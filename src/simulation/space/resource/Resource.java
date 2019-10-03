@@ -137,7 +137,7 @@ public class Resource { //TODO events of merging and stuff
     }
 
     private Resource movableModificator(Resource resource) {
-        if (isMovable()) {
+        if (resource.isMovable()) {
             return resource;
         }
         if (tile != null) {
@@ -152,15 +152,7 @@ public class Resource { //TODO events of merging and stuff
 
     public boolean update() {
         if (amount <= 0) {
-            if (getTile() == null) {
-                int i = 0;
-            }
-            getTile().getResources().remove(this);
-//            if (spreadProbability != 0 &&
-//                    resourceCore.world.map.getAllResourceInstancesWithName(getName()).size() == 0) {
-//                resourceCore.world.addEvent(new Event(Event.Type.ResourceDeath, resourceCore.world.getTurn(),
-//                        "Resource " + getName() + " is extinct.", "resource", resourceCore));
-//            }
+            getTile().removeResource(this);//TODO remove resource with fullEquals
             return false;
         }
         if (ProbFunc.getChances(spreadProbability)) {
@@ -185,7 +177,8 @@ public class Resource { //TODO events of merging and stuff
         Resource _r = getPart(part);
         List<Resource> result = _r.resourceCore.applyAspect(aspect);
         result.forEach(resource -> resource.amount = _r.amount);
-        _r.amount -= part > amount ? amount : part;
+        result.forEach(this::movableModificator);
+        _r.amount -= part > _r.amount ? _r.amount : part;
         return result;
     }
 

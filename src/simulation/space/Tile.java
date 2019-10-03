@@ -100,6 +100,15 @@ public class Tile {
         resource.setTile(this);
     }
 
+    public void removeResource(Resource resource) {
+        for (int i = 0; i < resources.size(); i++) {
+            Resource res = resources.get(i);
+            if (res.fullEquals(resource)) {
+                resources.remove(i);
+                return;
+            }
+        }
+    }
     public void addDelayedResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;
@@ -150,9 +159,6 @@ public class Tile {
     }
 
     public void update() {
-        if (_delayedResources.size() != 0) {
-            int i = 0;
-        }
         _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
         _delayedResources.clear();

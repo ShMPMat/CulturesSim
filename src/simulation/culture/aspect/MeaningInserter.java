@@ -23,12 +23,15 @@ public class MeaningInserter extends ConverseWrapper {//TODO has unnesessary dep
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {//TODO different resources get into dependencies
-            ShnyPair<Boolean, ResourcePack> pair = super.use(ceiling, amount);
-            Collection<Resource> res = pair.second.getResourceAndRemove(resource);
-            pair.second.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), aspect))
-                    .collect(Collectors.toList()));
-            return pair;
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {
+        if (resource.getName().equals("Tree")) {
+            int i = 0;
+        }
+        ShnyPair<Boolean, ResourcePack> pair = super.use(ceiling, amount);
+        Collection<Resource> res = pair.second.getResourceAndRemove(resource);
+        pair.second.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), aspect))
+                .collect(Collectors.toList()));
+        return pair;
     }
 
     @Override
