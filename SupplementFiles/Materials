@@ -1,0 +1,21 @@
+PlantFibre    -soft     -flexible      -thin      -solid
+Wood          -hard     -sturdy                   -solid
+Pulp          -soft                               -solid    -eatable
+Seed          -hard     -sturdy                   -solid
+
+Meat          -soft     -flexible                 -solid    -eatable    +Bake:RoastedMeat
+Bone          -hard     -sturdy                   -solid
+Chitin        -hard     -sturdy                   -solid
+
+Fibre         -soft     -flexible      -thin      -solid
+Cloth         -soft                    -wide      -solid
+
+RoastedMeat   -hard     -stiff                    -solid    -eatable
+
+Clay          -soft     -malleable                -solid                +Bake:Ceramics
+Ceramics      -hard     -fragile                  -solid
+
+Stone         -hard     -sturdy                   -solid
+
+Flame         -burns                              -gas
+Ash           -soft     -powder                   -solid
