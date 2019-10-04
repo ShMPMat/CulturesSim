@@ -28,7 +28,7 @@ public class Resource { //TODO events of merging and stuff
         this.spreadProbability = resourceCore.defaultSpreadability;
         this.amount = amount;
         this.resourceCore = resourceCore;
-        _hash = Objects.hash(getFullName(), resourceCore.getTags());
+        computeHash();
         setTile(null);
     }
 
@@ -42,6 +42,10 @@ public class Resource { //TODO events of merging and stuff
 
     public Resource(ResourceCore resourceCore) {
         this(resourceCore, resourceCore.defaultAmount);
+    }
+
+    void computeHash() {
+        _hash = Objects.hash(getFullName(), resourceCore.getTags());
     }
 
     public void actualizeLinks() {
@@ -152,7 +156,7 @@ public class Resource { //TODO events of merging and stuff
 
     public boolean update() {
         if (amount <= 0) {
-            getTile().removeResource(this);//TODO remove resource with fullEquals
+            getTile().removeResource(this);
             return false;
         }
         if (ProbFunc.getChances(spreadProbability)) {

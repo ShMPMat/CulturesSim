@@ -181,10 +181,8 @@ public class Group {
         return dep;
     }
 
-    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<AspectTag, Set<Dependency>> dep) { //TODO getRequirement rewritten with phony target
-        List<Resource> _l = converseWrapper.resource.applyAspect(converseWrapper.aspect);
-        if (!(_l.size() == 1 && _l.get(0).equals(converseWrapper.resource)) ||
-                (converseWrapper instanceof MeaningInserter && converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect))) {
+    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<AspectTag, Set<Dependency>> dep) {
+        if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
             if (getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
                 addDependenciesInMap(dep, Collections.singleton(new Dependency(converseWrapper.getRequirement(), this,
                         new ShnyPair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
@@ -381,6 +379,9 @@ public class Group {
         StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
                 ", population=" + population + ", aspects:\n");
         for (Aspect aspect : getAspects()) {
+            if (aspect.getUsefulness() < 0) {
+                continue;
+            }
             stringBuilder.append(aspect).append("\n\n");
         }
         stringBuilder.append("Aspirations: ");
@@ -398,7 +399,7 @@ public class Group {
                 .append("\n");
 
         for (Group subgroup : subgroups) {
-            stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString());
+            stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
         }
         return stringBuilder.toString();
     }

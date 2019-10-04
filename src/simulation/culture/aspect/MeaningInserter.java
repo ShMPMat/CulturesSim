@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MeaningInserter extends ConverseWrapper {//TODO has unnesessary dependencies which go to phony
+public class MeaningInserter extends ConverseWrapper {
 
     public MeaningInserter(Aspect aspect, Resource resource, Group group) {
         super(aspect, resource.fullClearCopy(), group);

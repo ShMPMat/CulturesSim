@@ -87,7 +87,7 @@ public class Dependency {
                     .anyMatch(dependency -> dependency.isCycleDependency(aspect)));
         }
         if (conversion != null) {
-            return (conversion.second.equals(aspect) && conversion.second != aspect); //TODO rewrite on CWs, so that cycle with CW on itself can be catched
+            return (conversion.second.equals(aspect) && conversion.second != aspect);
         }
         if (line != null) {
             return line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()

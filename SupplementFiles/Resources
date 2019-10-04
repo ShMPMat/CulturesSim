@@ -7,17 +7,22 @@ Insect           0.05  0.02  1  @Chitin      @Meat                         +Kill
 PlantFibre       0     0.5   1  @PlantFibre                                +MakingFibre:Fibre                 +Incinerate:Fire,Ash
 Fruit            0     0.1   1  @Pulp                                                                         +Incinerate:Fire,Ash
 Seed             0     1.01  1  @Seed                                                                         +Incinerate:Fire,Ash
-Wood             0     1     1  @Wood                                                                         +Incinerate:Fire,Ash
+Wood             0     1     1  @Wood                                      +BuildHouse:House                  +Incinerate:Fire,Ash
 Meat             0     0.1   1  @Meat
 Bone             0     0.1   1  @Bone
 Chitin           0     0.02  1  @Chitin
+Test             0     0     1  @Chitin
+Test2             0     0     1  @Chitin
+Test4             0     0     1  @Chitin
+
+Clay             0     0.5   1  @Clay                                      +BuildHouse:House
+Stone            0     0.1   1  @Stone
 
 Fibre            0     0.5   1  @Fibre                                     +Weaving:Cloth                     +Incinerate:Fire,Ash
 Cloth            0     0.5   1  @Cloth                                     +MakeClothes:Clothes               +Incinerate:Fire,Ash
 Clothes          0     0.5   1  @Cloth                                                                        +Incinerate:Fire,Ash
 
-Clay             0     0.5   1  @Clay
-Stone            0     0.1   1  @Stone
+House            0     5     0  @TEMPLATE
 
 Fire             0     0.5   1  @Flame
 Ash              0     0.5   1  @Ash

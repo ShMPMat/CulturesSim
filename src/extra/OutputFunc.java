@@ -15,7 +15,7 @@ public class OutputFunc {
      * @param right right text.
      * @return left and right text merged in one.
      */
-    public static StringBuilder addToRight(String left, String right) {
+    public static StringBuilder addToRight(String left, String right, boolean guarantiedLength) {
         StringBuilder stringBuilder = new StringBuilder();
         int m = left.lines().map(String::length).max(Integer::compareTo).get() + 4;
         List<String> list1 = left.lines().collect(Collectors.toList()), list2 = right.lines()
@@ -23,8 +23,8 @@ public class OutputFunc {
         for (int i = 0; i < Math.max(left.lines().count(), right.lines().count()); i++) {
             String ss1 = (i < list1.size() ? list1.get(i) : "");
             String ss2 = (i < list2.size() ? list2.get(i) : "");
-            stringBuilder.append(ss1).append(new String(new char[m - ss1.length()]).replace('\0', ' '))
-                    .append(ss2).append("\n");
+            stringBuilder.append(ss1).append(new String(new char[guarantiedLength ? 4 : m - ss1.length()])
+                    .replace('\0', ' ')).append(ss2).append("\n");
         }
         return stringBuilder;
     }
@@ -46,7 +46,15 @@ public class OutputFunc {
     }
 
     public static StringBuilder chompToLines(String string, int size) {
-        //TODO
-        return null;
+        int index = 0, counter = 0;
+        while (index + 1 < string.length()) {
+            index = string.indexOf("\n", index + 1);
+            counter++;
+            if (counter == size) {
+                return addToRight(string.substring(0, index),
+                        chompToLines(string.substring(index + 1), size).toString(), false);
+            }
+        }
+        return new StringBuilder(string);
     }
 }

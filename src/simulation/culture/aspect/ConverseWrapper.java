@@ -35,7 +35,7 @@ public class ConverseWrapper extends Aspect {
     }
 
     public AspectTag getRequirement() {
-        return getRequirements().stream().findFirst().get();
+        return new AspectTag("phony");
     }
 
     public List<Resource> getResult() {

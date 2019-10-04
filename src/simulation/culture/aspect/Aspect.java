@@ -91,6 +91,10 @@ public class Aspect {
         return dependencies;
     }
 
+    public int getUsefulness() {
+        return usefulness;
+    }
+
     public boolean canApplyMeaning() {
         return aspectCore.applyMeaning;
     }

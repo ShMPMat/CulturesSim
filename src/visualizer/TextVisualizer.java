@@ -1,5 +1,6 @@
 package visualizer;
-//TODO check smart territory acquisition it seems not to work; add events to ideal resources in resource pool
+//TODO check smart territory acquisition it seems not to work
+import extra.OutputFunc;
 import simulation.Controller;
 import simulation.World;
 import simulation.culture.Event;
@@ -29,60 +30,74 @@ public class TextVisualizer {
     /**
      * Symbols for representation of groups on the Map.
      */
-    static private Map<Group, String> groupSymbols;
+    private Map<Group, String> groupSymbols;
     /**
      * Symbols for representation of resource on the Map.
      */
-    static private Map<Resource, String> resourceSymbols;
+    private Map<Resource, String> resourceSymbols;
     /**
      * List of group population before beginning of the last sequence turn;
      * Used for estimating population change.
      */
-    static private List<Integer> groupPopulations;
+    private List<Integer> groupPopulations;
     /**
      * Map of all the tiles claimed by groups during the last sequence of turns;
      * Used for displaying new tiles for groups.
      */
-    static private Map<Group, Set<Tile>> lastClaimedTiles;
+    private Map<Group, Set<Tile>> lastClaimedTiles;
+
+    private Controller controller;
 
     /**
      * Pattern used for recognizing command for printing group information.
      */
-    static private Pattern groupPattern = Pattern.compile("^G\\d+");
+    private Pattern groupPattern = Pattern.compile("^G\\d+");
     /**
      * Pattern used for recognizing command for making sequence of turns.
      */
-    static private Pattern turnsPattern = Pattern.compile("\\d+");
+    private Pattern turnsPattern = Pattern.compile("\\d+");
     /**
      * Pattern used for recognizing command for printing tile information.
      */
-    static private Pattern tilePattern = Pattern.compile("\\d+ \\d+");
+    private Pattern tilePattern = Pattern.compile("\\d+ \\d+");
     /**
      * Pattern used for recognizing command for making turns until
      * something important happens.
      */
-    static private Pattern idleGoPattern = Pattern.compile("go");
+    private Pattern idleGoPattern = Pattern.compile("go");
     /**
      * Pattern used for recognizing command for printing resource information.
      */
-    static private Pattern resourcePattern = Pattern.compile("r \\w+");
-    static private Pattern meaningfulResourcePattern = Pattern.compile("meaning");
+    private Pattern resourcePattern = Pattern.compile("r \\w+");
+    private Pattern meaningfulResourcePattern = Pattern.compile("meaning");
     /**
      * Pattern used for recognizing command for printing map.
      */
-    static private Pattern mapPattern = Pattern.compile("[mM]");
+    private Pattern mapPattern = Pattern.compile("[mM]");
     /**
      * Pattern used for recognizing command for exiting simulation.
      */
-    static private Pattern exitPattern = Pattern.compile("EXIT");
-    static private Pattern addAspectPattern = Pattern.compile("^G\\d+ \\w+");
+    private Pattern exitPattern = Pattern.compile("EXIT");
+    private Pattern addAspectPattern = Pattern.compile("^G\\d+ \\w+");
+
+    public TextVisualizer() {
+        int numberOfGroups = 10, mapSize = 20, numberOrResources = 5;
+        controller = new Controller(numberOfGroups, mapSize, numberOrResources,
+                new MapModel(0.01, 0.25));
+        groupPopulations = new ArrayList<>();
+        for (int i = 0; i < numberOfGroups; i++) {
+            groupPopulations.add(0);
+        }
+        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
+        controller.world.groups.forEach(Group::finishUpdate);
+    }
 
     /**
      * Function returning a command represented in the line.
       * @param line String line with a command.
      * @return Command token represented by the line.
      */
-    private static Command getCommand(String line) {
+    private Command getCommand(String line) {
         if (groupPattern.matcher(line).matches()) {
             return Command.Group;
         } else if (turnsPattern.matcher(line).matches()) {
@@ -111,7 +126,7 @@ public class TextVisualizer {
      * @param controller main controller in which world is wrapped.
      * @throws IOException when files with symbols isn't found.
      */
-    private static void readSymbols(Controller controller) throws IOException {
+    private void readSymbols(Controller controller) throws IOException {
         groupSymbols = new HashMap<>();
         resourceSymbols = new HashMap<>();
         Scanner s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
@@ -128,7 +143,7 @@ public class TextVisualizer {
      * Prints default map and information output.
      * @param controller main controller in which world is wrapped.
      */
-    private static void print(Controller controller) {
+    private void print(Controller controller) {
         System.out.println(controller.world.getTurn());
         int i = -1;
         for (Group group : controller.world.groups) {
@@ -164,7 +179,7 @@ public class TextVisualizer {
      *                  above default map. If function returns non-empty string
      *                  for a tile, output of the function will be drawn above the tile.
      */
-    private static void printMap(WorldMap worldMap, Function<Tile, String> condition) {
+    private void printMap(WorldMap worldMap, Function<Tile, String> condition) {
         System.out.print("  ");
         for (int i = 0; i < worldMap.map.get(0).size(); i++) {
             System.out.print((i < 10 ? " " : i / 10));
@@ -175,10 +190,11 @@ public class TextVisualizer {
             System.out.print(i % 10);
         }
         System.out.println();
+        StringBuilder map = new StringBuilder();
         for (int i = 0; i < worldMap.map.size(); i++) {
             List<Tile> line = worldMap.map.get(i);
             String token;
-            System.out.print((i < 10 ? " " + i : i));
+            map.append((i < 10 ? " " + i : i));
             for (Tile tile : line) {
                 token = condition.apply(tile);
                 if (token.equals("")) {
@@ -206,14 +222,17 @@ public class TextVisualizer {
                         }
                     }
                 }
-                System.out.print(token + "\033[0m");
+                map.append(token).append("\033[0m");
             }
-            if (worldMap.resourcePool.size() > i) {
-                System.out.print("\033[31m" + resourceSymbols.get(worldMap.resourcePool.get(i)) + " - " +
-                        worldMap.resourcePool.get(i).getName());
-            }
-            System.out.println("\033[0m");
+            map.append("\033[0m").append("\n");
         }
+        StringBuilder resources = new StringBuilder();
+        for (Resource resource : worldMap.resourcePool) {
+            resources.append("\033[31m").append(resourceSymbols.get(resource)).append(" - ")
+                    .append(resource.getName()).append("\n");
+        }
+        System.out.print(OutputFunc.addToRight(map.toString(),
+                OutputFunc.chompToLines(resources.toString(), worldMap.map.size()).toString(), true));
     }
 
     /**
@@ -221,9 +240,11 @@ public class TextVisualizer {
      * @param group Group which will be printed.
      * @param map main map on which group is placed.
      */
-    private static void printGroup(Group group, WorldMap map) {
+    private void printGroup(Group group, WorldMap map) {
         printMap(map, tile -> (group.getTiles().contains(tile) ?
-                (group.subgroups.stream().anyMatch(sg -> sg.getTiles().contains(tile)) ? "\033[31mO" : "\033[30mX") : ""));
+                (group.subgroups.stream().anyMatch(sg -> sg.getTiles().contains(tile)) ? "\033[31mO" :
+                        (tile.getResources().stream().anyMatch(resource -> resource.getName().contains("House")) ?
+                                "\033[31m+" : "\033[30mX")) : ""));
         System.out.println(group);
     }
 
@@ -232,7 +253,7 @@ public class TextVisualizer {
      * @param resource Resource which will be printed.
      * @param map main map on which resource is placed.
      */
-    private static void printResource(Resource resource, WorldMap map) {
+    private void printResource(Resource resource, WorldMap map) {
         printMap(map, tile -> (tile.getResources().stream().anyMatch(r -> r.equals(resource)) ? "\033[30mX" : ""));
         System.out.println(resource);
     }
@@ -242,7 +263,7 @@ public class TextVisualizer {
      * @param tile Tile which will be printed.
      * @param map main map on which tile is placed.
      */
-    private static void printTile(Tile tile, WorldMap map) {
+    private void printTile(Tile tile, WorldMap map) {
         printMap(map, t -> (t.equals(tile) ? "\033[30mX" : ""));
         System.out.println(tile);
     }
@@ -251,7 +272,7 @@ public class TextVisualizer {
      * Prints important events.
      * @param events list of events.
      */
-    private static void printEvents(Collection<Event> events) {
+    private void printEvents(Collection<Event> events) {
         for (Event event : events) {
             if (event.type == Event.Type.Death || event.type == Event.Type.ResourceDeath || event.type == Event.Type.DisbandResources) {
                 System.out.println(event);
@@ -259,7 +280,7 @@ public class TextVisualizer {
         }
     }
 
-    private static void addAspectToGroup(Group group, String aspectName, World world) {
+    private void addAspectToGroup(Group group, String aspectName, World world) {
         if (group == null) {
             System.err.println("Cannot add aspect to group");
             return;
@@ -288,17 +309,7 @@ public class TextVisualizer {
         group.getCulturalCenter().pushAspects();
     }
 
-    public static void main(String[] args) {//TODO migrate to non-static
-        int numberOfGroups = 10, mapSize = 20, numberOrResources = 5;
-        Controller controller = new Controller(numberOfGroups, mapSize, numberOrResources,
-                new MapModel(0.01, 0.25));
-        groupPopulations = new ArrayList<>();
-        for (int i = 0; i < numberOfGroups; i++) {
-            groupPopulations.add(0);
-        }
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
-        controller.world.groups.forEach(Group::finishUpdate);
-
+    public void run(){
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             readSymbols(controller);
             print(controller);
@@ -369,6 +380,11 @@ public class TextVisualizer {
                 System.err.println(stackTraceElement);
             }
         }
+    }
+
+    public static void main(String[] args) {
+        TextVisualizer textVisualizer = new TextVisualizer();
+        textVisualizer.run();
     }
 
     /**

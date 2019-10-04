@@ -15,18 +15,21 @@ public class ResourceCore {
     String name, meaningPrefix;
     double defaultSpreadability;
     int defaultAmount;
-    World world;
+    private World world;
     int efficiencyCoof;
 
     private boolean hasMeaning = false;
     private boolean isMovable = true;
+    private boolean isTemplate = false;
     private double size;
     private List<Material> materials;
     private Map<Aspect, List<Resource>> aspectConversion;
     private Map<Aspect, String[]> _aspectConversion;
     private List<AspectTag> tags, _tags;
+    private Meme meaning;
 
     ResourceCore(String[] tags, int efficiencyCoof, World world) {
+        this.meaning = null;
         this.efficiencyCoof = efficiencyCoof;
         this.aspectConversion = new HashMap<>();
         this._aspectConversion = new HashMap<>();
@@ -53,21 +56,27 @@ public class ResourceCore {
                                 tag.substring(tag.indexOf(':') + 1).split(","));
                         break;
                     case '@':
+                        if (tag.substring(1).equals("TEMPLATE")) {
+                            isTemplate = true;
+                            break;
+                        }
                         materials.add(world.getMaterialFromPoolByName(tag.substring(1)));
+                        break;
                 }
 
             }
         }
-        if (materials.isEmpty()) {
+        if (materials.isEmpty() && !isTemplate) {
             System.err.println("Resource " + name + " has no materials.");
-        } else {
+        } else if (!materials.isEmpty()){
             this.tags.addAll(_tags);
             this.tags.addAll(materials.get(0).getTags(this));
         }
     }
 
     private ResourceCore(String name, String meaningPrefix, World world, int defaultAmount, double defaultSpreadability, List<AspectTag> tags,
-                         List<Material> materials, int efficiencyCoof, double size, boolean isMovable) {
+                         List<Material> materials, int efficiencyCoof, double size, boolean isMovable, boolean isTemplate) {
+        this.isTemplate = isTemplate;
         this.isMovable = isMovable;
         this.efficiencyCoof = efficiencyCoof;
         setName(name + meaningPrefix);
@@ -80,9 +89,9 @@ public class ResourceCore {
         this.materials = materials;
         this.aspectConversion = new HashMap<>();
         this._aspectConversion = new HashMap<>();
-        if (materials.isEmpty()) {
+        if (materials.isEmpty() && !isTemplate) {
             System.err.println("Resource " + name + " has no materials.");
-        } else {
+        } else if (!materials.isEmpty()){
             this.tags.addAll(_tags);
             this.tags.addAll(materials.get(0).getTags(this));
         }
@@ -116,20 +125,32 @@ public class ResourceCore {
 
     Resource fullCopy() {
         return new Resource(new ResourceCore(name, meaningPrefix, world, defaultAmount, 0,
-                new ArrayList<>(_tags), new ArrayList<>(materials), efficiencyCoof, size, isMovable()));
+                new ArrayList<>(_tags), new ArrayList<>(materials), efficiencyCoof, size, isMovable(), isTemplate));
     }
 
-    public ResourceCore insertMeaning(Meme meaning, Aspect aspect) { //TODO insert meaning in some list or smth
+    public ResourceCore insertMeaning(Meme meaning, Aspect aspect) {
         ResourceCore _r = new ResourceCore(name, "_representing_" + meaning + "_with_" + aspect.getName(),
                 world, defaultAmount, 0, new ArrayList<>(_tags), new ArrayList<>(materials),
-                efficiencyCoof, size, isMovable());
+                efficiencyCoof, size, isMovable(), isTemplate);
         _r.hasMeaning = true;
+        _r.meaning = meaning;
         return _r;
     }
 
     List<Resource> applyAspect(Aspect aspect) {
         if (aspectConversion.containsKey(aspect)) {
-            return aspectConversion.get(aspect).stream().map(resource -> resource.copy(1)).collect(Collectors.toList());
+            List<Resource> resourceList = aspectConversion.get(aspect).stream().map(resource -> resource.copy(1))
+                    .collect(Collectors.toList());
+            resourceList.forEach(resource -> {
+                if (resource.resourceCore.isTemplate) {
+                    resource.resourceCore = resource.resourceCore.fullCopy().resourceCore;
+                    resource.resourceCore.materials.addAll(materials);
+                    resource.resourceCore.setName(resource.resourceCore.name + name + resource.resourceCore.meaningPrefix);
+                    resource.resourceCore.isTemplate = false;
+                    resource.computeHash();
+                }
+            });
+            return resourceList;
         }
         return Collections.singletonList(applyAspectToMaterials(aspect).copy(1));
     }
@@ -138,7 +159,8 @@ public class ResourceCore {
         List<Material> newMaterials = materials.stream().map(material -> material.applyAspect(aspect))
                 .collect(Collectors.toList());
         return new ResourceCore(name + (newMaterials.equals(materials) ? "" : "_" + aspect.getName()), meaningPrefix,
-                world, defaultAmount, 0, new ArrayList<>(_tags), newMaterials, efficiencyCoof, size, isMovable());
+                world, defaultAmount, 0, new ArrayList<>(_tags), newMaterials, efficiencyCoof, size, isMovable(),
+                isTemplate);
     }
 
     public List<AspectTag> getTags() {
