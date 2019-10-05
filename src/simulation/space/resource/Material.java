@@ -7,7 +7,7 @@ import simulation.culture.aspect.AspectTag;
 import java.util.*;
 
 /**
- * Represents a material from which objects can consist.
+ * Represents material from which objects can be made.
  */
 public class Material {
     private List<Property> properties;
@@ -102,5 +102,9 @@ public class Material {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public boolean hasPropertyWithName(String name) {
+        return hasProperty(world.getPropertyFromPoolByName(name));
     }
 }

@@ -1,4 +1,5 @@
 soft
+springy
 hard
 
 flexible
@@ -20,3 +21,4 @@ gas
 eatable         -food
 
 burns           -burns
+_can_be_ignited

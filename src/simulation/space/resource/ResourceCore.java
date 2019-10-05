@@ -1,5 +1,6 @@
 package simulation.space.resource;
 
+import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
@@ -23,20 +24,13 @@ public class ResourceCore {
     private boolean isTemplate = false;
     private double size;
     private List<Material> materials;
-    private Map<Aspect, List<Resource>> aspectConversion;
+    private Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion;
     private Map<Aspect, String[]> _aspectConversion;
     private List<AspectTag> tags, _tags;
     private Meme meaning;
 
     ResourceCore(String[] tags, int efficiencyCoof, World world) {
-        this.meaning = null;
-        this.efficiencyCoof = efficiencyCoof;
-        this.aspectConversion = new HashMap<>();
-        this._aspectConversion = new HashMap<>();
-        this.world = world;
-        this.defaultAmount = 100;
-        this.tags = new ArrayList<>();
-        this._tags = new ArrayList<>();
+        initializeMutualFields(efficiencyCoof, world, 100, new ArrayList<>());
         this.materials = new ArrayList<>();
         for (int i = 0; i < tags.length; i++) {
             String tag = tags[i];
@@ -66,41 +60,53 @@ public class ResourceCore {
 
             }
         }
-        if (materials.isEmpty() && !isTemplate) {
-            System.err.println("Resource " + name + " has no materials.");
-        } else if (!materials.isEmpty()){
-            this.tags.addAll(_tags);
-            this.tags.addAll(materials.get(0).getTags(this));
-        }
+        computeMaterials();
     }
 
     private ResourceCore(String name, String meaningPrefix, World world, int defaultAmount, double defaultSpreadability, List<AspectTag> tags,
                          List<Material> materials, int efficiencyCoof, double size, boolean isMovable, boolean isTemplate) {
+        initializeMutualFields(efficiencyCoof, world, defaultAmount, tags);
         this.isTemplate = isTemplate;
         this.isMovable = isMovable;
         this.efficiencyCoof = efficiencyCoof;
         setName(name + meaningPrefix);
         this.defaultSpreadability = defaultSpreadability;
         this.size = size;
+        this.materials = materials;
+        computeMaterials();
+    }
+
+    private void initializeMutualFields(int efficiencyCoof, World world, int defaultAmount, List<AspectTag> tags) {
+        this.meaning = null;
+        this.efficiencyCoof = efficiencyCoof;
+        this.aspectConversion = new HashMap<>();
+        this._aspectConversion = new HashMap<>();
         this.world = world;
         this.defaultAmount = defaultAmount;
         this._tags = tags;
         this.tags = new ArrayList<>();
-        this.materials = materials;
-        this.aspectConversion = new HashMap<>();
-        this._aspectConversion = new HashMap<>();
-        if (materials.isEmpty() && !isTemplate) {
-            System.err.println("Resource " + name + " has no materials.");
-        } else if (!materials.isEmpty()){
-            this.tags.addAll(_tags);
-            this.tags.addAll(materials.get(0).getTags(this));
-        }
     }
 
-    public void actualizeLinks() {
+    void actualizeLinks() {
         for (Aspect aspect : _aspectConversion.keySet()) {
             aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
-                    .map(s -> world.getResourceFromPoolByName(s)).collect(Collectors.toList()));
+                    .map(s -> new ShnyPair<Resource, Integer>(world.getResourceFromPoolByName(s.split(":")[0]),
+                            Integer.parseInt(s.split(":")[1]))).collect(Collectors.toList()));
+        }
+        if (materials.isEmpty()) {
+            return;
+        }
+        Material material = materials.get(0);
+        if (material.hasPropertyWithName("_can_be_ignited") && !aspectConversion.containsKey(world.getAspectFromPoolByName("Incinerate"))) {
+            List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>(2);
+            resourceList.add(new ShnyPair<>(world.getResourceFromPoolByName("Fire"), 1));
+            resourceList.add(new ShnyPair<>(world.getResourceFromPoolByName("Ash"), 1));
+            aspectConversion.put(world.getAspectFromPoolByName("Incinerate"), resourceList);
+        }
+        if (size >= 0.5 && material.hasPropertyWithName("hard") && material.hasPropertyWithName("hard")
+                && !aspectConversion.containsKey(world.getAspectFromPoolByName("BuildHouse"))) {
+            aspectConversion.put(world.getAspectFromPoolByName("BuildHouse"),
+                    Collections.singletonList(new ShnyPair<>(world.getResourceFromPoolByName("House"), 1)));
         }
         _aspectConversion = null;
     }
@@ -112,6 +118,20 @@ public class ResourceCore {
         } else {
             name = fullName;
             meaningPrefix = "";
+        }
+    }
+
+    private void setMaterials(List<Material> materials) {
+        this.materials = materials;
+
+    }
+
+    private void computeMaterials() {
+        if (materials.isEmpty() && !isTemplate) {
+            System.err.println("Resource " + name + " has no materials.");
+        } else if (!materials.isEmpty()){
+            this.tags.addAll(_tags);
+            this.tags.addAll(materials.get(0).getTags(this));
         }
     }
 
@@ -139,12 +159,13 @@ public class ResourceCore {
 
     List<Resource> applyAspect(Aspect aspect) {
         if (aspectConversion.containsKey(aspect)) {
-            List<Resource> resourceList = aspectConversion.get(aspect).stream().map(resource -> resource.copy(1))
+            List<Resource> resourceList = aspectConversion.get(aspect).stream().map(pair -> pair.first.copy(pair.second))
                     .collect(Collectors.toList());
             resourceList.forEach(resource -> {
-                if (resource.resourceCore.isTemplate) {
+                if (resource.resourceCore.isTemplate) {//TODO links
                     resource.resourceCore = resource.resourceCore.fullCopy().resourceCore;
                     resource.resourceCore.materials.addAll(materials);
+                    resource.resourceCore.computeMaterials();
                     resource.resourceCore.setName(resource.resourceCore.name + name + resource.resourceCore.meaningPrefix);
                     resource.resourceCore.isTemplate = false;
                     resource.computeHash();

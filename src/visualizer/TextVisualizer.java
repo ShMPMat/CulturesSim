@@ -45,7 +45,9 @@ public class TextVisualizer {
      * Used for displaying new tiles for groups.
      */
     private Map<Group, Set<Tile>> lastClaimedTiles;
-
+    /**
+     * Main controller of the simulation
+     */
     private Controller controller;
 
     /**
@@ -78,8 +80,14 @@ public class TextVisualizer {
      * Pattern used for recognizing command for exiting simulation.
      */
     private Pattern exitPattern = Pattern.compile("EXIT");
+    /**
+     * Pattern used for recognizing command for adding Aspect for a group.
+     */
     private Pattern addAspectPattern = Pattern.compile("^G\\d+ \\w+");
 
+    /**
+     * Base constructor.
+     */
     public TextVisualizer() {
         int numberOfGroups = 10, mapSize = 20, numberOrResources = 5;
         controller = new Controller(numberOfGroups, mapSize, numberOrResources,
@@ -280,6 +288,13 @@ public class TextVisualizer {
         }
     }
 
+    /**
+     * Adds aspect to the group. Null-safe.
+     * @param group group to which Aspect will be added. Can be null.
+     * @param aspectName name of the aspect which will be added to the Group. Can
+     *                   represent Aspect which doesn't exists.
+     * @param world world in which Group and Aspect exist.
+     */
     private void addAspectToGroup(Group group, String aspectName, World world) {
         if (group == null) {
             System.err.println("Cannot add aspect to group");
@@ -304,12 +319,19 @@ public class TextVisualizer {
             }
         } else {
             aspect = world.getAspectFromPoolByName(aspectName);
+            if (aspect == null) {
+                System.err.println("Cannot add aspect to group");
+                return;
+            }
         }
         group.getCulturalCenter().addAspect(aspect);
         group.getCulturalCenter().pushAspects();
     }
 
-    public void run(){
+    /**
+     * Runs interface for the simulation control.
+     */
+    private void run(){
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             readSymbols(controller);
             print(controller);

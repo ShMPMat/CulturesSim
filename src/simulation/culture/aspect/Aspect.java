@@ -22,8 +22,8 @@ public class Aspect {
      * we can get get resource for using this aspect.
      */
     Map<AspectTag, Set<Dependency>> dependencies;
-    protected int usefulness;
-    protected boolean used;
+    private int usefulness;
+    private boolean used;
     protected Group group;
 
     /**

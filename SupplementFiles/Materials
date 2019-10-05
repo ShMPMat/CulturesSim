@@ -1,18 +1,20 @@
-PlantFibre    -soft     -flexible      -thin      -solid
-Wood          -hard     -sturdy                   -solid
+PlantFibre    -soft     -flexible      -thin      -solid    -_can_be_ignited
+Wood          -hard     -sturdy                   -solid    -_can_be_ignited
 Pulp          -soft                               -solid    -eatable
 Seed          -hard     -sturdy                   -solid
-
-Meat          -soft     -flexible                 -solid    -eatable    +Bake:RoastedMeat
+Fungus        -springy                            -solid    -eatable
+Meat          -springy  -flexible                 -solid    -eatable              +Bake:RoastedMeat
+Fat           -soft     -flexible                 -solid
 Bone          -hard     -sturdy                   -solid
 Chitin        -hard     -sturdy                   -solid
+Fur           -soft                               -solid
 
-Fibre         -soft     -flexible      -thin      -solid
-Cloth         -soft                    -wide      -solid
+Fibre         -soft     -flexible      -thin      -solid    -_can_be_ignited
+Cloth         -soft                    -wide      -solid    -_can_be_ignited
 
 RoastedMeat   -hard     -stiff                    -solid    -eatable
 
-Clay          -soft     -malleable                -solid                +Bake:Ceramics
+Clay          -soft     -malleable                -solid                          +Bake:Ceramics
 Ceramics      -hard     -fragile                  -solid
 
 Stone         -hard     -sturdy                   -solid

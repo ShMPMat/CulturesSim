@@ -9,6 +9,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Subclass of ConverseWrapper which inserts meaning in certain objects.
+ */
 public class MeaningInserter extends ConverseWrapper {
 
     public MeaningInserter(Aspect aspect, Resource resource, Group group) {
@@ -43,13 +46,13 @@ public class MeaningInserter extends ConverseWrapper {
     public MeaningInserter copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         MeaningInserter _w = new MeaningInserter(aspect, resource, group);
         _w.dependencies.putAll(dependencies);
-        Collection<AspectTag> aspectTags = new ArrayList<>();
+        Collection<AspectTag> unwantedTags = new ArrayList<>();
         for (AspectTag aspectTag : dependencies.keySet()) {
             if (!(aspectTag.isInstrumental || aspectTag.name.equals("phony"))) {
-                aspectTags.add(aspectTag);
+                unwantedTags.add(aspectTag);
             }
         }
-        aspectTags.forEach(dependencies::remove);
+        unwantedTags.forEach(dependencies::remove);
         return _w;
     }
 }

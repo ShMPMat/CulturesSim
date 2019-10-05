@@ -162,6 +162,7 @@ public class CulturalCenter {
     void addWant(Resource resource) {
         if (ProbFunc.getChances(0.1) && !wants.contains(resource)) {
             wants.add(resource);
+            return;
         }
         if (resource.getName().equals("Clothes")) {
             wants.add(resource);

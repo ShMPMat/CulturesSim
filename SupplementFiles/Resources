@@ -1,26 +1,26 @@
-Plant            0.05  1     0  @PlantFibre  @Pulp        @Seed            +TakeApart:Fruit,PlantFibre,Seed   +Incinerate:Fire,Ash
-Tree             0.05  5     0  @Wood                     @Seed            +TakeApart:Wood,Seed               +Incinerate:Fire,Ash
-Reed             0.05  1     1  @PlantFibre                                +TakeApart:PlantFibre              +Incinerate:Fire,Ash
-Animal           0.05  1     1  @Meat        @Bone                         +Killing:Meat,Bone
-Insect           0.05  0.02  1  @Chitin      @Meat                         +Killing:Chitin,Meat
+Plant            0.05  1     0  @PlantFibre  @Pulp        @Seed            +TakeApart:Fruit:2,PlantFibre:5,Seed:2
+Tree             0.05  5     0  @Wood                     @Seed            +TakeApart:Wood:10,Seed:2
+Reed             0.05  1     1  @PlantFibre                                +TakeApart:PlantFibre:2
+Animal           0.05  1     1  @Meat        @Fat         @Bone            +Killing:Meat:5,Fat:5,Bone:5,Fur:3
+Insect           0.05  0.02  1  @Chitin      @Meat                         +Killing:Chitin:1,Meat:1
+Mushroom         0.05  0.05  1  @Fungus                                    +TakeApart:Mushroom:1
 
-PlantFibre       0     0.5   1  @PlantFibre                                +MakingFibre:Fibre                 +Incinerate:Fire,Ash
-Fruit            0     0.1   1  @Pulp                                                                         +Incinerate:Fire,Ash
-Seed             0     1.01  1  @Seed                                                                         +Incinerate:Fire,Ash
-Wood             0     1     1  @Wood                                      +BuildHouse:House                  +Incinerate:Fire,Ash
+PlantFibre       0     0.5   1  @PlantFibre                                +MakingFibre:Fibre:1
+Fruit            0     0.1   1  @Pulp
+Seed             0     0.01  1  @Seed
+Wood             0     1     1  @Wood
 Meat             0     0.1   1  @Meat
+Fat              0     0.1   1  @Fat
 Bone             0     0.1   1  @Bone
 Chitin           0     0.02  1  @Chitin
-Test             0     0     1  @Chitin
-Test2             0     0     1  @Chitin
-Test4             0     0     1  @Chitin
+Fur              0     0.1   1  @Fur
 
-Clay             0     0.5   1  @Clay                                      +BuildHouse:House
+Clay             0     0.5   1  @Clay                                      +BuildHouse:House:1
 Stone            0     0.1   1  @Stone
 
-Fibre            0     0.5   1  @Fibre                                     +Weaving:Cloth                     +Incinerate:Fire,Ash
-Cloth            0     0.5   1  @Cloth                                     +MakeClothes:Clothes               +Incinerate:Fire,Ash
-Clothes          0     0.5   1  @Cloth                                                                        +Incinerate:Fire,Ash
+Fibre            0     0.5   1  @Fibre                                     +Weaving:Cloth:1
+Cloth            0     0.5   1  @Cloth                                     +MakeClothes:Clothes:1
+Clothes          0     0.5   1  @Cloth
 
 House            0     5     0  @TEMPLATE
 

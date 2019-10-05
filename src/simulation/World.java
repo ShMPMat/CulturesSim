@@ -35,6 +35,9 @@ public class World {
      * List of all Resources in the world.
      */
     public List<ResourceIdeal> resourcePool;
+    /**
+     * Base MemePool for the World. Contains all standard Memes.
+     */
     private GroupMemes memePool;
     /**
      * World map on which all simulated objects are placed.
@@ -217,6 +220,11 @@ public class World {
         return null;
     }
 
+    /**
+     * Returns Meme by name.
+     * @param name name of the Meme.
+     * @return Meme with this name.
+     */
     public Meme getMemeFromPoolByName(String name) {
         return memePool.getMemeByName(name).copy();
     }

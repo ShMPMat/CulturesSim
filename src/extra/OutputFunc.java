@@ -13,6 +13,7 @@ public class OutputFunc {
      *
      * @param left  left text. Must have at least one line in it.
      * @param right right text.
+     * @param guarantiedLength if left fragment is already has equal length of lines.
      * @return left and right text merged in one.
      */
     public static StringBuilder addToRight(String left, String right, boolean guarantiedLength) {
@@ -29,9 +30,15 @@ public class OutputFunc {
         return stringBuilder;
     }
 
-    public static StringBuilder chompToSize(String string, int size) {//TODO find spaces
+    /**
+     * Edits text via carrying lines which are longer than size.
+     * @param text text wich will be edited.
+     * @param size maximal acceptable length of a line.
+     * @return edited text, each line in it is not longer than size. Words can be cut in the middle.
+     */
+    public static StringBuilder chompToSize(String text, int size) {//TODO find spaces
         StringBuilder stringBuilder = new StringBuilder();
-        for (String line: string.lines().collect(Collectors.toList())) {
+        for (String line : text.lines().collect(Collectors.toList())) {
             while (!line.isEmpty()) {
                 if (size >= line.length()) {
                     stringBuilder.append(line).append("\n");
@@ -45,16 +52,22 @@ public class OutputFunc {
         return stringBuilder;
     }
 
-    public static StringBuilder chompToLines(String string, int size) {
+    /**
+     * Edits text via adding lines after size + 1 recursively to the right.
+     * @param text text which will be modified.
+     * @param size maximal acceptable number of lines.
+     * @return edited text, has no more than size lines, greater lines added to the right.
+     */
+    public static StringBuilder chompToLines(String text, int size) {
         int index = 0, counter = 0;
-        while (index + 1 < string.length()) {
-            index = string.indexOf("\n", index + 1);
+        while (index + 1 < text.length()) {
+            index = text.indexOf("\n", index + 1);
             counter++;
             if (counter == size) {
-                return addToRight(string.substring(0, index),
-                        chompToLines(string.substring(index + 1), size).toString(), false);
+                return addToRight(text.substring(0, index),
+                        chompToLines(text.substring(index + 1), size).toString(), false);
             }
         }
-        return new StringBuilder(string);
+        return new StringBuilder(text);
     }
 }

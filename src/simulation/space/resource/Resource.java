@@ -109,9 +109,6 @@ public class Resource { //TODO events of merging and stuff
         if (this.tile == null) {
             this.tile = tile;
         } else {
-            if (tile != null && tile != this.tile) {
-                int i = 0;
-            }
             this.tile = tile;
         }
     }
@@ -179,10 +176,11 @@ public class Resource { //TODO events of merging and stuff
 
     public List<Resource> applyAndConsumeAspect(Aspect aspect, int part) {
         Resource _r = getPart(part);
+        int p = part > _r.amount ? _r.amount : part;
         List<Resource> result = _r.resourceCore.applyAspect(aspect);
-        result.forEach(resource -> resource.amount = _r.amount);
+        result.forEach(resource -> resource.amount *= p);
         result.forEach(this::movableModificator);
-        _r.amount -= part > _r.amount ? _r.amount : part;
+        _r.amount -= p;
         return result;
     }
 

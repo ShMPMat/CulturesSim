@@ -11,8 +11,17 @@ import java.util.Objects;
  * Basic property of an object or a material.
  */
 public class Property {
+    /**
+     * Name of the property.
+     */
     private String name;
+    /**
+     * Link to the World in which property exists.
+     */
     private World world;
+    /**
+     * List of AspectTags associated with this Property.
+     */
     private List<AspectTag> tags;
 
     public Property(String[] tags, World world) {
@@ -31,8 +40,20 @@ public class Property {
         }
     }
 
+    /**
+     * Getter for tags.
+     * @return AspectTags associated with this Property.
+     */
     public List<AspectTag> getTags() {
         return tags;
+    }
+
+    /**
+     * Getter for name.
+     * @return name of this Property.
+     */
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -46,9 +67,5 @@ public class Property {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public String getName() {
-        return name;
     }
 }
