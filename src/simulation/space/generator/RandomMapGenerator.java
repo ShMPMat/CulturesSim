@@ -38,7 +38,7 @@ public class RandomMapGenerator {
         RandomMapGenerator.fillResources(map);
     }
 
-    private static void fillResourcePool(World world) {
+    private static void fillResourcePool(World world) {//TODO move to World class
         world.resourcePool = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Resources"))) {
             String line;
@@ -48,7 +48,7 @@ public class RandomMapGenerator {
                 if (line == null) {
                     break;
                 }
-                if (line.trim().isEmpty()) {
+                if (line.trim().isEmpty() || line.charAt(0) == '/') {
                     continue;
                 }
                 tags = line.split("\\s+");

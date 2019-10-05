@@ -2,16 +2,12 @@ package simulation.space.resource;
 
 import extra.ProbFunc;
 import simulation.World;
-import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents consumable objects found in the world.
@@ -23,6 +19,9 @@ public class Resource { //TODO events of merging and stuff
     private Tile tile;
     protected ResourceCore resourceCore;
     private double spreadProbability;
+
+    private int deathTurn = 0;
+    private double deathPart = 1;
 
     Resource(ResourceCore resourceCore, int amount) {
         this.spreadProbability = resourceCore.defaultSpreadability;
@@ -61,7 +60,7 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public String getFullName() {
-        return resourceCore.name + resourceCore.meaningPrefix;
+        return resourceCore.name + resourceCore.legacyPostfix + resourceCore.meaningPostfix;
     }
 
     public int getEfficiencyCoof() {
@@ -77,7 +76,13 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public Resource getPart(int part) {
-        int result = (amount > part ? part : amount);
+        int result;
+        double prob = Math.random() * 0.5;
+        if (part <= amount * prob) {
+            result = (amount > part ? part : amount);
+        } else {
+            result = amount * prob + 1 < amount ? (int) (amount * prob) + 1 : amount;
+        }
         amount -= result;
         return copy(result);
     }
@@ -152,10 +157,16 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public boolean update() {
+        if (deathTurn >= resourceCore.getDeathTime()) {
+            amount -= deathPart*amount;
+            deathTurn = 0;
+            deathPart = 1;
+        }
         if (amount <= 0) {
             getTile().removeResource(this);
             return false;
         }
+        deathTurn++;
         if (ProbFunc.getChances(spreadProbability)) {
             expand();
         }
@@ -163,6 +174,9 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public void addAmount(int amount) {
+        if (amount > 0) {
+            deathPart = (this.amount * deathPart) / (this.amount + amount);
+        }
         this.amount += amount;
     }
 

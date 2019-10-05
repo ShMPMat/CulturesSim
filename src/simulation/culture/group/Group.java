@@ -267,7 +267,7 @@ public class Group {
             return;
         }
 
-        for (Request request : getCulturalCenter().getRequests()) {
+        for (Request request : getCulturalCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
             List<ShnyPair<Aspect, Function<ResourcePack, Integer>>> pairs = getAspects().stream()
                     .map(aspect -> new ShnyPair<>(aspect, request.isAcceptable(aspect)))
                     .filter(pair -> pair.second != null).collect(Collectors.toList());

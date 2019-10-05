@@ -104,7 +104,7 @@ public class Dependency {
         if (aspect != null) {
             return aspect.use(ceiling, r -> ceiling);
         }
-        if (resource != null) {
+        if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
             return new ShnyPair<>(true, type.consumeAndGetResult(group.getOverallGroup().getTerritory().getResourceInstances(resource), ceiling));
         }
         if (conversion != null){

@@ -97,7 +97,7 @@ public class World {
                 if (line == null) {
                     break;
                 }
-                if (line.trim().isEmpty()) {
+                if (isLineBad(line)) {
                     continue;
                 }
                 tags = line.split("\\s+");
@@ -121,7 +121,7 @@ public class World {
                 if (line == null) {
                     break;
                 }
-                if (line.trim().isEmpty()) {
+                if (isLineBad(line)) {
                     continue;
                 }
                 tags = line.split("\\s+");
@@ -146,10 +146,7 @@ public class World {
                 if (line == null) {
                     break;
                 }
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
-                if (line.charAt(0) == '/') {
+                if (isLineBad(line)) {
                     continue;
                 }
                 tags = line.split("\\s+");
@@ -158,6 +155,10 @@ public class World {
         } catch (Throwable t) {
             System.err.println(t.toString());
         }
+    }
+
+    private boolean isLineBad(String line) {
+        return line.trim().isEmpty() || line.charAt(0) == '/';
     }
 
     /**

@@ -8,6 +8,7 @@ Fat           -soft     -flexible                 -solid
 Bone          -hard     -sturdy                   -solid
 Chitin        -hard     -sturdy                   -solid
 Fur           -soft                               -solid
+Feather       -soft     -flexible                 -solid
 
 Fibre         -soft     -flexible      -thin      -solid    -_can_be_ignited
 Cloth         -soft                    -wide      -solid    -_can_be_ignited

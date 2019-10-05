@@ -213,7 +213,8 @@ public class TextVisualizer {
                                 break;
                             case Normal:
                                 if (tile.getResources().size() > 0) {
-                                    token = "\033[36m" + resourceSymbols.get(tile.getResources().get(0));
+                                    token = "\033[36m" + (resourceSymbols.get(tile.getResources().get(0)) == null ? "Ё" :
+                                            resourceSymbols.get(tile.getResources().get(0)));
                                 } else {
                                     token = " ";
                                 }
