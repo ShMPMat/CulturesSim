@@ -79,7 +79,9 @@ public class Request {
         int amount = 0;
         ResourcePack _rp = new ResourcePack();
         if (tag != null) {
-            amount = resourcePack.getAmountOfResourcesWithTagAndRemove(tag, ceiling);
+            ResourcePack _r = resourcePack.getResourcesWithTagPart(tag, ceiling);
+            amount = _r.getAmountOfResources();
+            _rp.add(_r);
         }
         if (resource != null) {
             ResourcePack _r = resourcePack.getResourcePart(resource, ceiling);

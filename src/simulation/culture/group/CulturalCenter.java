@@ -26,7 +26,7 @@ public class CulturalCenter {
     private Set<Aspect> changedAspects; // always equals aspects except while making a turn
     private List<Event> events;
     private List<Request> requests;
-    private List<Resource> wants;
+    private List<ShnyPair<Resource, ResourceBehaviour>> wants;
     private GroupMemes memePool;
 
     private List<ConverseWrapper> _converseWrappers;
@@ -165,8 +165,9 @@ public class CulturalCenter {
     }
 
     public void addWant(Resource resource) {
-        if (!wants.contains(resource)) {
-            wants.add(resource);
+        if (wants.stream().noneMatch(pair -> pair.first.equals(resource))) {
+            wants.add(new ShnyPair<>(resource, new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
+                            PlacementStrategy.Strategy.values()[ProbFunc.randomInt(PlacementStrategy.Strategy.values().length)]))));
         }
     }
 
@@ -175,23 +176,27 @@ public class CulturalCenter {
         int floor = group.population / group.getFertility() + 1;
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> penalty = (pair, percent) -> {
             pair.first.starve(percent);
+            pair.second.removeAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward = (pair, percent) -> {
             pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
+            pair.second.removeAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
         requests.add(new Request(group, new AspectTag("food"), floor,
                 floor + group.population / 100 + 1, penalty, reward));
 
-        for (Resource want : wants) {//TODO Penalty
-            requests.add(new Request(group, want, 1, 10, (pair, percent) -> {
+        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {//TODO Penalty
+            requests.add(new Request(group, want.first, 1, 10, (pair, percent) -> {
                 pair.first.cherishedResources.add(pair.second);
-                addAspiration(new Aspiration(5, want));
+                addAspiration(new Aspiration(5, want.first));
+                want.second.procedeResources(pair.second);
                 return null;
             },
                     (pair, percent) -> {
                 pair.first.cherishedResources.add(pair.second);
+                want.second.procedeResources(pair.second);
                 return null;
                     }));
         }
@@ -276,7 +281,7 @@ public class CulturalCenter {
         }
     }
 
-    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO support resource Aspirations
+    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
         for (Aspect aspect : world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
@@ -342,5 +347,9 @@ public class CulturalCenter {
 
     public Meme getMeaning() {
         return memePool.getMemes().get(ProbFunc.randomInt(memePool.getMemes().size()));
+    }
+
+    public Collection<ShnyPair<Resource, ResourceBehaviour>> getWants() {
+        return wants;
     }
 }

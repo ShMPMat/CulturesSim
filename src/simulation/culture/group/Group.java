@@ -399,6 +399,11 @@ public class Group {
             stringBuilder.append(request).append(", ");
         }
         stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
+        stringBuilder.append("Wants: ");
+        for (ShnyPair<Resource, ResourceBehaviour> want : culturalCenter.getWants()) {
+            stringBuilder.append(want.first.getFullName()).append(" ").append(want.second).append(", ");
+        }
+        stringBuilder.append((culturalCenter.getWants().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
         stringBuilder.append("Artifacts:\n").append(OutputFunc.chompToSize(uniqueArtefacts.toString(), 70))
                 .append("\n");

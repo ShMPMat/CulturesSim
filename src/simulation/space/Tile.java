@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Basic tile of map
@@ -159,6 +160,7 @@ public class Tile {
     }
 
     public void update() {
+        _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
         _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
         _delayedResources.clear();

@@ -106,6 +106,10 @@ public class Territory {
         return tiles.size();
     }
 
+    public boolean contains(Tile tile) {
+        return tiles.contains(tile);
+    }
+
     public void addTile(Tile tile) {
         if (!tiles.contains(tile)) {
             tiles.add(tile);
@@ -135,5 +139,10 @@ public class Territory {
             return _o.get().first;
         }
         return null;
+    }
+
+    public List<Tile> getBorder() {
+        return tiles.stream().filter(tile -> !tile.getNeighbours(t -> !this.contains(t)).isEmpty())
+                .collect(Collectors.toList());
     }
 }

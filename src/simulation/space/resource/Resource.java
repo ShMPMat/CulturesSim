@@ -75,7 +75,7 @@ public class Resource { //TODO events of merging and stuff
 
     public Resource getPart(int part) {
         int result;
-        double prob = Math.random() * 0.5;
+        double prob = /*Math.random() * 0.5*/ 1; //TODO change when groups start to die from starvation
         if (part <= amount * prob) {
             result = (amount > part ? part : amount);
         } else {
@@ -109,9 +109,10 @@ public class Resource { //TODO events of merging and stuff
             this.tile = tile;
             return;
         }
-        if (this.tile == null) {
+        if (this.tile == null || deathTurn == 0) {
             this.tile = tile;
         } else {
+            System.err.println("Unmovable resource being moved!");
             this.tile = tile;
         }
     }

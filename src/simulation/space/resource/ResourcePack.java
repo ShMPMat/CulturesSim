@@ -60,6 +60,7 @@ public class ResourcePack {
     public Collection<Resource> removeAllResourcesWithTag(AspectTag tag) {
         Collection<Resource> result = getAllResourcesWithTag(tag);
         resources.removeAll(result);
+        result.forEach(resource -> resource.amount = 0);
         return result;
     }
 
@@ -83,6 +84,33 @@ public class ResourcePack {
         return getAllResourcesWithTag(tag).stream().reduce(0, (i, r) -> i + r.amount, Integer::sum);
     }
 
+    public int getAmountOfResourcesWithTagPart(AspectTag tag, int amount) {
+        Collection<Resource> _r = getAllResourcesWithTag(tag), result = new ArrayList<>();
+        int counter = 0;
+        for (Resource resource : _r) {
+            if (counter >= amount) {
+                break;
+            }
+            result.add(resource);
+            counter += resource.amount;
+        }
+        return counter;
+    }
+
+    public ResourcePack getResourcesWithTagPart(AspectTag tag, int amount) {
+        Collection<Resource> _r = getAllResourcesWithTag(tag);
+        ResourcePack result = new ResourcePack();
+        int counter = 0;
+        for (Resource resource : _r) {
+            if (counter >= amount) {
+                break;
+            }
+            result.add(resource);
+            counter += resource.amount;
+        }
+        return result;
+    }
+
     public int getAmountOfResource(Resource resource) {
         return getResource(resource).stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
     }
@@ -102,7 +130,7 @@ public class ResourcePack {
         return resourcePack;
     }
 
-    public int getAmountOfResourcesWithTagAndRemove(AspectTag tag, int amount) {
+    public int getAmountOfResourcesWithTagAndErase(AspectTag tag, int amount) {
         Collection<Resource> _r = getAllResourcesWithTag(tag), result = new ArrayList<>();
         int counter = 0;
         for (Resource resource : _r) {
@@ -113,6 +141,7 @@ public class ResourcePack {
             counter += resource.amount;
         }
         resources.removeAll(result);
+        result.forEach(resource -> resource.amount = 0);
         return counter;
     }
 
