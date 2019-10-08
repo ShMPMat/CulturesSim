@@ -72,6 +72,7 @@ public class TextVisualizer {
      */
     private Pattern resourcePattern = Pattern.compile("r \\w+");
     private Pattern meaningfulResourcePattern = Pattern.compile("meaning");
+    private Pattern artificialResourcePattern = Pattern.compile("artificial");
     /**
      * Pattern used for recognizing command for printing map.
      */
@@ -84,6 +85,7 @@ public class TextVisualizer {
      * Pattern used for recognizing command for adding Aspect for a group.
      */
     private Pattern addAspectPattern = Pattern.compile("^G\\d+ \\w+");
+    private Pattern addWantPattern = Pattern.compile("^want G\\d+ \\w+");
 
     /**
      * Base constructor.
@@ -97,6 +99,7 @@ public class TextVisualizer {
             groupPopulations.add(0);
         }
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
+        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("Take")));
         controller.world.groups.forEach(Group::finishUpdate);
     }
 
@@ -116,6 +119,8 @@ public class TextVisualizer {
             return Command.Resource;
         } else if (meaningfulResourcePattern.matcher(line).matches()) {
             return Command.MeaningfulResources;
+        } else if (artificialResourcePattern.matcher(line).matches()) {
+            return Command.ArtificialResources;
         } else if (idleGoPattern.matcher(line).matches()) {
             return Command.IdleGo;
         } else if (exitPattern.matcher(line).matches()) {
@@ -124,6 +129,8 @@ public class TextVisualizer {
             return Command.Map;
         } else if (addAspectPattern.matcher(line).matches()) {
             return Command.AddAspect;
+        } else if (addWantPattern.matcher(line).matches()) {
+            return Command.AddWant;
         } else {
             return Command.Turn;
         }
@@ -131,10 +138,9 @@ public class TextVisualizer {
 
     /**
      * Fills Symbol fields for map drawing.
-     * @param controller main controller in which world is wrapped.
      * @throws IOException when files with symbols isn't found.
      */
-    private void readSymbols(Controller controller) throws IOException {
+    private void readSymbols() throws IOException {
         groupSymbols = new HashMap<>();
         resourceSymbols = new HashMap<>();
         Scanner s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
@@ -149,9 +155,8 @@ public class TextVisualizer {
 
     /**
      * Prints default map and information output.
-     * @param controller main controller in which world is wrapped.
      */
-    private void print(Controller controller) {
+    private void print() {
         System.out.println(controller.world.getTurn());
         int i = -1;
         for (Group group : controller.world.groups) {
@@ -175,19 +180,19 @@ public class TextVisualizer {
                 filter(event -> event.type == Event.Type.TileAquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get((Group) event.getAttribute("group")).add((Tile) event.getAttribute("tile"));
         }
-        printMap(controller.world.map, tile -> "");
+        printMap(tile -> "");
         printEvents(controller.interactionModel.getEvents());
         controller.interactionModel.clearEvents();
     }
 
     /**
      * Prints world map.
-     * @param worldMap map which will be printed.
      * @param condition function which adds an extra layer of information
      *                  above default map. If function returns non-empty string
      *                  for a tile, output of the function will be drawn above the tile.
      */
-    private void printMap(WorldMap worldMap, Function<Tile, String> condition) {
+    private void printMap(Function<Tile, String> condition) {
+        WorldMap worldMap = controller.world.map;
         System.out.print("  ");
         for (int i = 0; i < worldMap.map.get(0).size(); i++) {
             System.out.print((i < 10 ? " " : i / 10));
@@ -238,7 +243,7 @@ public class TextVisualizer {
         StringBuilder resources = new StringBuilder();
         for (Resource resource : worldMap.resourcePool) {
             resources.append("\033[31m").append(resourceSymbols.get(resource)).append(" - ")
-                    .append(resource.getName()).append("\n");
+                    .append(resource.getBaseName()).append("\n");
         }
         System.out.print(OutputFunc.addToRight(map.toString(),
                 OutputFunc.chompToLines(resources.toString(), worldMap.map.size()).toString(), true));
@@ -247,12 +252,11 @@ public class TextVisualizer {
     /**
      * Prints group information.
      * @param group Group which will be printed.
-     * @param map main map on which group is placed.
      */
-    private void printGroup(Group group, WorldMap map) {
-        printMap(map, tile -> (group.getTiles().contains(tile) ?
+    private void printGroup(Group group) {
+        printMap(tile -> (group.getTiles().contains(tile) ?
                 (group.subgroups.stream().anyMatch(sg -> sg.getTiles().contains(tile)) ? "\033[31mO" :
-                        (tile.getResources().stream().anyMatch(resource -> resource.getName().contains("House")) ?
+                        (tile.getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
                                 "\033[31m+" : "\033[30mX")) : ""));
         System.out.println(group);
     }
@@ -260,20 +264,18 @@ public class TextVisualizer {
     /**
      * Prints resource information.
      * @param resource Resource which will be printed.
-     * @param map main map on which resource is placed.
      */
-    private void printResource(Resource resource, WorldMap map) {
-        printMap(map, tile -> (tile.getResources().stream().anyMatch(r -> r.equals(resource)) ? "\033[30mX" : ""));
+    private void printResource(Resource resource) {
+        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.equals(resource)) ? "\033[30mX" : ""));
         System.out.println(resource);
     }
 
     /**
      * Prints tile information.
      * @param tile Tile which will be printed.
-     * @param map main map on which tile is placed.
      */
-    private void printTile(Tile tile, WorldMap map) {
-        printMap(map, t -> (t.equals(tile) ? "\033[30mX" : ""));
+    private void printTile(Tile tile) {
+        printMap(t -> (t.equals(tile) ? "\033[30mX" : ""));
         System.out.println(tile);
     }
 
@@ -294,23 +296,22 @@ public class TextVisualizer {
      * @param group group to which Aspect will be added. Can be null.
      * @param aspectName name of the aspect which will be added to the Group. Can
      *                   represent Aspect which doesn't exists.
-     * @param world world in which Group and Aspect exist.
      */
-    private void addAspectToGroup(Group group, String aspectName, World world) {
+    private void addAspectToGroup(Group group, String aspectName) {
         if (group == null) {
-            System.err.println("Cannot add aspect to group");
+            System.err.println("Cannot add aspect to the group");
             return;
         }
         Aspect aspect;
         if (aspectName.contains("On")) {
-            Resource resource = world.getResourceFromPoolByName(aspectName.split("On")[1]);
+            Resource resource = controller.world.getResourceFromPoolByName(aspectName.split("On")[1]);
             if (resource == null) {
-                System.err.println("Cannot add aspect to group");
+                System.err.println("Cannot add aspect to the group");
                 return;
             }
-            Aspect a = world.getAspectFromPoolByName(aspectName.split("On")[0]);
+            Aspect a = controller.world.getAspectFromPoolByName(aspectName.split("On")[0]);
             if (a == null) {
-                System.err.println("Cannot add aspect to group");
+                System.err.println("Cannot add aspect to the group");
                 return;
             }
             if (a.canApplyMeaning()) {
@@ -319,9 +320,9 @@ public class TextVisualizer {
                 aspect = new ConverseWrapper(a, resource, group);
             }
         } else {
-            aspect = world.getAspectFromPoolByName(aspectName);
+            aspect = controller.world.getAspectFromPoolByName(aspectName);
             if (aspect == null) {
-                System.err.println("Cannot add aspect to group");
+                System.err.println("Cannot add aspect to the group");
                 return;
             }
         }
@@ -329,45 +330,66 @@ public class TextVisualizer {
         group.getCulturalCenter().pushAspects();
     }
 
+    private void addWantToGroup(Group group, String wantName) {
+        if (group == null) {
+            System.err.println("Cannot add aspect to the group");
+            return;
+        }
+        if (!group.subgroups.isEmpty()) {
+            group.subgroups.forEach(subgroup -> addWantToGroup(subgroup, wantName));
+            return;
+        }
+        Resource resource = controller.world.getResourceFromPoolByName(wantName);
+        if (resource == null) {
+            System.err.println("Cannot add want to the group");
+            return;
+        }
+        group.getCulturalCenter().addWant(resource);
+    }
+
     /**
      * Runs interface for the simulation control.
      */
     private void run(){
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            readSymbols(controller);
-            print(controller);
+            readSymbols();
+            print();
             while (true) {
+                String[] _s;
                 String line = br.readLine();
                 if (line != null) {
                     switch (getCommand(line)) {
                         case Group:
-                            printGroup(controller.world.groups.get(Integer.parseInt(line.substring(1))),
-                                    controller.world.map);
+                            printGroup(controller.world.groups.get(Integer.parseInt(line.substring(1))));
                             break;
                         case Turns:
                             for (int i = 0; i < Integer.parseInt(line); i++) {
                                 controller.turn();
                             }
-                            print(controller);
+                            print();
                             break;
                         case Tile:
                             printTile(controller.world.map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
-                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1))), controller.world.map);
+                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1))));
                             break;
                         case Resource:
-                            Optional<ResourceIdeal> _o = controller.world.resourcePool.stream()
-                                    .filter(r -> r.getName().equals(line.substring(2))).findFirst();
-                            _o.ifPresent(resource -> printResource(resource, controller.world.map));
-                            if (_o.isEmpty()) {
+                            Resource resource = controller.world.getResourceFromPoolByName(line.substring(2));
+                            if (resource != null) {
+                                printResource(resource);
+                            } else {
                                 Optional<Resource> _oo = resourceSymbols.entrySet().stream()
                                         .filter(entry -> entry.getValue().equals(line.substring(2)))
                                         .map(Map.Entry::getKey).findFirst();
-                                _oo.ifPresent(resource -> printResource(resource, controller.world.map));
+                                _oo.ifPresent(this::printResource);
                             }
                             break;
                         case MeaningfulResources:
-                            printMap(controller.world.map, tile -> (tile.getResources().stream()
-                                    .anyMatch(Resource::hasMeaning) ? "\033[30mX" : ""));
+                            printMap(tile -> (tile.getResources().stream().anyMatch(Resource::hasMeaning) ? "\033[30mX"
+                                    : ""));
+                            break;
+                        case ArtificialResources:
+                            printMap(tile -> (tile.getResources().stream().anyMatch(res -> res.hasMeaning() ||
+                                    res.getBaseName().equals("House")) ? "\033[30mX" : ""));
                             break;
                         case IdleGo:
                             for (int i = 0; i < 500; i++) {
@@ -377,21 +399,24 @@ public class TextVisualizer {
                                     break;
                                 }
                             }
-                            print(controller);
+                            print();
                             break;
                         case Map:
-                            printMap(controller.world.map, tile -> "");
+                            printMap(tile -> "");
                             break;
                         case Exit:
                             return;
                         case AddAspect:
-                            String[] _s = line.split(" ");
-                            addAspectToGroup(controller.world.groups.get(Integer.parseInt(_s[0].substring(1))),
-                                    _s[1], controller.world);
+                            _s = line.split(" ");
+                            addAspectToGroup(controller.world.groups.get(Integer.parseInt(_s[0].substring(1))), _s[1]);
+                            break;
+                        case AddWant:
+                            _s = line.split(" ");
+                            addWantToGroup(controller.world.groups.get(Integer.parseInt(_s[1].substring(1))), _s[2]);
                             break;
                         default:
                             controller.turn();
-                            print(controller);
+                            print();
                     }
                 } else {
                     break;
@@ -421,9 +446,11 @@ public class TextVisualizer {
         IdleGo,
         Resource,
         MeaningfulResources,
+        ArtificialResources,
         Map,
         Exit,
 
-        AddAspect
+        AddAspect,
+        AddWant
     }
 }

@@ -49,11 +49,11 @@ public class Dependency {
 
     public String getName() {
         if (resource != null) {
-            return resource.getName();
+            return resource.getBaseName();
         } else if (aspect != null){
             return aspect.getName();
         } else if (conversion != null) {
-            return conversion.second.getName() + " on " + conversion.first.getName();
+            return conversion.second.getName() + " on " + conversion.first.getBaseName();
         } else if (line != null) {
             return line.first.getName() + " from " + line.second.getName();
         }

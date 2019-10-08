@@ -87,7 +87,7 @@ public class ResourcePack {
         return getResource(resource).stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
     }
 
-    public ResourcePack getResourcePart(Resource resource, int ceiling) {
+    public ResourcePack getResourcePart(Resource resource, int ceiling) {//TODO give only part
         Collection<Resource> _r = getResource(resource);
         ResourcePack resourcePack = new ResourcePack();
         int counter = 0;
@@ -121,7 +121,7 @@ public class ResourcePack {
     }
 
     public void disbandOnTile(Tile tile) {
-        resources.forEach(tile::addResource);
+        resources.stream().filter(resource -> resource.getTile() == null).forEach(tile::addResource);
         resources.clear();
     }
 

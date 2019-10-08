@@ -151,6 +151,10 @@ public class Group {
                 .map(aspect -> ((ConverseWrapper) aspect).resource).distinct().collect(Collectors.toList());
     }
 
+    Group getParentGroup() {
+        return parentGroup;
+    }
+
     private void die() {
         state = State.Dead;
         population = 0;
@@ -385,8 +389,9 @@ public class Group {
             stringBuilder.append(aspect).append("\n\n");
         }
         stringBuilder.append("Aspirations: ");
-        for (Aspiration aspiration : getCulturalCenter().getAspirations()) {
-            stringBuilder.append(aspiration.need.name).append(", ");
+        for (Aspiration aspiration : getCulturalCenter().getAspirations())
+        {
+            stringBuilder.append(aspiration).append(", ");
         }
         stringBuilder.append((culturalCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append("Requests: ");
@@ -402,10 +407,6 @@ public class Group {
             stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
         }
         return stringBuilder.toString();
-    }
-
-    Group getParentGroup() {
-        return parentGroup;
     }
 
     public enum State {

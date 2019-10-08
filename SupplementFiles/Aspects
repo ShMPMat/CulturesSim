@@ -12,6 +12,7 @@ BuildHouse
 
 Killing                                                                     #weapon
 TakeApart
+Take
 
 ShapeMalleable                                                              /malleable          #MEANING
 Engrave                                                                     /goodForEngraving   #MEANING

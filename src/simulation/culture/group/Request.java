@@ -10,7 +10,6 @@ import simulation.space.resource.ResourcePack;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class Request {
     private Group group;
@@ -101,7 +100,7 @@ public class Request {
             return "want for " + tag;
         }
         if (resource != null) {
-            return "resource " + resource.getName();
+            return "resource " + resource.getBaseName();
         }
         return "W H A T ?";
     }

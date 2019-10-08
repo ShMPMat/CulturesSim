@@ -18,13 +18,11 @@ public class Resource { //TODO events of merging and stuff
     int amount;
     private Tile tile;
     protected ResourceCore resourceCore;
-    private double spreadProbability;
 
     private int deathTurn = 0;
     private double deathPart = 1;
 
     Resource(ResourceCore resourceCore, int amount) {
-        this.spreadProbability = resourceCore.defaultSpreadability;
         this.amount = amount;
         this.resourceCore = resourceCore;
         computeHash();
@@ -51,8 +49,8 @@ public class Resource { //TODO events of merging and stuff
         resourceCore.actualizeLinks();
     }
 
-    public String getName() {
-        return resourceCore.name;
+    public String getBaseName() {
+        return resourceCore.getBaseName();
     }
 
     public int getAmount() {
@@ -60,15 +58,15 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public String getFullName() {
-        return resourceCore.name + resourceCore.legacyPostfix + resourceCore.meaningPostfix;
+        return resourceCore.getBaseName() + resourceCore.legacyPostfix + resourceCore.meaningPostfix;
     }
 
     public int getEfficiencyCoof() {
-        return resourceCore.efficiencyCoof;
+        return resourceCore.getEfficiencyCoof();
     }
 
-    public double getSpreadAbility() {
-        return resourceCore.defaultSpreadability;
+    public double getSpreadProbability() {
+        return resourceCore.getSpreadProbability();
     }
 
     public Collection<AspectTag> getTags() {
@@ -98,7 +96,7 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public Resource merge(Resource resource) {
-        if (!resource.getName().equals(getName())) {
+        if (!resource.getBaseName().equals(getBaseName())) {
             System.err.println("Different resource tried to merge.");
             return this;
         }
@@ -143,7 +141,10 @@ public class Resource { //TODO events of merging and stuff
     }
 
     private Resource movableModificator(Resource resource) {
-        if (resource.isMovable()) {
+        if (resource.isMovable()) {//TODO if OK remove branch
+            if (tile != null) {
+                tile.addDelayedResource(resource);
+            }
             return resource;
         }
         if (tile != null) {
@@ -167,7 +168,7 @@ public class Resource { //TODO events of merging and stuff
             return false;
         }
         deathTurn++;
-        if (ProbFunc.getChances(spreadProbability)) {
+        if (ProbFunc.getChances(resourceCore.getSpreadProbability())) {
             expand();
         }
         return true;
@@ -207,7 +208,7 @@ public class Resource { //TODO events of merging and stuff
         }
         Resource resource = cleanCopy();
         resource.tile = null;
-        newTile.addResource(resource);
+        newTile.addDelayedResource(resource);
         return true;
     }
 
@@ -238,8 +239,8 @@ public class Resource { //TODO events of merging and stuff
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() +
-                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " + resourceCore.efficiencyCoof +
-                ", spread probability - " + spreadProbability + ", amount - " + amount + ", tags: ");
+                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " + resourceCore.getEfficiencyCoof() +
+                ", spread probability - " + getSpreadProbability() + ", amount - " + amount + ", tags: ");
         for (AspectTag aspectTag : resourceCore.getTags()) {
             stringBuilder.append(aspectTag.name).append(" ");
         }

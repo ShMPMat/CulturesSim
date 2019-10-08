@@ -27,7 +27,7 @@ public class MeaningInserter extends ConverseWrapper {
 
     @Override
     public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {
-        if (resource.getName().equals("Tree")) {
+        if (resource.getBaseName().equals("Tree")) {
             int i = 0;
         }
         ShnyPair<Boolean, ResourcePack> pair = super.use(ceiling, amount);

@@ -1,6 +1,9 @@
 package simulation.culture.group;
 
+import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
+import simulation.culture.aspect.ConverseWrapper;
+import simulation.space.resource.Resource;
 
 import java.util.Objects;
 
@@ -8,12 +11,32 @@ import java.util.Objects;
  * Represents a goal which Group strives to fulfill.
  */
 public class Aspiration {
-    public int level;
-    public AspectTag need;
+    int level;
+    private AspectTag need;
+    private Resource resource;
 
     public Aspiration(int level, AspectTag need) {
         this.level = level;
         this.need = need;
+        resource = null;
+    }
+
+    public Aspiration(int level, Resource resource) {
+        this.level = level;
+        this.resource = resource;
+        need = null;
+    }
+
+    boolean isAcceptable(Aspect aspect) {
+        if (need != null) {
+            return aspect.getTags().contains(need);
+        }
+        if (resource != null) {
+            if (aspect instanceof ConverseWrapper) {
+                return ((ConverseWrapper) aspect).getResult().contains(resource);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -21,11 +44,22 @@ public class Aspiration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Aspiration that = (Aspiration) o;
-        return need.equals(that.need);
+        return Objects.equals(need, that.need) && Objects.equals(resource, that.resource);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(need);
+    }
+
+    @Override
+    public String toString() {
+        if (need != null) {
+            return need.name;
+        }
+        if (resource != null) {
+            return resource.getBaseName();
+        }
+        return "WRONG ASPIRATION";
     }
 }

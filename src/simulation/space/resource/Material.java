@@ -61,8 +61,7 @@ public class Material {
         }
         if (properties.contains(world.getPropertyFromPoolByName("hard")) &&
                 properties.contains(world.getPropertyFromPoolByName("sturdy")) &&
-                !resourceCore.getTags().contains(new AspectTag("small")) &&
-                resourceCore.isMovable()) {
+                resourceCore.getSize() >= 0.05 && resourceCore.isMovable()) {
             _t.add(new AspectTag("weapon"));
         }
         if (properties.contains(world.getPropertyFromPoolByName("hard")) &&

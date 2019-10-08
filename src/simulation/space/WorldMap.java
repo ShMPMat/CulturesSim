@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +65,7 @@ public class WorldMap {
         List<Resource> resources = new ArrayList<>();
         for (List<Tile> line : map) {
             for (Tile tile : line) {
-                resources.addAll(tile.getResources().stream().filter(resource -> resource.getName().equals(name))
+                resources.addAll(tile.getResources().stream().filter(resource -> resource.getBaseName().equals(name))
                         .collect(Collectors.toList()));
             }
         }

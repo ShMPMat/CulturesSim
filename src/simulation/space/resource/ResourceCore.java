@@ -4,7 +4,6 @@ import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
-import simulation.culture.group.Group;
 import simulation.culture.thinking.meaning.Meme;
 
 import java.util.*;
@@ -14,20 +13,20 @@ import java.util.stream.Collectors;
  * Class which contains all general information about all Resources with the same name.
  */
 public class ResourceCore {
-    String name, meaningPostfix, legacyPostfix;
-    double defaultSpreadability;
+    String meaningPostfix, legacyPostfix;
     int defaultAmount;
-    private World world;
-    int efficiencyCoof;
 
+    private World world;
+    private int efficiencyCoof;
     private boolean hasMeaning = false;
     private boolean isMovable = true;
     private boolean isTemplate = false;
     private boolean hasLegacy = false;
-    private double size;
+    private Genome genome;
     private List<Material> materials;
     private Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion;
     private Map<Aspect, String[]> _aspectConversion;
+    private List<String> _parts;
     private List<AspectTag> tags, _tags;
     private Meme meaning;
 
@@ -35,11 +34,9 @@ public class ResourceCore {
 
     ResourceCore(String[] tags, int efficiencyCoof, World world) {
         initializeMutualFields(tags[0], efficiencyCoof, world, 100, new ArrayList<>(), new ArrayList<>(),
-                Double.parseDouble(tags[1]), Double.parseDouble(tags[2]), Integer.parseInt(tags[3]),
-                Integer.parseInt(tags[4]) == 1, Integer.parseInt(tags[5]) == 1, "");
-        if (size <= 0.05) {
-            this._tags.add(new AspectTag("small"));
-        }//TODO eliminate tag
+                Integer.parseInt(tags[3]), Integer.parseInt(tags[4]) == 1,
+                Integer.parseInt(tags[5]) == 1, "",
+                new Genome(tags[0], new ArrayList<>(), Double.parseDouble(tags[2]), Double.parseDouble(tags[1]), false));
         for (int i = 6; i < tags.length; i++) {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
@@ -54,41 +51,57 @@ public class ResourceCore {
                     }
                     materials.add(world.getMaterialFromPoolByName(tag.substring(1)));
                     break;
+                case '^':
+                    _parts.add(tag.substring(1));
+                    break;
             }
         }
         computeMaterials();
     }
 
-    private ResourceCore(String name, String meaningPostfix, World world, int defaultAmount, double defaultSpreadability, List<AspectTag> tags,
-                         List<Material> materials, int efficiencyCoof, double size, boolean isMovable,
-                         boolean isTemplate, boolean hasLegacy, String legacy, int deathTime) {
+    private ResourceCore(String name, String meaningPostfix, World world, int defaultAmount, List<AspectTag> tags,
+                         List<Material> materials, int efficiencyCoof, boolean isMovable,
+                         boolean isTemplate, boolean hasLegacy, String legacy, int deathTime, Genome genome) {
         initializeMutualFields(name + meaningPostfix, efficiencyCoof, world, defaultAmount, tags, materials,
-                defaultSpreadability, size, deathTime, isMovable, hasLegacy, legacy);
+                deathTime, isMovable, hasLegacy, legacy, genome);
         this.isTemplate = isTemplate;
         computeMaterials();
     }
 
     private void initializeMutualFields(String name, int efficiencyCoof, World world, int defaultAmount,
-                                        List<AspectTag> tags, List<Material> materials, double defaultSpreadability,
-                                        double size, int deathTime, boolean isMovable, boolean hasLegacy, String legacy) {
-        this.defaultSpreadability = defaultSpreadability;
-        this.size = size;
+                                        List<AspectTag> tags, List<Material> materials,
+                                        int deathTime, boolean isMovable, boolean hasLegacy, String legacy,
+                                        Genome genome) {
         this.deathTime = deathTime;
         this.isMovable = isMovable;
         this.meaning = null;
         this.efficiencyCoof = efficiencyCoof;
         this.aspectConversion = new HashMap<>();
         this._aspectConversion = new HashMap<>();
+        this._parts = new ArrayList<>();
         this.world = world;
         this.defaultAmount = defaultAmount;
         this._tags = tags;
         this.tags = new ArrayList<>();
         this.materials = materials;
         this.hasLegacy = hasLegacy;
+        this.genome = genome;
         setName(name, legacy);
     }
 
     void actualizeLinks() {
+        for (String part : _parts) {
+            Resource resource = world.getResourceFromPoolByName(part.split(":")[0]);
+            resource = resource.resourceCore.hasLegacy ? resource.resourceCore.copyWithLegacyInsertion(this)
+                    : resource;
+            resource.amount = Integer.parseInt(part.split(":")[1]);
+            genome.addPart(resource);
+        }
+        _parts.clear();
+        if (!materials.isEmpty() && genome.getPrimaryMaterial() != null
+                && !materials.get(0).equals(genome.getPrimaryMaterial())) {
+            System.err.println("Genome-computed primary material differs from stated material in Resource " + genome.getName());
+        }
         for (Aspect aspect : _aspectConversion.keySet()) {
             aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
                     .map(s -> {
@@ -108,20 +121,31 @@ public class ResourceCore {
             resourceList.add(new ShnyPair<>(world.getResourceFromPoolByName("Ash"), 1));
             aspectConversion.put(world.getAspectFromPoolByName("Incinerate"), resourceList);
         }
-        if (size >= 0.5 && material.hasPropertyWithName("hard") && material.hasPropertyWithName("hard")
+        if (genome.getSize() >= 0.5 && material.hasPropertyWithName("hard") && material.hasPropertyWithName("hard")
                 && !aspectConversion.containsKey(world.getAspectFromPoolByName("BuildHouse"))) {
             aspectConversion.put(world.getAspectFromPoolByName("BuildHouse"),
                     Collections.singletonList(new ShnyPair<>(world.getResourceFromPoolByName("House"), 1)));
+        }
+        if (!genome.getParts().isEmpty() && !_aspectConversion.containsKey(world.getAspectFromPoolByName("TakeApart"))) {
+            List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>();
+            for (Resource resource : genome.getParts()) {
+                resourceList.add(new ShnyPair<>(resource, resource.amount));
+                aspectConversion.put(world.getAspectFromPoolByName("TakeApart"), resourceList);
+            }
+        }
+        if (isMovable()) {
+            aspectConversion.put(world.getAspectFromPoolByName("Take"),
+                    Collections.singletonList(new ShnyPair<>(this.copy(), 1)));
         }
         _aspectConversion = null;
     }
 
     private void setName(String fullName, String legacy) {
         if (fullName.contains("_representing_")) {
-            name = fullName.substring(0, fullName.indexOf("_representing_"));
+            genome.setName(fullName.substring(0, fullName.indexOf("_representing_")));
             meaningPostfix = fullName.substring(fullName.indexOf("_representing_"));
         } else {
-            name = fullName;
+            genome.setName(fullName);
             meaningPostfix = "";
         }
         if (hasLegacy && legacy != null) {
@@ -133,12 +157,43 @@ public class ResourceCore {
 
     private void setMaterials(List<Material> materials) {
         this.materials = materials;
+    }
 
+    public List<AspectTag> getTags() {
+        return tags;
+    }
+
+    public int getDeathTime() {
+        return deathTime;
+    }
+
+    public int getEfficiencyCoof() {
+        return efficiencyCoof;
+    }
+
+    public List<Material> getMaterials() {
+        return materials;
+    }
+
+    double getSpreadProbability() {
+        return genome.getSpreadProbability();
+    }
+
+    boolean isHasMeaning() {
+        return hasMeaning;
+    }
+
+    void setHasMeaning(boolean b) {
+        hasMeaning = b;
+    }
+
+    boolean isMovable() {
+        return isMovable;
     }
 
     private void computeMaterials() {
         if (materials.isEmpty() && !isTemplate) {
-            System.err.println("Resource " + name + " has no materials.");
+            System.err.println("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()){
             this.tags.addAll(_tags);
             this.tags.addAll(materials.get(0).getTags(this));
@@ -150,9 +205,9 @@ public class ResourceCore {
     }
 
     Resource copyWithLegacyInsertion(ResourceCore creator) {
-        return new Resource(new ResourceCore(name, meaningPostfix, world, defaultAmount, 0,
-                new ArrayList<>(_tags), new ArrayList<>(materials), efficiencyCoof, size, isMovable(), isTemplate,
-                hasLegacy, "_of_" + creator.name + creator.legacyPostfix, deathTime));
+        return new Resource(new ResourceCore(genome.getName(), meaningPostfix, world, defaultAmount,
+                new ArrayList<>(_tags), new ArrayList<>(materials), efficiencyCoof, isMovable(), isTemplate,
+                hasLegacy, "_of_" + creator.genome.getName() + creator.legacyPostfix, deathTime, genome));//TODO is legacy passed to parts in genome?
     }
 
     Resource copy(int amount) {
@@ -160,15 +215,17 @@ public class ResourceCore {
     }
 
     Resource fullCopy() {
-        return new Resource(new ResourceCore(name, meaningPostfix, world, defaultAmount, 0,
-                new ArrayList<>(_tags), new ArrayList<>(materials), efficiencyCoof, size, isMovable(), isTemplate,
-                hasLegacy, legacyPostfix, deathTime));
+        return new Resource(new ResourceCore(genome.getName(), meaningPostfix, world, defaultAmount,
+                new ArrayList<>(_tags), new ArrayList<>(materials), efficiencyCoof, isMovable(), isTemplate,
+                hasLegacy, legacyPostfix, deathTime, genome));
     }
 
     public ResourceCore insertMeaning(Meme meaning, Aspect aspect) {
-        ResourceCore _r = new ResourceCore(name, "_representing_" + meaning + "_with_" + aspect.getName(),
-                world, defaultAmount, 0, new ArrayList<>(_tags), new ArrayList<>(materials),
-                efficiencyCoof, size, isMovable(), isTemplate, hasLegacy, legacyPostfix, deathTime);
+        Genome genome = new Genome(this.genome);
+        genome.setSpreadProbability(0);
+        ResourceCore _r = new ResourceCore(genome.getName(), "_representing_" + meaning + "_with_" + aspect.getName(),
+                world, defaultAmount, new ArrayList<>(_tags), new ArrayList<>(materials),
+                efficiencyCoof, isMovable(), isTemplate, hasLegacy, legacyPostfix, deathTime, genome);
         _r.hasMeaning = true;
         _r.meaning = meaning;
         return _r;
@@ -197,17 +254,11 @@ public class ResourceCore {
     private ResourceCore applyAspectToMaterials(Aspect aspect) {
         List<Material> newMaterials = materials.stream().map(material -> material.applyAspect(aspect))
                 .collect(Collectors.toList());
-        return new ResourceCore(name + (newMaterials.equals(materials) ? "" : "_" + aspect.getName()), meaningPostfix,
-                world, defaultAmount, 0, new ArrayList<>(_tags), newMaterials, efficiencyCoof, size, isMovable(),
-                isTemplate, hasLegacy, legacyPostfix, deathTime);
-    }
-
-    public List<AspectTag> getTags() {
-        return tags;
-    }
-
-    public int getDeathTime() {
-        return deathTime;
+        Genome genome = new Genome(this.genome);
+        genome.setSpreadProbability(0);
+        return new ResourceCore(genome.getName() + (newMaterials.equals(materials) ? "" : "_" + aspect.getName()), meaningPostfix,
+                world, defaultAmount, new ArrayList<>(_tags), newMaterials, efficiencyCoof, isMovable(),
+                isTemplate, hasLegacy, legacyPostfix, deathTime, genome);//TODO dangerous shit for genome
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {
@@ -223,23 +274,19 @@ public class ResourceCore {
         if (this == o) return true;
         if (o == null) return false;
         ResourceCore resourceCore = (ResourceCore) o;
-        return name.equals(resourceCore.name) && getTags().equals(resourceCore.getTags());
+        return genome.getName().equals(resourceCore.genome.getName()) /*&& getTags().equals(resourceCore.getTags())*/;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(genome.getName());
     }
 
-    boolean isHasMeaning() {
-        return hasMeaning;
+    public double getSize() {
+        return genome.getSize();
     }
 
-    void setHasMeaning(boolean b) {
-        hasMeaning = b;
-    }
-
-    boolean isMovable() {
-        return isMovable;
+    public String getBaseName() {
+        return genome.getName();
     }
 }

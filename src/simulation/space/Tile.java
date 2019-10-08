@@ -113,10 +113,10 @@ public class Tile {
         if (resource.getAmount() == 0) {
             return;
         }
-        if (resource.isMovable()) {
-            System.err.println("Movable resource added in Delayed resources.");
-            return;
-        }
+//        if (resource.isMovable()) {
+//            System.err.println("Movable resource added in Delayed resources.");
+//            return;
+//        }
         _delayedResources.add(resource);
         resource.setTile(this);
     }

@@ -1,33 +1,41 @@
-/Name          ||spread||size||death||Moves|Legacy||materials                                ||conversions
-Plant            0.15    1     10     0     0       @PlantFibre  @Pulp        @Seed            +TakeApart:Fruit:2,PlantFibre:5,Seed:2
-Tree             0.05    5     40     0     0       @Wood                     @Seed            +TakeApart:Wood:10,Seed:2
-Reed             0.25    1     5      1     0       @PlantFibre                                +TakeApart:PlantFibre:2
-Grass            0.25    0.1   5      1     0       @PlantFibre
-Moss             0.06    0.05  20     1     0       @PlantFibre
-Animal           0.08    1     20     1     0       @Meat        @Fat         @Bone            +Killing:Meat:10,Fat:5,Bone:5,Fur:3
-Bird             0.15    0.1   10     1     0       @Meat        @Fat         @Bone            +Killing:Meat:2,Fat:1,Bone:1,Feather:10
-Insect           0.25    0.02  5      1     0       @Chitin      @Meat                         +Killing:Chitin:1,Meat:1
-Mushroom         0.1     0.05  15     1     0       @Fungus                                    +TakeApart:Mushroom:1
+/Name          ||Spread||Size||Death||M|L||Materials      ||Parts                                                       ||Conversions
+Plant            0.15    1     10     0 0  @PlantFibre      ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
+Tree             0.05    5     40     0 0  @Wood            ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
+Reed             0.25    1     5      1 0  @PlantFibre      ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
+Grass            0.25    0.1   5      1 0  @PlantFibre      ^Leaf:3
+Moss             0.06    0.05  20     1 0  @PlantFibre      ^PlantFibre:1
+Animal           0.08    1     20     1 0  @Meat                                                                          +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+Bird             0.15    0.1   10     1 0  @Meat                                                                          +Killing:Meat:2,Fat:1,Bone:1,Feather:10
+Insect           0.25    0.02  5      1 0  @Chitin                                                                        +Killing:Chitin:1,Meat:1
+Mushroom         0.1     0.05  15     1 0  @Fungus
 
-PlantFibre       0       0.5   5      1     1       @PlantFibre                                +MakingFibre:Fibre:1
-Fruit            0       0.1   5      1     1       @Pulp
-Seed             0       0.01  100    1     1       @Seed
-Wood             0       1     50     1     1       @Wood
-Meat             0       0.1   5      1     1       @Meat
-Fat              0       0.1   5      1     1       @Fat
-Bone             0       0.1   1000   1     1       @Bone
-Chitin           0       0.02  1000   1     1       @Chitin
-Fur              0       0.1   50     1     1       @Fur
-Feather          0       0.05  50     1     1       @Feather
+Trunk            0       4     30     1 1  @Wood
+Branch           0       0.2   10     1 1  @Wood
+SoftBranch       0       0.2   5      1 1  @PlantFibre
+Leaf             0       0.03  3      1 1  @PlantFibre
+Root             0       0.5   10     1 1  @Wood
+SoftRoot         0       0.5   5      1 1  @PlantFibre
+Fruit            0       0.1   5      1 1  @Pulp
+Seed             0       0.01  100    1 1  @Seed
 
-Clay             0       0.5   100000 1     0       @Clay                                      +BuildHouse:House:1
-Stone            0       0.1   100000 1     0       @Stone
 
-Fibre            0       0.5   100    1     1       @Fibre                                     +Weaving:Cloth:1
-Cloth            0       0.5   100    1     1       @Cloth                                     +MakeClothes:Clothes:1
-Clothes          0       0.5   100    1     1       @Cloth
+PlantFibre       0       0.5   5      1 1  @PlantFibre                                                                    +MakingFibre:Fibre:1
+Wood             0       1     50     1 1  @Wood
+Meat             0       0.1   5      1 1  @Meat
+Fat              0       0.1   5      1 1  @Fat
+Bone             0       0.1   1000   1 1  @Bone
+Chitin           0       0.02  1000   1 1  @Chitin
+Fur              0       0.1   50     1 1  @Fur
+Feather          0       0.05  50     1 1  @Feather
 
-House            0       5     10000  0     1       @TEMPLATE
+Clay             0       0.5   100000 1 0  @Clay                                                                          +BuildHouse:House:1
+Stone            0       0.1   100000 1 0  @Stone
 
-Fire             0       0.5   2      1     0       @Flame
-Ash              0       0.5   50     1     0       @Ash
+Fibre            0       0.5   100    1 1  @Fibre                                                                         +Weaving:Cloth:1
+Cloth            0       0.5   100    1 1  @Cloth                                                                         +MakeClothes:Clothes:1
+Clothes          0       0.5   100    1 1  @Cloth
+
+House            0       5     10000  0 1  @TEMPLATE
+
+Fire             0       0.5   2      1 0  @Flame
+Ash              0       0.5   50     1 0  @Ash

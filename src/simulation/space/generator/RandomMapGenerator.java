@@ -27,14 +27,14 @@ public class RandomMapGenerator {
     }
 
     public static void fill(WorldMap map) {
-        createBlob(map, Tile.Type.Mountain, 10);
-        createBlob(map, Tile.Type.Water, 10);
-        createBlob(map, Tile.Type.Mountain, 10);
-        createBlob(map, Tile.Type.Water, 10);
-        createBlob(map, Tile.Type.Mountain, 10);
-        createBlob(map, Tile.Type.Water, 10);
-        createBlob(map, Tile.Type.Mountain, 10);
-        createBlob(map, Tile.Type.Water, 10);
+        createBlob(map, Tile.Type.Mountain, 30);
+        createBlob(map, Tile.Type.Water, 30);
+        createBlob(map, Tile.Type.Mountain, 30);
+        createBlob(map, Tile.Type.Water, 30);
+        createBlob(map, Tile.Type.Mountain, 30);
+        createBlob(map, Tile.Type.Water, 30);
+        createBlob(map, Tile.Type.Mountain, 30);
+        createBlob(map, Tile.Type.Water, 30);
         RandomMapGenerator.fillResources(map);
     }
 
@@ -98,8 +98,8 @@ public class RandomMapGenerator {
 
     private static void fillResources(WorldMap map) {
         for (Resource resource : map.resourcePool) {
-            if (resource.getSpreadAbility() == 0 && !resource.getName().matches("Clay") &&
-                    !resource.getName().matches("Stone")) {
+            if (resource.getSpreadProbability() == 0 && !resource.getBaseName().matches("Clay") &&
+                    !resource.getBaseName().matches("Stone")) {
                 continue;
             }
             scatter(map, resource, 40 + ProbFunc.randomInt(30));

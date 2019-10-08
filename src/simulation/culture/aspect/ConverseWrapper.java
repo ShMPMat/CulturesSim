@@ -24,7 +24,7 @@ public class ConverseWrapper extends Aspect {
     public boolean canInsertMeaning = false;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
-        super(new String[]{aspect.getName()+"On"+resource.getName()}, new HashMap<>(), group);
+        super(new String[]{aspect.getName()+"On"+resource.getBaseName()}, new HashMap<>(), group);
         this.aspect = aspect;
         this.resource = resource.cleanCopy();
         for (Resource res : resource.applyAspect(aspect)) {

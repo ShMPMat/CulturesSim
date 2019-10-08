@@ -35,7 +35,7 @@ public class GroupMemes extends MemePool {
     public void addAspectMemes(Aspect aspect) {
         add(new MemePredicate(aspect.getName()));
         if (aspect instanceof ConverseWrapper) {
-            ((ConverseWrapper) aspect).getResult().stream().map(a -> new MemeSubject(a.getName())).forEach(this::add);
+            ((ConverseWrapper) aspect).getResult().stream().map(a -> new MemeSubject(a.getBaseName())).forEach(this::add);
         }
     }
 

@@ -16,6 +16,7 @@ import simulation.space.resource.ResourceIdeal;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class World {
     /**
      * How many turns passed from the beginning of the simulation.
      */
-    private int turn = 0;
+    private int turn = 0, thousandTurns = 0;
 
     /**
      * Base constructor.
@@ -167,7 +168,7 @@ public class World {
      * @return how many turns passed since the beginning of the simulation.
      */
     public String getTurn() {
-        return turn + "";
+        return turn + thousandTurns * 1000 + "";
     }
 
     /**
@@ -208,12 +209,12 @@ public class World {
      * Returns Resource by name.
      *
      * @param name name of the Resource.
-     * @return Resource with this name. If there is no such Resource in the resourcePool
+     * @return Resource with this base name. If there is no such Resource in the resourcePool
      * returns null and prints a warning.
      */
     public ResourceIdeal getResourceFromPoolByName(String name) {
         for (ResourceIdeal resource : resourcePool) {
-            if (resource.getName().equals(name)) {
+            if (resource.getBaseName().equals(name)) {
                 return resource;
             }
         }
@@ -261,10 +262,22 @@ public class World {
      */
     public void incrementTurn() {
         turn++;
+        if (turn == 1000) {
+            thousandTurns++;
+            turn = 0;
+        }
+    }
+
+    public void incrementTurnEvolution() {
+        thousandTurns++;
     }
 
     public void addResources(List<Resource> resources) {
-        resources.stream().filter(resource -> getResourceFromPoolByName(resource.getName()) == null)
+        resources.stream().filter(resource -> getResourceFromPoolByName(resource.getBaseName()) == null)
                 .forEach(resource -> resources.add(new ResourceIdeal(resource)));//TODO to make ideals in CW resource
+    }
+
+    public Collection<Aspect> getAllDefaultAspects() {
+        return aspectPool;
     }
 }

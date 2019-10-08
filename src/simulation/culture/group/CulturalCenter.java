@@ -7,7 +7,6 @@ import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemePool;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
@@ -156,15 +155,17 @@ public class CulturalCenter {
     }
 
     void addWants(List<Resource> resources) {
-        resources.forEach(this::addWant);
+        resources.forEach(this::addWantWithProbability);
     }
 
-    void addWant(Resource resource) {
-        if (ProbFunc.getChances(0.1) && !wants.contains(resource)) {
-            wants.add(resource);
-            return;
+    void addWantWithProbability(Resource resource) {
+        if (ProbFunc.getChances(0.1)) {
+            addWant(resource);
         }
-        if (resource.getName().equals("Clothes")) {
+    }
+
+    public void addWant(Resource resource) {
+        if (!wants.contains(resource)) {
             wants.add(resource);
         }
     }
@@ -183,9 +184,10 @@ public class CulturalCenter {
         requests.add(new Request(group, new AspectTag("food"), floor,
                 floor + group.population / 100 + 1, penalty, reward));
 
-        for (Resource want : wants) {
-            requests.add(new Request(group, want, 0, 10, (pair, percent) -> {
+        for (Resource want : wants) {//TODO Penalty
+            requests.add(new Request(group, want, 1, 10, (pair, percent) -> {
                 pair.first.cherishedResources.add(pair.second);
+                addAspiration(new Aspiration(5, want));
                 return null;
             },
                     (pair, percent) -> {
@@ -207,16 +209,16 @@ public class CulturalCenter {
 
     private void mutateAspects(double rAspectAcquisition, double rAspectLending) { //TODO separate adding of new aspects und updating old
 
-        Set<ShnyPair<Aspect, Group>> allExistingAspects = getNeighboursAspects();
-
-        ShnyPair<Aspect, Group> _p = ProbFunc.addRandomAspectWithPairExcept(getChangedAspects(),
-                allExistingAspects, pair -> !getChangedAspects().contains(pair.first), rAspectLending);
-        if (_p != null) {
-            if (addAspect(_p.first)) {
-                group.addEvent(new Event(Event.Type.AspectGaining, world.getTurn(), "Group " + group.name +
-                        " got aspect " + _p.first.getName() + " from group " + _p.second.name, "group", group));
-            }
-        }
+//        Set<ShnyPair<Aspect, Group>> allExistingAspects = getNeighboursAspects();
+//
+//        ShnyPair<Aspect, Group> _p = ProbFunc.addRandomAspectWithPairExcept(getChangedAspects(),
+//                allExistingAspects, pair -> !getChangedAspects().contains(pair.first), rAspectLending);
+//        if (_p != null) {
+//            if (addAspect(_p.first)) {
+//                group.addEvent(new Event(Event.Type.AspectGaining, world.getTurn(), "Group " + group.name +
+//                        " got aspect " + _p.first.getBaseName() + " from group " + _p.second.name, "group", group));
+//            }
+//        }
 
         if (ProbFunc.getChances(rAspectAcquisition)) {
             List<Aspect> options = new ArrayList<>(world.aspectPool);
@@ -274,22 +276,23 @@ public class CulturalCenter {
         }
     }
 
-    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
+    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO support resource Aspirations
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
-        for (Aspect aspect : Aspect.getAllAspectsWithTag(aspiration.need, world)) {
+
+        for (Aspect aspect : world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
             Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new ShnyPair<>(aspect.copy(_m, group), null));
             }
         }
 
-        getAllConverseWrappers().stream().filter(wrapper -> wrapper.getTags().contains(aspiration.need))
+        getAllConverseWrappers().stream().filter(aspiration::isAcceptable)
                 .forEach(wrapper -> options.add(new ShnyPair<>(wrapper, null)));
 
         Set<ShnyPair<Aspect, Group>> aspects = getNeighboursAspects();
         for (ShnyPair<Aspect, Group> pair : aspects) {
             Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(pair.first);
-            if (pair.first.getTags().contains(aspiration.need) && pair.first.isDependenciesOk(_m)) {
+            if (aspiration.isAcceptable(pair.first) && pair.first.isDependenciesOk(_m)) {
                 pair.first = pair.first.copy(_m, group);
                 options.add(pair);
             }
@@ -309,7 +312,7 @@ public class CulturalCenter {
             }
         }
         _lastResourcesForCw.addAll(newResources);
-        newResources.forEach(resource -> getMemePool().add(new MemeSubject(resource.getName())));
+        newResources.forEach(resource -> getMemePool().add(new MemeSubject(resource.getBaseName())));
         return options;
     }
 
