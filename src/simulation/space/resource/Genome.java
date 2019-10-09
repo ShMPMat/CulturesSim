@@ -11,22 +11,32 @@ public class Genome {
     private double size;
     private List<Resource> parts;
     private double spreadProbability;
+    private boolean isMovable = true;
+    private boolean isTemplate = false;
+    private boolean hasLegacy = false;
+    private int deathTime;
 
     private Material _primaryMaterial;
     private int _mutationCount = 0;
 
-    public Genome(String name, List<ResourceIdeal> parts, double size, double spreadProbability, boolean isMutable) {
+    public Genome(String name, List<ResourceIdeal> parts, double size, double spreadProbability, boolean isMutable,
+                  boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime) {
         this.name = name;
         this.spreadProbability = spreadProbability;
         this.parts = new ArrayList<>(parts);
         this.size = size;
         this.isMutable = isMutable;
+        this.isMovable = isMovable;
+        this.isTemplate = isTemplate;
+        this.hasLegacy = hasLegacy;
+        this.deathTime = deathTime;
         _primaryMaterial = null;
         computePrimaryMaterial();
     }
 
     Genome(Genome genome) {
-        this(genome.name, new ArrayList<>(), genome.size, genome.spreadProbability, genome.isMutable);
+        this(genome.name, new ArrayList<>(), genome.size, genome.spreadProbability, genome.isMutable, genome.isMovable,
+                genome.isTemplate, genome.hasLegacy, genome.deathTime);
         genome.parts.forEach(this::addPart);
     }
 
@@ -56,8 +66,24 @@ public class Genome {
         return spreadProbability;
     }
 
+    public boolean isMovable() {
+        return isMovable;
+    }
+
+    public boolean isTemplate() {
+        return isTemplate;
+    }
+
+    public boolean hasLegacy() {
+        return hasLegacy;
+    }
+
     public boolean isMutable() {
         return isMutable;
+    }
+
+    public int getDeathTime() {
+        return deathTime;
     }
 
     void addPart(Resource part) {
@@ -79,6 +105,10 @@ public class Genome {
 
     public void setMutable(boolean mutable) {
         isMutable = mutable;
+    }
+
+    public void setTemplate(boolean template) {
+        isTemplate = template;
     }
 
     public void setSpreadProbability(double spreadProbability) {

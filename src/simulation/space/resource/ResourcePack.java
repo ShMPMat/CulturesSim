@@ -115,7 +115,7 @@ public class ResourcePack {
         return getResource(resource).stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
     }
 
-    public ResourcePack getResourcePart(Resource resource, int ceiling) {//TODO give only part
+    public ResourcePack getResourcePart(Resource resource, int ceiling) {
         Collection<Resource> _r = getResource(resource);
         ResourcePack resourcePack = new ResourcePack();
         int counter = 0;
@@ -123,9 +123,8 @@ public class ResourcePack {
             if (counter >= ceiling) {
                 break;
             }
-            resourcePack.add(res);
+            resourcePack.add(res.getCleanPart(ceiling - counter));
             counter += res.amount;
-            removeResource(res);
         }
         return resourcePack;
     }

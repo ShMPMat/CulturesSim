@@ -207,8 +207,8 @@ public class Resource { //TODO events of merging and stuff
         if (newTile == null) {
             return false;
         }
-        Resource resource = cleanCopy();
-        resource.tile = null;
+        Resource resource = copy();
+        resource.amount = Math.min(resourceCore.defaultAmount, amount);
         newTile.addDelayedResource(resource);
         return true;
     }

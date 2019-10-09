@@ -180,14 +180,14 @@ public class CulturalCenter {
             return null;
         };
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward = (pair, percent) -> {
-            pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
+            pair.first.population += Math.min(((int) (percent * pair.first.population)) / 10 + 1, group.getOverallTerritory().size() * 100); //TODO no more than territory allows
             pair.second.removeAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
         requests.add(new Request(group, new AspectTag("food"), floor,
                 floor + group.population / 100 + 1, penalty, reward));
 
-        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {//TODO Penalty
+        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {
             requests.add(new Request(group, want.first, 1, 10, (pair, percent) -> {
                 pair.first.cherishedResources.add(pair.second);
                 addAspiration(new Aspiration(5, want.first));
