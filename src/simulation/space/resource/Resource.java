@@ -38,11 +38,11 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public Resource(ResourceCore resourceCore) {
-        this(resourceCore, resourceCore.defaultAmount);
+        this(resourceCore, resourceCore.getDefaultAmount());
     }
 
     void computeHash() {
-        _hash = Objects.hash(getFullName(), resourceCore.getTags());
+        _hash = Objects.hash(getFullName());
     }
 
     public void actualizeLinks() {
@@ -58,7 +58,7 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public String getFullName() {
-        return resourceCore.getBaseName() + resourceCore.legacyPostfix + resourceCore.meaningPostfix;
+        return resourceCore.getBaseName() + resourceCore.getLegacyPostfix() + resourceCore.getMeaningPostfix();
     }
 
     public int getEfficiencyCoof() {
@@ -91,17 +91,16 @@ public class Resource { //TODO events of merging and stuff
         return cleanCopy(result);
     }
 
-    public boolean hasMeaning() {
-        return resourceCore.isHasMeaning();
+    public Tile getTile() {
+        return tile;
     }
 
-    public Resource merge(Resource resource) {
-        if (!resource.getBaseName().equals(getBaseName())) {
-            System.err.println("Different resource tried to merge.");
-            return this;
-        }
-        addAmount(resource.amount);
-        return this;
+    public boolean isMovable() {
+        return resourceCore.isMovable();
+    }
+
+    public boolean hasMeaning() {
+        return resourceCore.isHasMeaning();
     }
 
     public void setTile(Tile tile) {
@@ -117,8 +116,17 @@ public class Resource { //TODO events of merging and stuff
         }
     }
 
-    public boolean isMovable() {
-        return resourceCore.isMovable();
+    public void setHasMeaning(boolean b) {
+        resourceCore.setHasMeaning(b);
+    }
+
+    public Resource merge(Resource resource) {
+        if (!resource.getBaseName().equals(getBaseName())) {
+            System.err.println("Different resource tried to merge.");
+            return this;
+        }
+        addAmount(resource.amount);
+        return this;
     }
 
     public Resource copy() {
@@ -208,7 +216,7 @@ public class Resource { //TODO events of merging and stuff
             return false;
         }
         Resource resource = copy();
-        resource.amount = Math.min(resourceCore.defaultAmount, amount);
+        resource.amount = Math.min(resourceCore.getDefaultAmount(), amount);
         newTile.addDelayedResource(resource);
         return true;
     }
@@ -229,7 +237,7 @@ public class Resource { //TODO events of merging and stuff
             return false;
         }
         return getFullName().equals(resource.getFullName()) && resourceCore.equals(resource.resourceCore) &&
-                (isMovable() || tile == null || resource.tile == null || tile.equals(resource.tile));
+                (tile == null || resource.tile == null || tile.equals(resource.tile));
     }
 
     @Override
@@ -246,13 +254,5 @@ public class Resource { //TODO events of merging and stuff
             stringBuilder.append(aspectTag.name).append(" ");
         }
         return stringBuilder.toString();
-    }
-
-    public void setHasMeaning(boolean b) {
-        resourceCore.setHasMeaning(b);
-    }
-
-    public Tile getTile() {
-        return tile;
     }
 }

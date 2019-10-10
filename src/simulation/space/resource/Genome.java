@@ -1,42 +1,54 @@
 package simulation.space.resource;
 
 import extra.ProbFunc;
+import simulation.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Genome {
+    World world;
+    private int efficiencyCoof;
     private String name;
     private boolean isMutable;
     private double size;
     private List<Resource> parts;
     private double spreadProbability;
-    private boolean isMovable = true;
-    private boolean isTemplate = false;
-    private boolean hasLegacy = false;
+    private boolean isMovable;
+    private boolean isTemplate;
+    private boolean hasLegacy;
     private int deathTime;
+    private int defaultAmount;
+    private Genome legacy;
 
     private Material _primaryMaterial;
     private int _mutationCount = 0;
 
     public Genome(String name, List<ResourceIdeal> parts, double size, double spreadProbability, boolean isMutable,
-                  boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime) {
+                  boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
+                  int efficiencyCoof, Genome legacy, World world) {
         this.name = name;
+        this.world = world;
         this.spreadProbability = spreadProbability;
-        this.parts = new ArrayList<>(parts);
+        this.parts = new ArrayList<>();
+        parts.forEach(this::addPart);
+        setLegacy(legacy);
         this.size = size;
         this.isMutable = isMutable;
         this.isMovable = isMovable;
         this.isTemplate = isTemplate;
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
+        this.defaultAmount = defaultAmount;
+        this.efficiencyCoof = efficiencyCoof;
         _primaryMaterial = null;
         computePrimaryMaterial();
     }
 
     Genome(Genome genome) {
         this(genome.name, new ArrayList<>(), genome.size, genome.spreadProbability, genome.isMutable, genome.isMovable,
-                genome.isTemplate, genome.hasLegacy, genome.deathTime);
+                genome.isTemplate, genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.efficiencyCoof,
+                genome.legacy, genome.world);
         genome.parts.forEach(this::addPart);
     }
 
@@ -46,7 +58,7 @@ public class Genome {
         }
     }
 
-    public Material getPrimaryMaterial() {
+    Material getPrimaryMaterial() {
         return _primaryMaterial;
     }
 
@@ -54,7 +66,7 @@ public class Genome {
         return name;
     }
 
-    public List<Resource> getParts() {
+    List<Resource> getParts() {
         return parts;
     }
 
@@ -62,34 +74,48 @@ public class Genome {
         return size;
     }
 
-    public double getSpreadProbability() {
+    double getSpreadProbability() {
         return spreadProbability;
     }
 
-    public boolean isMovable() {
+    int getDefaultAmount() {
+        return defaultAmount;
+    }
+
+    public int getEfficiencyCoof() {
+        return efficiencyCoof;
+    }
+
+    public String getLegacyPostfix() {
+        return legacy == null ? "" : "_of_" + legacy.getName() + legacy.getLegacyPostfix();
+    }
+
+    boolean isMovable() {
         return isMovable;
     }
 
-    public boolean isTemplate() {
+    boolean isTemplate() {
         return isTemplate;
     }
 
-    public boolean hasLegacy() {
+    boolean hasLegacy() {
         return hasLegacy;
     }
 
-    public boolean isMutable() {
+    boolean isMutable() {
         return isMutable;
     }
 
-    public int getDeathTime() {
+    int getDeathTime() {
         return deathTime;
     }
 
     void addPart(Resource part) {
         int i = parts.indexOf(part);
         if (i == -1) {
-            parts.add(part);
+            Resource p = part.resourceCore.copyWithLegacyInsertion(this);
+            p.amount = part.amount;
+            parts.add(p);
             computePrimaryMaterial();
         } else {
             parts.get(i).addAmount(part.getAmount());
@@ -98,20 +124,26 @@ public class Genome {
 
     public void setName(String name) {
         this.name = name;
-        for (Resource part : parts) {
-            part.resourceCore.legacyPostfix = "_of_" + name; //TODO stupid, will break
-        }
+    }
+
+    public void setLegacy(Genome legacy) {
+        this.legacy = legacy;
+//        List<Resource> newParts = new ArrayList<>();
+//        for (Resource part : parts) {
+//            newParts.add(part.resourceCore.copyWithLegacyInsertion(legacy));
+//            newParts.get(newParts.size() - 1).amount = part.amount;
+//        }
     }
 
     public void setMutable(boolean mutable) {
         isMutable = mutable;
     }
 
-    public void setTemplate(boolean template) {
+    void setTemplate(boolean template) {
         isTemplate = template;
     }
 
-    public void setSpreadProbability(double spreadProbability) {
+    void setSpreadProbability(double spreadProbability) {
         this.spreadProbability = spreadProbability;
     }
 
@@ -128,4 +160,5 @@ public class Genome {
         }
         return genome;
     }
+
 }

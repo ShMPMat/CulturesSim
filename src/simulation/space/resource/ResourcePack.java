@@ -23,9 +23,6 @@ public class ResourcePack {
         if (resource.amount == 0) {
             return;
         }
-        if (!resource.isMovable()) {
-            int i = 0;
-        }
         int i = -1;
         for (int j = 0; j < resources.size(); j++) {
             if (resources.get(j).fullEquals(resource)) {

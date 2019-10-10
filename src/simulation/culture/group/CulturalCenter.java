@@ -180,7 +180,8 @@ public class CulturalCenter {
             return null;
         };
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward = (pair, percent) -> {
-            pair.first.population += Math.min(((int) (percent * pair.first.population)) / 10 + 1, group.getOverallTerritory().size() * 100); //TODO no more than territory allows
+            pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
+            pair.first.population = Math.min(pair.first.population, group.getOverallTerritory().size() * 100);
             pair.second.removeAllResourcesWithTag(new AspectTag("food"));
             return null;
         };

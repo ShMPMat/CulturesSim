@@ -160,17 +160,19 @@ public class TextVisualizer {
         System.out.println(controller.world.getTurn());
         int i = -1;
         for (Group group : controller.world.groups) {
+            StringBuilder stringBuilder = new StringBuilder();
             i++;
             if (group.state == Group.State.Dead) {
                 continue;
             }
-            System.out.print(groupSymbols.get(group) + " " + group.name + " ");
+            stringBuilder.append(groupSymbols.get(group)).append(" ").append(group.name).append(" ");
             for (Aspect aspect : group.getAspects()) {
-                System.out.print(aspect.getName() + " ");
+                stringBuilder.append(aspect.getName()).append(" ");
             }
-            System.out.print("   population=" + group.population +
-                    (group.population <= groupPopulations.get(i) ? "↓" : "↑") + '\n');
+            stringBuilder.append("   population=").append(group.population)
+                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append('\n');
             groupPopulations.set(i, group.population);
+            System.out.print(OutputFunc.chompToSize(stringBuilder.toString(), 160));
         }
         lastClaimedTiles = new HashMap<>();
         for (Group group : controller.world.groups) {
