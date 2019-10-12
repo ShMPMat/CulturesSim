@@ -77,6 +77,7 @@ public class World {
         fillMaterialPool();
         RandomMapGenerator.createResources(this, numberOrResources);
         map = new WorldMap(mapSize, mapSize * 2, resourcePool, this);
+        map.initializePlates();
         RandomMapGenerator.fill(map);
 
         groups = new ArrayList<>();

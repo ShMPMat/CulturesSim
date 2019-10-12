@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static extra.ProbFunc.*;
+
 /**
  * Represents tile map of the world
  */
 public class WorldMap {
     List<Boolean> _execution;
     public List<List<Tile>> map;
+    public List<Territory> tectonicPlates;
     public List<ResourceIdeal> resourcePool;
 
     private World world;
@@ -29,6 +32,35 @@ public class WorldMap {
             map.add(new ArrayList<>());
             for (int j = 0; j < y; j++) {
                 map.get(i).add(new Tile(i, j, world));
+            }
+        }
+    }
+
+    public void initializePlates() {
+        List<Tile> usedTiles = new ArrayList<>();
+        tectonicPlates = new ArrayList<>();
+        for (int i = 0; i< 5; i++) {
+            Territory territory = new Territory();
+            Tile tile = randomTile(this);
+            while (usedTiles.contains(tile)) {
+                tile = randomTile(this);
+            }
+            territory.addTile(tile);
+            tectonicPlates.add(territory);
+            usedTiles.add(tile);
+        }
+        boolean sw = true;
+        while (sw) {
+            sw = false;
+            for (Territory territory : tectonicPlates) {
+                List<Tile> tiles = territory.getBrinkWithCondition(t -> !usedTiles.contains(t));
+                if (tiles.isEmpty()) {
+                    continue;
+                }
+                Tile tile = tiles.get(randomInt(tiles.size()));
+                territory.addTile(tile);
+                usedTiles.add(tile);
+                sw = true;
             }
         }
     }
@@ -70,6 +102,10 @@ public class WorldMap {
             }
         }
         return resources;
+    }
+
+    public List<Territory> getTectonicPlates() {
+        return tectonicPlates;
     }
 
     public synchronized void update() {//TODO parallel

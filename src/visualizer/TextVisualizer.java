@@ -62,6 +62,7 @@ public class TextVisualizer {
      * Pattern used for recognizing command for printing tile information.
      */
     private Pattern tilePattern = Pattern.compile("\\d+ \\d+");
+    private Pattern platesPattern = Pattern.compile("plates");
     /**
      * Pattern used for recognizing command for making turns until
      * something important happens.
@@ -115,6 +116,8 @@ public class TextVisualizer {
             return Command.Turns;
         } else if (tilePattern.matcher(line).matches()) {
             return Command.Tile;
+        } else if (platesPattern.matcher(line).matches()) {
+            return Command.Plates;
         } else if (resourcePattern.matcher(line).matches()) {
             return Command.Resource;
         } else if (meaningfulResourcePattern.matcher(line).matches()) {
@@ -385,6 +388,16 @@ public class TextVisualizer {
                             printTile(controller.world.map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
                                     Integer.parseInt(line.substring(line.indexOf(' ') + 1))));
                             break;
+                        case Plates:
+                            printMap(tile -> {
+                                for (int i = 0; i < controller.world.map.getTectonicPlates().size(); i++) {
+                                    if (controller.world.map.getTectonicPlates().get(i).contains(tile)) {
+                                        return "\033[" + (30 + i) + "m" + groupSymbols.values().stream().sorted().collect(Collectors.toList()).get(i);
+                                    }
+                                }
+                                return " ";
+                            });
+                            break;
                         case Resource:
                             Resource resource = controller.world.getResourceFromPoolByName(line.substring(2));
                             if (resource != null) {
@@ -452,11 +465,12 @@ public class TextVisualizer {
      * Represents commands which can be given to visualizer.
      */
     private enum Command {
-        Group,
         Turns,
         Turn,
-        Tile,
         IdleGo,
+        Group,
+        Tile,
+        Plates,
         Resource,
         MeaningfulResources,
         ArtificialResources,

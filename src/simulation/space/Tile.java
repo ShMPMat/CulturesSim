@@ -64,22 +64,22 @@ public class Tile {
         if (newTile != null && predicate.test(newTile)) {
             goodTiles.add(newTile);
         }
-        newTile = map.get(x + 1, y + 1);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        newTile = map.get(x - 1, y + 1);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        newTile = map.get(x + 1, y - 1);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        newTile = map.get(x - 1, y - 1);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
+//        newTile = map.get(x + 1, y + 1);
+//        if (newTile != null && predicate.test(newTile)) {
+//            goodTiles.add(newTile);
+//        }
+//        newTile = map.get(x - 1, y + 1);
+//        if (newTile != null && predicate.test(newTile)) {
+//            goodTiles.add(newTile);
+//        }
+//        newTile = map.get(x + 1, y - 1);
+//        if (newTile != null && predicate.test(newTile)) {
+//            goodTiles.add(newTile);
+//        }
+//        newTile = map.get(x - 1, y - 1);
+//        if (newTile != null && predicate.test(newTile)) {
+//            goodTiles.add(newTile);
+//        }
 
         return goodTiles;
     }

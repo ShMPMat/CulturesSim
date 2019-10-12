@@ -41,15 +41,8 @@ public class Territory {
     public List<ShnyPair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
         Set<ShnyPair<Tile, Integer>> goodTiles = new HashSet<>();
         for (Tile tile : tiles) {
-            if (tile == null) {
-                int i = 0;
-            }
-            try {
-                goodTiles.addAll(tile.getNeighbours(tile1 -> predicate.test(tile1) && !tiles.contains(tile1)).stream()
-                        .map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1))).collect(Collectors.toList()));
-            } catch (Throwable t) {
-                int i = 0;
-            }
+            goodTiles.addAll(tile.getNeighbours(tile1 -> predicate.test(tile1) && !tiles.contains(tile1)).stream()
+                    .map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1))).collect(Collectors.toList()));
         }
 
         return new ArrayList<>(goodTiles);
