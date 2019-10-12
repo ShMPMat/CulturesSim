@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Class which contains all general information about all Resources with the same name.
  */
-public class ResourceCore {
+public class ResourceCore { //TODO similar Resources (seeds) with different aspect conversions (-> Plant or Tree) doesn't differentiated
     private String meaningPostfix;
     private boolean hasMeaning = false;
     private Genome genome;
@@ -25,9 +25,10 @@ public class ResourceCore {
 
     ResourceCore(String[] tags, int efficiencyCoof, World world) {
         initializeMutualFields(tags[0], new ArrayList<>(), new ArrayList<>(),
-                new Genome(tags[0], new ArrayList<>(), Double.parseDouble(tags[2]), Double.parseDouble(tags[1]),
+                new Genome(tags[0], Double.parseDouble(tags[2]), Double.parseDouble(tags[1]),
                         false, Integer.parseInt(tags[4]) == 1, false,
-                        Integer.parseInt(tags[5]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, world));
+                        Integer.parseInt(tags[5]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, world),
+                new HashMap<>());
         for (int i = 6; i < tags.length; i++) {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
@@ -50,14 +51,26 @@ public class ResourceCore {
         computeMaterials();
     }
 
-    private ResourceCore(String name, String meaningPostfix, List<AspectTag> tags, List<Material> materials, Genome genome) {
-        initializeMutualFields(name + meaningPostfix, tags, materials, genome);
+    private ResourceCore(String name, String meaningPostfix, List<AspectTag> tags, List<Material> materials, Genome genome,
+                         Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion) {
+        initializeMutualFields(name + meaningPostfix, tags, materials, genome, aspectConversion);
         computeMaterials();
     }
 
-    private void initializeMutualFields(String name, List<AspectTag> tags, List<Material> materials, Genome genome) {
+    private void replaceLinks() {
+        for (List<ShnyPair<Resource, Integer>> resources: aspectConversion.values()) {
+            for (ShnyPair<Resource, Integer> resource : resources) {
+                if (resource.first.getSimpleName().equals(this.getSimpleName())) {
+                    resource.first = this.copy();
+                }
+            }
+        }
+    }
+
+    private void initializeMutualFields(String name, List<AspectTag> tags, List<Material> materials, Genome genome,
+                                        Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion) {
         this.meaning = null;
-        this.aspectConversion = new HashMap<>();
+        this.aspectConversion = new HashMap<>(aspectConversion);
         this._aspectConversion = new HashMap<>();
         this._parts = new ArrayList<>();
         this._tags = tags;
@@ -68,26 +81,9 @@ public class ResourceCore {
     }
 
     void actualizeLinks() {
-        for (String part : _parts) {
-            Resource resource = genome.world.getResourceFromPoolByName(part.split(":")[0]);
-            resource = resource.resourceCore.genome.hasLegacy() ? resource.resourceCore.copyWithLegacyInsertion(this.genome) //TODO double?
-                    : resource;
-            resource.amount = Integer.parseInt(part.split(":")[1]);
-            genome.addPart(resource);
-        }
-        _parts.clear();
-        if (!materials.isEmpty() && genome.getPrimaryMaterial() != null
-                && !materials.get(0).equals(genome.getPrimaryMaterial())) {
-            System.err.println("Genome-computed primary material differs from stated material in Resource " + genome.getName());
-        }
         for (Aspect aspect : _aspectConversion.keySet()) {
             aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
-                    .map(s -> {
-                        Resource resource = genome.world.getResourceFromPoolByName(s.split(":")[0]);
-                        return new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
-                                resource.resourceCore.copyWithLegacyInsertion(this.genome) : resource,
-                                Integer.parseInt(s.split(":")[1]));
-                    }).collect(Collectors.toList()));
+                    .map(this::readConversion).collect(Collectors.toList()));
         }
         if (materials.isEmpty()) {
             return;
@@ -104,6 +100,25 @@ public class ResourceCore {
             aspectConversion.put(genome.world.getAspectFromPoolByName("BuildHouse"),
                     Collections.singletonList(new ShnyPair<>(genome.world.getResourceFromPoolByName("House"), 1)));
         }
+        if (isMovable()) {
+            aspectConversion.put(genome.world.getAspectFromPoolByName("Take"),
+                    Collections.singletonList(new ShnyPair<>(this.copy(), 1)));
+        }
+    }
+
+    void actualizeParts() {
+        for (String part : _parts) {
+            Resource resource = genome.world.getResourceFromPoolByName(part.split(":")[0]);
+            resource = resource.resourceCore.genome.hasLegacy() ? resource.resourceCore.copyWithLegacyInsertion(this) //TODO double?
+                    : resource;
+            resource.amount = Integer.parseInt(part.split(":")[1]);
+            genome.addPart(resource);
+        }
+        _parts.clear();
+        if (!materials.isEmpty() && genome.getPrimaryMaterial() != null
+                && !materials.get(0).equals(genome.getPrimaryMaterial())) {
+            System.err.println("Genome-computed primary material differs from stated material in Resource " + genome.getName());
+        }
         if (!genome.getParts().isEmpty() && !_aspectConversion.containsKey(genome.world.getAspectFromPoolByName("TakeApart"))) {
             List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>();
             for (Resource resource : genome.getParts()) {
@@ -111,14 +126,27 @@ public class ResourceCore {
                 aspectConversion.put(genome.world.getAspectFromPoolByName("TakeApart"), resourceList);
             }
         }
-        if (isMovable()) {
-            aspectConversion.put(genome.world.getAspectFromPoolByName("Take"),
-                    Collections.singletonList(new ShnyPair<>(this.copy(), 1)));
-        }
         _aspectConversion = null;
     }
 
-    private void setName(String fullName) {
+    private ShnyPair<Resource, Integer> readConversion(String s) {
+        if (s.split(":")[0].equals("LEGACY")) {
+            if (genome.getLegacy() == null) {
+                //System.err.println("No legacy for LEGACY conversion in genome " + genome.getName());
+                return new ShnyPair<Resource, Integer>(null, Integer.parseInt(s.split(":")[1]));//TODO insert legacy in another place
+            }
+            Resource resource = genome.getLegacy().copy();
+            return new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
+                    resource.resourceCore.copyWithLegacyInsertion(this) : resource,
+                    Integer.parseInt(s.split(":")[1]));
+        }
+        Resource resource = genome.world.getResourceFromPoolByName(s.split(":")[0]);
+        return new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
+                resource.resourceCore.copyWithLegacyInsertion(this) : resource,
+                Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;
+    }
+
+    private void setName(String fullName) {//TODO remove meaning postfix
         if (fullName.contains("_representing_")) {
             genome.setName(fullName.substring(0, fullName.indexOf("_representing_")));
             meaningPostfix = fullName.substring(fullName.indexOf("_representing_"));
@@ -153,6 +181,10 @@ public class ResourceCore {
         return genome.getDefaultAmount();
     }
 
+    public Genome getGenome() {
+        return genome;
+    }
+
     public int getEfficiencyCoof() {
         return genome.getEfficiencyCoof();
     }
@@ -178,6 +210,10 @@ public class ResourceCore {
     }
 
     public String getBaseName() {
+        return genome.hasLegacy() ? genome.getName() + getLegacyPostfix() : genome.getName();
+    }
+
+    public String getSimpleName() {
         return genome.getName();
     }
 
@@ -193,14 +229,37 @@ public class ResourceCore {
         return genome.isMovable();
     }
 
+    void setLegacy(ResourceCore legacy) {
+        genome.setLegacy(legacy);
+
+        if (_aspectConversion != null) {
+            for (Aspect aspect : _aspectConversion.keySet()) {
+                if (Arrays.stream(_aspectConversion.get(aspect)).anyMatch(s -> s.split(":")[0].equals("LEGACY"))) {
+                    aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
+                            .map(this::readConversion).collect(Collectors.toList()));
+                }
+            }
+        } else {
+            for (Aspect aspect : aspectConversion.keySet()) {
+                for (ShnyPair<Resource, Integer> pair : aspectConversion.get(aspect)) {
+                    if (pair.first == null) {
+                        pair.first = legacy.fullCopy();
+                    }
+                }
+            }
+        }
+        replaceLinks();
+    }
+
     Resource copy() {
         return new Resource(this);
     }
 
-    Resource copyWithLegacyInsertion(Genome creator) {
-        Resource resource= new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(_tags),
-                new ArrayList<>(materials), new Genome(genome)));
-        resource.resourceCore.genome.setLegacy(creator);
+    Resource copyWithLegacyInsertion(ResourceCore creator) {
+        Resource resource = new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(_tags),
+                new ArrayList<>(materials), new Genome(genome), aspectConversion));
+        resource.resourceCore._aspectConversion = _aspectConversion;
+        resource.resourceCore.setLegacy(creator);
         return resource;//TODO is legacy passed to parts in genome?
     }
 
@@ -210,14 +269,14 @@ public class ResourceCore {
 
     Resource fullCopy() {
         return new Resource(new ResourceCore(genome.getName(), meaningPostfix,
-                new ArrayList<>(_tags), new ArrayList<>(materials), new Genome(genome)));
+                new ArrayList<>(_tags), new ArrayList<>(materials), new Genome(genome), aspectConversion));
     }
 
     public ResourceCore insertMeaning(Meme meaning, Aspect aspect) {
         Genome genome = new Genome(this.genome);
         genome.setSpreadProbability(0);
         ResourceCore _r = new ResourceCore(genome.getName(), "_representing_" + meaning + "_with_" + aspect.getName(),
-                new ArrayList<>(_tags), new ArrayList<>(materials), genome);
+                new ArrayList<>(_tags), new ArrayList<>(materials), genome, aspectConversion);
         _r.hasMeaning = true;
         _r.meaning = meaning;
         return _r;
@@ -225,6 +284,9 @@ public class ResourceCore {
 
     List<Resource> applyAspect(Aspect aspect) {
         if (aspectConversion.containsKey(aspect)) {
+            if (aspectConversion.get(aspect).stream().anyMatch(resourceIntegerShnyPair -> resourceIntegerShnyPair.first == null)) {
+                int i = 0;
+            }
             List<Resource> resourceList = aspectConversion.get(aspect).stream().map(pair -> pair.first.copy(pair.second))
                     .collect(Collectors.toList());
             resourceList.forEach(resource -> {
@@ -249,7 +311,7 @@ public class ResourceCore {
         Genome genome = new Genome(this.genome);
         genome.setSpreadProbability(0);
         return new ResourceCore(genome.getName() + (newMaterials.equals(materials) ? "" : "_" + aspect.getName()),
-                meaningPostfix, new ArrayList<>(_tags), newMaterials, genome);//TODO dangerous shit for genome
+                meaningPostfix, new ArrayList<>(_tags), newMaterials, genome, aspectConversion);//TODO dangerous shit for genome
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {
@@ -265,11 +327,16 @@ public class ResourceCore {
         if (this == o) return true;
         if (o == null) return false;
         ResourceCore resourceCore = (ResourceCore) o;
-        return genome.getName().equals(resourceCore.genome.getName()) /*&& getTags().equals(resourceCore.getTags())*/;
+        return getBaseName().equals(resourceCore.getBaseName()) /*&& getTags().equals(resourceCore.getTags())*/;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(genome.getName());
+        return Objects.hash(getBaseName());
+    }
+
+    @Override
+    public String toString() {
+        return getBaseName();
     }
 }

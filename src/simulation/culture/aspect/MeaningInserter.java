@@ -27,11 +27,9 @@ public class MeaningInserter extends ConverseWrapper {
 
     @Override
     public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {
-        if (resource.getBaseName().equals("Tree")) {
-            int i = 0;
-        }
         ShnyPair<Boolean, ResourcePack> pair = super.use(ceiling, amount);
-        Collection<Resource> res = pair.second.getResourceAndRemove(resource);
+        Collection<Resource> res = new ArrayList<>(pair.second.getResourceAndRemove(resource));
+        res.removeIf(r -> r.getAmount() == 0);
         pair.second.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), aspect))
                 .collect(Collectors.toList()));
         return pair;

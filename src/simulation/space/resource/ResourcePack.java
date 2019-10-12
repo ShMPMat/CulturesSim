@@ -156,9 +156,10 @@ public class ResourcePack {
 
     @Override
     public String toString() {
+        resources.removeIf(resource -> resource.amount == 0);
         StringBuilder stringBuilder = new StringBuilder();
         for (Resource resource : resources) {
-            stringBuilder.append(resource.getFullName()).append(" ").append(resource.amount).append(" ")
+            stringBuilder.append(resource.getFullName()).append(" ").append(resource.amount).append("; ")
                     .append(resource.getTile() != null ? resource.getTile().x + " " + resource.getTile().y : "")
                     .append("\n");
         }

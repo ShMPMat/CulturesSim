@@ -24,6 +24,7 @@ public class RandomMapGenerator {
         fillResourcePool(world);
         //fillResourcePoolWithRandomResources(world, numberOrResources);//TODO off for debug
         world.resourcePool.forEach(Resource::actualizeLinks);
+        world.resourcePool.forEach(Resource::actualizeParts);
     }
 
     public static void fill(WorldMap map) {

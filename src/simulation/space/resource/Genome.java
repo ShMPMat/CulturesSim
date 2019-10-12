@@ -19,19 +19,18 @@ public class Genome {
     private boolean hasLegacy;
     private int deathTime;
     private int defaultAmount;
-    private Genome legacy;
+    private ResourceCore legacy;
 
     private Material _primaryMaterial;
     private int _mutationCount = 0;
 
-    public Genome(String name, List<ResourceIdeal> parts, double size, double spreadProbability, boolean isMutable,
+    Genome(String name, double size, double spreadProbability, boolean isMutable,
                   boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
-                  int efficiencyCoof, Genome legacy, World world) {
+                  int efficiencyCoof, ResourceCore legacy, World world) {
         this.name = name;
         this.world = world;
         this.spreadProbability = spreadProbability;
         this.parts = new ArrayList<>();
-        parts.forEach(this::addPart);
         setLegacy(legacy);
         this.size = size;
         this.isMutable = isMutable;
@@ -46,7 +45,7 @@ public class Genome {
     }
 
     Genome(Genome genome) {
-        this(genome.name, new ArrayList<>(), genome.size, genome.spreadProbability, genome.isMutable, genome.isMovable,
+        this(genome.name, genome.size, genome.spreadProbability, genome.isMutable, genome.isMovable,
                 genome.isTemplate, genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.efficiencyCoof,
                 genome.legacy, genome.world);
         genome.parts.forEach(this::addPart);
@@ -82,12 +81,16 @@ public class Genome {
         return defaultAmount;
     }
 
+    public ResourceCore getLegacy() {
+        return legacy;
+    }
+
     public int getEfficiencyCoof() {
         return efficiencyCoof;
     }
 
     public String getLegacyPostfix() {
-        return legacy == null ? "" : "_of_" + legacy.getName() + legacy.getLegacyPostfix();
+        return legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getLegacyPostfix();
     }
 
     boolean isMovable() {
@@ -110,12 +113,10 @@ public class Genome {
         return deathTime;
     }
 
-    void addPart(Resource part) {
+    void addPart(Resource part) { //TODO inserted without legacy insertion write it in the documentation
         int i = parts.indexOf(part);
         if (i == -1) {
-            Resource p = part.resourceCore.copyWithLegacyInsertion(this);
-            p.amount = part.amount;
-            parts.add(p);
+            parts.add(part);
             computePrimaryMaterial();
         } else {
             parts.get(i).addAmount(part.getAmount());
@@ -126,13 +127,8 @@ public class Genome {
         this.name = name;
     }
 
-    public void setLegacy(Genome legacy) {
+    public void setLegacy(ResourceCore legacy) {
         this.legacy = legacy;
-//        List<Resource> newParts = new ArrayList<>();
-//        for (Resource part : parts) {
-//            newParts.add(part.resourceCore.copyWithLegacyInsertion(legacy));
-//            newParts.get(newParts.size() - 1).amount = part.amount;
-//        }
     }
 
     public void setMutable(boolean mutable) {

@@ -268,7 +268,7 @@ public class TextVisualizer {
      * @param resource Resource which will be printed.
      */
     private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.equals(resource)) ? "\033[30mX" : ""));
+        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())) ? "\033[30mX" : ""));
         System.out.println(resource);
     }
 
@@ -299,14 +299,17 @@ public class TextVisualizer {
      * @param aspectName name of the aspect which will be added to the Group. Can
      *                   represent Aspect which doesn't exists.
      */
-    private void addAspectToGroup(Group group, String aspectName) {
+    private void addAspectToGroup(Group group, String aspectName) {//TODO new resource finding
         if (group == null) {
             System.err.println("Cannot add aspect to the group");
             return;
         }
         Aspect aspect;
         if (aspectName.contains("On")) {
-            Resource resource = controller.world.getResourceFromPoolByName(aspectName.split("On")[1]);
+            String resourceName = aspectName.split("On")[1];
+            Resource resource = group.getOverallTerritory().getDifferentResources().stream()
+                    .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null);
+//            Resource resource = controller.world.getResourceFromPoolByName(aspectName.split("On")[1]);
             if (resource == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
@@ -325,6 +328,14 @@ public class TextVisualizer {
             aspect = controller.world.getAspectFromPoolByName(aspectName);
             if (aspect == null) {
                 System.err.println("Cannot add aspect to the group");
+                return;
+            }
+        }
+        if (aspect instanceof ConverseWrapper) {
+            group.getCulturalCenter().addAspect(((ConverseWrapper) aspect).aspect);
+            group.getCulturalCenter().pushAspects();
+            if (group.getAspect(((ConverseWrapper) aspect).aspect) == null) {
+                System.err.println("Cannot add aspect to the group: cant add base aspect for the Converse Wrapper.");
                 return;
             }
         }

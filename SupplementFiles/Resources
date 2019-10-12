@@ -16,7 +16,7 @@ Leaf             0       0.03  3      1 1  @PlantFibre
 Root             0       0.5   10     1 1  @Wood
 SoftRoot         0       0.5   5      1 1  @PlantFibre
 Fruit            0       0.1   5      1 1  @Pulp
-Seed             0       0.01  100    1 1  @Seed
+Seed             0       0.01  100    1 1  @Seed                                                                          +Plant:LEGACY:1
 
 
 PlantFibre       0       0.5   5      1 1  @PlantFibre                                                                    +MakingFibre:Fibre:1

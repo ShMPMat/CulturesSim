@@ -13,6 +13,7 @@ import java.util.*;
  * Represents consumable objects found in the world.
  */
 public class Resource { //TODO events of merging and stuff
+    private String createdOn = "-1";
     private int _hash;
     private boolean isMarkedInTile = true;
     int amount;
@@ -23,6 +24,7 @@ public class Resource { //TODO events of merging and stuff
     private double deathPart = 1;
 
     Resource(ResourceCore resourceCore, int amount) {
+        this.createdOn = resourceCore.getGenome().world.getTurn();
         this.amount = amount;
         this.resourceCore = resourceCore;
         computeHash();
@@ -49,16 +51,24 @@ public class Resource { //TODO events of merging and stuff
         resourceCore.actualizeLinks();
     }
 
+    public void actualizeParts() {
+        resourceCore.actualizeParts();
+    }
+
+    public String getSimpleName() {
+        return resourceCore.getSimpleName();
+    }
+
     public String getBaseName() {
         return resourceCore.getBaseName();
     }
 
-    public int getAmount() {
-        return amount;
+    public String getFullName() {
+        return resourceCore.getBaseName() + resourceCore.getMeaningPostfix();
     }
 
-    public String getFullName() {
-        return resourceCore.getBaseName() + resourceCore.getLegacyPostfix() + resourceCore.getMeaningPostfix();
+    public int getAmount() {
+        return amount;
     }
 
     public int getEfficiencyCoof() {
@@ -163,7 +173,13 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public Resource insertMeaning(Meme meaning, Aspect aspect) {
-        return new Resource(resourceCore.insertMeaning(meaning, aspect), amount);
+        Resource resource = new Resource(resourceCore.insertMeaning(meaning, aspect), amount);
+        if (tile == null) {
+            int i = 0;
+        }
+        tile.addDelayedResource(resource);
+        this.amount = 0;
+        return resource;
     }
 
     public boolean update() {
@@ -239,6 +255,7 @@ public class Resource { //TODO events of merging and stuff
         return getFullName().equals(resource.getFullName()) && resourceCore.equals(resource.resourceCore) &&
                 (tile == null || resource.tile == null || tile.equals(resource.tile));
     }
+
 
     @Override
     public int hashCode() {
