@@ -2,6 +2,7 @@ package simulation.space.resource;
 
 import extra.ProbFunc;
 import simulation.World;
+import simulation.space.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,16 +82,20 @@ public class Genome {
         return defaultAmount;
     }
 
-    public ResourceCore getLegacy() {
+    ResourceCore getLegacy() {
         return legacy;
     }
 
-    public int getEfficiencyCoof() {
+    int getEfficiencyCoof() {
         return efficiencyCoof;
     }
 
-    public String getLegacyPostfix() {
+    String getLegacyPostfix() {
         return legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getLegacyPostfix();
+    }
+
+    public boolean isTypeAcceptable(Tile.Type type) {
+        return type != Tile.Type.Water;
     }
 
     boolean isMovable() {

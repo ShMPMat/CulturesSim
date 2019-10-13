@@ -36,7 +36,7 @@ public class OutputFunc {
      * @param size maximal acceptable length of a line.
      * @return edited text, each line in it is not longer than size. Words can be cut in the middle.
      */
-    public static StringBuilder chompToSize(String text, int size) {//TODO find spaces
+    public static StringBuilder chompToSize(String text, int size) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String line : text.lines().collect(Collectors.toList())) {
             while (!line.isEmpty()) {
@@ -44,8 +44,14 @@ public class OutputFunc {
                     stringBuilder.append(line).append("\n");
                     break;
                 } else {
-                    stringBuilder.append(line, 0, size).append("\n");
-                    line = line.substring(size);
+                    String part = line.substring(0, size);
+                    if (part.lastIndexOf(" ") != -1) {
+                        line = line.substring(part.lastIndexOf(" "));
+                        part = part.substring(0, part.lastIndexOf(" "));
+                    } else {
+                        line = line.substring(size);
+                    }
+                    stringBuilder.append(part).append("\n");
                 }
             }
         }

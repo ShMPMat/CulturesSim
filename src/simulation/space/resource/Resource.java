@@ -105,6 +105,10 @@ public class Resource { //TODO events of merging and stuff
         return tile;
     }
 
+    public Genome getGemome() {
+        return resourceCore.getGenome();
+    }
+
     public boolean isMovable() {
         return resourceCore.isMovable();
     }
@@ -227,7 +231,7 @@ public class Resource { //TODO events of merging and stuff
     private boolean expand() {
         List<Tile> l = new ArrayList<>();
         l.add(getTile());
-        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> true);
+        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGemome()));
         if (newTile == null) {
             return false;
         }

@@ -2,7 +2,9 @@ package simulation.space;
 
 import simulation.World;
 import simulation.culture.group.Group;
+import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourceCore;
 
 import java.util.ArrayList;
 
@@ -157,6 +159,10 @@ public class Tile {
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))) ||
                 (type == Type.Water && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
                         .anyMatch(aspectTag -> aspectTag.name.equals("waterLiving"))));
+    }
+
+    public boolean canSettle(Genome genome) {
+        return genome.isTypeAcceptable(type);
     }
 
     public void update() {

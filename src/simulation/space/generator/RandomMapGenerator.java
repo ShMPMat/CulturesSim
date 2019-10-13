@@ -3,6 +3,7 @@ package simulation.space.generator;
 import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
+import simulation.space.Territory;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
@@ -36,6 +37,18 @@ public class RandomMapGenerator {
         createBlob(map, Tile.Type.Water, 30);
         createBlob(map, Tile.Type.Mountain, 30);
         createBlob(map, Tile.Type.Water, 30);
+        boolean sw = true;
+        for (Territory plate: map.getTectonicPlates()) {
+            if (sw) {
+                sw = false;
+                continue;
+            }
+            if (ProbFunc.getChances(0.5)) {
+                for (Tile tile: plate.getTiles()) {
+                    tile.type = Tile.Type.Water;
+                }
+            }
+        }
         RandomMapGenerator.fillResources(map);
     }
 
@@ -125,6 +138,9 @@ public class RandomMapGenerator {
     private static void scatter(WorldMap map, Resource resource, int n) {
         for (int i = 0; i < n; i++) {
             Tile tile = ProbFunc.randomTile(map);
+            while (!tile.canSettle(resource.getGemome())) {
+                tile = ProbFunc.randomTile(map);
+            }
             if (!tile.getResources().contains(resource)) {
                 if (resource.isMovable()) {
                     tile.addResource(resource.copy());

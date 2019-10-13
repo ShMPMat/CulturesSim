@@ -19,10 +19,8 @@ ShapeMalleable                                                              /mal
 Engrave                                                                     /goodForEngraving   #MEANING
 
 /Riding                                                                      /ridingAnimals
-/Gathering                  -seeds                 1      -food         1   /food
 /Farming                    -food                  1                        /seeds
 /Dishes                                                                     /material
-/Housing                                                                    /material
 /Religion                   +religion              1
 /Totems                                                                     /material           *religion
 /SeaShips                                                                   /material

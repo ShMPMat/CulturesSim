@@ -20,7 +20,7 @@ public class ConverseWrapper extends Aspect {
     /**
      * Resource on which aspect is applied.
      */
-    public Resource resource; //TODO change to ResourseIdeal
+    public Resource resource;
     public boolean canInsertMeaning = false;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {

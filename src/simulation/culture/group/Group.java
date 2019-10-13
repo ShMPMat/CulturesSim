@@ -37,6 +37,8 @@ public class Group {
      * to sum of subgroup populations.
      */
     public int population;
+
+    private int maxPopulation = 100;
     private Group parentGroup;
     private CulturalCenter culturalCenter;
     private double spreadability;
@@ -118,7 +120,7 @@ public class Group {
         return culturalCenter;
     }
 
-    public int getFertility() {
+    int getFertility() {
         return fertility;
     }
 
@@ -128,6 +130,10 @@ public class Group {
 
     public List<Event> getEvents() {
         return getCulturalCenter().getEvents();
+    }
+
+    int getMaxPopulation() {
+        return getOverallTerritory().size() * maxPopulation;
     }
 
     private void setAspects(Set<Aspect> aspects) {
@@ -241,6 +247,9 @@ public class Group {
     }
 
     public void update(double rAspectAcquisition, double rAspectLending) {
+        if (state == State.Dead) {
+            return;
+        }
         updateRequests();
         executeRequests();
         populationUpdate();
@@ -270,7 +279,7 @@ public class Group {
             }
             return;
         }
-
+//TODO farming isn't working because noone knows that you can EAT planted plants
         for (Request request : getCulturalCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
             List<ShnyPair<Aspect, Function<ResourcePack, Integer>>> pairs = getAspects().stream()
                     .map(aspect -> new ShnyPair<>(aspect, request.isAcceptable(aspect)))
@@ -301,6 +310,20 @@ public class Group {
             if (population == 0) {
                 die();
             }
+        } else {
+//            if (getMaxPopulation() == population) {//TODO write
+//                if (parentGroup.subgroups.size() <= getOverallTerritory().size() / 8) {
+//                    return;
+//                }
+//                population = population / 2;
+//                Tile tile = ProbFunc.randomTile(getOverallTerritory());
+//                while (parentGroup.subgroups.stream().anyMatch(group -> group.territory.contains(tile))) {
+//
+//                    tile = ProbFunc.randomTile(getOverallTerritory());
+//                }
+//                parentGroup.subgroups.add(new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
+//                        population, tile));
+//            }
         }
     }
 
