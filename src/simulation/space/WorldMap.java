@@ -19,7 +19,7 @@ import static extra.ProbFunc.*;
 public class WorldMap {
     List<Boolean> _execution;
     public List<List<Tile>> map;
-    public List<Territory> tectonicPlates;
+    public List<TectonicPlate> tectonicPlates;
     public List<ResourceIdeal> resourcePool;
 
     private World world;
@@ -40,13 +40,13 @@ public class WorldMap {
         List<Tile> usedTiles = new ArrayList<>();
         tectonicPlates = new ArrayList<>();
         for (int i = 0; i< 5; i++) {
-            Territory territory = new Territory();
+            TectonicPlate tectonicPlate = new TectonicPlate();
             Tile tile = randomTile(this);
             while (usedTiles.contains(tile)) {
                 tile = randomTile(this);
             }
-            territory.addTile(tile);
-            tectonicPlates.add(territory);
+            tectonicPlate.addTile(tile);
+            tectonicPlates.add(tectonicPlate);
             usedTiles.add(tile);
         }
         boolean sw = true;
@@ -104,7 +104,7 @@ public class WorldMap {
         return resources;
     }
 
-    public List<Territory> getTectonicPlates() {
+    public List<TectonicPlate> getTectonicPlates() {
         return tectonicPlates;
     }
 

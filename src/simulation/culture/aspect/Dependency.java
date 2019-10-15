@@ -89,7 +89,7 @@ public class Dependency {
         if (conversion != null) {
             return (conversion.second.equals(aspect) && conversion.second != aspect);
         }
-        if (line != null) {
+        if (line != null) {//TODO cant TakeApart Plants, which Planted from Seed, TakeAparted from Plant
             return line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
             .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || line.second.equals(aspect);
         }

@@ -164,12 +164,6 @@ public class Resource { //TODO events of merging and stuff
     }
 
     private Resource movableModificator(Resource resource) {
-        if (resource.isMovable()) {//TODO if OK remove branch
-            if (tile != null) {
-                tile.addDelayedResource(resource);
-            }
-            return resource;
-        }
         if (tile != null) {
             tile.addDelayedResource(resource);
         }

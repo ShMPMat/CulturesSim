@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Class which contains all general information about all Resources with the same name.
  */
-public class ResourceCore { //TODO similar Resources (seeds) with different aspect conversions (-> Plant or Tree) doesn't differentiated
+public class ResourceCore {
     private String meaningPostfix;
     private boolean hasMeaning = false;
     private Genome genome;
@@ -109,7 +109,7 @@ public class ResourceCore { //TODO similar Resources (seeds) with different aspe
     void actualizeParts() {
         for (String part : _parts) {
             Resource resource = genome.world.getResourceFromPoolByName(part.split(":")[0]);
-            resource = resource.resourceCore.genome.hasLegacy() ? resource.resourceCore.copyWithLegacyInsertion(this) //TODO double?
+            resource = resource.resourceCore.genome.hasLegacy() ? resource.resourceCore.copyWithLegacyInsertion(this)
                     : resource;
             resource.amount = Integer.parseInt(part.split(":")[1]);
             genome.addPart(resource);
@@ -133,7 +133,7 @@ public class ResourceCore { //TODO similar Resources (seeds) with different aspe
         if (s.split(":")[0].equals("LEGACY")) {
             if (genome.getLegacy() == null) {
                 //System.err.println("No legacy for LEGACY conversion in genome " + genome.getName());
-                return new ShnyPair<Resource, Integer>(null, Integer.parseInt(s.split(":")[1]));//TODO insert legacy in another place
+                return new ShnyPair<>(null, Integer.parseInt(s.split(":")[1]));//TODO insert legacy in another place
             }
             Resource resource = genome.getLegacy().copy();
             return new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?

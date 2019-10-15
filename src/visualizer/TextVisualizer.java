@@ -1,18 +1,16 @@
 package visualizer;
 //TODO check smart territory acquisition it seems not to work
-import extra.OutputFunc;
 import simulation.Controller;
-import simulation.World;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.group.Group;
 import simulation.culture.interactionmodel.MapModel;
+import simulation.space.TectonicPlate;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourceIdeal;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,6 +20,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static extra.OutputFunc.*;
 
 /**
  * Main class, running and visualizing simulation.
@@ -175,7 +175,7 @@ public class TextVisualizer {
             stringBuilder.append("   population=").append(group.population)
                     .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append('\n');
             groupPopulations.set(i, group.population);
-            System.out.print(OutputFunc.chompToSize(stringBuilder.toString(), 160));
+            System.out.print(chompToSize(stringBuilder.toString(), 160));
         }
         lastClaimedTiles = new HashMap<>();
         for (Group group : controller.world.groups) {
@@ -185,8 +185,9 @@ public class TextVisualizer {
                 filter(event -> event.type == Event.Type.TileAquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get((Group) event.getAttribute("group")).add((Tile) event.getAttribute("tile"));
         }
-        printMap(tile -> "");
-        printEvents(controller.interactionModel.getEvents());
+        System.out.print(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
+                controller.world.map.map.size() + 2), printedEvents(controller.interactionModel.getEvents()),
+                false), true));
         controller.interactionModel.clearEvents();
     }
 
@@ -197,17 +198,22 @@ public class TextVisualizer {
      *                  for a tile, output of the function will be drawn above the tile.
      */
     private void printMap(Function<Tile, String> condition) {
+        System.out.print(addToRight(printedMap(condition),
+                chompToLines(printedResources(), controller.world.map.map.size() + 2), true));
+    }
+
+    private StringBuilder printedMap(Function<Tile, String> condition) {
+        StringBuilder main = new StringBuilder();
         WorldMap worldMap = controller.world.map;
-        System.out.print("  ");
+        main.append("  ");
         for (int i = 0; i < worldMap.map.get(0).size(); i++) {
-            System.out.print((i < 10 ? " " : i / 10));
+            main.append((i < 10 ? " " : i / 10));
         }
-        System.out.println();
-        System.out.print("  ");
+        main.append("\n").append("  ");
         for (int i = 0; i < worldMap.map.get(0).size(); i++) {
-            System.out.print(i % 10);
+            main.append(i % 10);
         }
-        System.out.println();
+        main.append("\n");
         StringBuilder map = new StringBuilder();
         for (int i = 0; i < worldMap.map.size(); i++) {
             List<Tile> line = worldMap.map.get(i);
@@ -245,13 +251,17 @@ public class TextVisualizer {
             }
             map.append("\033[0m").append("\n");
         }
+        return main.append(map);
+    }
+
+    private StringBuilder printedResources() {
         StringBuilder resources = new StringBuilder();
-        for (Resource resource : worldMap.resourcePool) {
+        for (Resource resource : controller.world.map.resourcePool) {
             resources.append("\033[31m").append(resourceSymbols.get(resource)).append(" - ")
                     .append(resource.getBaseName()).append("\n");
         }
-        System.out.print(OutputFunc.addToRight(map.toString(),
-                OutputFunc.chompToLines(resources.toString(), worldMap.map.size()).toString(), true));
+        return resources;
+
     }
 
     /**
@@ -289,11 +299,17 @@ public class TextVisualizer {
      * @param events list of events.
      */
     private void printEvents(Collection<Event> events) {
+        System.out.print(printedEvents(events));
+    }
+
+    private StringBuilder printedEvents(Collection<Event> events) {
+        StringBuilder main = new StringBuilder();
         for (Event event : events) {
             if (event.type == Event.Type.Death || event.type == Event.Type.ResourceDeath || event.type == Event.Type.DisbandResources) {
-                System.out.println(event);
+                main.append(event).append("\n");
             }
         }
+        return main;
     }
 
     /**
@@ -302,7 +318,7 @@ public class TextVisualizer {
      * @param aspectName name of the aspect which will be added to the Group. Can
      *                   represent Aspect which doesn't exists.
      */
-    private void addAspectToGroup(Group group, String aspectName) {//TODO new resource finding
+    private void addAspectToGroup(Group group, String aspectName) {
         if (group == null) {
             System.err.println("Cannot add aspect to the group");
             return;
@@ -311,7 +327,9 @@ public class TextVisualizer {
         if (aspectName.contains("On")) {
             String resourceName = aspectName.split("On")[1];
             Resource resource = group.getOverallTerritory().getDifferentResources().stream()
-                    .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null);
+                    .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
+                    .orElse(group.getCulturalCenter().getAllProducedResources().stream().map(pair -> pair.first)
+                            .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null));
 //            Resource resource = controller.world.getResourceFromPoolByName(aspectName.split("On")[1]);
             if (resource == null) {
                 System.err.println("Cannot add aspect to the group");
@@ -390,9 +408,31 @@ public class TextVisualizer {
                             break;
                         case Plates:
                             printMap(tile -> {
+                                List<Tile> affectedTiles = new ArrayList<>();
+                                for (TectonicPlate tectonicPlate: controller.world.map.getTectonicPlates()) {
+                                    affectedTiles.addAll(tectonicPlate.getAffectedTiles());
+                                }
                                 for (int i = 0; i < controller.world.map.getTectonicPlates().size(); i++) {
                                     if (controller.world.map.getTectonicPlates().get(i).contains(tile)) {
-                                        return "\033[" + (30 + i) + "m" + groupSymbols.values().stream().sorted().collect(Collectors.toList()).get(i);
+                                        if (affectedTiles.contains(tile)) {
+                                            return "\033[" + (30 + i) + "mX";
+                                        }
+                                        String direction = "0";
+                                        switch (controller.world.map.getTectonicPlates().get(i).getDirection()) {
+                                            case D:
+                                                direction = "v";
+                                                break;
+                                            case L:
+                                                direction = "<";
+                                                break;
+                                            case R:
+                                                direction = ">";
+                                                break;
+                                            case U:
+                                                direction = "^";
+                                                break;
+                                        }
+                                        return "\033[" + (30 + i) + "m" + direction;
                                     }
                                 }
                                 return " ";

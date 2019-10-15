@@ -3,6 +3,7 @@ package simulation.space.generator;
 import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
+import simulation.space.TectonicPlate;
 import simulation.space.Territory;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
@@ -29,25 +30,24 @@ public class RandomMapGenerator {
     }
 
     public static void fill(WorldMap map) {
-        createBlob(map, Tile.Type.Mountain, 30);
-        createBlob(map, Tile.Type.Water, 30);
-        createBlob(map, Tile.Type.Mountain, 30);
-        createBlob(map, Tile.Type.Water, 30);
-        createBlob(map, Tile.Type.Mountain, 30);
-        createBlob(map, Tile.Type.Water, 30);
-        createBlob(map, Tile.Type.Mountain, 30);
-        createBlob(map, Tile.Type.Water, 30);
+//        createBlob(map, Tile.Type.Mountain, 30);
+//        createBlob(map, Tile.Type.Water, 30);
+//        createBlob(map, Tile.Type.Mountain, 30);
+//        createBlob(map, Tile.Type.Water, 30);
+//        createBlob(map, Tile.Type.Mountain, 30);
+//        createBlob(map, Tile.Type.Water, 30);
+//        createBlob(map, Tile.Type.Mountain, 30);
+//        createBlob(map, Tile.Type.Water, 30);
         boolean sw = true;
-        for (Territory plate: map.getTectonicPlates()) {
+        for (TectonicPlate plate: map.getTectonicPlates()) {
             if (sw) {
+                plate.setType(TectonicPlate.Type.Terrain);
                 sw = false;
-                continue;
             }
-            if (ProbFunc.getChances(0.5)) {
-                for (Tile tile: plate.getTiles()) {
-                    tile.type = Tile.Type.Water;
-                }
-            }
+            plate.initialize();
+        }
+        for (TectonicPlate plate: map.getTectonicPlates()) {
+            plate.move();
         }
         RandomMapGenerator.fillResources(map);
     }

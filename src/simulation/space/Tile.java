@@ -26,6 +26,7 @@ public class Tile {
     public Group group;
     public Type type;
 
+    private TectonicPlate plate;
     private List<Resource> resources, _delayedResources;
     private World world;
 
@@ -86,6 +87,10 @@ public class Tile {
         return goodTiles;
     }
 
+    public TectonicPlate getPlate() {
+        return plate;
+    }
+
     public void addResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;
@@ -122,6 +127,10 @@ public class Tile {
 //        }
         _delayedResources.add(resource);
         resource.setTile(this);
+    }
+
+    public void setPlate(TectonicPlate plate) {
+        this.plate = plate;
     }
 
     public int closestTileWithResources(Collection<Resource> requirements) {

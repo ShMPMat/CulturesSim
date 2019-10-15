@@ -30,6 +30,10 @@ public class OutputFunc {
         return stringBuilder;
     }
 
+    public static StringBuilder addToRight(StringBuilder left, StringBuilder right, boolean guarantiedLength) {
+        return addToRight(left.toString(), right.toString(), guarantiedLength);
+    }
+
     /**
      * Edits text via carrying lines which are longer than size.
      * @param text text wich will be edited.
@@ -75,5 +79,9 @@ public class OutputFunc {
             }
         }
         return new StringBuilder(text);
+    }
+
+    public static StringBuilder chompToLines(StringBuilder text, int size) {
+        return chompToLines(text.toString(), size);
     }
 }

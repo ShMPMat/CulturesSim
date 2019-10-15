@@ -81,7 +81,7 @@ public class CulturalCenter {
         return allExistingAspects;
     }
 
-    List<ShnyPair<Resource, ConverseWrapper>> getAllProducedResources() {
+    public List<ShnyPair<Resource, ConverseWrapper>> getAllProducedResources() {
         List<ShnyPair<Resource, ConverseWrapper>> _m = new ArrayList<>();
         for (ConverseWrapper converseWrapper : aspects.stream().filter(aspect -> aspect instanceof ConverseWrapper)
                 .map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toList())) {

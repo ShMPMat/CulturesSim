@@ -275,7 +275,7 @@ public class World {
 
     public void addResources(List<Resource> resources) {
         resources.stream().filter(resource -> getResourceFromPoolByName(resource.getBaseName()) == null)
-                .forEach(resource -> resources.add(new ResourceIdeal(resource)));//TODO to make ideals in CW resource
+                .forEach(resource -> resources.add(new ResourceIdeal(resource)));
     }
 
     public Collection<Aspect> getAllDefaultAspects() {
