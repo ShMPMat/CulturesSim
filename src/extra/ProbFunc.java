@@ -60,6 +60,9 @@ public class ProbFunc {
     }
 
     public static Tile randomTile(Territory territory) {
+        if (territory.isEmpty()) {
+            return null;
+        }
         return territory.getTiles().get(randomInt(territory.getTiles().size()));
     }
 

@@ -21,6 +21,9 @@ public class ConverseWrapper extends Aspect {
      * Resource on which aspect is applied.
      */
     public Resource resource;
+    /**
+     * Whether this ConverseWrapper can insert meaning.
+     */
     public boolean canInsertMeaning = false;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {

@@ -10,8 +10,17 @@ import java.util.Objects;
  * Class which represents cultural meaning of an object, material.
  */
 public class AspectTag {
+    /**
+     * Name of the AspectTag
+     */
     public String name;
-    boolean isAbstract; //True if don't need any resource
+    /**
+     * Whether it don't need any resource.
+     */
+    boolean isAbstract;
+    /**
+     * Whether Resource doesn't waste on use.
+     */
     boolean isInstrumental;
 
     public AspectTag(String name, boolean isAbstract, boolean isInstrumental) {

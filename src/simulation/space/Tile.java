@@ -9,6 +9,7 @@ import simulation.space.resource.ResourceCore;
 import java.util.ArrayList;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,12 +23,33 @@ public class Tile {
         Mountain,
         Water
     }
+
+    /**
+     * Coordinates of this Tile on the WorldMap.
+     */
     public int x, y;
+    /**
+     * Group which is settled on this tile.
+     */
     public Group group;
+    /**
+     * Type of this Tile.
+     */
     public Type type;
 
+    /**
+     * TectonicPlate by which this Tile is owned.
+     */
     private TectonicPlate plate;
-    private List<Resource> resources, _delayedResources;
+    /**
+     * Resources which are located on this Tile.
+     */
+    private List<Resource> resources;
+    /**
+     * Resources which were added on this Tile during this turn. They are
+     * stored here before the end of the turn.
+     */
+    private List<Resource> _delayedResources;
     private World world;
 
     public Tile(int x, int y, World world) {
@@ -91,6 +113,18 @@ public class Tile {
         return plate;
     }
 
+    public int getDistance(Tile tile) {
+        return Math.abs(tile.x - x) + Math.abs(tile.y - y);
+    }
+
+    public Tile getClosest(Collection<Tile> tiles) {
+        return tiles.stream().min(Comparator.comparingInt(this::getDistance)).orElse(null);
+    }
+
+    public int getClosestDistance(Collection<Tile> tiles) {
+        return getClosest(tiles).getDistance(this);
+    }
+
     public void addResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;
@@ -117,6 +151,7 @@ public class Tile {
             }
         }
     }
+
     public void addDelayedResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;

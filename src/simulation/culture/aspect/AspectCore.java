@@ -8,8 +8,18 @@ import java.util.*;
  * Class which contains all general information about all Aspects with the same name.
  */
 class AspectCore {
+    /**
+     * Name of the Aspect.
+     */
     String name;
-    List<AspectTag> tags, requirements;
+    /**
+     * AspectTags which represent which resources are provided by this Aspect.
+     */
+    private List<AspectTag> tags;
+    /**
+     *
+     */
+    private List<AspectTag> requirements;
     boolean applyMeaning = false;
 
     public AspectCore(String[] tags) {

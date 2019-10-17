@@ -38,7 +38,7 @@ public class Group {
      */
     public int population;
 
-    private int maxPopulation = 100;
+    private int maxPopulation = 1000;
     private Group parentGroup;
     private CulturalCenter culturalCenter;
     private double spreadability;
@@ -133,7 +133,7 @@ public class Group {
     }
 
     int getMaxPopulation() {
-        return getOverallTerritory().size() * maxPopulation;
+        return getTerritory().size() * maxPopulation;
     }
 
     private void setAspects(Set<Aspect> aspects) {
@@ -309,21 +309,23 @@ public class Group {
             }
             if (population == 0) {
                 die();
+                subgroups.forEach(Group::die);
+            }
+            for (int i = 0; i < subgroups.size(); i++) {
+                subgroups.get(i).populationUpdate();
             }
         } else {
-//            if (getMaxPopulation() == population) {//TODO write
-//                if (parentGroup.subgroups.size() <= getOverallTerritory().size() / 8) {
-//                    return;
-//                }
-//                population = population / 2;
-//                Tile tile = ProbFunc.randomTile(getOverallTerritory());
-//                while (parentGroup.subgroups.stream().anyMatch(group -> group.territory.contains(tile))) {
-//
-//                    tile = ProbFunc.randomTile(getOverallTerritory());
-//                }
-//                parentGroup.subgroups.add(new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
-//                        population, tile));
-//            }
+            if (getMaxPopulation() == population) {
+                if (parentGroup.subgroups.size() > getOverallTerritory().size() / 8) {
+                    return;
+                }
+                population = population / 2;
+                List<Tile> tiles = getOverallTerritory().getTilesWithPredicate(t -> parentGroup.subgroups.stream()
+                        .anyMatch(group -> !group.territory.contains(t)));
+                Tile tile = tiles.get(ProbFunc.randomInt(tiles.size()));
+                parentGroup.subgroups.add(new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
+                        population, tile));
+            }
         }
     }
 
@@ -332,6 +334,14 @@ public class Group {
             population -= (population / 10) * (1 - fraction) + 1;
         }
         getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("food")));
+    }
+
+    private int getDistanceToClosestSubgroup(Tile tile) {
+        int d = Integer.MAX_VALUE;
+        for (Group subgroup: subgroups) {
+            d = Math.min(d, tile.getClosestDistance(subgroup.getTerritory().getTiles()));
+        }
+        return d;
     }
 
     private boolean expand() {
@@ -349,8 +359,8 @@ public class Group {
             }
         }
 
-        claimTile(territory.includeMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this),
-                tileValueMapper));
+        claimTile(territory.includeMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
+                getDistanceToClosestSubgroup(newTile) < 4, tileValueMapper));
         return true;
     }
 

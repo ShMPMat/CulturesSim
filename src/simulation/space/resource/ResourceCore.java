@@ -28,7 +28,7 @@ public class ResourceCore {
                 new Genome(tags[0], Double.parseDouble(tags[2]), Double.parseDouble(tags[1]),
                         false, Integer.parseInt(tags[4]) == 1, false,
                         Integer.parseInt(tags[5]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, world),
-                new HashMap<>());
+                new HashMap<>(), null);
         for (int i = 6; i < tags.length; i++) {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
@@ -52,8 +52,8 @@ public class ResourceCore {
     }
 
     private ResourceCore(String name, String meaningPostfix, List<AspectTag> tags, List<Material> materials, Genome genome,
-                         Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion) {
-        initializeMutualFields(name + meaningPostfix, tags, materials, genome, aspectConversion);
+                         Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion, Meme meaning) {
+        initializeMutualFields(name + meaningPostfix, tags, materials, genome, aspectConversion, meaning);
         computeMaterials();
     }
 
@@ -68,8 +68,8 @@ public class ResourceCore {
     }
 
     private void initializeMutualFields(String name, List<AspectTag> tags, List<Material> materials, Genome genome,
-                                        Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion) {
-        this.meaning = null;
+                                        Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion, Meme meaning) {
+        this.meaning = meaning;
         this.aspectConversion = new HashMap<>(aspectConversion);
         this._aspectConversion = new HashMap<>();
         this._parts = new ArrayList<>();
@@ -257,7 +257,7 @@ public class ResourceCore {
 
     Resource copyWithLegacyInsertion(ResourceCore creator) {
         Resource resource = new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(_tags),
-                new ArrayList<>(materials), new Genome(genome), aspectConversion));
+                new ArrayList<>(materials), new Genome(genome), aspectConversion, meaning));
         resource.resourceCore._aspectConversion = _aspectConversion;
         resource.resourceCore.setLegacy(creator);
         return resource;//TODO is legacy passed to parts in genome?
@@ -269,16 +269,15 @@ public class ResourceCore {
 
     Resource fullCopy() {
         return new Resource(new ResourceCore(genome.getName(), meaningPostfix,
-                new ArrayList<>(_tags), new ArrayList<>(materials), new Genome(genome), aspectConversion));
+                new ArrayList<>(_tags), new ArrayList<>(materials), new Genome(genome), aspectConversion, meaning));
     }
 
     public ResourceCore insertMeaning(Meme meaning, Aspect aspect) {
         Genome genome = new Genome(this.genome);
         genome.setSpreadProbability(0);
         ResourceCore _r = new ResourceCore(genome.getName(), "_representing_" + meaning + "_with_" + aspect.getName(),
-                new ArrayList<>(_tags), new ArrayList<>(materials), genome, aspectConversion);
+                new ArrayList<>(_tags), new ArrayList<>(materials), genome, aspectConversion, meaning);
         _r.hasMeaning = true;
-        _r.meaning = meaning;
         return _r;
     }
 
@@ -311,7 +310,7 @@ public class ResourceCore {
         Genome genome = new Genome(this.genome);
         genome.setSpreadProbability(0);
         return new ResourceCore(genome.getName() + (newMaterials.equals(materials) ? "" : "_" + aspect.getName()),
-                meaningPostfix, new ArrayList<>(_tags), newMaterials, genome, aspectConversion);//TODO dangerous shit for genome
+                meaningPostfix, new ArrayList<>(_tags), newMaterials, genome, aspectConversion, meaning);//TODO dangerous shit for genome
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {

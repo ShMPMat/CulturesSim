@@ -22,8 +22,17 @@ public class Aspect {
      * we can get get resource for using this aspect.
      */
     Map<AspectTag, Set<Dependency>> dependencies;
+    /**
+     * Coefficient which represents how much this aspect is used by its owner.
+     */
     private int usefulness;
+    /**
+     * Whether it was used on this turn.
+     */
     private boolean used;
+    /**
+     * Group which owns this aspect.
+     */
     protected Group group;
 
     /**

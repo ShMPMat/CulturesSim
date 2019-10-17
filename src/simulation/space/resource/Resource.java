@@ -18,7 +18,7 @@ public class Resource { //TODO events of merging and stuff
     private boolean isMarkedInTile = true;
     int amount;
     private Tile tile;
-    protected ResourceCore resourceCore;
+    ResourceCore resourceCore;
 
     private int deathTurn = 0;
     private double deathPart = 1;

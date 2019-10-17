@@ -29,6 +29,10 @@ public class Territory {
         return tiles;
     }
 
+    public List<Tile> getTilesWithPredicate(Predicate<Tile> predicate) {
+        return tiles.stream().filter(predicate::test).collect(Collectors.toList());
+    }
+
     public Tile getTileByNumber(int n) {
         return tiles.get(n);
     }
@@ -137,5 +141,9 @@ public class Territory {
     public List<Tile> getBorder() {
         return tiles.stream().filter(tile -> !tile.getNeighbours(t -> !this.contains(t)).isEmpty())
                 .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
     }
 }
