@@ -129,11 +129,15 @@ public class Aspect {
 
     public void addOneDependency(Map<AspectTag, Set<Dependency>> newDependencies) {
         for (AspectTag tag : dependencies.keySet()) {
-            for (Dependency dependency1 : newDependencies.get(tag)) {
-                if (!dependencies.get(tag).contains(dependency1)) {
-                    dependencies.get(tag).add(dependency1);
-                    break;
+            try {
+                for (Dependency dependency1 : newDependencies.get(tag)) {
+                    if (!dependencies.get(tag).contains(dependency1)) {
+                        dependencies.get(tag).add(dependency1);
+                        break;
+                    }
                 }
+            } catch (Exception e) {
+                int i = 0;
             }
         }
     }

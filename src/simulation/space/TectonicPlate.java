@@ -23,6 +23,8 @@ public class TectonicPlate extends Territory {
     }
     private Direction direction;
     private Type type;
+    private List<Tile> affectedTiles;
+
     TectonicPlate() {
         direction = Direction.values()[ProbFunc.randomInt(Direction.values().length)];
         type = Type.values()[ProbFunc.randomInt(Type.values().length)];
@@ -52,6 +54,9 @@ public class TectonicPlate extends Territory {
     }
 
     public List<Tile> getAffectedTiles() {
+        if (affectedTiles != null) {
+            return affectedTiles;
+        }
         List<Tile> startTiles = getBrinkWithCondition(tile -> {
             Tile t;
             switch (direction) {
@@ -71,7 +76,7 @@ public class TectonicPlate extends Territory {
                     return false;
             }
         });
-        List<Tile> affectedTiles = new ArrayList<>();
+        List<Tile> tiles = new ArrayList<>();
         for (Tile tile: startTiles) {
             List<Tile> neighbours = new ArrayList<>(), newTiles = new ArrayList<>();
             neighbours.add(tile);
@@ -83,9 +88,10 @@ public class TectonicPlate extends Territory {
                 neighbours.clear();
                 neighbours.addAll(newTiles);
             }
-            affectedTiles.addAll(neighbours);
+            tiles.addAll(neighbours);
         }
-        return affectedTiles.stream().distinct().collect(Collectors.toList());
+        this.affectedTiles = tiles.stream().distinct().collect(Collectors.toList());
+        return this.affectedTiles;
     }
 
     private int getInteractionCoof(TectonicPlate tectonicPlate) {

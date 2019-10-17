@@ -4,7 +4,6 @@ import simulation.World;
 import simulation.culture.group.Group;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourceCore;
 
 import java.util.ArrayList;
 
