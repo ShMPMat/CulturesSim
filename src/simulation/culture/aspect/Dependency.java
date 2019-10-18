@@ -18,6 +18,7 @@ public class Dependency {
     private ShnyPair<ConverseWrapper, ConverseWrapper> line;
     private AspectTag type;
     private Group group;
+    private boolean isAlreadyUsed = false;
 
     private Dependency(AspectTag type, Group group) {
         this.type = type;
@@ -89,9 +90,15 @@ public class Dependency {
         if (conversion != null) {
             return (conversion.second.equals(aspect) && conversion.second != aspect);
         }
-        if (line != null) {//TODO cant TakeApart Plants, which Planted from Seed, TakeAparted from Plant
-            return line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-            .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || line.second.equals(aspect);
+        if (line != null) {//TODO prohibit dependencies from same aspect which are not separated by other aspects;
+            if (isAlreadyUsed) {
+                return false;
+            }
+            isAlreadyUsed = true;
+            boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                    .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || (line.second.equals(aspect) && line.second != aspect);
+            isAlreadyUsed = false;
+            return b;
         }
         return false;
     }
@@ -119,11 +126,16 @@ public class Dependency {
             return new ShnyPair<>(true, resourcePack);
         }
         if (line != null) {
+            if (isAlreadyUsed) {
+                return new ShnyPair<>(true, resourcePack);
+            }
+            isAlreadyUsed = true;
             ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
                     rp -> rp.getAmountOfResource(line.first.resource));
             _p.second.getResource(line.first.resource)
                     .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
             resourcePack.add(_p.second);
+            isAlreadyUsed = false;
             return new ShnyPair<>(_p.first, resourcePack);
         }
         return new ShnyPair<>(false, null);

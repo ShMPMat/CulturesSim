@@ -4,7 +4,6 @@ import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
-import simulation.space.Territory;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
@@ -123,11 +122,11 @@ public class RandomMapGenerator {
     private static void createBlob(WorldMap map, Tile.Type type, int n) {
         List<Tile> tiles = new ArrayList<>();
         tiles.add(ProbFunc.randomTile(map));
-        tiles.get(0).type = type;
+        tiles.get(0).setType(type);
         for (int i = 0; i < n; i++) {
             Tile tile = ProbFunc.randomTileOnBrink(tiles, t -> true);
             if (tile != null) {
-                tile.type = type;
+                tile.setType(type);
                 tiles.add(tile);
             } else {
                 i+=0;

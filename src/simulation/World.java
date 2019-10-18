@@ -60,6 +60,7 @@ public class World {
      * How many turns passed from the beginning of the simulation.
      */
     private int turn = 0, thousandTurns = 0;
+    private int waterLevel = 100;
 
     /**
      * Base constructor.
@@ -204,6 +205,10 @@ public class World {
         }
         System.err.println("Unrecognized Property request - " + name);
         return null;
+    }
+
+    public int getWaterLevel() {
+        return waterLevel;
     }
 
     /**

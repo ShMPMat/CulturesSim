@@ -34,7 +34,7 @@ public class Tile {
     /**
      * Type of this Tile.
      */
-    public Type type;
+    private Type type;
 
     /**
      * TectonicPlate by which this Tile is owned.
@@ -49,6 +49,7 @@ public class Tile {
      * stored here before the end of the turn.
      */
     private List<Resource> _delayedResources;
+    private int level;
     private World world;
 
     public Tile(int x, int y, World world) {
@@ -56,7 +57,7 @@ public class Tile {
         this.y = y;
         this.world = world;
         group = null;
-        type = Type.Normal;
+        setType(Type.Normal);
         resources = new ArrayList<>();
         _delayedResources = new ArrayList<>();
     }
@@ -124,6 +125,14 @@ public class Tile {
         return getClosest(tiles).getDistance(this);
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public void addResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;
@@ -167,6 +176,32 @@ public class Tile {
         this.plate = plate;
     }
 
+    public void setType(Type type) {
+        this.type = type;
+        switch (type) {
+            case Mountain:
+                level = 110;
+                break;
+            case Normal:
+                level = 100;
+                break;
+            case Water:
+                level = 85;
+                break;
+        }
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+        type = Type.Normal;
+        if (level >= 110) {
+            type = Type.Mountain;
+        }
+        if (level < world.getWaterLevel()) {
+            type = Type.Water;
+        }
+    }
+
     public int closestTileWithResources(Collection<Resource> requirements) {
 //        List<Tile> tiles = new ArrayList<>(), layer;
 //        tiles.add(this);
@@ -197,15 +232,13 @@ public class Tile {
     }
 
     public boolean canSettle(Group group) {
-        return type == Type.Normal ||
-                (type == Type.Mountain && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
-                        .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))) ||
-                (type == Type.Water && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
-                        .anyMatch(aspectTag -> aspectTag.name.equals("waterLiving"))));
+        return getType() == Type.Normal ||
+                (getType() == Type.Mountain && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
+                        .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
     }
 
     public boolean canSettle(Genome genome) {
-        return genome.isTypeAcceptable(type);
+        return genome.isTypeAcceptable(getType());
     }
 
     public void update() {
@@ -233,7 +266,7 @@ public class Tile {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Tile " + x + " " + y +
-                (group == null ? "" : ", group=" + group.name) + ", type=" + type + ", resource:\n");
+                (group == null ? "" : ", group=" + group.name) + ", type=" + getType() + ", resource:\n");
         for (Resource resource : resources) {
             stringBuilder.append(resource).append("\n");
         }

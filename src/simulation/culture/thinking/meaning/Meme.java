@@ -6,14 +6,20 @@ import java.util.Objects;
 
 abstract public class Meme {
     String observerWord;
-    protected List<Meme> predicates;
+    List<Meme> predicates;
+    int importance;
 
-    public Meme(String observerWord, List<Meme> predicates) {
+    Meme(String observerWord, List<Meme> predicates, int importance) {
         this.observerWord = observerWord.toLowerCase();
         this.predicates = predicates;
+        this.importance = importance;
     }
 
-    public Meme(String observerWord) {
+    Meme(String observerWord, List<Meme> predicates) {
+        this(observerWord, predicates, 1);
+    }
+
+    Meme(String observerWord) {
         this(observerWord, new ArrayList<>());
     }
 

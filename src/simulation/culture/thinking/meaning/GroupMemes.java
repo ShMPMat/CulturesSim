@@ -1,10 +1,12 @@
 package simulation.culture.thinking.meaning;
 
+import extra.ProbFunc;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +18,7 @@ public class GroupMemes extends MemePool {
         memesCombinations = new ArrayList<>();
         String[] subjects = {"group"};
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
-        String[] predicates = {"die"};
+        String[] predicates = {"die", "acquireAspect"};
         addAll(Arrays.stream(predicates).map(MemeSubject::new).collect(Collectors.toList()));
     }
 
@@ -25,6 +27,20 @@ public class GroupMemes extends MemePool {
         List<Meme> memeList = super.getMemes();
         memeList.addAll(memesCombinations);
         return memeList;
+    }
+
+    public Meme getValuableMeme() {
+        List<Meme> memeList = getMemes();
+        int prob = ProbFunc.randomInt(memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum));
+        memeList.sort(Comparator.comparingInt(meme -> meme.importance));
+        for (Meme meme: memeList) {
+            prob -= meme.importance;
+            if (prob <= 0) {
+                meme.importance++;
+                return meme;
+            }
+        }
+        return memeList.get(0);
     }
 
     @Override

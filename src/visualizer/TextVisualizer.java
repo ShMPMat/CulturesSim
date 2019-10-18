@@ -225,7 +225,7 @@ public class TextVisualizer {
      *                  for a tile, output of the function will be drawn above the tile.
      * @return StringBuilder with a printed map.
      */
-    private StringBuilder printedMap(Function<Tile, String> condition) {
+    private StringBuilder printedMap(Function<Tile, String> condition) { //TODO colourful groups
         StringBuilder main = new StringBuilder();
         WorldMap worldMap = controller.world.map;
         main.append("  ");
@@ -246,9 +246,9 @@ public class TextVisualizer {
                 token = condition.apply(tile);
                 if (token.equals("")) {
                     if (tile.group == null) {
-                        switch (tile.type) {
+                        switch (tile.getType()) {
                             case Water:
-                                token = "\033[34m~";
+                                token = "\033[30m\033[44m~";
                                 break;
                             case Normal:
                                 if (tile.getResources().size() > 0) {
@@ -259,14 +259,14 @@ public class TextVisualizer {
                                 }
                                 break;
                             case Mountain:
-                                token = "\033[33m^";
+                                token = "\033[32m" + (tile.getLevel() > 110 ? "\033[43m" : "") + "^";
                                 break;
                         }
                     } else {
                         if (tile.group.state == Group.State.Dead) {
                             token = "\033[33m☠";
                         } else {
-                            token = (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : (tile.getResources().size() > 0 ? "\033[36m" : "\033[0m")) + groupSymbols.get(tile.group);
+                            token = (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[35m") + groupSymbols.get(tile.group);
                         }
                     }
                 }

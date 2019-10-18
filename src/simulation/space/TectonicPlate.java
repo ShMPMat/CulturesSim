@@ -35,7 +35,7 @@ public class TectonicPlate extends Territory {
             return;
         }
         for (Tile tile: getTiles()) {
-            tile.type = Tile.Type.Water;
+            tile.setType(Tile.Type.Water);
         }
     }
 
@@ -90,7 +90,7 @@ public class TectonicPlate extends Territory {
             }
             tiles.addAll(neighbours);
         }
-        this.affectedTiles = tiles.stream().distinct().collect(Collectors.toList());
+        this.affectedTiles = tiles;
         return this.affectedTiles;
     }
 
@@ -107,7 +107,7 @@ public class TectonicPlate extends Territory {
 
     public void move() {
         for (Tile tile: getAffectedTiles()) {
-            tile.type = Tile.Type.Mountain;
+            tile.setLevel(tile.getLevel() + 5 + ProbFunc.randomInt(5));
         }
     }
 }

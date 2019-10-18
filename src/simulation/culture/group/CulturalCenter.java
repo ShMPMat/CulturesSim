@@ -92,8 +92,12 @@ public class CulturalCenter {
         return _m;
     }
 
-    public GroupMemes getMemePool() {
+    GroupMemes getMemePool() {
         return memePool;
+    }
+
+    public void addMemeCombination(Meme meme) {
+        memePool.addMemeCombination(meme);
     }
 
     void setAspects(Set<Aspect> aspects) {
@@ -118,13 +122,17 @@ public class CulturalCenter {
     }
 
     public boolean addAspect(Aspect aspect) {
+        if (aspects.contains(aspect)) {
+            aspect = aspects.stream().filter(aspect::equals).findFirst().orElse(aspect);
+        }
         Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(aspect);
         if (!aspect.isDependenciesOk(_m)) {
             return false;
         }
 
         addAspectNow(aspect, _m);
-        group.subgroups.forEach(group -> group.getCulturalCenter().addAspectNow(aspect, _m));
+        Aspect finalAspect = aspect;
+        group.subgroups.forEach(group -> group.getCulturalCenter().addAspectNow(finalAspect, _m));
         return true;
     }
 
@@ -149,6 +157,8 @@ public class CulturalCenter {
             }
         }
         memePool.addAspectMemes(aspect);
+        addMemeCombination((new MemeSubject(group.name).addPredicate(
+                world.getMemeFromPoolByName("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         if (_a instanceof ConverseWrapper) {
             addWants(((ConverseWrapper) _a).getResult());
         }
@@ -225,7 +235,6 @@ public class CulturalCenter {
 //                        " got aspect " + _p.first.getBaseName() + " from group " + _p.second.name, "group", group));
 //            }
 //        }
-
         if (ProbFunc.getChances(rAspectAcquisition)) {
             List<Aspect> options = new ArrayList<>(world.aspectPool);
             options.addAll(getAllConverseWrappers());
@@ -347,7 +356,7 @@ public class CulturalCenter {
     }
 
     public Meme getMeaning() {
-        return memePool.getMemes().get(ProbFunc.randomInt(memePool.getMemes().size()));
+        return memePool.getValuableMeme();
     }
 
     public Collection<ShnyPair<Resource, ResourceBehaviour>> getWants() {

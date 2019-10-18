@@ -171,7 +171,7 @@ public class Group {
         uniqueArtefacts.disbandOnTile(territory.getTiles().get(ProbFunc.randomInt(territory.getTiles().size())));
         addEvent(new Event(Event.Type.Death, getCulturalCenter().world.getTurn(), "Group " + name + " died", "group", this));
         for (Group group : culturalCenter.world.map.getAllNearGroups(this)) {
-            group.culturalCenter.getMemePool().addMemeCombination(culturalCenter.world.getMemeFromPoolByName("group")
+            group.culturalCenter.addMemeCombination(culturalCenter.world.getMemeFromPoolByName("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(culturalCenter.world.getMemeFromPoolByName("die")));
         }
     }
@@ -279,7 +279,6 @@ public class Group {
             }
             return;
         }
-//TODO farming isn't working because noone knows that you can EAT planted plants
         for (Request request : getCulturalCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
             List<ShnyPair<Aspect, Function<ResourcePack, Integer>>> pairs = getAspects().stream()
                     .map(aspect -> new ShnyPair<>(aspect, request.isAcceptable(aspect)))
@@ -315,13 +314,12 @@ public class Group {
                 subgroups.get(i).populationUpdate();
             }
         } else {
-            if (getMaxPopulation() == population) {
-                if (parentGroup.subgroups.size() > getOverallTerritory().size() / 8) {
+            if (getMaxPopulation() == population) {//TODO margin doesnt work
+                List<Tile> tiles = getOverallTerritory().getTilesWithPredicate(t -> getDistanceToClosestSubgroup(t) > 2);
+                if (tiles.isEmpty()) {
                     return;
                 }
                 population = population / 2;
-                List<Tile> tiles = getOverallTerritory().getTilesWithPredicate(t -> parentGroup.subgroups.stream()
-                        .anyMatch(group -> !group.territory.contains(t)));
                 Tile tile = tiles.get(ProbFunc.randomInt(tiles.size()));
                 parentGroup.subgroups.add(new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
                         population, tile));
@@ -438,10 +436,11 @@ public class Group {
             s.append(want.first.getFullName()).append(" ").append(want.second).append(", ");
         }
         s.append((culturalCenter.getWants().isEmpty() ? "none\n" : "\n"));
-        stringBuilder.append(OutputFunc.chompToSize(s.toString(), 80));
+        stringBuilder.append(s.toString());
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
-        stringBuilder.append("Artifacts:\n").append(OutputFunc.chompToSize(uniqueArtefacts.toString(), 70))
+        stringBuilder.append("Artifacts:\n").append(uniqueArtefacts.toString())
                 .append("\n");
+        stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
 
         for (Group subgroup : subgroups) {
             stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);

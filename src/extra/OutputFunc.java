@@ -62,6 +62,11 @@ public class OutputFunc {
         return stringBuilder;
     }
 
+
+    public static StringBuilder chompToSize(StringBuilder text, int size) {
+        return chompToSize(text.toString(), size);
+    }
+
     /**
      * Edits text via adding lines after size + 1 recursively to the right.
      * @param text text which will be modified.
