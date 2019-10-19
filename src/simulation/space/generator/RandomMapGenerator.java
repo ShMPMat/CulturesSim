@@ -20,21 +20,13 @@ import java.util.List;
 public class RandomMapGenerator {
     public static List<AspectTag> aspectTagPool;
 
+    @Deprecated
     public static void createResources(World world, int numberOrResources) {
         fillAspectTagPool();
-        fillResourcePool(world);
-        //fillResourcePoolWithRandomResources(world, numberOrResources);//TODO off for debug
-        world.resourcePool.forEach(Resource::actualizeLinks);
-        world.resourcePool.forEach(Resource::actualizeParts);
+        //fillResourcePoolWithRandomResources(world, numberOrResources);
     }
 
     public static void fill(WorldMap map) {
-//        createBlob(map, Tile.Type.Mountain, 30);
-//        createBlob(map, Tile.Type.Water, 30);
-//        createBlob(map, Tile.Type.Mountain, 30);
-//        createBlob(map, Tile.Type.Water, 30);
-//        createBlob(map, Tile.Type.Mountain, 30);
-//        createBlob(map, Tile.Type.Water, 30);
 //        createBlob(map, Tile.Type.Mountain, 30);
 //        createBlob(map, Tile.Type.Water, 30);
         boolean sw = true;
@@ -51,27 +43,7 @@ public class RandomMapGenerator {
         RandomMapGenerator.fillResources(map);
     }
 
-    private static void fillResourcePool(World world) {//TODO move to World class
-        world.resourcePool = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Resources"))) {
-            String line;
-            String[] tags;
-            while (true) {
-                line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (line.trim().isEmpty() || line.charAt(0) == '/') {
-                    continue;
-                }
-                tags = line.split("\\s+");
-                world.resourcePool.add(new ResourceIdeal(tags, 1, world));
-            }
-        } catch (Throwable t) {
-            System.err.println(t.toString());
-        }
-    }
-
+    @Deprecated
     private static void fillResourcePoolWithRandomResources(World world, int numberOrResources) {
         for (int i = 0; i < numberOrResources; i++) {
             List<String> tags = new ArrayList<>();
@@ -80,7 +52,7 @@ public class RandomMapGenerator {
             int n = ProbFunc.randomInt(aspectTagPool.size());
             for (int j = 0; j < n; j++) {
                 while (true) {
-                    String name = aspectTagPool.get(ProbFunc.randomInt(aspectTagPool.size())).name;
+                    String name = ProbFunc.randomElement(aspectTagPool).name;
                     if (!tags.contains("-" + name)) {
                         tags.add("-" + name);
                         break;

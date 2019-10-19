@@ -1,5 +1,6 @@
 package simulation.space;
 
+import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
@@ -57,7 +58,7 @@ public class WorldMap {
                 if (tiles.isEmpty()) {
                     continue;
                 }
-                Tile tile = tiles.get(randomInt(tiles.size()));
+                Tile tile = randomElement(tiles);
                 territory.addTile(tile);
                 usedTiles.add(tile);
                 sw = true;

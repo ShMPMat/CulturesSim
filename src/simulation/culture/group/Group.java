@@ -96,9 +96,9 @@ public class Group {
             getCulturalCenter().addAspectNow(aspect, aspect.getDependencies());
             finishUpdate();
         }
-        for (Aspect aspect : group.culturalCenter.getChangedAspects()) {
-            getCulturalCenter().addAspectNow(aspect, aspect.getDependencies());
-        }
+//        for (Aspect aspect : group.culturalCenter.getChangedAspects()) { //TODO Why?
+//            getCulturalCenter().addAspectNow(aspect, aspect.getDependencies());
+//        }
     }
 
     public Set<Aspect> getAspects() {
@@ -167,8 +167,8 @@ public class Group {
         for (Tile tile : territory.getTiles()) {
             tile.group = null;
         }
-        cherishedResources.disbandOnTile(territory.getTiles().get(ProbFunc.randomInt(territory.getTiles().size())));
-        uniqueArtefacts.disbandOnTile(territory.getTiles().get(ProbFunc.randomInt(territory.getTiles().size())));
+        cherishedResources.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
+        uniqueArtefacts.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
         addEvent(new Event(Event.Type.Death, getCulturalCenter().world.getTurn(), "Group " + name + " died", "group", this));
         for (Group group : culturalCenter.world.map.getAllNearGroups(this)) {
             group.culturalCenter.addMemeCombination(culturalCenter.world.getMemeFromPoolByName("group")
@@ -314,13 +314,13 @@ public class Group {
                 subgroups.get(i).populationUpdate();
             }
         } else {
-            if (getMaxPopulation() == population) {//TODO margin doesnt work
-                List<Tile> tiles = getOverallTerritory().getTilesWithPredicate(t -> getDistanceToClosestSubgroup(t) > 2);
+            if (getMaxPopulation() == population && parentGroup.subgroups.size() < 10) {
+                List<Tile> tiles = getOverallTerritory().getTilesWithPredicate(t -> parentGroup.getDistanceToClosestSubgroup(t) > 2);
                 if (tiles.isEmpty()) {
                     return;
                 }
                 population = population / 2;
-                Tile tile = tiles.get(ProbFunc.randomInt(tiles.size()));
+                Tile tile = ProbFunc.randomElement(tiles);
                 parentGroup.subgroups.add(new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
                         population, tile));
             }
@@ -330,6 +330,7 @@ public class Group {
     void starve(double fraction) {
         if (subgroups.isEmpty()) {
             population -= (population / 10) * (1 - fraction) + 1;
+            population = Math.max(population, 0);
         }
         getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("food")));
     }

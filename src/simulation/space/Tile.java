@@ -16,11 +16,13 @@ import java.util.stream.Collectors;
 /**
  * Basic tile of map
  */
-public class Tile {
+public class Tile { //TODO woods type
     public enum Type {
         Normal,
         Mountain,
-        Water
+        Water,
+        Ice,
+        Woods
     }
 
     /**
@@ -50,11 +52,13 @@ public class Tile {
      */
     private List<Resource> _delayedResources;
     private int level;
+    private int temperature;
     private World world;
 
     public Tile(int x, int y, World world) {
         this.x = x;
         this.y = y;
+        temperature = x - 5;
         this.world = world;
         group = null;
         setType(Type.Normal);
@@ -133,6 +137,10 @@ public class Tile {
         return level;
     }
 
+    public int getTemperature() {
+        return temperature;
+    }
+
     public void addResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;
@@ -202,6 +210,13 @@ public class Tile {
         }
     }
 
+    private void checkIce() { //TODO defreezing
+        if (type == Type.Water && temperature < 0) {
+            type = Type.Ice;
+            level = world.getWaterLevel();
+        }
+    }
+
     public int closestTileWithResources(Collection<Resource> requirements) {
 //        List<Tile> tiles = new ArrayList<>(), layer;
 //        tiles.add(this);
@@ -232,7 +247,7 @@ public class Tile {
     }
 
     public boolean canSettle(Group group) {
-        return getType() == Type.Normal ||
+        return getType() != Type.Water && getType() != Type.Mountain ||
                 (getType() == Type.Mountain && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
     }
@@ -242,6 +257,7 @@ public class Tile {
     }
 
     public void update() {
+        checkIce();
         _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
         _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
@@ -266,7 +282,8 @@ public class Tile {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Tile " + x + " " + y +
-                (group == null ? "" : ", group=" + group.name) + ", type=" + getType() + ", resource:\n");
+                (group == null ? "" : ", group=" + group.name) + ", type=" + getType() + ", temperature=" + temperature
+                + ", level=" + level + ", resource:\n");
         for (Resource resource : resources) {
             stringBuilder.append(resource).append("\n");
         }

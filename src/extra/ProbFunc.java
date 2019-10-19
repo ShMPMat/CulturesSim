@@ -35,13 +35,21 @@ public class ProbFunc {
         return  (n == ceiling ? n - 1 : n);
     }
 
+    public static <E> E randomElement(List<E> list) {
+        return list.get(randomInt(list.size()));
+    }
+
+    public static <E> E randomElement(E[] array) {
+        return array[randomInt(array.length)];
+    }
+
     /**
      * Returns random tile from map.
      * @param map any non-empty map.
      * @return random Tile from map.
      */
     public static Tile randomTile(WorldMap map) {
-        return map.map.get(randomInt(map.map.size())).get(randomInt(map.map.get(0).size()));
+        return randomElement(randomElement(map.map));
     }
 
     /**
@@ -56,14 +64,14 @@ public class ProbFunc {
         if (goodTiles.size() == 0) {
             return null;
         }
-        return goodTiles.get(ProbFunc.randomInt(goodTiles.size()));
+        return randomElement(goodTiles);
     }
 
     public static Tile randomTile(Territory territory) {
         if (territory.isEmpty()) {
             return null;
         }
-        return territory.getTiles().get(randomInt(territory.getTiles().size()));
+        return randomElement(territory.getTiles());
     }
 
     private static ShnyPair<Aspect, Group> getRandomAspectWithPairExcept(Collection<ShnyPair<Aspect, Group>> pool,
@@ -77,7 +85,7 @@ public class ProbFunc {
         if (pairs.size() == 0) {
             return null;
         }
-        return pairs.get(randomInt(pairs.size()));
+        return randomElement(pairs);
     }
 
     public static ShnyPair<Aspect, Group> addRandomAspectWithPairExcept(Collection<Aspect> target,
@@ -99,6 +107,6 @@ public class ProbFunc {
         if (aspects.size() == 0) {
             return null;
         }
-        return aspects.get(randomInt(aspects.size()));
+        return randomElement(aspects);
     }
 }

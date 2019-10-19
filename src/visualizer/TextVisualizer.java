@@ -57,44 +57,6 @@ public class TextVisualizer {
     private InteractionModel interactionModel;
 
     /**
-     * Pattern used for recognizing command for printing group information.
-     */
-    private Pattern groupPattern = Pattern.compile("^G\\d+");
-    /**
-     * Pattern used for recognizing command for making sequence of turns.
-     */
-    private Pattern turnsPattern = Pattern.compile("\\d+");
-    /**
-     * Pattern used for recognizing command for printing tile information.
-     */
-    private Pattern tilePattern = Pattern.compile("\\d+ \\d+");
-    private Pattern platesPattern = Pattern.compile("plates");
-    /**
-     * Pattern used for recognizing command for making turns until
-     * something important happens.
-     */
-    private Pattern idleGoPattern = Pattern.compile("go");
-    /**
-     * Pattern used for recognizing command for printing resource information.
-     */
-    private Pattern resourcePattern = Pattern.compile("r \\w+");
-    private Pattern meaningfulResourcePattern = Pattern.compile("meaning");
-    private Pattern artificialResourcePattern = Pattern.compile("artificial");
-    /**
-     * Pattern used for recognizing command for printing map.
-     */
-    private Pattern mapPattern = Pattern.compile("[mM]");
-    /**
-     * Pattern used for recognizing command for exiting simulation.
-     */
-    private Pattern exitPattern = Pattern.compile("EXIT");
-    /**
-     * Pattern used for recognizing command for adding Aspect for a group.
-     */
-    private Pattern addAspectPattern = Pattern.compile("^G\\d+ \\w+");
-    private Pattern addWantPattern = Pattern.compile("^want G\\d+ \\w+");
-
-    /**
      * Base constructor.
      */
     public TextVisualizer() {
@@ -125,33 +87,12 @@ public class TextVisualizer {
      * @return Command token represented by the line.
      */
     private Command getCommand(String line) {
-        if (groupPattern.matcher(line).matches()) {
-            return Command.Group;
-        } else if (turnsPattern.matcher(line).matches()) {
-            return Command.Turns;
-        } else if (tilePattern.matcher(line).matches()) {
-            return Command.Tile;
-        } else if (platesPattern.matcher(line).matches()) {
-            return Command.Plates;
-        } else if (resourcePattern.matcher(line).matches()) {
-            return Command.Resource;
-        } else if (meaningfulResourcePattern.matcher(line).matches()) {
-            return Command.MeaningfulResources;
-        } else if (artificialResourcePattern.matcher(line).matches()) {
-            return Command.ArtificialResources;
-        } else if (idleGoPattern.matcher(line).matches()) {
-            return Command.IdleGo;
-        } else if (exitPattern.matcher(line).matches()) {
-            return Command.Exit;
-        } else if (mapPattern.matcher(line).matches()) {
-            return Command.Map;
-        } else if (addAspectPattern.matcher(line).matches()) {
-            return Command.AddAspect;
-        } else if (addWantPattern.matcher(line).matches()) {
-            return Command.AddWant;
-        } else {
-            return Command.Turn;
+        for (Command command : Command.values()) {
+            if (command.pattern.matcher(line).matches()) {
+                return command;
+            }
         }
+        return Command.Turn;
     }
 
     /**
@@ -225,7 +166,7 @@ public class TextVisualizer {
      *                  for a tile, output of the function will be drawn above the tile.
      * @return StringBuilder with a printed map.
      */
-    private StringBuilder printedMap(Function<Tile, String> condition) { //TODO colourful groups
+    private StringBuilder printedMap(Function<Tile, String> condition) {
         StringBuilder main = new StringBuilder();
         WorldMap worldMap = controller.world.map;
         main.append("  ");
@@ -245,28 +186,37 @@ public class TextVisualizer {
             for (Tile tile : line) {
                 token = condition.apply(tile);
                 if (token.equals("")) {
+                    switch (tile.getType()) {
+                        case Ice:
+                            token = "\033[47m";
+                            break;
+                        case Water:
+                            token = "\033[44m";
+                            break;
+                    }
                     if (tile.group == null) {
                         switch (tile.getType()) {
                             case Water:
-                                token = "\033[30m\033[44m~";
-                                break;
+                            case Ice:
                             case Normal:
                                 if (tile.getResources().size() > 0) {
-                                    token = "\033[36m" + (resourceSymbols.get(tile.getResources().get(0)) == null ? "Ё" :
+                                    token += "\033[30m" + (resourceSymbols.get(tile.getResources().get(0)) == null ? "Ё" :
                                             resourceSymbols.get(tile.getResources().get(0)));
                                 } else {
-                                    token = " ";
+                                    token += " ";
                                 }
                                 break;
                             case Mountain:
-                                token = "\033[32m" + (tile.getLevel() > 110 ? "\033[43m" : "") + "^";
+                                token = (tile.getLevel() > 130 ? "\033[43m\033[93m" : "\033[33m") + "^";
                                 break;
+                            default:
+                                token += " ";
                         }
                     } else {
                         if (tile.group.state == Group.State.Dead) {
-                            token = "\033[33m☠";
+                            token += "\033[33m☠";
                         } else {
-                            token = (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[35m") + groupSymbols.get(tile.group);
+                            token += (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[95m") + groupSymbols.get(tile.group);
                         }
                     }
                 }
@@ -482,6 +432,23 @@ public class TextVisualizer {
                                 return " ";
                             });
                             break;
+                        case Temperature:
+                            printMap(tile -> {
+                                String colour = "";
+                                if (tile.getTemperature() < -10) {
+                                    colour = "\033[44m";
+                                } else if (tile.getTemperature() < 0) {
+                                    colour = "\033[46m";
+                                } else if (tile.getTemperature() < 10) {
+                                    colour = "\033[47m";
+                                } else if (tile.getTemperature() < 20){
+                                    colour = "\033[43m";
+                                } else {
+                                    colour = "\033[41m";
+                                }
+                                return "\033[90m" + colour + Math.abs(tile.getTemperature() % 10);
+                            });
+                            break;
                         case Resource:
                             Resource resource = world.getResourceFromPoolByName(line.substring(2));
                             if (resource != null) {
@@ -499,7 +466,7 @@ public class TextVisualizer {
                             break;
                         case ArtificialResources:
                             printMap(tile -> (tile.getResources().stream().anyMatch(res -> res.hasMeaning() ||
-                                    res.getBaseName().equals("House")) ? "\033[30mX" : ""));
+                                    res.getBaseName().equals("House") || res.getBaseName().equals("Clothes")) ? "\033[30mX" : ""));
                             break;
                         case IdleGo:
                             for (int i = 0; i < 500; i++) {
@@ -544,19 +511,46 @@ public class TextVisualizer {
      * Represents commands which can be given to visualizer.
      */
     private enum Command {
-        Turns,
-        Turn,
-        IdleGo,
-        Group,
-        Tile,
-        Plates,
-        Resource,
-        MeaningfulResources,
-        ArtificialResources,
-        Map,
-        Exit,
+        /**
+         * Command for making sequence of turns.
+         */
+        Turns("\\d+"),
+        /**
+         * Command for making turns until something important happens.
+         */
+        IdleGo("go"),
+        /**
+         * Command for printing group information.
+         */
+        Group("^G\\d+"),
+        /**
+         * Command for printing tile information.
+         */
+        Tile("\\d+ \\d+"),
+        Plates("plates"),
+        Temperature("temperature"),
+        /**
+         * Command for printing resource information.
+         */
+        Resource("r \\w+"),
+        MeaningfulResources("meaning"),
+        ArtificialResources("artificial"),
+        /**
+         * Command for printing map.
+         */
+        Map("[mM]"),
+        /**
+         * Command for exiting simulation.
+         */
+        Exit("EXIT"),
+        /**
+         * Command for adding Aspect for a group.
+         */
+        AddAspect("^G\\d+ \\w+"),
+        AddWant("^want G\\d+ \\w+"),
+        Turn("");
 
-        AddAspect,
-        AddWant
+        Pattern pattern;
+        Command(String command) {pattern = Pattern.compile(command);}
     }
 }

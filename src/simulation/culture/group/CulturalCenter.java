@@ -177,7 +177,7 @@ public class CulturalCenter {
     public void addWant(Resource resource) {
         if (wants.stream().noneMatch(pair -> pair.first.equals(resource))) {
             wants.add(new ShnyPair<>(resource, new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
-                            PlacementStrategy.Strategy.values()[ProbFunc.randomInt(PlacementStrategy.Strategy.values().length)]))));
+                            ProbFunc.randomElement(PlacementStrategy.Strategy.values())))));
         }
     }
 
@@ -259,7 +259,7 @@ public class CulturalCenter {
             if (_l.isEmpty()) {
                 return;
             }
-            ConverseWrapper _a = _l.get(ProbFunc.randomInt(_l.size())), _b = _a.stripToMeaning();
+            ConverseWrapper _a = ProbFunc.randomElement(_l), _b = _a.stripToMeaning();
             ShnyPair<Boolean, ResourcePack> _p = _b.use(1, ResourcePack::getAmountOfResources);
             for (Resource resource : _p.second.resources) {
                 if (resource.hasMeaning()) {
@@ -277,7 +277,7 @@ public class CulturalCenter {
             Aspiration aspiration = (Aspiration) _o.get();
             List<ShnyPair<Aspect, Group>> options = findOptions(aspiration);
             if (!options.isEmpty()) {
-                ShnyPair<Aspect, Group> pair = options.get(ProbFunc.randomInt(options.size()));
+                ShnyPair<Aspect, Group> pair = ProbFunc.randomElement(options);
                 addAspect(pair.first);
                 removeAspiration(aspiration);
                 if (pair.second == null) {

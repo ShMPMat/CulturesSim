@@ -1,5 +1,6 @@
 package simulation.culture.group;
 
+import extra.ProbFunc;
 import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.resource.ResourcePack;
@@ -57,18 +58,18 @@ public class PlacementStrategy {
                 List<Tile> border = controlledTerritory.getBorder();
                 tiles = border.stream().filter(tile ->
                         !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
-                return tiles.isEmpty() ? border.get(randomInt(border.size())) : tiles.get(randomInt(tiles.size()));
+                return tiles.isEmpty() ? randomElement(border) : randomElement(tiles);
             case Homogeneous:
                 tiles = controlledTerritory.getTiles().stream().filter(tile ->
                         !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
-                return tiles.isEmpty() ? randomTile(controlledTerritory) : tiles.get(randomInt(tiles.size()));
+                return tiles.isEmpty() ? randomTile(controlledTerritory) : ProbFunc.randomElement(tiles);
             case Sprinkle:
                 return chooseSpecialTile();
             case Clumps:
                 Tile tile = chooseSpecialTile();
                 tiles = tile.getNeighbours(t -> true);
                 tiles.add(tile);
-                return tiles.get(randomInt(tiles.size()));
+                return ProbFunc.randomElement(tiles);
         }
         return null;
     }
@@ -88,7 +89,7 @@ public class PlacementStrategy {
         if (specialTiles.size() == 0) {
             int i = 0;
         }
-        return specialTiles.get(randomInt(specialTiles.size()));
+        return ProbFunc.randomElement(specialTiles);
     }
 
     void place(ResourcePack resourcePack) {

@@ -68,15 +68,15 @@ public class World {
      * @param numberOfGroups    how many groups will be spawned in the world.
      * @param mapSize           number from which map size will be computed. Guarantied that one of dimensions
      *                          will be equal to this number.
-     * @param numberOrResources how many random resources will be created.
+     * @param numberOfResources how many random resources will be created.
      */
-    World(int numberOfGroups, int mapSize, int numberOrResources) {
+    World(int numberOfGroups, int mapSize, int numberOfResources) {
         events = new ArrayList<>();
         memePool = new GroupMemes();
         fillAspectPool();
         fillPropertiesPool();
         fillMaterialPool();
-        RandomMapGenerator.createResources(this, numberOrResources);
+        fillResourcePool();
         map = new WorldMap(mapSize, mapSize * 3, resourcePool, this);
         map.initializePlates();
         RandomMapGenerator.fill(map);
@@ -158,6 +158,30 @@ public class World {
         } catch (Throwable t) {
             System.err.println(t.toString());
         }
+    }
+
+
+    private void fillResourcePool() {
+        resourcePool = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Resources"))) {
+            String line;
+            String[] tags;
+            while (true) {
+                line = br.readLine();
+                if (line == null) {
+                    break;
+                }
+                if (line.trim().isEmpty() || line.charAt(0) == '/') {
+                    continue;
+                }
+                tags = line.split("\\s+");
+                resourcePool.add(new ResourceIdeal(tags, 1, this));
+            }
+        } catch (Throwable t) {
+            System.err.println(t.toString());
+        }
+        resourcePool.forEach(Resource::actualizeLinks);
+        resourcePool.forEach(Resource::actualizeParts);
     }
 
     private boolean isLineBad(String line) {
@@ -285,5 +309,10 @@ public class World {
 
     public Collection<Aspect> getAllDefaultAspects() {
         return aspectPool;
+    }
+
+    @Override
+    public String toString() {
+        return getTurn();
     }
 }

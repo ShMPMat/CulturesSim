@@ -26,8 +26,8 @@ public class TectonicPlate extends Territory {
     private List<Tile> affectedTiles;
 
     TectonicPlate() {
-        direction = Direction.values()[ProbFunc.randomInt(Direction.values().length)];
-        type = Type.values()[ProbFunc.randomInt(Type.values().length)];
+        direction = ProbFunc.randomElement(Direction.values());
+        type = ProbFunc.randomElement(Type.values());
     }
 
     public void initialize() {
