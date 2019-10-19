@@ -20,5 +20,6 @@ gas
 
 eatable         -food
 
-burns           -burns
+burns           -burns -warmth
+warm                   -warmth
 _can_be_ignited

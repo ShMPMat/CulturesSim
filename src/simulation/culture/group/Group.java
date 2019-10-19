@@ -161,6 +161,14 @@ public class Group {
         return parentGroup;
     }
 
+    private int getDistanceToClosestSubgroup(Tile tile) {
+        int d = Integer.MAX_VALUE;
+        for (Group subgroup: subgroups) {
+            d = Math.min(d, tile.getClosestDistance(subgroup.getTerritory().getTiles()));
+        }
+        return d;
+    }
+
     private void die() {
         state = State.Dead;
         population = 0;
@@ -331,16 +339,20 @@ public class Group {
         if (subgroups.isEmpty()) {
             population -= (population / 10) * (1 - fraction) + 1;
             population = Math.max(population, 0);
+        } else {
+            int i = 0;
         }
         getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("food")));
     }
 
-    private int getDistanceToClosestSubgroup(Tile tile) {
-        int d = Integer.MAX_VALUE;
-        for (Group subgroup: subgroups) {
-            d = Math.min(d, tile.getClosestDistance(subgroup.getTerritory().getTiles()));
+    void freeze(double fraction) {
+        if (subgroups.isEmpty()) {
+            population -= (population / 10) * (1 - fraction) + 1;
+            population = Math.max(population, 0);
+        } else {
+            int i = 0;
         }
-        return d;
+        getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("warmth")));
     }
 
     private boolean expand() {

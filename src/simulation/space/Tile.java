@@ -253,7 +253,7 @@ public class Tile { //TODO woods type
     }
 
     public boolean canSettle(Genome genome) {
-        return genome.isTypeAcceptable(getType());
+        return genome.isAcceptable(this);
     }
 
     public void update() {

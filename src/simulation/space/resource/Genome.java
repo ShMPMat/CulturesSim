@@ -20,17 +20,21 @@ public class Genome {
     private boolean hasLegacy;
     private int deathTime;
     private int defaultAmount;
+    private int temperatureMin;
+    private int temperatureMax;
     private ResourceCore legacy;
 
     private Material _primaryMaterial;
     private int _mutationCount = 0;
 
-    Genome(String name, double size, double spreadProbability, boolean isMutable,
+    Genome(String name, double size, double spreadProbability, int temperatureMin, int temperatureMax, boolean isMutable,
                   boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
                   int efficiencyCoof, ResourceCore legacy, World world) {
         this.name = name;
         this.world = world;
         this.spreadProbability = spreadProbability;
+        this.temperatureMin = temperatureMin;
+        this.temperatureMax = temperatureMax;
         this.parts = new ArrayList<>();
         setLegacy(legacy);
         this.size = size;
@@ -46,9 +50,9 @@ public class Genome {
     }
 
     Genome(Genome genome) {
-        this(genome.name, genome.size, genome.spreadProbability, genome.isMutable, genome.isMovable,
-                genome.isTemplate, genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.efficiencyCoof,
-                genome.legacy, genome.world);
+        this(genome.name, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
+                genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
+                genome.defaultAmount, genome.efficiencyCoof, genome.legacy, genome.world);
         genome.parts.forEach(this::addPart);
     }
 
@@ -86,6 +90,14 @@ public class Genome {
         return legacy;
     }
 
+    public int getTemperatureMin() {
+        return temperatureMin;
+    }
+
+    public int getTemperatureMax() {
+        return temperatureMax;
+    }
+
     int getEfficiencyCoof() {
         return efficiencyCoof;
     }
@@ -94,8 +106,8 @@ public class Genome {
         return legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getLegacyPostfix();
     }
 
-    public boolean isTypeAcceptable(Tile.Type type) {
-        return type != Tile.Type.Water;
+    public boolean isAcceptable(Tile tile) {
+        return tile.getType() != Tile.Type.Water && (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
     }
 
     boolean isMovable() {

@@ -99,6 +99,10 @@ public class Territory {
         return list;
     }
 
+    public int getMinTemperature() {
+        return tiles.stream().reduce(Integer.MAX_VALUE, (x, y) -> Math.min(x, y.getTemperature()), Integer::compareTo);
+    }
+
     public int size() {
         return tiles.size();
     }

@@ -117,7 +117,8 @@ public class TextVisualizer {
      * Prints default map and information output.
      */
     private void print() {
-        System.out.println(world.getTurn());
+        StringBuilder main = new StringBuilder();
+        main.append(world.getTurn()).append("\n");
         int i = -1;
         for (Group group : world.groups) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -132,7 +133,7 @@ public class TextVisualizer {
             stringBuilder.append("   population=").append(group.population)
                     .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append('\n');
             groupPopulations.set(i, group.population);
-            System.out.print(chompToSize(stringBuilder.toString(), 160));
+            main.append(chompToSize(stringBuilder.toString(), 160));
         }
         lastClaimedTiles = new HashMap<>();
         for (Group group : controller.world.groups) {
@@ -142,9 +143,9 @@ public class TextVisualizer {
                 filter(event -> event.type == Event.Type.TileAquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get((Group) event.getAttribute("group")).add((Tile) event.getAttribute("tile"));
         }
-        System.out.print(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
+        System.out.print(main.append(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
                 map.map.size() + 2), printedEvents(interactionModel.getEvents(), false),
-                false), true));
+                false), true)));
         interactionModel.clearEvents();
     }
 

@@ -25,9 +25,9 @@ public class ResourceCore {
 
     ResourceCore(String[] tags, int efficiencyCoof, World world) {
         initializeMutualFields(tags[0], new ArrayList<>(), new ArrayList<>(),
-                new Genome(tags[0], Double.parseDouble(tags[2]), Double.parseDouble(tags[1]),
-                        false, Integer.parseInt(tags[4]) == 1, false,
-                        Integer.parseInt(tags[5]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, world),
+                new Genome(tags[0], Double.parseDouble(tags[2]), Double.parseDouble(tags[1]), Integer.parseInt(tags[4]),
+                        Integer.parseInt(tags[5]), false, Integer.parseInt(tags[6]) == 1, false,
+                        Integer.parseInt(tags[7]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, world),
                 new HashMap<>(), null);
         for (int i = 6; i < tags.length; i++) {
             String tag = tags[i];

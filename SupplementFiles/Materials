@@ -1,24 +1,24 @@
-PlantFibre    -soft     -flexible      -thin      -solid    -_can_be_ignited
-Wood          -hard     -sturdy                   -solid    -_can_be_ignited
-Pulp          -soft                               -solid    -eatable
-Seed          -hard     -sturdy                   -solid
-Fungus        -springy                            -solid    -eatable
-Meat          -springy  -flexible                 -solid    -eatable              +Bake:RoastedMeat
-Fat           -soft     -flexible                 -solid
-Bone          -hard     -sturdy                   -solid
-Chitin        -hard     -sturdy                   -solid
-Fur           -soft                               -solid
-Feather       -soft     -flexible                 -solid
+PlantFibre    -soft     -flexible      -thin                -solid    -_can_be_ignited
+Wood          -hard     -sturdy                             -solid    -_can_be_ignited
+Pulp          -soft                                         -solid    -eatable
+Seed          -hard     -sturdy                             -solid
+Fungus        -springy                                      -solid    -eatable
+Meat          -springy  -flexible                           -solid    -eatable              +Bake:RoastedMeat
+Fat           -soft     -flexible                           -solid
+Bone          -hard     -sturdy                             -solid
+Chitin        -hard     -sturdy                             -solid
+Fur           -soft                                         -solid
+Feather       -soft     -flexible                           -solid
 
-Fibre         -soft     -flexible      -thin      -solid    -_can_be_ignited
-Cloth         -soft                    -wide      -solid    -_can_be_ignited
+Fibre         -soft     -flexible      -thin                -solid    -_can_be_ignited
+Cloth         -soft                    -wide       -warm    -solid    -_can_be_ignited
 
-RoastedMeat   -hard     -stiff                    -solid    -eatable
+RoastedMeat   -hard     -stiff                              -solid    -eatable
 
-Clay          -soft     -malleable                -solid                          +Bake:Ceramics
-Ceramics      -hard     -fragile                  -solid
+Clay          -soft     -malleable                          -solid                          +Bake:Ceramics
+Ceramics      -hard     -fragile                            -solid
 
-Stone         -hard     -sturdy                   -solid
+Stone         -hard     -sturdy                             -solid
 
-Flame         -burns                              -gas
-Ash           -soft     -powder                   -solid
+Flame         -burns                                        -gas
+Ash           -soft     -powder                             -solid

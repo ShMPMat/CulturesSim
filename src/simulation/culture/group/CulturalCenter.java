@@ -183,20 +183,32 @@ public class CulturalCenter {
 
     void updateRequests() {
         requests = new ArrayList<>();
-        int floor = group.population / group.getFertility() + 1;
-        BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> penalty = (pair, percent) -> {
+        int foodFloor = group.population / group.getFertility() + 1;
+        BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
             pair.first.starve(percent);
             pair.second.removeAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
-        BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward = (pair, percent) -> {
+        BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
             pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
             pair.first.population = Math.min(pair.first.population, group.getMaxPopulation());
             pair.second.removeAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
-        requests.add(new Request(group, new AspectTag("food"), floor,
-                floor + group.population / 100 + 1, penalty, reward));
+        requests.add(new Request(group, new AspectTag("food"), foodFloor,
+                foodFloor + group.population / 100 + 1, foodPenalty, foodReward));
+
+        if (group.getTerritory().getMinTemperature() < 0) {
+            BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
+                pair.first.freeze(percent);
+                return null;
+            };
+            BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> {
+                return null;
+            };
+            requests.add(new Request(group, new AspectTag("warmth"), group.population,
+                    group.population, warmthPenalty, warmthReward));
+        }
 
         for (ShnyPair<Resource, ResourceBehaviour> want : wants) {
             requests.add(new Request(group, want.first, 1, 10, (pair, percent) -> {
@@ -291,7 +303,7 @@ public class CulturalCenter {
         }
     }
 
-    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
+    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO add potentially good options (incinerate for warmth etc.)
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
         for (Aspect aspect : world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
