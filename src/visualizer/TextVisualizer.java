@@ -15,11 +15,13 @@ import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.resource.Resource;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -194,11 +196,15 @@ public class TextVisualizer {
                         case Water:
                             token = "\033[44m";
                             break;
+                        case Woods:
+                            token = "\033[42m";
+                            break;
                     }
                     if (tile.group == null) {
                         switch (tile.getType()) {
                             case Water:
                             case Ice:
+                            case Woods:
                             case Normal:
                                 if (tile.getResources().size() > 0) {
                                     token += "\033[30m" + (resourceSymbols.get(tile.getResources().get(0)) == null ? "Ё" :

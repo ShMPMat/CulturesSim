@@ -9,8 +9,10 @@ import java.util.List;
 
 public class Genome {
     World world;
-    private int efficiencyCoof;
+
     private String name;
+    private Type type;
+    private int efficiencyCoof;
     private boolean isMutable;
     private double size;
     private List<Resource> parts;
@@ -27,10 +29,11 @@ public class Genome {
     private Material _primaryMaterial;
     private int _mutationCount = 0;
 
-    Genome(String name, double size, double spreadProbability, int temperatureMin, int temperatureMax, boolean isMutable,
-                  boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
-                  int efficiencyCoof, ResourceCore legacy, World world) {
+    Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax, boolean isMutable,
+           boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
+           int efficiencyCoof, ResourceCore legacy, World world) {
         this.name = name;
+        this.type = type;
         this.world = world;
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
@@ -50,7 +53,7 @@ public class Genome {
     }
 
     Genome(Genome genome) {
-        this(genome.name, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
+        this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
                 genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
                 genome.defaultAmount, genome.efficiencyCoof, genome.legacy, genome.world);
         genome.parts.forEach(this::addPart);
@@ -70,6 +73,14 @@ public class Genome {
         return name;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     List<Resource> getParts() {
         return parts;
     }
@@ -82,12 +93,20 @@ public class Genome {
         return spreadProbability;
     }
 
+    void setSpreadProbability(double spreadProbability) {
+        this.spreadProbability = spreadProbability;
+    }
+
     int getDefaultAmount() {
         return defaultAmount;
     }
 
     ResourceCore getLegacy() {
         return legacy;
+    }
+
+    public void setLegacy(ResourceCore legacy) {
+        this.legacy = legacy;
     }
 
     public int getTemperatureMin() {
@@ -118,12 +137,20 @@ public class Genome {
         return isTemplate;
     }
 
+    void setTemplate(boolean template) {
+        isTemplate = template;
+    }
+
     boolean hasLegacy() {
         return hasLegacy;
     }
 
     boolean isMutable() {
         return isMutable;
+    }
+
+    public void setMutable(boolean mutable) {
+        isMutable = mutable;
     }
 
     int getDeathTime() {
@@ -140,26 +167,6 @@ public class Genome {
         }
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLegacy(ResourceCore legacy) {
-        this.legacy = legacy;
-    }
-
-    public void setMutable(boolean mutable) {
-        isMutable = mutable;
-    }
-
-    void setTemplate(boolean template) {
-        isTemplate = template;
-    }
-
-    void setSpreadProbability(double spreadProbability) {
-        this.spreadProbability = spreadProbability;
-    }
-
     public Genome mutate() {
         if (!isMutable()) {
             System.err.println("Method mutate called from non-mutable genome!");
@@ -174,4 +181,9 @@ public class Genome {
         return genome;
     }
 
+    public enum Type{
+        Plant,
+        Animal,
+        None
+    }
 }

@@ -274,6 +274,14 @@ public class Tile { //TODO woods type
                 i--;
             }
         }
+        if (getType() != Type.Normal && getType() != Type.Woods) {
+            return;
+        }
+        if (resources.stream().anyMatch(resource -> resource.getGemome().getType() == Genome.Type.Plant)) {
+            setType(Type.Woods);
+        } else {
+            setType(Type.Normal);
+        }
     }
 
     @Override

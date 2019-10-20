@@ -147,7 +147,7 @@ public class Aspect {
         return aspectCore.copy(dependencies, group);
     }
 
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {//TODO instrument efficiency
         boolean isFinished;
         markAsUsed();
         ResourcePack meaningfulPack = new ResourcePack();
