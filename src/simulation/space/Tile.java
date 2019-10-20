@@ -52,6 +52,7 @@ public class Tile { //TODO woods type
      */
     private List<Resource> _delayedResources;
     private int level;
+    private int oldLevel;
     private int temperature;
     private World world;
 
@@ -210,10 +211,14 @@ public class Tile { //TODO woods type
         }
     }
 
-    private void checkIce() { //TODO defreezing
+    private void checkIce() {
         if (type == Type.Water && temperature < 0) {
             type = Type.Ice;
+            oldLevel = level;
             level = world.getWaterLevel();
+        } else if (type == Type.Ice && temperature > 0) {
+            type = Type.Water;
+            level = oldLevel;
         }
     }
 

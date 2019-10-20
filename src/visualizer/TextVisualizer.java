@@ -250,7 +250,7 @@ public class TextVisualizer {
         printMap(tile -> (group.getTiles().contains(tile) ?
                 (group.subgroups.stream().anyMatch(sg -> sg.getTiles().contains(tile)) ? "\033[31mO" :
                         (tile.getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
-                                "\033[31m+" : "\033[30mX")) : ""));
+                                "\033[31m+" : "\033[31mX")) : ""));
         System.out.println(group);
     }
 
@@ -260,7 +260,7 @@ public class TextVisualizer {
      * @param resource Resource which will be printed.
      */
     private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())) ? "\033[30mX" : ""));
+        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())) ? "\033[31mX" : ""));
         System.out.println(resource);
     }
 
@@ -270,7 +270,7 @@ public class TextVisualizer {
      * @param tile Tile which will be printed.
      */
     private void printTile(Tile tile) {
-        printMap(t -> (t.equals(tile) ? "\033[30mX" : ""));
+        printMap(t -> (t.equals(tile) ? "\033[31mX" : ""));
         System.out.println(tile);
     }
 
@@ -462,12 +462,12 @@ public class TextVisualizer {
                             }
                             break;
                         case MeaningfulResources:
-                            printMap(tile -> (tile.getResources().stream().anyMatch(Resource::hasMeaning) ? "\033[30mX"
+                            printMap(tile -> (tile.getResources().stream().anyMatch(Resource::hasMeaning) ? "\033[31mX"
                                     : ""));
                             break;
                         case ArtificialResources:
                             printMap(tile -> (tile.getResources().stream().anyMatch(res -> res.hasMeaning() ||
-                                    res.getBaseName().equals("House") || res.getBaseName().equals("Clothes")) ? "\033[30mX" : ""));
+                                    res.getBaseName().equals("House") || res.getBaseName().equals("Clothes")) ? "\033[31mX" : ""));
                             break;
                         case IdleGo:
                             for (int i = 0; i < 500; i++) {

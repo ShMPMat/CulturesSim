@@ -3,6 +3,7 @@ package simulation.culture.aspect;
 import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.group.Group;
+import simulation.culture.group.Stratum;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
@@ -150,6 +151,7 @@ public class Aspect {
         boolean isFinished;
         markAsUsed();
         ResourcePack meaningfulPack = new ResourcePack();
+        ceiling = group.changeStratumAmountByAspect(this, ceiling);
         for (Set<Dependency> dependency : getDependencies().values()) {
             isFinished = false;
             ResourcePack _rp = new ResourcePack();

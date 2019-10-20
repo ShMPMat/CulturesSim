@@ -39,10 +39,12 @@ public class Group {
     public int population;
 
     private int maxPopulation = 1000;
+    private int fertility = 10;
+    private int minPopulationPerTile = 1;
+    private List<Stratum> strata;
     private Group parentGroup;
     private CulturalCenter culturalCenter;
     private double spreadability;
-    private int fertility, minPopulationPerTile;
     private Territory territory;
     private Function<Tile, Integer> tileValueMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() -
             3 * t.closestTileWithResources(getResourceRequirements());
@@ -55,8 +57,7 @@ public class Group {
         this.resourcePack = new ResourcePack();
         this.cherishedResources = new ResourcePack();
         this.uniqueArtefacts = new ResourcePack();
-        this.fertility = 10;
-        this.minPopulationPerTile = 1;
+        this.strata = new ArrayList<>();
         this.parentGroup = null;
         this.name = name;
         setAspects(new HashSet<>());
@@ -132,16 +133,20 @@ public class Group {
         return getCulturalCenter().getEvents();
     }
 
+    public List<Stratum> getStrata() {
+        return strata;
+    }
+
+    public Stratum getStratumByAspect(Aspect aspect) {
+        return strata.stream().filter(stratum -> stratum.containsAspect(aspect)).findFirst().orElse(null);
+    }
+
     int getMaxPopulation() {
         return getTerritory().size() * maxPopulation;
     }
 
-    private void setAspects(Set<Aspect> aspects) {
-        getCulturalCenter().setAspects(aspects);
-    }
-
-    private void setEvents(List<Event> events) {
-        getCulturalCenter().setEvents(events);
+    public int getFreePopulation() {
+        return population - strata.stream().reduce(0, (x, y) -> x + y.getAmount(), Integer::sum);
     }
 
     public Territory getOverallTerritory() {
@@ -182,6 +187,14 @@ public class Group {
             group.culturalCenter.addMemeCombination(culturalCenter.world.getMemeFromPoolByName("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(culturalCenter.world.getMemeFromPoolByName("die")));
         }
+    }
+
+    private void setAspects(Set<Aspect> aspects) {
+        getCulturalCenter().setAspects(aspects);
+    }
+
+    private void setEvents(List<Event> events) {
+        getCulturalCenter().setEvents(events);
     }
 
     Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
@@ -252,6 +265,15 @@ public class Group {
 
     public void addEvent(Event event) {
         getEvents().add(event);
+    }
+
+    public int changeStratumAmountByAspect(Aspect aspect, int amount) {
+        Stratum stratum = getStratumByAspect(aspect);
+        if (stratum.getAmount() < amount) {
+            amount = Math.min(amount, getFreePopulation());
+        }
+        stratum.setAmount(amount);
+        return amount;
     }
 
     public void update(double rAspectAcquisition, double rAspectLending) {
@@ -329,8 +351,13 @@ public class Group {
                 }
                 population = population / 2;
                 Tile tile = ProbFunc.randomElement(tiles);
-                parentGroup.subgroups.add(new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
-                        population, tile));
+                Group group = new Group(parentGroup, parentGroup.name + "_" + parentGroup.subgroups.size(),
+                        population, tile);
+                for (Stratum stratum: strata) {
+                    group.strata.get(group.strata.indexOf(stratum)).setAmount(stratum.getAmount() / 2);
+                    stratum.setAmount(stratum.getAmount() - (stratum.getAmount() / 2));
+                }
+                parentGroup.subgroups.add(group);
             }
         }
     }
@@ -453,6 +480,11 @@ public class Group {
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtefacts.toString())
                 .append("\n");
+        for (Stratum stratum: strata) {
+            if (stratum.getAmount() != 0) {
+                stringBuilder.append(stratum).append("\n");
+            }
+        }
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
 
         for (Group subgroup : subgroups) {

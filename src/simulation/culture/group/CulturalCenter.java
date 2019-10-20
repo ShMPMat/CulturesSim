@@ -162,6 +162,10 @@ public class CulturalCenter {
         if (_a instanceof ConverseWrapper) {
             addWants(((ConverseWrapper) _a).getResult());
         }
+        Aspect final_a = _a;
+        if (group.getStrata().stream().noneMatch(stratum -> stratum.containsAspect(final_a))) {
+            group.getStrata().add(new Stratum(0, _a));
+        }
     }
 
     void addWants(List<Resource> resources) {
