@@ -1,5 +1,6 @@
 /Name          ||Spread||Size||DeathTime||TempMin|Max||M|L||Type       ||Materials      ||Parts                                                       ||Conversions
 Plant            0.15    1     10         0       30   0 0  Plant        @PlantFibre      ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
+ColdPlant        0.10    1     15         -25     0    0 0  Plant        @PlantFibre      ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
 Tree             0.05    5     40         0       30   0 0  Plant        @Wood            ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
 Reed             0.25    1     5          5       30   1 0  Plant        @PlantFibre      ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
 Grass            0.25    0.1   5          5       30   1 0  Plant        @PlantFibre      ^Leaf:3

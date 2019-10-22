@@ -100,7 +100,7 @@ public class ResourceCore {
             aspectConversion.put(genome.world.getAspectFromPoolByName("BuildHouse"),
                     Collections.singletonList(new ShnyPair<>(genome.world.getResourceFromPoolByName("House"), 1)));
         }
-        if (isMovable()) {
+        if (isMovable() && !material.hasPropertyWithName("gas")) {
             aspectConversion.put(genome.world.getAspectFromPoolByName("Take"),
                     Collections.singletonList(new ShnyPair<>(this.copy(), 1)));
         }

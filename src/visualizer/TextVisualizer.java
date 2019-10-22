@@ -223,7 +223,7 @@ public class TextVisualizer {
                         if (tile.group.state == Group.State.Dead) {
                             token += "\033[33m☠";
                         } else {
-                            token += (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[95m") + groupSymbols.get(tile.group);
+                            token += (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[96m\033[1m") + groupSymbols.get(tile.group);
                         }
                     }
                 }
@@ -456,6 +456,41 @@ public class TextVisualizer {
                                 return "\033[90m" + colour + Math.abs(tile.getTemperature() % 10);
                             });
                             break;
+                        case Wind:
+                            printMap(tile -> {
+                                String direction;
+                                int level = tile.getWind().getAffectedTiles().stream()
+                                        .reduce(Integer.MIN_VALUE, (x, y) -> Math.max(x, y.second), Integer::compareTo);
+                                if (level > 4) {
+                                    direction = "\033[41m";
+                                } else if (level > 3) {
+                                    direction = "\033[43m";
+                                } else if (level > 2) {
+                                    direction = "\033[47m";
+                                } else if (level > 1){
+                                    direction = "\033[46m";
+                                } else {
+                                    direction = "\033[44m";
+                                }
+                                if (tile.getWind().getAffectedTiles().size() == 1) {
+                                    Tile affected = tile.getWind().getAffectedTiles().get(0).first;
+                                    if (affected.getX() - tile.getX() == 1) {
+                                        direction += "V";
+                                    } else if (affected.getX() - tile.getX() == -1) {
+                                        direction += "^";
+                                    } else if (affected.getY() - tile.getY() == 1) {
+                                        direction += ">";
+                                    } else if (affected.getY() - tile.getY() == -1) {
+                                        direction += "<";
+                                    }
+                                } else if (tile.getWind().getAffectedTiles().size() > 1){
+                                    direction += "O";
+                                } else {
+                                    direction = " ";
+                                }
+                                return direction;
+                            });
+                            break;
                         case Resource:
                             Resource resource = world.getResourceFromPoolByName(line.substring(2));
                             if (resource != null) {
@@ -536,6 +571,7 @@ public class TextVisualizer {
         Tile("\\d+ \\d+"),
         Plates("plates"),
         Temperature("temperature"),
+        Wind("wind"),
         /**
          * Command for printing resource information.
          */

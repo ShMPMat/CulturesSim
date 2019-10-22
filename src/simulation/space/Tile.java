@@ -1,5 +1,6 @@
 package simulation.space;
 
+import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.group.Group;
 import simulation.space.resource.Genome;
@@ -54,12 +55,15 @@ public class Tile { //TODO woods type
     private int level;
     private int oldLevel;
     private int temperature;
+    private Wind wind;
+    private Wind _newWind;
     private World world;
 
     public Tile(int x, int y, World world) {
         this.x = x;
         this.y = y;
-        temperature = x - 5;
+        wind = new Wind();
+        updateTemperature();
         this.world = world;
         group = null;
         setType(Type.Normal);
@@ -140,6 +144,18 @@ public class Tile { //TODO woods type
 
     public int getTemperature() {
         return temperature;
+    }
+
+    public Wind getWind() {
+        return wind;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public void addResource(Resource resource) {
@@ -274,14 +290,62 @@ public class Tile { //TODO woods type
                 i--;
             }
         }
-        if (getType() != Type.Normal && getType() != Type.Woods) {
-            return;
+        updateTemperature();
+        if (getType() == Type.Normal || getType() == Type.Woods) {
+            if (resources.stream().anyMatch(resource -> resource.getGemome().getType() == Genome.Type.Plant)) {
+                setType(Type.Woods);
+            } else {
+                setType(Type.Normal);
+            }
         }
-        if (resources.stream().anyMatch(resource -> resource.getGemome().getType() == Genome.Type.Plant)) {
-            setType(Type.Woods);
-        } else {
-            setType(Type.Normal);
+    }
+
+    public void middleUpdate() {
+        _newWind = new Wind();
+        Tile tile = world.map.get(x + 1, y);
+        if (tile != null) {
+            if (tile.temperature - 1 > temperature) {
+                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
+            }
+            if (tile.wind.getLevelByTile(this) > 1) {
+                _newWind.changeLevelOnTile(world.map.get(x - 1, y), tile.wind.getLevelByTile(this) - 1);
+            }
         }
+        tile = world.map.get(x - 1, y);
+        if (tile != null) {
+            if (tile.temperature - 1 > temperature) {
+                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
+            }
+            if (tile.wind.getLevelByTile(this) > 1) {
+                _newWind.changeLevelOnTile(world.map.get(x + 1, y), tile.wind.getLevelByTile(this) - 1);
+            }
+        }
+        tile = world.map.get(x, y + 1);
+        if (tile != null) {
+            if (tile.temperature - 1 > temperature) {
+                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
+            }
+            if (tile.wind.getLevelByTile(this) > 1) {
+                _newWind.changeLevelOnTile(world.map.get(x, y - 1), tile.wind.getLevelByTile(this) - 1);
+            }
+        }
+        tile = world.map.get(x, y - 1);
+        if (tile != null) {
+            if (tile.temperature - 1 > temperature) {
+                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
+            }
+            if (tile.wind.getLevelByTile(this) > 1) {
+                _newWind.changeLevelOnTile(world.map.get(x, y + 1), tile.wind.getLevelByTile(this) - 1);
+            }
+        }
+    }
+
+    public void finishUpdate() {
+        wind = _newWind;
+    }
+
+    private void updateTemperature() {
+        temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 5 : 0);
     }
 
     @Override

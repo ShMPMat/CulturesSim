@@ -36,6 +36,8 @@ public class MapModel implements InteractionModel {
             group.finishUpdate();
         }
 
+        world.map.finishUpdate();
+
         for (int i = a; i < world.events.size(); i++) {
             newEvents.add(world.events.get(i));
         }

@@ -134,5 +134,19 @@ public class WorldMap {
                 tile.update();
             }
         }
+
+        for (List<Tile> line : map) {
+            for (Tile tile : line) {
+                tile.middleUpdate();
+            }
+        }
+    }
+
+    public synchronized void finishUpdate() {
+        for (List<Tile> line : map) {
+            for (Tile tile : line) {
+                tile.finishUpdate();
+            }
+        }
     }
 }
