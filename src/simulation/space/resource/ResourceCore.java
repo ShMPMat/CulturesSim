@@ -27,7 +27,7 @@ public class ResourceCore {
         initializeMutualFields(tags[0], new ArrayList<>(), new ArrayList<>(),
                 new Genome(tags[0], Genome.Type.valueOf(tags[8]), Double.parseDouble(tags[2]), Double.parseDouble(tags[1]), Integer.parseInt(tags[4]),
                         Integer.parseInt(tags[5]), false, Integer.parseInt(tags[6]) == 1, false,
-                        Integer.parseInt(tags[7]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, world),
+                        Integer.parseInt(tags[7]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, null, null, world),
                 new HashMap<>(), null);
         for (int i = 9; i < tags.length; i++) {
             String tag = tags[i];
@@ -42,6 +42,7 @@ public class ResourceCore {
                         break;
                     }
                     materials.add(world.getMaterialFromPoolByName(tag.substring(1)));
+                    genome.setPrimaryMaterial(materials.get(0));
                     break;
                 case '^':
                     _parts.add(tag.substring(1));
@@ -289,13 +290,13 @@ public class ResourceCore {
             List<Resource> resourceList = aspectConversion.get(aspect).stream().map(pair -> pair.first.copy(pair.second))
                     .collect(Collectors.toList());
             resourceList.forEach(resource -> {
-                if (resource.resourceCore.genome.isTemplate()) {//TODO links; legacy seems to leak from House
+                if (resource.resourceCore.genome.isTemplate()) {//TODO links
                     resource.resourceCore = resource.resourceCore.fullCopy().resourceCore;
                     resource.resourceCore.materials.addAll(materials);
                     resource.resourceCore.computeMaterials();
                     //resource.resourceCore.setName(resource.resourceCore.name + name + resource.resourceCore.meaningPostfix,
                       //      resource.resourceCore);
-                    resource.resourceCore.genome.setTemplate(false);
+                    resource.getGemome().setTemplateLegacy(this);
                     resource.computeHash();
                 }
             });

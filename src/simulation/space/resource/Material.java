@@ -10,30 +10,38 @@ import java.util.*;
  * Represents material from which objects can be made.
  */
 public class Material {
-    private List<Property> properties;
+    /**
+     * Link to the World in which this Material is present.
+     */
+    private World world;
+    /**
+     * Name of the Material.
+     */
     private String name;
+    /**
+     * Properties associated with this Material.
+     */
+    private List<Property> properties;
     private Map<Aspect, Material> aspectConversion;
     private Map<Aspect, String> _aspectConversion;
-    private World world;
+    private double density;
 
     public Material(String[] tags, World world) {
         this.world = world;
         this.aspectConversion = new HashMap<>();
         this._aspectConversion = new HashMap<>();
         this.properties = new ArrayList<>();
-        for (int i = 0; i < tags.length; i++) {
+        name = tags[0];
+        density = Double.parseDouble(tags[1]);
+        for (int i = 2; i < tags.length; i++) {
             String tag = tags[i];
-            if (i == 0) {
-                this.name = tag;
-            } else {
-                switch ((tag.charAt(0))) {
-                    case '+':
-                        this._aspectConversion.put(world.getAspectFromPoolByName(tag.substring(1, tag.indexOf(':'))),
-                                tag.substring(tag.indexOf(':') + 1));
-                        break;
-                    case '-':
-                        properties.add(world.getPropertyFromPoolByName(tag.substring(1)));
-                }
+            switch ((tag.charAt(0))) {
+                case '+':
+                    this._aspectConversion.put(world.getAspectFromPoolByName(tag.substring(1, tag.indexOf(':'))),
+                            tag.substring(tag.indexOf(':') + 1));
+                    break;
+                case '-':
+                    properties.add(world.getPropertyFromPoolByName(tag.substring(1)));
             }
         }
     }
@@ -84,6 +92,10 @@ public class Material {
 
     public String getName() {
         return name;
+    }
+
+    public double getDensity() {
+        return density;
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {

@@ -5,7 +5,7 @@ Tree             0.05    5     40         0       30   0 0  Plant        @Wood  
 Reed             0.25    1     5          5       30   1 0  Plant        @PlantFibre      ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
 Grass            0.25    0.1   5          5       30   1 0  Plant        @PlantFibre      ^Leaf:3
 Moss             0.06    0.05  20         -10     30   1 0  Plant        @PlantFibre      ^PlantFibre:1
-Animal           0.08    1     20         0       30   1 0  Plant        @Meat                                                                          +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+Herbivore        0.08    1     20         0       30   1 0  Plant        @Meat                                                                          +Killing:Meat:10,Fat:5,Bone:5,Fur:3
 Bird             0.15    0.1   10         0       30   1 0  Animal       @Meat                                                                          +Killing:Meat:2,Fat:1,Bone:1,Feather:10
 Insect           0.25    0.02  5          0       30   1 0  Animal       @Chitin                                                                        +Killing:Chitin:1,Meat:1
 Mushroom         0.1     0.05  15         0       30   1 0  Plant        @Fungus

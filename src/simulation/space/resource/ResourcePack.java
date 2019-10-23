@@ -13,36 +13,13 @@ import java.util.stream.Collectors;
  * Bunch of resources stored together.
  */
 public class ResourcePack {
+    /**
+     * Resources which this pack contains.
+     */
     public List<Resource> resources;
 
     public ResourcePack() {
         resources = new ArrayList<>();
-    }
-
-    public void add(Resource resource) {
-        if (resource.amount == 0) {
-            return;
-        }
-        int i = -1;
-        for (int j = 0; j < resources.size(); j++) {
-            if (resources.get(j).fullEquals(resource)) {
-                i = j;
-                break;
-            }
-        }
-        if (i == -1) {
-            resources.add(resource);
-            return;
-        }
-        resources.get(i).merge(resource);
-    }
-
-    public void add(ResourcePack resourcePack) {
-        resourcePack.resources.forEach(this::add);
-    }
-
-    public void add(Collection<Resource> resources) {
-        resources.forEach(this::add);
     }
 
     public Collection<Resource> getAllResourcesWithTag(AspectTag tag) {
@@ -52,23 +29,6 @@ public class ResourcePack {
     public Collection<Resource> getResource(Resource resource) {
         List<Resource> _r = resources.stream().filter(res -> res.fullEquals(resource)).collect(Collectors.toList());
         return _r.size() == 0 ? Collections.singleton(resource.cleanCopy(0)) : _r;
-    }
-
-    public Collection<Resource> removeAllResourcesWithTag(AspectTag tag) {
-        Collection<Resource> result = getAllResourcesWithTag(tag);
-        resources.removeAll(result);
-        result.forEach(resource -> resource.amount = 0);
-        return result;
-    }
-
-    public void removeResource(Resource resource) {
-        for (int i = 0; i < resources.size(); i++) {
-            Resource res = resources.get(i);
-            if (res.fullEquals(resource)) {
-                resources.remove(i);
-                return;
-            }
-        }
     }
 
     public Collection<Resource> getResourceAndRemove(Resource resource) {
@@ -116,7 +76,7 @@ public class ResourcePack {
         Collection<Resource> _r = getResource(resource);
         ResourcePack resourcePack = new ResourcePack();
         int counter = 0;
-        for (Resource res: _r) {
+        for (Resource res : _r) {
             if (counter >= ceiling) {
                 break;
             }
@@ -141,17 +101,71 @@ public class ResourcePack {
         return counter;
     }
 
+    /**
+     * @return whether this ResourcePack has any amount of Resources.
+     */
     public boolean isEmpty() {
-        return resources.stream().noneMatch(resource -> resource.amount > 0);
+        return getAmountOfResources() > 0;
     }
 
+    /**
+     * Disbands all the Resources on the particular Tile and clears this ResourcePack.
+     *
+     * @param tile Tile on which resources will be disbanded.
+     */
     public void disbandOnTile(Tile tile) {
         resources.stream().filter(resource -> resource.getTile() == null).forEach(tile::addResource);
         resources.clear();
     }
 
+    /**
+     * @return the amount of all resources in pack.
+     */
     public int getAmountOfResources() {
         return resources.stream().reduce(0, (i, r2) -> i + r2.amount, Integer::sum);
+    }
+
+    public void add(Resource resource) {
+        if (resource.amount == 0) {
+            return;
+        }
+        int i = -1;
+        for (int j = 0; j < resources.size(); j++) {
+            if (resources.get(j).fullEquals(resource)) {
+                i = j;
+                break;
+            }
+        }
+        if (i == -1) {
+            resources.add(resource);
+            return;
+        }
+        resources.get(i).merge(resource);
+    }
+
+    public void add(ResourcePack resourcePack) {
+        resourcePack.resources.forEach(this::add);
+    }
+
+    public void add(Collection<Resource> resources) {
+        resources.forEach(this::add);
+    }
+
+    public void removeResource(Resource resource) {
+        for (int i = 0; i < resources.size(); i++) {
+            Resource res = resources.get(i);
+            if (res.fullEquals(resource)) {
+                resources.remove(i);
+                return;
+            }
+        }
+    }
+
+    public Collection<Resource> removeAllResourcesWithTag(AspectTag tag) {
+        Collection<Resource> result = getAllResourcesWithTag(tag);
+        resources.removeAll(result);
+        result.forEach(resource -> resource.amount = 0);
+        return result;
     }
 
     @Override

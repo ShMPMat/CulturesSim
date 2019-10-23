@@ -17,9 +17,12 @@ class AspectCore {
      */
     private List<AspectTag> tags;
     /**
-     *
+     * Requirements for an Aspect to be added to the group.
      */
     private List<AspectTag> requirements;
+    /**
+     * Whether it can apply meaning.
+     */
     boolean applyMeaning = false;
 
     public AspectCore(String[] tags) {

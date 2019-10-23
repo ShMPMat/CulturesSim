@@ -8,30 +8,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Genome {
+    /**
+     * Link to the world in which this Genome exists.
+     */
     World world;
 
+    /**
+     * Base name of the Resource.
+     */
     private String name;
+    /**
+     * Type of the Resource.
+     */
     private Type type;
     private int efficiencyCoof;
+    /**
+     * Whether this Genome can mutate itself.
+     */
     private boolean isMutable;
+    /**
+     * Size of the Resource.
+     */
     private double size;
+    /**
+     * Parts from which Resource consists.
+     */
     private List<Resource> parts;
     private double spreadProbability;
+
     private boolean isMovable;
+    /**
+     * Whether it is a template genome.
+     */
     private boolean isTemplate;
     private boolean hasLegacy;
+    /**
+     * How many turns does the Resource live.
+     */
     private int deathTime;
     private int defaultAmount;
     private int temperatureMin;
     private int temperatureMax;
     private ResourceCore legacy;
+    /**
+     * From which template Resource was created.
+     */
+    private ResourceCore templateLegacy;
 
-    private Material _primaryMaterial;
+    private Material primaryMaterial;
     private int _mutationCount = 0;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax, boolean isMutable,
            boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
-           int efficiencyCoof, ResourceCore legacy, World world) {
+           int efficiencyCoof, ResourceCore legacy, ResourceCore templateLegacy, Material primaryMaterial, World world) {
         this.name = name;
         this.type = type;
         this.world = world;
@@ -40,6 +69,7 @@ public class Genome {
         this.temperatureMax = temperatureMax;
         this.parts = new ArrayList<>();
         setLegacy(legacy);
+        this.templateLegacy = templateLegacy;
         this.size = size;
         this.isMutable = isMutable;
         this.isMovable = isMovable;
@@ -48,25 +78,26 @@ public class Genome {
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
         this.efficiencyCoof = efficiencyCoof;
-        _primaryMaterial = null;
+        setPrimaryMaterial(primaryMaterial);
         computePrimaryMaterial();
     }
 
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
                 genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
-                genome.defaultAmount, genome.efficiencyCoof, genome.legacy, genome.world);
+                genome.defaultAmount, genome.efficiencyCoof, genome.legacy, genome.templateLegacy, genome.primaryMaterial,
+                genome.world);
         genome.parts.forEach(this::addPart);
     }
 
     private void computePrimaryMaterial() {
-        if (_primaryMaterial == null && !parts.isEmpty()) {
-            _primaryMaterial = parts.get(0).resourceCore.getMaterials().get(0);
+        if (parts.size() == 1) {
+            primaryMaterial = parts.get(0).resourceCore.getMaterials().get(0);
         }
     }
 
     Material getPrimaryMaterial() {
-        return _primaryMaterial;
+        return primaryMaterial;
     }
 
     public String getName() {
@@ -105,8 +136,18 @@ public class Genome {
         return legacy;
     }
 
+    public ResourceCore getTemplateLegacy() {
+        return templateLegacy;
+    }
+
     public void setLegacy(ResourceCore legacy) {
         this.legacy = legacy;
+    }
+
+    public void setTemplateLegacy(ResourceCore templateLegacy) {
+        setTemplate(false);
+        this.deathTime = templateLegacy.getDeathTime();
+        this.templateLegacy = templateLegacy;
     }
 
     public int getTemperatureMin() {
@@ -122,7 +163,16 @@ public class Genome {
     }
 
     String getLegacyPostfix() {
-        return legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getLegacyPostfix();
+        return (templateLegacy == null ? "" : "_of_" + templateLegacy.getGenome().getName() + templateLegacy.getLegacyPostfix()) +
+                (legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getLegacyPostfix());
+    }
+
+    int getDeathTime() {
+        return deathTime;
+    }
+
+    public double getMass() {
+        return primaryMaterial.getDensity() * size * size * size;
     }
 
     public boolean isAcceptable(Tile tile) {
@@ -137,10 +187,6 @@ public class Genome {
         return isTemplate;
     }
 
-    void setTemplate(boolean template) {
-        isTemplate = template;
-    }
-
     boolean hasLegacy() {
         return hasLegacy;
     }
@@ -149,12 +195,16 @@ public class Genome {
         return isMutable;
     }
 
-    public void setMutable(boolean mutable) {
-        isMutable = mutable;
+    void setTemplate(boolean template) {
+        isTemplate = template;
     }
 
-    int getDeathTime() {
-        return deathTime;
+    public void setPrimaryMaterial(Material primaryMaterial) {
+        this.primaryMaterial = primaryMaterial;
+    }
+
+    public void setMutable(boolean mutable) {
+        isMutable = mutable;
     }
 
     void addPart(Resource part) { //TODO inserted without legacy insertion write it in the documentation

@@ -55,7 +55,7 @@ public class Request {
         }
         if (resource != null) {
             if (aspect instanceof ConverseWrapper) {
-                if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.equals(resource))) {
+                if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
                     return resourcePack -> resourcePack.getAmountOfResource(resource);
                 } else {
                     return null;

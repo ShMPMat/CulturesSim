@@ -13,14 +13,31 @@ import java.util.*;
  * Represents consumable objects found in the world.
  */
 public class Resource { //TODO events of merging and stuff
-    private String createdOn = "-1";
-    private int _hash;
-    private boolean isMarkedInTile = true;
+    /**
+     * How many instances are in this Resources.
+     */
     int amount;
-    private Tile tile;
     ResourceCore resourceCore;
 
+    /**
+     * The turn Resource was created.
+     */
+    private String createdOn;
+    /**
+     * Precomputed hash.
+     */
+    private int _hash;
+    /**
+     * Tile on which this Resource is placed.
+     */
+    private Tile tile;
+    /**
+     * How many turns has this Resource been existing.
+     */
     private int deathTurn = 0;
+    /**
+     * What part of this Resource will be destroyed on the next death.
+     */
     private double deathPart = 1;
 
     Resource(ResourceCore resourceCore, int amount) {
@@ -254,7 +271,6 @@ public class Resource { //TODO events of merging and stuff
                 (tile == null || resource.tile == null || tile.equals(resource.tile));
     }
 
-
     @Override
     public int hashCode() {
         return resourceCore.hashCode();
@@ -264,7 +280,7 @@ public class Resource { //TODO events of merging and stuff
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() +
                 (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " + resourceCore.getEfficiencyCoof() +
-                ", spread probability - " + getSpreadProbability() + ", amount - " + amount + ", tags: ");
+                ", spread probability - " + getSpreadProbability() + ", mass - " + getGemome().getMass() + ", amount - " + amount + ", tags: ");
         for (AspectTag aspectTag : resourceCore.getTags()) {
             stringBuilder.append(aspectTag.name).append(" ");
         }
