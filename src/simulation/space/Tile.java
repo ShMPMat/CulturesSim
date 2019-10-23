@@ -290,6 +290,18 @@ public class Tile { //TODO woods type
                 i--;
             }
         }
+        for (int i = 0; i < resources.size(); i++) {
+            Resource resource = resources.get(i);//TODO smarter wind, now it can blow away everything on the first tile by order.
+            if (!resource.isMovable()) {
+                continue;
+            }
+            for (ShnyPair<Tile, Integer> pair: wind.affectedTiles) {
+                int part = (int) (resource.getAmount() * Math.min(pair.second * 0.0001 / resource.getGemome().getMass(), 1));
+                if (part > 0) {
+                    pair.first.addDelayedResource(resource.getCleanPart(part));
+                }
+            }
+        }
         updateTemperature();
         if (getType() == Type.Normal || getType() == Type.Woods) {
             if (resources.stream().anyMatch(resource -> resource.getGemome().getType() == Genome.Type.Plant)) {

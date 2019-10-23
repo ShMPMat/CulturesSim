@@ -35,6 +35,7 @@ public class Resource { //TODO events of merging and stuff
      * How many turns has this Resource been existing.
      */
     private int deathTurn = 0;
+    private int deathOverhead = 0;
     /**
      * What part of this Resource will be destroyed on the next death.
      */
@@ -198,9 +199,10 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public boolean update() {
-        if (deathTurn >= resourceCore.getDeathTime()) {
+        if (deathTurn + deathOverhead >= resourceCore.getDeathTime()) {
             amount -= deathPart*amount;
             deathTurn = 0;
+            deathOverhead = 0;
             deathPart = 1;
         }
         if (amount <= 0) {
