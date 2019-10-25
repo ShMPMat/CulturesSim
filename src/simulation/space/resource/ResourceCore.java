@@ -25,11 +25,11 @@ public class ResourceCore {
 
     ResourceCore(String[] tags, int efficiencyCoof, World world) {
         initializeMutualFields(tags[0], new ArrayList<>(), new ArrayList<>(),
-                new Genome(tags[0], Genome.Type.valueOf(tags[8]), Double.parseDouble(tags[2]), Double.parseDouble(tags[1]), Integer.parseInt(tags[4]),
-                        Integer.parseInt(tags[5]), false, Integer.parseInt(tags[6]) == 1, false,
-                        Integer.parseInt(tags[7]) == 1, Integer.parseInt(tags[3]), 100, efficiencyCoof, null, null, null, world),
+                new Genome(tags[0], Genome.Type.valueOf(tags[9]), Double.parseDouble(tags[2]), Double.parseDouble(tags[1]), Integer.parseInt(tags[4]),
+                        Integer.parseInt(tags[5]), false, Integer.parseInt(tags[7]) == 1, false,
+                        Integer.parseInt(tags[8]) == 1, Integer.parseInt(tags[3]), Integer.parseInt(tags[6]), efficiencyCoof, null, null, null, world),
                 new HashMap<>(), null);
-        for (int i = 9; i < tags.length; i++) {
+        for (int i = 10; i < tags.length; i++) {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
                 case '+':
@@ -47,6 +47,10 @@ public class ResourceCore {
                 case '^':
                     _parts.add(tag.substring(1));
                     break;
+                case '~':
+                    genome.addDependency(new ResourceDependency(ResourceDependency.Type.valueOf(tag.substring(tag.indexOf(';') + 1)),
+                            Double.parseDouble(tag.substring(tag.indexOf(':') + 1, tag.indexOf(';'))),
+                            Arrays.asList(tag.substring(1, tag.indexOf(':')).split(","))));
             }
         }
         computeMaterials();
@@ -296,7 +300,7 @@ public class ResourceCore {
                     resource.resourceCore.computeMaterials();
                     //resource.resourceCore.setName(resource.resourceCore.name + name + resource.resourceCore.meaningPostfix,
                       //      resource.resourceCore);
-                    resource.getGemome().setTemplateLegacy(this);
+                    resource.getGenome().setTemplateLegacy(this);
                     resource.computeHash();
                 }
             });

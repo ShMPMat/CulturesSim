@@ -33,7 +33,8 @@ public class Genome {
     /**
      * Parts from which Resource consists.
      */
-    private List<Resource> parts;
+    private List<Resource> parts = new ArrayList<>();
+    private List<ResourceDependency> dependencies = new ArrayList<>();
     private double spreadProbability;
 
     private boolean isMovable;
@@ -67,7 +68,6 @@ public class Genome {
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
         this.temperatureMax = temperatureMax;
-        this.parts = new ArrayList<>();
         setLegacy(legacy);
         this.templateLegacy = templateLegacy;
         this.size = size;
@@ -96,7 +96,7 @@ public class Genome {
         }
     }
 
-    Material getPrimaryMaterial() {
+    public Material getPrimaryMaterial() {
         return primaryMaterial;
     }
 
@@ -175,6 +175,10 @@ public class Genome {
         return primaryMaterial.getDensity() * size * size * size;
     }
 
+    public List<ResourceDependency> getDependencies() {
+        return dependencies;
+    }
+
     public boolean isAcceptable(Tile tile) {
         return tile.getType() != Tile.Type.Water && (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
     }
@@ -215,6 +219,10 @@ public class Genome {
         } else {
             parts.get(i).addAmount(part.getAmount());
         }
+    }
+
+    void addDependency(ResourceDependency dependency) {
+        dependencies.add(dependency);
     }
 
     public Genome mutate() {

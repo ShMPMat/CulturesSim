@@ -1,42 +1,92 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||M|L||Type       ||Materials      ||Parts                                                       ||Conversions
-Plant            0.15    1     10         0       30   0 0  Plant        @PlantFibre      ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
-ColdPlant        0.10    1     15         -25     0    0 0  Plant        @PlantFibre      ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
-Tree             0.05    5     40         0       30   0 0  Plant        @Wood            ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
-Reed             0.25    1     5          5       30   1 0  Plant        @PlantFibre      ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
-Grass            0.25    0.1   5          5       30   1 0  Plant        @PlantFibre      ^Leaf:3
-Moss             0.06    0.05  20         -10     30   1 0  Plant        @PlantFibre      ^PlantFibre:1
-Herbivore        0.08    1     20         0       30   1 0  Plant        @Meat                                                                          +Killing:Meat:10,Fat:5,Bone:5,Fur:3
-Bird             0.15    0.1   10         0       30   1 0  Animal       @Meat                                                                          +Killing:Meat:2,Fat:1,Bone:1,Feather:10
-Insect           0.25    0.02  5          0       30   1 0  Animal       @Chitin                                                                        +Killing:Chitin:1,Meat:1
-Mushroom         0.1     0.05  15         0       30   1 0  Plant        @Fungus
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||M|L||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
+-Plant            0.15    1     10         0       30  150        0 0  Plant        @PlantFibre
+        ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
 
-Trunk            0       4     30         5       30   1 1  None         @Wood
-Branch           0       0.2   10         5       30   1 1  None         @Wood
-SoftBranch       0       0.2   5          5       30   1 1  None         @PlantFibre
-Leaf             0       0.03  3          5       30   1 1  None         @PlantFibre
-Root             0       0.5   10         5       30   1 1  None         @Wood
-SoftRoot         0       0.5   5          5       30   1 1  None         @PlantFibre
-Fruit            0       0.1   5          5       30   1 1  None         @Pulp
-Seed             0       0.01  100        5       30   1 1  None         @Seed                                                                          +Plant:LEGACY:1
+-ColdPlant        0.10    1     15         -25     0   50         0 0  Plant        @PlantFibre
+        ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
+
+-Tree             0.05    5     40         0       30   100       0 0  Plant        @Wood
+        ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
+
+-Reed             0.25    1     5          5       30   50        1 0  Plant        @PlantFibre
+        ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
+
+-Grass            0.25    0.1   5          5       30   2000      1 0  Plant        @PlantFibre
+        ^Leaf:3
+
+-Moss             0.06    0.05  20         -10     30   100       1 0  Plant        @PlantFibre
+        ^PlantFibre:1
+
+-Herbivore        0.08    1     20         0       30   25        1 0  Plant        @Meat
+        ~@PlantFibre:0.2;CONSUME
+        +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+
+-Bird             0.15    0.1   10         0       30   40        1 0  Animal       @Meat
+        ~Insect:1;CONSUME
+        +Killing:Meat:2,Fat:1,Bone:1,Feather:10
+
+-Insect           0.25    0.02  5          0       30   1000      1 0  Animal       @Chitin
+        ~@PlantFibre:0.01;CONSUME
+        +Killing:Chitin:1,Meat:1
+
+-Mushroom         0.1     0.05  15         0       30   200       1 0  Plant        @Fungus
 
 
-PlantFibre       0       0.5   5          5       30   1 1  None         @PlantFibre                                                                    +MakingFibre:Fibre:1
-Wood             0       1     50         5       30   1 1  None         @Wood
-Meat             0       0.1   5          5       30   1 1  None         @Meat
-Fat              0       0.1   5          5       30   1 1  None         @Fat
-Bone             0       0.1   1000       5       30   1 1  None         @Bone
-Chitin           0       0.02  1000       5       30   1 1  None         @Chitin
-Fur              0       0.1   50         5       30   1 1  None         @Fur
-Feather          0       0.05  50         5       30   1 1  None         @Feather
+-Trunk            0       4     30         5       30   1         1 1  None         @Wood
 
-Clay             0       0.5   100000     5       30   1 0  None         @Clay                                                                          +BuildHouse:House:1
-Stone            0       0.1   100000     5       30   1 0  None         @Stone
+-Branch           0       0.2   10         5       30   1         1 1  None         @Wood
 
-Fibre            0       0.5   100        5       30   1 1  None         @Fibre                                                                         +Weaving:Cloth:1
-Cloth            0       0.5   100        5       30   1 1  None         @Cloth                                                                         +MakeClothes:Clothes:1
-Clothes          0       0.5   100        5       30   1 1  None         @Cloth
+-SoftBranch       0       0.2   5          5       30   1         1 1  None         @PlantFibre
 
-House            0       5     10000      5       30   0 1  None         @TEMPLATE
+-Leaf             0       0.03  3          5       30   1         1 1  None         @PlantFibre
 
-Fire             0       0.5   2          5       30   1 0  None         @Flame
-Ash              0       0.5   50         5       30   1 0  None         @Ash
+-Root             0       0.5   10         5       30   1         1 1  None         @Wood
+
+-SoftRoot         0       0.5   5          5       30   1         1 1  None         @PlantFibre
+
+-Fruit            0       0.1   5          5       30   1         1 1  None         @Pulp
+
+-Seed             0       0.01  100        5       30   1         1 1  None         @Seed
+        +Plant:LEGACY:1
+
+
+
+-PlantFibre       0       0.5   5          5       30   1         1 1  None         @PlantFibre
+        +MakingFibre:Fibre:1
+
+-Wood             0       1     50         5       30   1         1 1  None         @Wood
+
+-Meat             0       0.1   5          5       30   1         1 1  None         @Meat
+
+-Fat              0       0.1   5          5       30   1         1 1  None         @Fat
+
+-Bone             0       0.1   1000       5       30   1         1 1  None         @Bone
+
+-Chitin           0       0.02  1000       5       30   1         1 1  None         @Chitin
+
+-Fur              0       0.1   50         5       30   1         1 1  None         @Fur
+
+-Feather          0       0.05  50         5       30   1         1 1  None         @Feather
+
+
+-Clay             0       0.5   100000     5       30   1         1 0  None         @Clay
+        +BuildHouse:House:1
+
+-Stone            0       0.1   100000     5       30   1         1 0  None         @Stone
+
+
+-Fibre            0       0.5   100        5       30   1         1 1  None         @Fibre
+        +Weaving:Cloth:1
+
+-Cloth            0       0.5   100        5       30   1         1 1  None         @Cloth
+        +MakeClothes:Clothes:1
+
+-Clothes          0       0.5   100        5       30   1         1 1  None         @Cloth
+
+
+-House            0       5     10000      5       30   1         0 1  None         @TEMPLATE
+
+
+-Fire             0       0.5   2          5       30   1         1 0  None         @Flame
+
+-Ash              0       0.5   50         5       30   1         1 0  None         @Ash

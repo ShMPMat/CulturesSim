@@ -296,7 +296,7 @@ public class Tile { //TODO woods type
                 continue;
             }
             for (ShnyPair<Tile, Integer> pair: wind.affectedTiles) {
-                int part = (int) (resource.getAmount() * Math.min(pair.second * 0.0001 / resource.getGemome().getMass(), 1));
+                int part = (int) (resource.getAmount() * Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
                 if (part > 0) {
                     pair.first.addDelayedResource(resource.getCleanPart(part));
                 }
@@ -304,7 +304,7 @@ public class Tile { //TODO woods type
         }
         updateTemperature();
         if (getType() == Type.Normal || getType() == Type.Woods) {
-            if (resources.stream().anyMatch(resource -> resource.getGemome().getType() == Genome.Type.Plant)) {
+            if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
                 setType(Type.Woods);
             } else {
                 setType(Type.Normal);

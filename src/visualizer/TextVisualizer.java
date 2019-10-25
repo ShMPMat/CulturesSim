@@ -266,7 +266,7 @@ public class TextVisualizer {
      * @param resource Resource which will be printed.
      */
     private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())) ? "\033[31mX" : ""));
+        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())) ? "\033[31m\033[41mX" : ""));
         System.out.println(resource);
     }
 
@@ -276,7 +276,7 @@ public class TextVisualizer {
      * @param tile Tile which will be printed.
      */
     private void printTile(Tile tile) {
-        printMap(t -> (t.equals(tile) ? "\033[31mX" : ""));
+        printMap(t -> (t.equals(tile) ? "\033[31m\033[41mX" : ""));
         System.out.println(tile);
     }
 

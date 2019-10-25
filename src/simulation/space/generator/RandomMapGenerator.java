@@ -7,12 +7,14 @@ import simulation.space.TectonicPlate;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
+import simulation.space.resource.ResourceDependency;
 import simulation.space.resource.ResourceIdeal;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Basic map generator.
@@ -26,21 +28,21 @@ public class RandomMapGenerator {
         //fillResourcePoolWithRandomResources(world, numberOrResources);
     }
 
-    public static void fill(WorldMap map) {
+    public static void fill(World world) {
 //        createBlob(map, Tile.Type.Mountain, 30);
 //        createBlob(map, Tile.Type.Water, 30);
         boolean sw = true;
-        for (TectonicPlate plate: map.getTectonicPlates()) {
+        for (TectonicPlate plate: world.map.getTectonicPlates()) {
             if (sw) {
                 plate.setType(TectonicPlate.Type.Terrain);
                 sw = false;
             }
             plate.initialize();
         }
-        for (TectonicPlate plate: map.getTectonicPlates()) {
+        for (TectonicPlate plate: world.map.getTectonicPlates()) {
             plate.move();
         }
-        RandomMapGenerator.fillResources(map);
+        RandomMapGenerator.fillResources(world);
     }
 
     @Deprecated
@@ -81,13 +83,13 @@ public class RandomMapGenerator {
         }
     }
 
-    private static void fillResources(WorldMap map) {
-        for (Resource resource : map.resourcePool) {
+    private static void fillResources(World world) {
+        for (Resource resource : world.map.resourcePool) {
             if (resource.getSpreadProbability() == 0 && !resource.getBaseName().matches("Clay") &&
                     !resource.getBaseName().matches("Stone")) {
                 continue;
             }
-            scatter(map, resource, 40 + ProbFunc.randomInt(30));
+            scatter(world, resource, 40 + ProbFunc.randomInt(30));
         }
     }
 
@@ -106,17 +108,33 @@ public class RandomMapGenerator {
         }
     }
 
-    private static void scatter(WorldMap map, Resource resource, int n) {
+    private static void scatter(World world, Resource resource, int n) {
         for (int i = 0; i < n; i++) {
-            Tile tile = ProbFunc.randomTile(map);
-            while (!tile.canSettle(resource.getGemome())) {
-                tile = ProbFunc.randomTile(map);
+            Tile tile = ProbFunc.randomTile(world.map);
+            while (!tile.canSettle(resource.getGenome())) {
+                tile = ProbFunc.randomTile(world.map);
             }
-            if (!tile.getResources().contains(resource)) {
-                if (resource.isMovable()) {
-                    tile.addResource(resource.copy());
-                } else {
-                    tile.addDelayedResource(resource.copy());
+            tile.addDelayedResource(resource.copy());
+            addDependencies(resource, tile, world);
+        }
+    }
+
+    private static void addDependencies(Resource resource, Tile tile, World world) {
+        for (ResourceDependency dependency: resource.getGenome().getDependencies()) {
+            for (String name: dependency.getResourceNames()) {
+                Resource dep = world.getResourceFromPoolByName(name);
+                if (tile.canSettle(dep.getGenome())) {
+                    tile.addDelayedResource(dep.copy());
+                }
+                addDependencies(dep, tile, world);
+            }
+            for (String name: dependency.getMaterialNames()) {
+                for (Resource dep: world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
+                        r.getGenome().getPrimaryMaterial() != null && r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
+                    if (tile.canSettle(dep.getGenome())) {
+                        tile.addDelayedResource(dep.copy());
+                    }
+                    addDependencies(dep, tile, world);
                 }
             }
         }

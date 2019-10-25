@@ -1,5 +1,6 @@
 package simulation;
 
+import extra.InputDatabase;
 import extra.ProbFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
@@ -35,7 +36,7 @@ public class World {
     /**
      * List of all Resources in the world.
      */
-    public List<ResourceIdeal> resourcePool;
+    public List<ResourceIdeal> resourcePool = new ArrayList<>();
     /**
      * Base MemePool for the World. Contains all standard Memes.
      */
@@ -79,7 +80,7 @@ public class World {
         fillResourcePool();
         map = new WorldMap(mapSize, mapSize * 3, resourcePool, this);
         map.initializePlates();
-        RandomMapGenerator.fill(map);
+        RandomMapGenerator.fill(this);
 
         groups = new ArrayList<>();
         for (int i = 0; i < numberOfGroups; i++) {
@@ -162,23 +163,16 @@ public class World {
 
 
     private void fillResourcePool() {
-        resourcePool = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Resources"))) {
-            String line;
-            String[] tags;
-            while (true) {
-                line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (line.trim().isEmpty() || line.charAt(0) == '/') {
-                    continue;
-                }
-                tags = line.split("\\s+");
-                resourcePool.add(new ResourceIdeal(tags, 1, this));
+        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Resources");
+        String line;
+        String[] tags;
+        while (true) {
+            line = inputDatabase.readLine();
+            if (line == null) {
+                break;
             }
-        } catch (Throwable t) {
-            System.err.println(t.toString());
+            tags = line.split("\\s+");
+            resourcePool.add(new ResourceIdeal(tags, 1, this));
         }
         resourcePool.forEach(Resource::actualizeLinks);
         resourcePool.forEach(Resource::actualizeParts);

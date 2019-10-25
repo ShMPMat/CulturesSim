@@ -123,7 +123,7 @@ public class Resource { //TODO events of merging and stuff
         return tile;
     }
 
-    public Genome getGemome() {
+    public Genome getGenome() {
         return resourceCore.getGenome();
     }
 
@@ -199,6 +199,10 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public boolean update() {
+        for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {
+            double part = dependency.satisfactionPercent(tile, this);
+            deathOverhead += (1 - part) * resourceCore.getDeathTime();
+        }
         if (deathTurn + deathOverhead >= resourceCore.getDeathTime()) {
             amount -= deathPart*amount;
             deathTurn = 0;
@@ -244,7 +248,7 @@ public class Resource { //TODO events of merging and stuff
     private boolean expand() {
         List<Tile> l = new ArrayList<>();
         l.add(getTile());
-        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGemome()));
+        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGenome()));
         if (newTile == null) {
             return false;
         }
@@ -282,7 +286,7 @@ public class Resource { //TODO events of merging and stuff
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() +
                 (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " + resourceCore.getEfficiencyCoof() +
-                ", spread probability - " + getSpreadProbability() + ", mass - " + getGemome().getMass() + ", amount - " + amount + ", tags: ");
+                ", spread probability - " + getSpreadProbability() + ", mass - " + getGenome().getMass() + ", amount - " + amount + ", tags: ");
         for (AspectTag aspectTag : resourceCore.getTags()) {
             stringBuilder.append(aspectTag.name).append(" ");
         }
