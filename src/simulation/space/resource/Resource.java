@@ -248,9 +248,17 @@ public class Resource { //TODO events of merging and stuff
     private boolean expand() {
         List<Tile> l = new ArrayList<>();
         l.add(getTile());
-        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGenome()));
+        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGenome()) &&
+                getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile)));
         if (newTile == null) {
-            return false;
+            if (getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile))) {
+                newTile = tile;
+            } else {
+                newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGenome()));
+                if (newTile == null) {
+                    newTile = tile;
+                }
+            }
         }
         Resource resource = copy();
         resource.amount = Math.min(resourceCore.getDefaultAmount(), amount);

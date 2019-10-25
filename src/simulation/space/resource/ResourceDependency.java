@@ -35,7 +35,10 @@ public class ResourceDependency {
     public double satisfactionPercent(Tile tile, Resource resource) {
         double _amount = amount * resource.amount;
         for (Resource res: tile.getResources()) {
-            if ((resourceNames.contains(res.getSimpleName()) || res.getGenome().getPrimaryMaterial() != null && materialNames.contains(res.getGenome().getPrimaryMaterial().getName())) && res.amount > 0) {
+            if (res == resource) {
+                continue;
+            }
+            if (isResourceGood(res)) {
                 switch (type) {
                     case CONSUME:
                         if (_amount + currentAmount < 0) {
@@ -59,6 +62,15 @@ public class ResourceDependency {
             currentAmount -= _amount;
         }
         return res;
+    }
+
+    public boolean hasNeeded(Tile tile) {
+        return tile.getResources().stream().anyMatch(this::isResourceGood);
+    }
+
+    public boolean isResourceGood(Resource resource) {
+        return (resourceNames.contains(resource.getSimpleName()) || resource.getGenome().getPrimaryMaterial() != null &&
+                materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.amount > 0;
     }
 
     enum Type{

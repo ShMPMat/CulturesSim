@@ -17,8 +17,12 @@
 -Moss             0.06    0.05  20         -10     30   100       1 0  Plant        @PlantFibre
         ^PlantFibre:1
 
--Herbivore        0.08    1     20         0       30   25        1 0  Plant        @Meat
+-Herbivore        0.08    1     20         0       30   25        1 0  Animal       @Meat
         ~@PlantFibre:0.2;CONSUME
+        +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+
+-Predator         0.08    1     20         0       30   5         1 0  Animal        @Meat
+        ~@Meat:0.1;CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3
 
 -Bird             0.15    0.1   10         0       30   40        1 0  Animal       @Meat

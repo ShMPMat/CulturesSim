@@ -130,7 +130,9 @@ public class RandomMapGenerator {
             }
             for (String name: dependency.getMaterialNames()) {
                 for (Resource dep: world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
-                        r.getGenome().getPrimaryMaterial() != null && r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
+                        !r.getSimpleName().equals(resource.getSimpleName()) &&
+                        r.getGenome().getPrimaryMaterial() != null &&
+                        r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
                     if (tile.canSettle(dep.getGenome())) {
                         tile.addDelayedResource(dep.copy());
                     }

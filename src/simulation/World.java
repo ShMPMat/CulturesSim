@@ -41,6 +41,7 @@ public class World {
      * Base MemePool for the World. Contains all standard Memes.
      */
     private GroupMemes memePool;
+    public double tileScale = 100;
     /**
      * World map on which all simulated objects are placed.
      */
