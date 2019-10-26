@@ -103,7 +103,7 @@ public class Resource { //TODO events of merging and stuff
 
     public Resource getPart(int part) {
         int result;
-        double prob = /*Math.random() * 0.5*/ 1; //TODO change when groups start to die from starvation
+        double prob = Math.random() * 0.5;
         if (part <= amount * prob) {
             result = (amount > part ? part : amount);
         } else {
@@ -227,6 +227,15 @@ public class Resource { //TODO events of merging and stuff
         this.amount += amount;
     }
 
+    public void addAmountSoftly(int amount) {
+        int overhead = Math.max(0, this.amount + amount - getGenome().getNaturalDensity());
+        if (overhead > 0) {
+            amount -= overhead;
+        }
+        addAmount(amount);
+        //TODO overhead must matter
+    }
+
     public List<Resource> applyAspect(Aspect aspect) {
         return resourceCore.applyAspect(aspect);
     }
@@ -293,8 +302,10 @@ public class Resource { //TODO events of merging and stuff
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() +
-                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " + resourceCore.getEfficiencyCoof() +
-                ", spread probability - " + getSpreadProbability() + ", mass - " + getGenome().getMass() + ", amount - " + amount + ", tags: ");
+                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " +
+                resourceCore.getEfficiencyCoof() + ", natural density - " + getGenome().getNaturalDensity() +
+                ", spread probability - " + getSpreadProbability() + ", mass - " + getGenome().getMass() + ", amount - "
+                + amount + ", tags: ");
         for (AspectTag aspectTag : resourceCore.getTags()) {
             stringBuilder.append(aspectTag.name).append(" ");
         }

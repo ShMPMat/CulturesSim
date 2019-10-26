@@ -30,6 +30,7 @@ public class Genome {
      * Size of the Resource.
      */
     private double size;
+    private int naturalDensity;
     /**
      * Parts from which Resource consists.
      */
@@ -78,6 +79,10 @@ public class Genome {
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
         this.efficiencyCoof = efficiencyCoof;
+        naturalDensity = (int) Math.ceil(world.tileScale * world.tileScale / size / size);
+        if (naturalDensity > 100000000) {
+            System.err.println("Very high dencity in Genone " + name + " - " + naturalDensity);
+        }
         setPrimaryMaterial(primaryMaterial);
         computePrimaryMaterial();
     }
@@ -173,6 +178,10 @@ public class Genome {
 
     public double getMass() {
         return primaryMaterial.getDensity() * size * size * size;
+    }
+
+    public int getNaturalDensity() {
+        return naturalDensity;
     }
 
     public List<ResourceDependency> getDependencies() {

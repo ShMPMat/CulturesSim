@@ -105,7 +105,7 @@ public class Dependency {
 
     public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, Function<ResourcePack, Integer> amount) {
         ResourcePack resourcePack = new ResourcePack();
-        if (type.isAbstract) {
+        if (type.isAbstract || ceiling <= 0) {
             return new ShnyPair<>(true, resourcePack);
         }
         if (aspect != null) {

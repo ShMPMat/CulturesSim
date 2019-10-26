@@ -34,6 +34,9 @@ public class Stratum {
 
     public void setAmount(int amount) {
         this.amount = amount;
+        if (amount < 0) {
+            int i = 0; //TODO FUCKING NEGATIVE AMOUNTS
+        }
     }
 
     public void addAspect(Aspect aspect) {
