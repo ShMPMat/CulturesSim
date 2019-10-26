@@ -22,3 +22,4 @@ Stone         2500      -hard     -sturdy                             -solid
 
 Flame         10        -burns                                        -gas
 Ash           80        -soft     -powder                             -solid
+Water         1000                                                    -gas

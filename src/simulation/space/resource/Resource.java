@@ -5,6 +5,7 @@ import simulation.World;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.Territory;
 import simulation.space.Tile;
 
 import java.util.*;
@@ -198,7 +199,11 @@ public class Resource { //TODO events of merging and stuff
         return resource;
     }
 
-    public boolean update() {
+    public boolean update() {//TODO migration on gig numbers
+        if (amount <= 0) {
+            getTile().removeResource(this);
+            return false;
+        }
         for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {
             double part = dependency.satisfactionPercent(tile, this);
             deathOverhead += (1 - part) * resourceCore.getDeathTime();
@@ -216,6 +221,28 @@ public class Resource { //TODO events of merging and stuff
         deathTurn++;
         if (ProbFunc.getChances(resourceCore.getSpreadProbability())) {
             expand();
+        }
+        if (getSimpleName().equals("Vapour")) {
+            if (amount > 50) {
+                int part = amount - 50;
+                List<Tile> tiles = new ArrayList<>();
+                tiles.add(tile);
+                tiles.add(getGenome().world.map.get(tile.x - 1, tile.y));
+                tiles.add(getGenome().world.map.get(tile.x + 1, tile.y));
+                tiles.add(getGenome().world.map.get(tile.x, tile.y + 1));
+                tiles.add(getGenome().world.map.get(tile.x, tile.y - 1));
+                tiles.removeIf(Objects::isNull);
+                tiles.sort((Comparator.comparingInt(tile -> {
+                    Resource res = tile.getResources().stream().filter(r -> r.getSimpleName().equals(getSimpleName()))
+                            .findFirst().orElse(null);
+                    return res == null ? 0 : res.amount;
+                })));
+                tiles.get(0).addDelayedResource(getCleanPart(part));
+            }
+            if (tile.getTemperature() < 0) {
+                tile.addDelayedResource(tile.getWorld().getResourceFromPoolByName("Snow").copy(amount / 2));
+                amount -= amount / 2;
+            }
         }
         return true;
     }

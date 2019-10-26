@@ -28,7 +28,7 @@ public class World {
     /**
      * List of all Groups in the world, which are not subgroups.
      */
-    public List<Group> groups;
+    public List<Group> groups = new ArrayList<>();
     /**
      * List of all Aspects in the world.
      */
@@ -63,6 +63,8 @@ public class World {
      */
     private int turn = 0, thousandTurns = 0;
     private int waterLevel = 100;
+    int initialTurns = 100;
+    private int numberOfGroups;
 
     /**
      * Base constructor.
@@ -82,8 +84,11 @@ public class World {
         map = new WorldMap(mapSize, mapSize * 3, resourcePool, this);
         map.initializePlates();
         RandomMapGenerator.fill(this);
+        this.numberOfGroups = numberOfGroups;
+    }
 
-        groups = new ArrayList<>();
+    public void initialize() {
+        RandomMapGenerator.fillResources(this);
         for (int i = 0; i < numberOfGroups; i++) {
             groups.add(new Group("G" + i, this, 100 + ProbFunc.randomInt(100), 1));
         }

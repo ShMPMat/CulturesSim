@@ -61,7 +61,7 @@ public class ResourceDependency {
         if (currentAmount >= _amount) {
             currentAmount -= _amount;
         }
-        return res;
+        return (res + 1) / 2;
     }
 
     public boolean hasNeeded(Tile tile) {

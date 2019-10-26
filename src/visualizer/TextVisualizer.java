@@ -13,6 +13,7 @@ import simulation.culture.interactionmodel.MapModel;
 import simulation.space.TectonicPlate;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
+import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 
 import java.awt.*;
@@ -206,9 +207,12 @@ public class TextVisualizer {
                             case Ice:
                             case Woods:
                             case Normal:
-                                if (tile.getResources().size() > 0) {
-                                    token += "\033[30m" + (resourceSymbols.get(tile.getResources().get(0)) == null ? "Ё" :
-                                            resourceSymbols.get(tile.getResources().get(0)));
+                                List<Resource> actual = tile.getResources().stream().filter(resource ->
+                                        resource.getGenome().getType() != Genome.Type.Plant && resource.getAmount() > 0 &&
+                                        !resource.getSimpleName().equals("Vapour")).collect(Collectors.toList());
+                                if (actual.size() > 0) {
+                                    token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
+                                            resourceSymbols.get(actual.get(0)));
                                 } else {
                                     token += " ";
                                 }
@@ -266,7 +270,8 @@ public class TextVisualizer {
      * @param resource Resource which will be printed.
      */
     private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())) ? "\033[31m\033[41mX" : ""));
+        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
+                && r.getAmount() > 0) ? "\033[31m\033[41mX" : ""));
         System.out.println(resource);
     }
 
@@ -460,7 +465,7 @@ public class TextVisualizer {
                             printMap(tile -> {
                                 String direction;
                                 int level = tile.getWind().getAffectedTiles().stream()
-                                        .reduce(Integer.MIN_VALUE, (x, y) -> Math.max(x, y.second), Integer::compareTo);
+                                        .reduce(Integer.MIN_VALUE, (x, y) -> Math.max(x, (int) Math.ceil(y.second)), Integer::compareTo);
                                 if (level > 4) {
                                     direction = "\033[41m";
                                 } else if (level > 3) {

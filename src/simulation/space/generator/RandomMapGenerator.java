@@ -31,18 +31,20 @@ public class RandomMapGenerator {
     public static void fill(World world) {
 //        createBlob(map, Tile.Type.Mountain, 30);
 //        createBlob(map, Tile.Type.Water, 30);
-        boolean sw = true;
+        boolean sw = true, ssw = true;
         for (TectonicPlate plate: world.map.getTectonicPlates()) {
             if (sw) {
                 plate.setType(TectonicPlate.Type.Terrain);
                 sw = false;
+            } else if (ssw) {
+                plate.setType(TectonicPlate.Type.Oceanic);
+                ssw = false;
             }
             plate.initialize();
         }
         for (TectonicPlate plate: world.map.getTectonicPlates()) {
             plate.move();
         }
-        RandomMapGenerator.fillResources(world);
     }
 
     @Deprecated
@@ -83,7 +85,7 @@ public class RandomMapGenerator {
         }
     }
 
-    private static void fillResources(World world) {
+    public static void fillResources(World world) {
         for (Resource resource : world.map.resourcePool) {
             if (resource.getSpreadProbability() == 0 && !resource.getBaseName().matches("Clay") &&
                     !resource.getBaseName().matches("Stone")) {
@@ -121,6 +123,9 @@ public class RandomMapGenerator {
 
     private static void addDependencies(Resource resource, Tile tile, World world) {
         for (ResourceDependency dependency: resource.getGenome().getDependencies()) {
+            if (dependency.getResourceNames().stream().anyMatch(s -> s.equals("Vapour"))) {
+                return;
+            }
             for (String name: dependency.getResourceNames()) {
                 Resource dep = world.getResourceFromPoolByName(name);
                 if (tile.canSettle(dep.getGenome())) {

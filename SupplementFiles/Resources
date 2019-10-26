@@ -1,20 +1,27 @@
+/                                                     M - isMoving, L - hasLegacy
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||M|L||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -Plant            0.15    1     10         0       30  150        0 0  Plant        @PlantFibre
+        ~Vapour:0.01;CONSUME
         ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
 
 -ColdPlant        0.10    1     15         -25     0   50         0 0  Plant        @PlantFibre
+        ~Vapour:0.005;CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
 
 -Tree             0.05    5     40         0       30   100       0 0  Plant        @Wood
+        ~Vapour:0.01;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
 
 -Reed             0.25    1     5          5       30   50        1 0  Plant        @PlantFibre
+        ~Vapour:0.02;CONSUME
         ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
 
 -Grass            0.25    0.1   5          5       30   2000      1 0  Plant        @PlantFibre
+        ~Vapour:0.0001;CONSUME
         ^Leaf:3
 
 -Moss             0.06    0.05  20         -10     30   100       1 0  Plant        @PlantFibre
+        ~Vapour:0.01;CONSUME
         ^PlantFibre:1
 
 -Herbivore        0.08    1     20         0       30   25        1 0  Animal       @Meat
@@ -34,6 +41,7 @@
         +Killing:Chitin:1,Meat:1
 
 -Mushroom         0.1     0.05  15         0       30   200       1 0  Plant        @Fungus
+        ~Vapour:0.01;CONSUME
 
 
 -Trunk            0       4     30         5       30   1         1 1  None         @Wood
@@ -94,3 +102,7 @@
 -Fire             0       0.5   2          5       30   1         1 0  None         @Flame
 
 -Ash              0       0.5   50         5       30   1         1 0  None         @Ash
+
+-Vapour           0       0.01 100000000  -1000   1000 100        1 0  None         @Water
+
+-Snow             0       0.1  100000000  -1000   0    1          1 0  None         @Water

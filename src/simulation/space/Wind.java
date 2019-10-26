@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Wind {
-    List<ShnyPair<Tile, Integer>> affectedTiles;
+    static double windPropagation = 0.1;
+    List<ShnyPair<Tile, Double>> affectedTiles;
 
     public Wind() {
         affectedTiles = new ArrayList<>();
     }
 
-    public List<ShnyPair<Tile, Integer>> getAffectedTiles() {
+    public List<ShnyPair<Tile, Double>> getAffectedTiles() {
         return affectedTiles;
     }
 
@@ -20,13 +21,16 @@ public class Wind {
         return affectedTiles.isEmpty();
     }
 
-    public void changeLevelOnTile(Tile tile, int change) {//TODO remove if change makes level negative
+    public void changeLevelOnTile(Tile tile, double change) {//TODO remove if change makes level negative
         if (tile == null) {
             return;
         }
-        for (ShnyPair<Tile, Integer> pair: affectedTiles) {
+        for (ShnyPair<Tile, Double> pair: affectedTiles) {
             if (pair.first.equals(tile)) {
                 pair.second += change;
+                if (pair.second > 30) { //TODO strong winds
+                    int i = 0;
+                }
                 return;
             }
         }
@@ -36,8 +40,8 @@ public class Wind {
         affectedTiles.add(new ShnyPair<>(tile, change));
     }
 
-    public int getLevelByTile(Tile tile) {
-        for (ShnyPair<Tile, Integer> pair: affectedTiles) {
+    public double getLevelByTile(Tile tile) {
+        for (ShnyPair<Tile, Double> pair: affectedTiles) {
             if (pair.first.equals(tile)) {
                 return pair.second;
             }

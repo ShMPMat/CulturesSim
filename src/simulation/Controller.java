@@ -27,6 +27,10 @@ public class Controller {
     public Controller(int numberOfGroups, int mapSize, int numberOrResources, InteractionModel interactionModel) {
         world = new World(numberOfGroups, mapSize, numberOrResources);
         this.interactionModel = interactionModel;
+        for (int i = 0; i < world.initialTurns; i++) {
+            turn();
+        }
+        world.initialize();
     }
 
     /**

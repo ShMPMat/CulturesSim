@@ -278,7 +278,11 @@ public class Tile { //TODO woods type
     }
 
     public void update() {
+        _newWind = new Wind();
         checkIce();
+        if (type == Type.Water) {
+            int i = 0;
+        }
         _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
         _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
@@ -295,7 +299,7 @@ public class Tile { //TODO woods type
             if (!resource.isMovable()) {
                 continue;
             }
-            for (ShnyPair<Tile, Integer> pair: wind.affectedTiles) {
+            for (ShnyPair<Tile, Double> pair: wind.affectedTiles) {
                 int part = (int) (resource.getAmount() * Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
                 if (part > 0) {
                     pair.first.addDelayedResource(resource.getCleanPart(part));
@@ -309,45 +313,75 @@ public class Tile { //TODO woods type
             } else {
                 setType(Type.Normal);
             }
+        } else if (getType() == Type.Water) {
+            addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(10));
         }
     }
 
     public void middleUpdate() {
-        _newWind = new Wind();
-        Tile tile = world.map.get(x + 1, y);
+        WorldMap map = world.map;
+        Tile tile = map.get(x + 1, y);
         if (tile != null) {
             if (tile.temperature - 1 > temperature) {
-                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
-            }
-            if (tile.wind.getLevelByTile(this) > 1) {
-                _newWind.changeLevelOnTile(world.map.get(x - 1, y), tile.wind.getLevelByTile(this) - 1);
+                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
             }
         }
         tile = world.map.get(x - 1, y);
         if (tile != null) {
             if (tile.temperature - 1 > temperature) {
-                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
-            }
-            if (tile.wind.getLevelByTile(this) > 1) {
-                _newWind.changeLevelOnTile(world.map.get(x + 1, y), tile.wind.getLevelByTile(this) - 1);
+                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
             }
         }
-        tile = world.map.get(x, y + 1);
+        tile = map.get(x, y + 1);
         if (tile != null) {
             if (tile.temperature - 1 > temperature) {
-                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
-            }
-            if (tile.wind.getLevelByTile(this) > 1) {
-                _newWind.changeLevelOnTile(world.map.get(x, y - 1), tile.wind.getLevelByTile(this) - 1);
+                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
             }
         }
-        tile = world.map.get(x, y - 1);
+        tile = map.get(x, y - 1);
         if (tile != null) {
             if (tile.temperature - 1 > temperature) {
-                _newWind.affectedTiles.add(new ShnyPair<>(tile, tile.temperature - 1 - temperature));
+                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
             }
-            if (tile.wind.getLevelByTile(this) > 1) {
-                _newWind.changeLevelOnTile(world.map.get(x, y + 1), tile.wind.getLevelByTile(this) - 1);
+        }
+
+        if (!_newWind.isStill()) {
+            return;
+        }
+        propagateWindStraight(map.get(x - 1, y), map.get(x + 1, y));
+        propagateWindStraight(map.get(x + 1, y), map.get(x - 1, y));
+        propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1));
+        propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1));
+
+        if (!_newWind.isStill()) {
+            return;
+        }
+        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y - 1), map.get(x, y - 1));
+        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y + 1), map.get(x, y + 1));
+
+        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y - 1), map.get(x, y - 1));
+        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y + 1), map.get(x, y + 1));
+
+        propagateWindWithCondition(map.get(x, y + 1), map.get(x - 1, y - 1), map.get(x - 1, y));
+        propagateWindWithCondition(map.get(x, y + 1), map.get(x + 1, y - 1), map.get(x + 1, y));
+
+        propagateWindWithCondition(map.get(x, y - 1), map.get(x - 1, y + 1), map.get(x - 1, y));
+        propagateWindWithCondition(map.get(x, y - 1), map.get(x + 1, y + 1), map.get(x + 1, y));
+    }
+
+    private void propagateWindStraight(Tile target, Tile tile) {
+        if (tile != null && target != null) {
+            if (tile.wind.getLevelByTile(this) > 0.1) {
+                _newWind.changeLevelOnTile(target, tile.wind.getLevelByTile(this) - Wind.windPropagation);
+            }
+        }
+    }
+
+    private void propagateWindWithCondition(Tile target, Tile tile, Tile wanted) {
+        if (tile != null && target != null && wanted != null) {
+            double level = tile.wind.getLevelByTile(wanted) - Wind.windPropagation * 5;
+            if (level > 0) {
+                _newWind.changeLevelOnTile(target, level);
             }
         }
     }
