@@ -80,7 +80,7 @@ public class Genome {
         this.defaultAmount = defaultAmount;
         this.efficiencyCoof = efficiencyCoof;
         naturalDensity = (int) Math.ceil(world.tileScale * world.tileScale / size / size);
-        if (naturalDensity > 100000000) {
+        if (naturalDensity > 1000000000) {
             System.err.println("Very high dencity in Genone " + name + " - " + naturalDensity);
         }
         setPrimaryMaterial(primaryMaterial);
@@ -180,7 +180,7 @@ public class Genome {
         return primaryMaterial.getDensity() * size * size * size;
     }
 
-    public int getNaturalDensity() {
+    public int getNaturalDensity() {//TODO write density in file
         return naturalDensity;
     }
 

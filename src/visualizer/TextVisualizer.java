@@ -36,11 +36,11 @@ public class TextVisualizer {
     /**
      * Symbols for representation of groups on the Map.
      */
-    private Map<Group, String> groupSymbols;
+    private Map<Group, String> groupSymbols = new HashMap<>();
     /**
      * Symbols for representation of resource on the Map.
      */
-    private Map<Resource, String> resourceSymbols;
+    private Map<Resource, String> resourceSymbols = new HashMap<>();
     /**
      * List of group population before beginning of the last sequence turn;
      * Used for estimating population change.
@@ -66,6 +66,11 @@ public class TextVisualizer {
         int numberOfGroups = 10, mapSize = 30, numberOrResources = 5;
         controller = new Controller(numberOfGroups, mapSize, numberOrResources,
                 new MapModel(0.01, 0.25));
+        world = controller.world;
+        map = world.map;
+        interactionModel = controller.interactionModel;
+        print();
+        controller.initialize();
         groupPopulations = new ArrayList<>();
         for (int i = 0; i < numberOfGroups; i++) {
             groupPopulations.add(0);
@@ -73,9 +78,6 @@ public class TextVisualizer {
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("Take")));
         controller.world.groups.forEach(Group::finishUpdate);
-        world = controller.world;
-        map = world.map;
-        interactionModel = controller.interactionModel;
     }
 
     public static void main(String[] args) {
@@ -104,8 +106,6 @@ public class TextVisualizer {
      * @throws IOException when files with symbols isn't found.
      */
     private void readSymbols() throws IOException {
-        groupSymbols = new HashMap<>();
-        resourceSymbols = new HashMap<>();
         Scanner s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
         for (Group group : world.groups) {
             groupSymbols.put(group, s.nextLine());
@@ -218,7 +218,8 @@ public class TextVisualizer {
                                 }
                                 break;
                             case Mountain:
-                                token = (tile.getLevel() > 130 ? "\033[43m\033[93m" : "\033[33m") + "^";
+                                token = (tile.getLevel() > 130 ? "\033[43m" : "") +
+                                        (tile.getResources().contains(world.getResourceFromPoolByName("Snow")) ? "\033[30m" : "\033[93m") + "^";
                                 break;
                             default:
                                 token += " ";
@@ -477,9 +478,19 @@ public class TextVisualizer {
                                 } else {
                                     direction = "\033[44m";
                                 }
-                                if (tile.getWind().getAffectedTiles().size() == 1) {
-                                    Tile affected = tile.getWind().getAffectedTiles().get(0).first;
-                                    if (affected.getX() - tile.getX() == 1) {
+                                if (tile.getWind().getAffectedTiles().size() >= 1) {
+                                    Tile affected = tile.getWind().getAffectedTiles().stream()
+                                            .sorted(Comparator.comparingDouble(pair -> -pair.second))
+                                            .collect(Collectors.toList()).get(0).first;
+                                    if (affected.getX() - tile.getX() == 1 && affected.getY() - tile.getY() == 1) {
+                                        direction += "J";
+                                    } else if (affected.getX() - tile.getX() == 1 && affected.getY() - tile.getY() == -1) {
+                                        direction += "L";
+                                    } else if (affected.getX() - tile.getX() == -1 && affected.getY() - tile.getY() == 1) {
+                                        direction += "⏋";
+                                    } else if (affected.getX() - tile.getX() == -1 && affected.getY() - tile.getY() == -1) {
+                                        direction += "Г";
+                                    } else if (affected.getX() - tile.getX() == 1) {
                                         direction += "V";
                                     } else if (affected.getX() - tile.getX() == -1) {
                                         direction += "^";
@@ -488,8 +499,6 @@ public class TextVisualizer {
                                     } else if (affected.getY() - tile.getY() == -1) {
                                         direction += "<";
                                     }
-                                } else if (tile.getWind().getAffectedTiles().size() > 1){
-                                    direction += "O";
                                 } else {
                                     direction = " ";
                                 }

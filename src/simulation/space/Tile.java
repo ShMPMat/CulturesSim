@@ -190,10 +190,13 @@ public class Tile { //TODO woods type
     }
 
     public void setType(Type type) {
-        this.type = type;
-        if (level != 0) {
+        if (type == this.type) {
             return;
         }
+        this.type = type;
+//        if (level != 0) {
+//            return;
+//        }
         switch (type) {
             case Mountain:
                 level = 110;
@@ -225,7 +228,6 @@ public class Tile { //TODO woods type
     private void checkIce() {
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
-            secondLevel = level;
             level = world.getWaterLevel();
         } else if (type == Type.Ice && temperature > 0) {
             type = Type.Water;
@@ -306,36 +308,19 @@ public class Tile { //TODO woods type
                 setType(Type.Normal);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(10));
+            addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(50));
+        }
+        if (resources.contains(world.getResourceFromPoolByName("Water"))) {
+            addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(50));
         }
     }
 
     public void middleUpdate() {
         WorldMap map = world.map;
-        Tile tile = map.get(x + 1, y);
-        if (tile != null) {
-            if (tile.temperature - 1 > temperature) {
-                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
-            }
-        }
-        tile = world.map.get(x - 1, y);
-        if (tile != null) {
-            if (tile.temperature - 1 > temperature) {
-                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
-            }
-        }
-        tile = map.get(x, y + 1);
-        if (tile != null) {
-            if (tile.temperature - 1 > temperature) {
-                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
-            }
-        }
-        tile = map.get(x, y - 1);
-        if (tile != null) {
-            if (tile.temperature - 1 > temperature) {
-                _newWind.changeLevelOnTile(tile, (double) tile.temperature - 1 - temperature);
-            }
-        }
+        setWindByTemperature(map.get(x + 1, y));
+        setWindByTemperature(map.get(x - 1, y));
+        setWindByTemperature(map.get(x, y + 1));
+        setWindByTemperature(map.get(x, y - 1));
 
         if (!_newWind.isStill()) {
             return;
@@ -345,25 +330,34 @@ public class Tile { //TODO woods type
         propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1));
         propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1));
 
-        if (!_newWind.isStill()) {//TODO better to add wind for cross tiles than try to fetch it 
+        if (!_newWind.isStill()) {//TODO better to add wind for cross tiles than try to fetch it
             return;
         }
-        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y - 1), map.get(x, y - 1));
-        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y + 1), map.get(x, y + 1));
+//        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y - 1), map.get(x, y - 1));
+//        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y + 1), map.get(x, y + 1));
+//
+//        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y - 1), map.get(x, y - 1));
+//        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y + 1), map.get(x, y + 1));
+//
+//        propagateWindWithCondition(map.get(x, y + 1), map.get(x - 1, y - 1), map.get(x - 1, y));
+//        propagateWindWithCondition(map.get(x, y + 1), map.get(x + 1, y - 1), map.get(x + 1, y));
+//
+//        propagateWindWithCondition(map.get(x, y - 1), map.get(x - 1, y + 1), map.get(x - 1, y));
+//        propagateWindWithCondition(map.get(x, y - 1), map.get(x + 1, y + 1), map.get(x + 1, y));
+    }
 
-        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y - 1), map.get(x, y - 1));
-        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y + 1), map.get(x, y + 1));
-
-        propagateWindWithCondition(map.get(x, y + 1), map.get(x - 1, y - 1), map.get(x - 1, y));
-        propagateWindWithCondition(map.get(x, y + 1), map.get(x + 1, y - 1), map.get(x + 1, y));
-
-        propagateWindWithCondition(map.get(x, y - 1), map.get(x - 1, y + 1), map.get(x - 1, y));
-        propagateWindWithCondition(map.get(x, y - 1), map.get(x + 1, y + 1), map.get(x + 1, y));
+    private void setWindByTemperature(Tile tile) {
+        int temperatureChange = 3;
+        if (tile != null) {
+            if (tile.temperature - 1 - temperatureChange > temperature) {
+                _newWind.changeLevelOnTile(tile, ((double) tile.temperature - 1 - temperature) / temperatureChange);
+            }
+        }
     }
 
     private void propagateWindStraight(Tile target, Tile tile) {
         if (tile != null && target != null) {
-            if (tile.wind.getLevelByTile(this) > 0.1) {
+            if (tile.wind.getLevelByTile(this) > Wind.windPropagation) {
                 _newWind.changeLevelOnTile(target, tile.wind.getLevelByTile(this) - Wind.windPropagation);
             }
         }
@@ -383,7 +377,7 @@ public class Tile { //TODO woods type
     }
 
     private void updateTemperature() {
-        temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 8 : 0);
+        temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
 
     public void levelUpdate() {//TODO works bad on Ice

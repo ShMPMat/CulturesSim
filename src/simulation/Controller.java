@@ -27,6 +27,9 @@ public class Controller {
     public Controller(int numberOfGroups, int mapSize, int numberOrResources, InteractionModel interactionModel) {
         world = new World(numberOfGroups, mapSize, numberOrResources);
         this.interactionModel = interactionModel;
+    }
+
+    public void initialize() {
         for (int i = 0; i < world.geologyTurns; i++) {
             geologicTurn();
         }

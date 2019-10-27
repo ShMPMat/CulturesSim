@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Wind {
-    static double windPropagation = 0.1;
+    static double windPropagation = 0.025;
     List<ShnyPair<Tile, Double>> affectedTiles;
 
     public Wind() {

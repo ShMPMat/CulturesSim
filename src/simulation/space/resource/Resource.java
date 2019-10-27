@@ -9,6 +9,7 @@ import simulation.space.Territory;
 import simulation.space.Tile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents consumable objects found in the world.
@@ -223,13 +224,13 @@ public class Resource { //TODO events of merging and stuff
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
-            if (amount > 100) {
+            if (amount > 500) {
                 if (tile.getType() != Tile.Type.Water) {
                     tile.addDelayedResource(getGenome().world.getResourceFromPoolByName("Water").copy(amount / 100));
                     amount /= 100;
                 }
             }
-            if (amount > 50) {
+            if (amount > 250) {
                 int part = amount - 50;
                 List<Tile> tiles = new ArrayList<>();
                 tiles.add(tile);
@@ -248,6 +249,23 @@ public class Resource { //TODO events of merging and stuff
             if (tile.getTemperature() < 0) {
                 tile.addDelayedResource(tile.getWorld().getResourceFromPoolByName("Snow").copy(amount / 2));
                 amount -= amount / 2;
+            }
+        } else if (getSimpleName().equals("Water")) {
+            if (tile.getType() != Tile.Type.Water && tile.getNeighbours(t -> t.getType() == Tile.Type.Water).isEmpty()) {
+                List<Tile> tiles = tile.getNeighbours(t -> t.getLevel() <= tile.getLevel());
+                List<Tile> tilesWithWater = tiles.stream().filter(t -> t.getResources().contains(this) &&
+                        t.getLevel() < tile.getLevel()).collect(Collectors.toList());
+                if (tilesWithWater.isEmpty()) {
+                    if (!tiles.isEmpty()) {
+                        ProbFunc.randomElement(tiles).addDelayedResource(getCleanPart(amount - 1));
+                    }
+                } else {
+                    int a = amount - 1, size = tilesWithWater.size();
+                    tilesWithWater.get(0).addDelayedResource(getCleanPart(a - (a / size) * (size - 1)));
+                    for (int i = 1; i < size; i++) {
+                        tilesWithWater.get(i).addDelayedResource(getCleanPart(a / size));
+                    }
+                }
             }
         }
         return true;
