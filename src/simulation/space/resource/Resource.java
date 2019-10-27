@@ -223,6 +223,12 @@ public class Resource { //TODO events of merging and stuff
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
+            if (amount > 100) {
+                if (tile.getType() != Tile.Type.Water) {
+                    tile.addDelayedResource(getGenome().world.getResourceFromPoolByName("Water").copy(amount / 100));
+                    amount /= 100;
+                }
+            }
             if (amount > 50) {
                 int part = amount - 50;
                 List<Tile> tiles = new ArrayList<>();

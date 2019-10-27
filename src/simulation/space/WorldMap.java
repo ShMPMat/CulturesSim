@@ -142,11 +142,26 @@ public class WorldMap {
         }
     }
 
+    public void geologicUpdate() {
+        for (List<Tile> line : map) {
+            for (Tile tile : line) {
+                tile.levelUpdate();
+            }
+        }
+        movePlates();
+    }
+
     public synchronized void finishUpdate() {
         for (List<Tile> line : map) {
             for (Tile tile : line) {
                 tile.finishUpdate();
             }
+        }
+    }
+
+    public void movePlates() {
+        for (TectonicPlate plate: getTectonicPlates()) {
+            plate.move();
         }
     }
 }

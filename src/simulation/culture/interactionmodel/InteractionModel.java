@@ -10,6 +10,10 @@ import java.util.Collection;
  */
 public interface InteractionModel {
     void turn(World world);
+
+    void geologicTurn(World world);
+
     Collection<Event> getEvents();
+
     void clearEvents();
 }

@@ -27,6 +27,9 @@ public class Controller {
     public Controller(int numberOfGroups, int mapSize, int numberOrResources, InteractionModel interactionModel) {
         world = new World(numberOfGroups, mapSize, numberOrResources);
         this.interactionModel = interactionModel;
+        for (int i = 0; i < world.geologyTurns; i++) {
+            geologicTurn();
+        }
         for (int i = 0; i < world.initialTurns; i++) {
             turn();
         }
@@ -39,5 +42,10 @@ public class Controller {
     public void turn() {
         interactionModel.turn(world);
         world.incrementTurn();
+    }
+
+    public void geologicTurn() {
+        interactionModel.geologicTurn(world);
+        world.incrementTurnEvolution();
     }
 }

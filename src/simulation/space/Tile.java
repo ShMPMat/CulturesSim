@@ -1,5 +1,6 @@
 package simulation.space;
 
+import extra.ProbFunc;
 import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.group.Group;
@@ -53,7 +54,7 @@ public class Tile { //TODO woods type
      */
     private List<Resource> _delayedResources;
     private int level;
-    private int oldLevel;
+    private int secondLevel;
     private int temperature;
     private Wind wind;
     private Wind _newWind;
@@ -98,23 +99,6 @@ public class Tile { //TODO woods type
         if (newTile != null && predicate.test(newTile)) {
             goodTiles.add(newTile);
         }
-//        newTile = map.get(x + 1, y + 1);
-//        if (newTile != null && predicate.test(newTile)) {
-//            goodTiles.add(newTile);
-//        }
-//        newTile = map.get(x - 1, y + 1);
-//        if (newTile != null && predicate.test(newTile)) {
-//            goodTiles.add(newTile);
-//        }
-//        newTile = map.get(x + 1, y - 1);
-//        if (newTile != null && predicate.test(newTile)) {
-//            goodTiles.add(newTile);
-//        }
-//        newTile = map.get(x - 1, y - 1);
-//        if (newTile != null && predicate.test(newTile)) {
-//            goodTiles.add(newTile);
-//        }
-
         return goodTiles;
     }
 
@@ -140,6 +124,10 @@ public class Tile { //TODO woods type
 
     public int getLevel() {
         return level;
+    }
+
+    public int getSecondLevel() {
+        return secondLevel;
     }
 
     public int getTemperature() {
@@ -203,21 +191,28 @@ public class Tile { //TODO woods type
 
     public void setType(Type type) {
         this.type = type;
+        if (level != 0) {
+            return;
+        }
         switch (type) {
             case Mountain:
                 level = 110;
+                secondLevel = 110;
                 break;
             case Normal:
                 level = 100;
+                secondLevel = 100;
                 break;
             case Water:
                 level = 85;
+                secondLevel = 85;
                 break;
         }
     }
 
     public void setLevel(int level) {
         this.level = level;
+        this.secondLevel = level;
         type = Type.Normal;
         if (level >= 110) {
             type = Type.Mountain;
@@ -228,13 +223,13 @@ public class Tile { //TODO woods type
     }
 
     private void checkIce() {
-        if (type == Type.Water && temperature < 0) {
+        if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
-            oldLevel = level;
+            secondLevel = level;
             level = world.getWaterLevel();
         } else if (type == Type.Ice && temperature > 0) {
             type = Type.Water;
-            level = oldLevel;
+            level = secondLevel;
         }
     }
 
@@ -280,9 +275,6 @@ public class Tile { //TODO woods type
     public void update() {
         _newWind = new Wind();
         checkIce();
-        if (type == Type.Water) {
-            int i = 0;
-        }
         _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
         _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
@@ -353,7 +345,7 @@ public class Tile { //TODO woods type
         propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1));
         propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1));
 
-        if (!_newWind.isStill()) {
+        if (!_newWind.isStill()) {//TODO better to add wind for cross tiles than try to fetch it 
             return;
         }
         propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y - 1), map.get(x, y - 1));
@@ -391,7 +383,20 @@ public class Tile { //TODO woods type
     }
 
     private void updateTemperature() {
-        temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 5 : 0);
+        temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 8 : 0);
+    }
+
+    public void levelUpdate() {//TODO works bad on Ice
+        if (ProbFunc.getChances(0.5)) {
+            return;
+        }
+        List<Tile> tiles = getNeighbours(t -> true);
+        tiles.sort(Comparator.comparingInt(tile -> tile.secondLevel));
+        Tile lowest = tiles.get(0);
+        if (lowest.secondLevel + 1 < secondLevel) {
+            setLevel(level - 1);
+            lowest.setLevel(lowest.level + 1);
+        }
     }
 
     @Override

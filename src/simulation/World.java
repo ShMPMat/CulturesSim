@@ -40,7 +40,7 @@ public class World {
     /**
      * Base MemePool for the World. Contains all standard Memes.
      */
-    private GroupMemes memePool;
+    private GroupMemes memePool = new GroupMemes();
     public double tileScale = 100;
     /**
      * World map on which all simulated objects are placed.
@@ -49,7 +49,7 @@ public class World {
     /**
      * All events which are linked to the world as a whole.
      */
-    public List<Event> events;
+    public List<Event> events = new ArrayList<>();
     /**
      * List of all Materials in the world.
      */
@@ -64,6 +64,7 @@ public class World {
     private int turn = 0, thousandTurns = 0;
     private int waterLevel = 100;
     int initialTurns = 100;
+    int geologyTurns = 100;
     private int numberOfGroups;
 
     /**
@@ -75,8 +76,7 @@ public class World {
      * @param numberOfResources how many random resources will be created.
      */
     World(int numberOfGroups, int mapSize, int numberOfResources) {
-        events = new ArrayList<>();
-        memePool = new GroupMemes();
+        this.numberOfGroups = numberOfGroups;
         fillAspectPool();
         fillPropertiesPool();
         fillMaterialPool();
@@ -84,7 +84,7 @@ public class World {
         map = new WorldMap(mapSize, mapSize * 3, resourcePool, this);
         map.initializePlates();
         RandomMapGenerator.fill(this);
-        this.numberOfGroups = numberOfGroups;
+
     }
 
     public void initialize() {
@@ -278,6 +278,10 @@ public class World {
         return null;
     }
 
+    public Collection<Aspect> getAllDefaultAspects() {
+        return aspectPool;
+    }
+
     /**
      * Add an event into this World events.
      *
@@ -305,10 +309,6 @@ public class World {
     public void addResources(List<Resource> resources) {
         resources.stream().filter(resource -> getResourceFromPoolByName(resource.getBaseName()) == null)
                 .forEach(resource -> resources.add(new ResourceIdeal(resource)));
-    }
-
-    public Collection<Aspect> getAllDefaultAspects() {
-        return aspectPool;
     }
 
     @Override

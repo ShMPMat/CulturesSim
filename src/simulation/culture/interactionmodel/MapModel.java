@@ -44,6 +44,17 @@ public class MapModel implements InteractionModel {
     }
 
     @Override
+    public void geologicTurn(World world) {
+
+        int a = world.events.size();
+        world.map.geologicUpdate();
+
+        for (int i = a; i < world.events.size(); i++) {
+            newEvents.add(world.events.get(i));
+        }
+    }
+
+    @Override
     public Collection<Event> getEvents() {
         return newEvents;
     }

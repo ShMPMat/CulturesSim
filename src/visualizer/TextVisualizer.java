@@ -496,6 +496,25 @@ public class TextVisualizer {
                                 return direction;
                             });
                             break;
+                        case TerrainLevel:
+                            printMap(tile -> {
+                                String colour = "";
+                                if (tile.getSecondLevel() < 90) {
+                                    colour = "\033[44m";
+                                } else if (tile.getSecondLevel() < 100) {
+                                    colour = "\033[104m";
+                                } else if (tile.getSecondLevel() < 110) {
+                                    colour = "\033[46m";
+                                } else if (tile.getSecondLevel() < 120) {
+                                    colour = "\033[47m";
+                                } else if (tile.getSecondLevel() < 130){
+                                    colour = "\033[43m";
+                                } else {
+                                    colour = "\033[41m";
+                                }
+                                return "\033[90m" + colour + Math.abs(tile.getSecondLevel() % 10);
+                            });
+                            break;
                         case Resource:
                             Resource resource = world.getResourceFromPoolByName(line.substring(2));
                             if (resource != null) {
@@ -577,6 +596,7 @@ public class TextVisualizer {
         Plates("plates"),
         Temperature("temperature"),
         Wind("wind"),
+        TerrainLevel("level"),
         /**
          * Command for printing resource information.
          */

@@ -42,9 +42,7 @@ public class RandomMapGenerator {
             }
             plate.initialize();
         }
-        for (TectonicPlate plate: world.map.getTectonicPlates()) {
-            plate.move();
-        }
+        world.map.movePlates();
     }
 
     @Deprecated
@@ -95,20 +93,6 @@ public class RandomMapGenerator {
         }
     }
 
-    private static void createBlob(WorldMap map, Tile.Type type, int n) {
-        List<Tile> tiles = new ArrayList<>();
-        tiles.add(ProbFunc.randomTile(map));
-        tiles.get(0).setType(type);
-        for (int i = 0; i < n; i++) {
-            Tile tile = ProbFunc.randomTileOnBrink(tiles, t -> true);
-            if (tile != null) {
-                tile.setType(type);
-                tiles.add(tile);
-            } else {
-                i+=0;
-            }
-        }
-    }
 
     private static void scatter(World world, Resource resource, int n) {
         for (int i = 0; i < n; i++) {

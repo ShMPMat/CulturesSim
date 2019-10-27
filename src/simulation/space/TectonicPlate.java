@@ -5,7 +5,6 @@ import extra.ShnyPair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TectonicPlate extends Territory {
     public enum Direction {
@@ -24,6 +23,7 @@ public class TectonicPlate extends Territory {
     private Direction direction;
     private Type type;
     private List<Tile> affectedTiles;
+    private boolean isMoved = false;
 
     TectonicPlate() {
         direction = ProbFunc.randomElement(Direction.values());
@@ -107,7 +107,9 @@ public class TectonicPlate extends Territory {
 
     public void move() {
         for (Tile tile: getAffectedTiles()) {
-            tile.setLevel(tile.getLevel() + 5 + ProbFunc.randomInt(5));
+            tile.setLevel(isMoved ? tile.getLevel() + 1 :
+                    tile.getLevel() + 5 + ProbFunc.randomInt(5));
         }
+        isMoved = true;
     }
 }
