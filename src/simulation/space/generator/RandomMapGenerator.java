@@ -107,6 +107,9 @@ public class RandomMapGenerator {
 
     private static void addDependencies(Resource resource, Tile tile, World world) {
         for (ResourceDependency dependency: resource.getGenome().getDependencies()) {
+            if (!dependency.isPositive()) {
+                continue;
+            }
             if (dependency.getResourceNames().stream().anyMatch(s -> s.equals("Vapour"))) {
                 return;
             }

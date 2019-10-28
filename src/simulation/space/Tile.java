@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Basic tile of map
  */
-public class Tile { //TODO woods type
+public class Tile {
     public enum Type {
         Normal,
         Mountain,

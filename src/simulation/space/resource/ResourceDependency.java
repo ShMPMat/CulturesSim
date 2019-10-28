@@ -49,6 +49,7 @@ public class ResourceDependency {
                         currentAmount += part.amount;
                         part.amount = 0;
                         break;
+                    case AVOID:
                     case EXIST:
                         currentAmount += res.amount;
                 }
@@ -61,6 +62,7 @@ public class ResourceDependency {
         if (currentAmount >= _amount) {
             currentAmount -= _amount;
         }
+        res = (type == Type.AVOID ? 1 - res : res);
         return (res + 1) / 2;
     }
 
@@ -73,8 +75,13 @@ public class ResourceDependency {
                 materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.amount > 0;
     }
 
+    public boolean isPositive() {
+        return type != Type.AVOID;
+    }
+
     enum Type{
         CONSUME,
-        EXIST
+        EXIST,
+        AVOID
     }
 }

@@ -79,9 +79,9 @@ public class Genome {
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
         this.efficiencyCoof = efficiencyCoof;
-        naturalDensity = (int) Math.ceil(world.tileScale * world.tileScale / size / size);
-        if (naturalDensity > 1000000000) {
-            System.err.println("Very high dencity in Genone " + name + " - " + naturalDensity);
+        naturalDensity = (int) Math.ceil(world.tileScale * world.tileScale * defaultAmount);
+        if (naturalDensity > 100000000) {
+            System.err.println("Very high density in Genome " + name + " - " + naturalDensity);
         }
         setPrimaryMaterial(primaryMaterial);
         computePrimaryMaterial();
@@ -180,7 +180,7 @@ public class Genome {
         return primaryMaterial.getDensity() * size * size * size;
     }
 
-    public int getNaturalDensity() {//TODO write density in file
+    public int getNaturalDensity() {
         return naturalDensity;
     }
 
@@ -189,7 +189,9 @@ public class Genome {
     }
 
     public boolean isAcceptable(Tile tile) {
-        return tile.getType() != Tile.Type.Water && (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
+        return tile.getType() != Tile.Type.Water && /*dependencies.stream().filter(dependency -> !dependency.isPositive())
+                .allMatch(dependency -> tile.getResources().stream().an) &&*/ //TODO catch bad resources
+                (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
     }
 
     boolean isMovable() {

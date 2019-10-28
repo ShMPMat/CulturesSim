@@ -61,7 +61,7 @@ public class World {
     /**
      * How many turns passed from the beginning of the simulation.
      */
-    private int turn = 0, thousandTurns = 0;
+    private int turn = 0, thousandTurns = 0, millionTurns = 0;
     private int waterLevel = 100;
     int geologyTurns = 5;
     int initialTurns = 100;
@@ -194,7 +194,7 @@ public class World {
      * @return how many turns passed since the beginning of the simulation.
      */
     public String getTurn() {
-        return turn + thousandTurns * 1000 + "";
+        return turn + thousandTurns * 1000 + millionTurns * 1000000 + "";
     }
 
     /**
@@ -297,13 +297,21 @@ public class World {
     public void incrementTurn() {
         turn++;
         if (turn == 1000) {
-            thousandTurns++;
             turn = 0;
+            incrementTurnEvolution();
         }
     }
 
     public void incrementTurnEvolution() {
         thousandTurns++;
+        if (thousandTurns == 1000) {
+            thousandTurns = 0;
+            incrementTurnGeology();
+        }
+    }
+
+    public void incrementTurnGeology() {
+        millionTurns++;
     }
 
     public void addResources(List<Resource> resources) {

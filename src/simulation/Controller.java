@@ -49,6 +49,6 @@ public class Controller {
 
     public void geologicTurn() {
         interactionModel.geologicTurn(world);
-        world.incrementTurnEvolution();
+        world.incrementTurnGeology();
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Wind {
     static double windPropagation = 0.025;
+    static double maximalLevel = 30;
     List<ShnyPair<Tile, Double>> affectedTiles;
 
     public Wind() {
@@ -21,15 +22,16 @@ public class Wind {
         return affectedTiles.isEmpty();
     }
 
-    public void changeLevelOnTile(Tile tile, double change) {//TODO remove if change makes level negative
+    public void changeLevelOnTile(Tile tile, double change) {
         if (tile == null) {
             return;
         }
-        for (ShnyPair<Tile, Double> pair: affectedTiles) {
+        for (int i = 0; i < affectedTiles.size(); i++) {
+            ShnyPair<Tile, Double> pair = affectedTiles.get(i);
             if (pair.first.equals(tile)) {
-                pair.second += change;
-                if (pair.second > 30) { //TODO strong winds
-                    int i = 0;
+                pair.second = Math.min(change + pair.second, maximalLevel);
+                if (pair.second <= 0) {
+                    affectedTiles.remove(i);
                 }
                 return;
             }

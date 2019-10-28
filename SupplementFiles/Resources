@@ -1,12 +1,16 @@
 /                                                     M - isMoving, L - hasLegacy
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||M|L||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
--Plant           0.15    1      10         0       30  150        0 0  Plant        @PlantFibre
+-Plant           0.15    1      10         0        0  150        0 0  Plant        @PlantFibre
         ~Vapour:0.01;CONSUME
         ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
 
 -ColdPlant       0.10    1      15         -25     0   50         0 0  Plant        @PlantFibre
-        ~Vapour:0.005;CONSUME
+        ~Vapour:0.0025;CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
+
+-Cactus          0.10    1      15         10     50   25         0 0  Plant        @PlantFibre
+        ~Vapour:0.01;AVOID
+        ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
 
 -Tree            0.05    5      40         0       30   100       0 0  Plant        @Wood
         ~Vapour:0.01;CONSUME
@@ -105,6 +109,6 @@
 
 -Vapour          0       0.01   1000000000  -1000   1000 100       1 0  None         @Water
 
--Snow            0       0.1    1000000000  -1000   0    1         1 0  None         @Water
+-Snow            0       0.1    1000000000  -1000   0    100       1 0  None         @Water
 
--Water           0       1      1000000000  0       1000 1         1 0  None         @Water
+-Water           0       1      1000000000  0       1000 100       1 0  None         @Water
