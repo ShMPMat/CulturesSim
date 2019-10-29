@@ -201,6 +201,9 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public boolean update() {//TODO migration on gig numbers
+        if (getSimpleName().equals("Cactus")) {
+            int i = 0;
+        }
         if (amount <= 0) {
             getTile().removeResource(this);
             return false;

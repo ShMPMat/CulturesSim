@@ -274,6 +274,10 @@ public class Tile {
         return genome.isAcceptable(this);
     }
 
+    public boolean canSettleStrong(Genome genome) {
+        return genome.isOptimal(this);
+    }
+
     public void update() {
         _newWind = new Wind();
         checkIce();
@@ -380,7 +384,7 @@ public class Tile {
         temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
 
-    public void levelUpdate() {//TODO works bad on Ice
+    public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow
         if (ProbFunc.getChances(0.5)) {
             return;
         }

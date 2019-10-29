@@ -63,7 +63,7 @@ public class World {
      */
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
     private int waterLevel = 100;
-    int geologyTurns = 5;
+    int geologyTurns = 50;
     int initialTurns = 100;
     private int numberOfGroups;
 

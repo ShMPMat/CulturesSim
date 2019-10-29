@@ -33,7 +33,7 @@ public class ResourceDependency {
     }
 
     public double satisfactionPercent(Tile tile, Resource resource) {
-        double _amount = amount * resource.amount;
+        double _amount = amount * ( resource == null ? 1 : resource.amount);
         for (Resource res: tile.getResources()) {
             if (res == resource) {
                 continue;
@@ -41,6 +41,7 @@ public class ResourceDependency {
             if (isResourceGood(res)) {
                 switch (type) {
                     case CONSUME:
+                    case AVOID:
                         if (_amount + currentAmount < 0) {
                             currentAmount += _amount;
                             break;
@@ -49,7 +50,6 @@ public class ResourceDependency {
                         currentAmount += part.amount;
                         part.amount = 0;
                         break;
-                    case AVOID:
                     case EXIST:
                         currentAmount += res.amount;
                 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Wind {
     static double windPropagation = 0.025;
-    static double maximalLevel = 30;
+    static double maximalLevel = 10;
     List<ShnyPair<Tile, Double>> affectedTiles;
 
     public Wind() {

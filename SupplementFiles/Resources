@@ -8,8 +8,8 @@
         ~Vapour:0.0025;CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
 
--Cactus          0.10    1      15         10     50   25         0 0  Plant        @PlantFibre
-        ~Vapour:0.01;AVOID
+-Cactus          0.10    1      15         10     50   50         0 0  Plant        @PlantFibre
+        ~Vapour:1;AVOID
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
 
 -Tree            0.05    5      40         0       30   100       0 0  Plant        @Wood

@@ -189,9 +189,13 @@ public class Genome {
     }
 
     public boolean isAcceptable(Tile tile) {
-        return tile.getType() != Tile.Type.Water && /*dependencies.stream().filter(dependency -> !dependency.isPositive())
-                .allMatch(dependency -> tile.getResources().stream().an) &&*/ //TODO catch bad resources
+        return tile.getType() != Tile.Type.Water  &&
                 (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
+    }
+
+    public boolean isOptimal(Tile tile) {
+        return isAcceptable(tile) && dependencies.stream().filter(dependency -> !dependency.isPositive())
+                .allMatch(dependency -> dependency.satisfactionPercent(tile, null) >= 0.9);
     }
 
     boolean isMovable() {

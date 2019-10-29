@@ -106,6 +106,9 @@ public class TectonicPlate extends Territory {
     }
 
     public void move() {
+        if (ProbFunc.getChances(0.5)) {
+            return;
+        }
         for (Tile tile: getAffectedTiles()) {
             tile.setLevel(isMoved ? tile.getLevel() + 1 :
                     tile.getLevel() + 5 + ProbFunc.randomInt(5));

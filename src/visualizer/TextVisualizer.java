@@ -63,7 +63,7 @@ public class TextVisualizer {
      * Base constructor.
      */
     public TextVisualizer() {
-        int numberOfGroups = 10, mapSize = 30, numberOrResources = 5;
+        int numberOfGroups = 10, mapSize = 35, numberOrResources = 5;
         controller = new Controller(numberOfGroups, mapSize, numberOrResources,
                 new MapModel(0.01, 0.25));
         world = controller.world;
@@ -448,8 +448,10 @@ public class TextVisualizer {
                         case Temperature:
                             printMap(tile -> {
                                 String colour = "";
-                                if (tile.getTemperature() < -10) {
+                                if (tile.getTemperature() < -20) {
                                     colour = "\033[44m";
+                                } else if (tile.getTemperature() < -10) {
+                                    colour = "\033[104m";
                                 } else if (tile.getTemperature() < 0) {
                                     colour = "\033[46m";
                                 } else if (tile.getTemperature() < 10) {

@@ -95,10 +95,16 @@ public class RandomMapGenerator {
 
 
     private static void scatter(World world, Resource resource, int n) {
+        List<Tile> goodTiles = world.map.getTilesWithPredicate(tile -> resource.getGenome().isOptimal(tile));
         for (int i = 0; i < n; i++) {
-            Tile tile = ProbFunc.randomTile(world.map);
-            while (!tile.canSettle(resource.getGenome())) {
+            Tile tile;
+            if (goodTiles.isEmpty()) {
                 tile = ProbFunc.randomTile(world.map);
+                while (!resource.getGenome().isAcceptable(tile)) {
+                    tile = ProbFunc.randomTile(world.map);
+                }
+            } else {
+                tile = ProbFunc.randomElement(goodTiles);
             }
             tile.addDelayedResource(resource.copy());
             addDependencies(resource, tile, world);
