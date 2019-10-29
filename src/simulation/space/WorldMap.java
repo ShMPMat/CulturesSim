@@ -1,6 +1,5 @@
 package simulation.space;
 
-import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
@@ -20,6 +19,9 @@ import static extra.ProbFunc.*;
  */
 public class WorldMap {
     List<Boolean> _execution;
+    /**
+     * Array which contains Map Tiles.
+     */
     public List<List<Tile>> map;
     public List<TectonicPlate> tectonicPlates;
     public List<ResourceIdeal> resourcePool;
@@ -67,6 +69,12 @@ public class WorldMap {
         }
     }
 
+    /**
+     *
+     * @param x X coordinate of the Tile.
+     * @param y Y coordinate os the Tile.
+     * @return Tile on this coordinates or null if coordinates are out of bounds.
+     */
     public Tile get(int x, int y) {
         try {
             return map.get(x).get(y);
@@ -110,6 +118,10 @@ public class WorldMap {
         return tectonicPlates;
     }
 
+    /**
+     * @param predicate the Predicate on which Tiles will be tested.
+     * @return All Tiles from the map which satisfy the Predicate.
+     */
     public List<Tile> getTilesWithPredicate(Predicate<Tile> predicate) {
         List<Tile> goodTiles = new ArrayList<>();
         for (List<Tile> tiles : map) {
@@ -140,7 +152,7 @@ public class WorldMap {
 //        }
         for (List<Tile> line : map) {
             for (Tile tile : line) {
-                tile.update();
+                tile.startUpdate();
             }
         }
 
@@ -168,6 +180,9 @@ public class WorldMap {
         }
     }
 
+    /**
+     * MOves all the Plates on the Map.
+     */
     public void movePlates() {
         for (TectonicPlate plate: getTectonicPlates()) {
             plate.move();

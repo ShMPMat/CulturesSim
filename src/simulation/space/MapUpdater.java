@@ -15,7 +15,7 @@ public class MapUpdater implements Runnable {
     public void run() {
         for (int i = s; i < e; i++) {
             for (Tile tile : map.map.get(i)) {
-                tile.update();
+                tile.startUpdate();
             }
         }
         map._execution.set(i, true);

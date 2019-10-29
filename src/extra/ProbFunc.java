@@ -35,10 +35,20 @@ public class ProbFunc {
         return  (n == ceiling ? n - 1 : n);
     }
 
+    /**
+     * @param list a List from which a random element will be chosen.
+     * @param <E> Type of the List
+     * @return a random element from the List.
+     */
     public static <E> E randomElement(List<E> list) {
         return list.get(randomInt(list.size()));
     }
 
+    /**
+     * @param array An Array from which a random element will be chosen.
+     * @param <E> Type of the Array.
+     * @return a random element from the Array.
+     */
     public static <E> E randomElement(E[] array) {
         return array[randomInt(array.length)];
     }
@@ -67,6 +77,10 @@ public class ProbFunc {
         return randomElement(goodTiles);
     }
 
+    /**
+     * @param territory A Territory from which a random Tile will be chosen.
+     * @return A random Tile from the Territory.
+     */
     public static Tile randomTile(Territory territory) {
         if (territory.isEmpty()) {
             return null;

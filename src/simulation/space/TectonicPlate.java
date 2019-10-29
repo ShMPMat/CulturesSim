@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TectonicPlate extends Territory {
+    /**
+     * Enum with all possible directions in which Plate can move.
+     */
     public enum Direction {
         U(-1, 0),
         D(1, 0),
@@ -16,13 +19,30 @@ public class TectonicPlate extends Territory {
         ShnyPair<Integer, Integer> vector;
         Direction(int x, int y) {vector = new ShnyPair<>(x, y);}
     }
+
+    /**
+     * Enum with all possible Types of the Plate.
+     */
     public enum Type {
         Terrain,
         Oceanic
     }
+
+    /**
+     * In which Direction this Plate moves.
+     */
     private Direction direction;
+    /**
+     * Type of this Plate.
+     */
     private Type type;
+    /**
+     * Which Tiles are affected by this Plate movement.
+     */
     private List<Tile> affectedTiles;
+    /**
+     * Whether it was moved for the first time.
+     */
     private boolean isMoved = false;
 
     TectonicPlate() {
@@ -30,6 +50,9 @@ public class TectonicPlate extends Territory {
         type = ProbFunc.randomElement(Type.values());
     }
 
+    /**
+     * Changes Plate's Tiles depending on its Type.
+     */
     public void initialize() {
         if (type == Type.Terrain) {
             return;
@@ -53,6 +76,9 @@ public class TectonicPlate extends Territory {
         return direction;
     }
 
+    /**
+     * @return Tiles affected by this Plate.
+     */
     public List<Tile> getAffectedTiles() {
         if (affectedTiles != null) {
             return affectedTiles;
@@ -90,7 +116,7 @@ public class TectonicPlate extends Territory {
             }
             tiles.addAll(neighbours);
         }
-        this.affectedTiles = tiles;
+        this.affectedTiles = tiles;//TODO maybe distinct?
         return this.affectedTiles;
     }
 
@@ -105,6 +131,9 @@ public class TectonicPlate extends Territory {
         return 2;
     }
 
+    /**
+     * Moves plate in its direction and changes landscape.
+     */
     public void move() {
         if (ProbFunc.getChances(0.5)) {
             return;

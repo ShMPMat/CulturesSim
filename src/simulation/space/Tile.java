@@ -8,7 +8,6 @@ import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 
 import java.util.ArrayList;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -19,14 +18,6 @@ import java.util.stream.Collectors;
  * Basic tile of map
  */
 public class Tile {
-    public enum Type {
-        Normal,
-        Mountain,
-        Water,
-        Ice,
-        Woods
-    }
-
     /**
      * Coordinates of this Tile on the WorldMap.
      */
@@ -39,7 +30,6 @@ public class Tile {
      * Type of this Tile.
      */
     private Type type;
-
     /**
      * TectonicPlate by which this Tile is owned.
      */
@@ -53,11 +43,26 @@ public class Tile {
      * stored here before the end of the turn.
      */
     private List<Resource> _delayedResources;
+    /**
+     * Level of this Tile.
+     */
     private int level;
+    /**
+     * Lowest level of this Tile which corresponds to the ground level.
+     */
     private int secondLevel;
+    /**
+     * Temperature for this Tile.
+     */
     private int temperature;
+    /**
+     * Wind which is present on this Tile.
+     */
     private Wind wind;
     private Wind _newWind;
+    /**
+     * Link to the world in which this Tile is present.
+     */
     private World world;
 
     public Tile(int x, int y, World world) {
@@ -80,6 +85,10 @@ public class Tile {
         return world;
     }
 
+    /**
+     * @param predicate Predicate on which neighbour Tiles will bw tested.
+     * @return List of neighbour Tiles which satisfy the Predicate.
+     */
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
         List<Tile> goodTiles = new ArrayList<>();
         WorldMap map = getWorld().map;
@@ -102,18 +111,37 @@ public class Tile {
         return goodTiles;
     }
 
+    /**
+     * @return All neighbour Tiles.
+     */
+    public List<Tile> getNeighbours() {
+        return getNeighbours(t -> true);
+    }
+
     public TectonicPlate getPlate() {
         return plate;
     }
 
+    /**
+     * @param tile Tile to which distance will be calculated.
+     * @return distance to the Tile (it is not guarantied it will be euclidean).
+     */
     public int getDistance(Tile tile) {
         return Math.abs(tile.x - x) + Math.abs(tile.y - y);
     }
 
+    /**
+     * @param tiles Collection of tiles from which closest to this Tile will be found.
+     * @return Closest Tile from tiles.
+     */
     public Tile getClosest(Collection<Tile> tiles) {
         return tiles.stream().min(Comparator.comparingInt(this::getDistance)).orElse(null);
     }
 
+    /**
+     * @param tiles Collection of tiles in which distance will be calculated.
+     * @return Distance to the closest tile from tiles.
+     */
     public int getClosestDistance(Collection<Tile> tiles) {
         return getClosest(tiles).getDistance(this);
     }
@@ -144,45 +172,6 @@ public class Tile {
 
     public int getY() {
         return y;
-    }
-
-    public void addResource(Resource resource) {
-        if (resource.getAmount() == 0) {
-            return;
-        }
-        if (!resource.isMovable() && resource.getTile() != null) {
-            return;
-        }
-        for (Resource res : resources) {
-            if (res.fullEquals(resource)) {
-                res.merge(resource);
-                return;
-            }
-        }
-        resources.add(resource);
-        resource.setTile(this);
-    }
-
-    public void removeResource(Resource resource) {
-        for (int i = 0; i < resources.size(); i++) {
-            Resource res = resources.get(i);
-            if (res.fullEquals(resource)) {
-                resources.remove(i);
-                return;
-            }
-        }
-    }
-
-    public void addDelayedResource(Resource resource) {
-        if (resource.getAmount() == 0) {
-            return;
-        }
-//        if (resource.isMovable()) {
-//            System.err.println("Movable resource added in Delayed resources.");
-//            return;
-//        }
-        _delayedResources.add(resource);
-        resource.setTile(this);
     }
 
     public void setPlate(TectonicPlate plate) {
@@ -223,6 +212,57 @@ public class Tile {
         if (level < world.getWaterLevel()) {
             type = Type.Water;
         }
+    }
+
+    /**
+     * Adds Resource to the Resources available on this Tile.
+     * @param resource Resource which will be added.
+     */
+    private void addResource(Resource resource) {
+        if (resource.getAmount() == 0) {
+            return;
+        }
+        if (!resource.isMovable() && resource.getTile() != null) {
+            return;
+        }
+        for (Resource res : resources) {
+            if (res.fullEquals(resource)) {
+                res.merge(resource);
+                return;
+            }
+        }
+        resources.add(resource);
+        resource.setTile(this);
+    }
+
+    /**
+     * Removes resource from this Tile if it is present.
+     * @param resource resource which will be deleted.
+     */
+    public void removeResource(Resource resource) {
+        for (int i = 0; i < resources.size(); i++) {
+            Resource res = resources.get(i);
+            if (res.fullEquals(resource)) {
+                resources.remove(i);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Adds resources which will be available on this Tile on the next turn.
+     * @param resource resource which will be added.
+     */
+    public void addDelayedResource(Resource resource) {
+        if (resource.getAmount() == 0) {
+            return;
+        }
+//        if (resource.isMovable()) {
+//            System.err.println("Movable resource added in Delayed resources.");
+//            return;
+//        }
+        _delayedResources.add(resource);
+        resource.setTile(this);
     }
 
     private void checkIce() {
@@ -270,15 +310,10 @@ public class Tile {
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
     }
 
-    public boolean canSettle(Genome genome) {
-        return genome.isAcceptable(this);
-    }
-
-    public boolean canSettleStrong(Genome genome) {
-        return genome.isOptimal(this);
-    }
-
-    public void update() {
+    /**
+     * Starts update for this Tile.
+     */
+    public void startUpdate() {
         _newWind = new Wind();
         checkIce();
         _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
@@ -297,7 +332,7 @@ public class Tile {
             if (!resource.isMovable()) {
                 continue;
             }
-            for (ShnyPair<Tile, Double> pair: wind.affectedTiles) {
+            for (ShnyPair<Tile, Double> pair : wind.affectedTiles) {
                 int part = (int) (resource.getAmount() * Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
                 if (part > 0) {
                     pair.first.addDelayedResource(resource.getCleanPart(part));
@@ -388,7 +423,7 @@ public class Tile {
         if (ProbFunc.getChances(0.5)) {
             return;
         }
-        List<Tile> tiles = getNeighbours(t -> true);
+        List<Tile> tiles = getNeighbours();
         tiles.sort(Comparator.comparingInt(tile -> tile.secondLevel));
         Tile lowest = tiles.get(0);
         if (lowest.secondLevel + 1 < secondLevel) {
@@ -414,5 +449,13 @@ public class Tile {
             stringBuilder.append(resource).append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    public enum Type {
+        Normal,
+        Mountain,
+        Water,
+        Ice,
+        Woods
     }
 }

@@ -67,7 +67,7 @@ public class PlacementStrategy {
                 return chooseSpecialTile();
             case Clumps:
                 Tile tile = chooseSpecialTile();
-                tiles = tile.getNeighbours(t -> true);
+                tiles = tile.getNeighbours();
                 tiles.add(tile);
                 return ProbFunc.randomElement(tiles);
         }

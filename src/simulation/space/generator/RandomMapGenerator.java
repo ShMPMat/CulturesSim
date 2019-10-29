@@ -121,7 +121,7 @@ public class RandomMapGenerator {
             }
             for (String name: dependency.getResourceNames()) {
                 Resource dep = world.getResourceFromPoolByName(name);
-                if (tile.canSettle(dep.getGenome())) {
+                if (dep.getGenome().isAcceptable(tile)) {
                     tile.addDelayedResource(dep.copy());
                 }
                 addDependencies(dep, tile, world);
@@ -131,7 +131,7 @@ public class RandomMapGenerator {
                         !r.getSimpleName().equals(resource.getSimpleName()) &&
                         r.getGenome().getPrimaryMaterial() != null &&
                         r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
-                    if (tile.canSettle(dep.getGenome())) {
+                    if (dep.getGenome().isAcceptable(tile)) {
                         tile.addDelayedResource(dep.copy());
                     }
                     addDependencies(dep, tile, world);

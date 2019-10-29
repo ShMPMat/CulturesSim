@@ -311,13 +311,13 @@ public class Resource { //TODO events of merging and stuff
     private boolean expand() {
         List<Tile> l = new ArrayList<>();
         l.add(getTile());
-        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGenome()) &&
+        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile) &&
                 getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile)));
         if (newTile == null) {
             if (getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile))) {
                 newTile = tile;
             } else {
-                newTile = ProbFunc.randomTileOnBrink(l, tile -> tile.canSettle(getGenome()));
+                newTile = ProbFunc.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile));
                 if (newTile == null) {
                     newTile = tile;
                 }

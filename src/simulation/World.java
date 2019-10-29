@@ -62,9 +62,21 @@ public class World {
      * How many turns passed from the beginning of the simulation.
      */
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
+    /**
+     * Below what level World will be covered under water.
+     */
     private int waterLevel = 100;
+    /**
+     * How many initial geology turns will pass in the beginning of the simulation.
+     */
     int geologyTurns = 50;
+    /**
+     * How many turns will be spent before filling Resources in the World.
+     */
     int initialTurns = 100;
+    /**
+     * How many initial Groups will be generated.
+     */
     private int numberOfGroups;
 
     /**
@@ -167,7 +179,9 @@ public class World {
         }
     }
 
-
+    /**
+     * Reads all Resources from supplement file and fills resourcePool with them.
+     */
     private void fillResourcePool() {
         InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Resources");
         String line;
