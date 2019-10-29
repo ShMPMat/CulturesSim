@@ -16,7 +16,6 @@ import simulation.space.WorldMap;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -70,7 +69,9 @@ public class TextVisualizer {
         map = world.map;
         interactionModel = controller.interactionModel;
         print();
-        controller.initialize();
+        controller.initializeFirst();
+        print();
+        controller.initializeSecond();
         groupPopulations = new ArrayList<>();
         for (int i = 0; i < numberOfGroups; i++) {
             groupPopulations.add(0);

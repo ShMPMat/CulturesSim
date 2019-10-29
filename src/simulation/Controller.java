@@ -29,14 +29,21 @@ public class Controller {
         this.interactionModel = interactionModel;
     }
 
-    public void initialize() {
+    public void initializeFirst() {
         for (int i = 0; i < world.geologyTurns; i++) {
             geologicTurn();
         }
         for (int i = 0; i < world.initialTurns; i++) {
             turn();
         }
-        world.initialize();
+        world.initializeFirst();
+    }
+
+    public void initializeSecond() {
+        for (int i = 0; i < world.stabilizationTurns; i++) {
+            turn();
+        }
+        world.initializeSecond();
     }
 
     /**

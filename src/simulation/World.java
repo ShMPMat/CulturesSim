@@ -74,6 +74,7 @@ public class World {
      * How many turns will be spent before filling Resources in the World.
      */
     int initialTurns = 100;
+    int stabilizationTurns = 100;
     /**
      * How many initial Groups will be generated.
      */
@@ -99,8 +100,11 @@ public class World {
 
     }
 
-    public void initialize() {
+    public void initializeFirst() {
         RandomMapGenerator.fillResources(this);
+    }
+
+    public void initializeSecond() {
         for (int i = 0; i < numberOfGroups; i++) {
             groups.add(new Group("G" + i, this, 100 + ProbFunc.randomInt(100), 1));
         }
