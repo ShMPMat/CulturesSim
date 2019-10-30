@@ -22,6 +22,7 @@ public class AspectTag {
      * Whether Resource doesn't waste on use.
      */
     boolean isInstrumental;
+    public int level = 1;
 
     public AspectTag(String name, boolean isAbstract, boolean isInstrumental) {
         this.name = name;

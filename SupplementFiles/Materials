@@ -1,25 +1,25 @@
-PlantFibre    100       -soft     -flexible      -thin                -solid    -_can_be_ignited
-Wood          800       -hard     -sturdy                             -solid    -_can_be_ignited
-Pulp          80        -soft                                         -solid    -eatable
-Seed          700       -hard     -sturdy                             -solid
-Fungus        100       -springy                                      -solid    -eatable
-Meat          300       -springy  -flexible                           -solid    -eatable              +Bake:RoastedMeat
-Fat           300       -soft     -flexible                           -solid
-Bone          700       -hard     -sturdy                             -solid
-Chitin        500       -hard     -sturdy                             -solid
-Fur           200       -soft                                         -solid
-Feather       200       -soft     -flexible                           -solid
+PlantFibre    100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
+Wood          800       -hard:1     -sturdy:1                              -solid:1   -_can_be_ignited:1
+Pulp          80        -soft:1                                            -solid:1   -eatable:2
+Seed          700       -hard:1     -sturdy:1                              -solid:1
+Fungus        100       -springy:1                                         -solid:1   -eatable:2
+Meat          300       -springy:1  -flexible:1                            -solid:1   -eatable:1              +Bake:RoastedMeat
+Fat           300       -soft:1     -flexible:1                            -solid:1
+Bone          700       -hard:1     -sturdy:1                              -solid:1
+Chitin        500       -hard:1     -sturdy:1                              -solid:1
+Fur           200       -soft:1                                            -solid:1
+Feather       200       -soft:1     -flexible:1                            -solid:1
 
-Fibre         100       -soft     -flexible      -thin                -solid    -_can_be_ignited
-Cloth         100       -soft                    -wide       -warm    -solid    -_can_be_ignited
+Fibre         100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
+Cloth         100       -soft:1                      -wide:1     -warm:1   -solid:1   -_can_be_ignited:1
 
-RoastedMeat   400       -hard     -stiff                              -solid    -eatable
+RoastedMeat   400       -hard:1     -stiff:1                               -solid:1   -eatable:4
 
-Clay          1000      -soft     -malleable                          -solid                          +Bake:Ceramics
-Ceramics      1000      -hard     -fragile                            -solid
+Clay          1000      -soft:1     -malleable:1                           -solid:1                         +Bake:Ceramics
+Ceramics      1000      -hard:1     -fragile:1                             -solid:1
 
-Stone         2500      -hard     -sturdy                             -solid
+Stone         2500      -hard:1     -sturdy:1                              -solid:1
 
-Flame         10        -burns                                        -gas
-Ash           80        -soft     -powder                             -solid
-Water         1000                                                    -gas
+Flame         10        -burns:1                                           -gas:1
+Ash           80        -soft:1     -powder:1                              -solid:1
+Water         1000                                                         -gas:1

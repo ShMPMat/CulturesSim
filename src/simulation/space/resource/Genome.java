@@ -21,7 +21,6 @@ public class Genome {
      * Type of the Resource.
      */
     private Type type;
-    private int efficiencyCoof;
     /**
      * Whether this Genome can mutate itself.
      */
@@ -60,9 +59,9 @@ public class Genome {
     private Material primaryMaterial;
     private int _mutationCount = 0;
 
-    Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax, boolean isMutable,
-           boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
-           int efficiencyCoof, ResourceCore legacy, ResourceCore templateLegacy, Material primaryMaterial, World world) {
+    Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
+           boolean isMutable, boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
+           ResourceCore legacy, ResourceCore templateLegacy, Material primaryMaterial, World world) {
         this.name = name;
         this.type = type;
         this.world = world;
@@ -78,7 +77,6 @@ public class Genome {
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
-        this.efficiencyCoof = efficiencyCoof;
         naturalDensity = (int) Math.ceil(world.tileScale * world.tileScale * defaultAmount);
         if (naturalDensity > 100000000) {
             System.err.println("Very high density in Genome " + name + " - " + naturalDensity);
@@ -90,7 +88,7 @@ public class Genome {
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
                 genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
-                genome.defaultAmount, genome.efficiencyCoof, genome.legacy, genome.templateLegacy, genome.primaryMaterial,
+                genome.defaultAmount, genome.legacy, genome.templateLegacy, genome.primaryMaterial,
                 genome.world);
         genome.parts.forEach(this::addPart);
     }
@@ -161,10 +159,6 @@ public class Genome {
 
     public int getTemperatureMax() {
         return temperatureMax;
-    }
-
-    int getEfficiencyCoof() {
-        return efficiencyCoof;
     }
 
     String getLegacyPostfix() {

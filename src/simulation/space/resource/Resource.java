@@ -51,12 +51,12 @@ public class Resource { //TODO events of merging and stuff
         setTile(null);
     }
 
-    Resource(String[] tags, int efficiencyCoof, int amount, World world) {
-        this(new ResourceCore(tags, efficiencyCoof, world), amount);
+    Resource(String[] tags, int amount, World world) {
+        this(new ResourceCore(tags, world), amount);
     }
 
-    public Resource(String[] tags, int efficiencyCoof, World world) {
-        this(tags, efficiencyCoof, 100 + ProbFunc.randomInt(10), world);
+    public Resource(String[] tags, World world) {
+        this(tags, 100 + ProbFunc.randomInt(10), world);
     }
 
     public Resource(ResourceCore resourceCore) {
@@ -89,10 +89,6 @@ public class Resource { //TODO events of merging and stuff
 
     public int getAmount() {
         return amount;
-    }
-
-    public int getEfficiencyCoof() {
-        return resourceCore.getEfficiencyCoof();
     }
 
     public double getSpreadProbability() {
@@ -356,10 +352,9 @@ public class Resource { //TODO events of merging and stuff
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() +
-                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", efficiency coof - " +
-                resourceCore.getEfficiencyCoof() + ", natural density - " + getGenome().getNaturalDensity() +
-                ", spread probability - " + getSpreadProbability() + ", mass - " + getGenome().getMass() + ", amount - "
-                + amount + ", tags: ");
+                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", natural density - " +
+                getGenome().getNaturalDensity() + ", spread probability - " + getSpreadProbability() + ", mass - " +
+                getGenome().getMass() + ", amount - " + amount + ", tags: ");
         for (AspectTag aspectTag : resourceCore.getTags()) {
             stringBuilder.append(aspectTag.name).append(" ");
         }

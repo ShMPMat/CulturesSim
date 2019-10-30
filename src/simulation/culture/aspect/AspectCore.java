@@ -65,7 +65,7 @@ class AspectCore {
         return name;
     }
 
-    Collection<AspectTag> getTags() {
+    List<AspectTag> getTags() {
         return tags;
     }
 
@@ -75,8 +75,11 @@ class AspectCore {
 
     void addAllTags(Collection<AspectTag> tags) {
         for (AspectTag tag : tags) {
-            if (!getTags().contains(tag)) {
-                getTags().add(tag);
+            if (!this.tags.contains(tag)) {
+                this.tags.add(tag);
+            } else if (this.tags.get(this.tags.indexOf(tag)).level < tag.level) {
+                this.tags.remove(tag);
+                this.tags.add(tag);
             }
         }
     }

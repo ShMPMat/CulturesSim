@@ -9,10 +9,11 @@ public class ResourceDependency {
     private List<String> resourceNames = new ArrayList<>();
     private List<String> materialNames = new ArrayList<>();
     private double amount;
+    private double deprivationCoefficient;
     private int currentAmount = 0;
     private Type type;
 
-    public ResourceDependency(Type type, double amount, List<String> names) {
+    public ResourceDependency(Type type, double amount, double deprivationCoefficient, List<String> names) {
         for (String name: names) {
             if (name.charAt(0) == '@') {
                 this.materialNames.add(name.substring(1));
@@ -21,6 +22,7 @@ public class ResourceDependency {
             }
         }
         this.amount = amount;
+        this.deprivationCoefficient = deprivationCoefficient;
         this.type = type;
     }
 
@@ -38,7 +40,7 @@ public class ResourceDependency {
             if (res == resource) {
                 continue;
             }
-            if (isResourceGood(res)) {
+            if (isResourceDependency(res)) {
                 switch (type) {
                     case CONSUME:
                     case AVOID:
@@ -63,7 +65,7 @@ public class ResourceDependency {
             currentAmount -= _amount;
         }
         res = (type == Type.AVOID ? 1 - res : res);
-        return (res + 1) / 2;
+        return res + (1 - res) / deprivationCoefficient;
     }
 
     public boolean hasNeeded(Tile tile) {
@@ -71,6 +73,10 @@ public class ResourceDependency {
     }
 
     public boolean isResourceGood(Resource resource) {
+        return type == Type.AVOID ? !isResourceDependency(resource) : isResourceDependency(resource);
+    }
+
+    public boolean isResourceDependency(Resource resource) {
         return (resourceNames.contains(resource.getSimpleName()) || resource.getGenome().getPrimaryMaterial() != null &&
                 materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.amount > 0;
     }

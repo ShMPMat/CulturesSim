@@ -1,5 +1,6 @@
 package simulation.space.resource;
 
+import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 
@@ -23,6 +24,7 @@ public class Property {
      * List of AspectTags associated with this Property.
      */
     private List<AspectTag> tags;
+    private int level = 1;
 
     public Property(String[] tags, World world) {
         this.tags = new ArrayList<>();
@@ -38,6 +40,19 @@ public class Property {
                 }
             }
         }
+        setAspectLevel();
+    }
+
+    public Property(String name, World world, List<AspectTag> tags, int level) {
+        this.name = name;
+        this.world = world;
+        this.tags = new ArrayList<>(tags);
+        this.level = level;
+        setAspectLevel();
+    }
+
+    private void setAspectLevel() {
+        tags.forEach(aspectTag -> aspectTag.level = level);
     }
 
     /**
@@ -54,6 +69,10 @@ public class Property {
      */
     public String getName() {
         return name;
+    }
+
+    public Property copy(int level) {
+        return new Property(name, world, tags, level);
     }
 
     @Override

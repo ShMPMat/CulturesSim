@@ -176,7 +176,11 @@ public class TextVisualizer {
         WorldMap worldMap = controller.world.map;
         main.append("  ");
         for (int i = 0; i < worldMap.map.get(0).size(); i++) {
-            main.append((i < 10 ? " " : i / 10));
+            main.append((i < 100 ? " " : i / 100 % 100));
+        }
+        main.append("\n").append("  ");
+        for (int i = 0; i < worldMap.map.get(0).size(); i++) {
+            main.append((i < 10 ? " " : i / 10 % 10));
         }
         main.append("\n").append("  ");
         for (int i = 0; i < worldMap.map.get(0).size(); i++) {
@@ -389,6 +393,19 @@ public class TextVisualizer {
         group.getCulturalCenter().addWant(resource);
     }
 
+    private void addResourceOnTile(Tile tile, String resourceName) {
+        if (tile == null) {
+            System.err.println("No such Tile");
+            return;
+        }
+        Resource resource = world.getResourceFromPoolByName(resourceName);
+        if (resource == null) {
+            System.err.println("No such Resource");
+            return;
+        }
+        tile.addDelayedResource(resource.copy());
+    }
+
     /**
      * Runs interface for the simulation control.
      */
@@ -527,6 +544,28 @@ public class TextVisualizer {
                                 return "\033[90m" + colour + Math.abs(tile.getSecondLevel() % 10);
                             });
                             break;
+                        case Vapour:
+                            printMap(tile -> {
+                                String colour = "";
+                                Resource vapour = tile.getResources().stream().filter(resource ->
+                                        resource.getSimpleName().equals("Vapour")).findFirst().orElse(null);
+                                int level = vapour == null ? 0 : vapour.getAmount();
+                                if (level == 0) {
+                                    colour = "\033[44m";
+                                } else if (level < 10) {
+                                    colour = "\033[104m";
+                                } else if (level < 20) {
+                                    colour = "\033[46m";
+                                } else if (level < 30) {
+                                    colour = "\033[47m";
+                                } else if (level < 40){
+                                    colour = "\033[43m";
+                                } else {
+                                    colour = "\033[41m";
+                                }
+                                return "\033[90m" + colour + Math.abs(level % 10);
+                            });
+                            break;
                         case Resource:
                             Resource resource = world.getResourceFromPoolByName(line.substring(2));
                             if (resource != null) {
@@ -569,6 +608,10 @@ public class TextVisualizer {
                             _s = line.split(" ");
                             addWantToGroup(world.groups.get(Integer.parseInt(_s[1].substring(1))), _s[2]);
                             break;
+                        case AddResource:
+                            _s = line.split(" ");
+                            addResourceOnTile(map.get(Integer.parseInt(_s[0]), Integer.parseInt(_s[1])), _s[2]);
+                            break;
                         default:
                             controller.turn();
                             print();
@@ -609,6 +652,7 @@ public class TextVisualizer {
         Temperature("temperature"),
         Wind("wind"),
         TerrainLevel("level"),
+        Vapour("vapour"),
         /**
          * Command for printing resource information.
          */
@@ -628,6 +672,7 @@ public class TextVisualizer {
          */
         AddAspect("^G\\d+ \\w+"),
         AddWant("^want G\\d+ \\w+"),
+        AddResource("\\d+ \\d+ \\w+"),
         Turn("");
 
         Pattern pattern;

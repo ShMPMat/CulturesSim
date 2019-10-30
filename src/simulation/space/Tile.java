@@ -420,9 +420,12 @@ public class Tile {
     }
 
     public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow
-        if (ProbFunc.getChances(0.5)) {
-            return;
+        for (int i = 0; i < 1; i++) {
+            distributeLevel();
         }
+    }
+
+    private void distributeLevel() {
         List<Tile> tiles = getNeighbours();
         tiles.sort(Comparator.comparingInt(tile -> tile.secondLevel));
         Tile lowest = tiles.get(0);

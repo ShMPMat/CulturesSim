@@ -4,11 +4,11 @@
         ~Vapour:0.01;CONSUME
         ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
 
--ColdPlant       0.10    1      15         -25     0   50         0 0  Plant        @PlantFibre
+-ColdPlant       0.1     1      15         -25     0   50         0 0  Plant        @PlantFibre
         ~Vapour:0.0025;CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
 
--Cactus          0.10    1      15         10     50   50         0 0  Plant        @PlantFibre
+-Cactus          0.2     1      15         10     50   50         0 0  Plant        @PlantFibre
         ~Vapour:1;AVOID
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
 
@@ -40,8 +40,8 @@
         ~Insect:1;CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10
 
--Insect          0.25    0.02   5          0       30   1000      1 0  Animal       @Chitin
-        ~@PlantFibre:0.01;CONSUME
+-Insect          0.25    0.02   5          0       30   500       1 0  Animal       @Chitin
+        ~@PlantFibre:0.01;10'CONSUME
         +Killing:Chitin:1,Meat:1
 
 -Mushroom        0.1     0.05   15         0       30   200       1 0  Plant        @Fungus

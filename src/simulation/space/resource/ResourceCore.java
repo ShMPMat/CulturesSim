@@ -23,11 +23,13 @@ public class ResourceCore {
     private List<AspectTag> tags, _tags;
     private Meme meaning;
 
-    ResourceCore(String[] tags, int efficiencyCoof, World world) {
+    ResourceCore(String[] tags, World world) {
         initializeMutualFields(tags[0], new ArrayList<>(), new ArrayList<>(),
-                new Genome(tags[0], Genome.Type.valueOf(tags[9]), Double.parseDouble(tags[2]), Double.parseDouble(tags[1]), Integer.parseInt(tags[4]),
-                        Integer.parseInt(tags[5]), false, Integer.parseInt(tags[7]) == 1, false,
-                        Integer.parseInt(tags[8]) == 1, Integer.parseInt(tags[3]), Integer.parseInt(tags[6]), efficiencyCoof, null, null, null, world),
+                new Genome(tags[0], Genome.Type.valueOf(tags[9]), Double.parseDouble(tags[2]),
+                        Double.parseDouble(tags[1]), Integer.parseInt(tags[4]), Integer.parseInt(tags[5]),
+                        false, Integer.parseInt(tags[7]) == 1, false,
+                        Integer.parseInt(tags[8]) == 1, Integer.parseInt(tags[3]), Integer.parseInt(tags[6]),
+                        null, null, null, world),
                 new HashMap<>(), null);
         for (int i = 10; i < tags.length; i++) {
             String tag = tags[i];
@@ -48,8 +50,10 @@ public class ResourceCore {
                     _parts.add(tag.substring(1));
                     break;
                 case '~':
-                    genome.addDependency(new ResourceDependency(ResourceDependency.Type.valueOf(tag.substring(tag.indexOf(';') + 1)),
+                    genome.addDependency(new ResourceDependency(
+                            ResourceDependency.Type.valueOf(tag.substring(Math.max(tag.indexOf(';'), tag.indexOf('\'')) + 1)),
                             Double.parseDouble(tag.substring(tag.indexOf(':') + 1, tag.indexOf(';'))),
+                            tag.indexOf('\'') == -1 ? 2 : Double.parseDouble(tag.substring(tag.indexOf(';') + 1, tag.indexOf('\''))),
                             Arrays.asList(tag.substring(1, tag.indexOf(':')).split(","))));
             }
         }
@@ -188,10 +192,6 @@ public class ResourceCore {
 
     public Genome getGenome() {
         return genome;
-    }
-
-    public int getEfficiencyCoof() {
-        return genome.getEfficiencyCoof();
     }
 
     public List<Material> getMaterials() {

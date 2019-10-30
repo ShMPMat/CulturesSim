@@ -196,7 +196,7 @@ public class World {
                 break;
             }
             tags = line.split("\\s+");
-            resourcePool.add(new ResourceIdeal(tags, 1, this));
+            resourcePool.add(new ResourceIdeal(tags, this));
         }
         resourcePool.forEach(Resource::actualizeLinks);
         resourcePool.forEach(Resource::actualizeParts);

@@ -41,7 +41,8 @@ public class Material {
                             tag.substring(tag.indexOf(':') + 1));
                     break;
                 case '-':
-                    properties.add(world.getPropertyFromPoolByName(tag.substring(1)));
+                    properties.add(world.getPropertyFromPoolByName(tag.substring(1, tag.indexOf(':')))
+                            .copy(Integer.parseInt(tag.substring(tag.indexOf(':') + 1))));
             }
         }
     }

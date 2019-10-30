@@ -25,6 +25,7 @@ public class WorldMap {
     public List<List<Tile>> map;
     public List<TectonicPlate> tectonicPlates;
     public List<ResourceIdeal> resourcePool;
+    private int amountOfPlates = 10;
 
     private World world;
 
@@ -43,7 +44,7 @@ public class WorldMap {
     public void initializePlates() {
         List<Tile> usedTiles = new ArrayList<>();
         tectonicPlates = new ArrayList<>();
-        for (int i = 0; i< 5; i++) {
+        for (int i = 0; i < amountOfPlates; i++) {
             TectonicPlate tectonicPlate = new TectonicPlate();
             Tile tile = randomTile(this);
             while (usedTiles.contains(tile)) {
@@ -77,6 +78,11 @@ public class WorldMap {
      */
     public Tile get(int x, int y) {
         try {
+//            if (y < 0) {
+//                y = map.get(0).size() + y;
+//            } else if (y >= map.get(0).size()) {
+//                y -= map.get(0).size();
+//            }
             return map.get(x).get(y);
         } catch (IndexOutOfBoundsException e) {
             return null;

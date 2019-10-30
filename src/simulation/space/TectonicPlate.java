@@ -135,7 +135,7 @@ public class TectonicPlate extends Territory {
      * Moves plate in its direction and changes landscape.
      */
     public void move() {
-        if (ProbFunc.getChances(0.5)) {
+        if (ProbFunc.getChances(0.75) && isMoved) {
             return;
         }
         for (Tile tile: getAffectedTiles()) {
