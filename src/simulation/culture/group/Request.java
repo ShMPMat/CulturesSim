@@ -65,6 +65,17 @@ public class Request {
         return null;
     }
 
+    int satisfactionLevel(Resource sample) {
+        if (tag != null) {
+            int index = sample.getTags().indexOf(tag);
+            return index == -1 ? 0 : sample.getTags().get(index).level;
+        }
+        if (resource != null) {
+            return resource == sample ? 1 : 0;
+        }
+        return 0;
+    }
+
     int howMuchOfNeeded(ResourcePack resourcePack) {
         if (tag != null) {
             return resourcePack.getAmountOfResourcesWithTag(tag);

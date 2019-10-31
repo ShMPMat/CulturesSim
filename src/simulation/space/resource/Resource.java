@@ -95,7 +95,7 @@ public class Resource { //TODO events of merging and stuff
         return resourceCore.getSpreadProbability();
     }
 
-    public Collection<AspectTag> getTags() {
+    public List<AspectTag> getTags() {
         return resourceCore.getTags();
     }
 
@@ -141,7 +141,7 @@ public class Resource { //TODO events of merging and stuff
         if (this.tile == null || deathTurn == 0) {
             this.tile = tile;
         } else {
-            System.err.println("Unmovable resource being moved!");
+            System.err.println("Unmovable resource being moved! - " + getFullName());
             this.tile = tile;
         }
     }
@@ -152,7 +152,7 @@ public class Resource { //TODO events of merging and stuff
 
     public Resource merge(Resource resource) {
         if (!resource.getBaseName().equals(getBaseName())) {
-            System.err.println("Different resource tried to merge.");
+            System.err.println("Different resource tried to merge - " + getFullName() + " and " + resource.getFullName());
             return this;
         }
         addAmount(resource.amount);
@@ -197,9 +197,6 @@ public class Resource { //TODO events of merging and stuff
     }
 
     public boolean update() {//TODO migration on gig numbers
-        if (getSimpleName().equals("Cactus")) {
-            int i = 0;
-        }
         if (amount <= 0) {
             getTile().removeResource(this);
             return false;
@@ -251,9 +248,9 @@ public class Resource { //TODO events of merging and stuff
             }
         } else if (getSimpleName().equals("Water")) {
             if (tile.getType() != Tile.Type.Water && tile.getNeighbours(t -> t.getType() == Tile.Type.Water).isEmpty()) {
-                List<Tile> tiles = tile.getNeighbours(t -> t.getLevel() <= tile.getLevel());
+                List<Tile> tiles = tile.getNeighbours(t -> t.getLevelWithWater() <= tile.getLevelWithWater());
                 List<Tile> tilesWithWater = tiles.stream().filter(t -> t.getResources().contains(this) &&
-                        t.getLevel() < tile.getLevel()).collect(Collectors.toList());
+                        t.getLevelWithWater() < tile.getLevelWithWater()).collect(Collectors.toList());
                 if (tilesWithWater.isEmpty()) {
                     if (!tiles.isEmpty()) {
                         ProbFunc.randomElement(tiles).addDelayedResource(getCleanPart(amount - 1));

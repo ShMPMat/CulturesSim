@@ -1,10 +1,13 @@
 package simulation.culture.group;
 
+import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.space.resource.ResourcePack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class Stratum {
     private int amount;
@@ -41,6 +44,17 @@ public class Stratum {
 
     public void addAspect(Aspect aspect) {
         aspects.add(aspect);
+    }
+
+    public ResourcePack use(int ceiling, Function<ResourcePack, Integer> amount) {
+        ResourcePack resourcePack = new ResourcePack();
+        for (Aspect aspect: aspects) {
+            ShnyPair<Boolean, ResourcePack> result = aspect.use(ceiling, amount);
+            if (result.first) {
+                resourcePack.add(result.second);
+            }
+        }
+        return resourcePack;
     }
 
     @Override

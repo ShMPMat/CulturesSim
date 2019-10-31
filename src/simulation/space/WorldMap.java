@@ -78,11 +78,11 @@ public class WorldMap {
      */
     public Tile get(int x, int y) {
         try {
-//            if (y < 0) {
-//                y = map.get(0).size() + y;
-//            } else if (y >= map.get(0).size()) {
-//                y -= map.get(0).size();
-//            }
+            if (y < 0) {
+                y = map.get(0).size() + y;
+            } else if (y >= map.get(0).size()) {
+                y -= map.get(0).size();
+            }
             return map.get(x).get(y);
         } catch (IndexOutOfBoundsException e) {
             return null;

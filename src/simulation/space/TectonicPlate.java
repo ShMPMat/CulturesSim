@@ -116,7 +116,7 @@ public class TectonicPlate extends Territory {
             }
             tiles.addAll(neighbours);
         }
-        this.affectedTiles = tiles;//TODO maybe distinct?
+        this.affectedTiles = tiles;
         return this.affectedTiles;
     }
 
@@ -135,7 +135,7 @@ public class TectonicPlate extends Territory {
      * Moves plate in its direction and changes landscape.
      */
     public void move() {
-        if (ProbFunc.getChances(0.75) && isMoved) {
+        if (ProbFunc.getChances(0.85) && isMoved) {
             return;
         }
         for (Tile tile: getAffectedTiles()) {

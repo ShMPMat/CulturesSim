@@ -1,6 +1,7 @@
 package visualizer;
 //TODO check smart territory acquisition it seems not to work
 
+import extra.ProbFunc;
 import simulation.Controller;
 import simulation.World;
 import simulation.culture.Event;
@@ -204,6 +205,9 @@ public class TextVisualizer {
                             break;
                         case Woods:
                             token = "\033[42m";
+                            break;
+                        case Growth:
+                            token = "\033[103m";
                             break;
                     }
                     if (tile.group == null) {

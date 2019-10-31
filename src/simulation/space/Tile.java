@@ -154,6 +154,11 @@ public class Tile {
         return level;
     }
 
+    public int getLevelWithWater() {
+        int index = resources.indexOf(world.getResourceFromPoolByName("Water"));
+        return getLevel() + (index == -1 ? 0 : resources.get(index).getAmount());
+    }
+
     public int getSecondLevel() {
         return secondLevel;
     }
@@ -340,9 +345,11 @@ public class Tile {
             }
         }
         updateTemperature();
-        if (getType() == Type.Normal || getType() == Type.Woods) {
-            if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
+        if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
+            if (resources.stream().anyMatch(resource -> resource.getSimpleName().equals("Tree"))) {
                 setType(Type.Woods);
+            } else if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
+                setType(Type.Growth);
             } else {
                 setType(Type.Normal);
             }
@@ -420,7 +427,7 @@ public class Tile {
     }
 
     public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < (type == Type.Water ? 4 : (level > 105 && level < 120 ? 5 : 1)); i++) {
             distributeLevel();
         }
     }
@@ -459,6 +466,7 @@ public class Tile {
         Mountain,
         Water,
         Ice,
-        Woods
+        Woods,
+        Growth
     }
 }
