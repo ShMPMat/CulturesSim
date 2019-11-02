@@ -50,11 +50,12 @@ public class ResourceCore {
                     _parts.add(tag.substring(1));
                     break;
                 case '~':
+                    String[] elements = tag.split(":");
+                    elements[0] = elements[0].substring(1);
                     genome.addDependency(new ResourceDependency(
-                            ResourceDependency.Type.valueOf(tag.substring(Math.max(tag.indexOf(';'), tag.indexOf('\'')) + 1)),
-                            Double.parseDouble(tag.substring(tag.indexOf(':') + 1, tag.indexOf(';'))),
-                            tag.indexOf('\'') == -1 ? 2 : Double.parseDouble(tag.substring(tag.indexOf(';') + 1, tag.indexOf('\''))),
-                            Arrays.asList(tag.substring(1, tag.indexOf(':')).split(","))));
+                            ResourceDependency.Type.valueOf(elements[elements.length == 4 ? 3 : 2]),
+                            Double.parseDouble(elements[1]), elements.length != 4 ? 2 : Double.parseDouble(elements[2]),
+                            Arrays.asList(elements[0].split(","))));
             }
         }
         computeMaterials();

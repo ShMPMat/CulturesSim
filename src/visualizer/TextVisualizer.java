@@ -63,7 +63,7 @@ public class TextVisualizer {
      * Base constructor.
      */
     public TextVisualizer() {
-        int numberOfGroups = 10, mapSize = 35, numberOrResources = 5;
+        int numberOfGroups = 10, mapSize = 40, numberOrResources = 5;
         controller = new Controller(numberOfGroups, mapSize, numberOrResources,
                 new MapModel(0.01, 0.25));
         world = controller.world;
@@ -215,6 +215,7 @@ public class TextVisualizer {
                             case Water:
                             case Ice:
                             case Woods:
+                            case Growth:
                             case Normal:
                                 List<Resource> actual = tile.getResources().stream().filter(resource ->
                                         resource.getGenome().getType() != Genome.Type.Plant && resource.getAmount() > 0 &&
@@ -616,6 +617,10 @@ public class TextVisualizer {
                             _s = line.split(" ");
                             addResourceOnTile(map.get(Integer.parseInt(_s[0]), Integer.parseInt(_s[1])), _s[2]);
                             break;
+                        case GeologicalTurn:
+                            controller.geologicTurn();
+                            print();
+                            break;
                         default:
                             controller.turn();
                             print();
@@ -677,6 +682,7 @@ public class TextVisualizer {
         AddAspect("^G\\d+ \\w+"),
         AddWant("^want G\\d+ \\w+"),
         AddResource("\\d+ \\d+ \\w+"),
+        GeologicalTurn("Geo"),
         Turn("");
 
         Pattern pattern;

@@ -436,6 +436,9 @@ public class Tile {
         List<Tile> tiles = getNeighbours();
         tiles.sort(Comparator.comparingInt(tile -> tile.secondLevel));
         Tile lowest = tiles.get(0);
+        if (level == 110 && lowest.level == 100) {
+            int i = 0;
+        }
         if (lowest.secondLevel + 1 < secondLevel) {
             setLevel(level - 1);
             lowest.setLevel(lowest.level + 1);

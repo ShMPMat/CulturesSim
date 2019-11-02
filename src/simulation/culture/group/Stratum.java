@@ -2,6 +2,7 @@ package simulation.culture.group;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
 import java.util.ArrayList;

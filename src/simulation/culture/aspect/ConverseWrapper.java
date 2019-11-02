@@ -25,6 +25,7 @@ public class ConverseWrapper extends Aspect {
      * Whether this ConverseWrapper can insert meaning.
      */
     public boolean canInsertMeaning = false;
+    private ConverseWrapper traversedCopy;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
         super(new String[]{aspect.getName()+"On"+resource.getBaseName()}, new HashMap<>(), group);
@@ -62,15 +63,21 @@ public class ConverseWrapper extends Aspect {
     }
 
     public ConverseWrapper stripToMeaning() {
+        if (traversedCopy != null) {
+            return traversedCopy;
+        }
         ConverseWrapper converseWrapper = copy(dependencies, group);
+        traversedCopy = converseWrapper;
         converseWrapper.dependencies.put(new AspectTag("phony"), new HashSet<>());
         for (Dependency dependency : dependencies.get(new AspectTag("phony"))) {
-            if (dependency.getNextWrapper() != null && dependency.getNextWrapper().canInsertMeaning) {
+            ConverseWrapper next = dependency.getNextWrapper();
+            if (next != null && next.canInsertMeaning) {
                 converseWrapper.dependencies.get(new AspectTag("phony")).add(new Dependency(dependency.getType(),
-                        new ShnyPair<>(converseWrapper, dependency.getNextWrapper().stripToMeaning()), group));
-                dependency.getNextWrapper().stripToMeaning();
+                        new ShnyPair<>(converseWrapper, next.stripToMeaning()), group));
+                next.stripToMeaning();
             }
         }
+        traversedCopy = null;
         return converseWrapper;
     }
 

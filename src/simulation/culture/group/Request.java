@@ -10,6 +10,7 @@ import simulation.space.resource.ResourcePack;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Request {
     private Group group;
@@ -65,6 +66,28 @@ public class Request {
         return null;
     }
 
+    Function<ResourcePack, Integer> isAcceptable(Stratum stratum) {
+        if (tag != null) {
+            if (stratum.getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
+                return resourcePack -> resourcePack.getAmountOfResourcesWithTag(tag);
+            } else {
+                return null;
+            }
+        }
+        if (resource != null) {
+            for (Aspect aspect : stratum.getAspects()) {
+                if (aspect instanceof ConverseWrapper) {
+                    if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
+                        return resourcePack -> resourcePack.getAmountOfResource(resource);
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     int satisfactionLevel(Resource sample) {
         if (tag != null) {
             int index = sample.getTags().indexOf(tag);
@@ -74,6 +97,15 @@ public class Request {
             return resource == sample ? 1 : 0;
         }
         return 0;
+    }
+
+    int satisfactionLevel(Stratum stratum) {
+        int result = 0;
+        for (ConverseWrapper converseWrapper: stratum.getAspects().stream().filter(aspect ->
+                aspect instanceof ConverseWrapper).map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toList())) {
+            result += converseWrapper.getResult().stream().reduce(0, (x, y) -> x += satisfactionLevel(y), Integer::sum);
+        }
+        return result;
     }
 
     int howMuchOfNeeded(ResourcePack resourcePack) {
