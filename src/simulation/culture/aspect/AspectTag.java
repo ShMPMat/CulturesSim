@@ -22,16 +22,26 @@ public class AspectTag {
      * Whether Resource doesn't waste on use.
      */
     boolean isInstrumental;
-    public int level = 1;
+    public int level;
 
-    public AspectTag(String name, boolean isAbstract, boolean isInstrumental) {
+    public AspectTag(String name, boolean isAbstract, boolean isInstrumental, int level) {
         this.name = name;
         this.isAbstract = isAbstract;
         this.isInstrumental = isInstrumental;
+        this.level = level;
+    }
+
+    public AspectTag(String name, boolean isAbstract, boolean isInstrumental) {
+        this(name, isAbstract, isInstrumental, 1);
     }
 
     public AspectTag(String name) {
         this(name, false, false);
+    }
+
+
+    public AspectTag(String name, int level) {
+        this(name, false, false, level);
     }
 
     private Resource consumeAndGetResult(Resource resource, int ceiling) {

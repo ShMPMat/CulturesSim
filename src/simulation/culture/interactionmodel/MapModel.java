@@ -45,7 +45,6 @@ public class MapModel implements InteractionModel {
 
     @Override
     public void geologicTurn(World world) {
-
         int a = world.events.size();
         world.map.geologicUpdate();
 

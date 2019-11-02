@@ -72,7 +72,7 @@ public class Tile {
         updateTemperature();
         this.world = world;
         group = null;
-        setType(Type.Normal);
+        setType(Type.Normal, true);
         resources = new ArrayList<>();
         _delayedResources = new ArrayList<>();
     }
@@ -183,7 +183,7 @@ public class Tile {
         this.plate = plate;
     }
 
-    public void setType(Type type) {
+    public void setType(Type type, boolean updateLevel) {
         if (type == this.type) {
             return;
         }
@@ -191,6 +191,9 @@ public class Tile {
 //        if (level != 0) {
 //            return;
 //        }
+        if (!updateLevel) {
+            return;
+        }
         switch (type) {
             case Mountain:
                 level = 110;
@@ -347,11 +350,11 @@ public class Tile {
         updateTemperature();
         if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
             if (resources.stream().anyMatch(resource -> resource.getSimpleName().equals("Tree"))) {
-                setType(Type.Woods);
+                setType(Type.Woods, false);
             } else if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
-                setType(Type.Growth);
+                setType(Type.Growth, false);
             } else {
-                setType(Type.Normal);
+                setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
             addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(50));
@@ -423,7 +426,7 @@ public class Tile {
     }
 
     private void updateTemperature() {
-        temperature = x - 5 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
+        temperature = x - 15 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
 
     public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow

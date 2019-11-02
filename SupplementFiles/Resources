@@ -99,6 +99,9 @@
 
 -Clothes         0       0.5    100        5       30   1         1 1  None         @Cloth
 
+-StoneAxe        0       0.1    10000      5       30   1         1 1  None         @Stone
+        $weapon:3
+
 
 -House           0       5      10000      5       30   1         0 1  None         @TEMPLATE
 

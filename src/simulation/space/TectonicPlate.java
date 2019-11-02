@@ -58,7 +58,7 @@ public class TectonicPlate extends Territory {
             return;
         }
         for (Tile tile: getTiles()) {
-            tile.setType(Tile.Type.Water);
+            tile.setType(Tile.Type.Water, true);
         }
     }
 

@@ -2,6 +2,7 @@ package simulation.space.resource;
 
 import extra.ProbFunc;
 import simulation.World;
+import simulation.culture.aspect.AspectTag;
 import simulation.space.Tile;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class Genome {
      * From which template Resource was created.
      */
     private ResourceCore templateLegacy;
+    private List<AspectTag> tags = new ArrayList<>();
 
     private Material primaryMaterial;
     private int _mutationCount = 0;
@@ -182,6 +184,10 @@ public class Genome {
         return dependencies;
     }
 
+    public List<AspectTag> getTags() {
+        return tags;
+    }
+
     public boolean isAcceptable(Tile tile) {
         return tile.getType() != Tile.Type.Water  &&
                 (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
@@ -232,6 +238,10 @@ public class Genome {
 
     void addDependency(ResourceDependency dependency) {
         dependencies.add(dependency);
+    }
+
+    void addAspectTag(AspectTag tag) {
+        tags.add(tag);
     }
 
     public Genome mutate() {

@@ -63,17 +63,20 @@ public class Material {
             l1.addAll(l2);
             return l1;
         });
-        if (properties.contains(world.getPropertyFromPoolByName("flexible")) &&
+        if (!resourceCore.containsTag(new AspectTag("goodForClothes")) &&
+                properties.contains(world.getPropertyFromPoolByName("flexible")) &&
                 properties.contains(world.getPropertyFromPoolByName("solid")) &&
                 properties.contains(world.getPropertyFromPoolByName("soft"))) {
             _t.add(new AspectTag("goodForClothes"));
         }
-        if (properties.contains(world.getPropertyFromPoolByName("hard")) &&
+        if (!resourceCore.containsTag(new AspectTag("weapon")) &&
+                properties.contains(world.getPropertyFromPoolByName("hard")) &&
                 properties.contains(world.getPropertyFromPoolByName("sturdy")) &&
                 resourceCore.getSize() >= 0.05 && resourceCore.isMovable()) {
             _t.add(new AspectTag("weapon"));
         }
-        if (properties.contains(world.getPropertyFromPoolByName("hard")) &&
+        if (!resourceCore.containsTag(new AspectTag("goodForEngraving")) &&
+                properties.contains(world.getPropertyFromPoolByName("hard")) &&
                 properties.contains(world.getPropertyFromPoolByName("sturdy"))) {
             _t.add(new AspectTag("goodForEngraving"));
         }

@@ -63,7 +63,7 @@ public class TextVisualizer {
      * Base constructor.
      */
     public TextVisualizer() {
-        int numberOfGroups = 10, mapSize = 40, numberOrResources = 5;
+        int numberOfGroups = 10, mapSize = 45, numberOrResources = 5;
         controller = new Controller(numberOfGroups, mapSize, numberOrResources,
                 new MapModel(0.01, 0.25));
         world = controller.world;
