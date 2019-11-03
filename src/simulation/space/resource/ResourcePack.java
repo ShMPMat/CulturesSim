@@ -18,31 +18,40 @@ public class ResourcePack {
      */
     public List<Resource> resources;
 
+    public ResourcePack(Collection<Resource> resources) {
+        this.resources = new ArrayList<>(resources);
+    }
+
     public ResourcePack() {
-        resources = new ArrayList<>();
+        this(Collections.emptyList());
     }
 
-    public Collection<Resource> getAllResourcesWithTag(AspectTag tag) {
-        return resources.stream().filter(resource -> resource.getTags().contains(tag)).collect(Collectors.toList());
+    public Collection<Resource> getResources() {
+        return resources;
     }
 
-    public Collection<Resource> getResource(Resource resource) {
+    public ResourcePack getAllResourcesWithTag(AspectTag tag) {
+        return new ResourcePack(resources.stream().filter(resource -> resource.getTags().contains(tag))
+                .collect(Collectors.toList()));
+    }
+
+    public ResourcePack getResource(Resource resource) {
         List<Resource> _r = resources.stream().filter(res -> res.fullEquals(resource)).collect(Collectors.toList());
-        return _r.size() == 0 ? Collections.singleton(resource.cleanCopy(0)) : _r;
+        return _r.size() == 0 ? new ResourcePack() : new ResourcePack(_r);
     }
 
-    public Collection<Resource> getResourceAndRemove(Resource resource) {
-        Collection<Resource> _r = getResource(resource);
-        _r.forEach(this::removeResource);
+    public ResourcePack getResourceAndRemove(Resource resource) {
+        ResourcePack _r = getResource(resource);
+        _r.resources.forEach(this::removeResource);
         return _r;
     }
 
     public int getAmountOfResourcesWithTag(AspectTag tag) {
-        return getAllResourcesWithTag(tag).stream().reduce(0, (i, r) -> i + r.amount, Integer::sum);
+        return getAllResourcesWithTag(tag).getResources().stream().reduce(0, (i, r) -> i + r.amount, Integer::sum);
     }
 
     public int getAmountOfResourcesWithTagPart(AspectTag tag, int amount) {
-        Collection<Resource> _r = getAllResourcesWithTag(tag), result = new ArrayList<>();
+        Collection<Resource> _r = getAllResourcesWithTag(tag).getResources(), result = new ArrayList<>();
         int counter = 0;
         for (Resource resource : _r) {
             if (counter >= amount) {
@@ -55,10 +64,10 @@ public class ResourcePack {
     }
 
     public ResourcePack getResourcesWithTagPart(AspectTag tag, int amount) {
-        Collection<Resource> _r = getAllResourcesWithTag(tag);
+        ResourcePack _r = getAllResourcesWithTag(tag);
         ResourcePack result = new ResourcePack();
         int counter = 0;
-        for (Resource resource : _r) {
+        for (Resource resource : _r.getResources()) {
             if (counter >= amount) {
                 break;
             }
@@ -69,11 +78,11 @@ public class ResourcePack {
     }
 
     public int getAmountOfResource(Resource resource) {
-        return getResource(resource).stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
+        return getResource(resource).getResources().stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
     }
 
     public ResourcePack getResourcePart(Resource resource, int ceiling) {
-        Collection<Resource> _r = getResource(resource);
+        Collection<Resource> _r = getResource(resource).getResources();
         ResourcePack resourcePack = new ResourcePack();
         int counter = 0;
         for (Resource res : _r) {
@@ -87,7 +96,7 @@ public class ResourcePack {
     }
 
     public int getAmountOfResourcesWithTagAndErase(AspectTag tag, int amount) {
-        Collection<Resource> _r = getAllResourcesWithTag(tag), result = new ArrayList<>();
+        Collection<Resource> _r = getAllResourcesWithTag(tag).getResources(), result = new ArrayList<>();
         int counter = 0;
         for (Resource resource : _r) {
             if (counter >= amount) {
@@ -161,10 +170,10 @@ public class ResourcePack {
         }
     }
 
-    public Collection<Resource> removeAllResourcesWithTag(AspectTag tag) {
-        Collection<Resource> result = getAllResourcesWithTag(tag);
-        resources.removeAll(result);
-        result.forEach(resource -> resource.amount = 0);
+    public ResourcePack destroyAllResourcesWithTag(AspectTag tag) {
+        ResourcePack result = getAllResourcesWithTag(tag);
+        resources.removeAll(result.resources);
+        result.resources.forEach(resource -> resource.amount = 0);
         return result;
     }
 

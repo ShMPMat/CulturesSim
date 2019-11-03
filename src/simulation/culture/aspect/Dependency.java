@@ -132,7 +132,7 @@ public class Dependency {
             isAlreadyUsed = true;
             ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
                     rp -> rp.getAmountOfResource(line.first.resource));
-            _p.second.getResource(line.first.resource)
+            _p.second.getResource(line.first.resource).getResources()
                     .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
             resourcePack.add(_p.second);
             isAlreadyUsed = false;

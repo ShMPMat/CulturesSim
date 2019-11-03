@@ -190,13 +190,13 @@ public class CulturalCenter {
         int foodFloor = group.population / group.getFertility() + 1;
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
             pair.first.starve(percent);
-            pair.second.removeAllResourcesWithTag(new AspectTag("food"));
+            pair.second.destroyAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
             pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
             pair.first.population = Math.min(pair.first.population, group.getMaxPopulation());
-            pair.second.removeAllResourcesWithTag(new AspectTag("food"));
+            pair.second.destroyAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
         requests.add(new Request(group, new AspectTag("food"), foodFloor,
