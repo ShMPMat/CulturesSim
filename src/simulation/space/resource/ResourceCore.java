@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * Class which contains all general information about all Resources with the same name.
  */
 public class ResourceCore {
-    private String meaningPostfix;
+    private String meaningPostfix = "";
     private boolean hasMeaning = false;
     private Genome genome;
     private List<Material> materials;
@@ -165,7 +165,6 @@ public class ResourceCore {
             meaningPostfix = fullName.substring(fullName.indexOf("_representing_"));
         } else {
             genome.setName(fullName);
-            meaningPostfix = "";
         }
     }
 

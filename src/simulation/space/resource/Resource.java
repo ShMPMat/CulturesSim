@@ -274,15 +274,6 @@ public class Resource { //TODO events of merging and stuff
         this.amount += amount;
     }
 
-    public void addAmountSoftly(int amount) {
-        int overhead = Math.max(0, this.amount + amount - getGenome().getNaturalDensity());
-        if (overhead > 0) {
-            amount -= overhead;
-        }
-        addAmount(amount);
-        //TODO overhead must matter
-    }
-
     public List<Resource> applyAspect(Aspect aspect) {
         return resourceCore.applyAspect(aspect);
     }

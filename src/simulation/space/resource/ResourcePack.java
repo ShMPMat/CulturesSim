@@ -114,7 +114,7 @@ public class ResourcePack {
      * @return whether this ResourcePack has any amount of Resources.
      */
     public boolean isEmpty() {
-        return getAmountOfResources() > 0;
+        return getAmount() > 0;
     }
 
     /**
@@ -130,7 +130,7 @@ public class ResourcePack {
     /**
      * @return the amount of all resources in pack.
      */
-    public int getAmountOfResources() {
+    public int getAmount() {
         return resources.stream().reduce(0, (i, r2) -> i + r2.amount, Integer::sum);
     }
 

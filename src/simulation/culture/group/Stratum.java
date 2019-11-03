@@ -46,7 +46,7 @@ public class Stratum {
         aspects.add(aspect);
     }
 
-    public ResourcePack use(int ceiling, Function<ResourcePack, Integer> amount) {
+    public ResourcePack use(int ceiling, Function<ResourcePack, ResourcePack> amount) {
         ResourcePack resourcePack = new ResourcePack();
         for (Aspect aspect: aspects) {
             ShnyPair<Boolean, ResourcePack> result = aspect.use(ceiling, amount);

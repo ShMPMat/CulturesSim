@@ -226,7 +226,11 @@ public class Genome {
         isMutable = mutable;
     }
 
-    void addPart(Resource part) { //TODO inserted without legacy insertion write it in the documentation
+    /**
+     * Adds part to Genome.
+     * @param part Part which will be added. Legacy must by ALREADY inserted inside it.
+     */
+    void addPart(Resource part) {
         int i = parts.indexOf(part);
         if (i == -1) {
             parts.add(part);

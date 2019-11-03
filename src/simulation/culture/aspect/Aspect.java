@@ -3,7 +3,6 @@ package simulation.culture.aspect;
 import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.group.Group;
-import simulation.culture.group.Stratum;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
@@ -147,7 +146,7 @@ public class Aspect {
         return aspectCore.copy(dependencies, group);
     }
 
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {//TODO instrument efficiency
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, ResourcePack> amount) {//TODO instrument efficiency
         boolean isFinished;
         markAsUsed();
         ResourcePack meaningfulPack = new ResourcePack();
@@ -164,7 +163,7 @@ public class Aspect {
                         continue;
                     }
                     meaningfulPack.add(_p.second);
-                    if (amount.apply(meaningfulPack) >= ceiling) {
+                    if (amount.apply(meaningfulPack).getAmount() >= ceiling) {
                         break;
                     }
                 } else {

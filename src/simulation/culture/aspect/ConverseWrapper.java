@@ -57,7 +57,7 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, Integer> amount) {
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, ResourcePack> amount) {
         group.getAspect(aspect).markAsUsed();
         return super.use(ceiling, amount);
     }

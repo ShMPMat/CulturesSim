@@ -276,7 +276,7 @@ public class CulturalCenter {
                 return;
             }
             ConverseWrapper _a = ProbFunc.randomElement(_l), _b = _a.stripToMeaning();
-            ShnyPair<Boolean, ResourcePack> _p = _b.use(1, ResourcePack::getAmountOfResources);
+            ShnyPair<Boolean, ResourcePack> _p = _b.use(1, resourcePack -> resourcePack);
             for (Resource resource : _p.second.resources) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtefacts.add(resource);
