@@ -25,14 +25,14 @@ public class ResourceCore {
 
     ResourceCore(String[] tags, World world) {
         initializeMutualFields(tags[0], new ArrayList<>(),
-                new Genome(tags[0], Genome.Type.valueOf(tags[9]), Double.parseDouble(tags[2]),
+                new Genome(tags[0], Genome.Type.valueOf(tags[10]), Double.parseDouble(tags[2]),
                         Double.parseDouble(tags[1]), Integer.parseInt(tags[4]), Integer.parseInt(tags[5]),
-                        false, Integer.parseInt(tags[7]) == 1, false,
-                        Integer.parseInt(tags[8]) == 1, Integer.parseInt(tags[3]), Integer.parseInt(tags[6]),
-                        null, null, null, world),
+                        Integer.parseInt(tags[9]) == 1, false, Integer.parseInt(tags[7]) == 1,
+                        false, Integer.parseInt(tags[8]) == 1, Integer.parseInt(tags[3]),
+                        Integer.parseInt(tags[6]), null, null, null, world),
                 new HashMap<>(), null);
         String[] elements;
-        for (int i = 10; i < tags.length; i++) {
+        for (int i = 11; i < tags.length; i++) {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
                 case '+':

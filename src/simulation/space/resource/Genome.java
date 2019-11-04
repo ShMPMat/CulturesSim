@@ -29,6 +29,7 @@ public class Genome {
     /**
      * Size of the Resource.
      */
+    private boolean canMove;
     private double size;
     private int naturalDensity;
     /**
@@ -62,8 +63,8 @@ public class Genome {
     private int _mutationCount = 0;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
-           boolean isMutable, boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime, int defaultAmount,
-           ResourceCore legacy, ResourceCore templateLegacy, Material primaryMaterial, World world) {
+           boolean canMove, boolean isMutable, boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime,
+           int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy, Material primaryMaterial, World world) {
         this.name = name;
         this.type = type;
         this.world = world;
@@ -73,14 +74,15 @@ public class Genome {
         setLegacy(legacy);
         this.templateLegacy = templateLegacy;
         this.size = size;
+        this.canMove = canMove;
         this.isMutable = isMutable;
         this.isMovable = isMovable;
         this.isTemplate = isTemplate;
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
-        naturalDensity = (int) Math.ceil(world.tileScale * world.tileScale * defaultAmount);
-        if (naturalDensity > 100000000) {
+        naturalDensity = (int) Math.ceil(world.tileScale * defaultAmount);
+        if (naturalDensity > 1000000000) {
             System.err.println("Very high density in Genome " + name + " - " + naturalDensity);
         }
         setPrimaryMaterial(primaryMaterial);
@@ -89,9 +91,8 @@ public class Genome {
 
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
-                genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
-                genome.defaultAmount, genome.legacy, genome.templateLegacy, genome.primaryMaterial,
-                genome.world);
+                genome.canMove, genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
+                genome.defaultAmount, genome.legacy, genome.templateLegacy, genome.primaryMaterial, genome.world);
         genome.parts.forEach(this::addPart);
     }
 
@@ -206,12 +207,16 @@ public class Genome {
         return isTemplate;
     }
 
-    boolean hasLegacy() {
-        return hasLegacy;
-    }
-
     boolean isMutable() {
         return isMutable;
+    }
+
+    public boolean canMove() {
+        return canMove;
+    }
+
+    boolean hasLegacy() {
+        return hasLegacy;
     }
 
     void setTemplate(boolean template) {

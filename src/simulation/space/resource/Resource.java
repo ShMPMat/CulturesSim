@@ -264,7 +264,24 @@ public class Resource { //TODO events of merging and stuff
                 }
             }
         }
+        distribute();
         return true;
+    }
+
+    private void distribute() {
+        if (getGenome().canMove() && amount > getGenome().getNaturalDensity()) {
+            List<Tile> tiles = tile.getNeighbours(t -> getGenome().isAcceptable(t));
+            tiles.sort(Comparator.comparingInt(tile -> tile.getResource(this).amount));
+            for (Tile neighbour: tiles) {
+                if (amount <= getGenome().getNaturalDensity() / 2) {
+                    break;
+                }
+                int part = Math.min(amount - getGenome().getNaturalDensity() / 2,
+                        getGenome().getNaturalDensity() - neighbour.getResource(this).amount);
+                part = part <= 0 ? (amount - getGenome().getNaturalDensity() / 2) / tiles.size() : part;
+                neighbour.addDelayedResource(getCleanPart(part));
+            }
+        }
     }
 
     public void addAmount(int amount) {
