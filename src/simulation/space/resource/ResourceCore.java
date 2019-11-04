@@ -27,9 +27,9 @@ public class ResourceCore {
         initializeMutualFields(tags[0], new ArrayList<>(),
                 new Genome(tags[0], Genome.Type.valueOf(tags[10]), Double.parseDouble(tags[2]),
                         Double.parseDouble(tags[1]), Integer.parseInt(tags[4]), Integer.parseInt(tags[5]),
-                        Integer.parseInt(tags[9]) == 1, false, Integer.parseInt(tags[7]) == 1,
-                        false, Integer.parseInt(tags[8]) == 1, Integer.parseInt(tags[3]),
-                        Integer.parseInt(tags[6]), null, null, null, world),
+                        tags[9].equals("1"), false, tags[7].equals("1"), false, tags[8].equals("1"),
+                        Integer.parseInt(tags[3]), Integer.parseInt(tags[6]), null, null,
+                        null, world),
                 new HashMap<>(), null);
         String[] elements;
         for (int i = 11; i < tags.length; i++) {
@@ -53,9 +53,8 @@ public class ResourceCore {
                 case '~':
                     elements = tag.split(":");
                     genome.addDependency(new ResourceDependency(
-                            ResourceDependency.Type.valueOf(elements[elements.length == 4 ? 3 : 2]),
-                            Double.parseDouble(elements[1]), elements.length != 4 ? 2 : Double.parseDouble(elements[2]),
-                            Arrays.asList(elements[0].substring(1).split(","))));
+                            ResourceDependency.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
+                            Double.parseDouble(elements[2]), elements[3].equals("1"), Arrays.asList(elements[0].substring(1).split(","))));
                     break;
                 case '$':
                     elements = tag.split(":");
