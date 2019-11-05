@@ -56,6 +56,10 @@ public class ResourceCore {
                             ResourceDependency.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
                             Double.parseDouble(elements[2]), elements[3].equals("1"), Arrays.asList(elements[0].substring(1).split(","))));
                     break;
+                case '#':
+                    genome.addDependency(new ResourceDependency(ResourceDependency.Type.AVOID_TILES, 0,
+                            0, true, Arrays.asList(tag.substring(1).split(":"))));
+                    break;
                 case '$':
                     elements = tag.split(":");
                     genome.addAspectTag(new AspectTag(elements[0].substring(1), Integer.parseInt(elements[1])));
@@ -64,7 +68,7 @@ public class ResourceCore {
         computeMaterials();
     }
 
-    private ResourceCore(String name, String meaningPostfi, List<Material> materials, Genome genome,
+    private ResourceCore(String name, String meaningPostfix, List<Material> materials, Genome genome,
                          Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion, Meme meaning) {
         initializeMutualFields(name + meaningPostfix, materials, genome, aspectConversion, meaning);
         computeMaterials();

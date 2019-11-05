@@ -71,6 +71,10 @@ public class Genome {
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
         this.temperatureMax = temperatureMax;
+        dependencies.add(new ResourceDependency(ResourceDependency.Type.TEMPERATURE_MIN, temperatureMin,
+                2, true, new ArrayList<>()));
+        dependencies.add(new ResourceDependency(ResourceDependency.Type.TEMPERATURE_MAX, temperatureMax,
+                2, true, new ArrayList<>()));
         setLegacy(legacy);
         this.templateLegacy = templateLegacy;
         this.size = size;
@@ -190,13 +194,13 @@ public class Genome {
     }
 
     public boolean isAcceptable(Tile tile) {
-        return tile.getType() != Tile.Type.Water  &&
-                (tile.getTemperature() >= temperatureMin && tile.getTemperature() <= temperatureMax);
+        return dependencies.stream().filter(ResourceDependency::isNecessary)
+                .allMatch(d -> d.satisfactionPercent(tile, null) == 1);
     }
 
     public boolean isOptimal(Tile tile) {
-        return isAcceptable(tile) && dependencies.stream().filter(dependency -> !dependency.isPositive())
-                .allMatch(dependency -> dependency.satisfactionPercent(tile, null) >= 0.9);
+        return isAcceptable(tile) && dependencies.stream().filter(d -> !d.isPositive())
+                .allMatch(d -> d.satisfactionPercent(tile, null) >= 0.9);
     }
 
     boolean isMovable() {

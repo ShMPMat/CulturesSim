@@ -83,7 +83,7 @@ public class Tile {
 
     public Resource getResource(Resource resource) {
         int index = resources.indexOf(resource);
-        return index == -1 ? world.getResourceFromPoolByName(resource.getSimpleName()).copy(0) : resources.get(index);
+        return index == -1 ? resource.cleanCopy(0) : resources.get(index);
     }
 
     public World getWorld() {

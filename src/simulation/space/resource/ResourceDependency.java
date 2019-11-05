@@ -38,37 +38,54 @@ public class ResourceDependency {
     }
 
     public double satisfactionPercent(Tile tile, Resource resource) {
-        double _amount = amount * ( resource == null ? 1 : resource.amount);
-        for (Resource res: tile.getResources()) {
-            if (res == resource) {
-                continue;
-            }
-            if (isResourceDependency(res)) {
-                switch (type) {
-                    case CONSUME:
-                    case AVOID:
-                        if (_amount + currentAmount < 0) {
-                            currentAmount += _amount;
+        double result;
+        if (type == Type.TEMPERATURE_MAX || type == Type.TEMPERATURE_MIN) {
+            result = tile.getTemperature() - amount;
+            result = type == Type.TEMPERATURE_MIN ? -result : result;
+            result = 1 / Math.sqrt(Math.max(0, result) + 1);
+        } else if (type == Type.AVOID_TILES) {
+            return resourceNames.stream().noneMatch(name -> Tile.Type.valueOf(name) == tile.getType()) ? 1 : 0;
+        } else {
+            double _amount = amount * (resource == null ? 1 : resource.amount);
+            for (Resource res : tile.getResources()) {
+                if (res == resource) {
+                    continue;
+                }
+                if (isResourceDependency(res)) {
+                    switch (type) {
+                        case CONSUME:
+                        case AVOID:
+                            if (_amount + currentAmount < 0) {
+                                currentAmount += _amount;
+                                break;
+                            }
+                            Resource part = res.getPart((int) Math.ceil(_amount));
+                            currentAmount += part.amount;
+                            part.amount = 0;
                             break;
-                        }
-                        Resource part = res.getPart((int) Math.ceil(_amount));
-                        currentAmount += part.amount;
-                        part.amount = 0;
+                        case EXIST:
+                            currentAmount += res.amount;
+                    }
+                    if (currentAmount >= _amount) {
                         break;
-                    case EXIST:
-                        currentAmount += res.amount;
-                }
-                if (currentAmount >= _amount) {
-                    break;
+                    }
                 }
             }
+            result = Math.min(((double) currentAmount) / _amount, 1);
+            if (currentAmount >= _amount) {
+                currentAmount -= _amount;
+            }
+            result = (type == Type.AVOID ? 1 - result : result);
         }
-        double res = Math.min(((double) currentAmount) / _amount, 1);
-        if (currentAmount >= _amount) {
-            currentAmount -= _amount;
-        }
-        res = (type == Type.AVOID ? 1 - res : res);
-        return res + (1 - res) / deprivationCoefficient;
+        return result + (1 - result) / deprivationCoefficient;
+    }
+
+    Type getType() {
+        return type;
+    }
+
+    public double getAmount() {
+        return amount;
     }
 
     public boolean hasNeeded(Tile tile) {
@@ -95,6 +112,9 @@ public class ResourceDependency {
     enum Type{
         CONSUME,
         EXIST,
-        AVOID
+        AVOID,
+        TEMPERATURE_MIN,
+        TEMPERATURE_MAX,
+        AVOID_TILES
     }
 }

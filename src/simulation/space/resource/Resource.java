@@ -37,6 +37,10 @@ public class Resource { //TODO events of merging and stuff
      * How many turns has this Resource been existing.
      */
     private int deathTurn = 0;
+    /**
+     * How many additional years added to this Resource due to bad environment.
+     * Large numbers result in sooner death.
+     */
     private int deathOverhead = 0;
     /**
      * What part of this Resource will be destroyed on the next death.
@@ -99,6 +103,12 @@ public class Resource { //TODO events of merging and stuff
         return resourceCore.getTags();
     }
 
+    /**
+     * Returns part of this resource and subtracts its amount from this resource amount;
+     * @param part what amount of this Resource is requested.
+     * @return Copy of this Resource with amount equal or less than requested.
+     * Exact amount depends on current amount of this Resource.
+     */
     public Resource getPart(int part) {
         int result;
         double prob = Math.random() * 0.5;
@@ -110,7 +120,7 @@ public class Resource { //TODO events of merging and stuff
         amount -= result;
         return copy(result);
     }
-
+    
     public Resource getCleanPart(int part) {
         int result = (amount > part ? part : amount);
         amount -= result;
@@ -188,15 +198,12 @@ public class Resource { //TODO events of merging and stuff
 
     public Resource insertMeaning(Meme meaning, Aspect aspect) {
         Resource resource = new Resource(resourceCore.insertMeaning(meaning, aspect), amount);
-        if (tile == null) {
-            int i = 0;
-        }
         tile.addDelayedResource(resource);
         this.amount = 0;
         return resource;
     }
 
-    public boolean update() {//TODO migration on gig numbers
+    public boolean update() {
         if (amount <= 0) {
             getTile().removeResource(this);
             return false;
@@ -226,22 +233,22 @@ public class Resource { //TODO events of merging and stuff
                     amount /= 100;
                 }
             }
-            if (amount > 250) {
-                int part = amount - 50;
-                List<Tile> tiles = new ArrayList<>();
-                tiles.add(tile);
-                tiles.add(getGenome().world.map.get(tile.x - 1, tile.y));
-                tiles.add(getGenome().world.map.get(tile.x + 1, tile.y));
-                tiles.add(getGenome().world.map.get(tile.x, tile.y + 1));
-                tiles.add(getGenome().world.map.get(tile.x, tile.y - 1));
-                tiles.removeIf(Objects::isNull);
-                tiles.sort((Comparator.comparingInt(tile -> {
-                    Resource res = tile.getResources().stream().filter(r -> r.getSimpleName().equals(getSimpleName()))
-                            .findFirst().orElse(null);
-                    return res == null ? 0 : res.amount;
-                })));
-                tiles.get(0).addDelayedResource(getCleanPart(part));
-            }
+//            if (amount > 250) {
+//                int part = amount - 50;
+//                List<Tile> tiles = new ArrayList<>();
+//                tiles.add(tile);
+//                tiles.add(getGenome().world.map.get(tile.x - 1, tile.y));
+//                tiles.add(getGenome().world.map.get(tile.x + 1, tile.y));
+//                tiles.add(getGenome().world.map.get(tile.x, tile.y + 1));
+//                tiles.add(getGenome().world.map.get(tile.x, tile.y - 1));
+//                tiles.removeIf(Objects::isNull);
+//                tiles.sort((Comparator.comparingInt(tile -> {
+//                    Resource res = tile.getResources().stream().filter(r -> r.getSimpleName().equals(getSimpleName()))
+//                            .findFirst().orElse(null);
+//                    return res == null ? 0 : res.amount;
+//                })));
+//                tiles.get(0).addDelayedResource(getCleanPart(part));
+//            }
             if (tile.getTemperature() < 0) {
                 tile.addDelayedResource(tile.getWorld().getResourceFromPoolByName("Snow").copy(amount / 2));
                 amount -= amount / 2;
