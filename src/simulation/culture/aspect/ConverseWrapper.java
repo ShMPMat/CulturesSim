@@ -2,6 +2,7 @@ package simulation.culture.aspect;
 
 import extra.ShnyPair;
 import simulation.culture.group.Group;
+import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
@@ -57,9 +58,9 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, ResourcePack> amount) {
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {
         group.getAspect(aspect).markAsUsed();
-        return super.use(ceiling, amount);
+        return super.use(ceiling, evaluator);
     }
 
     public ConverseWrapper stripToMeaning() {

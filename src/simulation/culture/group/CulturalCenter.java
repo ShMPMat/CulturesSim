@@ -152,7 +152,7 @@ public class CulturalCenter {
                 Set<Resource> allResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
                 allResources.addAll(getAllProducedResources().stream().map(pair -> pair.first).collect(Collectors.toSet()));
                 for (Resource resource : allResources) {
-                    addConverceWrapper(_a, resource);
+                    addConverseWrapper(_a, resource);
                 }
             }
         }
@@ -232,6 +232,7 @@ public class CulturalCenter {
     void update(double rAspectAcquisition, double rAspectLending) {
         tryToFulfillAspirations();
         mutateAspects(rAspectAcquisition, rAspectLending);
+        group.getStrata().forEach(Stratum::update);
         createArtifact();
     }
 
@@ -276,7 +277,7 @@ public class CulturalCenter {
                 return;
             }
             ConverseWrapper _a = ProbFunc.randomElement(_l), _b = _a.stripToMeaning();
-            ShnyPair<Boolean, ResourcePack> _p = _b.use(1, resourcePack -> resourcePack);
+            ShnyPair<Boolean, ResourcePack> _p = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
             for (Resource resource : _p.second.resources) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtefacts.add(resource);
@@ -339,7 +340,7 @@ public class CulturalCenter {
         for (Aspect aspect : aspects.stream().filter(aspect -> !(aspect instanceof ConverseWrapper))
                 .collect(Collectors.toList())) {
             for (Resource resource : newResources) {
-                addConverceWrapper(aspect, resource);
+                addConverseWrapper(aspect, resource);
             }
         }
         _lastResourcesForCw.addAll(newResources);
@@ -347,7 +348,7 @@ public class CulturalCenter {
         return options;
     }
 
-    private void addConverceWrapper(Aspect aspect, Resource resource) {
+    private void addConverseWrapper(Aspect aspect, Resource resource) {
         ConverseWrapper _w;
         if (aspect.canApplyMeaning()) {
             _w = new MeaningInserter(aspect, resource,

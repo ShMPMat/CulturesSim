@@ -257,6 +257,10 @@ public class Genome {
         tags.add(tag);
     }
 
+    void addTag(AspectTag tag) {
+        tags.add(tag);
+    }
+
     public Genome mutate() {
         if (!isMutable()) {
             System.err.println("Method mutate called from non-mutable genome!");

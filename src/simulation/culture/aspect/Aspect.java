@@ -3,6 +3,7 @@ package simulation.culture.aspect;
 import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.group.Group;
+import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
@@ -146,7 +147,7 @@ public class Aspect {
         return aspectCore.copy(dependencies, group);
     }
 
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, ResourcePack> amount) {//TODO instrument efficiency
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {//TODO instrument efficiency
         boolean isFinished;
         markAsUsed();
         ResourcePack meaningfulPack = new ResourcePack();
@@ -158,17 +159,17 @@ public class Aspect {
                 if (dependency1.getType().name.equals("phony")) {
                     isFinished = true;
                     ShnyPair<Boolean, ResourcePack> _p = dependency1.useDependency(ceiling -
-                            meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource), amount);
+                            meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource), evaluator);
                     if (!_p.first) {
                         continue;
                     }
                     meaningfulPack.add(_p.second);
-                    if (amount.apply(meaningfulPack).getAmount() >= ceiling) {
+                    if (evaluator.evaluate(meaningfulPack) >= ceiling) {
                         break;
                     }
                 } else {
                     ShnyPair<Boolean, ResourcePack> _p = dependency1.useDependency(ceiling -
-                            _rp.getAmountOfResourcesWithTag(dependency1.getType()), amount);
+                            _rp.getAmountOfResourcesWithTag(dependency1.getType()), evaluator);
                     _rp.add(_p.second);
                     if (!_p.first) {
                         continue;

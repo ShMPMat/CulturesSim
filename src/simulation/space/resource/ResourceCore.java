@@ -162,7 +162,7 @@ public class ResourceCore {
                 Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;
     }
 
-    private void setName(String fullName) {//TODO change meaning postfix
+    private void setName(String fullName) {
         if (fullName.contains("_representing_")) {
             genome.setName(fullName.substring(0, fullName.indexOf("_representing_")));
             meaningPostfix = fullName.substring(fullName.indexOf("_representing_"));

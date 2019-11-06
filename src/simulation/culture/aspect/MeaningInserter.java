@@ -2,6 +2,7 @@ package simulation.culture.aspect;
 
 import extra.ShnyPair;
 import simulation.culture.group.Group;
+import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
@@ -26,8 +27,8 @@ public class MeaningInserter extends ConverseWrapper {
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, Function<ResourcePack, ResourcePack> amount) {
-        ShnyPair<Boolean, ResourcePack> pair = super.use(ceiling, amount);
+    public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {
+        ShnyPair<Boolean, ResourcePack> pair = super.use(ceiling, evaluator);
         Collection<Resource> res = new ArrayList<>(pair.second.getResourceAndRemove(resource).getResources());
         res.removeIf(r -> r.getAmount() == 0);
         pair.second.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), aspect))

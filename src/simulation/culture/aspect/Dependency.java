@@ -2,6 +2,7 @@ package simulation.culture.aspect;
 
 import extra.ShnyPair;
 import simulation.culture.group.Group;
+import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
@@ -103,13 +104,13 @@ public class Dependency {
         return false;
     }
 
-    public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, Function<ResourcePack, ResourcePack> amount) {
+    public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
         ResourcePack resourcePack = new ResourcePack();
         if (type.isAbstract || ceiling <= 0) {
             return new ShnyPair<>(true, resourcePack);
         }
         if (aspect != null) {
-            return aspect.use(ceiling, r -> new ResourcePack());
+            return aspect.use(ceiling, new ResourceEvaluator());
         }
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
             return new ShnyPair<>(true, type.consumeAndGetResult(group.getOverallGroup().getTerritory().getResourceInstances(resource), ceiling));
@@ -117,11 +118,11 @@ public class Dependency {
         if (conversion != null){
             Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
             for (Resource res : resourceInstances) {
-                if (ceiling <= amount.apply(resourcePack).getAmount()) {
+                if (ceiling <= evaluator.evaluate(resourcePack)) {
                     break;
                 }
                 resourcePack.add(res.applyAndConsumeAspect(conversion.second,
-                        ceiling - amount.apply(resourcePack).getAmount()));
+                        ceiling - evaluator.evaluate(resourcePack)));
             }
             return new ShnyPair<>(true, resourcePack);
         }
@@ -131,7 +132,8 @@ public class Dependency {
             }
             isAlreadyUsed = true;
             ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
-                    rp -> rp.getResource(line.first.resource));
+                    new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
+                            rp -> rp.getAmountOfResource(line.first.resource)));
             _p.second.getResource(line.first.resource).getResources()
                     .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
             resourcePack.add(_p.second);

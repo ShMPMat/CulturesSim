@@ -310,12 +310,12 @@ public class Group {
             return;
         }
         for (Request request : getCulturalCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
-            List<ShnyPair<Stratum, Function<ResourcePack, ResourcePack>>> pairs = strata.stream()
+            List<ShnyPair<Stratum, ResourceEvaluator>> pairs = strata.stream()
                     .map(stratum -> new ShnyPair<>(stratum, request.isAcceptable(stratum)))
                     .filter(pair -> pair.second != null).sorted(Comparator.comparingInt(pair ->
                             request.satisfactionLevel(pair.first)))
                     .collect(Collectors.toList());
-            for (ShnyPair<Stratum, Function<ResourcePack, ResourcePack>> pair : pairs) {
+            for (ShnyPair<Stratum, ResourceEvaluator> pair : pairs) {
                 int amount = request.howMuchOfNeeded(resourcePack);
                 if (amount > request.ceiling) {
                     break;

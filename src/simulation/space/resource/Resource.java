@@ -103,6 +103,11 @@ public class Resource { //TODO events of merging and stuff
         return resourceCore.getTags();
     }
 
+    public int getTagLevel(AspectTag tag) {
+        int index = getTags().indexOf(tag);
+        return index == -1 ? 0 : getTags().get(index).level;
+    }
+
     /**
      * Returns part of this resource and subtracts its amount from this resource amount;
      * @param part what amount of this Resource is requested.
@@ -120,7 +125,7 @@ public class Resource { //TODO events of merging and stuff
         amount -= result;
         return copy(result);
     }
-    
+
     public Resource getCleanPart(int part) {
         int result = (amount > part ? part : amount);
         amount -= result;

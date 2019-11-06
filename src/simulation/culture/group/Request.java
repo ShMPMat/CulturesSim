@@ -66,10 +66,12 @@ public class Request {
         return null;
     }
 
-    Function<ResourcePack, ResourcePack> isAcceptable(Stratum stratum) {
+     ResourceEvaluator isAcceptable(Stratum stratum) {
         if (tag != null) {
             if (stratum.getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
-                return resourcePack -> resourcePack.getAllResourcesWithTag(tag);
+                return new ResourceEvaluator(resourcePack -> resourcePack.getAllResourcesWithTag(tag),
+                        resourcePack -> resourcePack.getAllResourcesWithTag(tag).getResources().stream()
+                                .reduce(0, (x, y) -> x += y.getTagLevel(tag), Integer::sum));
             } else {
                 return null;
             }
@@ -78,7 +80,8 @@ public class Request {
             for (Aspect aspect : stratum.getAspects()) {
                 if (aspect instanceof ConverseWrapper) {
                     if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
-                        return resourcePack -> resourcePack.getResource(resource);
+                        return new ResourceEvaluator(resourcePack -> resourcePack.getResource(resource),
+                                resourcePack -> resourcePack.getAmountOfResource(resource));
                     } else {
                         return null;
                     }

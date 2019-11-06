@@ -2,16 +2,16 @@ package simulation.culture.group;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectTag;
 import simulation.space.resource.ResourcePack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 public class Stratum {
     private int amount;
     private List<Aspect> aspects;
+    private Map<AspectTag, ResourcePack> dependencies = new HashMap<>();
 
     public Stratum(int amount) {
         this.amount = amount;
@@ -21,6 +21,11 @@ public class Stratum {
     public Stratum(int amount, Aspect aspect) {
         this(amount);
         aspects.add(aspect);
+        aspect.getDependencies().keySet().forEach(tag -> {
+            if (!tag.name.equals("phony")) {
+                dependencies.put(new AspectTag(tag.name), new ResourcePack());
+            }
+        });
     }
 
     public int getAmount() {
@@ -46,15 +51,19 @@ public class Stratum {
         aspects.add(aspect);
     }
 
-    public ResourcePack use(int ceiling, Function<ResourcePack, ResourcePack> amount) {
+    public ResourcePack use(int ceiling, ResourceEvaluator evaluator) {
         ResourcePack resourcePack = new ResourcePack();
         for (Aspect aspect: aspects) {
-            ShnyPair<Boolean, ResourcePack> result = aspect.use(ceiling, amount);
+            ShnyPair<Boolean, ResourcePack> result = aspect.use(ceiling, evaluator);
             if (result.first) {
                 resourcePack.add(result.second);
             }
         }
         return resourcePack;
+    }
+
+    void update() {
+
     }
 
     @Override
