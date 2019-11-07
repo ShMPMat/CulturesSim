@@ -1,6 +1,5 @@
 package simulation.space;
 
-import simulation.World;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceIdeal;
@@ -27,16 +26,13 @@ public class WorldMap {
     public List<ResourceIdeal> resourcePool;
     private int amountOfPlates = 10;
 
-    private World world;
-
-    public WorldMap(int x, int y, List<ResourceIdeal> resources, World world) {
-        this.world = world;
+    public WorldMap(int x, int y, List<ResourceIdeal> resources) {
         this.resourcePool = resources;
         map = new ArrayList<>();
         for (int i = 0; i < x; i++) {
             map.add(new ArrayList<>());
             for (int j = 0; j < y; j++) {
-                map.get(i).add(new Tile(i, j, world));
+                map.get(i).add(new Tile(i, j));
             }
         }
     }

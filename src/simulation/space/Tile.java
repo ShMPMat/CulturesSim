@@ -1,6 +1,5 @@
 package simulation.space;
 
-import extra.ProbFunc;
 import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.group.Group;
@@ -13,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static simulation.Controller.sessionController;
 
 /**
  * Basic tile of map
@@ -63,14 +64,12 @@ public class Tile {
     /**
      * Link to the world in which this Tile is present.
      */
-    private World world;
 
-    public Tile(int x, int y, World world) {
+    public Tile(int x, int y) {
         this.x = x;
         this.y = y;
         wind = new Wind();
         updateTemperature();
-        this.world = world;
         group = null;
         setType(Type.Normal, true);
         resources = new ArrayList<>();
@@ -86,17 +85,13 @@ public class Tile {
         return index == -1 ? resource.cleanCopy(0) : resources.get(index);
     }
 
-    public World getWorld() {
-        return world;
-    }
-
     /**
      * @param predicate Predicate on which neighbour Tiles will bw tested.
      * @return List of neighbour Tiles which satisfy the Predicate.
      */
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
         List<Tile> goodTiles = new ArrayList<>();
-        WorldMap map = getWorld().map;
+        WorldMap map = sessionController.world.map;
         Tile newTile = map.get(x, y + 1);
         if (newTile != null && predicate.test(newTile)) {
             goodTiles.add(newTile);
@@ -160,7 +155,7 @@ public class Tile {
     }
 
     public int getLevelWithWater() {
-        int index = resources.indexOf(world.getResourceFromPoolByName("Water"));
+        int index = resources.indexOf(sessionController.world.getResourceFromPoolByName("Water"));
         return getLevel() + (index == -1 ? 0 : resources.get(index).getAmount());
     }
 
@@ -222,7 +217,7 @@ public class Tile {
         if (level >= 110) {
             type = Type.Mountain;
         }
-        if (level < world.getWaterLevel()) {
+        if (level < sessionController.world.getWaterLevel()) {
             type = Type.Water;
         }
     }
@@ -281,7 +276,7 @@ public class Tile {
     private void checkIce() {
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
-            level = world.getWaterLevel();
+            level = sessionController.world.getWaterLevel();
         } else if (type == Type.Ice && temperature > 0) {
             type = Type.Water;
             level = secondLevel;
@@ -362,15 +357,15 @@ public class Tile {
                 setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(50));
+            addDelayedResource(sessionController.world.getResourceFromPoolByName("Vapour").copy(50));
         }
-        if (resources.contains(world.getResourceFromPoolByName("Water"))) {
-            addDelayedResource(world.getResourceFromPoolByName("Vapour").copy(50));
+        if (resources.contains(sessionController.world.getResourceFromPoolByName("Water"))) {
+            addDelayedResource(sessionController.world.getResourceFromPoolByName("Vapour").copy(50));
         }
     }
 
     public void middleUpdate() {
-        WorldMap map = world.map;
+        WorldMap map = sessionController.world.map;
         setWindByTemperature(map.get(x + 1, y));
         setWindByTemperature(map.get(x - 1, y));
         setWindByTemperature(map.get(x, y + 1));

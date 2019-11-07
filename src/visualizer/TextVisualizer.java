@@ -1,7 +1,6 @@
 package visualizer;
 //TODO check smart territory acquisition it seems not to work
 
-import extra.ProbFunc;
 import simulation.Controller;
 import simulation.World;
 import simulation.culture.Event;
@@ -145,7 +144,7 @@ public class TextVisualizer {
             lastClaimedTiles.put(group, new HashSet<>());
         }
         for (Event event : interactionModel.getEvents().stream().
-                filter(event -> event.type == Event.Type.TileAquisition).collect(Collectors.toList())) {
+                filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get((Group) event.getAttribute("group")).add((Tile) event.getAttribute("tile"));
         }
         System.out.print(main.append(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
@@ -220,7 +219,7 @@ public class TextVisualizer {
                                 List<Resource> actual = tile.getResources().stream().filter(resource ->
                                         resource.getGenome().getType() != Genome.Type.Plant && resource.getAmount() > 0 &&
                                         !resource.getSimpleName().equals("Vapour")).collect(Collectors.toList());
-                                if (actual.size() > 0) {
+                                if (/*actual.size() > 0*/ false) {
                                     token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
                                             resourceSymbols.get(actual.get(0)));
                                 } else {
@@ -557,18 +556,18 @@ public class TextVisualizer {
                                 int level = vapour == null ? 0 : vapour.getAmount();
                                 if (level == 0) {
                                     colour = "\033[44m";
-                                } else if (level < 10) {
+                                } else if (level < 50) {
                                     colour = "\033[104m";
-                                } else if (level < 20) {
+                                } else if (level < 100) {
                                     colour = "\033[46m";
-                                } else if (level < 30) {
+                                } else if (level < 150) {
                                     colour = "\033[47m";
-                                } else if (level < 40){
+                                } else if (level < 200){
                                     colour = "\033[43m";
                                 } else {
                                     colour = "\033[41m";
                                 }
-                                return "\033[90m" + colour + Math.abs(level % 10);
+                                return "\033[90m" + colour + (level / 10) % 10;
                             });
                             break;
                         case Resource:

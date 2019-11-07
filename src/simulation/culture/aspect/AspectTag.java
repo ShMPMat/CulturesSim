@@ -44,6 +44,14 @@ public class AspectTag {
         this(name, false, false, level);
     }
 
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public boolean isInstrumental() {
+        return isInstrumental;
+    }
+
     private Resource consumeAndGetResult(Resource resource, int ceiling) {
         return resource.getPart(ceiling);
     }

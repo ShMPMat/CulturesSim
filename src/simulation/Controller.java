@@ -14,6 +14,7 @@ public class Controller {
      * Interaction Model, which governs how world is updated.
      */
     public InteractionModel interactionModel;
+    public static Controller sessionController;
 
     /**
      * Base constructor.
@@ -25,7 +26,9 @@ public class Controller {
      * @param interactionModel  Interaction Model, which will govern how world will be updated.
      */
     public Controller(int numberOfGroups, int mapSize, int numberOrResources, InteractionModel interactionModel) {
+        sessionController = this;
         world = new World(numberOfGroups, mapSize, numberOrResources);
+        world.initializeZero();
         this.interactionModel = interactionModel;
     }
 

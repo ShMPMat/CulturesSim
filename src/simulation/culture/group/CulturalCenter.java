@@ -2,6 +2,7 @@ package simulation.culture.group;
 
 import extra.ProbFunc;
 import extra.ShnyPair;
+import simulation.Controller;
 import simulation.World;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
@@ -11,15 +12,17 @@ import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
+import javax.naming.ldap.Control;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+
+import static simulation.Controller.*;
 
 /**
  * Takes responsibility of Group's cultural change.
  */
 public class CulturalCenter {
-    World world;
     private List<Aspiration> aspirations;
     private Group group;
     private Set<Aspect> aspects;
@@ -32,8 +35,7 @@ public class CulturalCenter {
     private List<ConverseWrapper> _converseWrappers;
     private List<Resource> _lastResourcesForCw;
 
-    CulturalCenter(Group group, World world) {
-        this.world = world;
+    CulturalCenter(Group group) {
         this.memePool = new GroupMemes();
         setAspects(new HashSet<>());
         setChangedAspects(new HashSet<>());
@@ -71,7 +73,7 @@ public class CulturalCenter {
 
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
         Set<ShnyPair<Aspect, Group>> allExistingAspects = new HashSet<>();
-        for (Group neighbour : world.map.getAllNearGroups(group)) {
+        for (Group neighbour : sessionController.world.map.getAllNearGroups(group)) {
             for (Aspect aspect : neighbour.getAspects().stream().filter(aspect ->
                     !(aspect instanceof ConverseWrapper) || getAspect(((ConverseWrapper) aspect).aspect) != null)
                     .collect(Collectors.toList())) {
@@ -158,7 +160,7 @@ public class CulturalCenter {
         }
         memePool.addAspectMemes(aspect);
         addMemeCombination((new MemeSubject(group.name).addPredicate(
-                world.getMemeFromPoolByName("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
+                sessionController.world.getMemeFromPoolByName("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         if (_a instanceof ConverseWrapper) {
             addWants(((ConverseWrapper) _a).getResult());
         }
@@ -232,7 +234,6 @@ public class CulturalCenter {
     void update(double rAspectAcquisition, double rAspectLending) {
         tryToFulfillAspirations();
         mutateAspects(rAspectAcquisition, rAspectLending);
-        group.getStrata().forEach(Stratum::update);
         createArtifact();
     }
 
@@ -253,12 +254,12 @@ public class CulturalCenter {
 //            }
 //        }
         if (ProbFunc.getChances(rAspectAcquisition)) {
-            List<Aspect> options = new ArrayList<>(world.aspectPool);
+            List<Aspect> options = new ArrayList<>(sessionController.world.aspectPool);
             options.addAll(getAllConverseWrappers());
             Aspect _a = ProbFunc.getRandomAspectExcept(options, aspect -> true);
             if (_a != null) {
                 if (addAspect(_a)) {
-                    group.addEvent(new Event(Event.Type.AspectGaining, world.getTurn(), "Group " + group.name +
+                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
                             " got aspect " + _a.getName() + " by itself", "group", group));
                 }
             }
@@ -298,10 +299,10 @@ public class CulturalCenter {
                 addAspect(pair.first);
                 removeAspiration(aspiration);
                 if (pair.second == null) {
-                    group.addEvent(new Event(Event.Type.AspectGaining, world.getTurn(), "Group " + group.name +
+                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
                             " developed aspect " + pair.first.getName(), "group", this));
                 } else {
-                    group.addEvent(new Event(Event.Type.AspectGaining, world.getTurn(), "Group " + group.name +
+                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
                             " took aspect " + pair.first.getName() + " from group " + pair.second.name, "group", this));
                 }
             }
@@ -311,7 +312,7 @@ public class CulturalCenter {
     private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO add potentially good options (incinerate for warmth etc.)
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
-        for (Aspect aspect : world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
+        for (Aspect aspect : sessionController.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
             Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new ShnyPair<>(aspect.copy(_m, group), null));

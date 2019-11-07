@@ -6,6 +6,8 @@ import extra.ShnyPair;
 import java.util.ArrayList;
 import java.util.List;
 
+import static simulation.Controller.sessionController;
+
 public class TectonicPlate extends Territory {
     /**
      * Enum with all possible directions in which Plate can move.
@@ -87,16 +89,16 @@ public class TectonicPlate extends Territory {
             Tile t;
             switch (direction) {
                 case U:
-                    t = tile.getWorld().map.get(tile.x + 1, tile.y);
+                    t = sessionController.world.map.get(tile.x + 1, tile.y);
                     return t!= null && t.getPlate() == this;
                 case R:
-                    t = tile.getWorld().map.get(tile.x, tile.y - 1);
+                    t = sessionController.world.map.get(tile.x, tile.y - 1);
                     return t!= null && t.getPlate() == this;
                 case L:
-                    t = tile.getWorld().map.get(tile.x, tile.y + 1);
+                    t = sessionController.world.map.get(tile.x, tile.y + 1);
                     return t!= null && t.getPlate() == this;
                 case D:
-                    t = tile.getWorld().map.get(tile.x - 1, tile.y);
+                    t = sessionController.world.map.get(tile.x - 1, tile.y);
                     return t!= null && t.getPlate() == this;
                 default:
                     return false;

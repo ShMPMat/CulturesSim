@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 public class Stratum {
     private int amount;
+    private int usedAmount = 0;
     private List<Aspect> aspects;
     private Map<AspectTag, ResourcePack> dependencies = new HashMap<>();
 
@@ -22,10 +23,15 @@ public class Stratum {
         this(amount);
         aspects.add(aspect);
         aspect.getDependencies().keySet().forEach(tag -> {
-            if (!tag.name.equals("phony")) {
+            if (tag.isInstrumental() && !tag.name.equals("phony")) {
                 dependencies.put(new AspectTag(tag.name), new ResourcePack());
             }
         });
+    }
+
+    public ResourcePack getInstrumentByTag(AspectTag tag) {
+        ResourcePack resourcePack = dependencies.get(tag);
+        return resourcePack == null ? new ResourcePack() : resourcePack;
     }
 
     public int getAmount() {
@@ -40,8 +46,9 @@ public class Stratum {
         return aspects.contains(aspect);
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void useAmount(int amount) {
+        this.usedAmount = amount;
+        this.amount = Math.max(amount, this.amount);
         if (amount < 0) {
             int i = 0; //TODO FUCKING NEGATIVE AMOUNTS
         }
@@ -63,7 +70,11 @@ public class Stratum {
     }
 
     void update() {
-
+        for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {
+            //TODO
+        }
+        amount -= amount > usedAmount ? 1 : 0;
+        usedAmount = 0;
     }
 
     @Override

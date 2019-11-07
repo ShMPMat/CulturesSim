@@ -12,8 +12,8 @@ import java.util.List;
  * an example instance of a resource inside classes working with resources.
  */
 public class ResourceIdeal extends Resource {
-    public ResourceIdeal(String[] tags, World world) {
-        super(tags, 1, world);
+    public ResourceIdeal(String[] tags) {
+        super(tags, 1);
     }
 
     public ResourceIdeal(Resource resource) {

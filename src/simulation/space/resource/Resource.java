@@ -1,20 +1,23 @@
 package simulation.space.resource;
 
 import extra.ProbFunc;
+import simulation.Controller;
 import simulation.World;
+import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.Territory;
 import simulation.space.Tile;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static simulation.Controller.*;
+
 /**
  * Represents consumable objects found in the world.
  */
-public class Resource { //TODO events of merging and stuff
+public class Resource {
     /**
      * How many instances are in this Resources.
      */
@@ -24,7 +27,6 @@ public class Resource { //TODO events of merging and stuff
     /**
      * The turn Resource was created.
      */
-    private String createdOn;
     /**
      * Precomputed hash.
      */
@@ -46,21 +48,23 @@ public class Resource { //TODO events of merging and stuff
      * What part of this Resource will be destroyed on the next death.
      */
     private double deathPart = 1;
+    private List<Event> events = new ArrayList<>();
 
     Resource(ResourceCore resourceCore, int amount) {
-        this.createdOn = resourceCore.getGenome().world.getTurn();
         this.amount = amount;
         this.resourceCore = resourceCore;
         computeHash();
         setTile(null);
+        events.add(new Event(Event.Type.Creation,
+                "Resource was created", "name", getFullName()));
     }
 
-    Resource(String[] tags, int amount, World world) {
-        this(new ResourceCore(tags, world), amount);
+    Resource(String[] tags, int amount) {
+        this(new ResourceCore(tags), amount);
     }
 
-    public Resource(String[] tags, World world) {
-        this(tags, 100 + ProbFunc.randomInt(10), world);
+    public Resource(String[] tags) {
+        this(tags, 100 + ProbFunc.randomInt(10));
     }
 
     public Resource(ResourceCore resourceCore) {
@@ -151,10 +155,14 @@ public class Resource { //TODO events of merging and stuff
     public void setTile(Tile tile) {
         if (resourceCore.isMovable()) {
             this.tile = tile;
+            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
+                    "tile", tile));
             return;
         }
         if (this.tile == null || deathTurn == 0) {
             this.tile = tile;
+            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
+                    "tile", tile));
         } else {
             System.err.println("Unmovable resource being moved! - " + getFullName());
             this.tile = tile;
@@ -164,7 +172,7 @@ public class Resource { //TODO events of merging and stuff
     public void setHasMeaning(boolean b) {
         resourceCore.setHasMeaning(b);
     }
-
+    //TODO events of merging and stuff
     public Resource merge(Resource resource) {
         if (!resource.getBaseName().equals(getBaseName())) {
             System.err.println("Different resource tried to merge - " + getFullName() + " and " + resource.getFullName());
@@ -232,9 +240,9 @@ public class Resource { //TODO events of merging and stuff
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
-            if (amount > 500) {
+            if (amount > 1000) {
                 if (tile.getType() != Tile.Type.Water) {
-                    tile.addDelayedResource(getGenome().world.getResourceFromPoolByName("Water").copy(amount / 100));
+                    tile.addDelayedResource(sessionController.world.getResourceFromPoolByName("Water").copy(amount / 100));
                     amount /= 100;
                 }
             }
@@ -255,7 +263,7 @@ public class Resource { //TODO events of merging and stuff
 //                tiles.get(0).addDelayedResource(getCleanPart(part));
 //            }
             if (tile.getTemperature() < 0) {
-                tile.addDelayedResource(tile.getWorld().getResourceFromPoolByName("Snow").copy(amount / 2));
+                tile.addDelayedResource(sessionController.world.getResourceFromPoolByName("Snow").copy(amount / 2));
                 amount -= amount / 2;
             }
         } else if (getSimpleName().equals("Water")) {

@@ -1,5 +1,7 @@
 package simulation.culture;
 
+import simulation.Controller;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,8 +13,11 @@ public class Event {
         Death,
         ResourceDeath,
         AspectGaining,
-        TileAquisition,
-        DisbandResources
+        TileAcquisition,
+        DisbandResources,
+
+        Creation,
+        Move
     }
     public Type type;
     public Map<String, Object> attributes;
@@ -21,15 +26,13 @@ public class Event {
     private String description;
 
     /**
-     *
      * @param type - type of event.
-     * @param turn - turn on which event occurred.
      * @param description - string describing event.
      * @param attributes - list of attributes in pair of String name for attribute and any Object linked to it.
      */
-    public Event(Type type, String turn, String description, Object ... attributes) {
+    public Event(Type type, String description, Object... attributes) {
         this.type = type;
-        this.turn = turn;
+        this.turn = Controller.sessionController.world == null ? "None" : Controller.sessionController.world.getTurn();
         this.description = description;
         this.attributes = new HashMap<>();
         for (int i = 0; i < attributes.length; i += 2) {
@@ -41,8 +44,8 @@ public class Event {
         }
     }
 
-    public Event(Type type, String turn, String description) {
-        this(type, turn, description, "");
+    public Event(Type type, String description) {
+        this(type, description, "");
     }
 
     public Object getAttribute(String name) {

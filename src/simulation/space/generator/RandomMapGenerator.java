@@ -61,7 +61,7 @@ public class RandomMapGenerator {
                     }
                 }
             }
-            world.resourcePool.add(new ResourceIdeal(tags.toArray(new String[n + 2]), world));
+            world.resourcePool.add(new ResourceIdeal(tags.toArray(new String[n + 2])));
         }
     }
 

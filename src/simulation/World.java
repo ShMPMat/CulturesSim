@@ -79,6 +79,7 @@ public class World {
      * How many initial Groups will be generated.
      */
     private int numberOfGroups;
+    private int mapSize;
 
     /**
      * Base constructor.
@@ -90,14 +91,17 @@ public class World {
      */
     World(int numberOfGroups, int mapSize, int numberOfResources) {
         this.numberOfGroups = numberOfGroups;
+        this.mapSize = mapSize;
         fillAspectPool();
         fillPropertiesPool();
         fillMaterialPool();
+    }
+
+    void initializeZero() {
         fillResourcePool();
-        map = new WorldMap(mapSize, mapSize * 3, resourcePool, this);
+        map = new WorldMap(mapSize, mapSize * 3, resourcePool);
         map.initializePlates();
         RandomMapGenerator.fill(this);
-
     }
 
     public void initializeFirst() {
@@ -106,7 +110,7 @@ public class World {
 
     public void initializeSecond() {
         for (int i = 0; i < numberOfGroups; i++) {
-            groups.add(new Group("G" + i, this, 100 + ProbFunc.randomInt(100), 1));
+            groups.add(new Group("G" + i, 100 + ProbFunc.randomInt(100), 1));
         }
     }
 
@@ -196,7 +200,7 @@ public class World {
                 break;
             }
             tags = line.split("\\s+");
-            resourcePool.add(new ResourceIdeal(tags, this));
+            resourcePool.add(new ResourceIdeal(tags));
         }
         resourcePool.forEach(Resource::actualizeLinks);
         resourcePool.forEach(Resource::actualizeParts);

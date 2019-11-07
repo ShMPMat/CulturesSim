@@ -8,12 +8,9 @@ import simulation.space.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Genome {
-    /**
-     * Link to the world in which this Genome exists.
-     */
-    World world;
+import static simulation.Controller.sessionController;
 
+public class Genome {
     /**
      * Base name of the Resource.
      */
@@ -61,13 +58,15 @@ public class Genome {
 
     private Material primaryMaterial;
     private int _mutationCount = 0;
+    private int baseDesirability;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
-           boolean canMove, boolean isMutable, boolean isMovable, boolean isTemplate, boolean hasLegacy, int deathTime,
-           int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy, Material primaryMaterial, World world) {
+           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean isTemplate,
+           boolean hasLegacy, int deathTime, int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy,
+           Material primaryMaterial) {
         this.name = name;
         this.type = type;
-        this.world = world;
+        this.baseDesirability = baseDesirability;
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
         this.temperatureMax = temperatureMax;
@@ -85,7 +84,7 @@ public class Genome {
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
-        naturalDensity = (int) Math.ceil(world.tileScale * defaultAmount);
+        naturalDensity = (int) Math.ceil(sessionController.world.tileScale * defaultAmount);
         if (naturalDensity > 1000000000) {
             System.err.println("Very high density in Genome " + name + " - " + naturalDensity);
         }
@@ -95,8 +94,9 @@ public class Genome {
 
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
-                genome.canMove, genome.isMutable, genome.isMovable, genome.isTemplate, genome.hasLegacy, genome.deathTime,
-                genome.defaultAmount, genome.legacy, genome.templateLegacy, genome.primaryMaterial, genome.world);
+                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.isTemplate,
+                genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
+                genome.primaryMaterial);
         genome.parts.forEach(this::addPart);
     }
 
@@ -158,6 +158,7 @@ public class Genome {
         setTemplate(false);
         this.deathTime = templateLegacy.getDeathTime();
         this.templateLegacy = templateLegacy;
+        setPrimaryMaterial(templateLegacy.getGenome().primaryMaterial);
     }
 
     public int getTemperatureMin() {
@@ -179,6 +180,10 @@ public class Genome {
 
     public double getMass() {
         return primaryMaterial.getDensity() * size * size * size;
+    }
+
+    public int getBaseDesirability() {
+        return baseDesirability;
     }
 
     public int getNaturalDensity() {
