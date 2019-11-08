@@ -1,7 +1,6 @@
 package simulation.space.resource;
 
 import extra.ProbFunc;
-import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.Tile;
 

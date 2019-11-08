@@ -105,16 +105,24 @@ public class ResourceDependency {
         return type != Type.AVOID;
     }
 
+    public boolean isResourceNeeded() {
+        return type.isResourceDependent;
+    }
+
     public boolean isNecessary() {
         return isNecessary;
     }
 
     enum Type{
-        CONSUME,
-        EXIST,
-        AVOID,
-        TEMPERATURE_MIN,
-        TEMPERATURE_MAX,
-        AVOID_TILES
+        CONSUME(true),
+        EXIST(true),
+        AVOID(true),
+        TEMPERATURE_MIN(false),
+        TEMPERATURE_MAX(false),
+        AVOID_TILES(false);
+
+        boolean isResourceDependent;
+
+        Type(boolean isResourceDependent) {this.isResourceDependent = isResourceDependent;}
     }
 }

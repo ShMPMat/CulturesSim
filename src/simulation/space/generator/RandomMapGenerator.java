@@ -6,7 +6,6 @@ import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
-import simulation.space.WorldMap;
 import simulation.space.resource.ResourceDependency;
 import simulation.space.resource.ResourceIdeal;
 
@@ -112,7 +111,7 @@ public class RandomMapGenerator {
 
     private static void addDependencies(Resource resource, Tile tile, World world) {
         for (ResourceDependency dependency: resource.getGenome().getDependencies()) {
-            if (!dependency.isPositive()) {
+            if (!dependency.isPositive() || !dependency.isResourceNeeded()) {
                 continue;
             }
             if (dependency.getResourceNames().stream().anyMatch(s -> s.equals("Vapour"))) {
@@ -132,8 +131,8 @@ public class RandomMapGenerator {
                         r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
                     if (dep.getGenome().isAcceptable(tile)) {
                         tile.addDelayedResource(dep.copy());
+                        addDependencies(dep, tile, world);
                     }
-                    addDependencies(dep, tile, world);
                 }
             }
         }

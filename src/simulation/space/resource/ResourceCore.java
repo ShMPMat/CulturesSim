@@ -1,7 +1,6 @@
 package simulation.space.resource;
 
 import extra.ShnyPair;
-import simulation.World;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;

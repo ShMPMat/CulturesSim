@@ -155,14 +155,14 @@ public class Resource {
     public void setTile(Tile tile) {
         if (resourceCore.isMovable()) {
             this.tile = tile;
-            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
-                    "tile", tile));
+//            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
+//                    "tile", tile));
             return;
         }
         if (this.tile == null || deathTurn == 0) {
             this.tile = tile;
-            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
-                    "tile", tile));
+//            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
+//                    "tile", tile));
         } else {
             System.err.println("Unmovable resource being moved! - " + getFullName());
             this.tile = tile;
@@ -172,11 +172,14 @@ public class Resource {
     public void setHasMeaning(boolean b) {
         resourceCore.setHasMeaning(b);
     }
-    //TODO events of merging and stuff
+
     public Resource merge(Resource resource) {
         if (!resource.getBaseName().equals(getBaseName())) {
             System.err.println("Different resource tried to merge - " + getFullName() + " and " + resource.getFullName());
             return this;
+        }
+        if (this == resource) {
+            int i = 0;
         }
         addAmount(resource.amount);
         return this;
@@ -246,22 +249,6 @@ public class Resource {
                     amount /= 100;
                 }
             }
-//            if (amount > 250) {
-//                int part = amount - 50;
-//                List<Tile> tiles = new ArrayList<>();
-//                tiles.add(tile);
-//                tiles.add(getGenome().world.map.get(tile.x - 1, tile.y));
-//                tiles.add(getGenome().world.map.get(tile.x + 1, tile.y));
-//                tiles.add(getGenome().world.map.get(tile.x, tile.y + 1));
-//                tiles.add(getGenome().world.map.get(tile.x, tile.y - 1));
-//                tiles.removeIf(Objects::isNull);
-//                tiles.sort((Comparator.comparingInt(tile -> {
-//                    Resource res = tile.getResources().stream().filter(r -> r.getSimpleName().equals(getSimpleName()))
-//                            .findFirst().orElse(null);
-//                    return res == null ? 0 : res.amount;
-//                })));
-//                tiles.get(0).addDelayedResource(getCleanPart(part));
-//            }
             if (tile.getTemperature() < 0) {
                 tile.addDelayedResource(sessionController.world.getResourceFromPoolByName("Snow").copy(amount / 2));
                 amount -= amount / 2;
@@ -308,6 +295,8 @@ public class Resource {
         if (amount > 0) {
             deathPart = (this.amount * deathPart) / (this.amount + amount);
         }
+//        events.add(new Event(Event.Type.Change, "Resource amount increased", "name", getFullName(),
+//                "oldAmount", this.amount, "newAmount", this.amount + amount));
         this.amount += amount;
     }
 

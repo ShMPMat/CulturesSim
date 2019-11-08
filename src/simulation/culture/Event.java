@@ -17,7 +17,8 @@ public class Event {
         DisbandResources,
 
         Creation,
-        Move
+        Move,
+        Change
     }
     public Type type;
     public Map<String, Object> attributes;
