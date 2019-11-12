@@ -15,7 +15,8 @@ public class Controller {
      */
     public InteractionModel interactionModel;
 
-    public final double tileScale = 10;
+    public final int mapSizeX = 45;
+    public final int mapSizeY = 135;
     /**
      * How many initial geology turns will pass in the beginning of the simulation.
      */
@@ -29,6 +30,12 @@ public class Controller {
      * Below what level World will be covered under water.
      */
     public final int defaultWaterLevel = 100;
+    public final int startResourceAmountMin = 40;
+    public final int startResourceAmountMax = 70;
+    public final int startGroupAmount = 10;
+
+    public final double tileScale = 10;
+
     public final double defaultGroupSpreadability = 1;
     public final int defaultGroupMaxPopulation = 1000;
     public final int defaultGroupMinPopulationPerTile = 1;
@@ -45,17 +52,11 @@ public class Controller {
     }
 
     /**
-     * Base constructor.
-     *
-     * @param numberOfGroups    how many groups will be spawned in the world.
-     * @param mapSize           number from which map size will be computed. Guarantied that one of dimensions
-     *                          will be equal to this number.
-     * @param numberOrResources how many random resources will be created.
      * @param interactionModel  Interaction Model, which will govern how world will be updated.
      */
-    public Controller(int numberOfGroups, int mapSize, int numberOrResources, InteractionModel interactionModel) {
+    public Controller(InteractionModel interactionModel) {
         sessionController = this;
-        world = new World(numberOfGroups, mapSize, numberOrResources);
+        world = new World();
         world.initializeZero();
         this.interactionModel = interactionModel;
     }

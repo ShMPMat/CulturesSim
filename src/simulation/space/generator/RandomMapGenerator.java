@@ -1,6 +1,7 @@
 package simulation.space.generator;
 
 import extra.ProbFunc;
+import simulation.Controller;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static simulation.Controller.*;
+
 /**
  * Basic map generator.
  */
@@ -27,11 +30,11 @@ public class RandomMapGenerator {
         //fillResourcePoolWithRandomResources(world, numberOrResources);
     }
 
-    public static void fill(World world) {
+    public static void fill() {
 //        createBlob(map, Tile.Type.Mountain, 30);
 //        createBlob(map, Tile.Type.Water, 30);
         boolean sw = true, ssw = true;
-        for (TectonicPlate plate: world.map.getTectonicPlates()) {
+        for (TectonicPlate plate: sessionController.world.map.getTectonicPlates()) {
             if (sw) {
                 plate.setType(TectonicPlate.Type.Terrain);
                 sw = false;
@@ -41,7 +44,7 @@ public class RandomMapGenerator {
             }
             plate.initialize();
         }
-        world.map.movePlates();
+        sessionController.world.map.movePlates();
     }
 
     @Deprecated
@@ -81,35 +84,37 @@ public class RandomMapGenerator {
         }
     }
 
-    public static void fillResources(World world) {
-        for (Resource resource : world.map.resourcePool) {
+    public static void fillResources() {
+        for (Resource resource : sessionController.world.map.resourcePool) {
             if (resource.getSpreadProbability() == 0 && !resource.getBaseName().matches("Clay") &&
                     !resource.getBaseName().matches("Stone")) {
                 continue;
             }
-            scatter(world, resource, 40 + ProbFunc.randomInt(30));
+            scatter(resource, sessionController.startResourceAmountMin +
+                    ProbFunc.randomInt(sessionController.startResourceAmountMax -
+                            sessionController.startResourceAmountMin));
         }
     }
 
 
-    private static void scatter(World world, Resource resource, int n) {
-        List<Tile> goodTiles = world.map.getTilesWithPredicate(tile -> resource.getGenome().isOptimal(tile));
+    private static void scatter(Resource resource, int n) {
+        List<Tile> goodTiles = sessionController.world.map.getTilesWithPredicate(t -> resource.getGenome().isOptimal(t));
         for (int i = 0; i < n; i++) {
             Tile tile;
             if (goodTiles.isEmpty()) {
-                tile = ProbFunc.randomTile(world.map);
+                tile = ProbFunc.randomTile(sessionController.world.map);
                 while (!resource.getGenome().isAcceptable(tile)) {
-                    tile = ProbFunc.randomTile(world.map);
+                    tile = ProbFunc.randomTile(sessionController.world.map);
                 }
             } else {
                 tile = ProbFunc.randomElement(goodTiles);
             }
             tile.addDelayedResource(resource.copy());
-            addDependencies(resource, tile, world);
+            addDependencies(resource, tile);
         }
     }
 
-    private static void addDependencies(Resource resource, Tile tile, World world) {
+    private static void addDependencies(Resource resource, Tile tile) {
         for (ResourceDependency dependency: resource.getGenome().getDependencies()) {
             if (!dependency.isPositive() || !dependency.isResourceNeeded()) {
                 continue;
@@ -118,20 +123,20 @@ public class RandomMapGenerator {
                 return;
             }
             for (String name: dependency.getResourceNames()) {
-                Resource dep = world.getResourceFromPoolByName(name);
+                Resource dep = sessionController.world.getResourceFromPoolByName(name);
                 if (dep.getGenome().isAcceptable(tile)) {
                     tile.addDelayedResource(dep.copy());
                 }
-                addDependencies(dep, tile, world);
+                addDependencies(dep, tile);
             }
             for (String name: dependency.getMaterialNames()) {
-                for (Resource dep: world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
+                for (Resource dep: sessionController.world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
                         !r.getSimpleName().equals(resource.getSimpleName()) &&
                         r.getGenome().getPrimaryMaterial() != null &&
                         r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
                     if (dep.getGenome().isAcceptable(tile)) {
                         tile.addDelayedResource(dep.copy());
-                        addDependencies(dep, tile, world);
+                        addDependencies(dep, tile);
                     }
                 }
             }

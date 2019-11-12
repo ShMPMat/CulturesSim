@@ -63,23 +63,8 @@ public class World {
      * How many turns passed from the beginning of the simulation.
      */
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
-    /**
-     * How many initial Groups will be generated.
-     */
-    private int numberOfGroups;
-    private int mapSize;
 
-    /**
-     * Base constructor.
-     *
-     * @param numberOfGroups    how many groups will be spawned in the world.
-     * @param mapSize           number from which map size will be computed. Guarantied that one of dimensions
-     *                          will be equal to this number.
-     * @param numberOfResources how many random resources will be created.
-     */
-    World(int numberOfGroups, int mapSize, int numberOfResources) {
-        this.numberOfGroups = numberOfGroups;
-        this.mapSize = mapSize;
+    World() {
         fillAspectPool();
         fillPropertiesPool();
         fillMaterialPool();
@@ -87,17 +72,17 @@ public class World {
 
     void initializeZero() {
         fillResourcePool();
-        map = new WorldMap(mapSize, mapSize * 3, resourcePool);
+        map = new WorldMap(sessionController.mapSizeX, sessionController.mapSizeY, resourcePool);
         map.initializePlates();
-        RandomMapGenerator.fill(this);
+        RandomMapGenerator.fill();
     }
 
     public void initializeFirst() {
-        RandomMapGenerator.fillResources(this);
+        RandomMapGenerator.fillResources();
     }
 
     public void initializeSecond() {
-        for (int i = 0; i < numberOfGroups; i++) {
+        for (int i = 0; i < sessionController.startGroupAmount; i++) {
             groups.add(new Group("G" + i, 100 + ProbFunc.randomInt(100),
                     sessionController.defaultGroupSpreadability));
         }

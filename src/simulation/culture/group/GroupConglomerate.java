@@ -3,15 +3,14 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.space.Territory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GroupConglomerate {
     String name;
     Group.State state;
     List<Group> groups = new ArrayList<>();
     Territory _territory = new Territory();
-    List<Aspect> _aspects = new ArrayList<>();
+    Set<Aspect> _aspects = new HashSet<>();
     int population;
 
     private Group temporaryCrutch;
@@ -35,7 +34,15 @@ public class GroupConglomerate {
     }
 
     void recomputeAspects() {
-        //TODO
+        _aspects = new HashSet<>();
+        for (Group group: groups) {
+            for (Aspect aspect: group.getAspects()) {
+                if (aspect.getUsefulness() > 0) {
+                    continue;
+                }
+                _aspects.add(aspect);
+            }
+        }
     }
 
     void recomputePopulation() {

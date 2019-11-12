@@ -50,6 +50,8 @@ public class TextVisualizer {
      * Used for displaying new tiles for groups.
      */
     private Map<Group, Set<Tile>> lastClaimedTiles;
+    private int mapCut;
+
     /**
      * Main controller of the simulation
      */
@@ -63,9 +65,7 @@ public class TextVisualizer {
      * Base constructor.
      */
     public TextVisualizer() {
-        int numberOfGroups = 10, mapSize = 45, numberOrResources = 5;
-        controller = new Controller(numberOfGroups, mapSize, numberOrResources,
-                new MapModel());
+        controller = new Controller(new MapModel());
         world = controller.world;
         map = world.map;
         interactionModel = controller.interactionModel;
@@ -73,13 +73,40 @@ public class TextVisualizer {
         controller.initializeFirst();
         print();
         controller.initializeSecond();
-        for (int i = 0; i < numberOfGroups; i++) {
+        for (int i = 0; i < controller.startGroupAmount; i++) {
             groupPopulations.add(0);
         }
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("Take")));
         controller.world.groups.forEach(Group::finishUpdate);
-        //TODO cut map in a convenient way
+        computeCut();
+    }
+
+    private void computeCut() {
+        int gapStart = 0, gapFinish = 0, start = -1, finish = 0;
+        for (int y = 0; y < controller.mapSizeY; y++) {
+            boolean isLineClear = true;
+            for (int x = 0; x < controller.mapSizeX; x++) {
+                Tile tile = map.get(x, y);
+                if (tile.getType() != Tile.Type.Water && tile.getType() != Tile.Type.Ice) {
+                    isLineClear = false;
+                    break;
+                }
+            }
+            if (isLineClear) {
+                if (start == -1) {
+                    start = y;
+                }
+                finish = y;
+            } else if (start != -1) {
+                if (finish - start > gapFinish - gapStart) {
+                    gapStart = start;
+                    gapFinish = finish;
+                }
+                start = -1;
+            }
+        }
+        mapCut = (gapStart + gapFinish) / 2;
     }
 
     public static void main(String[] args) {
@@ -193,11 +220,12 @@ public class TextVisualizer {
         }
         main.append("\n");
         StringBuilder map = new StringBuilder();
-        for (int i = 0; i < worldMap.map.size(); i++) {
+        for (int i = 0; i < controller.mapSizeX; i++) {
             List<Tile> line = worldMap.map.get(i);
             String token;
             map.append((i < 10 ? " " + i : i));
-            for (Tile tile : line) {
+            for (int j = 0; j < controller.mapSizeY; j++) {
+                Tile tile = worldMap.get(i, j + mapCut);
                 token = condition.apply(tile);
                 if (token.equals("")) {
                     switch (tile.getType()) {
@@ -223,7 +251,7 @@ public class TextVisualizer {
                             case Normal:
                                 List<Resource> actual = tile.getResources().stream().filter(resource ->
                                         resource.getGenome().getType() != Genome.Type.Plant && resource.getAmount() > 0 &&
-                                        !resource.getSimpleName().equals("Vapour")).collect(Collectors.toList());
+                                                !resource.getSimpleName().equals("Vapour")).collect(Collectors.toList());
                                 if (/*actual.size() > 0*/ false) {
                                     token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
                                             resourceSymbols.get(actual.get(0)));
