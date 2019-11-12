@@ -217,7 +217,7 @@ public class Tile {
         if (level >= 110) {
             type = Type.Mountain;
         }
-        if (level < sessionController.world.getWaterLevel()) {
+        if (level < sessionController.defaultWaterLevel) {
             type = Type.Water;
         }
     }
@@ -276,7 +276,7 @@ public class Tile {
     private void checkIce() {
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
-            level = sessionController.world.getWaterLevel();
+            level = sessionController.defaultWaterLevel;
         } else if (type == Type.Ice && temperature > 0) {
             type = Type.Water;
             level = secondLevel;

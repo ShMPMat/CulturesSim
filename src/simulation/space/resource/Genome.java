@@ -83,7 +83,7 @@ public class Genome {
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
-        naturalDensity = (int) Math.ceil(sessionController.world.tileScale * defaultAmount);
+        naturalDensity = (int) Math.ceil(sessionController.tileScale * defaultAmount);
         if (naturalDensity > 1000000000) {
             System.err.println("Very high density in Genome " + name + " - " + naturalDensity);
         }

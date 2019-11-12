@@ -69,8 +69,8 @@ public class TectonicPlate extends Territory {
     }
 
     @Override
-    public void addTile(Tile tile) {
-        super.addTile(tile);
+    public void add(Tile tile) {
+        super.add(tile);
         tile.setPlate(this);
     }
 

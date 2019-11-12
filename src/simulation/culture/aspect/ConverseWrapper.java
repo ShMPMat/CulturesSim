@@ -7,7 +7,6 @@ import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * Special Aspect which wraps around another aspect and resource and returns application
@@ -59,7 +58,11 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {
-        group.getAspect(aspect).markAsUsed();
+        try {
+            group.getAspect(aspect).markAsUsed();
+        } catch (Exception e) {
+            int i = 0;
+        }
         return super.use(ceiling, evaluator);
     }
 

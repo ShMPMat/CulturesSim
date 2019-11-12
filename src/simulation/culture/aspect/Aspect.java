@@ -44,7 +44,7 @@ public class Aspect {
      */
     Aspect(AspectCore aspectCore, Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         this.aspectCore = aspectCore;
-        this.dependencies = dependencies;
+        this.dependencies = new HashMap<>(dependencies);
         this.group = group;
         this.usefulness = 50;
         this.used = false;

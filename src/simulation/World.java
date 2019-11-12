@@ -21,12 +21,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static simulation.Controller.*;
+
 /**
  * Class which stores all entities in the simulation.
  */
 public class World {
     /**
-     * List of all Groups in the world, which are not subgroups.
+     * List of all Groups in the world, which are not groups.
      */
     public List<Group> groups = new ArrayList<>();
     /**
@@ -41,7 +43,6 @@ public class World {
      * Base MemePool for the World. Contains all standard Memes.
      */
     private GroupMemes memePool = new GroupMemes();
-    public double tileScale = 10;
     /**
      * World map on which all simulated objects are placed.
      */
@@ -62,19 +63,6 @@ public class World {
      * How many turns passed from the beginning of the simulation.
      */
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
-    /**
-     * Below what level World will be covered under water.
-     */
-    private int waterLevel = 100;
-    /**
-     * How many initial geology turns will pass in the beginning of the simulation.
-     */
-    int geologyTurns = 50;
-    /**
-     * How many turns will be spent before filling Resources in the World.
-     */
-    int initialTurns = 100;
-    int stabilizationTurns = 100;
     /**
      * How many initial Groups will be generated.
      */
@@ -110,7 +98,8 @@ public class World {
 
     public void initializeSecond() {
         for (int i = 0; i < numberOfGroups; i++) {
-            groups.add(new Group("G" + i, 100 + ProbFunc.randomInt(100), 1));
+            groups.add(new Group("G" + i, 100 + ProbFunc.randomInt(100),
+                    sessionController.defaultGroupSpreadability));
         }
     }
 
@@ -253,10 +242,6 @@ public class World {
         return null;
     }
 
-    public int getWaterLevel() {
-        return waterLevel;
-    }
-
     /**
      * Returns Resource by name.
      *
@@ -311,6 +296,10 @@ public class World {
      */
     public void addEvent(Event event) {
         events.add(event);
+    }
+
+    public void addGroup(Group group) {
+        groups.add(group);
     }
 
     /**

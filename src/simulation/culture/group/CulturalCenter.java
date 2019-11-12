@@ -2,8 +2,6 @@ package simulation.culture.group;
 
 import extra.ProbFunc;
 import extra.ShnyPair;
-import simulation.Controller;
-import simulation.World;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.thinking.meaning.GroupMemes;
@@ -12,7 +10,6 @@ import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
-import javax.naming.ldap.Control;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -23,28 +20,22 @@ import static simulation.Controller.*;
  * Takes responsibility of Group's cultural change.
  */
 public class CulturalCenter {
-    private List<Aspiration> aspirations;
+    private List<Aspiration> aspirations = new ArrayList<>();;
     private Group group;
     private Set<Aspect> aspects;
     private Set<Aspect> changedAspects; // always equals aspects except while making a turn
     private List<Event> events;
-    private List<Request> requests;
-    private List<ShnyPair<Resource, ResourceBehaviour>> wants;
-    private GroupMemes memePool;
+    private List<Request> requests = new ArrayList<>();;
+    private List<ShnyPair<Resource, ResourceBehaviour>> wants = new ArrayList<>();;
+    private GroupMemes memePool = new GroupMemes();;
 
-    private List<ConverseWrapper> _converseWrappers;
-    private List<Resource> _lastResourcesForCw;
+    private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
+    private List<Resource> _lastResourcesForCw = new ArrayList<>();
 
     CulturalCenter(Group group) {
-        this.memePool = new GroupMemes();
         setAspects(new HashSet<>());
         setChangedAspects(new HashSet<>());
         this.group = group;
-        aspirations = new ArrayList<>();
-        requests = new ArrayList<>();
-        wants = new ArrayList<>();
-        _converseWrappers = new ArrayList<>();
-        _lastResourcesForCw = new ArrayList<>();
     }
 
     List<Aspiration> getAspirations() {
@@ -114,7 +105,7 @@ public class CulturalCenter {
         this.events = events;
     }
 
-    void addAspiration(Aspiration aspiration) { //TODO seems that aspirations are stuck in subgroups;
+    void addAspiration(Aspiration aspiration) { //TODO seems that aspirations are stuck in groups;
         if (aspirations.stream().noneMatch(aspir -> aspir.equals(aspiration))) {
             aspirations.add(aspiration);
         }
@@ -231,9 +222,9 @@ public class CulturalCenter {
         }
     }
 
-    void update(double rAspectAcquisition, double rAspectLending) {
+    void update() {
         tryToFulfillAspirations();
-        mutateAspects(rAspectAcquisition, rAspectLending);
+        mutateAspects();
         createArtifact();
     }
 
@@ -241,7 +232,7 @@ public class CulturalCenter {
         aspirations.remove(aspiration);
     }
 
-    private void mutateAspects(double rAspectAcquisition, double rAspectLending) { //TODO separate adding of new aspects und updating old
+    private void mutateAspects() { //TODO separate adding of new aspects und updating old
 
 //        Set<ShnyPair<Aspect, Group>> allExistingAspects = getNeighboursAspects();
 //
@@ -253,7 +244,7 @@ public class CulturalCenter {
 //                        " got aspect " + _p.first.getBaseName() + " from group " + _p.second.name, "group", group));
 //            }
 //        }
-        if (ProbFunc.getChances(rAspectAcquisition)) {
+        if (ProbFunc.getChances(sessionController.rAspectAcquisition)) {
             List<Aspect> options = new ArrayList<>(sessionController.world.aspectPool);
             options.addAll(getAllConverseWrappers());
             Aspect _a = ProbFunc.getRandomAspectExcept(options, aspect -> true);
@@ -281,7 +272,7 @@ public class CulturalCenter {
             ShnyPair<Boolean, ResourcePack> _p = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
             for (Resource resource : _p.second.resources) {
                 if (resource.hasMeaning()) {
-                    group.uniqueArtefacts.add(resource);
+                    group.uniqueArtifacts.add(resource);
                 } else {
                     group.resourcePack.add(resource);
                 }

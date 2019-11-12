@@ -46,7 +46,7 @@ public class WorldMap {
             while (usedTiles.contains(tile)) {
                 tile = randomTile(this);
             }
-            tectonicPlate.addTile(tile);
+            tectonicPlate.add(tile);
             tectonicPlates.add(tectonicPlate);
             usedTiles.add(tile);
         }
@@ -59,7 +59,7 @@ public class WorldMap {
                     continue;
                 }
                 Tile tile = randomElement(tiles);
-                territory.addTile(tile);
+                territory.add(tile);
                 usedTiles.add(tile);
                 sw = true;
             }

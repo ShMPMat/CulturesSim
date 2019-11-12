@@ -111,7 +111,15 @@ public class Territory {
         return tiles.contains(tile);
     }
 
-    public void addTile(Tile tile) {
+    public void addAll(Territory territory) {
+        addAll(territory.tiles);
+    }
+
+    public void addAll(Collection<Tile> tiles) {
+        tiles.forEach(this::add);
+    }
+
+    public void add(Tile tile) {
         if (!tiles.contains(tile)) {
             tiles.add(tile);
         }
@@ -123,6 +131,9 @@ public class Territory {
     }
 
     public Tile excludeMostUselessTileExcept(Collection<Tile> exceptions, Function<Tile, Integer> mapper) {
+        if (size() <= 1) {
+            return null;
+        }
         Set<Tile> result = new HashSet<>(tiles);
         result.removeAll(exceptions);
         Optional<Tile> exclude = result.stream().min(Comparator.comparingInt(mapper::apply));

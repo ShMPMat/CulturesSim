@@ -123,6 +123,9 @@ public class ResourcePack {
      * @param tile Tile on which resources will be disbanded.
      */
     public void disbandOnTile(Tile tile) {
+        if (tile == null) {
+            int i = 0;
+        }
         resources.stream().filter(resource -> resource.getTile() == null).forEach(tile::addDelayedResource);
         resources.clear();
     }

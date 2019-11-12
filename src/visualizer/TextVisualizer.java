@@ -35,7 +35,7 @@ public class TextVisualizer {
     /**
      * Symbols for representation of groups on the Map.
      */
-    private Map<Group, String> groupSymbols = new HashMap<>();
+    private Map<String, String> groupSymbols = new HashMap<>();
     /**
      * Symbols for representation of resource on the Map.
      */
@@ -44,7 +44,7 @@ public class TextVisualizer {
      * List of group population before beginning of the last sequence turn;
      * Used for estimating population change.
      */
-    private List<Integer> groupPopulations;
+    private List<Integer> groupPopulations = new ArrayList<>();
     /**
      * Map of all the tiles claimed by groups during the last sequence of turns;
      * Used for displaying new tiles for groups.
@@ -57,6 +57,7 @@ public class TextVisualizer {
     private World world;
     private WorldMap map;
     private InteractionModel interactionModel;
+    private Scanner s;
 
     /**
      * Base constructor.
@@ -64,7 +65,7 @@ public class TextVisualizer {
     public TextVisualizer() {
         int numberOfGroups = 10, mapSize = 45, numberOrResources = 5;
         controller = new Controller(numberOfGroups, mapSize, numberOrResources,
-                new MapModel(0.01, 0.25));
+                new MapModel());
         world = controller.world;
         map = world.map;
         interactionModel = controller.interactionModel;
@@ -72,13 +73,13 @@ public class TextVisualizer {
         controller.initializeFirst();
         print();
         controller.initializeSecond();
-        groupPopulations = new ArrayList<>();
         for (int i = 0; i < numberOfGroups; i++) {
             groupPopulations.add(0);
         }
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("Take")));
         controller.world.groups.forEach(Group::finishUpdate);
+        //TODO cut map in a convenient way
     }
 
     public static void main(String[] args) {
@@ -107,13 +108,13 @@ public class TextVisualizer {
      * @throws IOException when files with symbols isn't found.
      */
     private void readSymbols() throws IOException {
-        Scanner s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
-        for (Group group : world.groups) {
-            groupSymbols.put(group, s.nextLine());
-        }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsResourceLibrary"));
         for (Resource resource : world.resourcePool) {
             resourceSymbols.put(resource, s.nextLine());
+        }
+        s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
+        for (Group group : world.groups) {
+            groupSymbols.put(group.name, s.nextLine());
         }
     }
 
@@ -124,13 +125,17 @@ public class TextVisualizer {
         StringBuilder main = new StringBuilder();
         main.append(world.getTurn()).append("\n");
         int i = -1;
+        while (groupPopulations.size() < world.groups.size()) {
+            groupSymbols.put(world.groups.get(groupPopulations.size()).name, s.nextLine());
+            groupPopulations.add(0);
+        }
         for (Group group : world.groups) {
             StringBuilder stringBuilder = new StringBuilder();
             i++;
             if (group.state == Group.State.Dead) {
                 continue;
             }
-            stringBuilder.append(groupSymbols.get(group)).append(" ").append(group.name).append(" ");
+            stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" ");
             for (Aspect aspect : group.getAspects()) {
                 stringBuilder.append(aspect.getName()).append(" ");
             }
@@ -237,7 +242,7 @@ public class TextVisualizer {
                         if (tile.group.state == Group.State.Dead) {
                             token += "\033[33m☠";
                         } else {
-                            token += (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[96m\033[1m") + groupSymbols.get(tile.group);
+                            token += (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[96m\033[1m") + groupSymbols.get(tile.group.name);
                         }
                     }
                 }
