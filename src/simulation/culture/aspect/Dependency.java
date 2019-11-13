@@ -6,8 +6,8 @@ import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Class which stores source to which an Aspect requirement is linked.
@@ -52,12 +52,13 @@ public class Dependency {
     public String getName() {
         if (resource != null) {
             return resource.getBaseName();
-        } else if (aspect != null){
+        }
+        if (aspect != null) {
             return aspect.getName();
-//        } else if (conversion != null) {
-//            return conversion.second.getName() + " on " + conversion.first.getBaseName();
-//        } else if (line != null) {
-//            return line.first.getName() + " from " + line.second.getName();
+        } else if (conversion != null) {
+            return conversion.second.getName() + " on " + conversion.first.getBaseName();
+        } else if (line != null) {
+            return line.first.getName() + " from " + line.second.getName();
         }
         return "What?";
     }
@@ -88,19 +89,19 @@ public class Dependency {
             return this.aspect.dependencies.values().stream().anyMatch(dependencies -> dependencies.stream()
                     .anyMatch(dependency -> dependency.isCycleDependency(aspect)));
         }
-//        if (conversion != null) {
-//            return (conversion.second.equals(aspect) && conversion.second != aspect);
-//        }
-//        if (line != null) {
-//            if (isAlreadyUsed) {
-//                return false;
-//            }
-//            isAlreadyUsed = true;
-//            boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-//                    .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || (line.second.equals(aspect) && line.second != aspect);
-//            isAlreadyUsed = false;
-//            return b;
-//        }
+        if (conversion != null) {
+            return (conversion.second.equals(aspect) && conversion.second != aspect);
+        }
+        if (line != null) {
+            if (isAlreadyUsed) {
+                return false;
+            }
+            isAlreadyUsed = true;
+            boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                    .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || (line.second.equals(aspect) && line.second != aspect);
+            isAlreadyUsed = false;
+            return b;
+        }
         return false;
     }
 
@@ -112,34 +113,34 @@ public class Dependency {
         if (aspect != null) {
             return aspect.use(ceiling, new ResourceEvaluator());
         }
-        if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
+        if (resource != null) {
             return new ShnyPair<>(true, type.consumeAndGetResult(group.getOverallGroup().getTerritory().getResourceInstances(resource), ceiling));
         }
-//        if (conversion != null){
-//            Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
-//            for (Resource res : resourceInstances) {
-//                if (ceiling <= evaluator.evaluate(resourcePack)) {
-//                    break;
-//                }
-//                resourcePack.add(res.applyAndConsumeAspect(conversion.second,
-//                        ceiling - evaluator.evaluate(resourcePack)));
-//            }
-//            return new ShnyPair<>(true, resourcePack);
-//        }
-//        if (line != null) {
-//            if (isAlreadyUsed) {
-//                return new ShnyPair<>(true, resourcePack);
-//            }
-//            isAlreadyUsed = true;
-//            ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
-//                    new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
-//                            rp -> rp.getAmountOfResource(line.first.resource)));
-//            _p.second.getResource(line.first.resource).getResources()
-//                    .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
-//            resourcePack.add(_p.second);
-//            isAlreadyUsed = false;
-//            return new ShnyPair<>(_p.first, resourcePack);
-//        }
+        if (conversion != null){
+            Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
+            for (Resource res : resourceInstances) {
+                if (ceiling <= evaluator.evaluate(resourcePack)) {
+                    break;
+                }
+                resourcePack.add(res.applyAndConsumeAspect(conversion.second,
+                        ceiling - evaluator.evaluate(resourcePack)));
+            }
+            return new ShnyPair<>(true, resourcePack);
+        }
+        if (line != null) {
+            if (isAlreadyUsed) {
+                return new ShnyPair<>(true, resourcePack);
+            }
+            isAlreadyUsed = true;
+            ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
+                    new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
+                            rp -> rp.getAmountOfResource(line.first.resource)));
+            _p.second.getResource(line.first.resource).getResources()
+                    .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
+            resourcePack.add(_p.second);
+            isAlreadyUsed = false;
+            return new ShnyPair<>(_p.first, resourcePack);
+        }
         return new ShnyPair<>(false, null);
     }
 

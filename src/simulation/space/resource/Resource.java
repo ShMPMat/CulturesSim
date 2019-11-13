@@ -17,7 +17,7 @@ import static simulation.Controller.*;
 /**
  * Represents consumable objects found in the world.
  */
-public class Resource {
+public class Resource {//TODO check parts it seems that simple Plant has Fruits of ColdPlant
     /**
      * How many instances are in this Resources.
      */

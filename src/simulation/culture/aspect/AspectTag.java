@@ -56,7 +56,7 @@ public class AspectTag {
         return resource.getPart(ceiling);
     }
 
-    ResourcePack consumeAndGetResult(Collection<Resource> resources, int ceiling) {
+    public ResourcePack consumeAndGetResult(Collection<Resource> resources, int ceiling) {
         ResourcePack resourceResult = new ResourcePack();
         for (Resource resource : resources) {
             resourceResult.add(consumeAndGetResult(resource, ceiling));
