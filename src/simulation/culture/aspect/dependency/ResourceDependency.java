@@ -8,10 +8,15 @@ import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
-public class ResourceDependency implements Dependency {
+public class ResourceDependency extends AbstractDependency {
     private Resource resource;
-    private AspectTag tag;
     private Group group;
+
+    public ResourceDependency(AspectTag tag, Group group, Resource resource) {
+        super(tag);
+        this.resource = resource;
+        this.group = group;
+    }
 
     @Override
     public String getName() {

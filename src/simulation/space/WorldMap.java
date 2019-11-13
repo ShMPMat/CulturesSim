@@ -1,5 +1,6 @@
 package simulation.space;
 
+import simulation.Controller;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceIdeal;
@@ -12,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static extra.ProbFunc.*;
+import static simulation.Controller.*;
 
 /**
  * Represents tile map of the world
@@ -73,16 +75,16 @@ public class WorldMap {
      * @return Tile on this coordinates or null if coordinates are out of bounds.
      */
     public Tile get(int x, int y) {
-        try {
-            if (y < 0) {
-                y = map.get(0).size() + y;
-            } else if (y >= map.get(0).size()) {
-                y -= map.get(0).size();
-            }
-            return map.get(x).get(y);
-        } catch (IndexOutOfBoundsException e) {
+        if (x < 0) {
+            return null;
+        } else if (x >= sessionController.mapSizeX) {
             return null;
         }
+        while (y < 0) {
+            y += sessionController.mapSizeY;
+        }
+        y %= sessionController.mapSizeY;
+        return map.get(x).get(y);
     }
 
     public Set<Group> getAllNearGroups(Group group) {

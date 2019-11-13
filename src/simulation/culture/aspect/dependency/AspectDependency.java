@@ -2,11 +2,17 @@ package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
-public class AspectDependency implements Dependency {
+public class AspectDependency extends AbstractDependency {
     private Aspect aspect;
+
+    public AspectDependency(AspectTag tag, Aspect aspect) {
+        super(tag);
+        this.aspect = aspect;
+    }
 
     @Override
     public String getName() {

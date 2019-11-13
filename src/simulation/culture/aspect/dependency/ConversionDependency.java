@@ -10,11 +10,12 @@ import simulation.space.resource.ResourcePack;
 
 import java.util.Collection;
 
-public class ConversionDependency implements Dependency {
+public class ConversionDependency extends AbstractDependency {
     private ShnyPair<Resource, Aspect> conversion;
     private Group group;
 
-    public ConversionDependency(ShnyPair<Resource, Aspect> conversion, Group group) {
+    public ConversionDependency(AspectTag tag, Group group, ShnyPair<Resource, Aspect> conversion) {
+        super(tag);
         this.conversion = conversion;
         this.group = group;
     }

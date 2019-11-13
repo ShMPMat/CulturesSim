@@ -1,6 +1,8 @@
 package simulation.culture.aspect;
 
 import extra.ShnyPair;
+import simulation.culture.aspect.dependency.Dependency;
+import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.Group;
 import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
@@ -51,7 +53,7 @@ public class ConverseWrapper extends Aspect {
         if (!aspect.getName().equals("TakeApart") && !aspect.getName().equals("Incinerate")) {
             int i = 0;
         }
-//        Map<AspectTag, Set<Dependency>> _m = new HashMap<>(dependencies);
+//        Map<AspectTag, Set<Dependency_>> _m = new HashMap<>(dependencies);
 //        _m.putAll(aspect.dependencies);
         return dependencies;
     }
@@ -74,10 +76,14 @@ public class ConverseWrapper extends Aspect {
         traversedCopy = converseWrapper;
         converseWrapper.dependencies.put(new AspectTag("phony"), new HashSet<>());
         for (Dependency dependency : dependencies.get(new AspectTag("phony"))) {
-            ConverseWrapper next = dependency.getNextWrapper();
+            if (!(dependency instanceof LineDependency)) {
+                continue;
+            }
+            ConverseWrapper next = ((LineDependency) dependency).getNextWrapper();
             if (next != null && next.canInsertMeaning) {
-                converseWrapper.dependencies.get(new AspectTag("phony")).add(new Dependency(dependency.getType(),
-                        new ShnyPair<>(converseWrapper, next.stripToMeaning()), group));
+                converseWrapper.dependencies.get(new AspectTag("phony")).add(/*new Dependency_(dependency.getType(),
+                        new ShnyPair<>(converseWrapper, next.stripToMeaning()), group)*/
+                new LineDependency(dependency.getType(), group, new ShnyPair<>(converseWrapper, next.stripToMeaning())));
                 next.stripToMeaning();
             }
         }
@@ -90,8 +96,8 @@ public class ConverseWrapper extends Aspect {
         ConverseWrapper _w = new ConverseWrapper(aspect, resource, group);
         _w.dependencies.putAll(dependencies);
         _w.canInsertMeaning = dependencies.get(new AspectTag("phony")).stream()
-                .anyMatch(dependency -> dependency.getNextWrapper() != null && dependency.getNextWrapper()
-                        .canInsertMeaning);
+                .anyMatch(dependency -> dependency instanceof LineDependency &&
+                        ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
         return _w;
     }
 

@@ -2,6 +2,7 @@ package simulation.culture.aspect;
 
 import extra.ShnyPair;
 import simulation.World;
+import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
 import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
@@ -155,7 +156,7 @@ public class Aspect {
             isFinished = false;
             ResourcePack _rp = new ResourcePack();
             for (Dependency dependency1 : dependency) {
-                if (dependency1.getType().name.equals("phony")) {
+                if (dependency1.isPhony()) {
                     isFinished = true;
                     ShnyPair<Boolean, ResourcePack> _p = dependency1.useDependency(ceiling -
                             meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource), evaluator);

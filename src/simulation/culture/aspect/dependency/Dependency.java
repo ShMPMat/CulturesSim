@@ -10,5 +10,6 @@ public interface Dependency {
     String getName();
     boolean isCycleDependency(Aspect aspect);
     ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator);
-   // AspectTag getType();
+    boolean isPhony();
+    AspectTag getType();
 }

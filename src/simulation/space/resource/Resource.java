@@ -25,9 +25,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     ResourceCore resourceCore;
 
     /**
-     * The turn Resource was created.
-     */
-    /**
      * Precomputed hash.
      */
     private int _hash;

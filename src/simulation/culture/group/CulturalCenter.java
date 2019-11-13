@@ -4,6 +4,7 @@ import extra.ProbFunc;
 import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
+import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;

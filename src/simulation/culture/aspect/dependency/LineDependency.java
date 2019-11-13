@@ -2,17 +2,19 @@ package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
-public class LineDependency implements Dependency {
+public class LineDependency extends AbstractDependency {
     private boolean isAlreadyUsed = false;
     private Group group;
     private ShnyPair<ConverseWrapper, ConverseWrapper> line;
 
-    public LineDependency(Group group, ShnyPair<ConverseWrapper, ConverseWrapper> line) {
+    public LineDependency(AspectTag tag, Group group, ShnyPair<ConverseWrapper, ConverseWrapper> line) {
+        super(tag);
         this.group = group;
         this.line = line;
     }
@@ -29,7 +31,7 @@ public class LineDependency implements Dependency {
         }
         isAlreadyUsed = true;
         boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || (line.second.equals(aspect) && line.second != aspect);
+                .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || (line.second.equals(aspect) /*&& line.second != aspect*/);
         isAlreadyUsed = false;
         return b;
     }
