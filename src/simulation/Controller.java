@@ -17,6 +17,7 @@ public class Controller {
 
     public final int mapSizeX = 45;
     public final int mapSizeY = 135;
+    public final int temperatureBaseStart = -15;
     /**
      * How many initial geology turns will pass in the beginning of the simulation.
      */

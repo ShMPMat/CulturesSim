@@ -6,6 +6,8 @@ import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
+import java.util.Objects;
+
 public class AspectDependency extends AbstractDependency {
     private Aspect aspect;
 
@@ -31,5 +33,19 @@ public class AspectDependency extends AbstractDependency {
     @Override
     public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
         return aspect.use(ceiling, new ResourceEvaluator());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AspectDependency that = (AspectDependency) o;
+        return Objects.equals(aspect, that.aspect);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), aspect);
     }
 }

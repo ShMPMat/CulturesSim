@@ -8,6 +8,8 @@ import simulation.culture.group.Group;
 import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
+import java.util.Objects;
+
 public class LineDependency extends AbstractDependency {
     private boolean isAlreadyUsed = false;
     private Group group;
@@ -55,5 +57,19 @@ public class LineDependency extends AbstractDependency {
 
     public ConverseWrapper getNextWrapper() {
         return line.second;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        LineDependency that = (LineDependency) o;
+        return Objects.equals(line, that.line);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), line);
     }
 }

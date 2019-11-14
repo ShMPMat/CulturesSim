@@ -54,7 +54,7 @@ public class Group {
     ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
 
-    private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup) {//TODO why first tile is empty?
+    private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup) {
         getCulturalCenter().setChangedAspects(new HashSet<>());
         this.name = name;
         this.parentGroup = parentGroup;
@@ -355,13 +355,13 @@ public class Group {
             return;
         }
         if (!subgroups.isEmpty()) {
-            overgroupComputePopulation();
+            for (int i = 0; i < subgroups.size(); i++) {
+                subgroups.get(i).populationUpdate();
+            }
+            overgroupUpdatePopulation();
             if (population == 0) {
                 die();
                 subgroups.forEach(Group::die);
-            }
-            for (int i = 0; i < subgroups.size(); i++) {
-                subgroups.get(i).populationUpdate();
             }
         } else {
             if (getMaxPopulation() == population && parentGroup.subgroups.size() < 10) {
@@ -388,6 +388,10 @@ public class Group {
                 parentGroup.addSubgroup(group);
             }
         }
+    }
+
+    private void overgroupUpdatePopulation() {
+        overgroupComputePopulation();
     }
 
     private void overgroupComputePopulation() {
@@ -434,7 +438,7 @@ public class Group {
         if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(sessionController.defaultGroupDiverge)) {
             parentGroup.removeSubgroup(this);
             Group group = new Group(sessionController.getVacantGroupName(), population, spreadability, 0, getCenter(), null);
-            group.addSubgroup(this);//TODO better tile passing
+            group.addSubgroup(this);
             territory.getTiles().forEach(parentGroup::overgroupRemove);
             territory.getTiles().forEach(group::overgroupClaim);
             parentGroup = group;

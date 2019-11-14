@@ -9,6 +9,7 @@ import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class ConversionDependency extends AbstractDependency {
     private ShnyPair<Resource, Aspect> conversion;
@@ -42,5 +43,19 @@ public class ConversionDependency extends AbstractDependency {
                     ceiling - evaluator.evaluate(resourcePack)));
         }
         return new ShnyPair<>(true, resourcePack);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ConversionDependency that = (ConversionDependency) o;
+        return super.equals(o) && Objects.equals(conversion, that.conversion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), conversion);
     }
 }

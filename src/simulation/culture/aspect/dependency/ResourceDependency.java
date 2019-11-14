@@ -8,6 +8,8 @@ import simulation.culture.group.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
+import java.util.Objects;
+
 public class ResourceDependency extends AbstractDependency {
     private Resource resource;
     private Group group;
@@ -39,5 +41,19 @@ public class ResourceDependency extends AbstractDependency {
 
     public AspectTag getType() {
         return tag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ResourceDependency that = (ResourceDependency) o;
+        return Objects.equals(resource, that.resource);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), resource);
     }
 }

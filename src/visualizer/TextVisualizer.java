@@ -49,7 +49,7 @@ public class TextVisualizer {
      * Map of all the tiles claimed by groups during the last sequence of turns;
      * Used for displaying new tiles for groups.
      */
-    private Map<Group, Set<Tile>> lastClaimedTiles;
+    private Map<String, Set<Tile>> lastClaimedTiles;
     private int mapCut;
 
     /**
@@ -173,11 +173,11 @@ public class TextVisualizer {
         }
         lastClaimedTiles = new HashMap<>();
         for (Group group : controller.world.groups) {
-            lastClaimedTiles.put(group, new HashSet<>());
+            lastClaimedTiles.put(group.name, new HashSet<>());
         }
         for (Event event : interactionModel.getEvents().stream().
                 filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
-            lastClaimedTiles.get((Group) event.getAttribute("group")).add((Tile) event.getAttribute("tile"));
+            lastClaimedTiles.get(((Group) event.getAttribute("group")).name).add((Tile) event.getAttribute("tile"));
         }
         System.out.print(main.append(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
                 map.map.size() + 2), printedEvents(interactionModel.getEvents(), false),
@@ -270,7 +270,8 @@ public class TextVisualizer {
                         if (tile.group.state == Group.State.Dead) {
                             token += "\033[33m☠";
                         } else {
-                            token += (lastClaimedTiles.get(tile.group).contains(tile) ? "\033[31m" : "\033[96m\033[1m") + groupSymbols.get(tile.group.name);
+                            token += (lastClaimedTiles.get(tile.group.name).contains(tile) ? "\033[31m" :
+                                    "\033[96m\033[1m") + groupSymbols.get(tile.group.name);
                         }
                     }
                 }

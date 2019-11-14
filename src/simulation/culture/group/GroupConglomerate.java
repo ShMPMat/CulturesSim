@@ -48,4 +48,16 @@ public class GroupConglomerate {
     void recomputePopulation() {
         population = groups.stream().reduce(0, (x, y) -> x + y.population, Integer::sum);
     }
+
+    public void update() {
+        int size = groups.size();
+        for (int i = 0; i < size; i++) {
+            Group group = groups.get(i);
+            group.update();
+            if (!groups.contains(group)) {//TODO message from inside will be faster
+                i--;
+                size--;
+            }
+        }
+    }
 }

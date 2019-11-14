@@ -426,7 +426,8 @@ public class Tile {
     }
 
     private void updateTemperature() {
-        temperature = x - 15 - Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
+        temperature = x + sessionController.temperatureBaseStart -
+                Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
 
     public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow
