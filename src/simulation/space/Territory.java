@@ -33,8 +33,8 @@ public class Territory {
         return tiles.stream().filter(predicate::test).collect(Collectors.toList());
     }
 
-    public Tile getTileByNumber(int n) {
-        return tiles.get(n);
+    public Tile getCenter() {
+        return tiles.get(0);
     }
 
     public List<Tile> getBrinkWithCondition(Predicate<Tile> predicate) {

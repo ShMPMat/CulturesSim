@@ -55,13 +55,10 @@ public class Group {
     ResourcePack uniqueArtifacts = new ResourcePack();
 
     private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup) {
-        getCulturalCenter().setChangedAspects(new HashSet<>());
         this.name = name;
         this.parentGroup = parentGroup;
-        setAspects(new HashSet<>());
         this.population = population;
         this.spreadability = spreadability;
-        setEvents(new ArrayList<>());
         if (root == null) {
             while (true) {
                 Tile tile = ProbFunc.randomTile(sessionController.world.map);
@@ -75,13 +72,14 @@ public class Group {
         }
 
         for (int i = 0; i < numberOfSubGroups; i++) {
-            addSubgroup(new Group(this, null, name + "_" + i, population / numberOfSubGroups,
+            overgroupAddSubgroup(new Group(this, null, name + "_" + i, population / numberOfSubGroups,
                     getCenter()));
         }
     }
 
-    public Group(String name, int population, double spreadability) {
-        this(name, population, spreadability, 1, null, null);
+    public Group(int numberOfSubgroups, Tile root) {
+        this(sessionController.getVacantGroupName(), 100 + ProbFunc.randomInt(100),
+                sessionController.defaultGroupSpreadability, numberOfSubgroups, root,null);
     }
 
     private Group(Group group, Group subgroup, String name, int population, Tile tile) {
@@ -91,8 +89,9 @@ public class Group {
         }
         for (Aspect aspect : subgroup.getAspects()) {
             getCulturalCenter().addAspectNow(aspect, aspect.getDependencies());
-            finishUpdate();
+            overgroupFinishUpdate();
         }
+        culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
     }
 
     public Set<Aspect> getAspects() {
@@ -147,7 +146,11 @@ public class Group {
     }
 
     public Group getOverallGroup() {
-        return (getParentGroup() == null ? this : getParentGroup().getOverallGroup());
+        if (getParentGroup() == null) {
+            int i = 0;
+            return this;
+        }
+        return getParentGroup().getOverallGroup();
     }
 
     private Collection<Resource> getResourceRequirements() {
@@ -159,39 +162,19 @@ public class Group {
         return parentGroup;
     }
 
-    private int getDistanceToClosestSubgroup(Tile tile) {
-        int d = Integer.MAX_VALUE;
-        for (Group subgroup: subgroups) {
-            d = Math.min(d, tile.getClosestDistance(Collections.singleton(subgroup.getCenter())));
-        }
-        return d;
-    }
-
     private void die() {
-        try {
-            state = State.Dead;
-            population = 0;
-            for (Tile tile : territory.getTiles()) {
-                tile.group = null;
-            }
-            cherishedResources.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
-            uniqueArtifacts.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
-            addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
-            for (Group group : sessionController.world.map.getAllNearGroups(this)) {
-                group.culturalCenter.addMemeCombination(sessionController.world.getMemeFromPoolByName("group")
-                        .addPredicate(new MemeSubject(name)).addPredicate(sessionController.world.getMemeFromPoolByName("die")));
-            }
-        } catch (Exception e) {
-            int i = 0;
+        state = State.Dead;
+        population = 0;
+        for (Tile tile : territory.getTiles()) {
+            tile.group = null;
         }
-    }
-
-    private void setAspects(Set<Aspect> aspects) {
-        getCulturalCenter().setAspects(aspects);
-    }
-
-    private void setEvents(List<Event> events) {
-        getCulturalCenter().setEvents(events);
+        cherishedResources.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
+        uniqueArtifacts.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
+        addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
+        for (Group group : sessionController.world.map.getAllNearGroups(this)) {
+            group.culturalCenter.addMemeCombination(sessionController.world.getMemeFromPoolByName("group")
+                    .addPredicate(new MemeSubject(name)).addPredicate(sessionController.world.getMemeFromPoolByName("die")));
+        }
     }
 
     Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
@@ -271,13 +254,8 @@ public class Group {
         getEvents().add(event);
     }
 
-    private void addSubgroup(Group subgroup) {
-        subgroups.add(subgroup);
-        overgroupComputePopulation();
-    }
-
     public Tile getCenter() {
-        return territory.getTileByNumber(0);
+        return territory.getCenter();
     }
 
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
@@ -287,38 +265,6 @@ public class Group {
         }
         stratum.useAmount(amount);
         return amount;
-    }
-
-    private void removeSubgroup(Group subgroup) {
-        population -= subgroup.population;
-        if (!subgroups.remove(subgroup)) {
-            System.err.println("Trying to remove non-child subgroup " + subgroup.name + " from Group " + name);
-        }
-    }
-
-    public void update() {
-        if (state == State.Dead) {
-            return;
-        }
-        subgroups.forEach(Group::updateRequests);
-        subgroups.forEach(Group::executeRequests);
-        subgroups.forEach(Group::strataUpdate);
-        populationUpdate();
-        if (state == State.Dead) {
-            return;
-        }
-        subgroups.forEach(Group::expand);
-        if (!subgroups.isEmpty()) {//TODO remove when ready to split
-            getCulturalCenter().update();
-            if (sessionController.groupDiverge) {
-                for (int i = 0; i < subgroups.size(); i++) {
-                    Group subgroup = subgroups.get(i);
-                    if (subgroup.diverge()) {
-                        i--;
-                    }
-                }
-            }
-        }
     }
 
     private void updateRequests() {
@@ -351,47 +297,66 @@ public class Group {
     }
 
     private void populationUpdate() {
+        if (population == 0) {
+            die();
+            return;
+        }
+        if (getMaxPopulation() == population && parentGroup.subgroups.size() < 10) {
+            List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
+                    parentGroup.overgroupGetDistanceToClosestSubgroup(t) > 2 && t.canSettle(this));
+            if (tiles.isEmpty()) {
+                return;
+            }
+            population = population / 2;
+            Tile tile = ProbFunc.randomElement(tiles);
+            Group group = new Group(parentGroup, this, parentGroup.name + "_" + parentGroup.subgroups.size(),
+                    population, tile);
+            for (Stratum stratum: strata) {
+                try {
+                    group.strata.get(group.strata.indexOf(stratum)).useAmount(stratum.getAmount() / 2);
+                } catch (Exception e) {
+                    int i = 0;
+                }
+                stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
+            }
+            if (group.territory.isEmpty()) {
+                int i = 0;
+            }
+            parentGroup.overgroupAddSubgroup(group);
+        }
+    }
+
+    public void overgroupUpdate() {
         if (state == State.Dead) {
             return;
         }
-        if (!subgroups.isEmpty()) {
-            for (int i = 0; i < subgroups.size(); i++) {
-                subgroups.get(i).populationUpdate();
-            }
-            overgroupUpdatePopulation();
-            if (population == 0) {
-                die();
-                subgroups.forEach(Group::die);
-            }
-        } else {
-            if (getMaxPopulation() == population && parentGroup.subgroups.size() < 10) {
-                List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
-                        parentGroup.getDistanceToClosestSubgroup(t) > 2 && t.canSettle(this));
-                if (tiles.isEmpty()) {
-                    return;
-                }
-                population = population / 2;
-                Tile tile = ProbFunc.randomElement(tiles);
-                Group group = new Group(parentGroup, this, parentGroup.name + "_" + parentGroup.subgroups.size(),
-                        population, tile);
-                for (Stratum stratum: strata) {
-                    try {
-                        group.strata.get(group.strata.indexOf(stratum)).useAmount(stratum.getAmount() / 2);
-                    } catch (Exception e) {
-                        int i = 0;
-                    }
-                    stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
-                }
-                if (group.territory.isEmpty()) {
-                    int i = 0;
-                }
-                parentGroup.addSubgroup(group);
+        int size = subgroups.size();
+        subgroups.forEach(Group::updateRequests);
+        subgroups.forEach(Group::executeRequests);
+        subgroups.forEach(Group::strataUpdate);
+        for (int i = 0; i < size; i++) {
+            subgroups.get(i).populationUpdate();
+        }
+        overgroupUpdatePopulation();
+        if (state == State.Dead) {
+            return;
+        }
+        subgroups.forEach(Group::expand);
+        subgroups.forEach(group -> group.culturalCenter.update());
+        getCulturalCenter().overgroupUpdate();
+        for (int i = 0; i < subgroups.size(); i++) {
+            Group subgroup = subgroups.get(i);
+            if (subgroup.diverge()) {
+                i--;
             }
         }
     }
 
     private void overgroupUpdatePopulation() {
         overgroupComputePopulation();
+        if (population == 0) {
+            die();
+        }
     }
 
     private void overgroupComputePopulation() {
@@ -412,6 +377,38 @@ public class Group {
     private void overgroupRemove(Tile tile) {
         tile.group = null;
         territory.removeTile(tile);
+    }
+
+    private void overgroupAddSubgroup(Group subgroup) {
+        subgroups.add(subgroup);
+        overgroupComputePopulation();
+    }
+
+    private int overgroupGetDistanceToClosestSubgroup(Tile tile) {
+        int d = Integer.MAX_VALUE;
+        for (Group subgroup: subgroups) {
+            d = Math.min(d, tile.getClosestDistance(Collections.singleton(subgroup.getCenter())));
+        }
+        return d;
+    }
+
+    private void overgroupRemoveSubgroup(Group subgroup) {
+        population -= subgroup.population;
+        if (!subgroups.remove(subgroup)) {
+            System.err.println("Trying to remove non-child subgroup " + subgroup.name + " from Group " + name);
+        }
+    }
+
+    public void overgroupFinishUpdate() {
+        getCulturalCenter().finishUpdate();
+        Tile tile = ProbFunc.randomTile(getOverallTerritory());
+        resourcePack.disbandOnTile(tile);
+        addEvent(new Event(Event.Type.DisbandResources, "Resources were disbanded on tile " + tile.x + " " +
+                tile.y, "tile", tile));
+        if (subgroups.isEmpty()) {
+            getAspects().forEach(Aspect::finishUpdate);
+        }
+        subgroups.forEach(Group::overgroupFinishUpdate);
     }
 
     void starve(double fraction) {
@@ -435,16 +432,19 @@ public class Group {
     }
 
     private boolean diverge() {
+        if (sessionController.groupDiverge) {
+            return false;
+        }
         if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(sessionController.defaultGroupDiverge)) {
-            parentGroup.removeSubgroup(this);
-            Group group = new Group(sessionController.getVacantGroupName(), population, spreadability, 0, getCenter(), null);
-            group.addSubgroup(this);
+            parentGroup.overgroupRemoveSubgroup(this);
+            Group group = new Group(0, getCenter());
+            group.overgroupAddSubgroup(this);
             territory.getTiles().forEach(parentGroup::overgroupRemove);
             territory.getTiles().forEach(group::overgroupClaim);
             parentGroup = group;
             for (Aspect aspect : getAspects()) {
                 group.getCulturalCenter().addAspectNow(aspect.copy(aspect.getDependencies(), group), aspect.getDependencies());
-                group.finishUpdate();
+                group.overgroupFinishUpdate();
             }
             sessionController.world.addGroup(group);
             return true;
@@ -498,18 +498,6 @@ public class Group {
             return;
         }
         territory.removeTile(tile);
-    }
-
-    public void finishUpdate() {
-        getCulturalCenter().finishUpdate();
-        Tile tile = ProbFunc.randomTile(getOverallTerritory());
-        resourcePack.disbandOnTile(tile);
-        addEvent(new Event(Event.Type.DisbandResources, "Resources were disbanded on tile " + tile.x + " " +
-                tile.y, "tile", tile));
-        if (subgroups.isEmpty()) {
-            getAspects().forEach(Aspect::finishUpdate);
-        }
-        subgroups.forEach(Group::finishUpdate);
     }
 
     @Override

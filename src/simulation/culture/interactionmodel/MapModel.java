@@ -1,13 +1,10 @@
 package simulation.culture.interactionmodel;
 
-import simulation.Controller;
 import simulation.World;
 import simulation.culture.Event;
 import simulation.culture.group.Group;
 
 import java.util.*;
-
-import static simulation.Controller.*;
 
 /**
  * Model with 2d map on which all interactions take place.
@@ -22,7 +19,7 @@ public class MapModel implements InteractionModel {
         for (int j = 0; j < size; j++) {
             Group group = world.groups.get(j);
             int e = group.getEvents().size();
-            group.update();
+            group.overgroupUpdate();
             for (int i = e; i < group.getEvents().size(); i++) {
                 newEvents.add(group.getEvents().get(i));
             }
@@ -32,7 +29,7 @@ public class MapModel implements InteractionModel {
         world.map.update();
 
         for (Group group : world.groups) {
-            group.finishUpdate();
+            group.overgroupFinishUpdate();
         }
 
         world.map.finishUpdate();

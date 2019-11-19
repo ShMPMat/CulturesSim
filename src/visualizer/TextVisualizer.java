@@ -78,7 +78,7 @@ public class TextVisualizer {
         }
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
         controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("Take")));
-        controller.world.groups.forEach(Group::finishUpdate);
+        controller.world.groups.forEach(Group::overgroupFinishUpdate);
         computeCut();
     }
 

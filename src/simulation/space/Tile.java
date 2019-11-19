@@ -319,7 +319,7 @@ public class Tile {
     }
 
     /**
-     * Starts update for this Tile.
+     * Starts overgroupUpdate for this Tile.
      */
     public void startUpdate() {
         _newWind = new Wind();

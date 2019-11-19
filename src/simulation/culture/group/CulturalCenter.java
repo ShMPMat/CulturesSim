@@ -23,9 +23,9 @@ import static simulation.Controller.*;
 public class CulturalCenter {
     private List<Aspiration> aspirations = new ArrayList<>();;
     private Group group;
-    private Set<Aspect> aspects;
-    private Set<Aspect> changedAspects; // always equals aspects except while making a turn
-    private List<Event> events;
+    private Set<Aspect> aspects = new HashSet<>();
+    private Set<Aspect> changedAspects = new HashSet<>(); // always equals aspects except while making a turn
+    private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();;
     private List<ShnyPair<Resource, ResourceBehaviour>> wants = new ArrayList<>();;
     private GroupMemes memePool = new GroupMemes();;
@@ -34,8 +34,6 @@ public class CulturalCenter {
     private List<Resource> _lastResourcesForCw = new ArrayList<>();
 
     CulturalCenter(Group group) {
-        setAspects(new HashSet<>());
-        setChangedAspects(new HashSet<>());
         this.group = group;
     }
 
@@ -92,18 +90,6 @@ public class CulturalCenter {
 
     public void addMemeCombination(Meme meme) {
         memePool.addMemeCombination(meme);
-    }
-
-    void setAspects(Set<Aspect> aspects) {
-        this.aspects = aspects;
-    }
-
-    void setChangedAspects(Set<Aspect> changedAspects) {
-        this.changedAspects = changedAspects;
-    }
-
-    void setEvents(List<Event> events) {
-        this.events = events;
     }
 
     void addAspiration(Aspiration aspiration) { //TODO seems that aspirations are stuck in groups;
@@ -223,9 +209,12 @@ public class CulturalCenter {
         }
     }
 
-    void update() {
+    void overgroupUpdate() {//TODO move aspects to subgroups and share them between subgroups
         tryToFulfillAspirations();
         mutateAspects();
+    }
+
+    void update() {
         createArtifact();
     }
 
@@ -361,7 +350,7 @@ public class CulturalCenter {
     }
 
     public void pushAspects() {
-        setAspects(new HashSet<>());
+        aspects = new HashSet<>();
         getAspects().addAll(getChangedAspects());
     }
 

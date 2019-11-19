@@ -83,8 +83,7 @@ public class World {
 
     public void initializeSecond() {
         for (int i = 0; i < sessionController.startGroupAmount; i++) {
-            groups.add(new Group("G" + i, 100 + ProbFunc.randomInt(100),
-                    sessionController.defaultGroupSpreadability));
+            groups.add(new Group(1, null));
         }
     }
 

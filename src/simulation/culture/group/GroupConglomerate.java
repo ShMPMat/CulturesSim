@@ -2,6 +2,7 @@ package simulation.culture.group;
 
 import simulation.culture.aspect.Aspect;
 import simulation.space.Territory;
+import simulation.space.Tile;
 
 import java.util.*;
 
@@ -15,8 +16,9 @@ public class GroupConglomerate {
 
     private Group temporaryCrutch;
 
-    public GroupConglomerate(String name) {
+    public GroupConglomerate(int numberOfSubgroups, Tile root) {
         this.name = name;
+        temporaryCrutch = new Group(numberOfSubgroups, root);
     }
 
     public void addGroup(Group group) {
@@ -50,14 +52,20 @@ public class GroupConglomerate {
     }
 
     public void update() {
-        int size = groups.size();
-        for (int i = 0; i < size; i++) {
-            Group group = groups.get(i);
-            group.update();
-            if (!groups.contains(group)) {//TODO message from inside will be faster
-                i--;
-                size--;
-            }
-        }
+        temporaryCrutch.overgroupUpdate();//TODO remove
+//        int size = groups.size();
+//        for (int i = 0; i < size; i++) {
+//            Group group = groups.get(i);
+//            group.overgroupUpdate();
+//            if (!groups.contains(group)) {//TODO message from inside will be faster
+//                i--;
+//                size--;
+//            }
+//        }
+    }
+
+    @Override
+    public String toString() {
+        return temporaryCrutch.toString();
     }
 }

@@ -22,6 +22,11 @@ public class GroupMemes extends MemePool {
         addAll(Arrays.stream(predicates).map(MemeSubject::new).collect(Collectors.toList()));
     }
 
+    public void addAll(GroupMemes groupMemes) {
+        super.addAll(groupMemes);
+        groupMemes.memesCombinations.forEach(this::addMemeCombination);
+    }
+
     @Override
     public List<Meme> getMemes() {
         List<Meme> memeList = super.getMemes();

@@ -26,6 +26,10 @@ public class MemePool {
         memes.forEach(this::add);
     }
 
+    public void addAll(MemePool memePool) {
+        memePool.memes.forEach(this::add);
+    }
+
     public List<Meme> getMemes() {
         return memes;
     }
