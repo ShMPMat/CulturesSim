@@ -398,23 +398,25 @@ public class Tile {
     private void setWindByTemperature(Tile tile) {
         int temperatureChange = 3;
         if (tile != null) {
-            if (tile.temperature - 1 - temperatureChange > temperature) {
-                _newWind.changeLevelOnTile(tile, ((double) tile.temperature - 1 - temperature) / temperatureChange);
+            double level = ((double) tile.temperature - 1 - temperature) / temperatureChange;
+            if (level > 0) {
+                _newWind.changeLevelOnTile(tile, level);
             }
         }
     }
 
     private void propagateWindStraight(Tile target, Tile tile) {
         if (tile != null && target != null) {
-            if (tile.wind.getLevelByTile(this) > Wind.windPropagation) {
-                _newWind.changeLevelOnTile(target, tile.wind.getLevelByTile(this) - Wind.windPropagation);
+            double level = tile.wind.getLevelByTile(this) - sessionController.windPropagation;
+            if (level > 0) {
+                _newWind.changeLevelOnTile(target, level);
             }
         }
     }
 
     private void propagateWindWithCondition(Tile target, Tile tile, Tile wanted) {
         if (tile != null && target != null && wanted != null) {
-            double level = tile.wind.getLevelByTile(wanted) - Wind.windPropagation * 5;
+            double level = tile.wind.getLevelByTile(wanted) - sessionController.windPropagation * 5;
             if (level > 0) {
                 _newWind.changeLevelOnTile(target, level);
             }

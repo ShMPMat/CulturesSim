@@ -467,7 +467,7 @@ public class TextVisualizer {
                             break;
                         case Tile:
                             printTile(map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
-                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1))));
+                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut));
                             break;
                         case Plates:
                             printMap(tile -> {
@@ -503,7 +503,7 @@ public class TextVisualizer {
                             break;
                         case Temperature:
                             printMap(tile -> {
-                                String colour = "";
+                                String colour;
                                 if (tile.getTemperature() < -20) {
                                     colour = "\033[44m";
                                 } else if (tile.getTemperature() < -10) {
@@ -570,9 +570,9 @@ public class TextVisualizer {
                                     colour = "\033[44m";
                                 } else if (tile.getSecondLevel() < 100) {
                                     colour = "\033[104m";
-                                } else if (tile.getSecondLevel() < 110) {
+                                } else if (tile.getSecondLevel() < 105) {
                                     colour = "\033[46m";
-                                } else if (tile.getSecondLevel() < 120) {
+                                } else if (tile.getSecondLevel() < 110) {
                                     colour = "\033[47m";
                                 } else if (tile.getSecondLevel() < 130){
                                     colour = "\033[43m";

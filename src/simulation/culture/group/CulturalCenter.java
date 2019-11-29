@@ -21,14 +21,14 @@ import static simulation.Controller.*;
  * Takes responsibility of Group's cultural change.
  */
 public class CulturalCenter {
-    private List<Aspiration> aspirations = new ArrayList<>();;
+    private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
     private Set<Aspect> aspects = new HashSet<>();
     private Set<Aspect> changedAspects = new HashSet<>(); // always equals aspects except while making a turn
     private List<Event> events = new ArrayList<>();
-    private List<Request> requests = new ArrayList<>();;
-    private List<ShnyPair<Resource, ResourceBehaviour>> wants = new ArrayList<>();;
-    private GroupMemes memePool = new GroupMemes();;
+    private List<Request> requests = new ArrayList<>();
+    private List<ShnyPair<Resource, ResourceBehaviour>> wants = new ArrayList<>();
+    private GroupMemes memePool = new GroupMemes();
 
     private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
     private List<Resource> _lastResourcesForCw = new ArrayList<>();
@@ -45,11 +45,11 @@ public class CulturalCenter {
         return aspects;
     }
 
-    public Aspect getAspect(Aspect aspect) {
+    Aspect getAspect(Aspect aspect) {
         return getAspects().stream().filter(aspect::equals).findFirst().orElse(null);
     }
 
-    public List<Request> getRequests() {
+    List<Request> getRequests() {
         return requests;
     }
 
@@ -88,7 +88,7 @@ public class CulturalCenter {
         return memePool;
     }
 
-    public void addMemeCombination(Meme meme) {
+    void addMemeCombination(Meme meme) {
         memePool.addMemeCombination(meme);
     }
 
@@ -237,7 +237,7 @@ public class CulturalCenter {
         if (ProbFunc.getChances(sessionController.rAspectAcquisition)) {
             List<Aspect> options = new ArrayList<>(sessionController.world.aspectPool);
             options.addAll(getAllConverseWrappers());
-            Aspect _a = ProbFunc.getRandomAspectExcept(options, aspect -> true);
+            Aspect _a = ProbFunc.randomElement(options, aspect -> true);
             if (_a != null) {
                 if (addAspect(_a)) {
                     group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
@@ -255,10 +255,11 @@ public class CulturalCenter {
             List<ConverseWrapper> _l = aspects.stream()
                     .filter(aspect -> aspect instanceof ConverseWrapper && aspect.canReturnMeaning())
                     .map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toList());
-            if (_l.isEmpty()) {
+            ConverseWrapper _a = ProbFunc.randomElement(_l);
+            if (_a == null) {
                 return;
             }
-            ConverseWrapper _a = ProbFunc.randomElement(_l), _b = _a.stripToMeaning();
+            ConverseWrapper _b = _a.stripToMeaning();
             ShnyPair<Boolean, ResourcePack> _p = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
             for (Resource resource : _p.second.resources) {
                 if (resource.hasMeaning()) {
@@ -275,17 +276,18 @@ public class CulturalCenter {
         if (_o.isPresent()) {
             Aspiration aspiration = (Aspiration) _o.get();
             List<ShnyPair<Aspect, Group>> options = findOptions(aspiration);
-            if (!options.isEmpty()) {
-                ShnyPair<Aspect, Group> pair = ProbFunc.randomElement(options);
-                addAspect(pair.first);
-                removeAspiration(aspiration);
-                if (pair.second == null) {
-                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                            " developed aspect " + pair.first.getName(), "group", this));
-                } else {
-                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                            " took aspect " + pair.first.getName() + " from group " + pair.second.name, "group", this));
-                }
+            ShnyPair<Aspect, Group> pair = ProbFunc.randomElement(options);
+            if (pair == null) {
+                return;
+            }
+            addAspect(pair.first);
+            removeAspiration(aspiration);
+            if (pair.second == null) {
+                group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
+                        " developed aspect " + pair.first.getName(), "group", this));
+            } else {
+                group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
+                        " took aspect " + pair.first.getName() + " from group " + pair.second.name, "group", this));
             }
         }
     }

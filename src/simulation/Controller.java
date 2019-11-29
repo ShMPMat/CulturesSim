@@ -32,7 +32,7 @@ public class Controller {
      */
     public final int defaultWaterLevel = 100;
     public final int startResourceAmountMin = 40;
-    public final int startResourceAmountMax = 70;
+    public final int startResourceAmountMax = startResourceAmountMin + 30;
     public final int startGroupAmount = 10;
 
     public final double tileScale = 10;
@@ -45,6 +45,9 @@ public class Controller {
     public final double rAspectAcquisition = 0.01;
     public final double rAspectLending = 0.25;
     public final boolean groupDiverge = true;
+
+    public final double windPropagation = 0.025;
+    public final double maximalWind = 10;
 
     public static Controller sessionController;
 

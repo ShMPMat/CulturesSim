@@ -26,7 +26,7 @@ public class ProbFunc {
     }
 
     /**
-     * Returns rendom integer lower then ceiling.
+     * Returns random integer lower then ceiling.
      * @param ceiling non-negative number.
      * @return random int from 0 to ceiling.
      */
@@ -41,7 +41,14 @@ public class ProbFunc {
      * @return a random element from the List.
      */
     public static <E> E randomElement(List<E> list) {
+        if (list.isEmpty()) {
+            return null;
+        }
         return list.get(randomInt(list.size()));
+    }
+
+    public static <E> E randomElement(List<E> list, Predicate<E> predicate) {
+        return randomElement(list.stream().filter(predicate).collect(Collectors.toList()));
     }
 
     /**
@@ -114,13 +121,5 @@ public class ProbFunc {
             return null;
         }
         return pair;
-    }
-
-    public static Aspect getRandomAspectExcept(Collection<Aspect> pool, Predicate<Aspect> predicate) {
-        List<Aspect> aspects = pool.stream().filter(predicate).collect(Collectors.toList());
-        if (aspects.size() == 0) {
-            return null;
-        }
-        return randomElement(aspects);
     }
 }
