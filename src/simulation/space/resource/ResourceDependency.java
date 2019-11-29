@@ -47,7 +47,7 @@ public class ResourceDependency {
             return resourceNames.stream().noneMatch(name -> Tile.Type.valueOf(name) == tile.getType()) ? 1 : 0;
         } else {
             double _amount = amount * (resource == null ? 1 : resource.amount);
-            for (Resource res : tile.getResources()) {
+            for (Resource res : tile.getAccessibleResources()) {
                 if (res == resource) {
                     continue;
                 }

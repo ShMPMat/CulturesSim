@@ -146,7 +146,7 @@ public class Aspect {
     public Aspect copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         return aspectCore.copy(dependencies, group);
     }
-
+//TODO some dependencies don't change group to subgroup when passed down to subgroups
     public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {//TODO instrument efficiency
         boolean isFinished;
         markAsUsed();

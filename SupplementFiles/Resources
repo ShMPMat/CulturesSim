@@ -1,6 +1,9 @@
 /         M - isMoving (whether can be moved), L - hasLegacy, N - canMove
-/         ~Names divided with comma with @ - Materials, without - Resources:Required amount per Resource:
-/                 Deprivation coefficient:Whether necessary:TypeName
+/
+/         ~Names divided with comma with @ - Materials,
+/          without - Resources:Required amount per Resource:
+/          Deprivation coefficient:Whether necessary:TypeName
+/
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -Plant           0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
         ~Vapour:0.01:2:0:CONSUME
@@ -37,6 +40,10 @@
         ^PlantFibre:1
         #Water
 
+-Seaweed         0.25    0.1    5          -10     30   2000      0             1 0 0  Plant        @PlantFibre
+        ^Leaf:7
+        #Normal:Mountain:Ice:Woods:Growth
+
 -Herbivore       0.08    1      20         0       30   25        0             1 0 1  Animal       @Meat
         ~@PlantFibre:0.2:2:0:CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3
@@ -62,6 +69,7 @@
         #Water
 
 -Fish            0.15    0.1    10         -20     30   100       0             1 0 1  Animal       @Meat
+        ~@PlantFibre:0.0001:10:0:CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10
         #Normal:Mountain:Ice:Woods:Growth
 

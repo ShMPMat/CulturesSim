@@ -26,6 +26,9 @@ public class Controller {
      * How many turns will be spent before filling Resources in the World.
      */
     public final int initialTurns = 100;
+    /**
+     * How many turns will be spent after filling Resources in the World.
+     */
     public final int stabilizationTurns = 100;
     /**
      * Below what level World will be covered under water.

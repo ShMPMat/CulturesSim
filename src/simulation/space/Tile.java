@@ -80,6 +80,12 @@ public class Tile {
         return resources;
     }
 
+    public List<Resource> getAccessibleResources() {
+        List<Resource> _l = new ArrayList<>(getResources());
+        getNeighbours().forEach(tile -> _l.addAll(tile.getResources()));
+        return _l;
+    }
+
     public Resource getResource(Resource resource) {
         int index = resources.indexOf(resource);
         return index == -1 ? resource.cleanCopy(0) : resources.get(index);
