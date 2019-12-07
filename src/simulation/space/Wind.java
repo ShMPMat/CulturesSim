@@ -9,6 +9,7 @@ import java.util.List;
 import static simulation.Controller.*;
 
 public class Wind {
+    boolean isFilling = false;
     List<ShnyPair<Tile, Double>> affectedTiles;
 
     public Wind() {
@@ -54,5 +55,12 @@ public class Wind {
             }
         }
         return 0;
+    }
+
+    public double getPureLevelByTile(Tile tile) {
+        if (isFilling) {
+            return 0;
+        }
+        return getLevelByTile(tile);
     }
 }

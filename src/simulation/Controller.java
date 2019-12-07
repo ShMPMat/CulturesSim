@@ -50,6 +50,7 @@ public class Controller {
     public final boolean groupDiverge = true;
 
     public final double windPropagation = 0.025;
+    public final double windFillIn = 0.1;
     public final double maximalWind = 10;
 
     public static Controller sessionController;

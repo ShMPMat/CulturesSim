@@ -76,10 +76,26 @@ public class Tile {
         _delayedResources = new ArrayList<>();
     }
 
+    /**
+     * @return all available Resources which are placed on this Tile
+     */
     public List<Resource> getResources() {
         return resources;
     }
 
+    /**
+     * @return all Resources on this Tile including ones which were
+     * moved on this Tile on this turn and inaccessible outside of Tile.
+     */
+    public List<Resource> getResourcesWithMoved() {
+        List<Resource> _l = new ArrayList<>(getResources());
+        _l.addAll(_delayedResources);
+        return _l;
+    }
+
+    /**
+     * @return all Resources which are available from this Tile.
+     */
     public List<Resource> getAccessibleResources() {
         List<Resource> _l = new ArrayList<>(getResources());
         getNeighbours().forEach(tile -> _l.addAll(tile.getResources()));
@@ -342,12 +358,14 @@ public class Tile {
             }
         }
         for (int i = 0; i < resources.size(); i++) {
-            Resource resource = resources.get(i);//TODO smarter wind, now it can blow away everything on the first tile by order.
+            Resource resource = resources.get(i);
             if (!resource.isMovable()) {
                 continue;
             }
+            double overallWindLevel = wind.affectedTiles.stream().reduce((double) 0, (x, y) -> x + y.second, Double::sum);
             for (ShnyPair<Tile, Double> pair : wind.affectedTiles) {
-                int part = (int) (resource.getAmount() * Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
+                int part = (int) (resource.getAmount() * pair.second / overallWindLevel *
+                        Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
                 if (part > 0) {
                     pair.first.addDelayedResource(resource.getCleanPart(part));
                 }
@@ -388,6 +406,12 @@ public class Tile {
         if (!_newWind.isStill()) {//TODO better to add wind for cross tiles than try to fetch it; cut wind on large level changes
             return;
         }
+
+        propagateWindFillIn(map.get(x - 1, y), map.get(x - 2, y));
+        propagateWindFillIn(map.get(x + 1, y), map.get(x + 2, y));
+        propagateWindFillIn(map.get(x, y - 1), map.get(x, y - 2));
+        propagateWindFillIn(map.get(x, y + 1), map.get(x, y + 2));
+
 //        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y - 1), map.get(x, y - 1));
 //        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y + 1), map.get(x, y + 1));
 //
@@ -413,18 +437,19 @@ public class Tile {
 
     private void propagateWindStraight(Tile target, Tile tile) {
         if (tile != null && target != null) {
-            double level = tile.wind.getLevelByTile(this) - sessionController.windPropagation;
+            double level = tile.wind.getPureLevelByTile(this) - sessionController.windPropagation;
             if (level > 0) {
                 _newWind.changeLevelOnTile(target, level);
             }
         }
     }
 
-    private void propagateWindWithCondition(Tile target, Tile tile, Tile wanted) {
-        if (tile != null && target != null && wanted != null) {
-            double level = tile.wind.getLevelByTile(wanted) - sessionController.windPropagation * 5;
+    private void propagateWindFillIn(Tile tile, Tile target) {
+        if (tile != null && target != null) {
+            double level = tile.wind.getLevelByTile(target) - sessionController.windFillIn;
             if (level > 0) {
-                _newWind.changeLevelOnTile(target, level);
+                _newWind.isFilling = true;
+                _newWind.changeLevelOnTile(tile, level);
             }
         }
     }

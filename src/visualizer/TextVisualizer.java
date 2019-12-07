@@ -585,9 +585,9 @@ public class TextVisualizer {
                         case Vapour:
                             printMap(tile -> {
                                 String colour = "";
-                                Resource vapour = tile.getResources().stream().filter(resource ->
-                                        resource.getSimpleName().equals("Vapour")).findFirst().orElse(null);
-                                int level = vapour == null ? 0 : vapour.getAmount();
+                                int level = tile.getResourcesWithMoved().stream().filter(resource ->
+                                        resource.getSimpleName().equals("Vapour")).reduce(0,
+                                        (x, y) -> x + y.getAmount(), Integer::sum);
                                 if (level == 0) {
                                     colour = "\033[44m";
                                 } else if (level < 50) {
@@ -596,7 +596,7 @@ public class TextVisualizer {
                                     colour = "\033[46m";
                                 } else if (level < 150) {
                                     colour = "\033[47m";
-                                } else if (level < 200){
+                                } else if (level < 200) {
                                     colour = "\033[43m";
                                 } else {
                                     colour = "\033[41m";

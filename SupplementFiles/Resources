@@ -6,12 +6,12 @@
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -Plant           0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.01:2:0:CONSUME
+        ~Vapour:0.0025:2:0:CONSUME
         ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
         #Water
 
 -ColdPlant       0.1     1      15         -30     0   50         0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.0025:2:0:CONSUME
+        ~Vapour:0.001:2:0:CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
         #Water
 
@@ -31,12 +31,12 @@
         #Water
 
 -Grass           0.25    0.1    5          5       30   2000      0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.0001:2:0:CONSUME
+        ~Vapour:0.00001:2:0:CONSUME
         ^Leaf:3
         #Water
 
 -Moss            0.06    0.05   20         -10     30   100       0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.01:2:0:CONSUME
+        ~Vapour:0.001:2:0:CONSUME
         ^PlantFibre:1
         #Water
 

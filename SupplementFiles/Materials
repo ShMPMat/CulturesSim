@@ -1,3 +1,4 @@
+/Name         Density   Tags with levels
 PlantFibre    100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
 Wood          800       -hard:1     -sturdy:1                              -solid:1   -_can_be_ignited:1
 Pulp          80        -soft:1                                            -solid:1   -eatable:2
@@ -22,4 +23,4 @@ Stone         2500      -hard:1     -sturdy:1                              -soli
 
 Flame         10        -burns:1                                           -gas:1
 Ash           80        -soft:1     -powder:1                              -solid:1
-Water         1000                                                         -gas:1
+Water         1                                                         -gas:1
