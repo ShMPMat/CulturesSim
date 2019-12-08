@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  */
 public class Territory {
     private List<Tile> tiles;
+    private List<Tile> brink = new ArrayList<>();
 
     public Territory(Collection<Tile> tiles) {
         this.tiles = new ArrayList<>();
@@ -37,18 +38,25 @@ public class Territory {
         return tiles.get(0);
     }
 
-    public List<Tile> getBrinkWithCondition(Predicate<Tile> predicate) {
-        return getBrinkWithImportance(predicate, tile -> 0).stream().map(pair -> pair.first)
+    public List<Tile> getBrink() {
+        return getBrinkWithImportance(tile -> true, tile -> 0).stream().map(pair -> pair.first)
                 .collect(Collectors.toList());
+    }
+
+    public List<Tile> getBrinkWithCondition(Predicate<Tile> predicate) {
+        List<Tile> collect = getBrinkWithImportance(predicate, tile -> 0).stream().map(pair -> pair.first)
+                .collect(Collectors.toList());
+        return collect;
     }
 
     public List<ShnyPair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
         Set<ShnyPair<Tile, Integer>> goodTiles = new HashSet<>();
-        for (Tile tile : tiles) {
-            goodTiles.addAll(tile.getNeighbours(tile1 -> predicate.test(tile1) && !tiles.contains(tile1)).stream()
-                    .map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1))).collect(Collectors.toList()));
-        }
-
+//        for (Tile tile : tiles) {
+//            goodTiles.addAll(tile.getNeighbours(tile1 -> predicate.test(tile1) && !tiles.contains(tile1)).stream()
+//                    .map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1))).collect(Collectors.toList()));
+//        }
+        goodTiles.addAll(brink.stream().filter(predicate).map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1)))
+                .collect(Collectors.toList()));
         return new ArrayList<>(goodTiles);
     }
 
@@ -120,14 +128,32 @@ public class Territory {
     }
 
     public void add(Tile tile) {
+        if (tile == null) {
+            return;
+        }
         if (!tiles.contains(tile)) {
             tiles.add(tile);
+            brink.remove(tile);
+            tile.getNeighbours().forEach(this::addToBrink);
+        }
+    }
+
+    private void addToBrink(Tile tile) {
+        if (!brink.contains(tile) && !tiles.contains(tile)) {
+            brink.add(tile);
         }
     }
 
     public void removeTile(Tile tile) {
-        tiles.remove(tile);
         tile.group = null;
+        if (!tiles.remove(tile)) {
+            return;
+        }
+        tile.getNeighbours().forEach(t -> {
+            if (t.getNeighbours().stream().noneMatch(this::contains)) {
+                brink.remove(t);
+            }
+        });
     }
 
     public Tile excludeMostUselessTileExcept(Collection<Tile> exceptions, Function<Tile, Integer> mapper) {

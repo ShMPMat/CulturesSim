@@ -258,6 +258,10 @@ public class Group {
         return territory.getCenter();
     }
 
+    private boolean isTileReachable(Tile tile) {
+        return getCenter().getDistance(tile) < 4;
+    }
+
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
         Stratum stratum = getStratumByAspect(aspect);
         if (stratum.getAmount() < amount) {
@@ -460,18 +464,24 @@ public class Group {
             return false;
         }
         if (population <= minPopulationPerTile * territory.size()) {
-            List<Tile> t = new ArrayList<>();
-            for (Group group : subgroups) {
-                t.addAll(group.territory.getTiles());
-            }
-            parentGroup.territory.removeTile(territory.excludeMostUselessTileExcept(t, tileValueMapper));
+            parentGroup.territory.removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tileValueMapper));
             if (population <= minPopulationPerTile * territory.size()) {
-                parentGroup.territory.removeTile(territory.excludeMostUselessTileExcept(t, tileValueMapper));
+                parentGroup.territory.removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tileValueMapper));
             }
         }
 
         claimTile(territory.includeMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
-                getCenter().getDistance(newTile) < 4, tileValueMapper));
+                isTileReachable(newTile), tileValueMapper));
+        return true;
+    }
+
+    private boolean migrate() {
+        if (state == State.Dead) {
+            return false;
+        }//TODO migration
+
+//        claimTile(territory.includeMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
+//                isTileReachable(newTile), tileValueMapper));
         return true;
     }
 
