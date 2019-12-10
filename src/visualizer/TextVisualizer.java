@@ -76,8 +76,8 @@ public class TextVisualizer {
         for (int i = 0; i < controller.startGroupAmount; i++) {
             groupPopulations.add(0);
         }
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("TakeApart")));
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getAspectFromPoolByName("Take")));
+        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspectByName("TakeApart")));
+        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspectByName("Take")));
         controller.world.groups.forEach(Group::overgroupFinishUpdate);
         computeCut();
     }
@@ -261,7 +261,7 @@ public class TextVisualizer {
                                 break;
                             case Mountain:
                                 token = (tile.getLevel() > 130 ? "\033[43m" : "") +
-                                        (tile.getResources().contains(world.getResourceFromPoolByName("Snow")) ? "\033[30m" : "\033[93m") + "^";
+                                        (tile.getResources().contains(world.getPoolResourceByName("Snow")) ? "\033[30m" : "\033[93m") + "^";
                                 break;
                             default:
                                 token += " ";
@@ -373,12 +373,12 @@ public class TextVisualizer {
                     .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
                     .orElse(group.getCulturalCenter().getAllProducedResources().stream().map(pair -> pair.first)
                             .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null));
-//            Resource resource = controller.world.getResourceFromPoolByName(aspectName.split("On")[1]);
+//            Resource resource = controller.world.getPoolResourceByName(aspectName.split("On")[1]);
             if (resource == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
             }
-            Aspect a = world.getAspectFromPoolByName(aspectName.split("On")[0]);
+            Aspect a = world.getPoolAspectByName(aspectName.split("On")[0]);
             if (a == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
@@ -389,7 +389,7 @@ public class TextVisualizer {
                 aspect = new ConverseWrapper(a, resource, group);
             }
         } else {
-            aspect = world.getAspectFromPoolByName(aspectName);
+            aspect = world.getPoolAspectByName(aspectName);
             if (aspect == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
@@ -423,7 +423,7 @@ public class TextVisualizer {
             group.subgroups.forEach(subgroup -> addWantToGroup(subgroup, wantName));
             return;
         }
-        Resource resource = world.getResourceFromPoolByName(wantName);
+        Resource resource = world.getPoolResourceByName(wantName);
         if (resource == null) {
             System.err.println("Cannot add want to the group");
             return;
@@ -436,7 +436,7 @@ public class TextVisualizer {
             System.err.println("No such Tile");
             return;
         }
-        Resource resource = world.getResourceFromPoolByName(resourceName);
+        Resource resource = world.getPoolResourceByName(resourceName);
         if (resource == null) {
             System.err.println("No such Resource");
             return;
@@ -605,7 +605,7 @@ public class TextVisualizer {
                             });
                             break;
                         case Resource:
-                            Resource resource = world.getResourceFromPoolByName(line.substring(2));
+                            Resource resource = world.getPoolResourceByName(line.substring(2));
                             if (resource != null) {
                                 printResource(resource);
                             } else {

@@ -1,7 +1,6 @@
 package simulation;
 
 import extra.InputDatabase;
-import extra.ProbFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.Group;
@@ -72,7 +71,7 @@ public class World {
 
     void initializeZero() {
         fillResourcePool();
-        map = new WorldMap(sessionController.mapSizeX, sessionController.mapSizeY, resourcePool);
+        map = new WorldMap(session.mapSizeX, session.mapSizeY, resourcePool);
         map.initializePlates();
         RandomMapGenerator.fill();
     }
@@ -82,7 +81,7 @@ public class World {
     }
 
     public void initializeSecond() {
-        for (int i = 0; i < sessionController.startGroupAmount; i++) {
+        for (int i = 0; i < session.startGroupAmount; i++) {
             groups.add(new Group(1, null));
         }
     }
@@ -199,7 +198,7 @@ public class World {
      * @return Aspect with this name. If there is no such Aspect in the aspectPool
      * returns null and prints a warning.
      */
-    public Aspect getAspectFromPoolByName(String name) {
+    public Aspect getPoolAspectByName(String name) {
         for (Aspect aspect : aspectPool) {
             if (aspect.getName().equals(name)) {
                 return aspect;
@@ -216,7 +215,7 @@ public class World {
      * @return Property with this name. If there is no such Property in the propertyPool
      * returns null and prints a warning.
      */
-    public Property getPropertyFromPoolByName(String name) {
+    public Property getPoolPropertyByName(String name) {
         for (Property property : propertyPool) {
             if (property.getName().equals(name)) {
                 return property;
@@ -233,7 +232,7 @@ public class World {
      * @return Resource with this base name. If there is no such Resource in the resourcePool
      * returns null and prints a warning.
      */
-    public ResourceIdeal getResourceFromPoolByName(String name) {
+    public ResourceIdeal getPoolResourceByName(String name) {
         for (ResourceIdeal resource : resourcePool) {
             if (resource.getBaseName().equals(name)) {
                 return resource;
@@ -310,7 +309,7 @@ public class World {
     }
 
     public void addResources(List<Resource> resources) {
-        resources.stream().filter(resource -> getResourceFromPoolByName(resource.getBaseName()) == null)
+        resources.stream().filter(resource -> getPoolResourceByName(resource.getBaseName()) == null)
                 .forEach(resource -> resources.add(new ResourceIdeal(resource)));
     }
 

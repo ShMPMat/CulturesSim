@@ -1,7 +1,6 @@
 package simulation.space;
 
 import extra.ShnyPair;
-import simulation.World;
 import simulation.culture.group.Group;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static simulation.Controller.sessionController;
+import static simulation.Controller.session;
 
 /**
  * Basic tile of map
@@ -113,7 +112,7 @@ public class Tile {
      */
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
         List<Tile> goodTiles = new ArrayList<>();
-        WorldMap map = sessionController.world.map;
+        WorldMap map = session.world.map;
         Tile newTile = map.get(x, y + 1);
         if (newTile != null && predicate.test(newTile)) {
             goodTiles.add(newTile);
@@ -177,7 +176,7 @@ public class Tile {
     }
 
     public int getLevelWithWater() {
-        int index = resources.indexOf(sessionController.world.getResourceFromPoolByName("Water"));
+        int index = resources.indexOf(session.world.getPoolResourceByName("Water"));
         return getLevel() + (index == -1 ? 0 : resources.get(index).getAmount());
     }
 
@@ -239,7 +238,7 @@ public class Tile {
         if (level >= 110) {
             type = Type.Mountain;
         }
-        if (level < sessionController.defaultWaterLevel) {
+        if (level < session.defaultWaterLevel) {
             type = Type.Water;
         }
     }
@@ -298,7 +297,7 @@ public class Tile {
     private void checkIce() {
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
-            level = sessionController.defaultWaterLevel;
+            level = session.defaultWaterLevel;
         } else if (type == Type.Ice && temperature > 0) {
             type = Type.Water;
             level = secondLevel;
@@ -381,15 +380,15 @@ public class Tile {
                 setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(sessionController.world.getResourceFromPoolByName("Vapour").copy(50));
+            addDelayedResource(session.world.getPoolResourceByName("Vapour").copy(50));
         }
-        if (resources.contains(sessionController.world.getResourceFromPoolByName("Water"))) {
-            addDelayedResource(sessionController.world.getResourceFromPoolByName("Vapour").copy(50));
+        if (resources.contains(session.world.getPoolResourceByName("Water"))) {
+            addDelayedResource(session.world.getPoolResourceByName("Vapour").copy(50));
         }
     }
 
     public void middleUpdate() {
-        WorldMap map = sessionController.world.map;
+        WorldMap map = session.world.map;
         setWindByTemperature(map.get(x + 1, y));
         setWindByTemperature(map.get(x - 1, y));
         setWindByTemperature(map.get(x, y + 1));
@@ -437,7 +436,7 @@ public class Tile {
 
     private void propagateWindStraight(Tile target, Tile tile) {
         if (tile != null && target != null) {
-            double level = tile.wind.getPureLevelByTile(this) - sessionController.windPropagation;
+            double level = tile.wind.getPureLevelByTile(this) - session.windPropagation;
             if (level > 0) {
                 _newWind.changeLevelOnTile(target, level);
             }
@@ -446,7 +445,7 @@ public class Tile {
 
     private void propagateWindFillIn(Tile tile, Tile target) {
         if (tile != null && target != null) {
-            double level = tile.wind.getLevelByTile(target) - sessionController.windFillIn;
+            double level = tile.wind.getLevelByTile(target) - session.windFillIn;
             if (level > 0) {
                 _newWind.isFilling = true;
                 _newWind.changeLevelOnTile(tile, level);
@@ -459,8 +458,10 @@ public class Tile {
     }
 
     private void updateTemperature() {
-        temperature = x + sessionController.temperatureBaseStart -
-                Math.max(0, (level - 110) / 2) - (type == Type.Water || type == Type.Ice ? 10 : 0);
+        temperature = session.temperatureBaseStart +
+                x*(session.temperatureBaseFinish - session.temperatureBaseStart) /session.mapSizeX -
+                Math.max(0, (level - 110) / 2) -
+                (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
 
     public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow

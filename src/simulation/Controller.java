@@ -15,9 +15,12 @@ public class Controller {
      */
     public InteractionModel interactionModel;
 
-    public final int mapSizeX = 45;
-    public final int mapSizeY = 135;
+    public final int proportionCoef = 1;
+    public final int mapSizeX = 45 * proportionCoef;
+    public final int mapSizeY = 135 * proportionCoef;
+    public final int amountOfPlates = 10 * proportionCoef;
     public final int temperatureBaseStart = -15;
+    public final int temperatureBaseFinish = 29;
     /**
      * How many initial geology turns will pass in the beginning of the simulation.
      */
@@ -34,8 +37,8 @@ public class Controller {
      * Below what level World will be covered under water.
      */
     public final int defaultWaterLevel = 100;
-    public final int startResourceAmountMin = 40;
-    public final int startResourceAmountMax = startResourceAmountMin + 30;
+    public final int startResourceAmountMin = 40 * proportionCoef * proportionCoef;
+    public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoef * proportionCoef;
     public final int startGroupAmount = 10;
 
     public final double tileScale = 10;
@@ -53,7 +56,7 @@ public class Controller {
     public final double windFillIn = 0.1;
     public final double maximalWind = 10;
 
-    public static Controller sessionController;
+    public static Controller session;
 
     public String getVacantGroupName() {
         return "G" + world.groups.size();
@@ -63,7 +66,7 @@ public class Controller {
      * @param interactionModel  Interaction Model, which will govern how world will be updated.
      */
     public Controller(InteractionModel interactionModel) {
-        sessionController = this;
+        session = this;
         world = new World();
         world.initializeZero();
         this.interactionModel = interactionModel;

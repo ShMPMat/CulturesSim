@@ -1,6 +1,5 @@
 package simulation.space;
 
-import simulation.Controller;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceIdeal;
@@ -26,7 +25,6 @@ public class WorldMap {
     public List<List<Tile>> map;
     public List<TectonicPlate> tectonicPlates;
     public List<ResourceIdeal> resourcePool;
-    private int amountOfPlates = 10;
 
     public WorldMap(int x, int y, List<ResourceIdeal> resources) {
         this.resourcePool = resources;
@@ -40,9 +38,9 @@ public class WorldMap {
     }
 
     public void initializePlates() {
-        List<Tile> usedTiles = new ArrayList<>();
+        Set<Tile> usedTiles = new HashSet<>();
         tectonicPlates = new ArrayList<>();
-        for (int i = 0; i < amountOfPlates; i++) {
+        for (int i = 0; i < session.amountOfPlates; i++) {
             TectonicPlate tectonicPlate = new TectonicPlate();
             Tile tile = randomTile(this);
             while (usedTiles.contains(tile)) {
@@ -77,13 +75,13 @@ public class WorldMap {
     public Tile get(int x, int y) {
         if (x < 0) {
             return null;
-        } else if (x >= sessionController.mapSizeX) {
+        } else if (x >= session.mapSizeX) {
             return null;
         }
         while (y < 0) {
-            y += sessionController.mapSizeY;
+            y += session.mapSizeY;
         }
-        y %= sessionController.mapSizeY;
+        y %= session.mapSizeY;
         return map.get(x).get(y);
     }
 

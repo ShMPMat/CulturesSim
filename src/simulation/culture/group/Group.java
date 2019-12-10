@@ -40,9 +40,9 @@ public class Group {
      */
     public int population;
 
-    private int maxPopulation = sessionController.defaultGroupMaxPopulation;
-    private int fertility = sessionController.defaultGroupFertility;
-    private int minPopulationPerTile = sessionController.defaultGroupMinPopulationPerTile;
+    private int maxPopulation = session.defaultGroupMaxPopulation;
+    private int fertility = session.defaultGroupFertility;
+    private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
     private List<Stratum> strata = new ArrayList<>();
     private Group parentGroup;
     private CulturalCenter culturalCenter = new CulturalCenter(this);;
@@ -61,7 +61,7 @@ public class Group {
         this.spreadability = spreadability;
         if (root == null) {
             while (true) {
-                Tile tile = ProbFunc.randomTile(sessionController.world.map);
+                Tile tile = ProbFunc.randomTile(session.world.map);
                 if (tile.group == null && tile.canSettle(this)) {
                     overgroupClaim(tile);
                     break;
@@ -78,12 +78,12 @@ public class Group {
     }
 
     public Group(int numberOfSubgroups, Tile root) {
-        this(sessionController.getVacantGroupName(), 100 + ProbFunc.randomInt(100),
-                sessionController.defaultGroupSpreadability, numberOfSubgroups, root,null);
+        this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100),
+                session.defaultGroupSpreadability, numberOfSubgroups, root,null);
     }
 
     private Group(Group group, Group subgroup, String name, int population, Tile tile) {
-        this(name, population, sessionController.defaultGroupSpreadability, 0, tile, group);
+        this(name, population, session.defaultGroupSpreadability, 0, tile, group);
         if (subgroup == null) {
             return;
         }
@@ -171,9 +171,9 @@ public class Group {
         cherishedResources.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
         uniqueArtifacts.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
-        for (Group group : sessionController.world.map.getAllNearGroups(this)) {
-            group.culturalCenter.addMemeCombination(sessionController.world.getMemeFromPoolByName("group")
-                    .addPredicate(new MemeSubject(name)).addPredicate(sessionController.world.getMemeFromPoolByName("die")));
+        for (Group group : session.world.map.getAllNearGroups(this)) {
+            group.culturalCenter.addMemeCombination(session.world.getMemeFromPoolByName("group")
+                    .addPredicate(new MemeSubject(name)).addPredicate(session.world.getMemeFromPoolByName("die")));
         }
     }
 
@@ -436,10 +436,10 @@ public class Group {
     }
 
     private boolean diverge() {
-        if (sessionController.groupDiverge) {
+        if (session.groupDiverge) {
             return false;
         }
-        if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(sessionController.defaultGroupDiverge)) {
+        if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupDiverge)) {
             parentGroup.overgroupRemoveSubgroup(this);
             Group group = new Group(0, getCenter());
             group.overgroupAddSubgroup(this);
@@ -450,7 +450,7 @@ public class Group {
                 group.getCulturalCenter().addAspectNow(aspect.copy(aspect.getDependencies(), group), aspect.getDependencies());
                 group.overgroupFinishUpdate();
             }
-            sessionController.world.addGroup(group);
+            session.world.addGroup(group);
             return true;
         }
         return false;

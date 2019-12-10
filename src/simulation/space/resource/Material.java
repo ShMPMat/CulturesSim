@@ -37,11 +37,11 @@ public class Material {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
                 case '+':
-                    this._aspectConversion.put(world.getAspectFromPoolByName(tag.substring(1, tag.indexOf(':'))),
+                    this._aspectConversion.put(world.getPoolAspectByName(tag.substring(1, tag.indexOf(':'))),
                             tag.substring(tag.indexOf(':') + 1));
                     break;
                 case '-':
-                    properties.add(world.getPropertyFromPoolByName(tag.substring(1, tag.indexOf(':')))
+                    properties.add(world.getPoolPropertyByName(tag.substring(1, tag.indexOf(':')))
                             .copy(Integer.parseInt(tag.substring(tag.indexOf(':') + 1))));
             }
         }
@@ -64,20 +64,20 @@ public class Material {
             return l1;
         });
         if (!resourceCore.containsTag(new AspectTag("goodForClothes")) &&
-                properties.contains(world.getPropertyFromPoolByName("flexible")) &&
-                properties.contains(world.getPropertyFromPoolByName("solid")) &&
-                properties.contains(world.getPropertyFromPoolByName("soft"))) {
+                properties.contains(world.getPoolPropertyByName("flexible")) &&
+                properties.contains(world.getPoolPropertyByName("solid")) &&
+                properties.contains(world.getPoolPropertyByName("soft"))) {
             _t.add(new AspectTag("goodForClothes"));
         }
         if (!resourceCore.containsTag(new AspectTag("weapon")) &&
-                properties.contains(world.getPropertyFromPoolByName("hard")) &&
-                properties.contains(world.getPropertyFromPoolByName("sturdy")) &&
+                properties.contains(world.getPoolPropertyByName("hard")) &&
+                properties.contains(world.getPoolPropertyByName("sturdy")) &&
                 resourceCore.getSize() >= 0.05 && resourceCore.isMovable()) {
             _t.add(new AspectTag("weapon"));
         }
         if (!resourceCore.containsTag(new AspectTag("goodForEngraving")) &&
-                properties.contains(world.getPropertyFromPoolByName("hard")) &&
-                properties.contains(world.getPropertyFromPoolByName("sturdy"))) {
+                properties.contains(world.getPoolPropertyByName("hard")) &&
+                properties.contains(world.getPoolPropertyByName("sturdy"))) {
             _t.add(new AspectTag("goodForEngraving"));
         }
         return _t;
@@ -120,6 +120,6 @@ public class Material {
     }
 
     public boolean hasPropertyWithName(String name) {
-        return hasProperty(world.getPropertyFromPoolByName(name));
+        return hasProperty(world.getPoolPropertyByName(name));
     }
 }

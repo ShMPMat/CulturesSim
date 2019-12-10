@@ -6,7 +6,7 @@ import extra.ShnyPair;
 import java.util.ArrayList;
 import java.util.List;
 
-import static simulation.Controller.sessionController;
+import static simulation.Controller.session;
 
 public class TectonicPlate extends Territory {
     /**
@@ -89,16 +89,16 @@ public class TectonicPlate extends Territory {
             Tile t;
             switch (direction) {
                 case U:
-                    t = sessionController.world.map.get(tile.x + 1, tile.y);
+                    t = session.world.map.get(tile.x + 1, tile.y);
                     return t!= null && t.getPlate() == this;
                 case R:
-                    t = sessionController.world.map.get(tile.x, tile.y - 1);
+                    t = session.world.map.get(tile.x, tile.y - 1);
                     return t!= null && t.getPlate() == this;
                 case L:
-                    t = sessionController.world.map.get(tile.x, tile.y + 1);
+                    t = session.world.map.get(tile.x, tile.y + 1);
                     return t!= null && t.getPlate() == this;
                 case D:
-                    t = sessionController.world.map.get(tile.x - 1, tile.y);
+                    t = session.world.map.get(tile.x - 1, tile.y);
                     return t!= null && t.getPlate() == this;
                 default:
                     return false;

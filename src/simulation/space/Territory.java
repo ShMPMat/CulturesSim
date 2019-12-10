@@ -145,6 +145,9 @@ public class Territory {
     }
 
     public void removeTile(Tile tile) {
+        if (tile == null) {
+            return;
+        }
         tile.group = null;
         if (!tiles.remove(tile)) {
             return;

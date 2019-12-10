@@ -1,7 +1,6 @@
 package simulation.space.generator;
 
 import extra.ProbFunc;
-import simulation.Controller;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
@@ -34,7 +33,7 @@ public class RandomMapGenerator {
 //        createBlob(map, Tile.Type.Mountain, 30);
 //        createBlob(map, Tile.Type.Water, 30);
         boolean sw = true, ssw = true;
-        for (TectonicPlate plate: sessionController.world.map.getTectonicPlates()) {
+        for (TectonicPlate plate: session.world.map.getTectonicPlates()) {
             if (sw) {
                 plate.setType(TectonicPlate.Type.Terrain);
                 sw = false;
@@ -44,7 +43,7 @@ public class RandomMapGenerator {
             }
             plate.initialize();
         }
-        sessionController.world.map.movePlates();
+        session.world.map.movePlates();
     }
 
     @Deprecated
@@ -85,26 +84,26 @@ public class RandomMapGenerator {
     }
 
     public static void fillResources() {
-        for (Resource resource : sessionController.world.map.resourcePool) {
+        for (Resource resource : session.world.map.resourcePool) {
             if (resource.getSpreadProbability() == 0 && !resource.getBaseName().matches("Clay") &&
                     !resource.getBaseName().matches("Stone")) {
                 continue;
             }
-            scatter(resource, sessionController.startResourceAmountMin +
-                    ProbFunc.randomInt(sessionController.startResourceAmountMax -
-                            sessionController.startResourceAmountMin));
+            scatter(resource, session.startResourceAmountMin +
+                    ProbFunc.randomInt(session.startResourceAmountMax -
+                            session.startResourceAmountMin));
         }
     }
 
 
     private static void scatter(Resource resource, int n) {
-        List<Tile> goodTiles = sessionController.world.map.getTilesWithPredicate(t -> resource.getGenome().isOptimal(t));
+        List<Tile> goodTiles = session.world.map.getTilesWithPredicate(t -> resource.getGenome().isOptimal(t));
         for (int i = 0; i < n; i++) {
             Tile tile;
             if (goodTiles.isEmpty()) {
-                tile = ProbFunc.randomTile(sessionController.world.map);
+                tile = ProbFunc.randomTile(session.world.map);
                 while (!resource.getGenome().isAcceptable(tile)) {
-                    tile = ProbFunc.randomTile(sessionController.world.map);
+                    tile = ProbFunc.randomTile(session.world.map);
                 }
             } else {
                 tile = ProbFunc.randomElement(goodTiles);
@@ -123,14 +122,14 @@ public class RandomMapGenerator {
                 return;
             }
             for (String name: dependency.getResourceNames()) {
-                Resource dep = sessionController.world.getResourceFromPoolByName(name);
+                Resource dep = session.world.getPoolResourceByName(name);
                 if (dep.getGenome().isAcceptable(tile)) {
                     tile.addDelayedResource(dep.copy());
                 }
                 addDependencies(dep, tile);
             }
             for (String name: dependency.getMaterialNames()) {
-                for (Resource dep: sessionController.world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
+                for (Resource dep: session.world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
                         !r.getSimpleName().equals(resource.getSimpleName()) &&
                         r.getGenome().getPrimaryMaterial() != null &&
                         r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {

@@ -33,7 +33,7 @@ public class Event {
      */
     public Event(Type type, String description, Object... attributes) {
         this.type = type;
-        this.turn = Controller.sessionController.world == null ? "None" : Controller.sessionController.world.getTurn();
+        this.turn = Controller.session.world == null ? "None" : Controller.session.world.getTurn();
         this.description = description;
         this.attributes = new HashMap<>();
         for (int i = 0; i < attributes.length; i += 2) {

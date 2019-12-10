@@ -63,7 +63,7 @@ public class CulturalCenter {
 
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
         Set<ShnyPair<Aspect, Group>> allExistingAspects = new HashSet<>();
-        for (Group neighbour : sessionController.world.map.getAllNearGroups(group)) {
+        for (Group neighbour : session.world.map.getAllNearGroups(group)) {
             for (Aspect aspect : neighbour.getAspects().stream().filter(aspect ->
                     !(aspect instanceof ConverseWrapper) || getAspect(((ConverseWrapper) aspect).aspect) != null)
                     .collect(Collectors.toList())) {
@@ -138,7 +138,7 @@ public class CulturalCenter {
         }
         memePool.addAspectMemes(aspect);
         addMemeCombination((new MemeSubject(group.name).addPredicate(
-                sessionController.world.getMemeFromPoolByName("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
+                session.world.getMemeFromPoolByName("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         if (_a instanceof ConverseWrapper) {
             addWants(((ConverseWrapper) _a).getResult());
         }
@@ -234,8 +234,8 @@ public class CulturalCenter {
 //                        " got aspect " + _p.first.getBaseName() + " from group " + _p.second.name, "group", group));
 //            }
 //        }
-        if (ProbFunc.getChances(sessionController.rAspectAcquisition)) {
-            List<Aspect> options = new ArrayList<>(sessionController.world.aspectPool);
+        if (ProbFunc.getChances(session.rAspectAcquisition)) {
+            List<Aspect> options = new ArrayList<>(session.world.aspectPool);
             options.addAll(getAllConverseWrappers());
             Aspect _a = ProbFunc.randomElement(options, aspect -> true);
             if (_a != null) {
@@ -295,7 +295,7 @@ public class CulturalCenter {
     private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO add potentially good options (incinerate for warmth etc.)
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
-        for (Aspect aspect : sessionController.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
+        for (Aspect aspect : session.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
             Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new ShnyPair<>(aspect.copy(_m, group), null));
