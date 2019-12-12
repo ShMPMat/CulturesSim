@@ -138,7 +138,7 @@ public class CulturalCenter {
         }
         memePool.addAspectMemes(aspect);
         addMemeCombination((new MemeSubject(group.name).addPredicate(
-                session.world.getMemeFromPoolByName("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
+                session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         if (_a instanceof ConverseWrapper) {
             addWants(((ConverseWrapper) _a).getResult());
         }
@@ -247,7 +247,7 @@ public class CulturalCenter {
         }
     }
 
-    private void createArtifact() {
+    private void createArtifact() {//TODO decide what to create something HERE
         if (ProbFunc.getChances(0.1)) {
             if (memePool.isEmpty()){
                 return;

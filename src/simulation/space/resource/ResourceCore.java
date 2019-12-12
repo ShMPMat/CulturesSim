@@ -37,7 +37,7 @@ public class ResourceCore {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
                 case '+':
-                    this._aspectConversion.put(session.world.getPoolAspectByName(tag.substring(1, tag.indexOf(':'))),
+                    this._aspectConversion.put(session.world.getPoolAspect(tag.substring(1, tag.indexOf(':'))),
                             tag.substring(tag.indexOf(':') + 1).split(","));
                     break;
                 case '@':
@@ -45,7 +45,7 @@ public class ResourceCore {
                         genome.setTemplate(true);
                         break;
                     }
-                    materials.add(session.world.getMaterialFromPoolByName(tag.substring(1)));
+                    materials.add(session.world.getPoolMaterial(tag.substring(1)));
                     genome.setPrimaryMaterial(materials.get(0));
                     break;
                 case '^':
@@ -106,26 +106,26 @@ public class ResourceCore {
             return;
         }
         Material material = materials.get(0);
-        if (material.hasPropertyWithName("_can_be_ignited") && !aspectConversion.containsKey(session.world.getPoolAspectByName("Incinerate"))) {
+        if (material.hasPropertyWithName("_can_be_ignited") && !aspectConversion.containsKey(session.world.getPoolAspect("Incinerate"))) {
             List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>(2);
-            resourceList.add(new ShnyPair<>(session.world.getPoolResourceByName("Fire"), 1));
-            resourceList.add(new ShnyPair<>(session.world.getPoolResourceByName("Ash"), 1));
-            aspectConversion.put(session.world.getPoolAspectByName("Incinerate"), resourceList);
+            resourceList.add(new ShnyPair<>(session.world.getPoolResource("Fire"), 1));
+            resourceList.add(new ShnyPair<>(session.world.getPoolResource("Ash"), 1));
+            aspectConversion.put(session.world.getPoolAspect("Incinerate"), resourceList);
         }
         if (genome.getSize() >= 0.5 && material.hasPropertyWithName("hard") && material.hasPropertyWithName("hard")
-                && !aspectConversion.containsKey(session.world.getPoolAspectByName("BuildHouse"))) {
-            aspectConversion.put(session.world.getPoolAspectByName("BuildHouse"),
-                    Collections.singletonList(new ShnyPair<>(session.world.getPoolResourceByName("House"), 1)));
+                && !aspectConversion.containsKey(session.world.getPoolAspect("BuildHouse"))) {
+            aspectConversion.put(session.world.getPoolAspect("BuildHouse"),
+                    Collections.singletonList(new ShnyPair<>(session.world.getPoolResource("House"), 1)));
         }
         if (isMovable() && !material.hasPropertyWithName("gas")) {
-            aspectConversion.put(session.world.getPoolAspectByName("Take"),
+            aspectConversion.put(session.world.getPoolAspect("Take"),
                     Collections.singletonList(new ShnyPair<>(this.copy(), 1)));
         }
     }
 
     void actualizeParts() {
         for (String part : _parts) {
-            Resource resource = session.world.getPoolResourceByName(part.split(":")[0]);
+            Resource resource = session.world.getPoolResource(part.split(":")[0]);
             resource = resource.resourceCore.genome.hasLegacy() ? resource.resourceCore.copyWithLegacyInsertion(this)
                     : resource;
             resource.amount = Integer.parseInt(part.split(":")[1]);
@@ -136,11 +136,11 @@ public class ResourceCore {
                 && !materials.get(0).equals(genome.getPrimaryMaterial())) {
             System.err.println("Genome-computed primary material differs from stated material in Resource " + genome.getName());
         }
-        if (!genome.getParts().isEmpty() && !_aspectConversion.containsKey(session.world.getPoolAspectByName("TakeApart"))) {
+        if (!genome.getParts().isEmpty() && !_aspectConversion.containsKey(session.world.getPoolAspect("TakeApart"))) {
             List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>();
             for (Resource resource : genome.getParts()) {
                 resourceList.add(new ShnyPair<>(resource, resource.amount));
-                aspectConversion.put(session.world.getPoolAspectByName("TakeApart"), resourceList);
+                aspectConversion.put(session.world.getPoolAspect("TakeApart"), resourceList);
             }
         }
         _aspectConversion = null;
@@ -157,7 +157,7 @@ public class ResourceCore {
                     resource.resourceCore.copyWithLegacyInsertion(this) : resource,
                     Integer.parseInt(s.split(":")[1]));
         }
-        Resource resource = session.world.getPoolResourceByName(s.split(":")[0]);
+        Resource resource = session.world.getPoolResource(s.split(":")[0]);
         return new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
                 resource.resourceCore.copyWithLegacyInsertion(this) : resource,
                 Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;

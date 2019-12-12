@@ -73,11 +73,12 @@ public class TextVisualizer {
         controller.initializeFirst();
         print();
         controller.initializeSecond();
+        controller.initializeThird();
         for (int i = 0; i < controller.startGroupAmount; i++) {
             groupPopulations.add(0);
         }
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspectByName("TakeApart")));
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspectByName("Take")));
+        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspect("TakeApart")));
+        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspect("Take")));
         controller.world.groups.forEach(Group::overgroupFinishUpdate);
         computeCut();
     }
@@ -151,27 +152,8 @@ public class TextVisualizer {
     private void print() {
         StringBuilder main = new StringBuilder();
         main.append(world.getTurn()).append("\n");
-        int i = -1;
-        while (groupPopulations.size() < world.groups.size()) {
-            groupSymbols.put(world.groups.get(groupPopulations.size()).name, s.nextLine());
-            groupPopulations.add(0);
-        }
-        for (Group group : world.groups) {
-            StringBuilder stringBuilder = new StringBuilder();
-            i++;
-            if (group.state == Group.State.Dead) {
-                continue;
-            }
-            stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" ");
-            for (Aspect aspect : group.getAspects()) {
-                stringBuilder.append(aspect.getName()).append(" ");
-            }
-            stringBuilder.append("   population=").append(group.population)
-                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append('\n');
-            groupPopulations.set(i, group.population);
-            main.append(chompToSize(stringBuilder.toString(), 160));
-        }
         lastClaimedTiles = new HashMap<>();
+        main.append(printedGroups());
         for (Group group : controller.world.groups) {
             lastClaimedTiles.put(group.name, new HashSet<>());
         }
@@ -195,6 +177,34 @@ public class TextVisualizer {
     private void printMap(Function<Tile, String> condition) {
         System.out.print(addToRight(printedMap(condition), chompToLines(printedResources(), map.map.size() + 2),
                 true));
+    }
+
+    private StringBuilder printedGroups() {
+        StringBuilder main = new StringBuilder();
+        int i = -1;
+        while (groupPopulations.size() < world.groups.size()) {
+            groupSymbols.put(world.groups.get(groupPopulations.size()).name, s.nextLine());
+            groupPopulations.add(0);
+        }
+        for (Group group : world.groups) {//TODO print artificial things
+            StringBuilder stringBuilder = new StringBuilder();
+            i++;
+            if (group.state == Group.State.Dead) {
+                continue;
+            }
+            stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" \033[31m");
+            List<Aspect> aspects = new ArrayList<>(group.getAspects2());
+            aspects.sort(Comparator.comparingInt(Aspect::getUsefulness));
+            for (Aspect aspect : aspects) {
+                stringBuilder.append(aspect.getName()).append(" ");
+            }
+            stringBuilder.append(" \033[39m");
+            stringBuilder.append("   population=").append(group.population)
+                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append('\n');
+            groupPopulations.set(i, group.population);
+            main.append(chompToSize(stringBuilder.toString(), 160));
+        }
+        return main;
     }
 
     /**
@@ -261,7 +271,7 @@ public class TextVisualizer {
                                 break;
                             case Mountain:
                                 token = (tile.getLevel() > 130 ? "\033[43m" : "") +
-                                        (tile.getResources().contains(world.getPoolResourceByName("Snow")) ? "\033[30m" : "\033[93m") + "^";
+                                        (tile.getResources().contains(world.getPoolResource("Snow")) ? "\033[30m" : "\033[93m") + "^";
                                 break;
                             default:
                                 token += " ";
@@ -315,7 +325,7 @@ public class TextVisualizer {
      */
     private void printResource(Resource resource) {
         printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
-                && r.getAmount() > 0) ? "\033[31m\033[41mX" : ""));
+                && r.getAmount() > 0) ? "\033[30m\033[41m" + resource.getAmount() % 10 : ""));
         System.out.println(resource);
     }
 
@@ -373,12 +383,12 @@ public class TextVisualizer {
                     .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
                     .orElse(group.getCulturalCenter().getAllProducedResources().stream().map(pair -> pair.first)
                             .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null));
-//            Resource resource = controller.world.getPoolResourceByName(aspectName.split("On")[1]);
+//            Resource resource = controller.world.getPoolResource(aspectName.split("On")[1]);
             if (resource == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
             }
-            Aspect a = world.getPoolAspectByName(aspectName.split("On")[0]);
+            Aspect a = world.getPoolAspect(aspectName.split("On")[0]);
             if (a == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
@@ -389,7 +399,7 @@ public class TextVisualizer {
                 aspect = new ConverseWrapper(a, resource, group);
             }
         } else {
-            aspect = world.getPoolAspectByName(aspectName);
+            aspect = world.getPoolAspect(aspectName);
             if (aspect == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
@@ -423,7 +433,7 @@ public class TextVisualizer {
             group.subgroups.forEach(subgroup -> addWantToGroup(subgroup, wantName));
             return;
         }
-        Resource resource = world.getPoolResourceByName(wantName);
+        Resource resource = world.getPoolResource(wantName);
         if (resource == null) {
             System.err.println("Cannot add want to the group");
             return;
@@ -436,7 +446,7 @@ public class TextVisualizer {
             System.err.println("No such Tile");
             return;
         }
-        Resource resource = world.getPoolResourceByName(resourceName);
+        Resource resource = world.getPoolResource(resourceName);
         if (resource == null) {
             System.err.println("No such Resource");
             return;
@@ -473,7 +483,8 @@ public class TextVisualizer {
                             printMap(tile -> {
                                 List<Tile> affectedTiles = new ArrayList<>();
                                 for (TectonicPlate tectonicPlate : map.getTectonicPlates()) {
-                                    affectedTiles.addAll(tectonicPlate.getAffectedTiles());
+                                    affectedTiles.addAll(tectonicPlate.getAffectedTiles().stream()
+                                            .map(pair -> pair.first).collect(Collectors.toList()));
                                 }
                                 for (int i = 0; i < map.getTectonicPlates().size(); i++) {
                                     if (map.getTectonicPlates().get(i).contains(tile)) {
@@ -568,7 +579,7 @@ public class TextVisualizer {
                                 String colour = "";
                                 if (tile.getSecondLevel() < 90) {
                                     colour = "\033[44m";
-                                } else if (tile.getSecondLevel() < 100) {
+                                } else if (tile.getSecondLevel() < controller.defaultWaterLevel) {
                                     colour = "\033[104m";
                                 } else if (tile.getSecondLevel() < 105) {
                                     colour = "\033[46m";
@@ -605,7 +616,7 @@ public class TextVisualizer {
                             });
                             break;
                         case Resource:
-                            Resource resource = world.getPoolResourceByName(line.substring(2));
+                            Resource resource = world.getPoolResource(line.substring(2));
                             if (resource != null) {
                                 printResource(resource);
                             } else {

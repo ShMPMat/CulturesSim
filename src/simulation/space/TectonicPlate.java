@@ -5,6 +5,7 @@ import extra.ShnyPair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static simulation.Controller.session;
 
@@ -41,7 +42,7 @@ public class TectonicPlate extends Territory {
     /**
      * Which Tiles are affected by this Plate movement.
      */
-    private List<Tile> affectedTiles;
+    private List<ShnyPair<Tile, Double>> affectedTiles;
     /**
      * Whether it was moved for the first time.
      */
@@ -81,7 +82,7 @@ public class TectonicPlate extends Territory {
     /**
      * @return Tiles affected by this Plate.
      */
-    public List<Tile> getAffectedTiles() {
+    public List<ShnyPair<Tile, Double>> getAffectedTiles() {
         if (affectedTiles != null) {
             return affectedTiles;
         }
@@ -118,7 +119,7 @@ public class TectonicPlate extends Territory {
             }
             tiles.addAll(neighbours);
         }
-        this.affectedTiles = tiles;
+        this.affectedTiles = tiles.stream().map(tile -> new ShnyPair<>(tile, (Math.random() + 0.1)/1.1)).collect(Collectors.toList());
         return this.affectedTiles;
     }
 
@@ -136,13 +137,15 @@ public class TectonicPlate extends Territory {
     /**
      * Moves plate in its direction and changes landscape.
      */
-    public void move() {
-        if (ProbFunc.getChances(0.85) && isMoved) {
+    public void move() {//TODO volcanoes
+        if (ProbFunc.getChances(0.7) && isMoved) {
             return;
         }
-        for (Tile tile: getAffectedTiles()) {
-            tile.setLevel(isMoved ? tile.getLevel() + 1 :
-                    tile.getLevel() + 5 + ProbFunc.randomInt(5));
+        for (ShnyPair<Tile, Double> pair: getAffectedTiles()) {
+            if (ProbFunc.getChances(pair.second)) {
+                pair.first.setLevel(isMoved ? pair.first.getLevel() + 1 :
+                        pair.first.getLevel() + 5 + ProbFunc.randomInt(5));
+            }
         }
         isMoved = true;
     }

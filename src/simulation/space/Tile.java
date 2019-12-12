@@ -5,10 +5,7 @@ import simulation.culture.group.Group;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -106,6 +103,12 @@ public class Tile {
         return index == -1 ? resource.cleanCopy(0) : resources.get(index);
     }
 
+    public Resource getResource(String name) {
+        Resource resource = session.world.getPoolResource(name);
+        int index = resources.indexOf(resource);
+        return index == -1 ? resource.cleanCopy(0) : resources.get(index);
+    }
+
     /**
      * @param predicate Predicate on which neighbour Tiles will bw tested.
      * @return List of neighbour Tiles which satisfy the Predicate.
@@ -137,6 +140,20 @@ public class Tile {
      */
     public List<Tile> getNeighbours() {
         return getNeighbours(t -> true);
+    }
+
+    public List<Tile> getNeighboursInRadius(Predicate<Tile> predicate, int radius) {
+        List<Tile> tiles = new ArrayList<>();
+        Queue<Tile> candidates = new ArrayDeque<>(getNeighbours());
+        while (!candidates.isEmpty()) {
+            Tile candidate = candidates.poll();
+            if (getDistance(candidate) <= radius && !tiles.contains(candidate) && this != candidate) {
+                tiles.add(candidate);
+                candidates.addAll(candidate.getNeighbours());
+            }
+        }
+        tiles.removeIf(predicate.negate());
+        return tiles;
     }
 
     public TectonicPlate getPlate() {
@@ -176,7 +193,7 @@ public class Tile {
     }
 
     public int getLevelWithWater() {
-        int index = resources.indexOf(session.world.getPoolResourceByName("Water"));
+        int index = resources.indexOf(session.world.getPoolResource("Water"));
         return getLevel() + (index == -1 ? 0 : resources.get(index).getAmount());
     }
 
@@ -335,20 +352,16 @@ public class Tile {
 
     public boolean canSettle(Group group) {
         return getType() != Type.Water && getType() != Type.Mountain ||
-                (getType() == Type.Mountain && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
+                (getType() == Type.Mountain && group.getAspects2().stream().anyMatch(aspect -> aspect.getTags().stream()
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
     }
 
     /**
      * Starts overgroupUpdate for this Tile.
      */
-    public void startUpdate() {
+    public void startUpdate() { //TODO wind blows on 2 neighbour tiles
         _newWind = new Wind();
         checkIce();
-        _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
-        _delayedResources.forEach(resource -> resource.setTile(null));
-        _delayedResources.forEach(this::addResource);
-        _delayedResources.clear();
         for (int i = 0; i < resources.size(); i++) {
             Resource resource = resources.get(i);
             if (!resource.update()) {
@@ -380,14 +393,18 @@ public class Tile {
                 setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(session.world.getPoolResourceByName("Vapour").copy(50));
+            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
         }
-        if (resources.contains(session.world.getPoolResourceByName("Water"))) {
-            addDelayedResource(session.world.getPoolResourceByName("Vapour").copy(50));
+        if (resources.contains(session.world.getPoolResource("Water"))) {
+            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
         }
     }
 
     public void middleUpdate() {
+        _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
+        _delayedResources.forEach(resource -> resource.setTile(null));
+        _delayedResources.forEach(this::addResource);
+        _delayedResources.clear();
         WorldMap map = session.world.map;
         setWindByTemperature(map.get(x + 1, y));
         setWindByTemperature(map.get(x - 1, y));

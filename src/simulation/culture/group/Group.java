@@ -94,8 +94,12 @@ public class Group {
         culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
     }
 
-    public Set<Aspect> getAspects() {
+    Set<Aspect> getAspects() {
         return getCulturalCenter().getAspects();
+    }
+
+    public Set<Aspect> getAspects2() {
+        return subgroups.isEmpty() ? getCulturalCenter().getAspects() : subgroups.get(0).getCulturalCenter().getAspects();
     }
 
     public Aspect getAspect(Aspect aspect) {
@@ -172,8 +176,8 @@ public class Group {
         uniqueArtifacts.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : session.world.map.getAllNearGroups(this)) {
-            group.culturalCenter.addMemeCombination(session.world.getMemeFromPoolByName("group")
-                    .addPredicate(new MemeSubject(name)).addPredicate(session.world.getMemeFromPoolByName("die")));
+            group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
+                    .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
     }
 
@@ -311,6 +315,9 @@ public class Group {
             if (tiles.isEmpty()) {
                 return;
             }
+            if (!session.subgroupMultiplication) {
+                return;
+            }
             population = population / 2;
             Tile tile = ProbFunc.randomElement(tiles);
             Group group = new Group(parentGroup, this, parentGroup.name + "_" + parentGroup.subgroups.size(),
@@ -435,8 +442,8 @@ public class Group {
         getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("warmth")));
     }
 
-    private boolean diverge() {
-        if (session.groupDiverge) {
+    private boolean diverge() {//TODO make diverge for single subgroup groups
+        if (!session.groupDiverge) {
             return false;
         }
         if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupDiverge)) {

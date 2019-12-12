@@ -33,10 +33,11 @@ public class Controller {
      * How many turns will be spent after filling Resources in the World.
      */
     public final int stabilizationTurns = 100;
+    public final int fillCycles = 3;
     /**
      * Below what level World will be covered under water.
      */
-    public final int defaultWaterLevel = 100;
+    public final int defaultWaterLevel = 98;
     public final int startResourceAmountMin = 40 * proportionCoef * proportionCoef;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoef * proportionCoef;
     public final int startGroupAmount = 10;
@@ -51,6 +52,7 @@ public class Controller {
     public final double rAspectAcquisition = 0.01;
     public final double rAspectLending = 0.25;
     public final boolean groupDiverge = true;
+    public final boolean subgroupMultiplication = false;
 
     public final double windPropagation = 0.025;
     public final double windFillIn = 0.1;
@@ -79,14 +81,22 @@ public class Controller {
         for (int i = 0; i < initialTurns; i++) {
             turn();
         }
-        world.initializeFirst();
+        world.fillResources();
     }
 
     public void initializeSecond() {
-        for (int i = 0; i < stabilizationTurns; i++) {
-            turn();
+        for (int j = 0; j < fillCycles; j++) {
+            if (j != 0) {
+                world.fillResources();
+            }
+            for (int i = 0; i < stabilizationTurns; i++) {
+                turn();
+            }
         }
-        world.initializeSecond();
+    }
+
+    public void initializeThird() {
+        world.initializeFirst();
     }
 
     /**

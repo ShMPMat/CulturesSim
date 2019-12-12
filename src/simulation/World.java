@@ -76,11 +76,11 @@ public class World {
         RandomMapGenerator.fill();
     }
 
-    public void initializeFirst() {
+    public void fillResources() {
         RandomMapGenerator.fillResources();
     }
 
-    public void initializeSecond() {
+    public void initializeFirst() {
         for (int i = 0; i < session.startGroupAmount; i++) {
             groups.add(new Group(1, null));
         }
@@ -198,7 +198,7 @@ public class World {
      * @return Aspect with this name. If there is no such Aspect in the aspectPool
      * returns null and prints a warning.
      */
-    public Aspect getPoolAspectByName(String name) {
+    public Aspect getPoolAspect(String name) {
         for (Aspect aspect : aspectPool) {
             if (aspect.getName().equals(name)) {
                 return aspect;
@@ -215,7 +215,7 @@ public class World {
      * @return Property with this name. If there is no such Property in the propertyPool
      * returns null and prints a warning.
      */
-    public Property getPoolPropertyByName(String name) {
+    public Property getPoolProperty(String name) {
         for (Property property : propertyPool) {
             if (property.getName().equals(name)) {
                 return property;
@@ -232,7 +232,7 @@ public class World {
      * @return Resource with this base name. If there is no such Resource in the resourcePool
      * returns null and prints a warning.
      */
-    public ResourceIdeal getPoolResourceByName(String name) {
+    public ResourceIdeal getPoolResource(String name) {
         for (ResourceIdeal resource : resourcePool) {
             if (resource.getBaseName().equals(name)) {
                 return resource;
@@ -247,7 +247,7 @@ public class World {
      * @param name name of the Meme.
      * @return Meme with this name.
      */
-    public Meme getMemeFromPoolByName(String name) {
+    public Meme getPoolMeme(String name) {
         return memePool.getMemeByName(name).copy();
     }
 
@@ -258,7 +258,7 @@ public class World {
      * @return Material with this name. If there is no such Material in the materialPool
      * returns null and prints a warning.
      */
-    public Material getMaterialFromPoolByName(String name) {
+    public Material getPoolMaterial(String name) {
         for (Material material : materialPool) {
             if (material.getName().equals(name)) {
                 return material;
@@ -309,7 +309,7 @@ public class World {
     }
 
     public void addResources(List<Resource> resources) {
-        resources.stream().filter(resource -> getPoolResourceByName(resource.getBaseName()) == null)
+        resources.stream().filter(resource -> getPoolResource(resource.getBaseName()) == null)
                 .forEach(resource -> resources.add(new ResourceIdeal(resource)));
     }
 

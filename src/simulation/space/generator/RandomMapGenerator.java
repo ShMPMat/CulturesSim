@@ -122,7 +122,7 @@ public class RandomMapGenerator {
                 return;
             }
             for (String name: dependency.getResourceNames()) {
-                Resource dep = session.world.getPoolResourceByName(name);
+                Resource dep = session.world.getPoolResource(name);
                 if (dep.getGenome().isAcceptable(tile)) {
                     tile.addDelayedResource(dep.copy());
                 }
