@@ -77,11 +77,7 @@ public class ProbFunc {
      * If such Tile does not exists, returns null.
      */
     public static Tile randomTileOnBrink(Collection<Tile> tiles, Predicate<Tile> predicate) {
-        List<Tile> goodTiles = new Territory(tiles).getBrinkWithCondition(predicate);
-        if (goodTiles.size() == 0) {
-            return null;
-        }
-        return randomElement(goodTiles);
+        return randomElement(new Territory(tiles).getBrinkWithCondition(predicate));
     }
 
     /**
@@ -89,9 +85,6 @@ public class ProbFunc {
      * @return A random Tile from the Territory.
      */
     public static Tile randomTile(Territory territory) {
-        if (territory.isEmpty()) {
-            return null;
-        }
         return randomElement(territory.getTiles());
     }
 

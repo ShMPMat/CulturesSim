@@ -73,13 +73,11 @@ public class TextVisualizer {
         controller.initializeFirst();
         print();
         controller.initializeSecond();
+        print();
         controller.initializeThird();
         for (int i = 0; i < controller.startGroupAmount; i++) {
             groupPopulations.add(0);
         }
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspect("TakeApart")));
-        controller.world.groups.forEach(group -> group.getCulturalCenter().addAspect(controller.world.getPoolAspect("Take")));
-        controller.world.groups.forEach(Group::overgroupFinishUpdate);
         computeCut();
     }
 
@@ -194,9 +192,10 @@ public class TextVisualizer {
             }
             stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" \033[31m");
             List<Aspect> aspects = new ArrayList<>(group.getAspects2());
-            aspects.sort(Comparator.comparingInt(Aspect::getUsefulness));
+            aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
             for (Aspect aspect : aspects) {
-                stringBuilder.append(aspect.getName()).append(" ");
+                stringBuilder.append("(").append(aspect.getName()).append(" ").append(aspect.getUsefulness())
+                        .append(") ");
             }
             stringBuilder.append(" \033[39m");
             stringBuilder.append("   population=").append(group.population)
@@ -325,7 +324,7 @@ public class TextVisualizer {
      */
     private void printResource(Resource resource) {
         printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
-                && r.getAmount() > 0) ? "\033[30m\033[41m" + resource.getAmount() % 10 : ""));
+                && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResource(resource).getAmount() % 10 : ""));
         System.out.println(resource);
     }
 
@@ -615,6 +614,9 @@ public class TextVisualizer {
                                 return "\033[90m" + colour + (level / 10) % 10;
                             });
                             break;
+                        case Fixed:
+                            printMap(tile -> tile.fixedWater ? "\033[41mX" : "");
+                            break;
                         case Resource:
                             Resource resource = world.getPoolResource(line.substring(2));
                             if (resource != null) {
@@ -706,6 +708,7 @@ public class TextVisualizer {
         Wind("wind"),
         TerrainLevel("level"),
         Vapour("vapour"),
+        Fixed("fixed"),
         /**
          * Command for printing resource information.
          */

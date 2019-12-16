@@ -57,9 +57,7 @@ public class Tile {
      */
     private Wind wind;
     private Wind _newWind;
-    /**
-     * Link to the world in which this Tile is present.
-     */
+    public boolean fixedWater = false;
 
     public Tile(int x, int y) {
         this.x = x;

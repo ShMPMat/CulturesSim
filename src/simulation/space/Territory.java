@@ -19,7 +19,7 @@ public class Territory {
 
     public Territory(Collection<Tile> tiles) {
         this.tiles = new ArrayList<>();
-        this.tiles.addAll(tiles);
+        addAll(tiles);
     }
 
     public Territory() {

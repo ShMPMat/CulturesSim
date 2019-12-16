@@ -16,6 +16,8 @@ public class Controller {
     public InteractionModel interactionModel;
 
     public final int proportionCoef = 1;
+    public final boolean doTurns = true;
+
     public final int mapSizeX = 45 * proportionCoef;
     public final int mapSizeY = 135 * proportionCoef;
     public final int amountOfPlates = 10 * proportionCoef;
@@ -37,6 +39,7 @@ public class Controller {
     /**
      * Below what level World will be covered under water.
      */
+    public final int cultureTurns = 200;
     public final int defaultWaterLevel = 98;
     public final int startResourceAmountMin = 40 * proportionCoef * proportionCoef;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoef * proportionCoef;
@@ -85,7 +88,7 @@ public class Controller {
     }
 
     public void initializeSecond() {
-        for (int j = 0; j < fillCycles; j++) {
+        for (int j = 0; j < fillCycles && doTurns; j++) {
             if (j != 0) {
                 world.fillResources();
             }
@@ -97,6 +100,10 @@ public class Controller {
 
     public void initializeThird() {
         world.initializeFirst();
+        for (int i = 0; i < cultureTurns && doTurns
+                ; i++) {
+            turn();
+        }
     }
 
     /**

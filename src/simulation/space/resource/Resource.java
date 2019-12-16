@@ -238,40 +238,45 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
-            if (amount > 100000) {
-                if (tile.getType() != Tile.Type.Water &&
-                        tile.getResource("Water").getAmount() < 5) {
-                    tile.addDelayedResource(session.world.getPoolResource("Water").copy(amount / 100));
-                    amount /= 100;
-                }
+            if (amount > 100000) {//TODO debug off
+//                if (tile.getType() != Tile.Type.Water &&
+//                        tile.getResource("Water").getAmount() < 5) {
+//                    tile.addDelayedResource(session.world.getPoolResource("Water").copy(amount / 100));
+//                    amount /= 100;
+//                }
             }
             if (tile.getTemperature() < 0) {
                 tile.addDelayedResource(session.world.getPoolResource("Snow").copy(amount / 2));
                 amount -= amount / 2;
             }
         } else if (getSimpleName().equals("Water")) {
+            if (!tile.getNeighbours(t -> t.getType() == Tile.Type.Water || t.fixedWater).isEmpty()) {
+                tile.fixedWater = true;
+            } else {
+                tile.fixedWater = false;
 //            if ((tile.x + " " + tile.y).equals("21 118")) {
 //                int i = 0;
 //            }
-            if (tile.getType() != Tile.Type.Water && tile.getNeighbours(t -> t.getType() == Tile.Type.Water).isEmpty()) {
-                List<Tile> tiles = tile.getNeighbours(t -> t.getLevelWithWater() <= tile.getLevelWithWater());
-                List<Tile> tilesWithWater = tiles.stream().filter(t -> t.getResources().contains(this))
-                        .collect(Collectors.toList());
-                if (tilesWithWater.isEmpty()) {
-                    if (!tiles.isEmpty()) {
-                        tiles.stream().min(Comparator.comparingInt(Tile::getLevelWithWater)).get().addDelayedResource(getCleanPart(amount <= 1 ? 1 : 1));
-                    }
-                } else {
-                    int size = tilesWithWater.size();
-                    tilesWithWater.sort(Comparator.comparingInt(Tile::getLevelWithWater));
-                    for (int i = 0; i < size; i++) {
-                        if (amount == 0) {
-                            break;
+                if (tile.getType() != Tile.Type.Water && tile.getNeighbours(t -> t.getType() == Tile.Type.Water).isEmpty()) {
+                    List<Tile> tiles = tile.getNeighbours(t -> t.getLevelWithWater() <= tile.getLevelWithWater());
+                    List<Tile> tilesWithWater = tiles.stream().filter(t -> t.getResourcesWithMoved().contains(this))
+                            .collect(Collectors.toList());
+                    if (tilesWithWater.isEmpty()) {
+                        if (!tiles.isEmpty()) {
+                            tiles.stream().min(Comparator.comparingInt(Tile::getLevelWithWater)).get().addDelayedResource(getCleanPart(amount <= 1 ? 1 : 1));
                         }
-                        if (tilesWithWater.get(i).getResource("Water").getAmount() > 1) {//TODO more water in deeps but not much water in rivers
-                            continue;
+                    } else {
+                        int size = tilesWithWater.size();
+                        tilesWithWater.sort(Comparator.comparingInt(Tile::getLevelWithWater));
+                        for (int i = 0; i < size; i++) {
+                            if (amount == 0) {
+                                break;//TODO fixate Tiles near water
+                            }
+                            if (tilesWithWater.get(i).getResource("Water").getAmount() > 1) {//TODO more water in deeps but not much water in rivers
+                                continue;
+                            }
+                            tilesWithWater.get(i).addDelayedResource(getCleanPart(1));
                         }
-                        tilesWithWater.get(i).addDelayedResource(getCleanPart(1));
                     }
                 }
             }
@@ -282,7 +287,8 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 //                }
                 Resource water = session.world.getPoolResource("Water").copy(2);
                 if (tile.getResource(water).getAmount() < 2 && (tile.getNeighboursInRadius(t ->
-                        t.getResource(this).getAmount() != 0 && t.getResource(water).getAmount() != 0, 3).isEmpty() ||
+                        t.getType() == Tile.Type.Mountain &&
+                        t.getResource(this).getAmount() != 0 && t.getResource(water).getAmount() != 0, 5).isEmpty() ||
                         tile.getResource(water).getAmount() != 0)) {
                     tile.addDelayedResource(water);
                 }

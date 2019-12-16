@@ -84,6 +84,9 @@ public class World {
         for (int i = 0; i < session.startGroupAmount; i++) {
             groups.add(new Group(1, null));
         }
+        groups.forEach(group -> group.getCulturalCenter().addAspect(getPoolAspect("TakeApart")));
+        groups.forEach(group -> group.getCulturalCenter().addAspect(getPoolAspect("Take")));
+        groups.forEach(Group::overgroupFinishUpdate);
     }
 
     /**
