@@ -9,7 +9,7 @@ public class ResourceBehaviour {
         this.placementStrategy = placementStrategy;
     }
 
-    void procedeResources(ResourcePack resourcePack) {
+    public void procedeResources(ResourcePack resourcePack) {
         placementStrategy.place(resourcePack);
     }
 

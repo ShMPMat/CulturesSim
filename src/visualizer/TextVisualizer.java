@@ -8,6 +8,7 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.group.Group;
+import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.interactionmodel.InteractionModel;
 import simulation.culture.interactionmodel.MapModel;
 import simulation.space.TectonicPlate;
@@ -194,14 +195,21 @@ public class TextVisualizer {
             List<Aspect> aspects = new ArrayList<>(group.getAspects2());
             aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
             for (Aspect aspect : aspects) {
+                if (aspect.getUsefulness() <= 0 ) {
+                    break;
+                }
                 stringBuilder.append("(").append(aspect.getName()).append(" ").append(aspect.getUsefulness())
                         .append(") ");
             }
-            stringBuilder.append(" \033[39m");
-            stringBuilder.append("   population=").append(group.population)
-                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append('\n');
+            stringBuilder.append(" \033[32m\n");
+            for (CultureAspect aspect : group.getCulturalCenter().getCultureAspects()) {
+                stringBuilder.append("(").append(aspect).append(") ");
+            }
+            stringBuilder.append(" \033[39m\n");
+            stringBuilder.append("population=").append(group.population)
+                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append("\n");
             groupPopulations.set(i, group.population);
-            main.append(chompToSize(stringBuilder.toString(), 160));
+            main.append(chompToSize(stringBuilder.toString(), 220));
         }
         return main;
     }

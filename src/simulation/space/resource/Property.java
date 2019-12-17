@@ -7,6 +7,7 @@ import simulation.culture.aspect.AspectTag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Basic property of an object or a material.
@@ -46,7 +47,8 @@ public class Property {
     public Property(String name, World world, List<AspectTag> tags, int level) {
         this.name = name;
         this.world = world;
-        this.tags = new ArrayList<>(tags);
+        this.tags = tags.stream().map(tag -> new AspectTag(tag.name)).collect(Collectors.toList());
+        this.tags.forEach(tag -> tag.level = level);
         this.level = level;
         setAspectLevel();
     }

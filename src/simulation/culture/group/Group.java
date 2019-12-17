@@ -6,6 +6,8 @@ import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.*;
+import simulation.culture.group.cultureaspect.CultureAspect;
+import simulation.culture.group.request.Request;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
@@ -51,7 +53,7 @@ public class Group {
     private Function<Tile, Integer> tileValueMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() -
             3 * t.closestTileWithResources(getResourceRequirements());
     ResourcePack resourcePack = new ResourcePack();
-    ResourcePack cherishedResources = new ResourcePack();
+    public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
 
     private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup) {
@@ -290,7 +292,7 @@ public class Group {
                             request.satisfactionLevel(pair.first)))
                     .collect(Collectors.toList());
             for (ShnyPair<Stratum, ResourceEvaluator> pair : pairs) {
-                int amount = request.howMuchOfNeeded(resourcePack);
+                int amount = pair.second.evaluate(resourcePack);
                 if (amount > request.ceiling) {
                     break;
                 }
@@ -556,11 +558,11 @@ public class Group {
         }
         stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
-        s.append("Wants: ");
-        for (ShnyPair<Resource, ResourceBehaviour> want : culturalCenter.getWants()) {
-            s.append(want.first.getFullName()).append(" ").append(want.second).append(", ");
+        s.append("Aspects: ");
+        for (CultureAspect aspect : culturalCenter.getCultureAspects()) {
+            s.append(aspect).append(", ");
         }
-        s.append((culturalCenter.getWants().isEmpty() ? "none\n" : "\n"));
+        s.append((culturalCenter.getCultureAspects().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())

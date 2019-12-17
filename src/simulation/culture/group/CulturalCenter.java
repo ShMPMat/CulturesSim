@@ -5,6 +5,11 @@ import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.Dependency;
+import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
+import simulation.culture.group.cultureaspect.CultureAspect;
+import simulation.culture.group.request.Request;
+import simulation.culture.group.request.ResourceRequest;
+import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;
@@ -27,7 +32,7 @@ public class CulturalCenter {
     private Set<Aspect> changedAspects = new HashSet<>(); // always equals aspects except while making a turn
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
-    private List<ShnyPair<Resource, ResourceBehaviour>> wants = new ArrayList<>();
+    private List<CultureAspect> cultureAspects = new ArrayList<>();
     private GroupMemes memePool = new GroupMemes();
 
     private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
@@ -59,6 +64,10 @@ public class CulturalCenter {
 
     List<Event> getEvents() {
         return events;
+    }
+
+    public List<CultureAspect> getCultureAspects() {
+        return cultureAspects;
     }
 
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
@@ -159,9 +168,11 @@ public class CulturalCenter {
     }
 
     public void addWant(Resource resource) {
-        if (wants.stream().noneMatch(pair -> pair.first.equals(resource))) {
-            wants.add(new ShnyPair<>(resource, new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
-                            ProbFunc.randomElement(PlacementStrategy.Strategy.values())))));
+        AestheticallyPleasingObject res = new AestheticallyPleasingObject(group, resource,
+                new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
+                ProbFunc.randomElement(PlacementStrategy.Strategy.values()))));
+        if (!cultureAspects.contains(res)) {
+            cultureAspects.add(res);
         }
     }
 
@@ -179,7 +190,7 @@ public class CulturalCenter {
             pair.second.destroyAllResourcesWithTag(new AspectTag("food"));
             return null;
         };
-        requests.add(new Request(group, new AspectTag("food"), foodFloor,
+        requests.add(new TagRequest(group, new AspectTag("food"), foodFloor,
                 foodFloor + group.population / 100 + 1, foodPenalty, foodReward));
 
         if (group.getTerritory().getMinTemperature() < 0) {
@@ -190,23 +201,24 @@ public class CulturalCenter {
             BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> {
                 return null;
             };
-            requests.add(new Request(group, new AspectTag("warmth"), group.population,
+            requests.add(new TagRequest(group, new AspectTag("warmth"), group.population,
                     group.population, warmthPenalty, warmthReward));
         }
 
-        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {
-            requests.add(new Request(group, want.first, 1, 10, (pair, percent) -> {
-                pair.first.cherishedResources.add(pair.second);
-                addAspiration(new Aspiration(5, want.first));
-                want.second.procedeResources(pair.second);
-                return null;
-            },
-                    (pair, percent) -> {
-                pair.first.cherishedResources.add(pair.second);
-                want.second.procedeResources(pair.second);
-                return null;
-                    }));
-        }
+        cultureAspects.forEach(cultureAspect -> requests.add(cultureAspect.getRequest()));
+//        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {
+//            requests.add(new ResourceRequest(group, want.first, 1, 10, (pair, percent) -> {
+//                pair.first.cherishedResources.add(pair.second);
+//                addAspiration(new Aspiration(5, want.first));
+//                want.second.procedeResources(pair.second);
+//                return null;
+//            },
+//                    (pair, percent) -> {
+//                pair.first.cherishedResources.add(pair.second);
+//                want.second.procedeResources(pair.second);
+//                return null;
+//                    }));
+//        }
     }
 
     void overgroupUpdate() {//TODO move aspects to subgroups and share them between subgroups
@@ -358,9 +370,5 @@ public class CulturalCenter {
 
     public Meme getMeaning() {
         return memePool.getValuableMeme();
-    }
-
-    public Collection<ShnyPair<Resource, ResourceBehaviour>> getWants() {
-        return wants;
     }
 }
