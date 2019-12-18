@@ -4,7 +4,7 @@ import extra.ShnyPair;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceEvaluator;
+import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 

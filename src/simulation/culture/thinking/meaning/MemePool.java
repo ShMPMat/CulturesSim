@@ -1,15 +1,13 @@
 package simulation.culture.thinking.meaning;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class MemePool {
-    protected List<Meme> memes;
+    protected Set<Meme> memes;
 
-    public MemePool(List<Meme> memes) {
-        this.memes = memes;
+    public MemePool(Collection<Meme> memes) {
+        this.memes = new HashSet<>(memes);
     }
 
     public MemePool() {
@@ -17,9 +15,7 @@ public class MemePool {
     }
 
     public void add(Meme meme) {
-        if (!memes.contains(meme)) {
-            memes.add(meme);
-        }
+        memes.add(meme);
     }
 
     public void addAll(Collection<Meme> memes) {
@@ -31,7 +27,7 @@ public class MemePool {
     }
 
     public List<Meme> getMemes() {
-        return memes;
+        return new ArrayList<>(memes);
     }
 
     public Meme getMemeByName(String name) {

@@ -1,6 +1,7 @@
 package simulation;
 
 import simulation.culture.interactionmodel.InteractionModel;
+import visualizer.Visualizer;
 
 /**
  * Class which wraps the World with its Interaction Model.
@@ -54,6 +55,7 @@ public class Controller {
     public final double defaultGroupDiverge = (double) 1/100;
     public final double rAspectAcquisition = 0.01;
     public final double rAspectLending = 0.25;
+    public final double cultureAspectBaseProbability = 0.02;
     public final boolean groupDiverge = true;
     public final boolean subgroupMultiplication = false;
 
@@ -62,6 +64,8 @@ public class Controller {
     public final double maximalWind = 10;
 
     public static Controller session;
+    public static Visualizer visualizer;
+    public static final boolean doPrint = false;
 
     public String getVacantGroupName() {
         return "G" + world.groups.size();
@@ -80,9 +84,15 @@ public class Controller {
     public void initializeFirst() {
         for (int i = 0; i < geologyTurns; i++) {
             geologicTurn();
+            if (doPrint) {
+                visualizer.print();
+            }
         }
         for (int i = 0; i < initialTurns; i++) {
             turn();
+            if (doPrint) {
+                visualizer.print();
+            }
         }
         world.fillResources();
     }
@@ -94,15 +104,20 @@ public class Controller {
             }
             for (int i = 0; i < stabilizationTurns; i++) {
                 turn();
+                if (doPrint) {
+                    visualizer.print();
+                }
             }
         }
     }
 
     public void initializeThird() {
         world.initializeFirst();
-        for (int i = 0; i < cultureTurns && doTurns
-                ; i++) {
+        for (int i = 0; i < cultureTurns && doTurns; i++) {
             turn();
+            if (doPrint) {
+                visualizer.print();
+            }
         }
     }
 

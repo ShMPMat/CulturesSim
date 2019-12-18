@@ -4,7 +4,7 @@ import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceEvaluator;
+import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;

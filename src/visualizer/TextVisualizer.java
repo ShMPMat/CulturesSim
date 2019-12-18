@@ -11,6 +11,7 @@ import simulation.culture.group.Group;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.interactionmodel.InteractionModel;
 import simulation.culture.interactionmodel.MapModel;
+import simulation.culture.thinking.meaning.Meme;
 import simulation.space.TectonicPlate;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
@@ -32,7 +33,7 @@ import static extra.OutputFunc.*;
 /**
  * Main class, running and visualizing simulation.
  */
-public class TextVisualizer {
+public class TextVisualizer implements Visualizer{
     /**
      * Symbols for representation of groups on the Map.
      */
@@ -67,9 +68,13 @@ public class TextVisualizer {
      */
     public TextVisualizer() {
         controller = new Controller(new MapModel());
+        Controller.visualizer = this;
         world = controller.world;
         map = world.map;
         interactionModel = controller.interactionModel;
+    }
+
+    private void initialize() {
         print();
         controller.initializeFirst();
         print();
@@ -111,6 +116,7 @@ public class TextVisualizer {
 
     public static void main(String[] args) {
         TextVisualizer textVisualizer = new TextVisualizer();
+        textVisualizer.initialize();
         textVisualizer.run();
     }
 
@@ -148,7 +154,7 @@ public class TextVisualizer {
     /**
      * Prints default map and information output.
      */
-    private void print() {
+    public void print() {
         StringBuilder main = new StringBuilder();
         main.append(world.getTurn()).append("\n");
         lastClaimedTiles = new HashMap<>();
@@ -185,7 +191,7 @@ public class TextVisualizer {
             groupSymbols.put(world.groups.get(groupPopulations.size()).name, s.nextLine());
             groupPopulations.add(0);
         }
-        for (Group group : world.groups) {//TODO print artificial things
+        for (Group group : world.groups) {
             StringBuilder stringBuilder = new StringBuilder();
             i++;
             if (group.state == Group.State.Dead) {
@@ -204,6 +210,13 @@ public class TextVisualizer {
             stringBuilder.append(" \033[32m\n");
             for (CultureAspect aspect : group.getCulturalCenter().getCultureAspects()) {
                 stringBuilder.append("(").append(aspect).append(") ");
+            }
+            stringBuilder.append(" \033[33m\n");
+            List<Meme> memes = group.getCulturalCenter().getMemePool().getMemes();//TODO increase importance on Resource-Aspect uses
+            memes.sort(Comparator.comparingInt(Meme::getImportance).reversed());
+            for (int j = 0; j < 10 && memes.size() > j; j++) {
+                Meme meme = memes.get(j);
+                stringBuilder.append("(").append(meme).append(" ").append(meme.getImportance()).append(") ");
             }
             stringBuilder.append(" \033[39m\n");
             stringBuilder.append("population=").append(group.population)

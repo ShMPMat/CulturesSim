@@ -8,7 +8,7 @@ import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceRequest;
+import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
@@ -67,7 +67,7 @@ public class CulturalCenter {
     }
 
     public List<CultureAspect> getCultureAspects() {
-        return cultureAspects;
+        return group.subgroups.isEmpty() ? cultureAspects : group.subgroups.get(0).getCulturalCenter().getCultureAspects();
     }
 
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
@@ -93,8 +93,8 @@ public class CulturalCenter {
         return _m;
     }
 
-    GroupMemes getMemePool() {
-        return memePool;
+    public GroupMemes getMemePool() {
+        return group.subgroups.isEmpty() ? memePool : group.subgroups.get(0).getCulturalCenter().getMemePool();
     }
 
     void addMemeCombination(Meme meme) {
@@ -148,22 +148,9 @@ public class CulturalCenter {
         memePool.addAspectMemes(aspect);
         addMemeCombination((new MemeSubject(group.name).addPredicate(
                 session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
-        if (_a instanceof ConverseWrapper) {
-            addWants(((ConverseWrapper) _a).getResult());
-        }
         Aspect final_a = _a;
         if (group.getStrata().stream().noneMatch(stratum -> stratum.containsAspect(final_a))) {
             group.getStrata().add(new Stratum(0, _a));
-        }
-    }
-
-    void addWants(List<Resource> resources) {
-        resources.forEach(this::addWantWithProbability);
-    }
-
-    void addWantWithProbability(Resource resource) {
-        if (ProbFunc.getChances(0.1)) {
-            addWant(resource);
         }
     }
 
@@ -228,6 +215,15 @@ public class CulturalCenter {
 
     void update() {
         createArtifact();
+        addCulturalAspect();
+    }
+
+    private void addCulturalAspect() {
+        if (!ProbFunc.getChances(session.cultureAspectBaseProbability)) {
+            return;
+        }
+        addWant(ProbFunc.randomElement(getAllProducedResources().stream().map(pair -> pair.first)
+                .collect(Collectors.toList())));
     }
 
     private void removeAspiration(Aspiration aspiration) {

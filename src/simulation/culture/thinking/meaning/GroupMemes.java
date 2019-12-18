@@ -4,18 +4,15 @@ import extra.ProbFunc;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GroupMemes extends MemePool {
-    private List<Meme> memesCombinations;
+    private Set<Meme> memesCombinations;
 
     public GroupMemes() {
         super();
-        memesCombinations = new ArrayList<>();
+        memesCombinations = new HashSet<>();
         String[] subjects = {"group"};
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
         String[] predicates = {"die", "acquireAspect"};
@@ -41,7 +38,7 @@ public class GroupMemes extends MemePool {
         for (Meme meme: memeList) {
             prob -= meme.importance;
             if (prob <= 0) {
-                meme.importance++;
+                meme.increaseImportance(1);
                 return meme;
             }
         }
@@ -61,9 +58,10 @@ public class GroupMemes extends MemePool {
     }
 
     public void addMemeCombination(Meme meme) {
-        if (memesCombinations.contains(meme)) {
-            return;
-        }
         memesCombinations.add(meme);
+    }
+
+    public void strengthenMeme(String memeString, int delta) {
+        //TODO
     }
 }

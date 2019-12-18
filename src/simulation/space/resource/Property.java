@@ -25,6 +25,10 @@ public class Property {
      * List of AspectTags associated with this Property.
      */
     private List<AspectTag> tags;
+    /**
+     * Level of intensity of this Property.
+     * All children Tags will inherit it.
+     */
     private int level = 1;
 
     public Property(String[] tags, World world) {
@@ -44,15 +48,17 @@ public class Property {
         setAspectLevel();
     }
 
-    public Property(String name, World world, List<AspectTag> tags, int level) {
+    private Property(String name, World world, List<AspectTag> tags, int level) {
         this.name = name;
         this.world = world;
         this.tags = tags.stream().map(tag -> new AspectTag(tag.name)).collect(Collectors.toList());
-        this.tags.forEach(tag -> tag.level = level);
         this.level = level;
         setAspectLevel();
     }
 
+    /**
+     * Changes level of tags corresponding to this Property level.
+     */
     private void setAspectLevel() {
         tags.forEach(aspectTag -> aspectTag.level = level);
     }
@@ -73,6 +79,10 @@ public class Property {
         return name;
     }
 
+    /**
+     * @param level Level of a copy of this Property.
+     * @return New instance of This Property with a new level.
+     */
     public Property copy(int level) {
         return new Property(name, world, tags, level);
     }

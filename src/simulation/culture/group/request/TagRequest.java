@@ -3,7 +3,6 @@ package simulation.culture.group.request;
 import extra.ShnyPair;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceEvaluator;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;

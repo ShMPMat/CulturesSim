@@ -23,6 +23,14 @@ abstract public class Meme {
         this(observerWord, new ArrayList<>());
     }
 
+    public int getImportance() {
+        return importance;
+    }
+
+    public void increaseImportance(int delta) {
+        importance += delta;
+    }
+
     public Meme addPredicate(Meme predicate) {
         predicates.add(predicate);
         return this;
@@ -41,7 +49,7 @@ abstract public class Meme {
 
     @Override
     public int hashCode() {
-        return Objects.hash(observerWord);
+        return Objects.hash(toString());
     }
 
     public abstract Meme copy();

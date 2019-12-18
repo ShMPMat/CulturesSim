@@ -8,6 +8,7 @@ import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.request.Request;
+import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;

@@ -1,20 +1,18 @@
 package simulation.culture.group.request;
 
 import extra.ShnyPair;
-import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceEvaluator;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
-import java.util.Collection;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Class which represents a request which may by executed by a Group.
+ */
 public abstract class Request {
     protected Group group;
     int floor;

@@ -1,9 +1,12 @@
-package simulation.culture.group;
+package simulation.culture.group.request;
 
 import simulation.space.resource.ResourcePack;
 
 import java.util.function.Function;
 
+/**
+ * Class which evaluates ResourcePacks for containing needed Resources.
+ */
 public class ResourceEvaluator {
     private Function<ResourcePack, ResourcePack> picker;
     private Function<ResourcePack, Integer> evaluator;

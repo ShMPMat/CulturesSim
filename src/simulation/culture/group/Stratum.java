@@ -3,10 +3,10 @@ package simulation.culture.group;
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
+import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class Stratum {
     private int amount;

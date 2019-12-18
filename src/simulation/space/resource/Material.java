@@ -102,6 +102,10 @@ public class Material {
         return density;
     }
 
+    public boolean hasPropertyWithName(String name) {
+        return hasProperty(world.getPoolProperty(name));
+    }
+
     public boolean hasApplicationForAspect(Aspect aspect) {
         return aspectConversion.containsKey(aspect);
     }
@@ -117,9 +121,5 @@ public class Material {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public boolean hasPropertyWithName(String name) {
-        return hasProperty(world.getPoolProperty(name));
     }
 }

@@ -26,10 +26,17 @@ public class ResourcePack {
         this(Collections.emptyList());
     }
 
+    /**
+     * @return Resources which are contained in this pack.
+     */
     public Collection<Resource> getResources() {
         return resources;
     }
 
+    /**
+     * @param tag Tag which will be looked up.
+     * @return New ResourcePack with all Resources which contain required Tag.
+     */
     public ResourcePack getAllResourcesWithTag(AspectTag tag) {
         return new ResourcePack(resources.stream().filter(resource -> resource.getTags().contains(tag))
                 .collect(Collectors.toList()));
@@ -77,6 +84,10 @@ public class ResourcePack {
         return result;
     }
 
+    /**
+     * @param resource Resource which will be looked up.
+     * @return Amount of all instances of this Resource in the Pack.
+     */
     public int getAmountOfResource(Resource resource) {
         return getResource(resource).getResources().stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
     }
@@ -155,6 +166,11 @@ public class ResourcePack {
         resources.get(i).merge(resource);
     }
 
+    /**
+     * Adds all Resources from a ResourcePack.
+     * //TODO will source be affected?
+     * @param resourcePack Pack from which all Resources will be added.
+     */
     public void add(ResourcePack resourcePack) {
         resourcePack.resources.forEach(this::add);
     }
@@ -173,11 +189,10 @@ public class ResourcePack {
         }
     }
 
-    public ResourcePack destroyAllResourcesWithTag(AspectTag tag) {
+    public void destroyAllResourcesWithTag(AspectTag tag) {
         ResourcePack result = getAllResourcesWithTag(tag);
         resources.removeAll(result.resources);
         result.resources.forEach(resource -> resource.amount = 0);
-        return result;
     }
 
     @Override
