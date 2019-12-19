@@ -34,7 +34,7 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
     }
 
     @Override
-    public void use() {//TODO any uses?
+    public void use() {
 
     }
 

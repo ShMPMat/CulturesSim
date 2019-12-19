@@ -11,16 +11,17 @@ import java.util.*;
 public class Stratum {
     private int amount;
     private int usedAmount = 0;
-    private List<Aspect> aspects;
+    private List<Aspect> aspects = new ArrayList<>();
     private Map<AspectTag, ResourcePack> dependencies = new HashMap<>();
+    private Group group;
 
-    public Stratum(int amount) {
+    public Stratum(int amount, Group group) {
         this.amount = amount;
-        aspects = new ArrayList<>();
+        this.group = group;
     }
 
-    public Stratum(int amount, Aspect aspect) {
-        this(amount);
+    public Stratum(int amount, Aspect aspect, Group group) {
+        this(amount, group);
         aspects.add(aspect);
         aspect.getDependencies().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
@@ -62,6 +63,11 @@ public class Stratum {
         ResourcePack resourcePack = new ResourcePack();
         for (Aspect aspect: aspects) {
             ShnyPair<Boolean, ResourcePack> result = aspect.use(ceiling, evaluator);
+            if (!result.second.isEmpty()) {
+                group.getCulturalCenter().getMemePool().strengthenAspectMeme(aspect);
+                result.second.getResources().forEach(resource ->
+                        group.getCulturalCenter().getMemePool().strengthenMeme(resource.getFullName()));
+            }
             if (result.first) {
                 resourcePack.add(result.second);
             }

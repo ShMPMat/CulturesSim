@@ -18,6 +18,7 @@ Take
 
 ShapeMalleable                                                              /malleable          #MEANING
 Engrave                                                                     /goodForEngraving   #MEANING
+Carve                                                                       /goodForEngraving   #MEANING
 
 /Riding                                                                      /ridingAnimals
 /Farming                    -food                  1                        /seeds

@@ -212,7 +212,7 @@ public class TextVisualizer implements Visualizer{
                 stringBuilder.append("(").append(aspect).append(") ");
             }
             stringBuilder.append(" \033[33m\n");
-            List<Meme> memes = group.getCulturalCenter().getMemePool().getMemes();//TODO increase importance on Resource-Aspect uses
+            List<Meme> memes = group.getCulturalCenter().getMemePool().getMemes();
             memes.sort(Comparator.comparingInt(Meme::getImportance).reversed());
             for (int j = 0; j < 10 && memes.size() > j; j++) {
                 Meme meme = memes.get(j);
@@ -458,7 +458,7 @@ public class TextVisualizer implements Visualizer{
             System.err.println("Cannot add want to the group");
             return;
         }
-        group.getCulturalCenter().addWant(resource);
+        group.getCulturalCenter().addResourceWant(resource);
     }
 
     private void addResourceOnTile(Tile tile, String resourceName) {

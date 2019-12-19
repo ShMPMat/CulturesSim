@@ -38,6 +38,8 @@ public class CulturalCenter {
     private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
     private List<Resource> _lastResourcesForCw = new ArrayList<>();
 
+    private Meme currentMeme;
+
     CulturalCenter(Group group) {
         this.group = group;
     }
@@ -97,6 +99,10 @@ public class CulturalCenter {
         return group.subgroups.isEmpty() ? memePool : group.subgroups.get(0).getCulturalCenter().getMemePool();
     }
 
+    public Meme getCurrentMeme() {
+        return currentMeme;
+    }
+
     void addMemeCombination(Meme meme) {
         memePool.addMemeCombination(meme);
     }
@@ -150,17 +156,20 @@ public class CulturalCenter {
                 session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         Aspect final_a = _a;
         if (group.getStrata().stream().noneMatch(stratum -> stratum.containsAspect(final_a))) {
-            group.getStrata().add(new Stratum(0, _a));
+            group.getStrata().add(new Stratum(0, _a, group));
         }
     }
 
-    public void addWant(Resource resource) {
-        AestheticallyPleasingObject res = new AestheticallyPleasingObject(group, resource,
-                new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
-                ProbFunc.randomElement(PlacementStrategy.Strategy.values()))));
-        if (!cultureAspects.contains(res)) {
-            cultureAspects.add(res);
+    public void addCultureAspect(CultureAspect cultureAspect) {
+        if (!cultureAspects.contains(cultureAspect)) {
+            cultureAspects.add(cultureAspect);
         }
+    }
+
+    public void addResourceWant(Resource resource) {
+        addCultureAspect(new AestheticallyPleasingObject(group, resource, new ResourceBehaviour(
+                new PlacementStrategy(group.getOverallTerritory(),
+                        ProbFunc.randomElement(PlacementStrategy.Strategy.values())))));
     }
 
     void updateRequests() {
@@ -218,12 +227,21 @@ public class CulturalCenter {
         addCulturalAspect();
     }
 
+
     private void addCulturalAspect() {
         if (!ProbFunc.getChances(session.cultureAspectBaseProbability)) {
             return;
         }
-        addWant(ProbFunc.randomElement(getAllProducedResources().stream().map(pair -> pair.first)
-                .collect(Collectors.toList())));
+        CultureAspect cultureAspect = null;
+        switch (ProbFunc.randomInt(1)){
+            case 0:
+                cultureAspect = new AestheticallyPleasingObject(group, ProbFunc.randomElement(getAllProducedResources()
+                        .stream().map(pair -> pair.first).collect(Collectors.toList())),
+                        new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
+                                ProbFunc.randomElement(PlacementStrategy.Strategy.values()))));
+                break;
+        }
+        addCultureAspect(cultureAspect);
     }
 
     private void removeAspiration(Aspiration aspiration) {
@@ -255,7 +273,7 @@ public class CulturalCenter {
         }
     }
 
-    private void createArtifact() {//TODO decide what to create something HERE
+    private void createArtifact() {
         if (ProbFunc.getChances(0.1)) {
             if (memePool.isEmpty()){
                 return;
@@ -268,7 +286,9 @@ public class CulturalCenter {
                 return;
             }
             ConverseWrapper _b = _a.stripToMeaning();
+            generateCurrentMeme();
             ShnyPair<Boolean, ResourcePack> _p = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
+            clearCurrentMeme();
             for (Resource resource : _p.second.resources) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtifacts.add(resource);
@@ -277,6 +297,14 @@ public class CulturalCenter {
                 }
             }
         }
+    }
+
+    private void generateCurrentMeme() {
+        currentMeme = memePool.getValuableMeme();
+    }
+
+    private void clearCurrentMeme() {
+        currentMeme = null;
     }
 
     private void tryToFulfillAspirations() {
@@ -365,6 +393,6 @@ public class CulturalCenter {
     }
 
     public Meme getMeaning() {
-        return memePool.getValuableMeme();
+        return getCurrentMeme();
     }
 }

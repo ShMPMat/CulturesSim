@@ -61,7 +61,20 @@ public class GroupMemes extends MemePool {
         memesCombinations.add(meme);
     }
 
+    public void strengthenAspectMeme(Aspect aspect) {
+        strengthenMeme((new MemePredicate(aspect.getName())).toString());
+    }
+
+    public void strengthenMeme(String memeString) {
+        strengthenMeme(memeString, 1);
+    }
+
     public void strengthenMeme(String memeString, int delta) {
-        //TODO
+        Meme existing = getMemeByName(memeString);
+        if (existing != null) {
+            existing.increaseImportance(delta);
+        } else {
+            int i = 0;
+        }
     }
 }

@@ -125,7 +125,7 @@ public class ResourcePack {
      * @return whether this ResourcePack has any amount of Resources.
      */
     public boolean isEmpty() {
-        return getAmount() > 0;
+        return getAmount() <= 0;
     }
 
     /**
