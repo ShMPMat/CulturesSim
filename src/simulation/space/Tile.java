@@ -383,7 +383,7 @@ public class Tile {
         }
         updateTemperature();
         if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
-            if (resources.stream().anyMatch(resource -> resource.getSimpleName().equals("Tree"))) {
+            if (resources.stream().anyMatch(resource -> resource.getSimpleName().matches("Tree|JungleTree"))) {
                 setType(Type.Woods, false);
             } else if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
                 setType(Type.Growth, false);

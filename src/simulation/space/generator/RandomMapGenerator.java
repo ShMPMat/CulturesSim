@@ -4,6 +4,7 @@ import extra.ProbFunc;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
+import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
 import simulation.space.resource.ResourceDependency;
@@ -85,8 +86,7 @@ public class RandomMapGenerator {
 
     public static void fillResources() {
         for (Resource resource : session.world.map.resourcePool) {
-            if (resource.getSpreadProbability() == 0 && !resource.getBaseName().matches("Clay") &&
-                    !resource.getBaseName().matches("Stone")) {
+            if (resource.getSpreadProbability() == 0 && !resource.getGenome().getType().equals(Genome.Type.Mineral)) {
                 continue;
             }
             scatter(resource, session.startResourceAmountMin +

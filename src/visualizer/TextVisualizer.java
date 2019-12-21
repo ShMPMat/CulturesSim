@@ -220,7 +220,7 @@ public class TextVisualizer implements Visualizer{
             }
             stringBuilder.append(" \033[39m\n");
             stringBuilder.append("population=").append(group.population)
-                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append("\n");
+                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append("\n\n");
             groupPopulations.set(i, group.population);
             main.append(chompToSize(stringBuilder.toString(), 220));
         }

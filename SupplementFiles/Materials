@@ -18,6 +18,7 @@ RoastedMeat   400       -hard:1     -stiff:1                               -soli
 
 Clay          1000      -soft:1     -malleable:1                           -solid:1                         +Bake:Ceramics
 Ceramics      1000      -hard:1     -fragile:1                             -solid:1
+Iron          1000      -hard:1     -malleable:1                           -solid:1
 
 Stone         2500      -hard:1     -sturdy:1                              -solid:1
 

@@ -25,8 +25,13 @@
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
 
+-JungleTree      0.05    5      40         20       40   150       0             0 0 0  Plant        @Wood
+        ~Vapour:1:2:0:CONSUME
+        ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
+        #Water
+
 -Reed            0.25    1      5          5       30   50        0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.02:2:0:CONSUME
+        ~Vapour:0.1:2:0:CONSUME
         ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
         #Water
 
@@ -47,6 +52,11 @@
 -Herbivore       0.08    1      20         0       30   25        0             1 0 1  Animal       @Meat
         ~@PlantFibre:0.2:2:0:CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+        #Water
+
+-Mouse           0.25    0.05   5          -5      35   100       0             1 0 1  Animal       @Meat
+        ~@PlantFibre:0.02:2:0:CONSUME
+        +Killing:Meat:1,Fat:1,Bone:1,Fur:1
         #Water
 
 -Predator        0.08    1      20         0       30   5         0             1 0 1  Animal       @Meat
@@ -115,11 +125,13 @@
 -Feather         0       0.05   50         -500    500  100000000 0             1 1 0  None         @Feather
 
 
--Clay            0       0.5    100000     -500    500  100000000 0             1 0 0  None         @Clay
+-Clay            0       0.5    100000     -500    500  100000000 0             1 0 0  Mineral      @Clay
         +BuildHouse:House:1
 
--Stone           0       0.1    100000     -500    500  100000000 0             1 0 0  None         @Stone
+-Stone           0       0.1    100000     -500    500  100000000 0             1 0 0  Mineral      @Stone
         +Chisel:StoneAxe:1
+
+-Iron            0       0.5    100000     -500    500  100000000 0             1 0 0  Mineral      @Iron
 
 
 -Fibre           0       0.5    100        -500    500  100000000 1             1 1 0  None         @Fibre

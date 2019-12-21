@@ -27,7 +27,7 @@ import static simulation.Controller.*;
 /**
  * Takes responsibility of Group's cultural change.
  */
-public class CulturalCenter {
+public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has Aspects, which Subgroup lack
     private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
     private Set<Aspect> aspects = new HashSet<>();
@@ -169,7 +169,7 @@ public class CulturalCenter {
     }
 
     public void addCultureAspect(CultureAspect cultureAspect) {
-        if (!cultureAspects.contains(cultureAspect)) {
+        if (cultureAspect != null && !cultureAspects.contains(cultureAspect)) {
             cultureAspects.add(cultureAspect);
         }
     }
@@ -253,9 +253,12 @@ public class CulturalCenter {
                     break;
                 }
             case 1:
-                cultureAspect = new AestheticallyPleasingObject(group, randomElement(getAllProducedResources().stream()
-                        .map(pair -> pair.first).collect(Collectors.toList())), ResourceBehaviour.getRandom(group));
-                break;
+                Resource resource = randomElement(getAllProducedResources().stream().map(pair -> pair.first)
+                        .collect(Collectors.toList()));
+                if (resource != null) {
+                    cultureAspect = new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group));
+                    break;
+                }
         }
         addCultureAspect(cultureAspect);
     }

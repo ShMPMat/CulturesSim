@@ -282,6 +282,7 @@ public class Genome {
     public enum Type{
         Plant,
         Animal,
+        Mineral,
         None
     }
 }

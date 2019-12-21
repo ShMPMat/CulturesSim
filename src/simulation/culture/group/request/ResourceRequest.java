@@ -22,15 +22,11 @@ public class ResourceRequest extends Request {
     public ResourceEvaluator isAcceptable(Stratum stratum) {
         for (Aspect aspect : stratum.getAspects()) {
             if (aspect instanceof ConverseWrapper) {
-                try {
-                    if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
-                        return new ResourceEvaluator(resourcePack -> resourcePack.getResource(resource),
-                                resourcePack -> resourcePack.getAmountOfResource(resource));
-                    } else {
-                        return null;
-                    }
-                } catch (Exception e) {
-                    int i = 0;
+                if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
+                    return new ResourceEvaluator(resourcePack -> resourcePack.getResource(resource),
+                            resourcePack -> resourcePack.getAmountOfResource(resource));
+                } else {
+                    return null;
                 }
             }
         }

@@ -45,7 +45,7 @@ public class OutputFunc {
         for (String line : text.lines().collect(Collectors.toList())) {
             while (!line.isEmpty()) {
                 if (size >= line.length()) {
-                    stringBuilder.append(line).append("\n");
+                    stringBuilder.append(line);
                     break;
                 } else {
                     String part = line.substring(0, size);
@@ -58,6 +58,7 @@ public class OutputFunc {
                     stringBuilder.append(part).append("\n");
                 }
             }
+            stringBuilder.append("\n");
         }
         return stringBuilder;
     }
