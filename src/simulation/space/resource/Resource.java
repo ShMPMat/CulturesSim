@@ -263,14 +263,17 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                             .collect(Collectors.toList());
                     if (tilesWithWater.isEmpty()) {
                         if (!tiles.isEmpty()) {
-                            tiles.stream().min(Comparator.comparingInt(Tile::getLevelWithWater)).get().addDelayedResource(getCleanPart(amount <= 1 ? 1 : 1));
+                            int min = tiles.stream().min(Comparator.comparingInt(Tile::getLevelWithWater)).get()
+                                    .getLevelWithWater();
+                            ProbFunc.randomElement(tiles.stream().filter(t -> t.getLevelWithWater() == min).collect(Collectors.toList()))
+                                    .addDelayedResource(getCleanPart(amount <= 1 ? 1 : 1));
                         }
                     } else {
                         int size = tilesWithWater.size();
                         tilesWithWater.sort(Comparator.comparingInt(Tile::getLevelWithWater));
                         for (int i = 0; i < size; i++) {
                             if (amount == 0) {
-                                break;//TODO fixate Tiles near water
+                                break;
                             }
                             if (tilesWithWater.get(i).getResource("Water").getAmount() > 1) {//TODO more water in deeps but not much water in rivers
                                 continue;

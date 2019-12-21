@@ -154,7 +154,7 @@ public class Group {
 
     public Group getOverallGroup() {
         if (getParentGroup() == null) {
-            int i = 0;
+            int i = 0;//TODO fuck.
             return this;
         }
         return getParentGroup().getOverallGroup();

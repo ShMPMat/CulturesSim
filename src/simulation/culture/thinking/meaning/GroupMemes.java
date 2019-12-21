@@ -31,6 +31,13 @@ public class GroupMemes extends MemePool {
         return memeList;
     }
 
+    @Override
+    public Meme getMemeByName(String name) {
+        Meme memeS = super.getMemeByName(name);
+        return memeS != null ? memeS : memesCombinations.stream()
+                .filter(meme -> meme.toString().equals(name.toLowerCase())).findFirst().orElse(null);
+    }
+
     public Meme getValuableMeme() {
         List<Meme> memeList = getMemes();
         int prob = ProbFunc.randomInt(memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum));
@@ -73,7 +80,7 @@ public class GroupMemes extends MemePool {
         Meme existing = getMemeByName(memeString);
         if (existing != null) {
             existing.increaseImportance(delta);
-        } else {
+        } else {//TODO shit.
             int i = 0;
         }
     }

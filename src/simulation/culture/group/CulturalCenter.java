@@ -7,6 +7,7 @@ import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.cultureaspect.CultureAspect;
+import simulation.culture.group.cultureaspect.DepictObject;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
@@ -20,6 +21,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import static extra.ProbFunc.*;
 import static simulation.Controller.*;
 
 /**
@@ -50,6 +52,12 @@ public class CulturalCenter {
 
     Set<Aspect> getAspects() {
         return aspects;
+    }
+
+    Set<ConverseWrapper> getMeaningAspects() {
+        return aspects.stream()
+                .filter(aspect -> aspect instanceof ConverseWrapper && aspect.canReturnMeaning())
+                .map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toSet());
     }
 
     Aspect getAspect(Aspect aspect) {
@@ -167,9 +175,7 @@ public class CulturalCenter {
     }
 
     public void addResourceWant(Resource resource) {
-        addCultureAspect(new AestheticallyPleasingObject(group, resource, new ResourceBehaviour(
-                new PlacementStrategy(group.getOverallTerritory(),
-                        ProbFunc.randomElement(PlacementStrategy.Strategy.values())))));
+        addCultureAspect(new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group)));
     }
 
     void updateRequests() {
@@ -201,7 +207,7 @@ public class CulturalCenter {
                     group.population, warmthPenalty, warmthReward));
         }
 
-        cultureAspects.forEach(cultureAspect -> requests.add(cultureAspect.getRequest()));
+        cultureAspects.forEach(cultureAspect -> addRequest(cultureAspect.getRequest()));
 //        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {
 //            requests.add(new ResourceRequest(group, want.first, 1, 10, (pair, percent) -> {
 //                pair.first.cherishedResources.add(pair.second);
@@ -227,18 +233,28 @@ public class CulturalCenter {
         addCulturalAspect();
     }
 
+    private void addRequest(Request request) {
+        if (request != null) {
+            requests.add(request);
+        }
+    }
 
     private void addCulturalAspect() {
-        if (!ProbFunc.getChances(session.cultureAspectBaseProbability)) {
+        if (!getChances(session.cultureAspectBaseProbability)) {
             return;
         }
         CultureAspect cultureAspect = null;
-        switch (ProbFunc.randomInt(1)){
+        switch (randomInt(2)){
             case 0:
-                cultureAspect = new AestheticallyPleasingObject(group, ProbFunc.randomElement(getAllProducedResources()
-                        .stream().map(pair -> pair.first).collect(Collectors.toList())),
-                        new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
-                                ProbFunc.randomElement(PlacementStrategy.Strategy.values()))));
+                List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
+                if (!_l.isEmpty()) {
+                    cultureAspect = new DepictObject(group, memePool.getValuableMeme().toString(),
+                            randomElement(_l), ResourceBehaviour.getRandom(group));
+                    break;
+                }
+            case 1:
+                cultureAspect = new AestheticallyPleasingObject(group, randomElement(getAllProducedResources().stream()
+                        .map(pair -> pair.first).collect(Collectors.toList())), ResourceBehaviour.getRandom(group));
                 break;
         }
         addCultureAspect(cultureAspect);
@@ -260,10 +276,10 @@ public class CulturalCenter {
 //                        " got aspect " + _p.first.getBaseName() + " from group " + _p.second.name, "group", group));
 //            }
 //        }
-        if (ProbFunc.getChances(session.rAspectAcquisition)) {
+        if (getChances(session.rAspectAcquisition)) {
             List<Aspect> options = new ArrayList<>(session.world.aspectPool);
             options.addAll(getAllConverseWrappers());
-            Aspect _a = ProbFunc.randomElement(options, aspect -> true);
+            Aspect _a = randomElement(options, aspect -> true);
             if (_a != null) {
                 if (addAspect(_a)) {
                     group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
@@ -274,14 +290,12 @@ public class CulturalCenter {
     }
 
     private void createArtifact() {
-        if (ProbFunc.getChances(0.1)) {
+        if (getChances(0.1)) {
             if (memePool.isEmpty()){
                 return;
             }
-            List<ConverseWrapper> _l = aspects.stream()
-                    .filter(aspect -> aspect instanceof ConverseWrapper && aspect.canReturnMeaning())
-                    .map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toList());
-            ConverseWrapper _a = ProbFunc.randomElement(_l);
+            List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
+            ConverseWrapper _a = randomElement(_l);
             if (_a == null) {
                 return;
             }
@@ -299,12 +313,20 @@ public class CulturalCenter {
         }
     }
 
-    private void generateCurrentMeme() {
+    public void putCurrentMeme(String memeString) {
+        currentMeme = memePool.getMemeByName(memeString);
+    }
+
+    public void generateCurrentMeme() {
         currentMeme = memePool.getValuableMeme();
     }
 
-    private void clearCurrentMeme() {
+    public void clearCurrentMeme() {
         currentMeme = null;
+    }
+
+    public Meme getMeaning() {
+        return getCurrentMeme();
     }
 
     private void tryToFulfillAspirations() {
@@ -312,7 +334,7 @@ public class CulturalCenter {
         if (_o.isPresent()) {
             Aspiration aspiration = (Aspiration) _o.get();
             List<ShnyPair<Aspect, Group>> options = findOptions(aspiration);
-            ShnyPair<Aspect, Group> pair = ProbFunc.randomElement(options);
+            ShnyPair<Aspect, Group> pair = randomElement(options);
             if (pair == null) {
                 return;
             }
@@ -328,7 +350,7 @@ public class CulturalCenter {
         }
     }
 
-    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO add potentially good options (incinerate for warmth etc.)
+    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO add potentially good options (incinerate for warmth etc.) (should I though?)
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
         for (Aspect aspect : session.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
@@ -390,9 +412,5 @@ public class CulturalCenter {
     public void pushAspects() {
         aspects = new HashSet<>();
         getAspects().addAll(getChangedAspects());
-    }
-
-    public Meme getMeaning() {
-        return getCurrentMeme();
     }
 }
