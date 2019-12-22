@@ -198,7 +198,7 @@ public class TextVisualizer implements Visualizer{
                 continue;
             }
             stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" \033[31m");
-            List<Aspect> aspects = new ArrayList<>(group.getAspects2());
+            List<Aspect> aspects = new ArrayList<>(group.overgroupGetAspects());
             aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
             for (Aspect aspect : aspects) {
                 if (aspect.getUsefulness() <= 0 ) {

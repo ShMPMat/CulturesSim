@@ -21,7 +21,8 @@ Ceramics      1000      -hard:1     -fragile:1                             -soli
 Iron          1000      -hard:1     -malleable:1                           -solid:1
 
 Stone         2500      -hard:1     -sturdy:1                              -solid:1
+Ruby          2500      -hard:1     -sturdy:1                              -solid:1
 
 Flame         10        -burns:1                                           -gas:1
 Ash           80        -soft:1     -powder:1                              -solid:1
-Water         1                                                         -gas:1
+Water         1                                                            -gas:1

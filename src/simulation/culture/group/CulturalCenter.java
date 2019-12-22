@@ -45,10 +45,16 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
     CulturalCenter(Group group) {
         this.group = group;
         if (group.type == 'O') {
-            cultureAspects = null;
             aspirations = null;
             aspects = null;
-            changedAspects = null; //TODO Why does it not breaks?
+            changedAspects = null;
+            //
+            // events = null;
+            requests = null;
+            cultureAspects = null;
+            memePool = null;
+            _converseWrappers = null;
+            _lastResourcesForCw = null;
         }
     }
 
@@ -89,7 +95,7 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
         Set<ShnyPair<Aspect, Group>> allExistingAspects = new HashSet<>();
         for (Group neighbour : session.world.map.getAllNearGroups(group)) {
-            for (Aspect aspect : neighbour.getAspects().stream().filter(aspect ->
+            for (Aspect aspect : neighbour.overgroupGetAspects().stream().filter(aspect ->
                     !(aspect instanceof ConverseWrapper) || getAspect(((ConverseWrapper) aspect).aspect) != null)
                     .collect(Collectors.toList())) {
                 allExistingAspects.add(new ShnyPair<>(aspect, neighbour));
@@ -227,11 +233,12 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
     }
 
     void overgroupUpdate() {//TODO move aspects to subgroups and share them between subgroups
-        mutateAspects();
+
     }
 
     void update() {
         tryToFulfillAspirations();
+        mutateAspects();
         createArtifact();
         useCultureAspects();
         addCultureAspect();
@@ -261,16 +268,16 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
                     break;
                 }
             case 1:
+                Meme meme = getMemePool().getValuableMeme();
+                if (meme != null) {
+                    cultureAspect = new Tale(group, meme);
+                    break;
+                }
+            case 2:
                 Resource resource = randomElement(getAllProducedResources().stream().map(pair -> pair.first)
                         .collect(Collectors.toList()));
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group));
-                    break;
-                }
-            case 2:
-                Meme meme = getMemePool().getValuableMeme();
-                if (meme != null) {
-                    cultureAspect = new Tale(group, meme);
                     break;
                 }
         }
@@ -427,7 +434,10 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
     }
 
     public void pushAspects() {
+        if (group.type == 'O') {
+            int i = 0;
+        }
         aspects = new HashSet<>();
-        getAspects().addAll(getChangedAspects());
+        aspects.addAll(getChangedAspects());
     }
 }

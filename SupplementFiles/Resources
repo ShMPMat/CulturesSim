@@ -15,6 +15,11 @@
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
         #Water
 
+-DwarfBirch      0.1     1      15         -30     20  40         0             0 0 0  Plant        @PlantFibre
+        ~Vapour:0.001:2:0:CONSUME
+        ^SoftBranch:15 ^Leaf:30              ^Seed:2 ^SoftRoot:5
+        #Water
+
 -Cactus          0.2     1      15         10     50   50         0             0 0 0  Plant        @PlantFibre
         ~Vapour:1:2:0:AVOID
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
@@ -130,6 +135,8 @@
 
 -Stone           0       0.1    100000     -500    500  100000000 0             1 0 0  Mineral      @Stone
         +Chisel:StoneAxe:1
+
+-Ruby            0       0.1    100000     -500    500  100000000 0             1 0 0  Mineral      @Ruby
 
 -Iron            0       0.5    100000     -500    500  100000000 0             1 0 0  Mineral      @Iron
 

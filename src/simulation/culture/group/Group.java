@@ -50,7 +50,7 @@ public class Group {
     private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
     private List<Stratum> strata = new ArrayList<>();
     private Group parentGroup;
-    private CulturalCenter culturalCenter = new CulturalCenter(this);;
+    private CulturalCenter culturalCenter;
     private double spreadability;
     private Territory territory = new Territory();
     private Function<Tile, Integer> tileValueMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() -
@@ -59,7 +59,9 @@ public class Group {
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
 
-    private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup) {
+    private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup, char type) {
+        this.type = type;
+        culturalCenter = new CulturalCenter(this);
         this.name = name;
         this.parentGroup = parentGroup;
         this.population = population;
@@ -84,29 +86,34 @@ public class Group {
 
     public Group(int numberOfSubgroups, Tile root) {
         this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100),
-                session.defaultGroupSpreadability, numberOfSubgroups, root,null);
-        type = 'O';
+                session.defaultGroupSpreadability, numberOfSubgroups, root,null, 'O');
     }
 
     private Group(Group group, Group subgroup, String name, int population, Tile tile) {
-        this(name, population, session.defaultGroupSpreadability, 0, tile, group);
+        this(name, population, session.defaultGroupSpreadability, 0, tile, group, 'S');
         if (subgroup == null) {
             return;
         }
         for (Aspect aspect : subgroup.getAspects()) {
             getCulturalCenter().addAspectNow(aspect, aspect.getDependencies());
-            overgroupFinishUpdate();
+            finishUpdate();
         }
         culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
-        type = 'S';
     }
 
     Set<Aspect> getAspects() {
         return getCulturalCenter().getAspects();
     }
 
+    public Set<Aspect> overgroupGetAspects() {
+        return subgroups.stream().map(Group::getAspects).reduce(new HashSet<>(), (x, y) -> {
+            x.addAll(y);
+            return x;
+        });
+    }
+
     public Set<Aspect> getAspects2() {
-        return subgroups.isEmpty() ? getCulturalCenter().getAspects() : subgroups.get(0).getCulturalCenter().getAspects();
+        return type == 'O' ? overgroupGetAspects() : getAspects();
     }
 
     public Aspect getAspect(Aspect aspect) {
@@ -418,15 +425,18 @@ public class Group {
     }
 
     public void overgroupFinishUpdate() {
+        subgroups.forEach(Group::finishUpdate);
+    }
+
+    public void finishUpdate() {
+        if (type == 'O') {
+            throw new UnsupportedOperationException();
+        }
         getCulturalCenter().finishUpdate();
         Tile tile = ProbFunc.randomTile(getOverallTerritory());
         resourcePack.disbandOnTile(tile);
         addEvent(new Event(Event.Type.DisbandResources, "Resources were disbanded on tile " + tile.x + " " +
                 tile.y, "tile", tile));
-        if (subgroups.isEmpty()) {
-            getAspects().forEach(Aspect::finishUpdate);
-        }
-        subgroups.forEach(Group::overgroupFinishUpdate);
     }
 
     void starve(double fraction) {
@@ -461,8 +471,8 @@ public class Group {
             territory.getTiles().forEach(group::overgroupClaim);
             parentGroup = group;
             for (Aspect aspect : getAspects()) {
-                group.getCulturalCenter().addAspectNow(aspect.copy(aspect.getDependencies(), group), aspect.getDependencies());
-                group.overgroupFinishUpdate();
+                group.getCulturalCenter().addAspectNow(aspect.copy(aspect.getDependencies(), group), aspect.getDependencies()); //TODO overgroup is updating; WRONG
+                group.finishUpdate();
             }
             session.world.addGroup(group);
             return true;
@@ -543,46 +553,75 @@ public class Group {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
-                ", population=" + population + ", aspects:\n");
-        for (Aspect aspect : getAspects()) {
-            if (aspect.getUsefulness() < 0) {
-                continue;
+        if (type == 'S') {
+            StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
+                    ", population=" + population + ", aspects:\n");
+            for (Aspect aspect : getAspects()) {
+                if (aspect.getUsefulness() < 0) {
+                    continue;
+                }
+                stringBuilder.append(aspect).append("\n\n");
             }
-            stringBuilder.append(aspect).append("\n\n");
-        }
-        stringBuilder.append("Aspirations: ");
-        for (Aspiration aspiration : getCulturalCenter().getAspirations())
-        {
-            stringBuilder.append(aspiration).append(", ");
-        }
-        stringBuilder.append((culturalCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
-        stringBuilder.append("Requests: ");
-        for (Request request : culturalCenter.getRequests()) {
-            stringBuilder.append(request).append(", ");
-        }
-        stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
-        StringBuilder s = new StringBuilder();
-        s.append("Aspects: ");
-        for (CultureAspect aspect : culturalCenter.getCultureAspects()) {
-            s.append(aspect).append(", ");
-        }
-        s.append((culturalCenter.getCultureAspects().isEmpty() ? "none\n" : "\n"));
-        stringBuilder.append(s.toString());
-        stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
-        stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
-                .append("\n");
-        for (Stratum stratum: strata) {
-            if (stratum.getAmount() != 0) {
-                stringBuilder.append(stratum).append("\n");
+            stringBuilder.append("Aspirations: ");
+            for (Aspiration aspiration : getCulturalCenter().getAspirations()) {
+                stringBuilder.append(aspiration).append(", ");
             }
-        }
-        stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
+            stringBuilder.append((culturalCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
+            stringBuilder.append("Requests: ");
+            for (Request request : culturalCenter.getRequests()) {
+                stringBuilder.append(request).append(", ");
+            }
+            stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
+            StringBuilder s = new StringBuilder();
+            s.append("Aspects: ");
+            for (CultureAspect aspect : culturalCenter.getCultureAspects()) {
+                s.append(aspect).append(", ");
+            }
+            s.append((culturalCenter.getCultureAspects().isEmpty() ? "none\n" : "\n"));
+            stringBuilder.append(s.toString());
+            stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
+            stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
+                    .append("\n");
+            for (Stratum stratum : strata) {
+                if (stratum.getAmount() != 0) {
+                    stringBuilder.append(stratum).append("\n");
+                }
+            }
+            stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
 
-        for (Group subgroup : subgroups) {
-            stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
+            for (Group subgroup : subgroups) {
+                stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
+            }
+            return stringBuilder.toString();
+        } else {
+            StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
+                    ", population=" + population + ", aspects:\n");
+            for (Aspect aspect : getAspects()) {
+                if (aspect.getUsefulness() < 0) {
+                    continue;
+                }
+                stringBuilder.append(aspect).append("\n\n");
+            }
+            stringBuilder.append("Requests: ");
+            for (Request request : culturalCenter.getRequests()) {
+                stringBuilder.append(request).append(", ");
+            }
+            stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
+            stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
+            stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
+                    .append("\n");
+            for (Stratum stratum : strata) {
+                if (stratum.getAmount() != 0) {
+                    stringBuilder.append(stratum).append("\n");
+                }
+            }
+            stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
+
+            for (Group subgroup : subgroups) {
+                stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
+            }
+            return stringBuilder.toString();
         }
-        return stringBuilder.toString();
     }
 
     public enum State {
