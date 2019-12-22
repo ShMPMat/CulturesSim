@@ -1,6 +1,5 @@
 package simulation.culture.group;
 
-import extra.ProbFunc;
 import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
@@ -8,6 +7,7 @@ import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.cultureaspect.DepictObject;
+import simulation.culture.group.cultureaspect.Tale;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
@@ -44,6 +44,12 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
 
     CulturalCenter(Group group) {
         this.group = group;
+        if (group.type == 'O') {
+            cultureAspects = null;
+            aspirations = null;
+            aspects = null;
+            changedAspects = null; //TODO Why does it not breaks?
+        }
     }
 
     List<Aspiration> getAspirations() {
@@ -118,9 +124,6 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
     void addAspiration(Aspiration aspiration) { //TODO seems that aspirations are stuck in groups;
         if (aspirations.stream().noneMatch(aspir -> aspir.equals(aspiration))) {
             aspirations.add(aspiration);
-        }
-        if (group.getParentGroup() != null) {
-            group.getParentGroup().getCulturalCenter().addAspiration(aspiration);
         }
     }
 
@@ -224,13 +227,18 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
     }
 
     void overgroupUpdate() {//TODO move aspects to subgroups and share them between subgroups
-        tryToFulfillAspirations();
         mutateAspects();
     }
 
     void update() {
+        tryToFulfillAspirations();
         createArtifact();
-        addCulturalAspect();
+        useCultureAspects();
+        addCultureAspect();
+    }
+
+    private void useCultureAspects() {
+        cultureAspects.forEach(CultureAspect::use);
     }
 
     private void addRequest(Request request) {
@@ -239,12 +247,12 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
         }
     }
 
-    private void addCulturalAspect() {
+    private void addCultureAspect() {
         if (!getChances(session.cultureAspectBaseProbability)) {
             return;
         }
         CultureAspect cultureAspect = null;
-        switch (randomInt(2)){
+        switch (randomInt(3)){
             case 0:
                 List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
                 if (!_l.isEmpty()) {
@@ -257,6 +265,12 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
                         .collect(Collectors.toList()));
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group));
+                    break;
+                }
+            case 2:
+                Meme meme = getMemePool().getValuableMeme();
+                if (meme != null) {
+                    cultureAspect = new Tale(group, meme);
                     break;
                 }
         }

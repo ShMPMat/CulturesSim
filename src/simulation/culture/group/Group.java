@@ -25,6 +25,8 @@ import static simulation.Controller.*;
  * Entity with Aspects, which develops through time.
  */
 public class Group {
+    public char type; //TODO CRUTCH; = O if overgroup, = S if subgroup
+
     /**
      * Subgroups on which this group is divided.
      */
@@ -32,7 +34,7 @@ public class Group {
     /**
      * Whether group live or dead
      */
-    public State state = State.Live;;
+    public State state = State.Live;
     /**
      * Abstract name of the group;
      */
@@ -83,6 +85,7 @@ public class Group {
     public Group(int numberOfSubgroups, Tile root) {
         this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100),
                 session.defaultGroupSpreadability, numberOfSubgroups, root,null);
+        type = 'O';
     }
 
     private Group(Group group, Group subgroup, String name, int population, Tile tile) {
@@ -95,6 +98,7 @@ public class Group {
             overgroupFinishUpdate();
         }
         culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
+        type = 'S';
     }
 
     Set<Aspect> getAspects() {
