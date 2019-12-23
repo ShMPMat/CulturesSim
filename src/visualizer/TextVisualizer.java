@@ -208,11 +208,11 @@ public class TextVisualizer implements Visualizer{
                         .append(") ");
             }
             stringBuilder.append(" \033[32m\n");
-            for (CultureAspect aspect : group.getCulturalCenter().getCultureAspects()) {
+            for (CultureAspect aspect : group.overgroupGetCultureAspects()) {
                 stringBuilder.append("(").append(aspect).append(") ");
             }
             stringBuilder.append(" \033[33m\n");
-            List<Meme> memes = group.getCulturalCenter().getMemePool().getMemes();
+            List<Meme> memes = group.overgroupGetMemes();
             memes.sort(Comparator.comparingInt(Meme::getImportance).reversed());
             for (int j = 0; j < 10 && memes.size() > j; j++) {
                 Meme meme = memes.get(j);

@@ -18,10 +18,10 @@ public class MapModel implements InteractionModel {
         int size = world.groups.size();
         for (int j = 0; j < size; j++) {
             Group group = world.groups.get(j);
-            int e = group.getEvents().size();
+            int e = group.overgroupGetEvents().size();
             group.overgroupUpdate();
-            for (int i = e; i < group.getEvents().size(); i++) {
-                newEvents.add(group.getEvents().get(i));
+            for (int i = e; i < group.overgroupGetEvents().size(); i++) {
+                newEvents.add(group.overgroupGetEvents().get(i));
             }
         }
 

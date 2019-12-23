@@ -27,11 +27,11 @@ import static simulation.Controller.*;
 /**
  * Takes responsibility of Group's cultural change.
  */
-public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has Aspects, which Subgroup lack
+public class CulturalCenter {
     private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
     private Set<Aspect> aspects = new HashSet<>();
-    private Set<Aspect> changedAspects = new HashSet<>(); // always equals aspects except while making a turn
+    private Set<Aspect> changedAspects = new HashSet<>(); // always equals to aspects except while making a turn
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
     private List<CultureAspect> cultureAspects = new ArrayList<>();
@@ -44,18 +44,6 @@ public class CulturalCenter {//TODO sometimes for whatever reason Overgroup has 
 
     CulturalCenter(Group group) {
         this.group = group;
-        if (group.type == 'O') {
-            aspirations = null;
-            aspects = null;
-            changedAspects = null;
-            //
-            // events = null;
-            requests = null;
-            cultureAspects = null;
-            memePool = null;
-            _converseWrappers = null;
-            _lastResourcesForCw = null;
-        }
     }
 
     List<Aspiration> getAspirations() {

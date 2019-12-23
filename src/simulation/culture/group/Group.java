@@ -9,6 +9,7 @@ import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
@@ -51,6 +52,7 @@ public class Group {
     private List<Stratum> strata = new ArrayList<>();
     private Group parentGroup;
     private CulturalCenter culturalCenter;
+    private CulturalCenterOvergroup culturalCenterOvergroup;
     private double spreadability;
     private Territory territory = new Territory();
     private Function<Tile, Integer> tileValueMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() -
@@ -61,7 +63,11 @@ public class Group {
 
     private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup, char type) {
         this.type = type;
-        culturalCenter = new CulturalCenter(this);
+        if (type == 'O') {
+            culturalCenterOvergroup = new CulturalCenterOvergroup(this);
+        } else {
+            culturalCenter = new CulturalCenter(this);
+        }
         this.name = name;
         this.parentGroup = parentGroup;
         this.population = population;
@@ -112,6 +118,14 @@ public class Group {
         });
     }
 
+    public List<CultureAspect> overgroupGetCultureAspects() {//TODO reduce
+        return subgroups.get(0).getCulturalCenter().getCultureAspects();
+    }
+
+    public List<Meme> overgroupGetMemes() {//TODO reduce
+        return subgroups.get(0).getCulturalCenter().getMemePool().getMemes();
+    }
+
     public Set<Aspect> getAspects2() {
         return type == 'O' ? overgroupGetAspects() : getAspects();
     }
@@ -139,8 +153,8 @@ public class Group {
         return territory;
     }
 
-    public List<Event> getEvents() {
-        return getCulturalCenter().getEvents();
+    public List<Event> overgroupGetEvents() {
+        return culturalCenterOvergroup.getEvents();
     }
 
     public List<Stratum> getStrata() {
@@ -193,6 +207,11 @@ public class Group {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
+    }
+
+    private void overgroupDie() {
+        state = State.Dead;
+        population = 0;
     }
 
     Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
@@ -269,7 +288,7 @@ public class Group {
     }
 
     public void addEvent(Event event) {
-        getEvents().add(event);
+        getCulturalCenter().getEvents().add(event);
     }
 
     public Tile getCenter() {
@@ -368,7 +387,6 @@ public class Group {
         }
         subgroups.forEach(Group::expand);
         subgroups.forEach(group -> group.culturalCenter.update());
-        getCulturalCenter().overgroupUpdate();
         for (int i = 0; i < subgroups.size(); i++) {
             Group subgroup = subgroups.get(i);
             if (subgroup.diverge()) {
@@ -380,7 +398,7 @@ public class Group {
     private void overgroupUpdatePopulation() {
         overgroupComputePopulation();
         if (population == 0) {
-            die();
+            overgroupDie();
         }
     }
 
