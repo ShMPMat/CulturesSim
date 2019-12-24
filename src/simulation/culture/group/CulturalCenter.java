@@ -83,7 +83,7 @@ public class CulturalCenter {
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
         Set<ShnyPair<Aspect, Group>> allExistingAspects = new HashSet<>();
         for (Group neighbour : session.world.map.getAllNearGroups(group)) {
-            for (Aspect aspect : neighbour.overgroupGetAspects().stream().filter(aspect ->
+            for (Aspect aspect : neighbour.getAspects().stream().filter(aspect ->
                     !(aspect instanceof ConverseWrapper) || getAspect(((ConverseWrapper) aspect).aspect) != null)
                     .collect(Collectors.toList())) {
                 allExistingAspects.add(new ShnyPair<>(aspect, neighbour));
@@ -218,10 +218,6 @@ public class CulturalCenter {
 //                return null;
 //                    }));
 //        }
-    }
-
-    void overgroupUpdate() {//TODO move aspects to subgroups and share them between subgroups
-
     }
 
     void update() {
@@ -422,9 +418,6 @@ public class CulturalCenter {
     }
 
     public void pushAspects() {
-        if (group.type == 'O') {
-            int i = 0;
-        }
         aspects = new HashSet<>();
         aspects.addAll(getChangedAspects());
     }

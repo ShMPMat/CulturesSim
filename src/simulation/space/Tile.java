@@ -34,7 +34,7 @@ public class Tile {
     /**
      * Resources which are located on this Tile.
      */
-    private List<Resource> resources;
+    private List<Resource> resources;//TODO make it set
     /**
      * Resources which were added on this Tile during this turn. They are
      * stored here before the end of the turn.

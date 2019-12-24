@@ -48,7 +48,7 @@ public class ResourceDependency {
         } else {
             double _amount = amount * (resource == null ? 1 : resource.amount);
             for (Resource res : tile.getAccessibleResources()) {
-                if (res == resource) {
+                if (res.equals(resource)) {
                     continue;
                 }
                 if (isResourceDependency(res)) {

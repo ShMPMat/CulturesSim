@@ -607,33 +607,9 @@ public class Group {
             }
             stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
 
-            for (Group subgroup : subgroups) {
-                stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
-            }
             return stringBuilder.toString();
         } else {
-            StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
-                    ", population=" + population + ", aspects:\n");
-            for (Aspect aspect : getAspects()) {
-                if (aspect.getUsefulness() < 0) {
-                    continue;
-                }
-                stringBuilder.append(aspect).append("\n\n");
-            }
-            stringBuilder.append("Requests: ");
-            for (Request request : culturalCenter.getRequests()) {
-                stringBuilder.append(request).append(", ");
-            }
-            stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
-            stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
-            stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
-                    .append("\n");
-            for (Stratum stratum : strata) {
-                if (stratum.getAmount() != 0) {
-                    stringBuilder.append(stratum).append("\n");
-                }
-            }
-            stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
+            StringBuilder stringBuilder = new StringBuilder();
 
             for (Group subgroup : subgroups) {
                 stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);

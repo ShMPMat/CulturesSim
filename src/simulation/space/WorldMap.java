@@ -88,20 +88,9 @@ public class WorldMap {
     public Set<Group> getAllNearGroups(Group group) {
         Set<Group> groups = new HashSet<>();
         for (Tile tile : group.getTiles()) {
-            int x = tile.x, y = tile.y;
-            if (get(x, y + 1) != null && get(x, y + 1).group != null && get(x, y + 1).group != group) {
-                groups.add(get(x, y + 1).group);
-            }
-            if (get(x, y - 1) != null && get(x, y - 1).group != null && get(x, y - 1).group != group) {
-                groups.add(get(x, y - 1).group);
-            }
-            if (get(x + 1, y) != null && get(x + 1, y).group != null && get(x + 1, y).group != group) {
-                groups.add(get(x + 1, y).group);
-            }
-            if (get(x - 1, y) != null && get(x - 1, y).group != null && get(x - 1, y).group != group) {
-                groups.add(get(x - 1, y).group);
-            }
+            tile.getNeighbours(t -> t.group != null).forEach(t -> groups.addAll(t.group.subgroups));
         }
+        groups.remove(group);
         return groups;
     }
 

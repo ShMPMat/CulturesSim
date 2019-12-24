@@ -17,6 +17,9 @@ public class OutputFunc {
      * @return left and right text merged in one.
      */
     public static StringBuilder addToRight(String left, String right, boolean guarantiedLength) {
+        if (left.isEmpty()) {
+            return new StringBuilder(right);
+        }
         StringBuilder stringBuilder = new StringBuilder();
         int m = left.lines().map(String::length).max(Integer::compareTo).get() + 4;
         List<String> list1 = left.lines().collect(Collectors.toList()), list2 = right.lines()
@@ -36,7 +39,7 @@ public class OutputFunc {
 
     /**
      * Edits text via carrying lines which are longer than size.
-     * @param text text wich will be edited.
+     * @param text text which will be edited.
      * @param size maximal acceptable length of a line.
      * @return edited text, each line in it is not longer than size. Words can be cut in the middle.
      */
