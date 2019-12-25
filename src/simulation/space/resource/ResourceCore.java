@@ -64,6 +64,10 @@ public class ResourceCore {
                 case '$':
                     elements = tag.split(":");
                     genome.addAspectTag(new AspectTag(elements[0].substring(1), Integer.parseInt(elements[1])));
+                    break;
+                case 'R':
+                    genome.setWillResist(true);
+                    break;
             }
         }
         computeMaterials();

@@ -115,13 +115,16 @@ public class CulturalCenter {
         memePool.addMemeCombination(meme);
     }
 
-    void addAspiration(Aspiration aspiration) { //TODO seems that aspirations are stuck in groups;
+    void addAspiration(Aspiration aspiration) {
         if (aspirations.stream().noneMatch(aspir -> aspir.equals(aspiration))) {
             aspirations.add(aspiration);
         }
     }
 
     public boolean addAspect(Aspect aspect) {
+        if (!aspect.isValid()) {
+            return false;
+        }
         if (aspects.contains(aspect)) {
             aspect = aspects.stream().filter(aspect::equals).findFirst().orElse(aspect);
         }
@@ -358,7 +361,7 @@ public class CulturalCenter {
         }
     }
 
-    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {//TODO add potentially good options (incinerate for warmth etc.) (should I though?)
+    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
         for (Aspect aspect : session.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
@@ -407,10 +410,14 @@ public class CulturalCenter {
             _w = new ConverseWrapper(aspect, resource,
                     group);
         }
-        Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(_w);
-        if (_w.isDependenciesOk(_m)) {
-            _converseWrappers.add(_w);
+        if (!_w.isValid()) {
+            return;
         }
+//        Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(_w); //TODO maybe all kill aspects go away at this point
+//        if (_w.isDependenciesOk(_m)) {
+//            _converseWrappers.add(_w);
+//        }
+        _converseWrappers.add(_w);
     }
 
     void finishUpdate() {

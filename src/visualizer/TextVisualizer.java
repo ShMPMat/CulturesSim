@@ -433,8 +433,8 @@ public class TextVisualizer implements Visualizer{
                 return;
             }
         }
-        group.getCulturalCenter().addAspect(aspect);
-        group.getCulturalCenter().pushAspects();
+        group.subgroups.forEach(g -> g.getCulturalCenter().addAspect(aspect));
+        group.subgroups.forEach(g -> g.getCulturalCenter().pushAspects());
     }
 
     /**

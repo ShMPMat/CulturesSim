@@ -77,7 +77,10 @@ public class Stratum {
 
     void update() {
         for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {
-            //TODO
+            if (!entry.getKey().isInstrumental()) {
+                continue;
+            }
+            int i = 0;
         }
         amount -= amount > usedAmount ? 1 : 0;
         usedAmount = 0;

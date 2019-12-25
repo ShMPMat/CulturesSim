@@ -575,9 +575,6 @@ public class Group {
             StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
                     ", population=" + population + ", aspects:\n");
             for (Aspect aspect : getAspects()) {
-                if (aspect.getUsefulness() < 0) {
-                    continue;
-                }
                 stringBuilder.append(aspect).append("\n\n");
             }
             stringBuilder.append("Aspirations: ");

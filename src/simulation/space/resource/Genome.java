@@ -23,9 +23,13 @@ public class Genome {
      */
     private boolean isMutable;
     /**
-     * Size of the Resource.
+     * Whether it can move at its will.
      */
     private boolean canMove;
+    private boolean willResist = false;
+    /**
+     * Size of the Resource.
+     */
     private double size;
     private int naturalDensity;
     /**
@@ -117,10 +121,6 @@ public class Genome {
         return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     List<Resource> getParts() {
         return parts;
     }
@@ -141,12 +141,24 @@ public class Genome {
         return defaultAmount;
     }
 
+    public boolean willResist() {
+        return willResist;
+    }
+
     ResourceCore getLegacy() {
         return legacy;
     }
 
     public ResourceCore getTemplateLegacy() {
         return templateLegacy;
+    }
+
+    public void setWillResist(boolean willResist) {
+        this.willResist = willResist;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setLegacy(ResourceCore legacy) {

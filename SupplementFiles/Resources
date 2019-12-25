@@ -3,6 +3,7 @@
 /         ~Names divided with comma with @ - Materials,
 /          without - Resources:Required amount per Resource:
 /          Deprivation coefficient:Whether necessary:TypeName
+/          R - whether Resource will resist
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -Plant           0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
@@ -63,16 +64,19 @@
         ~@PlantFibre:0.02:2:0:CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1
         #Water
+        R
 
 -Predator        0.08    1      20         0       30   5         0             1 0 1  Animal       @Meat
         ~@Meat:0.1:1.25:0:CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3
         #Water
+        R
 
 -Bird            0.15    0.1    10         0       30   40        0             1 0 1  Animal       @Meat
         ~Insect:1:2:0:CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10
         #Water
+        R
 
 -Insect          0.25    0.02   5          0       30   500       0             1 0 1  Animal       @Chitin
         ~@PlantFibre:0.01:10:0:CONSUME
@@ -87,11 +91,13 @@
         ~@PlantFibre:0.0001:10:0:CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10
         #Normal:Mountain:Ice:Woods:Growth
+        R
 
 -PredatorFish    0.15    0.1    10         -20     30   10        0             1 0 1  Animal       @Meat
         ~@Meat:0.025:1.25:0:CONSUME
         +Killing:Meat:1,Fat:1,Bone:1
         #Normal:Mountain:Ice:Woods:Growth
+        R
 
 -Trunk           0       4      30         -500    500  100000000 0             1 1 0  None         @Wood
 

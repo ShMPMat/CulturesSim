@@ -105,6 +105,10 @@ public class Aspect {
         return usefulness;
     }
 
+    public boolean isValid() {
+        return true;
+    }
+
     public boolean canApplyMeaning() {
         return aspectCore.applyMeaning;
     }

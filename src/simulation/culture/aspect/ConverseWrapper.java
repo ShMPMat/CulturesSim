@@ -92,6 +92,14 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
+    public boolean isValid() {
+        if (resource.getGenome().willResist() && aspect.getName().equals("Take")) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public ConverseWrapper copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         ConverseWrapper _w = new ConverseWrapper(aspect, resource, group);
         _w.dependencies.putAll(dependencies);

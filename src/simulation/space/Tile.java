@@ -284,13 +284,7 @@ public class Tile {
      * @param resource resource which will be deleted.
      */
     public void removeResource(Resource resource) {
-        for (int i = 0; i < resources.size(); i++) {
-            Resource res = resources.get(i);
-            if (res.fullEquals(resource)) {
-                resources.remove(i);
-                return;
-            }
-        }
+        resources.removeIf(res -> res.fullEquals(resource));
     }
 
     /**
@@ -367,8 +361,7 @@ public class Tile {
                 i--;
             }
         }
-        for (int i = 0; i < resources.size(); i++) {
-            Resource resource = resources.get(i);
+        for (Resource resource : resources) {
             if (!resource.isMovable()) {
                 continue;
             }
