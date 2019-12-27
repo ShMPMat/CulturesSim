@@ -8,11 +8,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GroupMemes extends MemePool {
-    private Set<Meme> memesCombinations;
+    private Map<String, Meme> memesCombinations;
 
     public GroupMemes() {
         super();
-        memesCombinations = new HashSet<>();
+        memesCombinations = new HashMap<>();
         String[] subjects = {"group"};
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
         String[] predicates = {"die", "acquireAspect"};
@@ -21,21 +21,24 @@ public class GroupMemes extends MemePool {
 
     public void addAll(GroupMemes groupMemes) {
         super.addAll(groupMemes);
-        groupMemes.memesCombinations.forEach(this::addMemeCombination);
+        groupMemes.memesCombinations.values().forEach(this::addMemeCombination);
     }
 
     @Override
     public List<Meme> getMemes() {
         List<Meme> memeList = super.getMemes();
-        memeList.addAll(memesCombinations);
+        memeList.addAll(memesCombinations.values());
         return memeList;
     }
 
     @Override
     public Meme getMemeByName(String name) {
         Meme memeS = super.getMemeByName(name);
-        return memeS != null ? memeS : memesCombinations.stream()
-                .filter(meme -> meme.toString().equals(name.toLowerCase())).findFirst().orElse(null);
+        return memeS != null ? memeS : getMemeCombinationByName(name);
+    }
+
+    private Meme getMemeCombinationByName(String name) {
+        return memesCombinations.get(name.toLowerCase());
     }
 
     public Meme getValuableMeme() {
@@ -58,30 +61,34 @@ public class GroupMemes extends MemePool {
     }
 
     public void addAspectMemes(Aspect aspect) {
-        add(new MemePredicate(aspect.getName()));
+        add(Meme.getMeme(aspect));
         if (aspect instanceof ConverseWrapper) {
-            ((ConverseWrapper) aspect).getResult().stream().map(a -> new MemeSubject(a.getBaseName())).forEach(this::add);
+            ((ConverseWrapper) aspect).getResult().stream().map(Meme::getMeme).forEach(this::add);
         }
     }
 
     public void addMemeCombination(Meme meme) {
-        memesCombinations.add(meme);
+        memesCombinations.put(meme.toString(), meme);
     }
 
-    public void strengthenAspectMeme(Aspect aspect) {
-        strengthenMeme((new MemePredicate(aspect.getName())).toString());
+    @Override
+    public boolean strengthenMeme(Meme meme) {
+        return strengthenMeme(meme, 1);
     }
 
-    public void strengthenMeme(String memeString) {
-        strengthenMeme(memeString, 1);
-    }
-
-    public void strengthenMeme(String memeString, int delta) {
-        Meme existing = getMemeByName(memeString);
+    public boolean strengthenMeme(Meme meme, int delta) {
+        if (super.strengthenMeme(meme, delta)) {
+            return true;
+        }
+        Meme existing = getMemeCombinationByName(meme.toString());
         if (existing != null) {
             existing.increaseImportance(delta);
-        } else {//TODO shit.
-            int i = 0;
-        }
+            return true;
+        }//TODO add simple memes.
+        return false;
     }
+
+//    public void addOrStrengthenSimpleMeme(String memeString) { //TODO
+//        strengthenMeme(memeString, 1);
+//    }
 }

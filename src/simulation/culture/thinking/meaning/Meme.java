@@ -1,5 +1,8 @@
 package simulation.culture.thinking.meaning;
 
+import simulation.culture.aspect.Aspect;
+import simulation.space.resource.Resource;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,8 +26,20 @@ abstract public class Meme {
         this(observerWord, new ArrayList<>());
     }
 
+    public static Meme getMeme(Aspect aspect) {
+        return new MemePredicate(aspect.getName());
+    }
+
+    public static Meme getMeme(Resource resource) {
+        return new MemeSubject(resource.getFullName());//TODO full?
+    }
+
     public int getImportance() {
         return importance;
+    }
+
+    public boolean isSimple() {
+        return predicates.isEmpty();
     }
 
     public void increaseImportance(int delta) {

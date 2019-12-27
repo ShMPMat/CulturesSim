@@ -4,6 +4,7 @@ import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
@@ -64,9 +65,9 @@ public class Stratum {
         for (Aspect aspect: aspects) {
             ShnyPair<Boolean, ResourcePack> result = aspect.use(ceiling, evaluator);
             if (!result.second.isEmpty()) {
-                group.getCulturalCenter().getMemePool().strengthenAspectMeme(aspect);
+                group.getCulturalCenter().getMemePool().strengthenMeme(Meme.getMeme(aspect));
                 result.second.getResources().forEach(resource ->
-                        group.getCulturalCenter().getMemePool().strengthenMeme(resource.getFullName()));
+                        group.getCulturalCenter().getMemePool().strengthenMeme(Meme.getMeme(resource)));
             }
             if (result.first) {
                 resourcePack.add(result.second);

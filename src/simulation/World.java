@@ -251,7 +251,12 @@ public class World {
      * @return Meme with this name.
      */
     public Meme getPoolMeme(String name) {
-        return memePool.getMemeByName(name).copy();
+        try {
+            return memePool.getMemeByName(name).copy();
+        } catch (Exception e) {
+            int i = 0;
+        }
+        return null;
     }
 
     /**

@@ -174,7 +174,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             return this;
         }
         if (this == resource) {
-            int i = 0;
+            int i = 0;//TODO this happens, yes
         }
         addAmount(resource.amount);
         return this;

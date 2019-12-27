@@ -26,7 +26,7 @@ public class Tale extends AbstractCultureAspect {
 
     @Override
     public void use() {
-        group.getCulturalCenter().getMemePool().strengthenMeme(meme.toString());
+        group.getCulturalCenter().getMemePool().strengthenMeme(meme);
     }
 
     @Override

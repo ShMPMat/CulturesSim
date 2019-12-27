@@ -4,10 +4,11 @@ package simulation.culture.thinking.meaning;
 import java.util.*;
 
 public class MemePool {
-    protected Set<Meme> memes;
+    protected Map<String, Meme> memes;
 
     public MemePool(Collection<Meme> memes) {
-        this.memes = new HashSet<>(memes);
+        this.memes = new HashMap<>();
+        memes.forEach(this::add);
     }
 
     public MemePool() {
@@ -15,7 +16,7 @@ public class MemePool {
     }
 
     public void add(Meme meme) {
-        memes.add(meme);
+        memes.put(meme.toString(), meme);
     }
 
     public void addAll(Collection<Meme> memes) {
@@ -23,18 +24,31 @@ public class MemePool {
     }
 
     public void addAll(MemePool memePool) {
-        memePool.memes.forEach(this::add);
+        memePool.memes.values().forEach(this::add);
     }
 
     public List<Meme> getMemes() {
-        return new ArrayList<>(memes);
+        return new ArrayList<>(memes.values());
     }
 
     public Meme getMemeByName(String name) {
-        return memes.stream().filter(meme -> meme.observerWord.equals(name.toLowerCase())).findFirst().orElse(null);
+        return memes.get(name.toLowerCase());
     }
 
     public boolean isEmpty() {
         return memes.isEmpty();
+    }
+
+    public boolean strengthenMeme(Meme meme) {//TODO
+        return strengthenMeme(meme, 1);
+    }
+
+    public boolean strengthenMeme(Meme meme, int delta) {
+        Meme existing = memes.get(meme.toString());
+        if (existing != null) {
+            existing.increaseImportance(delta);
+            return true;
+        }
+        return false;
     }
 }
