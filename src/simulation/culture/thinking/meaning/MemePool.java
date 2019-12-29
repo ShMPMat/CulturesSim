@@ -39,7 +39,7 @@ public class MemePool {
         return memes.isEmpty();
     }
 
-    public boolean strengthenMeme(Meme meme) {//TODO
+    public boolean strengthenMeme(Meme meme) {
         return strengthenMeme(meme, 1);
     }
 

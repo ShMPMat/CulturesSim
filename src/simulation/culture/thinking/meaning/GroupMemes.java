@@ -3,6 +3,8 @@ package simulation.culture.thinking.meaning;
 import extra.ProbFunc;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.space.resource.Resource;
+import simulation.space.resource.ResourceDependency;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,7 +17,7 @@ public class GroupMemes extends MemePool {
         memesCombinations = new HashMap<>();
         String[] subjects = {"group"};
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
-        String[] predicates = {"die", "acquireAspect"};
+        String[] predicates = {"die", "acquireAspect", "consume"};
         addAll(Arrays.stream(predicates).map(MemeSubject::new).collect(Collectors.toList()));
     }
 
@@ -42,7 +44,17 @@ public class GroupMemes extends MemePool {
     }
 
     public Meme getValuableMeme() {
-        List<Meme> memeList = getMemes();
+        return chooseMeme(getMemes());
+    }
+
+    public Meme getMemeWithComplexityBias() {
+        if (ProbFunc.getChances(0.5)) {
+            return getValuableMeme();
+        }
+        return chooseMeme(new ArrayList<>(memesCombinations.values()));
+    }
+
+    private Meme chooseMeme(List<Meme> memeList) {
         int prob = ProbFunc.randomInt(memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum));
         memeList.sort(Comparator.comparingInt(meme -> meme.importance));
         for (Meme meme: memeList) {
@@ -63,7 +75,33 @@ public class GroupMemes extends MemePool {
     public void addAspectMemes(Aspect aspect) {
         add(Meme.getMeme(aspect));
         if (aspect instanceof ConverseWrapper) {
-            ((ConverseWrapper) aspect).getResult().stream().map(Meme::getMeme).forEach(this::add);
+            addResourceMemes(((ConverseWrapper) aspect).resource);
+            ((ConverseWrapper) aspect).getResult().forEach(this::addResourceMemes);
+        }
+    }
+
+    public void addResourceMemes(Resource resource) {
+        Meme meme = Meme.getMeme(resource);
+        if (memes.containsKey(meme.toString())) {
+            return;
+        }
+        add(meme);
+        addResourceInformationMemes(resource);
+    }
+
+    public void addResourceInformationMemes(Resource resource) {
+        for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
+            switch (resourceDependency.getType()) {
+                case CONSUME:
+                    for (String res: resourceDependency.lastConsumed) {
+                        Meme subject = new MemeSubject(res.toLowerCase());
+                        add(subject);
+                        Meme object = Meme.getMeme(resource).addPredicate(getMemeByName("consume").copy());
+                        object.predicates.get(0).addPredicate(subject);
+                        addMemeCombination(object);
+                    }
+                    break;
+            }
         }
     }
 
@@ -84,11 +122,11 @@ public class GroupMemes extends MemePool {
         if (existing != null) {
             existing.increaseImportance(delta);
             return true;
-        }//TODO add simple memes.
+        }
+        if (meme.isSimple()) {
+            add(meme.copy());
+            return true;
+        }
         return false;
     }
-
-//    public void addOrStrengthenSimpleMeme(String memeString) { //TODO
-//        strengthenMeme(memeString, 1);
-//    }
 }

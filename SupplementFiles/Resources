@@ -2,7 +2,7 @@
 /
 /         ~Names divided with comma with @ - Materials,
 /          without - Resources:Required amount per Resource:
-/          Deprivation coefficient:Whether necessary:TypeName
+/          Deprivation coefficient (the bigger it is the harder the time without this resource):Whether necessary:TypeName
 /          R - whether Resource will resist
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
@@ -79,12 +79,12 @@
         R
 
 -Insect          0.25    0.02   5          0       30   500       0             1 0 1  Animal       @Chitin
-        ~@PlantFibre:0.01:10:0:CONSUME
+        ~@PlantFibre:0.01:100:0:CONSUME
         +Killing:Chitin:1,Meat:1
         #Water
 
--Mushroom        0.1     0.05   15         0       30   200       0             1 0 0  Plant        @Fungus
-        ~Vapour:0.01:2:0:CONSUME
+-Mushroom        0.1     0.05   11         0       30   200       0             1 0 0  Plant        @Fungus
+        ~Vapour:0.1:100:0:CONSUME
         #Water
 
 -Fish            0.15    0.1    10         -20     30   100       0             1 0 1  Animal       @Meat

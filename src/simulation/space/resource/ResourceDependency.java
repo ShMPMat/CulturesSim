@@ -3,9 +3,11 @@ package simulation.space.resource;
 import simulation.space.Tile;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class ResourceDependency {
+public class ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
     private List<String> resourceNames = new ArrayList<>();
     private List<String> materialNames = new ArrayList<>();
     private double amount;
@@ -13,6 +15,7 @@ public class ResourceDependency {
     private double deprivationCoefficient;
     private int currentAmount = 0;
     private Type type;
+    public Set<String> lastConsumed = new HashSet<>();
 
     public ResourceDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
                               List<String> names) {
@@ -61,6 +64,9 @@ public class ResourceDependency {
                             }
                             Resource part = res.getPart((int) Math.ceil(_amount));
                             currentAmount += part.amount;
+                            if (part.amount > 0) {
+                                lastConsumed.add(part.getFullName());
+                            }
                             part.amount = 0;
                             break;
                         case EXIST:
@@ -80,7 +86,7 @@ public class ResourceDependency {
         return result + (1 - result) / deprivationCoefficient;
     }
 
-    Type getType() {
+    public Type getType() {
         return type;
     }
 
@@ -113,7 +119,7 @@ public class ResourceDependency {
         return isNecessary;
     }
 
-    enum Type{
+    public enum Type{
         CONSUME(true),
         EXIST(true),
         AVOID(true),

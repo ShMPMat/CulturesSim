@@ -256,7 +256,7 @@ public class CulturalCenter {
                     break;
                 }
             case 1:
-                Meme meme = getMemePool().getValuableMeme();
+                Meme meme = getMemePool().getMemeWithComplexityBias();
                 if (meme != null) {
                     cultureAspect = new Tale(group, meme);
                     break;
@@ -408,7 +408,7 @@ public class CulturalCenter {
             }
         }
         _lastResourcesForCw.addAll(newResources);
-        newResources.forEach(resource -> getMemePool().add(new MemeSubject(resource.getBaseName())));
+        newResources.forEach(resource -> getMemePool().addResourceMemes(resource));
         return options;
     }
 
@@ -424,14 +424,11 @@ public class CulturalCenter {
         if (!_w.isValid()) {
             return;
         }
-//        Map<AspectTag, Set<Dependency>> _m = group.canAddAspect(_w); //TODO maybe all kill aspects go away at this point
-//        if (_w.isDependenciesOk(_m)) {
-//            _converseWrappers.add(_w);
-//        }
         _converseWrappers.add(_w);
     }
 
     void finishUpdate() {
+        aspects.forEach(Aspect::finishUpdate);
         pushAspects();
     }
 

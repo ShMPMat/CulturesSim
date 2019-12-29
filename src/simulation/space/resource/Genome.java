@@ -190,7 +190,7 @@ public class Genome {
     }
 
     public double getMass() {
-        return primaryMaterial.getDensity() * size * size * size;
+        return primaryMaterial == null ? 0 : primaryMaterial.getDensity() * size * size * size;
     }
 
     public int getBaseDesirability() {
