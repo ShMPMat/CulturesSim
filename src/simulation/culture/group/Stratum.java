@@ -9,8 +9,17 @@ import simulation.space.resource.ResourcePack;
 
 import java.util.*;
 
+/**
+ * Represents certain people who do particular work in Group
+ */
 public class Stratum {
+    /**
+     * Overall amount of people in Stratum
+     */
     private int amount;
+    /**
+     * How many people already worked on this turn;
+     */
     private int usedAmount = 0;
     private List<Aspect> aspects = new ArrayList<>();
     private Map<AspectTag, ResourcePack> dependencies = new HashMap<>();
@@ -52,8 +61,12 @@ public class Stratum {
         this.usedAmount = amount;
         this.amount = Math.max(amount, this.amount);
         if (amount < 0) {
-            int i = 0; //TODO FUCKING NEGATIVE AMOUNTS
+            int i = 0;
         }
+    }
+
+    public void freeAmount(int delta) {
+        amount -= delta;
     }
 
     public void addAspect(Aspect aspect) {
@@ -80,7 +93,7 @@ public class Stratum {
         for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {
             if (!entry.getKey().isInstrumental()) {
                 continue;
-            }
+            }//TODO
             int i = 0;
         }
         amount -= amount > usedAmount ? 1 : 0;

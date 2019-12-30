@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.min;
 import static simulation.Controller.*;
 
 /**
@@ -302,7 +303,7 @@ public class Group {
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
         Stratum stratum = getStratumByAspect(aspect);
         if (stratum.getAmount() < amount) {
-            amount = Math.min(amount, getFreePopulation());
+            amount = min(amount, getFreePopulation());
         }
         stratum.useAmount(amount);
         return amount;
@@ -430,7 +431,7 @@ public class Group {
     private int overgroupGetDistanceToClosestSubgroup(Tile tile) {
         int d = Integer.MAX_VALUE;
         for (Group subgroup: subgroups) {
-            d = Math.min(d, tile.getClosestDistance(Collections.singleton(subgroup.getCenter())));
+            d = min(d, tile.getClosestDistance(Collections.singleton(subgroup.getCenter())));
         }
         return d;
     }
@@ -458,23 +459,29 @@ public class Group {
     }
 
     void starve(double fraction) {
-        if (subgroups.isEmpty()) {
-            population -= (population / 10) * (1 - fraction) + 1;
-            population = Math.max(population, 0);
-        } else {
-            int i = 0;
-        }
+        decreasePopulation((population / 10) * (1 - fraction) + 1);
         getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("food")));
     }
 
     void freeze(double fraction) {
-        if (subgroups.isEmpty()) {
-            population -= (population / 10) * (1 - fraction) + 1;
-            population = Math.max(population, 0);
-        } else {
-            int i = 0;
-        }
+        decreasePopulation((population / 10) * (1 - fraction) + 1);
         getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("warmth")));
+    }
+
+    private void decreasePopulation(double amount) {
+        decreasePopulation((int) amount);
+    }
+
+    private void decreasePopulation(int amount) {
+        amount = min(population, amount);
+        int delta = amount - getFreePopulation();
+        if (delta > 0) {
+            for (Stratum stratum: strata) {
+                int part = min(amount * (stratum.getAmount() / population) + 1, stratum.getAmount());
+                stratum.freeAmount(part);
+            }
+        }
+        population -= amount;
     }
 
     private boolean diverge() {//TODO make diverge for single subgroup groups
