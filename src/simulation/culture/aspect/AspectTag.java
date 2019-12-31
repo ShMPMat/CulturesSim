@@ -64,6 +64,15 @@ public class AspectTag {
         return resourceResult;
     }
 
+    public AspectTag copy() {
+        return new AspectTag(name, isAbstract, isInstrumental, level);
+    }
+
+
+    public static AspectTag phony() {
+        return new AspectTag("phony");
+    }
+
     @Override
     public String toString() {
         return name;

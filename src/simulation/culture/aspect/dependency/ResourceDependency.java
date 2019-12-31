@@ -34,7 +34,7 @@ public class ResourceDependency extends AbstractDependency {
     public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
         ResourcePack resourcePack = new ResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
-            return new ShnyPair<>(true, tag.consumeAndGetResult(group.getOverallGroup().getTerritory().getResourceInstances(resource), ceiling));
+            return new ShnyPair<>(true, tag.consumeAndGetResult(group.getParentGroup().getTerritory().getResourceInstances(resource), ceiling));
         }
         return new ShnyPair<>(true, resourcePack);
     }

@@ -178,20 +178,12 @@ public class Group {
         return (getParentGroup() == null ? territory : getParentGroup().getOverallTerritory());
     }
 
-    public Group getOverallGroup() {
-        if (getParentGroup() == null) {
-            int i = 0;//TODO fuck.
-            return this;
-        }
-        return getParentGroup().getOverallGroup();
-    }
-
     private Collection<Resource> getResourceRequirements() {
         return getAspects().stream().filter(aspect -> aspect instanceof ConverseWrapper)
                 .map(aspect -> ((ConverseWrapper) aspect).resource).distinct().collect(Collectors.toList());
     }
 
-    Group getParentGroup() {
+    public Group getParentGroup() {
         return parentGroup;
     }
 
@@ -473,6 +465,9 @@ public class Group {
     }
 
     private void decreasePopulation(int amount) {
+        if (getFreePopulation() < 0) {
+            int i = 0;
+        }
         amount = min(population, amount);
         int delta = amount - getFreePopulation();
         if (delta > 0) {
@@ -482,6 +477,9 @@ public class Group {
             }
         }
         population -= amount;
+        if (getFreePopulation() < 0) {
+            int i = 0;
+        }
     }
 
     private boolean diverge() {//TODO make diverge for single subgroup groups

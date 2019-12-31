@@ -51,7 +51,7 @@ public class Property {
     private Property(String name, World world, List<AspectTag> tags, int level) {
         this.name = name;
         this.world = world;
-        this.tags = tags.stream().map(tag -> new AspectTag(tag.name)).collect(Collectors.toList());
+        this.tags = tags.stream().map(AspectTag::copy).collect(Collectors.toList());
         this.level = level;
         setAspectLevel();
     }

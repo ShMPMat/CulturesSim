@@ -3,6 +3,7 @@ package simulation.culture.group;
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
+import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.ResourcePack;
@@ -35,7 +36,7 @@ public class Stratum {
         aspects.add(aspect);
         aspect.getDependencies().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
-                dependencies.put(new AspectTag(tag.name), new ResourcePack());
+                dependencies.put(tag.copy(), new ResourcePack());
             }
         });
     }
@@ -61,7 +62,7 @@ public class Stratum {
         this.usedAmount = amount;
         this.amount = Math.max(amount, this.amount);
         if (amount < 0) {
-            int i = 0;
+            int i = 0;//TODO WHYYYYYYYYYYYYY?
         }
     }
 
@@ -93,8 +94,13 @@ public class Stratum {
         for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {
             if (!entry.getKey().isInstrumental()) {
                 continue;
-            }//TODO
-            int i = 0;
+            }
+            for (Aspect aspect: aspects) {
+                Set deps = aspect.getDependencies().get(entry.getKey());
+                if (deps != null) {
+                    //TODO;
+                }
+            }
         }
         amount -= amount > usedAmount ? 1 : 0;
         usedAmount = 0;

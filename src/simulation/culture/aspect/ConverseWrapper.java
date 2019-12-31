@@ -36,12 +36,12 @@ public class ConverseWrapper extends Aspect {
         for (Resource res : resource.applyAspect(aspect)) {
             aspectCore.addAllTags(res.getTags());
         }
-        getRequirements().add(new AspectTag("phony"));
+        getRequirements().add(AspectTag.phony());
         getRequirements().addAll(aspect.getRequirements());
     }
 
     public AspectTag getRequirement() {
-        return new AspectTag("phony");
+        return AspectTag.phony();
     }
 
     public List<Resource> getResult() {
@@ -74,16 +74,15 @@ public class ConverseWrapper extends Aspect {
         }
         ConverseWrapper converseWrapper = copy(dependencies, group);
         traversedCopy = converseWrapper;
-        converseWrapper.dependencies.put(new AspectTag("phony"), new HashSet<>());
-        for (Dependency dependency : dependencies.get(new AspectTag("phony"))) {
+        converseWrapper.dependencies.put(AspectTag.phony(), new HashSet<>());
+        for (Dependency dependency : dependencies.get(AspectTag.phony())) {
             if (!(dependency instanceof LineDependency)) {
                 continue;
             }
             ConverseWrapper next = ((LineDependency) dependency).getNextWrapper();
             if (next != null && next.canInsertMeaning) {
-                converseWrapper.dependencies.get(new AspectTag("phony")).add(/*new Dependency_(dependency.getType(),
-                        new ShnyPair<>(converseWrapper, next.stripToMeaning()), group)*/
-                new LineDependency(dependency.getType(), group, new ShnyPair<>(converseWrapper, next.stripToMeaning())));
+                converseWrapper.dependencies.get(AspectTag.phony()).add(new LineDependency(dependency.getType(), group,
+                        new ShnyPair<>(converseWrapper, next.stripToMeaning())));
                 next.stripToMeaning();
             }
         }
@@ -103,8 +102,8 @@ public class ConverseWrapper extends Aspect {
     public ConverseWrapper copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         ConverseWrapper _w = new ConverseWrapper(aspect, resource, group);
         _w.dependencies.putAll(dependencies);
-        _w.canInsertMeaning = dependencies.get(new AspectTag("phony")).stream()
-                .anyMatch(dependency -> dependency instanceof LineDependency &&
+        _w.canInsertMeaning = dependencies.get(AspectTag.phony()).stream().anyMatch(dependency ->
+                dependency instanceof LineDependency &&
                         ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
         return _w;
     }
