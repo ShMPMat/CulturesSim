@@ -1,11 +1,13 @@
 package simulation;
 
 import extra.InputDatabase;
+import extra.ProbFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.Group;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.RandomMapGenerator;
 import simulation.space.resource.Material;
@@ -82,11 +84,20 @@ public class World {
 
     public void initializeFirst() {
         for (int i = 0; i < session.startGroupAmount; i++) {
-            groups.add(new Group(1, null));
+            groups.add(new Group(1, getTileForGroup()));
         }
         groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("TakeApart"))));
         groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("Take"))));
         groups.forEach(Group::overgroupFinishUpdate);
+    }
+
+    private Tile getTileForGroup() {
+        while (true) {
+            Tile tile = ProbFunc.randomTile(session.world.map);
+            if (tile.group == null && tile.canSettle()) {
+                return tile;
+            }
+        }
     }
 
     /**

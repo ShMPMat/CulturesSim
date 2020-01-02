@@ -348,6 +348,10 @@ public class Tile {
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
     }
 
+    public boolean canSettle() {
+        return getType() != Type.Water && getType() != Type.Mountain;
+    }
+
     /**
      * Starts overgroupUpdate for this Tile.
      */

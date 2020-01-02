@@ -300,8 +300,8 @@ public class TextVisualizer implements Visualizer{
                         if (tile.group.state == Group.State.Dead) {
                             token += "\033[33m☠";
                         } else {
-                            token += (lastClaimedTiles.get(tile.group.name).contains(tile) ? "\033[31m" :
-                                    "\033[96m\033[1m") + groupSymbols.get(tile.group.name);
+                            token += (lastClaimedTiles.get(tile.group.getParentGroup().name).contains(tile) ? "\033[31m" :
+                                    "\033[96m\033[1m") + groupSymbols.get(tile.group.getParentGroup().name);
                         }
                     }
                 }

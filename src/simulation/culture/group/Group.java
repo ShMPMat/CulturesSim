@@ -64,24 +64,15 @@ public class Group {
 
     private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, Group parentGroup, char type) {
         this.type = type;
-        if (type == 'O') {
-            culturalCenterOvergroup = new CulturalCenterOvergroup(this);
-        } else {
-            culturalCenter = new CulturalCenter(this);
-        }
         this.name = name;
         this.parentGroup = parentGroup;
         this.population = population;
         this.spreadability = spreadability;
-        if (root == null) {
-            while (true) {
-                Tile tile = ProbFunc.randomTile(session.world.map);
-                if (tile.group == null && tile.canSettle(this)) {
-                    overgroupClaim(tile);
-                    break;
-                }
-            }
+        if (type == 'O') {
+            culturalCenterOvergroup = new CulturalCenterOvergroup(this);
+            overgroupClaim(root);
         } else {
+            culturalCenter = new CulturalCenter(this);
             claimTile(root);
         }
 
@@ -403,10 +394,6 @@ public class Group {
     }
 
     private void overgroupClaim(Tile tile) {
-        if (tile.group != null) {
-            int i = 0;
-        }
-        tile.group = this;
         territory.add(tile);
     }
 
@@ -466,7 +453,7 @@ public class Group {
 
     private void decreasePopulation(int amount) {
         if (getFreePopulation() < 0) {
-            int i = 0;
+            int i = 0;//TODO
         }
         amount = min(population, amount);
         int delta = amount - getFreePopulation();
@@ -533,18 +520,11 @@ public class Group {
     }
 
     private void claimTile(Tile tile) {
-        if (!subgroups.isEmpty()) {
-            int i = 0;
-        }
         if (tile == null) {
             return;
         }
-        if (parentGroup != null) {
-            parentGroup.overgroupClaim(tile);
-        }
-        if (tile.group != parentGroup) {
-            int i = 0;
-        }
+        parentGroup.overgroupClaim(tile);
+        tile.group = this;
         territory.add(tile);
         addEvent(new Event(Event.Type.TileAcquisition, "Group " + name + " claimed tile " + tile.x + " " +
                 tile.y, "group", this, "tile", tile));
