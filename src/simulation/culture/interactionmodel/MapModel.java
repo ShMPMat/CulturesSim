@@ -3,6 +3,7 @@ package simulation.culture.interactionmodel;
 import simulation.World;
 import simulation.culture.Event;
 import simulation.culture.group.Group;
+import simulation.culture.group.GroupConglomerate;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class MapModel implements InteractionModel {
     public void turn(World world) {
         int size = world.groups.size();
         for (int j = 0; j < size; j++) {
-            Group group = world.groups.get(j);
+            GroupConglomerate group = world.groups.get(j);
             int e = group.overgroupGetEvents().size();
             group.overgroupUpdate();
             for (int i = e; i < group.overgroupGetEvents().size(); i++) {
@@ -28,7 +29,7 @@ public class MapModel implements InteractionModel {
         int a = world.events.size();
         world.map.update();
 
-        for (Group group : world.groups) {
+        for (GroupConglomerate group : world.groups) {
             group.overgroupFinishUpdate();
         }
 

@@ -344,7 +344,7 @@ public class Tile {
 
     public boolean canSettle(Group group) {
         return getType() != Type.Water && getType() != Type.Mountain ||
-                (getType() == Type.Mountain && group.getAspects2().stream().anyMatch(aspect -> aspect.getTags().stream()
+                (getType() == Type.Mountain && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
     }
 

@@ -13,12 +13,12 @@ import static simulation.Controller.session;
  * Takes responsibility of Group's cultural change.
  */
 public class CulturalCenterOvergroup {
-    private Group group;
+    private GroupConglomerate groupConglomerate;
     private List<Event> events = new ArrayList<>();
 
 
-    CulturalCenterOvergroup(Group group) {
-        this.group = group;
+    CulturalCenterOvergroup(GroupConglomerate group) {
+        this.groupConglomerate = group;
     }
 
     List<Event> getEvents() {

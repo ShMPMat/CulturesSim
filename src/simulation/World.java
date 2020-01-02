@@ -5,6 +5,7 @@ import extra.ProbFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.Group;
+import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
@@ -31,7 +32,7 @@ public class World {
     /**
      * List of all Groups in the world, which are not groups.
      */
-    public List<Group> groups = new ArrayList<>();
+    public List<GroupConglomerate> groups = new ArrayList<>();
     /**
      * List of all Aspects in the world.
      */
@@ -84,11 +85,11 @@ public class World {
 
     public void initializeFirst() {
         for (int i = 0; i < session.startGroupAmount; i++) {
-            groups.add(new Group(1, getTileForGroup()));
+            groups.add(new GroupConglomerate(1, getTileForGroup()));
         }
         groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("TakeApart"))));
         groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("Take"))));
-        groups.forEach(Group::overgroupFinishUpdate);
+        groups.forEach(GroupConglomerate::overgroupFinishUpdate);
     }
 
     private Tile getTileForGroup() {
@@ -300,7 +301,7 @@ public class World {
         events.add(event);
     }
 
-    public void addGroup(Group group) {
+    public void addGroup(GroupConglomerate group) {
         groups.add(group);
     }
 

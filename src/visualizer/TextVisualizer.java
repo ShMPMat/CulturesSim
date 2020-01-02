@@ -8,6 +8,7 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.group.Group;
+import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.interactionmodel.InteractionModel;
 import simulation.culture.interactionmodel.MapModel;
@@ -146,7 +147,7 @@ public class TextVisualizer implements Visualizer{
             resourceSymbols.put(resource, s.nextLine());
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
-        for (Group group : world.groups) {
+        for (GroupConglomerate group : world.groups) {
             groupSymbols.put(group.name, s.nextLine());
         }
     }
@@ -159,7 +160,7 @@ public class TextVisualizer implements Visualizer{
         main.append(world.getTurn()).append("\n");
         lastClaimedTiles = new HashMap<>();
         main.append(printedGroups());
-        for (Group group : controller.world.groups) {
+        for (GroupConglomerate group : controller.world.groups) {
             lastClaimedTiles.put(group.name, new HashSet<>());
         }
         for (Event event : interactionModel.getEvents().stream().
@@ -191,10 +192,10 @@ public class TextVisualizer implements Visualizer{
             groupSymbols.put(world.groups.get(groupPopulations.size()).name, s.nextLine());
             groupPopulations.add(0);
         }
-        for (Group group : world.groups) {
+        for (GroupConglomerate group : world.groups) {
             StringBuilder stringBuilder = new StringBuilder();
             i++;
-            if (group.state == Group.State.Dead) {
+            if (group.state == GroupConglomerate.State.Dead) {
                 continue;
             }
             stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" \033[31m");
@@ -330,7 +331,7 @@ public class TextVisualizer implements Visualizer{
      *
      * @param group Group which will be printed.
      */
-    private void printGroup(Group group) {
+    private void printGroup(GroupConglomerate group) {
         printMap(tile -> (group.getTiles().contains(tile) ?
                 (group.subgroups.stream().anyMatch(sg -> sg.getTiles().contains(tile)) ? "\033[31mO" :
                         (tile.getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
@@ -384,6 +385,10 @@ public class TextVisualizer implements Visualizer{
         return main;
     }
 
+    private void addAspectToGroup(GroupConglomerate group, String aspectName) {
+        group.subgroups.forEach(g -> addAspectToGroup(g, aspectName));
+    }
+
     /**
      * Adds aspect to the group. Null-safe.
      *
@@ -435,6 +440,10 @@ public class TextVisualizer implements Visualizer{
         }
         group.subgroups.forEach(g -> g.getCulturalCenter().addAspect(aspect));
         group.subgroups.forEach(g -> g.getCulturalCenter().pushAspects());
+    }
+
+    private void addWantToGroup(GroupConglomerate group, String wantName) {
+        group.subgroups.forEach(g -> addWantToGroup(g, wantName));
     }
 
     /**
