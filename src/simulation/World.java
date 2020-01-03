@@ -4,7 +4,6 @@ import extra.InputDatabase;
 import extra.ProbFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.group.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
@@ -89,7 +88,7 @@ public class World {
         }
         groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("TakeApart"))));
         groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("Take"))));
-        groups.forEach(GroupConglomerate::overgroupFinishUpdate);
+        groups.forEach(GroupConglomerate::finishUpdate);
     }
 
     private Tile getTileForGroup() {

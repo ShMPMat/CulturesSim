@@ -9,7 +9,6 @@ import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
-import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
@@ -281,7 +280,7 @@ public class Group {
         }
         if (getMaxPopulation() == population && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
-                    parentGroup.overgroupGetDistanceToClosestSubgroup(t) > 2 && t.canSettle(this));
+                    parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
             if (tiles.isEmpty()) {
                 return;
             }
@@ -303,7 +302,7 @@ public class Group {
             if (group.territory.isEmpty()) {
                 int i = 0;
             }
-            parentGroup.overgroupAddSubgroup(group);
+            parentGroup.addGroup(group);
         }
     }
 
@@ -352,11 +351,9 @@ public class Group {
             return false;
         }
         if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupDiverge)) {
-            parentGroup.overgroupRemoveSubgroup(this);
+            parentGroup.removeGroup(this);
             GroupConglomerate group = new GroupConglomerate(0, getCenter());
-            group.overgroupAddSubgroup(this);
-            territory.getTiles().forEach(parentGroup::overgroupRemove);
-            territory.getTiles().forEach(group::overgroupClaim);
+            group.addGroup(this);
             parentGroup = group;
             session.world.addGroup(group);
             return true;
@@ -397,7 +394,7 @@ public class Group {
         if (tile == null) {
             return;
         }
-        parentGroup.overgroupClaim(tile);
+        parentGroup.claimTile(tile);
         tile.group = this;
         territory.add(tile);
         addEvent(new Event(Event.Type.TileAcquisition, "Group " + name + " claimed tile " + tile.x + " " +

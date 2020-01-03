@@ -353,7 +353,7 @@ public class Tile {
     }
 
     /**
-     * Starts overgroupUpdate for this Tile.
+     * Starts update for this Tile.
      */
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
         _newWind = new Wind();

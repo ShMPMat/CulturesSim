@@ -199,7 +199,7 @@ public class TextVisualizer implements Visualizer{
                 continue;
             }
             stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" \033[31m");
-            List<Aspect> aspects = new ArrayList<>(group.overgroupGetAspects());
+            List<Aspect> aspects = new ArrayList<>(group.getAspects());
             aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
             for (Aspect aspect : aspects) {
                 if (aspect.getUsefulness() <= 0 ) {
@@ -209,11 +209,11 @@ public class TextVisualizer implements Visualizer{
                         .append(") ");
             }
             stringBuilder.append(" \033[32m\n");
-            for (CultureAspect aspect : group.overgroupGetCultureAspects()) {
+            for (CultureAspect aspect : group.getCultureAspects()) {
                 stringBuilder.append("(").append(aspect).append(") ");
             }
             stringBuilder.append(" \033[33m\n");
-            List<Meme> memes = group.overgroupGetMemes();
+            List<Meme> memes = group.getMemes();
             memes.sort(Comparator.comparingInt(Meme::getImportance).reversed());
             for (int j = 0; j < 10 && memes.size() > j; j++) {
                 Meme meme = memes.get(j);

@@ -2,25 +2,16 @@ package simulation.culture.group;
 
 import extra.OutputFunc;
 import extra.ProbFunc;
-import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
-import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
-import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
-import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.min;
 import static simulation.Controller.session;
@@ -46,57 +37,45 @@ public class GroupConglomerate {
      * to sum of subgroup populations.
      */
     public int population;
-
-    private int maxPopulation = session.defaultGroupMaxPopulation;
-    private int fertility = session.defaultGroupFertility;
-    private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
-    private List<Stratum> strata = new ArrayList<>();
-    private CulturalCenterOvergroup culturalCenterOvergroup;
-    private double spreadability;
+    /**
+     * CulturalCenter of this GroupConglomerate
+     */
+    private CulturalCenterConglomerate culturalCenterOvergroup;
     private Territory territory = new Territory();
-    ResourcePack resourcePack = new ResourcePack();
-    public ResourcePack cherishedResources = new ResourcePack();
-    ResourcePack uniqueArtifacts = new ResourcePack();
 
-    private GroupConglomerate(String name, int population, double spreadability, int numberOfSubGroups, Tile root) {
+    private GroupConglomerate(String name, int population, int numberOfSubGroups, Tile root) {
         this.name = name;
         this.population = population;
-        this.spreadability = spreadability;
-        culturalCenterOvergroup = new CulturalCenterOvergroup(this);
-        overgroupClaim(root);
+        culturalCenterOvergroup = new CulturalCenterConglomerate(this);
+        claimTile(root);
 
         for (int i = 0; i < numberOfSubGroups; i++) {
-            overgroupAddSubgroup(new Group(this, null, name + "_" + i, population / numberOfSubGroups,
+            addGroup(new Group(this, null, name + "_" + i, population / numberOfSubGroups,
                     getCenter()));
         }
     }
 
     public GroupConglomerate(int numberOfSubgroups, Tile root) {
-        this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100),
-                session.defaultGroupSpreadability, numberOfSubgroups, root);
+        this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100), numberOfSubgroups, root);
     }
 
-    public Set<Aspect> overgroupGetAspects() {
+    public Set<Aspect> getAspects() {
         return subgroups.stream().map(Group::getAspects).reduce(new HashSet<>(), (x, y) -> {
             x.addAll(y);
             return x;
         });
     }
 
-    public List<CultureAspect> overgroupGetCultureAspects() {//TODO reduce
+    public List<CultureAspect> getCultureAspects() {//TODO reduce
         return subgroups.get(0).getCulturalCenter().getCultureAspects();
     }
 
-    public List<Meme> overgroupGetMemes() {//TODO reduce
+    public List<Meme> getMemes() {//TODO reduce
         return subgroups.get(0).getCulturalCenter().getMemePool().getMemes();
     }
 
     public List<Tile> getTiles() {
         return territory.getTiles();
-    }
-
-    int getFertility() {
-        return fertility;
     }
 
     public Territory getTerritory() {
@@ -105,22 +84,6 @@ public class GroupConglomerate {
 
     public List<Event> overgroupGetEvents() {
         return culturalCenterOvergroup.getEvents();
-    }
-
-    public List<Stratum> getStrata() {
-        return strata;
-    }
-
-    public Stratum getStratumByAspect(Aspect aspect) {
-        return strata.stream().filter(stratum -> stratum.containsAspect(aspect)).findFirst().orElse(null);
-    }
-
-    int getMaxPopulation() {
-        return getTerritory().size() * maxPopulation;
-    }
-
-    public int getFreePopulation() {
-        return population - strata.stream().reduce(0, (x, y) -> x + y.getAmount(), Integer::sum);
     }
 
     public Territory getOverallTerritory() {
@@ -156,7 +119,7 @@ public class GroupConglomerate {
         return getCenter().getDistance(tile) < 4;
     }
 
-    public void overgroupUpdate() {
+    public void update() {
         if (state == State.Dead) {
             return;
         }
@@ -167,7 +130,7 @@ public class GroupConglomerate {
         for (int i = 0; i < size; i++) {
             subgroups.get(i).populationUpdate();
         }
-        overgroupUpdatePopulation();
+        updatePopulation();
         if (state == State.Dead) {
             return;
         }
@@ -181,35 +144,31 @@ public class GroupConglomerate {
         }
     }
 
-    private void overgroupUpdatePopulation() {
-        overgroupComputePopulation();
+    private void updatePopulation() {
+        computePopulation();
         if (population == 0) {
             overgroupDie();
         }
     }
 
-    private void overgroupComputePopulation() {
+    private void computePopulation() {
         population = 0;
         for (Group subgroup : subgroups) {
             population += subgroup.population;
         }
     }
 
-    void overgroupClaim(Tile tile) {
+    void claimTile(Tile tile) {
         territory.add(tile);
     }
 
-    void overgroupRemove(Tile tile) {
-        tile.group = null;
-        territory.removeTile(tile);
+    void addGroup(Group group) {
+        subgroups.add(group);
+        computePopulation();
+        group.getTerritory().getTiles().forEach(this::claimTile);
     }
 
-    void overgroupAddSubgroup(Group subgroup) {
-        subgroups.add(subgroup);
-        overgroupComputePopulation();
-    }
-
-    int overgroupGetDistanceToClosestSubgroup(Tile tile) {
+    int getClosestInnerGroupDistance(Tile tile) {
         int d = Integer.MAX_VALUE;
         for (Group subgroup: subgroups) {
             d = min(d, tile.getClosestDistance(Collections.singleton(subgroup.getCenter())));
@@ -217,37 +176,17 @@ public class GroupConglomerate {
         return d;
     }
 
-    void overgroupRemoveSubgroup(Group subgroup) {
-        population -= subgroup.population;
-        if (!subgroups.remove(subgroup)) {
-            System.err.println("Trying to remove non-child subgroup " + subgroup.name + " from Group " + name);
+    void removeGroup(Group group) {
+        population -= group.population;
+        if (!subgroups.remove(group)) {
+            System.err.println("Trying to remove non-child subgroup " + group.name + " from Group " + name);
+            return;
         }
+        group.getTerritory().getTiles().forEach(this::removeTile);
     }
 
-    public void overgroupFinishUpdate() {
+    public void finishUpdate() {
         subgroups.forEach(Group::finishUpdate);
-    }
-
-    private void decreasePopulation(double amount) {
-        decreasePopulation((int) amount);
-    }
-
-    private void decreasePopulation(int amount) {
-        if (getFreePopulation() < 0) {
-            int i = 0;//TODO
-        }
-        amount = min(population, amount);
-        int delta = amount - getFreePopulation();
-        if (delta > 0) {
-            for (Stratum stratum: strata) {
-                int part = min(amount * (stratum.getAmount() / population) + 1, stratum.getAmount());
-                stratum.freeAmount(part);
-            }
-        }
-        population -= amount;
-        if (getFreePopulation() < 0) {
-            int i = 0;
-        }
     }
 
     private void removeTile(Tile tile) {
