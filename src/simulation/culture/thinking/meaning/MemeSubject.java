@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemeSubject extends Meme {
+    public MemeSubject(String observerWord, int importance) {
+        super(observerWord, new ArrayList<>(), importance);
+    }
+
     public MemeSubject(String observerWord) {
-        super(observerWord, new ArrayList<>());
+        this(observerWord, 1);
     }
 
     @Override
@@ -19,6 +23,6 @@ public class MemeSubject extends Meme {
 
     @Override
     public Meme copy() {
-        return new MemeSubject(observerWord);
+        return new MemeSubject(observerWord, importance);
     }
 }

@@ -123,7 +123,7 @@ public class Group {
     }
 
     public Territory getOverallTerritory() {
-        return getParentGroup().getOverallTerritory(); //TODO
+        return getParentGroup().getOverallTerritory();
     }
 
     private Collection<Resource> getResourceRequirements() {

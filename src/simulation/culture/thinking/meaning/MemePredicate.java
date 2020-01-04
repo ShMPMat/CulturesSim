@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemePredicate extends Meme {
+    public MemePredicate(String observerWord, int importance) {
+        super(observerWord, new ArrayList<>(), importance);
+    }
+
     public MemePredicate(String observerWord) {
-        super(observerWord);
-        predicates = new ArrayList<>();
+        this(observerWord, 1);
     }
 
     @Override
@@ -16,6 +19,6 @@ public class MemePredicate extends Meme {
 
     @Override
     public Meme copy() {
-        return new MemePredicate(observerWord);
+        return new MemePredicate(observerWord, importance);
     }
 }

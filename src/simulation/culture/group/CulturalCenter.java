@@ -35,7 +35,7 @@ public class CulturalCenter {
     private Set<Aspect> changedAspects = new HashSet<>(); // always equals to aspects except while making a turn
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
-    private List<CultureAspect> cultureAspects = new ArrayList<>();
+    private Set<CultureAspect> cultureAspects = new HashSet<>();
     private GroupMemes memePool = new GroupMemes();
 
     private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
@@ -77,8 +77,8 @@ public class CulturalCenter {
         return events;
     }
 
-    public List<CultureAspect> getCultureAspects() {
-        return group.subgroups.isEmpty() ? cultureAspects : group.subgroups.get(0).getCulturalCenter().getCultureAspects();
+    public Set<CultureAspect> getCultureAspects() {
+        return cultureAspects;
     }
 
     private Set<ShnyPair<Aspect, Group>> getNeighboursAspects() {
@@ -105,7 +105,7 @@ public class CulturalCenter {
     }
 
     public GroupMemes getMemePool() {
-        return group.subgroups.isEmpty() ? memePool : group.subgroups.get(0).getCulturalCenter().getMemePool();
+        return memePool;
     }
 
     public Meme getCurrentMeme() {

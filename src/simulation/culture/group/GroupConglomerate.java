@@ -12,6 +12,7 @@ import simulation.space.Territory;
 import simulation.space.Tile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.min;
 import static simulation.Controller.session;
@@ -41,6 +42,9 @@ public class GroupConglomerate {
      * CulturalCenter of this GroupConglomerate
      */
     private CulturalCenterConglomerate culturalCenterOvergroup;
+    /**
+     * Overall Territory which is under the child Groups
+     */
     private Territory territory = new Territory();
 
     private GroupConglomerate(String name, int population, int numberOfSubGroups, Tile root) {
@@ -59,19 +63,38 @@ public class GroupConglomerate {
         this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100), numberOfSubgroups, root);
     }
 
-    public Set<Aspect> getAspects() {
+
+    public Set<Aspect> getAspects() { //TODO BAD importance lost (?)
         return subgroups.stream().map(Group::getAspects).reduce(new HashSet<>(), (x, y) -> {
             x.addAll(y);
             return x;
         });
     }
 
-    public List<CultureAspect> getCultureAspects() {//TODO reduce
-        return subgroups.get(0).getCulturalCenter().getCultureAspects();
+    /**
+     * @return all CultureAspects of child Groups.
+     */
+    public List<CultureAspect> getCultureAspects() {
+        return subgroups.stream().flatMap(group -> group.getCulturalCenter().getCultureAspects().stream())
+                .collect(Collectors.toList());
     }
 
-    public List<Meme> getMemes() {//TODO reduce
-        return subgroups.get(0).getCulturalCenter().getMemePool().getMemes();
+    /**
+     * @return all Memes of child Groups.
+     */
+    public List<Meme> getMemes() {
+        return subgroups.stream().map(group -> group.getCulturalCenter().getMemePool().getMemes())
+                .reduce(new ArrayList<>(), (x, y) -> {
+                    for (Meme meme: y) {
+                        int i = x.indexOf(meme);
+                        if (i == -1) {
+                            x.add(meme.copy());
+                        } else {
+                            x.get(i).increaseImportance(meme.getImportance());
+                        }
+                    }
+                    return x;
+                });
     }
 
     public List<Tile> getTiles() {

@@ -31,7 +31,7 @@ abstract public class Meme {
     }
 
     public static Meme getMeme(Resource resource) {
-        return new MemeSubject(resource.getFullName());//TODO full?
+        return new MemeSubject(resource.getFullName());
     }
 
     public int getImportance() {
