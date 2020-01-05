@@ -4,19 +4,23 @@ package simulation.culture.thinking.meaning;
 import java.util.*;
 
 public class MemePool {
-    protected Map<String, Meme> memes;
+    private Map<String, Meme> memes;
 
-    public MemePool(Collection<Meme> memes) {
+    private MemePool(Collection<Meme> memes) {
         this.memes = new HashMap<>();
         memes.forEach(this::add);
     }
 
-    public MemePool() {
+    MemePool() {
         this(new ArrayList<>());
     }
 
-    public void add(Meme meme) {
+    public boolean add(Meme meme) {
+        if (memes.containsKey(meme.toString())) {
+            return false;
+        }
         memes.put(meme.toString(), meme);
+        return true;
     }
 
     public void addAll(Collection<Meme> memes) {
@@ -31,8 +35,13 @@ public class MemePool {
         return new ArrayList<>(memes.values());
     }
 
-    public Meme getMemeByName(String name) {
+    public Meme getMeme(String name) {
         return memes.get(name.toLowerCase());
+    }
+
+    public Meme getMemeCopy(String name) {
+        Meme meme = getMeme(name);
+        return meme == null ? null : meme.copy();
     }
 
     public boolean isEmpty() {

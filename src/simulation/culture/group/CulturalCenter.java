@@ -1,6 +1,5 @@
 package simulation.culture.group;
 
-import extra.ProbFunc;
 import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
@@ -251,12 +250,15 @@ public class CulturalCenter {
             case 0:
                 List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
                 if (!_l.isEmpty()) {
-                    cultureAspect = new DepictObject(group, memePool.getValuableMeme(), randomElement(_l),
-                            ResourceBehaviour.getRandom(group));
-                    break;
+                    Meme meme = constructMeme();
+                    if (meme != null) {
+                        cultureAspect = new DepictObject(group, meme, randomElement(_l),
+                                ResourceBehaviour.getRandom(group));
+                        break;
+                    }
                 }
             case 1:
-                Meme meme = getMemePool().getMemeWithComplexityBias();
+                Meme meme = constructMeme();
                 if (meme != null) {
                     cultureAspect = new Tale(group, meme);
                     break;
@@ -270,6 +272,16 @@ public class CulturalCenter {
                 }
         }
         addCultureAspect(cultureAspect);
+    }
+
+    private Meme constructMeme() {
+        Meme meme = getMemePool().getMemeWithComplexityBias();
+        if (getChances(0.5)) {
+            Meme second = getMemePool().getMemeWithComplexityBias().copy();
+            meme = meme.copy().addPredicate(getMemePool().getMemeCopy("and").addPredicate(second));
+            getMemePool().addMemeCombination(meme);
+        }
+        return meme;
     }
 
     private void removeAspiration(Aspiration aspiration) {
@@ -336,7 +348,7 @@ public class CulturalCenter {
     }
 
     public void putCurrentMeme(String memeString) {
-        currentMeme = memePool.getMemeByName(memeString);
+        currentMeme = memePool.getMeme(memeString);
     }
 
     public void generateCurrentMeme() {

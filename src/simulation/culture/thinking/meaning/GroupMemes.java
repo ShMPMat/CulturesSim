@@ -17,7 +17,7 @@ public class GroupMemes extends MemePool {
         memesCombinations = new HashMap<>();
         String[] subjects = {"group"};
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
-        String[] predicates = {"die", "acquireAspect", "consume"};
+        String[] predicates = {"die", "acquireAspect", "consume", "and"};
         addAll(Arrays.stream(predicates).map(MemeSubject::new).collect(Collectors.toList()));
     }
 
@@ -34,9 +34,19 @@ public class GroupMemes extends MemePool {
     }
 
     @Override
-    public Meme getMemeByName(String name) {
-        Meme memeS = super.getMemeByName(name);
+    public Meme getMeme(String name) {
+        Meme memeS = super.getMeme(name);
         return memeS != null ? memeS : getMemeCombinationByName(name);
+    }
+
+    @Override
+    public Meme getMemeCopy(String name) {
+        Meme meme = super.getMemeCopy(name);
+        if (meme != null) {
+            return meme;
+        }
+        meme = getMemeCombinationByName(name);
+        return meme == null ? null : meme.copy();
     }
 
     private Meme getMemeCombinationByName(String name) {
@@ -82,10 +92,9 @@ public class GroupMemes extends MemePool {
 
     public void addResourceMemes(Resource resource) {
         Meme meme = Meme.getMeme(resource);
-        if (memes.containsKey(meme.toString())) {
+        if (!add(meme)) {
             return;
         }
-        add(meme);
         addResourceInformationMemes(resource);
     }
 
@@ -96,7 +105,7 @@ public class GroupMemes extends MemePool {
                     for (String res: resourceDependency.lastConsumed) {
                         Meme subject = new MemeSubject(res.toLowerCase());
                         add(subject);
-                        Meme object = Meme.getMeme(resource).addPredicate(getMemeByName("consume").copy());
+                        Meme object = Meme.getMeme(resource).addPredicate(getMemeCopy("consume"));
                         object.predicates.get(0).addPredicate(subject);
                         addMemeCombination(object);
                     }

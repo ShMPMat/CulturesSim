@@ -263,7 +263,7 @@ public class World {
      */
     public Meme getPoolMeme(String name) {
         try {
-            return memePool.getMemeByName(name).copy();
+            return memePool.getMemeCopy(name);
         } catch (Exception e) {
             int i = 0;
         }

@@ -62,7 +62,7 @@ public class Stratum {
         this.usedAmount = amount;
         this.amount = Math.max(amount, this.amount);
         if (amount < 0) {
-            int i = 0;//TODO WHYYYYYYYYYYYYY?
+            int i = 0;
         }
     }
 

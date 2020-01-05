@@ -330,13 +330,13 @@ public class Group {
 
     private void decreasePopulation(int amount) {
         if (getFreePopulation() < 0) {
-            int i = 0;//TODO
+            int i = 0;
         }
         amount = min(population, amount);
         int delta = amount - getFreePopulation();
         if (delta > 0) {
             for (Stratum stratum: strata) {
-                int part = min(amount * (stratum.getAmount() / population) + 1, stratum.getAmount());
+                int part = (int) min(amount * (((double) stratum.getAmount()) / population) + 1, stratum.getAmount());
                 stratum.freeAmount(part);
             }
         }
