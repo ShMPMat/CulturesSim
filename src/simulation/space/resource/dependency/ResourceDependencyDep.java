@@ -1,13 +1,14 @@
-package simulation.space.resource;
+package simulation.space.resource.dependency;
 
 import simulation.space.Tile;
+import simulation.space.resource.Resource;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
+public class ResourceDependencyDep implements ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
     private List<String> resourceNames = new ArrayList<>();
     private List<String> materialNames = new ArrayList<>();
     private double amount;
@@ -17,8 +18,8 @@ public class ResourceDependency {//TODO please, write an interface and BUNCH OF 
     private Type type;
     public Set<String> lastConsumed = new HashSet<>();
 
-    public ResourceDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
-                              List<String> names) {
+    public ResourceDependencyDep(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
+                                 List<String> names) {
         for (String name: names) {
             if (name.charAt(0) == '@') {
                 this.materialNames.add(name.substring(1));
@@ -49,7 +50,7 @@ public class ResourceDependency {//TODO please, write an interface and BUNCH OF 
         } else if (type == Type.AVOID_TILES) {
             return resourceNames.stream().noneMatch(name -> Tile.Type.valueOf(name) == tile.getType()) ? 1 : 0;
         } else {
-            double _amount = amount * (resource == null ? 1 : resource.amount);
+            double _amount = amount * (resource == null ? 1 : resource.getAmount());
             for (Resource res : tile.getAccessibleResources()) {
                 if (res.equals(resource)) {
                     continue;
@@ -63,14 +64,14 @@ public class ResourceDependency {//TODO please, write an interface and BUNCH OF 
                                 break;
                             }
                             Resource part = res.getPart((int) Math.ceil(_amount));
-                            currentAmount += part.amount;
-                            if (part.amount > 0) {
+                            currentAmount += part.getAmount();
+                            if (part.getAmount() > 0) {
                                 lastConsumed.add(part.getFullName());
                             }
-                            part.amount = 0;
+                            part.setAmount(0);
                             break;
                         case EXIST:
-                            currentAmount += res.amount;
+                            currentAmount += res.getAmount();
                     }
                     if (currentAmount >= _amount) {
                         break;
@@ -104,7 +105,7 @@ public class ResourceDependency {//TODO please, write an interface and BUNCH OF 
 
     public boolean isResourceDependency(Resource resource) {
         return (resourceNames.contains(resource.getSimpleName()) || resource.getGenome().getPrimaryMaterial() != null &&
-                materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.amount > 0;
+                materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.getAmount() > 0;
     }
 
     public boolean isPositive() {

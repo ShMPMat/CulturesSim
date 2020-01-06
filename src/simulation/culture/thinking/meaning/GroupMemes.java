@@ -4,7 +4,8 @@ import extra.ProbFunc;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourceDependency;
+import simulation.space.resource.dependency.ResourceDependency;
+import simulation.space.resource.dependency.ResourceDependencyDep;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,9 +101,10 @@ public class GroupMemes extends MemePool {
 
     public void addResourceInformationMemes(Resource resource) {
         for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
-            switch (resourceDependency.getType()) {
+            if (resourceDependency instanceof ResourceDependencyDep)
+            switch (((ResourceDependencyDep) resourceDependency).getType()) {
                 case CONSUME:
-                    for (String res: resourceDependency.lastConsumed) {
+                    for (String res: ((ResourceDependencyDep) resourceDependency).lastConsumed) {
                         Meme subject = new MemeSubject(res.toLowerCase());
                         add(subject);
                         Meme object = Meme.getMeme(resource).addPredicate(getMemeCopy("consume"));

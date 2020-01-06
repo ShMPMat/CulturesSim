@@ -6,6 +6,8 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
+import simulation.space.resource.dependency.ResourceDependency;
+import simulation.space.resource.dependency.ResourceDependencyDep;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -332,6 +334,10 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 
     public boolean hasApplicationForAspect(Aspect aspect) {
         return resourceCore.hasApplicationForAspect(aspect);
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public List<Resource> applyAndConsumeAspect(Aspect aspect, int part) {

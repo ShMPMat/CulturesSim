@@ -7,7 +7,8 @@ import simulation.space.TectonicPlate;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 import simulation.space.Tile;
-import simulation.space.resource.ResourceDependency;
+import simulation.space.resource.dependency.ResourceDependency;
+import simulation.space.resource.dependency.ResourceDependencyDep;
 import simulation.space.resource.ResourceIdeal;
 
 import java.io.BufferedReader;
@@ -118,24 +119,27 @@ public class RandomMapGenerator {
             if (!dependency.isPositive() || !dependency.isResourceNeeded()) {
                 continue;
             }
-            if (dependency.getResourceNames().stream().anyMatch(s -> s.equals("Vapour"))) {
+            if (dependency instanceof ResourceDependencyDep && ((ResourceDependencyDep) dependency).getResourceNames()
+                    .stream().anyMatch(s -> s.equals("Vapour"))) {
                 return;
             }
-            for (String name: dependency.getResourceNames()) {
-                Resource dep = session.world.getPoolResource(name);
-                if (dep.getGenome().isAcceptable(tile)) {
-                    tile.addDelayedResource(dep.copy());
-                }
-                addDependencies(dep, tile);
-            }
-            for (String name: dependency.getMaterialNames()) {
-                for (Resource dep: session.world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
-                        !r.getSimpleName().equals(resource.getSimpleName()) &&
-                        r.getGenome().getPrimaryMaterial() != null &&
-                        r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
+            if (dependency instanceof ResourceDependencyDep) {
+                for (String name : ((ResourceDependencyDep) dependency).getResourceNames()) {
+                    Resource dep = session.world.getPoolResource(name);
                     if (dep.getGenome().isAcceptable(tile)) {
                         tile.addDelayedResource(dep.copy());
-                        addDependencies(dep, tile);
+                    }
+                    addDependencies(dep, tile);
+                }
+                for (String name : ((ResourceDependencyDep) dependency).getMaterialNames()) {
+                    for (Resource dep : session.world.resourcePool.stream().filter(r -> r.getSpreadProbability() > 0 &&
+                            !r.getSimpleName().equals(resource.getSimpleName()) &&
+                            r.getGenome().getPrimaryMaterial() != null &&
+                            r.getGenome().getPrimaryMaterial().getName().equals(name)).collect(Collectors.toList())) {
+                        if (dep.getGenome().isAcceptable(tile)) {
+                            tile.addDelayedResource(dep.copy());
+                            addDependencies(dep, tile);
+                        }
                     }
                 }
             }

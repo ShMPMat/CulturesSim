@@ -277,7 +277,10 @@ public class CulturalCenter {
     private Meme constructMeme() {
         Meme meme = getMemePool().getMemeWithComplexityBias();
         if (getChances(0.5)) {
-            Meme second = getMemePool().getMemeWithComplexityBias().copy();
+            Meme second;
+            do {
+                second = getMemePool().getMemeWithComplexityBias().copy();
+            } while (second.equals(meme));
             meme = meme.copy().addPredicate(getMemePool().getMemeCopy("and").addPredicate(second));
             getMemePool().addMemeCombination(meme);
         }

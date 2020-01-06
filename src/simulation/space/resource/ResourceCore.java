@@ -4,6 +4,7 @@ import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.resource.dependency.ResourceDependencyDep;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,12 +54,12 @@ public class ResourceCore {
                     break;
                 case '~':
                     elements = tag.split(":");
-                    genome.addDependency(new ResourceDependency(
-                            ResourceDependency.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
+                    genome.addDependency(new ResourceDependencyDep(
+                            ResourceDependencyDep.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
                             Double.parseDouble(elements[2]), elements[3].equals("1"), Arrays.asList(elements[0].substring(1).split(","))));
                     break;
                 case '#':
-                    genome.addDependency(new ResourceDependency(ResourceDependency.Type.AVOID_TILES, 0,
+                    genome.addDependency(new ResourceDependencyDep(ResourceDependencyDep.Type.AVOID_TILES, 0,
                             0, true, Arrays.asList(tag.substring(1).split(":"))));
                     break;
                 case '$':
