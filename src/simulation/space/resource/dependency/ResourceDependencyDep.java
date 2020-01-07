@@ -43,47 +43,39 @@ public class ResourceDependencyDep implements ResourceDependency {//TODO please,
 
     public double satisfactionPercent(Tile tile, Resource resource) {
         double result;
-        if (type == Type.TEMPERATURE_MAX || type == Type.TEMPERATURE_MIN) {
-            result = tile.getTemperature() - amount;
-            result = type == Type.TEMPERATURE_MIN ? -result : result;
-            result = 1 / Math.sqrt(Math.max(0, result) + 1);
-        } else if (type == Type.AVOID_TILES) {
-            return resourceNames.stream().noneMatch(name -> Tile.Type.valueOf(name) == tile.getType()) ? 1 : 0;
-        } else {
-            double _amount = amount * (resource == null ? 1 : resource.getAmount());
-            for (Resource res : tile.getAccessibleResources()) {
-                if (res.equals(resource)) {
-                    continue;
-                }
-                if (isResourceDependency(res)) {
-                    switch (type) {
-                        case CONSUME:
-                        case AVOID:
-                            if (_amount + currentAmount < 0) {
-                                currentAmount += _amount;
-                                break;
-                            }
-                            Resource part = res.getPart((int) Math.ceil(_amount));
-                            currentAmount += part.getAmount();
-                            if (part.getAmount() > 0) {
-                                lastConsumed.add(part.getFullName());
-                            }
-                            part.setAmount(0);
+        double _amount = amount * (resource == null ? 1 : resource.getAmount());
+        for (Resource res : tile.getAccessibleResources()) {
+            if (res.equals(resource)) {
+                continue;
+            }
+            if (isResourceDependency(res)) {
+                switch (type) {
+                    case CONSUME:
+                    case AVOID:
+                        if (_amount + currentAmount < 0) {
+                            currentAmount += _amount;
                             break;
-                        case EXIST:
-                            currentAmount += res.getAmount();
-                    }
-                    if (currentAmount >= _amount) {
+                        }
+                        Resource part = res.getPart((int) Math.ceil(_amount));
+                        currentAmount += part.getAmount();
+                        if (part.getAmount() > 0) {
+                            lastConsumed.add(part.getFullName());
+                        }
+                        part.setAmount(0);
                         break;
-                    }
+                    case EXIST:
+                        currentAmount += res.getAmount();
+                }
+                if (currentAmount >= _amount) {
+                    break;
                 }
             }
-            result = Math.min(((double) currentAmount) / _amount, 1);
-            if (currentAmount >= _amount) {
-                currentAmount -= _amount;
-            }
-            result = (type == Type.AVOID ? 1 - result : result);
         }
+        result = Math.min(((double) currentAmount) / _amount, 1);
+        if (currentAmount >= _amount) {
+            currentAmount -= _amount;
+        }
+        result = (type == Type.AVOID ? 1 - result : result);
         return result + (1 - result) / deprivationCoefficient;
     }
 
@@ -123,10 +115,7 @@ public class ResourceDependencyDep implements ResourceDependency {//TODO please,
     public enum Type{
         CONSUME(true),
         EXIST(true),
-        AVOID(true),
-        TEMPERATURE_MIN(false),
-        TEMPERATURE_MAX(false),
-        AVOID_TILES(false);
+        AVOID(true);
 
         boolean isResourceDependent;
 

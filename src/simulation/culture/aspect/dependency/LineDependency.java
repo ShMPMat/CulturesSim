@@ -41,7 +41,7 @@ public class LineDependency extends AbstractDependency {
     @Override
     public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
         ResourcePack resourcePack = new ResourcePack();
-        if (isAlreadyUsed) {
+        if (isAlreadyUsed || ceiling <= 0) {
             return new ShnyPair<>(true, resourcePack);
         }
         isAlreadyUsed = true;

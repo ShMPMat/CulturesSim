@@ -5,6 +5,8 @@ import simulation.culture.aspect.AspectTag;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.dependency.ResourceDependencyDep;
+import simulation.space.resource.dependency.TemperatureMax;
+import simulation.space.resource.dependency.TemperatureMin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +77,8 @@ public class Genome {
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
         this.temperatureMax = temperatureMax;
-        dependencies.add(new ResourceDependencyDep(ResourceDependencyDep.Type.TEMPERATURE_MIN, temperatureMin,
-                2, true, new ArrayList<>()));
-        dependencies.add(new ResourceDependencyDep(ResourceDependencyDep.Type.TEMPERATURE_MAX, temperatureMax,
-                2, true, new ArrayList<>()));
+        dependencies.add(new TemperatureMin(temperatureMin, 2));
+        dependencies.add(new TemperatureMax(temperatureMax, 2));
         setLegacy(legacy);
         this.templateLegacy = templateLegacy;
         this.size = size;
@@ -267,7 +267,7 @@ public class Genome {
         }
     }
 
-    void addDependency(ResourceDependencyDep dependency) {
+    void addDependency(ResourceDependency dependency) {
         dependencies.add(dependency);
     }
 
