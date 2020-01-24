@@ -6,6 +6,7 @@ import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.AvoidTiles;
+import simulation.space.resource.dependency.ConsumeDependency;
 import simulation.space.resource.dependency.ResourceDependencyDep;
 
 import java.util.*;
@@ -56,9 +57,15 @@ public class ResourceCore {
                     break;
                 case '~':
                     elements = tag.split(":");
-                    genome.addDependency(new ResourceDependencyDep(
-                            ResourceDependencyDep.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
-                            Double.parseDouble(elements[2]), elements[3].equals("1"), Arrays.asList(elements[0].substring(1).split(","))));
+                    if (elements[4].equals("CONSUME")) {
+                        genome.addDependency(new ConsumeDependency(Double.parseDouble(elements[2]),
+                                elements[3].equals("1"), Double.parseDouble(elements[1]),
+                                Arrays.asList(elements[0].substring(1).split(","))));
+                    } else {
+                        genome.addDependency(new ResourceDependencyDep(
+                                ResourceDependencyDep.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
+                                Double.parseDouble(elements[2]), elements[3].equals("1"), Arrays.asList(elements[0].substring(1).split(","))));
+                    }
                     break;
                 case '#':
                     genome.addDependency(new AvoidTiles(Arrays.stream(tag.substring(1).split(":"))

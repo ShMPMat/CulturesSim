@@ -50,20 +50,8 @@ public class ResourceDependencyDep implements ResourceDependency {//TODO please,
             }
             if (isResourceDependency(res)) {
                 switch (type) {
-                    case CONSUME:
-                    case AVOID:
-                        if (_amount + currentAmount < 0) {
-                            currentAmount += _amount;
-                            break;
-                        }
-                        Resource part = res.getPart((int) Math.ceil(_amount));
-                        currentAmount += part.getAmount();
-                        if (part.getAmount() > 0) {
-                            lastConsumed.add(part.getFullName());
-                        }
-                        part.setAmount(0);
-                        break;
                     case EXIST:
+                    case AVOID:
                         currentAmount += res.getAmount();
                 }
                 if (currentAmount >= _amount) {
@@ -91,11 +79,11 @@ public class ResourceDependencyDep implements ResourceDependency {//TODO please,
         return tile.getResources().stream().anyMatch(this::isResourceGood);
     }
 
-    public boolean isResourceGood(Resource resource) {
+    private boolean isResourceGood(Resource resource) {
         return type == Type.AVOID ? !isResourceDependency(resource) : isResourceDependency(resource);
     }
 
-    public boolean isResourceDependency(Resource resource) {
+    private boolean isResourceDependency(Resource resource) {
         return (resourceNames.contains(resource.getSimpleName()) || resource.getGenome().getPrimaryMaterial() != null &&
                 materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.getAmount() > 0;
     }
@@ -113,7 +101,6 @@ public class ResourceDependencyDep implements ResourceDependency {//TODO please,
     }
 
     public enum Type{
-        CONSUME(true),
         EXIST(true),
         AVOID(true);
 

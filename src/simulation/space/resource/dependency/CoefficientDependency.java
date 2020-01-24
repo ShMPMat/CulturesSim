@@ -10,11 +10,11 @@ public abstract class CoefficientDependency implements ResourceDependency {
         this.deprivationCoefficient = deprivationCoefficient;
     }
 
-    abstract double satisfaction(Tile tile, Resource resource);
-
     @Override
     public double satisfactionPercent(Tile tile, Resource resource) {
         double result = satisfaction(tile, resource);
         return result + (1 - result) / deprivationCoefficient;
     }
+
+    abstract double satisfaction(Tile tile, Resource resource);
 }
