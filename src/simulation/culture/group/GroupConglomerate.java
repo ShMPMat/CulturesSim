@@ -157,6 +157,7 @@ public class GroupConglomerate {
         if (state == State.Dead) {
             return;
         }
+        subgroups.forEach(Group::migrate);
         subgroups.forEach(Group::expand);
         subgroups.forEach(group -> group.getCulturalCenter().update());
         for (int i = 0; i < subgroups.size(); i++) {
@@ -212,7 +213,7 @@ public class GroupConglomerate {
         subgroups.forEach(Group::finishUpdate);
     }
 
-    private void removeTile(Tile tile) {
+    void removeTile(Tile tile) {
         if (tile == null) {
             return;
         }

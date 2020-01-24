@@ -375,19 +375,37 @@ public class Group {
             }
         }
 
-        claimTile(territory.includeMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
+        claimTile(territory.getMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
                 isTileReachable(newTile), tileValueMapper));
         return true;
     }
 
-    private boolean migrate() {
+    boolean migrate() {
         if (state == State.Dead) {
             return false;
         }//TODO migration
+        if (!shouldMigrate()) {
+            return false;
+        }
 
-//        claimTile(territory.includeMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
-//                isTileReachable(newTile), tileValueMapper));
+        Tile newCenter = getMigrationTile();
+        if (newCenter == null) {
+            return false;
+        }
+        territory.setCenter(newCenter);
+        claimTile(newCenter);
+        removeTiles(territory.getTilesWithPredicate(tile -> !isTileReachable(tile)));
         return true;
+    }
+
+    private Tile getMigrationTile() {
+        return territory.getCenter().getNeighbours().stream()
+                .max(Comparator.comparingInt(tile -> tileValueMapper.apply(tile))).orElse(null);
+        //return ProbFunc.randomElement(territory.getCenter().getNeighbours(tile -> tile.canSettle(this)));
+    }
+
+    private boolean shouldMigrate() {
+        return !culturalCenter.getAspirations().isEmpty();
     }
 
     private void claimTile(Tile tile) {
@@ -401,11 +419,16 @@ public class Group {
                 tile.y, "group", this, "tile", tile));
     }
 
+    private void removeTiles(Collection<Tile> tiles) {
+        tiles.forEach(this::removeTile);
+    }
+
     private void removeTile(Tile tile) {
         if (tile == null) {
             return;
         }
         territory.removeTile(tile);
+        parentGroup.removeTile(tile);
     }
 
     @Override

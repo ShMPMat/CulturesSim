@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 public class Territory {
     private List<Tile> tiles;
     private List<Tile> brink = new ArrayList<>();
+    private Tile center;
 
     public Territory(Collection<Tile> tiles) {
         this.tiles = new ArrayList<>();
         addAll(tiles);
+
     }
 
     public Territory() {
@@ -35,7 +37,12 @@ public class Territory {
     }
 
     public Tile getCenter() {
-        return tiles.get(0);
+        return center;
+    }
+
+    public void setCenter(Tile newCenter) {
+        center = newCenter;
+        add(center);
     }
 
     public List<Tile> getBrink() {
@@ -136,6 +143,9 @@ public class Territory {
             brink.remove(tile);
             tile.getNeighbours().forEach(this::addToBrink);
         }
+        if (tiles.size() == 1) {
+            center = tile;
+        }
     }
 
     private void addToBrink(Tile tile) {
@@ -173,13 +183,10 @@ public class Territory {
         return null;
     }
 
-    public Tile includeMostUsefulTile(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
+    public Tile getMostUsefulTile(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
         Optional<ShnyPair<Tile, Integer>> _o = getBrinkWithImportance(predicate, mapper).stream()
                 .max(Comparator.comparingInt(o -> o.second));
-        if (_o.isPresent()) {
-            return _o.get().first;
-        }
-        return null;
+        return _o.map(tileIntegerShnyPair -> tileIntegerShnyPair.first).orElse(null);
     }
 
     public List<Tile> getBorder() {

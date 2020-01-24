@@ -24,7 +24,7 @@ public class ConsumeDependency extends ResourceMaterialDependency {
             }
             if (isResourceDependency(res)) {
                 if (!res.getSimpleName().equals("Vapour")) {
-                    int i = 0;
+                    int i = 0; //TODO something wrong but i don't remember what
                 }
                 if (_amount + currentAmount < 0) {
                     currentAmount += _amount;
