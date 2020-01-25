@@ -57,7 +57,7 @@ public class Controller {
     public final double rAspectLending = 0.25;
     public final double cultureAspectBaseProbability = 0.02;
     public final boolean groupDiverge = true;
-    public final boolean subgroupMultiplication = false;
+    public final boolean subgroupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
 
     public final double windPropagation = 0.025;

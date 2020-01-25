@@ -53,7 +53,7 @@ public class Group {
     private double spreadability;
     private Territory territory = new Territory();
     private Function<Tile, Integer> tileValueMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() -
-            3 * t.closestTileWithResources(getResourceRequirements());
+            3 * t.closestTileWithResources(getResourceRequirements());//TODO function is awful, it works inside out
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();

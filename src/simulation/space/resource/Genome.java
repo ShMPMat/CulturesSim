@@ -13,7 +13,7 @@ import java.util.List;
 
 import static simulation.Controller.session;
 
-public class Genome {
+public class Genome { //TODO make template genome
     /**
      * Base name of the Resource.
      */
