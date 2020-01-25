@@ -120,7 +120,7 @@ public class ResourceCore {
         if (materials.isEmpty()) {
             return;
         }
-        Material material = getMainMaterial();//TODO make it new file
+        Material material = getMainMaterial();
         for (Aspect aspect: session.world.aspectPool) {
             for (AspectMatcher matcher: aspect.getMatchers()) {
                 if (matcher.match(this)) {
@@ -128,11 +128,6 @@ public class ResourceCore {
                 }
             }
         }
-//        if (genome.getSize() >= 0.5 && material.hasPropertyWithName("hard")
-//                && !aspectConversion.containsKey(session.world.getPoolAspect("BuildHouse"))) {
-//            addAspectConversion("BuildHouse",
-//                    Collections.singletonList(new ShnyPair<>(session.world.getPoolResource("House"), 1)));
-//        }
     }
 
     public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) {

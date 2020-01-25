@@ -52,12 +52,13 @@ public class Controller {
     public final int defaultGroupMaxPopulation = 1000;
     public final int defaultGroupMinPopulationPerTile = 1;
     public final int defaultGroupFertility = 10;
-    public final double defaultGroupDiverge = (double) 1/100;
+    public final double defaultGroupExiting = 0.01;
+    public final double defaultGroupDiverge = 0.002;
     public final double rAspectAcquisition = 0.1;
     public final double rAspectLending = 0.25;
     public final double cultureAspectBaseProbability = 0.02;
     public final boolean groupDiverge = true;
-    public final boolean subgroupMultiplication = true;
+    public final boolean groupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
 
     public final double windPropagation = 0.025;

@@ -33,6 +33,10 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
                 });
     }
 
+    public Resource getResource() {
+        return resource;
+    }
+
     @Override
     public void use() {
 

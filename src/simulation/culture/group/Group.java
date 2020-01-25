@@ -278,13 +278,14 @@ public class Group {
             die();
             return;
         }
-        if (getMaxPopulation() == population && parentGroup.subgroups.size() < 10) {
+        if ((getMaxPopulation() == population || ProbFunc.getChances(session.defaultGroupDiverge))
+                && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
                     parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
             if (tiles.isEmpty()) {
                 return;
             }
-            if (!session.subgroupMultiplication) {
+            if (!session.groupMultiplication) {
                 return;
             }
             population = population / 2;
@@ -302,6 +303,7 @@ public class Group {
             if (group.territory.isEmpty()) {
                 int i = 0;
             }
+            group.culturalCenter.initializeFromCenter(culturalCenter);
             parentGroup.addGroup(group);
         }
     }
@@ -330,7 +332,7 @@ public class Group {
 
     private void decreasePopulation(int amount) {
         if (getFreePopulation() < 0) {
-            int i = 0;
+            int i = 0; //TODO still happens
         }
         amount = min(population, amount);
         int delta = amount - getFreePopulation();
@@ -342,15 +344,15 @@ public class Group {
         }
         population -= amount;
         if (getFreePopulation() < 0) {
-            int i = 0;
+            int i = 0; //TODO still happens
         }
     }
 
-    boolean diverge() {//TODO make diverge for single subgroup groups
-        if (!session.groupDiverge) {
+    boolean diverge() {
+        if (!session.groupDiverge) {//TODO diverge if too far from others
             return false;
         }
-        if (population == getMaxPopulation() && parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupDiverge)) {
+        if (parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupExiting)) {
             parentGroup.removeGroup(this);
             GroupConglomerate group = new GroupConglomerate(0, getCenter());
             group.addGroup(this);

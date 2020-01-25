@@ -31,6 +31,7 @@ public class CulturalCenter {
     private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
     private Set<Aspect> aspects = new HashSet<>();
+    private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
     private Set<Aspect> changedAspects = new HashSet<>(); // always equals to aspects except while making a turn
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
@@ -169,8 +170,11 @@ public class CulturalCenter {
     }
 
     public void addCultureAspect(CultureAspect cultureAspect) {
-        if (cultureAspect != null && !cultureAspects.contains(cultureAspect)) {
+        if (cultureAspect != null) {
             cultureAspects.add(cultureAspect);
+        }
+        if (cultureAspect instanceof AestheticallyPleasingObject) {
+            aestheticallyPleasingResources.add(((AestheticallyPleasingObject) cultureAspect).getResource());
         }
     }
 
@@ -264,8 +268,9 @@ public class CulturalCenter {
                     break;
                 }
             case 2:
-                Resource resource = randomElement(getAllProducedResources().stream().map(pair -> pair.first)
-                        .collect(Collectors.toList()));
+                Resource resource = getAllProducedResources().stream().map(pair -> pair.first)
+                        .filter(r -> !aestheticallyPleasingResources.contains(r))
+                        .max(Comparator.comparingInt(Resource::getBaseDesireability)).orElse(null);
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group));
                     break;
@@ -291,7 +296,7 @@ public class CulturalCenter {
         aspirations.remove(aspiration);
     }
 
-    private void mutateAspects() { //TODO separate adding of new aspects und updating old
+    private void mutateAspects() { //TODO separate adding of new aspects and updating old
 
 //        Set<ShnyPair<Aspect, Group>> allExistingAspects = getNeighboursAspects();
 //
@@ -450,5 +455,9 @@ public class CulturalCenter {
     public void pushAspects() {
         aspects = new HashSet<>();
         aspects.addAll(getChangedAspects());
+    }
+
+    public void initializeFromCenter(CulturalCenter culturalCenter) {
+        culturalCenter.aspects.forEach(this::addAspect);
     }
 }

@@ -96,6 +96,10 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         return amount;
     }
 
+    public int getBaseDesireability() {
+        return getGenome().getBaseDesirability();
+    }
+
     public double getSpreadProbability() {
         return resourceCore.getSpreadProbability();
     }

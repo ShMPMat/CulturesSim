@@ -18,6 +18,8 @@
 
 -BuildHouse
     &@hard--s0.5--#House:1
+-MakeDish
+    &@hard--s0.05--#Dish:1
 
 -Killing                                                                     #weapon
 -Plant
