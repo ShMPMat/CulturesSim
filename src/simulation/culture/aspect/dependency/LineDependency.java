@@ -45,14 +45,19 @@ public class LineDependency extends AbstractDependency {
             return new ShnyPair<>(true, resourcePack);
         }
         isAlreadyUsed = true;
-        ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
-                new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
-                        rp -> rp.getAmountOfResource(line.first.resource)));
-        _p.second.getResource(line.first.resource).getResources()
-                .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
-        resourcePack.add(_p.second);
-        isAlreadyUsed = false;
-        return new ShnyPair<>(_p.first, resourcePack);
+        try {
+            ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
+                    new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
+                            rp -> rp.getAmountOfResource(line.first.resource)));
+            _p.second.getResource(line.first.resource).getResources()
+                    .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
+            resourcePack.add(_p.second);
+            isAlreadyUsed = false;
+            return new ShnyPair<>(_p.first, resourcePack);
+        } catch (Exception e) {
+            int i = 0;
+            return null;
+        }
     }
 
     public ConverseWrapper getNextWrapper() {

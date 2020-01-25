@@ -52,7 +52,7 @@ public class Controller {
     public final int defaultGroupMaxPopulation = 1000;
     public final int defaultGroupMinPopulationPerTile = 1;
     public final int defaultGroupFertility = 10;
-    public final double defaultGroupExiting = 0.01;
+    public final double defaultGroupExiting = 0.0005;
     public final double defaultGroupDiverge = 0.002;
     public final double rAspectAcquisition = 0.1;
     public final double rAspectLending = 0.25;
