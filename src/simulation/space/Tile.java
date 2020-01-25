@@ -313,33 +313,11 @@ public class Tile {
         }
     }
 
-    public int closestTileWithResources(Collection<Resource> requirements) {
-//        List<Tile> tiles = new ArrayList<>(), layer;
-//        tiles.add(this);
-//        if (resource.containsAll(requirements)) {
-//            return 0;
-//        }
-//        int i = 1;
-//        while (true) {
-//            layer = new Territory(tiles).getBrinkWithCondition(tile -> true);
-//            if (layer.size() >= 100) { //TODO INFINITE TILES BUG
-//                return -1;
-//            }
-//            if (layer.size() == 0) {
-//                return -1;
-//            }
-//            List _l = layer.stream().filter(tile -> tile.resource.containsAll(requirements))
-//                    .collect(Collectors.toList());
-//            if (_l.size() > 0) {
-//                return i;
-//            }
-//            tiles.addAll(layer);
-//            i++;
-//        }
+    public int hasResources(Collection<Resource> requirements) {
         if (resources.stream().anyMatch(requirements::contains)) {
-            return 0;
+            return 1;
         }
-        return 1;
+        return 0;
     }
 
     public boolean canSettle(Group group) {

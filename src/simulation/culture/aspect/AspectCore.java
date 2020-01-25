@@ -16,19 +16,18 @@ class AspectCore {
     /**
      * AspectTags which represent which resources are provided by this Aspect.
      */
-    private List<AspectTag> tags;
+    private List<AspectTag> tags = new ArrayList<>();
     /**
      * Requirements for an Aspect to be added to the group.
      */
-    private List<AspectTag> requirements;
+    private List<AspectTag> requirements = new ArrayList<>();
     /**
      * Whether it can apply meaning.
      */
+    List<AspectMatcher> matchers = new ArrayList<>();
     boolean applyMeaning = false;
 
     public AspectCore(String[] tags) {
-        this.tags = new ArrayList<>();
-        this.requirements = new ArrayList<>();
         for (int i = 0; i < tags.length; i++) {
             String tag = tags[i];
             if (i == 0) {
@@ -55,6 +54,9 @@ class AspectCore {
                         } else {
                             this.requirements.add(new AspectTag(tag.substring(1), false, true));
                         }
+                        break;
+                    case '&':
+                        matchers.add(new AspectMatcher(tag.substring(1).split("-+"), this));
                         break;
                 }
             }

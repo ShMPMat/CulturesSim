@@ -2,6 +2,7 @@ package simulation.space.resource;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectMatcher;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
@@ -119,22 +120,23 @@ public class ResourceCore {
         if (materials.isEmpty()) {
             return;
         }
-        Material material = materials.get(0);
-        if (material.hasPropertyWithName("_can_be_ignited") && !aspectConversion.containsKey(session.world.getPoolAspect("Incinerate"))) {
-            List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>(2);
-            resourceList.add(new ShnyPair<>(session.world.getPoolResource("Fire"), 1));
-            resourceList.add(new ShnyPair<>(session.world.getPoolResource("Ash"), 1));
-            aspectConversion.put(session.world.getPoolAspect("Incinerate"), resourceList);
+        Material material = getMainMaterial();//TODO make it new file
+        for (Aspect aspect: session.world.aspectPool) {
+            for (AspectMatcher matcher: aspect.getMatchers()) {
+                if (matcher.match(this)) {
+                    addAspectConversion(aspect.getName(), matcher.getResults(copy()));
+                }
+            }
         }
-        if (genome.getSize() >= 0.5 && material.hasPropertyWithName("hard") && material.hasPropertyWithName("hard")
-                && !aspectConversion.containsKey(session.world.getPoolAspect("BuildHouse"))) {
-            aspectConversion.put(session.world.getPoolAspect("BuildHouse"),
-                    Collections.singletonList(new ShnyPair<>(session.world.getPoolResource("House"), 1)));
-        }
-        if (isMovable() && !material.hasPropertyWithName("gas")) {
-            aspectConversion.put(session.world.getPoolAspect("Take"),
-                    Collections.singletonList(new ShnyPair<>(this.copy(), 1)));
-        }
+//        if (genome.getSize() >= 0.5 && material.hasPropertyWithName("hard")
+//                && !aspectConversion.containsKey(session.world.getPoolAspect("BuildHouse"))) {
+//            addAspectConversion("BuildHouse",
+//                    Collections.singletonList(new ShnyPair<>(session.world.getPoolResource("House"), 1)));
+//        }
+    }
+
+    public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) {
+        aspectConversion.put(session.world.getPoolAspect(aspectName), resourceList);
     }
 
     void actualizeParts() {
@@ -177,6 +179,10 @@ public class ResourceCore {
                 Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;
     }
 
+    public Map<Aspect, List<ShnyPair<Resource, Integer>>> getAspectConversion() {
+        return aspectConversion;
+    }
+
     private void setName(String fullName) {
         if (fullName.contains("_representing_")) {
             genome.setName(fullName.substring(0, fullName.indexOf("_representing_")));
@@ -201,6 +207,10 @@ public class ResourceCore {
 
     public List<AspectTag> getTags() {
         return tags;
+    }
+
+    public Material getMainMaterial() {
+        return materials.get(0);
     }
 
     public int getDeathTime() {
@@ -247,7 +257,7 @@ public class ResourceCore {
         return hasMeaning;
     }
 
-    boolean isMovable() {
+    public boolean isMovable() {
         return genome.isMovable();
     }
 

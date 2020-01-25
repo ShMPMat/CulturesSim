@@ -101,6 +101,10 @@ public class Aspect {
         return dependencies;
     }
 
+    public List<AspectMatcher> getMatchers() {
+        return aspectCore.matchers;
+    }
+
     public int getUsefulness() {
         return usefulness;
     }

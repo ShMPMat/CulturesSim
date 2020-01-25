@@ -1,24 +1,33 @@
-MountainLiving             +mountainLiving       1
+/ Grammar for matches: @ - needed property, ! - bad property
+/                      isMovable - if Resource needs to be movable
+/                      s%f       - if Resource needs to be greater in size then %f
+/                      # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
+/
 
-Incinerate
-Bake                                                                        /burns
-Roast                                                                       /burns
+-MountainLiving             +mountainLiving       1
 
-MakingFibre
-Weaving
-MakeClothes
-Chisel
+-Incinerate
+    &@_can_be_ignited--#Fire:1--#Ash:1
+-Bake                                                                        /burns
+-Roast                                                                       /burns
 
-BuildHouse
+-MakingFibre
+-Weaving
+-MakeClothes
+-Chisel
 
-Killing                                                                     #weapon
-Plant
-TakeApart
-Take
+-BuildHouse
+    &@hard--s0.5--#House:1
 
-ShapeMalleable                                                              /malleable          #MEANING
-Engrave                                                                     /goodForEngraving   #MEANING
-Carve                                                                       /goodForEngraving   #MEANING
+-Killing                                                                     #weapon
+-Plant
+-TakeApart
+-Take
+    &!gas--isMovable--#MATCHED:1
+
+-ShapeMalleable                                                              /malleable          #MEANING
+-Engrave                                                                     /goodForEngraving   #MEANING
+-Carve                                                                       /goodForEngraving   #MEANING
 
 /Riding                                                                      /ridingAnimals
 /Farming                    -food                  1                        /seeds

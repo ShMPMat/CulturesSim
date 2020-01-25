@@ -35,7 +35,7 @@ public class World {
     /**
      * List of all Aspects in the world.
      */
-    public List<Aspect> aspectPool;
+    public List<Aspect> aspectPool = new ArrayList<>();
     /**
      * List of all Resources in the world.
      */
@@ -153,23 +153,16 @@ public class World {
      * Reads all Aspects from supplement file and fills aspectPool with them.
      */
     private void fillAspectPool() {
-        aspectPool = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Aspects"))) {
-            String line;
-            String[] tags;
-            while (true) {
-                line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (isLineBad(line)) {
-                    continue;
-                }
-                tags = line.split("\\s+");
-                aspectPool.add(new Aspect(tags, new HashMap<>(), null));
+        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Aspects");
+        String line;
+        String[] tags;
+        while (true) {
+            line = inputDatabase.readLine();
+            if (line == null) {
+                break;
             }
-        } catch (Throwable t) {
-            System.err.println(t.toString());
+            tags = line.split("\\s+");
+            aspectPool.add(new Aspect(tags, new HashMap<>(), null));
         }
     }
 
