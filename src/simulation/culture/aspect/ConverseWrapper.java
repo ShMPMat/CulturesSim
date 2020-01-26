@@ -54,11 +54,11 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult use(int ceiling, ResourceEvaluator evaluator) {
         try {
             group.getAspect(aspect).markAsUsed();
         } catch (Exception e) {
-            int i = 0;
+            throw new RuntimeException("");
         }
         return super.use(ceiling, evaluator);
     }

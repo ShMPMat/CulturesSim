@@ -72,7 +72,7 @@ public class Group {
         if (subgroup == null) {
             return;
         }
-        for (Aspect aspect : subgroup.getAspects()) {//TODO for whatever reason CWs sometimes have some new dependencies on the second turn (look in exception in addOneDependency in Aspect)
+        for (Aspect aspect : subgroup.getAspects()) {
             culturalCenter.hardAspectAdd(aspect.copy(aspect.getDependencies(), this));
         }
         culturalCenter.getAspects().forEach(Aspect::swapDependencies);

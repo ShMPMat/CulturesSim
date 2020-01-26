@@ -167,10 +167,10 @@ public class Aspect {
     public Aspect copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         return aspectCore.copy(dependencies, group);
     }
-//TODO some dependencies don't change group to subgroup when passed down to subgroups
-    public ShnyPair<Boolean, ResourcePack> use(int ceiling, ResourceEvaluator evaluator) {//TODO instrument efficiency
-        boolean isFinished;
-        markAsUsed();
+
+    public AspectResult use(int ceiling, ResourceEvaluator evaluator) {//TODO instrument efficiency
+        boolean isFinished;//TODO not increase importance if floor is not reached
+        markAsUsed();//TODO wrire Instruction class to control use of aspect (floor, ceiling, whether I want resources with a meaning)
         ResourcePack meaningfulPack = new ResourcePack();
         ceiling = group.changeStratumAmountByAspect(this, ceiling);
         for (Set<Dependency> dependency : getDependencies().values()) {
@@ -179,24 +179,24 @@ public class Aspect {
             for (Dependency dependency1 : dependency) {
                 if (dependency1.isPhony()) {
                     isFinished = true;
-                    ShnyPair<Boolean, ResourcePack> _p = dependency1.useDependency(ceiling -
+                    AspectResult _p = dependency1.useDependency(ceiling -
                             meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource), evaluator);
-                    if (!_p.first) {
+                    if (!_p.isFinished) {
                         continue;
                     }
-                    meaningfulPack.add(_p.second);
+                    meaningfulPack.add(_p.resources);
                     if (evaluator.evaluate(meaningfulPack) >= ceiling) {
                         break;
                     }
                 } else {
-                    ShnyPair<Boolean, ResourcePack> _p = dependency1.useDependency(ceiling -
+                    AspectResult _p = dependency1.useDependency(ceiling -
                             _rp.getAmountOfResourcesWithTag(dependency1.getType()), evaluator);
-                    _rp.add(_p.second);
-                    if (!_p.first) {
+                    _rp.add(_p.resources);
+                    if (!_p.isFinished) {
                         continue;
                     }
                     if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= ceiling) {
-                        if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting result because other dependencies are lacking
+                        if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
                             _rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), ceiling);
                         }
                         meaningfulPack.add(_rp);
@@ -206,10 +206,10 @@ public class Aspect {
                 }
             }
             if (!isFinished) {
-                return new ShnyPair<>(false, new ResourcePack());
+                return new AspectResult(false);
             }
         }
-        return  new ShnyPair<>(true, meaningfulPack);
+        return  new AspectResult(meaningfulPack);
     }
 
     protected void markAsUsed() {

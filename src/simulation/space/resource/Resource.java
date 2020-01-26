@@ -38,7 +38,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     private int deathTurn = 0;
     /**
      * How many additional years added to this Resource due to bad environment.
-     * Large numbers result in sooner death.
+     * Large numbers resources in sooner death.
      */
     private int deathOverhead = 0;
     /**

@@ -2,6 +2,7 @@ package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
@@ -43,21 +44,21 @@ public class LineDependency extends AbstractDependency {
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
         try {
         ResourcePack resourcePack = new ResourcePack();
         if (isAlreadyUsed || ceiling <= 0) {
-            return new ShnyPair<>(true, resourcePack);
+            return new AspectResult(resourcePack);
         }
         isAlreadyUsed = true;
-            ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
+            AspectResult _p = group.getAspect(line.second).use(ceiling,
                     new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
                             rp -> rp.getAmountOfResource(line.first.resource)));
-            _p.second.getResource(line.first.resource).getResources()
+            _p.resources.getResource(line.first.resource).getResources()
                     .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
-            resourcePack.add(_p.second);
+            resourcePack.add(_p.resources);
             isAlreadyUsed = false;
-            return new ShnyPair<>(_p.first, resourcePack);
+            return new AspectResult(_p.isFinished, resourcePack);
         } catch (NullPointerException e) {
             throw new RuntimeException("No such aspect in Group");
         }
@@ -76,7 +77,6 @@ public class LineDependency extends AbstractDependency {
     public void swapDependencies(Group group) {
         line = new ShnyPair<>((ConverseWrapper) group.getAspect(line.first), (ConverseWrapper) group.getAspect(line.second));
         if (line.first == null || line.second == null) {
-            int i = 0;
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
         }
     }

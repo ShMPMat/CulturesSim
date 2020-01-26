@@ -368,9 +368,9 @@ public class CulturalCenter {
             }
             ConverseWrapper _b = _a.stripToMeaning();
             generateCurrentMeme();
-            ShnyPair<Boolean, ResourcePack> _p = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
+            AspectResult result = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
             clearCurrentMeme();
-            for (Resource resource : _p.second.resources) {
+            for (Resource resource : result.resources.resources) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtifacts.add(resource);
                 } else {

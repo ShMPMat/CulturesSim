@@ -135,6 +135,7 @@
 
 -Feather         0       0.05   50         -500    500  100000000 0             1 1 0  None         @Feather
 
+-Blood           0       0.05   50         -500    500  100000000 0             1 1 0  None         @Blood
 
 -Clay            0       0.5    100000     -500    500  100000000 0             1 0 0  Mineral      @Clay
         +BuildHouse:House:1
@@ -162,6 +163,8 @@
 -House           0       5      10000      -500    500  100000000 10            0 1 0  None         @TEMPLATE
 
 -Dish            0       5      10000      -500    500  100000000 5             0 1 0  None         @TEMPLATE
+
+-Dye             0       5      10000      -500    500  100000000 5             0 1 0  None         @TEMPLATE
 
 
 -Fire            0       0.5    2          -500    500  100000000 0             1 0 0  None         @Flame

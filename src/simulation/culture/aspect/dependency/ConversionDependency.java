@@ -2,6 +2,7 @@ package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
@@ -32,7 +33,7 @@ public class ConversionDependency extends AbstractDependency {
     }
 
     @Override
-    public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
         ResourcePack resourcePack = new ResourcePack();
         Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
         for (Resource res : resourceInstances) {
@@ -42,7 +43,7 @@ public class ConversionDependency extends AbstractDependency {
             resourcePack.add(res.applyAndConsumeAspect(conversion.second,
                     ceiling - evaluator.evaluate(resourcePack)));
         }
-        return new ShnyPair<>(true, resourcePack);
+        return new AspectResult(resourcePack);
     }
 
     @Override
@@ -54,7 +55,6 @@ public class ConversionDependency extends AbstractDependency {
     public void swapDependencies(Group group) {
         conversion = new ShnyPair<>(conversion.first, group.getAspect(conversion.second));
         if (conversion.second == null) {
-            int i = 0;
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
         }
     }

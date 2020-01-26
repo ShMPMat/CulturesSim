@@ -1,7 +1,10 @@
-/ Grammar for matches: @ - needed property, ! - bad property
-/                      isMovable - if Resource needs to be movable
-/                      s%f       - if Resource needs to be greater in size then %f
-/                      # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
+/ Grammar for matches:     @ - needed property, ! - bad property
+/                          isMovable - if Resource needs to be movable
+/                          s%f       - if Resource needs to be greater in size then %f
+/                          # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
+/
+/ Grammar for other tags:  # - needed instrument, / - requirement
+/
 /
 
 -MountainLiving             +mountainLiving       1
@@ -20,6 +23,8 @@
     &@hard--s0.5--#House:1
 -MakeDish
     &@hard--s0.05--#Dish:1
+-MakeDye
+    &@_colour--#Dye:1
 
 -Killing                                                                     #weapon
 -Plant

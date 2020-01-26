@@ -1,7 +1,7 @@
 /Name         Density   Tags with levels
 PlantFibre    100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
 Wood          800       -hard:1     -sturdy:1                              -solid:1   -_can_be_ignited:1
-Pulp          80        -soft:1                                            -solid:1   -eatable:2
+Pulp          80        -soft:1                                            -solid:1   -eatable:2  -_colour:1
 Seed          700       -hard:1     -sturdy:1                              -solid:1
 Fungus        100       -springy:1                                         -solid:1   -eatable:2
 Meat          300       -springy:1  -flexible:1                            -solid:1   -eatable:1              +Bake:RoastedMeat
@@ -10,6 +10,7 @@ Bone          700       -hard:1     -sturdy:1                              -soli
 Chitin        500       -hard:1     -sturdy:1                              -solid:1
 Fur           200       -soft:1                                            -solid:1
 Feather       200       -soft:1     -flexible:1                            -solid:1
+Blood         200                                                          -liquid:1  -_colour:1
 
 Fibre         100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
 Cloth         100       -soft:1                      -wide:1     -warm:1   -solid:1   -_can_be_ignited:1
