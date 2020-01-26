@@ -4,6 +4,7 @@ import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.Dependency;
+import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.cultureaspect.DepictObject;
@@ -152,7 +153,7 @@ public class CulturalCenter {
         } else {
             _a = aspect.copy(dependencies, group);
             getChangedAspects().add(_a);
-            if (!(_a instanceof ConverseWrapper)) {
+            if (!(_a instanceof ConverseWrapper)) {//TODO maybe should do the same in straight
                 Set<Resource> allResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
                 allResources.addAll(getAllProducedResources().stream().map(pair -> pair.first).collect(Collectors.toSet()));
                 for (Resource resource : allResources) {
@@ -163,9 +164,18 @@ public class CulturalCenter {
         memePool.addAspectMemes(aspect);
         addMemeCombination((new MemeSubject(group.name).addPredicate(
                 session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
-        Aspect final_a = _a;
-        if (group.getStrata().stream().noneMatch(stratum -> stratum.containsAspect(final_a))) {
-            group.getStrata().add(new Stratum(0, _a, group));
+        neededAdding(_a);
+    }
+
+    void hardAspectAdd(Aspect aspect) {
+        changedAspects.add(aspect);
+        aspects.add(aspect);
+        neededAdding(aspect);
+    }
+
+    void neededAdding(Aspect aspect) {
+        if (group.getStrata().stream().noneMatch(stratum -> stratum.containsAspect(aspect))) {
+            group.getStrata().add(new Stratum(0, aspect, group));
         }
     }
 
@@ -228,6 +238,21 @@ public class CulturalCenter {
     }
 
     void update() {
+        for (Aspect aspect: aspects) {
+            if (aspect instanceof ConverseWrapper) {
+                if (aspect.getDependencies().isEmpty()) {
+                    int i = 0;
+                }
+            }
+            if (!(aspect instanceof MeaningInserter)) {
+                continue;
+            }
+            for (Dependency dependency: aspect.getDependencies().values().stream().flatMap(Collection::stream).collect(Collectors.toSet())) {
+                if (dependency instanceof LineDependency && !((LineDependency) dependency).getLine().second.getGroup().name.equals(group.name)) {
+                    int i = 0;
+                }
+            }
+        }
         tryToFulfillAspirations();
         mutateAspects();
         createArtifact();

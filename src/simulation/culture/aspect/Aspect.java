@@ -22,15 +22,15 @@ public class Aspect {
      * Map which stores for every requirement some Dependencies, from which
      * we can get get resource for using this aspect.
      */
-    Map<AspectTag, Set<Dependency>> dependencies;
+    Map<AspectTag, Set<Dependency>> dependencies = new HashMap<>();
     /**
      * Coefficient which represents how much this aspect is used by its owner.
      */
-    private int usefulness;
+    private int usefulness = 50;
     /**
      * Whether it was used on this turn.
      */
-    private boolean used;
+    private boolean used = false;
     /**
      * Group which owns this aspect.
      */
@@ -44,10 +44,8 @@ public class Aspect {
      */
     Aspect(AspectCore aspectCore, Map<AspectTag, Set<Dependency>> dependencies, Group group) {
         this.aspectCore = aspectCore;
-        this.dependencies = new HashMap<>(dependencies);
         this.group = group;
-        this.usefulness = 50;
-        this.used = false;
+        initDependencies(dependencies);
     }
 
     /**
@@ -63,6 +61,17 @@ public class Aspect {
     public static Collection<Aspect> getAllAspectsWithTag(AspectTag aspectTag, World world) {
         return world.aspectPool.stream().filter(aspect -> aspect.getTags().contains(aspectTag))
                 .collect(Collectors.toList());
+    }
+
+    void initDependencies(Map<AspectTag, Set<Dependency>> dependencies) {
+        for (Map.Entry<AspectTag, Set<Dependency>> entry: dependencies.entrySet()) {
+            this.dependencies.put(entry.getKey(),
+                    entry.getValue().stream().map(dependency -> dependency.copy(group)).collect(Collectors.toSet()));
+        }
+    }
+
+    public void swapDependencies() {
+        dependencies.values().forEach(set -> set.forEach(dependency -> dependency.swapDependencies(group)));
     }
 
     /**
@@ -90,6 +99,10 @@ public class Aspect {
      */
     public Collection<AspectTag> getRequirements() {
         return aspectCore.getRequirements();
+    }
+
+    public Group getGroup() {
+        return group;
     }
 
     /**

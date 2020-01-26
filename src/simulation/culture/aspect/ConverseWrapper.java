@@ -50,11 +50,6 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public Map<AspectTag, Set<Dependency>> getDependencies() {
-        if (!aspect.getName().equals("TakeApart") && !aspect.getName().equals("Incinerate")) {
-            int i = 0;
-        }
-//        Map<AspectTag, Set<Dependency_>> _m = new HashMap<>(dependencies);
-//        _m.putAll(aspect.dependencies);
         return dependencies;
     }
 
@@ -100,12 +95,17 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public ConverseWrapper copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
-        ConverseWrapper _w = new ConverseWrapper(aspect, resource, group);
-        _w.dependencies.putAll(dependencies);
-        _w.canInsertMeaning = dependencies.get(AspectTag.phony()).stream().anyMatch(dependency ->
-                dependency instanceof LineDependency &&
-                        ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
-        return _w;
+        ConverseWrapper copy = new ConverseWrapper(aspect, resource, group);
+        copy.initDependencies(dependencies);
+        try {
+            copy.canInsertMeaning = dependencies.get(AspectTag.phony()).stream().anyMatch(dependency ->
+                    dependency instanceof LineDependency &&
+                            ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
+            return copy;
+        } catch (Exception e) {
+            int i = 0;
+            return null;
+        }
     }
 
     @Override

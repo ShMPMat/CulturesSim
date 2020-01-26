@@ -58,7 +58,7 @@ public class Group {
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
 
-    private Group(String name, int population, double spreadability, int numberOfSubGroups, Tile root, GroupConglomerate parentGroup) {
+    private Group(String name, int population, double spreadability, Tile root, GroupConglomerate parentGroup) {
         this.name = name;
         this.parentGroup = parentGroup;
         this.population = population;
@@ -68,15 +68,15 @@ public class Group {
     }
 
     Group(GroupConglomerate group, Group subgroup, String name, int population, Tile tile) {
-        this(name, population, session.defaultGroupSpreadability, 0, tile, group);
+        this(name, population, session.defaultGroupSpreadability, tile, group);
         if (subgroup == null) {
             return;
         }
-        for (Aspect aspect : subgroup.getAspects()) {
-            getCulturalCenter().addAspectNow(aspect, aspect.getDependencies());
-            finishUpdate();
+        for (Aspect aspect : subgroup.getAspects()) {//TODO for whatever reason CWs sometimes have some new dependencies on the second turn (look in exception in addOneDependency in Aspect)
+            culturalCenter.hardAspectAdd(aspect.copy(aspect.getDependencies(), this));
         }
-        culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
+        culturalCenter.getAspects().forEach(Aspect::swapDependencies);
+        culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool()); //TODO seems like memes can become unbinded with CultureAspects
     }
 
     public Set<Aspect> getAspects() {
@@ -303,7 +303,7 @@ public class Group {
             if (group.territory.isEmpty()) {
                 int i = 0;
             }
-            group.culturalCenter.initializeFromCenter(culturalCenter);
+            group.culturalCenter.initializeFromCenter(culturalCenter);//TODO maybe put in constructor somehow
             parentGroup.addGroup(group);
         }
     }

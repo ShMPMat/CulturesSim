@@ -3,6 +3,7 @@ package simulation.culture.aspect.dependency;
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
+import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
@@ -33,6 +34,20 @@ public class AspectDependency extends AbstractDependency {
     @Override
     public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
         return aspect.use(ceiling, new ResourceEvaluator());
+    }
+
+    @Override
+    public AspectDependency copy(Group group) {//TODO aspect isn't changing
+        return new AspectDependency(tag, aspect);
+    }
+
+    @Override
+    public void swapDependencies(Group group) {
+        aspect = group.getAspect(aspect);
+        if (aspect == null) {
+            int i = 0;
+            throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
+        }
     }
 
     @Override

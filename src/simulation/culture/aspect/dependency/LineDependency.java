@@ -26,6 +26,10 @@ public class LineDependency extends AbstractDependency {
         return line.first.getName() + " from " + line.second.getName();
     }
 
+    public ShnyPair<ConverseWrapper, ConverseWrapper> getLine() {
+        return line;
+    }
+
     @Override
     public boolean isCycleDependency(Aspect aspect) {//TODO prohibit dependencies from same aspect which are not separated by other aspects;
         if (isAlreadyUsed) {
@@ -40,12 +44,12 @@ public class LineDependency extends AbstractDependency {
 
     @Override
     public ShnyPair<Boolean, ResourcePack> useDependency(int ceiling, ResourceEvaluator evaluator) {
+        try {
         ResourcePack resourcePack = new ResourcePack();
         if (isAlreadyUsed || ceiling <= 0) {
             return new ShnyPair<>(true, resourcePack);
         }
         isAlreadyUsed = true;
-        try {
             ShnyPair<Boolean, ResourcePack> _p = group.getAspect(line.second).use(ceiling,
                     new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
                             rp -> rp.getAmountOfResource(line.first.resource)));
@@ -54,14 +58,27 @@ public class LineDependency extends AbstractDependency {
             resourcePack.add(_p.second);
             isAlreadyUsed = false;
             return new ShnyPair<>(_p.first, resourcePack);
-        } catch (Exception e) {
-            int i = 0;
-            return null;
+        } catch (NullPointerException e) {
+            throw new RuntimeException("No such aspect in Group");
         }
     }
 
     public ConverseWrapper getNextWrapper() {
         return line.second;
+    }
+
+    @Override
+    public LineDependency copy(Group group) {
+        return new LineDependency(tag, group, line);
+    }
+
+    @Override
+    public void swapDependencies(Group group) {
+        line = new ShnyPair<>((ConverseWrapper) group.getAspect(line.first), (ConverseWrapper) group.getAspect(line.second));
+        if (line.first == null || line.second == null) {
+            int i = 0;
+            throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
+        }
     }
 
     @Override

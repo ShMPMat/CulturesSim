@@ -46,6 +46,20 @@ public class ConversionDependency extends AbstractDependency {
     }
 
     @Override
+    public ConversionDependency copy(Group group) {
+        return new ConversionDependency(tag, group, conversion);
+    }
+
+    @Override
+    public void swapDependencies(Group group) {
+        conversion = new ShnyPair<>(conversion.first, group.getAspect(conversion.second));
+        if (conversion.second == null) {
+            int i = 0;
+            throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
+        }
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

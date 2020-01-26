@@ -43,8 +43,8 @@ public class MeaningInserter extends ConverseWrapper {
 
     @Override
     public MeaningInserter copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
-        MeaningInserter _w = new MeaningInserter(aspect, resource, group);
-        _w.dependencies.putAll(dependencies);
+        MeaningInserter copy = new MeaningInserter(aspect, resource, group);
+        copy.initDependencies(dependencies);
         Collection<AspectTag> unwantedTags = new ArrayList<>();
         for (AspectTag aspectTag : dependencies.keySet()) {
             if (!(aspectTag.isInstrumental || aspectTag.name.equals("phony"))) {
@@ -52,6 +52,6 @@ public class MeaningInserter extends ConverseWrapper {
             }
         }
         unwantedTags.forEach(dependencies::remove);
-        return _w;
+        return copy;
     }
 }
