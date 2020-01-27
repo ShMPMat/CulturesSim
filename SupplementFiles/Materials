@@ -4,7 +4,7 @@ Wood          800       -hard:1     -sturdy:1                              -soli
 Pulp          80        -soft:1                                            -solid:1   -eatable:2  -_colour:1
 Seed          700       -hard:1     -sturdy:1                              -solid:1
 Fungus        100       -springy:1                                         -solid:1   -eatable:2
-Meat          300       -springy:1  -flexible:1                            -solid:1   -eatable:1              +Bake:RoastedMeat
+Meat          300       -springy:2  -flexible:1                            -solid:1   -eatable:1              +Bake:RoastedMeat
 Fat           300       -soft:1     -flexible:1                            -solid:1
 Bone          700       -hard:1     -sturdy:1                              -solid:1
 Chitin        500       -hard:1     -sturdy:1                              -solid:1
@@ -15,7 +15,7 @@ Blood         200                                                          -liqu
 Fibre         100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
 Cloth         100       -soft:1                      -wide:1     -warm:1   -solid:1   -_can_be_ignited:1
 
-RoastedMeat   400       -hard:1     -stiff:1                               -solid:1   -eatable:4
+RoastedMeat   400       -springy:1  -stiff:1                               -solid:1   -eatable:4
 
 Clay          1000      -soft:1     -malleable:1                           -solid:1                         +Bake:Ceramics
 Ceramics      1000      -hard:1     -fragile:1                             -solid:1
