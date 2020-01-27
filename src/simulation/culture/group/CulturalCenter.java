@@ -359,7 +359,8 @@ public class CulturalCenter {
             }
             ConverseWrapper _b = _a.stripToMeaning();
             generateCurrentMeme();
-            AspectResult result = _b.use(1, new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
+            AspectResult result = _b.use(new AspectController(1, 1,
+                    new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
             clearCurrentMeme();
             for (Resource resource : result.resources.resources) {
                 if (resource.hasMeaning()) {

@@ -3,6 +3,7 @@ package simulation.culture.group;
 import extra.ShnyPair;
 import simulation.Controller;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.aspect.dependency.Dependency;
@@ -79,10 +80,10 @@ public class Stratum {
         aspects.add(aspect);
     }
 
-    public ResourcePack use(int ceiling, ResourceEvaluator evaluator) {
+    public ResourcePack use(AspectController controller) {
         ResourcePack resourcePack = new ResourcePack();
         for (Aspect aspect: aspects) {
-            AspectResult result = aspect.use(ceiling, evaluator);
+            AspectResult result = aspect.use(controller);
             if (!result.resources.isEmpty()) {
                 group.getCulturalCenter().getMemePool().strengthenMeme(Meme.getMeme(aspect));
                 result.resources.getResources().forEach(resource ->
@@ -118,7 +119,8 @@ public class Stratum {
                 Set<Dependency> deps = aspect.getDependencies().get(entry.getKey());
                 if (deps != null) {
                     for (Dependency dependency: deps) {
-                        AspectResult result = dependency.useDependency(amount - currentAmount, evaluator);
+                        AspectResult result = dependency.useDependency(
+                                new AspectController(amount - currentAmount, 1, evaluator));
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);
                             entry.getValue().add(evaluator.pick(result.resources));//TODO disband

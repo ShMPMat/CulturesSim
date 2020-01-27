@@ -1,6 +1,7 @@
 package simulation.culture.group.cultureaspect;
 
 import extra.ShnyPair;
+import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
@@ -32,8 +33,8 @@ public class DepictObject extends AbstractCultureAspect {
     @Override
     public void use() {
         group.getCulturalCenter().putCurrentMeme(meme.toString());
-        AspectResult result = converseWrapper.use(1,
-                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount));
+        AspectResult result = converseWrapper.use(new AspectController(1, 1,
+                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
         if (result.isFinished) {
             group.cherishedResources.add(result.resources);
             resourceBehaviour.procedeResources(result.resources);

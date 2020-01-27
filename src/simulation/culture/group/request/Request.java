@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Request {
     protected Group group;
-    int floor;
+    public int floor;
     public int ceiling;
     BiFunction<ShnyPair<Group, ResourcePack>, Double,Void> penalty, reward;
 

@@ -2,6 +2,7 @@ package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.Group;
@@ -37,10 +38,11 @@ public class ResourceDependency extends AbstractDependency {
     }
 
     @Override
-    public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult useDependency(AspectController controller) {
         ResourcePack resourcePack = new ResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
-            return new AspectResult(tag.consumeAndGetResult(group.getParentGroup().getTerritory().getResourceInstances(resource), ceiling), null);
+            return new AspectResult(tag.consumeAndGetResult(group.getParentGroup().getTerritory()
+                    .getResourceInstances(resource), controller.ceiling), null);
         }
         return new AspectResult(resourcePack, null);
     }

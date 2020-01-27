@@ -1,10 +1,7 @@
 package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
-import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.AspectTag;
-import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
@@ -39,7 +36,7 @@ public class LineDependency extends AbstractDependency {
         }
         isAlreadyUsed = true;
         boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect) /*&& line.second != aspect*/);
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect));
         isAlreadyUsed = false;
         return b;
     }
@@ -51,24 +48,24 @@ public class LineDependency extends AbstractDependency {
         }
         isAlreadyUsed = true;
         boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect) /*&& line.second != aspect*/);
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect));
         isAlreadyUsed = false;
         return b;
     }
 
     @Override
-    public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult useDependency(AspectController controller) {
         try {
         ResourcePack resourcePack = new ResourcePack();
-        if (isAlreadyUsed || ceiling <= 0) {
+        if (isAlreadyUsed || controller.ceiling <= 0) {
             return new AspectResult(resourcePack, null);
         }
         isAlreadyUsed = true;
-            AspectResult _p = group.getAspect(line.second).use(ceiling,
+            AspectResult _p = group.getAspect(line.second).use(new AspectController(controller.ceiling, controller.floor,
                     new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
-                            rp -> rp.getAmountOfResource(line.first.resource)));
+                            rp -> rp.getAmountOfResource(line.first.resource))));
             resourcePack.add(_p.resources.getResource(line.first.resource).getResources().stream()
-                    .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling).stream()).collect(Collectors.toList()));
+                    .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, controller.ceiling).stream()).collect(Collectors.toList()));
             resourcePack.add(_p.resources);
             isAlreadyUsed = false;
             return new AspectResult(_p.isFinished, resourcePack, null);

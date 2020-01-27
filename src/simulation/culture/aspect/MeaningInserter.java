@@ -25,8 +25,8 @@ public class MeaningInserter extends ConverseWrapper {
     }
 
     @Override
-    public AspectResult use(int ceiling, ResourceEvaluator evaluator) {
-        AspectResult result = super.use(ceiling, evaluator);
+    public AspectResult use(AspectController controller) {
+        AspectResult result = super.use(controller);
         Collection<Resource> res = new ArrayList<>(result.resources.getResourceAndRemove(resource).getResources());
         res.removeIf(r -> r.getAmount() == 0);
         result.resources.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), result))

@@ -176,11 +176,10 @@ public class Aspect {
         return aspectCore.copy(dependencies, group);
     }
 
-    public AspectResult use(int ceiling, ResourceEvaluator evaluator) {//TODO instrument efficiency
-        boolean isFinished;//TODO not increase importance if floor is not reached
-        markAsUsed();//TODO wrire Instruction class to control use of aspect (floor, ceiling, whether I want resources with a meaning)
+    public AspectResult use(AspectController controller) {//TODO instrument efficiency
+        boolean isFinished;
         ResourcePack meaningfulPack = new ResourcePack();
-        ceiling = group.changeStratumAmountByAspect(this, ceiling);
+        controller.ceiling = group.changeStratumAmountByAspect(this, controller.ceiling);
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         for (Map.Entry<AspectTag, Set<Dependency>> entry : getDependencies().entrySet()) {
             Set<Dependency> dependency = entry.getValue();
@@ -188,31 +187,33 @@ public class Aspect {
             isFinished = false;
             ResourcePack _rp = new ResourcePack();
             ResourcePack provided = group.getStratumByAspect(this).getInstrumentByTag(entry.getKey());
-            if (provided != null) { //TODO shove it in AspectUseController
+            if (provided != null) {
                 _rp.add(provided);
             }
             for (Dependency dependency1 : dependency) {
                 if (dependency1.isPhony()) {
                     isFinished = true;
-                    AspectResult _p = dependency1.useDependency(ceiling -
-                            meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource), evaluator);
+                    int newDelta = meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource);
+                    AspectResult _p = dependency1.useDependency(new AspectController(controller.ceiling -
+                            newDelta, controller.floor - newDelta, controller.evaluator, controller.isMeaningNeeded));
                     if (!_p.isFinished) {
                         continue;
                     }
                     meaningfulPack.add(_p.resources);
-                    if (evaluator.evaluate(meaningfulPack) >= ceiling) {
+                    if (controller.evaluator.evaluate(meaningfulPack) >= controller.ceiling) {
                         break;
                     }
                 } else {
-                    AspectResult result = dependency1.useDependency(ceiling -
-                            _rp.getAmountOfResourcesWithTag(dependency1.getType()), evaluator);
+                    int newDelta = _rp.getAmountOfResourcesWithTag(dependency1.getType());
+                    AspectResult result = dependency1.useDependency(new AspectController(controller.ceiling -
+                            newDelta, controller.floor - newDelta, controller.evaluator, controller.isMeaningNeeded));
                     _rp.add(result.resources);
                     if (!result.isFinished) {
                         continue;
                     }
-                    if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= ceiling) {
+                    if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= controller.ceiling) {
                         if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
-                            usedForDependency.add(_rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), ceiling).second);
+                            usedForDependency.add(_rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), controller.ceiling).second);
                         } else {
                             usedForDependency.add(_rp.getAllResourcesWithTag(dependency1.getType()));
                         }
@@ -227,7 +228,10 @@ public class Aspect {
                 return new AspectResult(false, node);
             }
         }
-        return  new AspectResult(meaningfulPack, node);
+        if (controller.evaluator.evaluate(meaningfulPack) >= controller.floor) {
+            markAsUsed();
+        }
+        return new AspectResult(meaningfulPack, node);
     }
 
     protected void markAsUsed() {

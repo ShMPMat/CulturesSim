@@ -2,6 +2,7 @@ package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.group.Group;
@@ -12,7 +13,7 @@ public interface Dependency {
     String getName();
     boolean isCycleDependency(Aspect aspect);
     boolean isCycleDependencyInner(Aspect aspect);
-    AspectResult useDependency(int ceiling, ResourceEvaluator evaluator);
+    AspectResult useDependency(AspectController controller);
     boolean isPhony();
     AspectTag getType();
     Dependency copy(Group group);

@@ -1,10 +1,7 @@
 package simulation.culture.aspect.dependency;
 
 import extra.ShnyPair;
-import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.AspectTag;
-import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
@@ -39,15 +36,15 @@ public class ConversionDependency extends AbstractDependency {
     }
 
     @Override
-    public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult useDependency(AspectController controller) {
         ResourcePack resourcePack = new ResourcePack();
         Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
         for (Resource res : resourceInstances) {
-            if (ceiling <= evaluator.evaluate(resourcePack)) {
+            if (controller.ceiling <= controller.evaluator.evaluate(resourcePack)) {
                 break;
             }
             resourcePack.add(res.applyAndConsumeAspect(conversion.second,
-                    ceiling - evaluator.evaluate(resourcePack)));
+                    controller.ceiling - controller.evaluator.evaluate(resourcePack)));
         }
         return new AspectResult(resourcePack, null);
     }

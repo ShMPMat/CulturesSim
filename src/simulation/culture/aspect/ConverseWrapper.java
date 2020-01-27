@@ -63,13 +63,13 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public AspectResult use(int ceiling, ResourceEvaluator evaluator) {
+    public AspectResult use(AspectController controller) {
         try {
             group.getAspect(aspect).markAsUsed();
         if (aspect.getName().equals("Paint")) {
             int i = 0;
         }
-        return super.use(ceiling, evaluator);
+        return super.use(controller);
         } catch (Exception e) {
             throw new RuntimeException("");
         }
