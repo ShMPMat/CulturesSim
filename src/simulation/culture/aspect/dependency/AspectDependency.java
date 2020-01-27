@@ -12,6 +12,7 @@ import simulation.space.resource.ResourcePack;
 import java.util.Objects;
 
 public class AspectDependency extends AbstractDependency {
+    static int debug = 0;
     private Aspect aspect;
 
     public AspectDependency(AspectTag tag, Aspect aspect) {
@@ -26,6 +27,7 @@ public class AspectDependency extends AbstractDependency {
 
     @Override
     public boolean isCycleDependency(Aspect aspect) {
+        debug = 0;
         if (aspect instanceof ConverseWrapper && this.aspect.equals(((ConverseWrapper) aspect).aspect)) {
             return true;
         }
@@ -36,6 +38,10 @@ public class AspectDependency extends AbstractDependency {
     @Override
     public boolean isCycleDependencyInner(Aspect aspect) {
         try {
+            debug++;
+            if (debug == 100) {
+                int i = 0;
+            }
             if (this.aspect.equals(aspect) ||
                     aspect instanceof ConverseWrapper && this.aspect.equals(((ConverseWrapper) aspect).aspect)) {
                 return true;
@@ -49,7 +55,11 @@ public class AspectDependency extends AbstractDependency {
 
     @Override
     public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
-        return aspect.use(ceiling, new ResourceEvaluator());
+        try {
+            return aspect.use(ceiling, new ResourceEvaluator());
+        } catch (StackOverflowError e) {
+            throw new RuntimeException("Infinite Dependency");
+        }
     }
 
     @Override

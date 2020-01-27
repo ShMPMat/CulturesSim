@@ -22,26 +22,28 @@ public class AspectTag {
      * Whether Resource doesn't waste on use.
      */
     boolean isInstrumental;
+    boolean isConverseCondition;
     public int level;
 
-    public AspectTag(String name, boolean isAbstract, boolean isInstrumental, int level) {
+    public AspectTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition, int level) {
         this.name = name;
         this.isAbstract = isAbstract;
         this.isInstrumental = isInstrumental;
+        this.isConverseCondition = isConverseCondition;
         this.level = level;
     }
 
-    public AspectTag(String name, boolean isAbstract, boolean isInstrumental) {
-        this(name, isAbstract, isInstrumental, 1);
+    public AspectTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition) {
+        this(name, isAbstract, isInstrumental, isConverseCondition, 1);
     }
 
     public AspectTag(String name) {
-        this(name, false, false);
+        this(name, false, false, false);
     }
 
 
     public AspectTag(String name, int level) {
-        this(name, false, false, level);
+        this(name, false, false, false, level);
     }
 
     public boolean isAbstract() {
@@ -65,7 +67,7 @@ public class AspectTag {
     }
 
     public AspectTag copy() {
-        return new AspectTag(name, isAbstract, isInstrumental, level);
+        return new AspectTag(name, isAbstract, isInstrumental, isConverseCondition, level);
     }
 
 
@@ -89,5 +91,9 @@ public class AspectTag {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public boolean isWrapperCondition() {
+        return isConverseCondition;
     }
 }

@@ -100,8 +100,8 @@ public class Aspect {
         return aspectCore.getRequirements();
     }
 
-    public Collection<AspectTag> getNoninstrumentalRequirements() {
-        return aspectCore.getRequirements().stream().filter(aspectTag -> !aspectTag.isInstrumental)
+    public Collection<AspectTag> getWrapperRequirements() {
+        return aspectCore.getRequirements().stream().filter(aspectTag -> aspectTag.isConverseCondition)
                 .collect(Collectors.toSet());
     }
 
@@ -139,7 +139,7 @@ public class Aspect {
     }
 
     public boolean isDependenciesOk(Map<AspectTag, Set<Dependency>> dependencies) {
-        return getRequirements().size() == dependencies.size();
+        return getRequirements().size() - getWrapperRequirements().size() == dependencies.size();
     }
 
     public boolean canTakeResources() {

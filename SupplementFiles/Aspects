@@ -3,8 +3,8 @@
 /                          s%f       - if Resource needs to be greater in size then %f
 /                          # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
 /
-/ Grammar for other tags:  # - needed instrument, / - requirement
-/
+/ Grammar for other tags:  # - needed instrument, / - needed ingredient,
+/                          * - what Resource should possess to satisfy CW on this Aspect
 /
 
 -MountainLiving             +mountainLiving       1
@@ -32,10 +32,11 @@
 -Take
     &!gas--isMovable--#MATCHED:1
 
--ShapeMalleable                                                              /malleable          #MEANING
--Engrave                                                                     /goodForEngraving   #MEANING
--Carve                                                                       /goodForEngraving   #MEANING
--Paint                                                     /solid        #colour                 #MEANING
+-ShapeMalleable                                                              *malleable          #MEANING
+-Engrave                                                                     *goodForEngraving   #MEANING
+-Carve                                                                       *goodForEngraving   #MEANING
+-Paint                                                     *solid        #colour                 #MEANING
+-Incrust                                                   *hard         /hard                   #MEANING
 
 /Riding                                                                      /ridingAnimals
 /Farming                    -food                  1                        /seeds

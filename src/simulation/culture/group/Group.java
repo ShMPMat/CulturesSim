@@ -152,7 +152,7 @@ public class Group {
             addForConverseWrapper((ConverseWrapper) aspect, dep);
         }
         for (AspectTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals(AspectTag.phony().name)) {
+            if (requirement.name.equals(AspectTag.phony().name) || requirement.isWrapperCondition()) {
                 continue;
             }
             addAspectDependencies(requirement, dep, aspect);
@@ -189,7 +189,7 @@ public class Group {
         for (Aspect selfAspect : getAspects()) {
             if (selfAspect.getTags().contains(requirement)) {
                 Dependency dependency = new AspectDependency(requirement, selfAspect);
-                if (dependency.isCycleDependency(selfAspect)) {
+                if (dependency.isCycleDependency(selfAspect) || dependency.isCycleDependencyInner(aspect)) {
                     continue;
                 }
                 addDependenciesInMap(dep, Collections.singleton(dependency), requirement);

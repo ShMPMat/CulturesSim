@@ -6,9 +6,9 @@ import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Special Aspect which wraps around another aspect and resource and returns application
@@ -40,8 +40,8 @@ public class ConverseWrapper extends Aspect {
             aspectCore.addAllTags(res.getTags());
         }
         getRequirements().add(AspectTag.phony());
-        getRequirements().addAll(aspect.getRequirements());
-        getRequirements().removeAll(aspect.getNoninstrumentalRequirements()); //TODO Bake and Roast are broken now
+        getRequirements().addAll(aspect.getRequirements().stream().filter(tag -> !tag.isConverseCondition)
+                .collect(Collectors.toList())); //TODO Bake and Roast are broken now
     }
 
     public AspectTag getRequirement() {
@@ -49,8 +49,8 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public Collection<AspectTag> getNoninstrumentalRequirements() {
-        return aspect.getNoninstrumentalRequirements();
+    public Collection<AspectTag> getWrapperRequirements() {
+        return aspect.getWrapperRequirements();
     }
 
     public List<Resource> getResult() {
@@ -95,6 +95,11 @@ public class ConverseWrapper extends Aspect {
         }
         traversedCopy = null;
         return converseWrapper;
+    }
+
+    @Override
+    public boolean isDependenciesOk(Map<AspectTag, Set<Dependency>> dependencies) {
+        return getRequirements().size() == dependencies.size();
     }
 
     @Override

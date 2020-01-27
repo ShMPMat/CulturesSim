@@ -35,24 +35,24 @@ class AspectCore {
             } else {
                 switch ((tag.charAt(0))) {
                     case '-':
-                        this.tags.add(new AspectTag(tag.substring(1), false, false));
+                        this.tags.add(new AspectTag(tag.substring(1), false, false, false));
                         i++;
                         break;
                     case '+':
-                        this.tags.add(new AspectTag(tag.substring(1), true, false));
+                        this.tags.add(new AspectTag(tag.substring(1), true, false, false));
                         i++;
                         break;
                     case '/':
-                        this.requirements.add(new AspectTag(tag.substring(1), false, false));
+                        this.requirements.add(new AspectTag(tag.substring(1), false, false, false));
                         break;
                     case '*':
-                        this.requirements.add(new AspectTag(tag.substring(1), true, false));
+                        this.requirements.add(new AspectTag(tag.substring(1), false, false, true));
                         break;
                     case '#':
                         if (tag.substring(1).equals("MEANING")) {
                             applyMeaning = true;
                         } else {
-                            this.requirements.add(new AspectTag(tag.substring(1), false, true));
+                            this.requirements.add(new AspectTag(tag.substring(1), false, true, false));
                         }
                         break;
                     case '&':
