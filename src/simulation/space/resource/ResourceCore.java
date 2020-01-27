@@ -170,9 +170,12 @@ public class ResourceCore {
                     Integer.parseInt(s.split(":")[1]));
         }
         Resource resource = session.world.getPoolResource(s.split(":")[0]);
-        return new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
+        ShnyPair<Resource, Integer> pair = new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
                 resource.resourceCore.copyWithLegacyInsertion(this) : resource,
                 Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;
+        pair.first.resourceCore._aspectConversion = new HashMap<>(resource.resourceCore._aspectConversion);
+        pair.first.resourceCore.actualizeLinks();
+        return pair;
     }
 
     public Map<Aspect, List<ShnyPair<Resource, Integer>>> getAspectConversion() {
@@ -332,9 +335,6 @@ public class ResourceCore {
 
     List<Resource> applyAspect(Aspect aspect) {
         if (aspectConversion.containsKey(aspect)) {
-            if (aspectConversion.get(aspect).stream().anyMatch(resourceIntegerShnyPair -> resourceIntegerShnyPair.first == null)) {
-                int i = 0;
-            }
             List<Resource> resourceList = aspectConversion.get(aspect).stream().map(pair -> pair.first.copy(pair.second))
                     .collect(Collectors.toList());
             resourceList.forEach(resource -> {

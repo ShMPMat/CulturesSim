@@ -237,21 +237,6 @@ public class CulturalCenter {
     }
 
     void update() {
-        for (Aspect aspect: aspects) {
-            if (aspect instanceof ConverseWrapper) {
-                if (aspect.getDependencies().isEmpty()) {
-                    int i = 0;
-                }
-            }
-            if (!(aspect instanceof MeaningInserter)) {
-                continue;
-            }
-            for (Dependency dependency: aspect.getDependencies().values().stream().flatMap(Collection::stream).collect(Collectors.toSet())) {
-                if (dependency instanceof LineDependency && !((LineDependency) dependency).getLine().second.getGroup().name.equals(group.name)) {
-                    int i = 0;
-                }
-            }
-        }
         tryToFulfillAspirations();
         mutateAspects();
         createArtifact();

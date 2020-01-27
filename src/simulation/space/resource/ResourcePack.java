@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Bunch of resources stored together.
  */
-public class ResourcePack {
+public class ResourcePack { //TODO subclass which stores all instances of the same Resource on different Tiles
     /**
      * Resources which this pack contains.
      */

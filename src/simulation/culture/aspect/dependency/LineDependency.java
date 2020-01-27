@@ -10,6 +10,7 @@ import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class LineDependency extends AbstractDependency {
     private boolean isAlreadyUsed = false;
@@ -66,8 +67,8 @@ public class LineDependency extends AbstractDependency {
             AspectResult _p = group.getAspect(line.second).use(ceiling,
                     new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
                             rp -> rp.getAmountOfResource(line.first.resource)));
-            _p.resources.getResource(line.first.resource).getResources()
-                    .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
+            resourcePack.add(_p.resources.getResource(line.first.resource).getResources().stream()
+                    .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling).stream()).collect(Collectors.toList()));
             resourcePack.add(_p.resources);
             isAlreadyUsed = false;
             return new AspectResult(_p.isFinished, resourcePack, null);

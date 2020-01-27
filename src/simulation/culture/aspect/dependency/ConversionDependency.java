@@ -4,6 +4,7 @@ import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
+import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
@@ -29,11 +30,12 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public boolean isCycleDependency(Aspect aspect) {
-        return false;
+        return aspect instanceof ConverseWrapper && conversion.second.equals(((ConverseWrapper) aspect).aspect);
     }
 
     public boolean isCycleDependencyInner(Aspect aspect) {
-        return conversion.second.equals(aspect);
+        return aspect instanceof ConverseWrapper && conversion.second.equals(((ConverseWrapper) aspect).aspect) ||
+                conversion.second.equals(aspect);
     }
 
     @Override

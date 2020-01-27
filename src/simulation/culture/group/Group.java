@@ -155,25 +155,21 @@ public class Group {
             if (requirement.name.equals(AspectTag.phony().name)) {
                 continue;
             }
-            addResourceDependencies(requirement, dep);
-            addAspectDependencies(requirement, dep);
+            addAspectDependencies(requirement, dep, aspect);
         }
         return dep;
     }
 
     private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<AspectTag, Set<Dependency>> dep) {
         if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
-            if (getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
-                addDependenciesInMap(dep, Collections.singleton(/*new Dependency_(converseWrapper.getRequirement(), this,
-                        new ShnyPair<>(converseWrapper.resource, converseWrapper.aspect))*/
-                new ConversionDependency(converseWrapper.getRequirement(), this,
+            if (converseWrapper.canTakeResources() && getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
+                addDependenciesInMap(dep, Collections.singleton(
+                        new ConversionDependency(converseWrapper.getRequirement(), this,
                         new ShnyPair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
             }
             addDependenciesInMap(dep, getCulturalCenter().getAllProducedResources().stream()
                             .filter(pair -> pair.first.equals(converseWrapper.resource))
-                            .map(pair -> /*new Dependency_(converseWrapper.getRequirement(), new ShnyPair<>(converseWrapper, pair.second),
-                                    this)*/
-                            new LineDependency(converseWrapper.getRequirement(), this,
+                            .map(pair -> new LineDependency(converseWrapper.getRequirement(), this,
                                     new ShnyPair<>(converseWrapper, pair.second))).filter(dependency ->
                                     !dependency.isCycleDependency(converseWrapper)).collect(Collectors.toList()),
                     converseWrapper.getRequirement());
@@ -189,7 +185,7 @@ public class Group {
         }
     }
 
-    private void addAspectDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep) {
+    private void addAspectDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep, Aspect aspect) {
         for (Aspect selfAspect : getAspects()) {
             if (selfAspect.getTags().contains(requirement)) {
                 Dependency dependency = new AspectDependency(requirement, selfAspect);
@@ -203,7 +199,7 @@ public class Group {
             addDependenciesInMap(dep, territory.getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
                             .map(resource -> /*new Dependency_(requirement, this, new ShnyPair<>(resource, selfAspect))*/
                             new ConversionDependency(requirement, this, new ShnyPair<>(resource, selfAspect)))
-                            .collect(Collectors.toList()),
+                            .filter(dependency -> !dependency.isCycleDependency(aspect)).collect(Collectors.toList()),
                     requirement);
         }
     }

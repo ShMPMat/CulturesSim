@@ -33,7 +33,7 @@ public class ResourceDependency extends AbstractDependency {
 
     @Override
     public boolean isCycleDependencyInner(Aspect aspect) {
-        return resource != null;
+        return false/*resource != null*/; //TODO what?
     }
 
     @Override

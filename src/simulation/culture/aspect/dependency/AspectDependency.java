@@ -4,6 +4,7 @@ import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
+import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
@@ -25,17 +26,25 @@ public class AspectDependency extends AbstractDependency {
 
     @Override
     public boolean isCycleDependency(Aspect aspect) {
+        if (aspect instanceof ConverseWrapper && this.aspect.equals(((ConverseWrapper) aspect).aspect)) {
+            return true;
+        }
         return this.aspect.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
                 .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect)));
     }
 
     @Override
     public boolean isCycleDependencyInner(Aspect aspect) {
-        if (this.aspect.equals(aspect)) {
-            return true;
+        try {
+            if (this.aspect.equals(aspect) ||
+                    aspect instanceof ConverseWrapper && this.aspect.equals(((ConverseWrapper) aspect).aspect)) {
+                return true;
+            }
+            return this.aspect.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                    .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect)));
+        } catch (StackOverflowError e) {
+            throw new RuntimeException("Endless dependencies");
         }
-        return this.aspect.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect)));
     }
 
     @Override

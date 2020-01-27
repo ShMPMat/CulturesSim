@@ -142,6 +142,10 @@ public class Aspect {
         return getRequirements().size() == dependencies.size();
     }
 
+    public boolean canTakeResources() {
+        return false;
+    }
+
     @Deprecated
     public void mergeDependencies(Aspect aspect) {
         if (!aspect.getName().equals(getName())) {

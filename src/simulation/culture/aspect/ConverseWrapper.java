@@ -41,10 +41,16 @@ public class ConverseWrapper extends Aspect {
         }
         getRequirements().add(AspectTag.phony());
         getRequirements().addAll(aspect.getRequirements());
+        getRequirements().removeAll(aspect.getNoninstrumentalRequirements()); //TODO Bake and Roast are broken now
     }
 
     public AspectTag getRequirement() {
         return AspectTag.phony();
+    }
+
+    @Override
+    public Collection<AspectTag> getNoninstrumentalRequirements() {
+        return aspect.getNoninstrumentalRequirements();
     }
 
     public List<Resource> getResult() {
@@ -100,6 +106,11 @@ public class ConverseWrapper extends Aspect {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean canTakeResources() {
+        return aspect.getName().equals("Take") || aspect.getName().equals("Killing");
     }
 
     @Override
