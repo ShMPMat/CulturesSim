@@ -271,7 +271,7 @@ public class CulturalCenter {
                     }
                 }
             case 1:
-                Meme meme = constructMeme();
+                Meme meme = constructTale();
                 if (meme != null) {
                     cultureAspect = new Tale(group, meme);
                     break;
@@ -288,13 +288,17 @@ public class CulturalCenter {
         addCultureAspect(cultureAspect);
     }
 
+    private Meme constructTale() {
+        return constructMeme();
+    }
+
     private Meme constructMeme() {
         Meme meme = getMemePool().getMemeWithComplexityBias();
         if (getChances(0.5)) {
             Meme second;
             do {
                 second = getMemePool().getMemeWithComplexityBias().copy();
-            } while (second.equals(meme));
+            } while (second.hasPart(meme, Collections.singleton("and")));
             meme = meme.copy().addPredicate(getMemePool().getMemeCopy("and").addPredicate(second));
             getMemePool().addMemeCombination(meme);
         }

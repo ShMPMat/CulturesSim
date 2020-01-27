@@ -136,6 +136,7 @@ public class GroupMemes extends MemePool {
             add(meme.copy());
             return true;
         }
-        return false;
+        addMemeCombination(meme.copy());
+        return true;
     }
 }

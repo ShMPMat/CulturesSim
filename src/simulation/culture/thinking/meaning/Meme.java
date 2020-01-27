@@ -3,9 +3,8 @@ package simulation.culture.thinking.meaning;
 import simulation.culture.aspect.Aspect;
 import simulation.space.resource.Resource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 abstract public class Meme {
     String observerWord;
@@ -49,6 +48,33 @@ abstract public class Meme {
     public Meme addPredicate(Meme predicate) {
         predicates.add(predicate);
         return this;
+    }
+
+    public List<Meme> splitOn(Collection<String> splitters) {//TODO empty if only splitters are there
+        List<Meme> memes = new ArrayList<>();
+        Queue<Meme> newMemes = new ArrayDeque<>();
+        Meme copy = copy();
+        memes.add(copy);
+        newMemes.add(copy);
+        while (!newMemes.isEmpty()) {
+            Meme current = newMemes.poll();
+            List<Meme> memeList = current.predicates;
+            for (int i = 0; i < memeList.size(); i++) {
+                Meme child = memeList.get(i);
+                if (splitters.contains(child.observerWord)) {
+                    memeList.remove(i);
+                    i--;
+                    memes.addAll(child.predicates);
+                }
+                newMemes.addAll(child.predicates);
+            }
+        }
+        return memes.stream().distinct().collect(Collectors.toList());
+    }
+
+    public boolean hasPart(Meme that, Collection<String> splitters) {
+        Collection<Meme> thatMemes = that.splitOn(splitters);
+        return splitOn(splitters).stream().anyMatch(thatMemes::contains);
     }
 
     @Override

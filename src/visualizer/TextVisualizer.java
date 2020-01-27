@@ -408,7 +408,6 @@ public class TextVisualizer implements Visualizer{
                     .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
                     .orElse(group.getCulturalCenter().getAllProducedResources().stream().map(pair -> pair.first)
                             .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null));
-//            Resource resource = controller.world.getPoolResource(aspectName.split("On")[1]);
             if (resource == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;

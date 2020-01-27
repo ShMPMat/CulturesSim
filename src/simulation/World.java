@@ -198,6 +198,10 @@ public class World {
         return turn + thousandTurns * 1000 + millionTurns * 1000000 + "";
     }
 
+    public int getLesserTurnNumber() {
+        return turn;
+    }
+
     /**
      * Returns Aspect by name.
      *

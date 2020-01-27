@@ -1,15 +1,19 @@
 package simulation.culture.group;
 
 import extra.ShnyPair;
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
 import java.util.*;
+
+import static simulation.Controller.session;
 
 /**
  * Represents certain people who do particular work in Group
@@ -92,14 +96,37 @@ public class Stratum {
     }
 
     void update() {
+        if (session.world.getLesserTurnNumber() % session.stratumTurnsBeforeInstrumentRenewal != 0) {
+            return;
+        }
         for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {
+            int currentAmount = entry.getValue().getAmount();
+            if (currentAmount >= amount) {
+                continue;
+            }
             if (!entry.getKey().isInstrumental()) {
                 continue;
             }
-            for (Aspect aspect: aspects) {
-                Set deps = aspect.getDependencies().get(entry.getKey());
+            ResourceEvaluator evaluator = new ResourceEvaluator(
+                    resourcePack -> resourcePack.getAllResourcesWithTag(entry.getKey()),
+                    resourcePack -> resourcePack.getAllResourcesWithTag(entry.getKey()).getResources().stream()
+                            .map(Resource::getAmount).reduce(0, Integer::sum));
+            for (Aspect aspect: aspects) {//TODO choose the best
+                if (currentAmount >= amount) {
+                    break;
+                }
+                Set<Dependency> deps = aspect.getDependencies().get(entry.getKey());
                 if (deps != null) {
-                    //TODO;
+                    for (Dependency dependency: deps) {
+                        AspectResult result = dependency.useDependency(amount - currentAmount, evaluator);
+                        if (result.isFinished) {
+                            currentAmount += evaluator.evaluate(result.resources);
+                            entry.getValue().add(evaluator.pick(result.resources));//TODO disband
+                            if (currentAmount >= amount) {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -395,7 +395,6 @@ public class Group {
     private Tile getMigrationTile() {
         return territory.getCenter().getNeighbours().stream()
                 .max(Comparator.comparingInt(tile -> tileValueMapper.apply(tile))).orElse(null);
-        //return ProbFunc.randomElement(territory.getCenter().getNeighbours(tile -> tile.canSettle(this)));
     }
 
     private boolean shouldMigrate() {

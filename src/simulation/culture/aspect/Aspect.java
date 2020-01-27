@@ -187,6 +187,10 @@ public class Aspect {
             ResourcePack usedForDependency = new ResourcePack();
             isFinished = false;
             ResourcePack _rp = new ResourcePack();
+            ResourcePack provided = group.getStratumByAspect(this).getInstrumentByTag(entry.getKey());
+            if (provided != null) { //TODO shove it in AspectUseController
+                _rp.add(provided);
+            }
             for (Dependency dependency1 : dependency) {
                 if (dependency1.isPhony()) {
                     isFinished = true;
@@ -200,10 +204,10 @@ public class Aspect {
                         break;
                     }
                 } else {
-                    AspectResult _p = dependency1.useDependency(ceiling -
+                    AspectResult result = dependency1.useDependency(ceiling -
                             _rp.getAmountOfResourcesWithTag(dependency1.getType()), evaluator);
-                    _rp.add(_p.resources);
-                    if (!_p.isFinished) {
+                    _rp.add(result.resources);
+                    if (!result.isFinished) {
                         continue;
                     }
                     if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= ceiling) {
