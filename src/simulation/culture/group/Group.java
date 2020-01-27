@@ -27,10 +27,6 @@ import static simulation.Controller.*;
  */
 public class Group {
     /**
-     * Subgroups on which this group is divided.
-     */
-    public List<Group> subgroups = new ArrayList<>();
-    /**
      * Whether group live or dead
      */
     public State state = State.Live;
@@ -156,7 +152,7 @@ public class Group {
             addForConverseWrapper((ConverseWrapper) aspect, dep);
         }
         for (AspectTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals("phony")) {
+            if (requirement.name.equals(AspectTag.phony().name)) {
                 continue;
             }
             addResourceDependencies(requirement, dep);
@@ -196,7 +192,7 @@ public class Group {
     private void addAspectDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep) {
         for (Aspect selfAspect : getAspects()) {
             if (selfAspect.getTags().contains(requirement)) {
-                Dependency dependency = /*new Dependency_(requirement, this, selfAspect);*/ new AspectDependency(requirement, selfAspect);
+                Dependency dependency = new AspectDependency(requirement, selfAspect);
                 if (dependency.isCycleDependency(selfAspect)) {
                     continue;
                 }
@@ -260,7 +256,7 @@ public class Group {
                     .collect(Collectors.toList());
             for (ShnyPair<Stratum, ResourceEvaluator> pair : pairs) {
                 int amount = pair.second.evaluate(resourcePack);
-                if (amount > request.ceiling) {
+                if (amount >= request.ceiling) {
                     break;
                 }
                 resourcePack.add(pair.first.use(request.ceiling - amount, pair.second));

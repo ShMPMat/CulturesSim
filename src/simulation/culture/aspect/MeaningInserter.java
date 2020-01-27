@@ -29,7 +29,7 @@ public class MeaningInserter extends ConverseWrapper {
         AspectResult result = super.use(ceiling, evaluator);
         Collection<Resource> res = new ArrayList<>(result.resources.getResourceAndRemove(resource).getResources());
         res.removeIf(r -> r.getAmount() == 0);
-        result.resources.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), aspect))
+        result.resources.add(res.stream().map(r -> r.insertMeaning(group.getCulturalCenter().getMeaning(), result))
                 .collect(Collectors.toList()));
         return result;
     }

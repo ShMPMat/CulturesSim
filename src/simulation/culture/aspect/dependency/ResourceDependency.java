@@ -32,12 +32,17 @@ public class ResourceDependency extends AbstractDependency {
     }
 
     @Override
+    public boolean isCycleDependencyInner(Aspect aspect) {
+        return resource != null;
+    }
+
+    @Override
     public AspectResult useDependency(int ceiling, ResourceEvaluator evaluator) {
         ResourcePack resourcePack = new ResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
-            return new AspectResult(tag.consumeAndGetResult(group.getParentGroup().getTerritory().getResourceInstances(resource), ceiling));
+            return new AspectResult(tag.consumeAndGetResult(group.getParentGroup().getTerritory().getResourceInstances(resource), ceiling), null);
         }
-        return new AspectResult(resourcePack);
+        return new AspectResult(resourcePack, null);
     }
 
     public AspectTag getType() {

@@ -11,6 +11,7 @@ import simulation.space.resource.ResourcePack;
 public interface Dependency {
     String getName();
     boolean isCycleDependency(Aspect aspect);
+    boolean isCycleDependencyInner(Aspect aspect);
     AspectResult useDependency(int ceiling, ResourceEvaluator evaluator);
     boolean isPhony();
     AspectTag getType();

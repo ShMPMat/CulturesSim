@@ -3,6 +3,7 @@ package simulation.space.resource;
 import extra.ProbFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
@@ -213,8 +214,8 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         return resource;
     }
 
-    public Resource insertMeaning(Meme meaning, Aspect aspect) {
-        Resource resource = new Resource(resourceCore.insertMeaning(meaning, aspect), amount);
+    public Resource insertMeaning(Meme meaning, AspectResult result) {
+        Resource resource = new Resource(resourceCore.insertMeaning(meaning, result), amount);
         tile.addDelayedResource(resource);
         this.amount = 0;
         return resource;

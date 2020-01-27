@@ -31,6 +31,9 @@ public class ConverseWrapper extends Aspect {
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
         super(new String[]{aspect.getName()+"On"+resource.getBaseName()}, new HashMap<>(), group);
+        if (aspect.getName().equals("Paint")) {
+            int i = 0;
+        }
         this.aspect = aspect;
         this.resource = resource.cleanCopy();
         for (Resource res : resource.applyAspect(aspect)) {
@@ -57,10 +60,13 @@ public class ConverseWrapper extends Aspect {
     public AspectResult use(int ceiling, ResourceEvaluator evaluator) {
         try {
             group.getAspect(aspect).markAsUsed();
+        if (aspect.getName().equals("Paint")) {
+            int i = 0;
+        }
+        return super.use(ceiling, evaluator);
         } catch (Exception e) {
             throw new RuntimeException("");
         }
-        return super.use(ceiling, evaluator);
     }
 
     public ConverseWrapper stripToMeaning() {
@@ -88,6 +94,9 @@ public class ConverseWrapper extends Aspect {
     @Override
     public boolean isValid() {
         if (resource.getGenome().willResist() && aspect.getName().equals("Take")) {
+            return false;
+        }
+        if (!resource.hasApplicationForAspect(aspect)) {
             return false;
         }
         return true;

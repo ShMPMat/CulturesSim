@@ -1,6 +1,5 @@
 package simulation.culture.aspect;
 
-import extra.ShnyPair;
 import simulation.World;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
@@ -101,6 +100,11 @@ public class Aspect {
         return aspectCore.getRequirements();
     }
 
+    public Collection<AspectTag> getNoninstrumentalRequirements() {
+        return aspectCore.getRequirements().stream().filter(aspectTag -> !aspectTag.isInstrumental)
+                .collect(Collectors.toSet());
+    }
+
     public Group getGroup() {
         return group;
     }
@@ -173,7 +177,10 @@ public class Aspect {
         markAsUsed();//TODO wrire Instruction class to control use of aspect (floor, ceiling, whether I want resources with a meaning)
         ResourcePack meaningfulPack = new ResourcePack();
         ceiling = group.changeStratumAmountByAspect(this, ceiling);
-        for (Set<Dependency> dependency : getDependencies().values()) {
+        AspectResult.ResultNode node = new AspectResult.ResultNode(this);
+        for (Map.Entry<AspectTag, Set<Dependency>> entry : getDependencies().entrySet()) {
+            Set<Dependency> dependency = entry.getValue();
+            ResourcePack usedForDependency = new ResourcePack();
             isFinished = false;
             ResourcePack _rp = new ResourcePack();
             for (Dependency dependency1 : dependency) {
@@ -200,16 +207,18 @@ public class Aspect {
                             _rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), ceiling);
                         }
                         meaningfulPack.add(_rp);
+                        usedForDependency.add(_rp);
                         isFinished = true;
                         break;
                     }
                 }
             }
+            node.resourceUsed.put(entry.getKey(), usedForDependency);
             if (!isFinished) {
-                return new AspectResult(false);
+                return new AspectResult(false, node);
             }
         }
-        return  new AspectResult(meaningfulPack);
+        return  new AspectResult(meaningfulPack, node);
     }
 
     protected void markAsUsed() {

@@ -25,11 +25,17 @@ public class AspectDependency extends AbstractDependency {
 
     @Override
     public boolean isCycleDependency(Aspect aspect) {
+        return this.aspect.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect)));
+    }
+
+    @Override
+    public boolean isCycleDependencyInner(Aspect aspect) {
         if (this.aspect.equals(aspect)) {
             return true;
         }
         return this.aspect.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependency(aspect)));
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect)));
     }
 
     @Override

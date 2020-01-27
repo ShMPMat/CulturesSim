@@ -35,6 +35,7 @@
 -ShapeMalleable                                                              /malleable          #MEANING
 -Engrave                                                                     /goodForEngraving   #MEANING
 -Carve                                                                       /goodForEngraving   #MEANING
+-Paint                                                     /solid        #colour                 #MEANING
 
 /Riding                                                                      /ridingAnimals
 /Farming                    -food                  1                        /seeds

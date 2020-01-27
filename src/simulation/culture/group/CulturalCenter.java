@@ -137,7 +137,6 @@ public class CulturalCenter {
 
         addAspectNow(aspect, _m);
         Aspect finalAspect = aspect;
-        group.subgroups.forEach(group -> group.getCulturalCenter().addAspectNow(finalAspect, _m));
         return true;
     }
 
@@ -348,6 +347,9 @@ public class CulturalCenter {
 
             Aspect _a = randomElement(options, aspect -> true);
             if (_a != null) {
+                if (_a instanceof ConverseWrapper && ((ConverseWrapper) _a).aspect.getName().equals("Paint")) {
+                    int i = 0;
+                }
                 if (addAspect(_a)) {
                     group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
                             " got aspect " + _a.getName() + " by itself", "group", group));
@@ -442,7 +444,7 @@ public class CulturalCenter {
     }
 
     private List<ConverseWrapper> getAllConverseWrappers() {
-        List<ConverseWrapper> options = new ArrayList<>(_converseWrappers);
+        List<ConverseWrapper> options = new ArrayList<>(_converseWrappers); //TODO maybe do it after the middle part?
         Set<Resource> newResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
         newResources.addAll(getAllProducedResources().stream().map(pair -> pair.first).collect(Collectors.toSet()));
         newResources.removeAll(_lastResourcesForCw);
@@ -457,7 +459,7 @@ public class CulturalCenter {
         return options;
     }
 
-    private void addConverseWrapper(Aspect aspect, Resource resource) {
+    private void addConverseWrapper(Aspect aspect, Resource resource) { //TODO I'm adding a lot of garbage
         ConverseWrapper _w;
         if (aspect.canApplyMeaning()) {
             _w = new MeaningInserter(aspect, resource,

@@ -57,24 +57,24 @@
 
 -Herbivore       0.08    1      20         0       30   25        0             1 0 1  Animal       @Meat
         ~@PlantFibre:0.2:2:0:CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
         #Water
 
 -Mouse           0.25    0.05   5          -5      35   100       0             1 0 1  Animal       @Meat
         ~@PlantFibre:0.02:2:0:CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1,Fur:1
+        +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
         #Water
         R
 
 -Predator        0.08    1      20         0       30   5         0             1 0 1  Animal       @Meat
         ~@Meat:0.1:1.25:0:CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5,Fur:3
+        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
         #Water
         R
 
 -Bird            0.15    0.1    10         0       30   40        0             1 0 1  Animal       @Meat
         ~Insect:1:2:0:CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1,Feather:10
+        +Killing:Meat:2,Fat:1,Bone:1,Feather:10,Blood:3
         #Water
         R
 
@@ -89,13 +89,13 @@
 
 -Fish            0.15    0.1    10         -20     30   100       0             1 0 1  Animal       @Meat
         ~@PlantFibre:0.0001:10:0:CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1,Feather:10
+        +Killing:Meat:2,Fat:1,Bone:1,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
 -PredatorFish    0.15    0.1    10         -20     30   10        0             1 0 1  Animal       @Meat
         ~@Meat:0.025:1.25:0:CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1
+        +Killing:Meat:1,Fat:1,Bone:1,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
@@ -165,7 +165,7 @@
 -Dish            0       5      10000      -500    500  100000000 5             0 1 0  None         @TEMPLATE
 
 -Dye             0       5      10000      -500    500  100000000 5             0 1 0  None         @TEMPLATE
-
+        $colour:3
 
 -Fire            0       0.5    2          -500    500  100000000 0             1 0 0  None         @Flame
 

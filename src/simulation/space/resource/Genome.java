@@ -103,6 +103,7 @@ public class Genome { //TODO make template genome
                 genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
                 genome.primaryMaterial);
         genome.parts.forEach(this::addPart);
+        genome.tags.forEach(this::addAspectTag);
     }
 
     private void computePrimaryMaterial() {
@@ -272,10 +273,6 @@ public class Genome { //TODO make template genome
     }
 
     void addAspectTag(AspectTag tag) {
-        tags.add(tag);
-    }
-
-    void addTag(AspectTag tag) {
         tags.add(tag);
     }
 

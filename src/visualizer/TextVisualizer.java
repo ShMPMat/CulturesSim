@@ -438,8 +438,8 @@ public class TextVisualizer implements Visualizer{
                 return;
             }
         }
-        group.subgroups.forEach(g -> g.getCulturalCenter().addAspect(aspect));
-        group.subgroups.forEach(g -> g.getCulturalCenter().pushAspects());
+        group.getCulturalCenter().addAspect(aspect);
+        group.getCulturalCenter().pushAspects();
     }
 
     private void addWantToGroup(GroupConglomerate group, String wantName) {
@@ -456,10 +456,6 @@ public class TextVisualizer implements Visualizer{
     private void addWantToGroup(Group group, String wantName) {
         if (group == null) {
             System.err.println("Cannot add aspect to the group");
-            return;
-        }
-        if (!group.subgroups.isEmpty()) {
-            group.subgroups.forEach(subgroup -> addWantToGroup(subgroup, wantName));
             return;
         }
         Resource resource = world.getPoolResource(wantName);

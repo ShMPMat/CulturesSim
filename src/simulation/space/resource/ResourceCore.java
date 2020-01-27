@@ -3,6 +3,7 @@ package simulation.space.resource;
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectMatcher;
+import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
@@ -307,11 +308,24 @@ public class ResourceCore {
                 new Genome(genome), aspectConversion, meaning));
     }
 
-    public ResourceCore insertMeaning(Meme meaning, Aspect aspect) {
+    public ResourceCore insertMeaning(Meme meaning, AspectResult result) {
         Genome genome = new Genome(this.genome);
         genome.setSpreadProbability(0);
-        ResourceCore _r = new ResourceCore(genome.getName(), "_representing_" + meaning + "_with_" + aspect.getName(),
-                new ArrayList<>(materials), genome, aspectConversion, meaning);
+        StringBuilder meaningPostfix = new StringBuilder("_representing_" + meaning + "_with_" +
+                result.node.aspect.getName());
+        if (result.node.resourceUsed.size() > 1) {
+            List<String> names = result.node.resourceUsed.entrySet().stream()
+                    .filter(entry -> !entry.getKey().name.equals(AspectTag.phony().name))
+                    .flatMap(entry -> entry.getValue().resources.stream().map(Resource::getFullName)).distinct()
+                    .collect(Collectors.toList());
+            meaningPostfix.append("(");
+            for (String name: names) {
+                meaningPostfix.append(name).append(", ");
+            }
+            meaningPostfix = new StringBuilder(meaningPostfix.substring(0, meaningPostfix.length() - 2) + ")");
+        }
+        ResourceCore _r = new ResourceCore(genome.getName(), meaningPostfix.toString(), new ArrayList<>(materials), genome,
+                aspectConversion, meaning);
         _r.hasMeaning = true;
         return _r;
     }
@@ -350,7 +364,7 @@ public class ResourceCore {
 
     public boolean hasApplicationForAspect(Aspect aspect) {
         if (aspect.canApplyMeaning()) {
-            return getTags().containsAll(aspect.getRequirements());
+            return getTags().containsAll(aspect.getNoninstrumentalRequirements());
         }
         return aspectConversion.containsKey(aspect) || materials.stream()
                 .anyMatch(material -> material.hasApplicationForAspect(aspect));

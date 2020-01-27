@@ -38,7 +38,19 @@ public class LineDependency extends AbstractDependency {
         }
         isAlreadyUsed = true;
         boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependency(aspect))) || (line.second.equals(aspect) /*&& line.second != aspect*/);
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect) /*&& line.second != aspect*/);
+        isAlreadyUsed = false;
+        return b;
+    }
+
+    @Override
+    public boolean isCycleDependencyInner(Aspect aspect) {//TODO prohibit dependencies from same aspect which are not separated by other aspects;
+        if (isAlreadyUsed) {
+            return false;
+        }
+        isAlreadyUsed = true;
+        boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect) /*&& line.second != aspect*/);
         isAlreadyUsed = false;
         return b;
     }
@@ -48,7 +60,7 @@ public class LineDependency extends AbstractDependency {
         try {
         ResourcePack resourcePack = new ResourcePack();
         if (isAlreadyUsed || ceiling <= 0) {
-            return new AspectResult(resourcePack);
+            return new AspectResult(resourcePack, null);
         }
         isAlreadyUsed = true;
             AspectResult _p = group.getAspect(line.second).use(ceiling,
@@ -58,7 +70,7 @@ public class LineDependency extends AbstractDependency {
                     .forEach(res -> res.applyAndConsumeAspect(line.first.aspect, ceiling));
             resourcePack.add(_p.resources);
             isAlreadyUsed = false;
-            return new AspectResult(_p.isFinished, resourcePack);
+            return new AspectResult(_p.isFinished, resourcePack, null);
         } catch (NullPointerException e) {
             throw new RuntimeException("No such aspect in Group");
         }

@@ -29,7 +29,11 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public boolean isCycleDependency(Aspect aspect) {
-        return (conversion.second.equals(aspect) && conversion.second != aspect);
+        return false;
+    }
+
+    public boolean isCycleDependencyInner(Aspect aspect) {
+        return conversion.second.equals(aspect);
     }
 
     @Override
@@ -43,7 +47,7 @@ public class ConversionDependency extends AbstractDependency {
             resourcePack.add(res.applyAndConsumeAspect(conversion.second,
                     ceiling - evaluator.evaluate(resourcePack)));
         }
-        return new AspectResult(resourcePack);
+        return new AspectResult(resourcePack, null);
     }
 
     @Override

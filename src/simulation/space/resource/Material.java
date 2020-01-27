@@ -58,7 +58,7 @@ public class Material {
         return computeTags(resourceCore);
     }
 
-    private List<AspectTag> computeTags(ResourceCore resourceCore) {
+    private List<AspectTag> computeTags(ResourceCore resourceCore) {//TODO where do I add the goddamn goodForEngraving tag?
         List<AspectTag> _t = properties.stream().map(Property::getTags).reduce(new ArrayList<>(), (l1, l2) -> {
             l1.addAll(l2);
             return l1;
@@ -80,6 +80,7 @@ public class Material {
                 properties.contains(world.getPoolProperty("sturdy"))) {
             _t.add(new AspectTag("goodForEngraving"));
         }
+        properties.forEach(property -> _t.add(new AspectTag(property.getName())));
         return _t;
     }
 
