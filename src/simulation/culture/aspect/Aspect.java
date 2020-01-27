@@ -208,10 +208,11 @@ public class Aspect {
                     }
                     if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= ceiling) {
                         if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
-                            _rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), ceiling);
+                            usedForDependency.add(_rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), ceiling).second);
+                        } else {
+                            usedForDependency.add(_rp.getAllResourcesWithTag(dependency1.getType()));
                         }
                         meaningfulPack.add(_rp);
-                        usedForDependency.add(_rp);
                         isFinished = true;
                         break;
                     }

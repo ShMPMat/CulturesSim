@@ -1,5 +1,6 @@
 package simulation.space.resource;
 
+import extra.ShnyPair;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.Tile;
 
@@ -57,19 +58,6 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         return getAllResourcesWithTag(tag).getResources().stream().reduce(0, (i, r) -> i + r.amount, Integer::sum);
     }
 
-    public int getAmountOfResourcesWithTagPart(AspectTag tag, int amount) {
-        Collection<Resource> _r = getAllResourcesWithTag(tag).getResources(), result = new ArrayList<>();
-        int counter = 0;
-        for (Resource resource : _r) {
-            if (counter >= amount) {
-                break;
-            }
-            result.add(resource);
-            counter += resource.amount;
-        }
-        return counter;
-    }
-
     public ResourcePack getResourcesWithTagPart(AspectTag tag, int amount) {
         ResourcePack _r = getAllResourcesWithTag(tag);
         ResourcePack result = new ResourcePack();
@@ -106,8 +94,9 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         return resourcePack;
     }
 
-    public int getAmountOfResourcesWithTagAndErase(AspectTag tag, int amount) {
-        Collection<Resource> _r = getAllResourcesWithTag(tag).getResources(), result = new ArrayList<>();
+    public ShnyPair<Integer, List<Resource>> getAmountOfResourcesWithTagAndErase(AspectTag tag, int amount) {
+        Collection<Resource> _r = getAllResourcesWithTag(tag).getResources();
+        List<Resource> result = new ArrayList<>();
         int counter = 0;
         for (Resource resource : _r) {
             if (counter >= amount) {
@@ -118,7 +107,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         }
         resources.removeAll(result);
         result.forEach(resource -> resource.amount = 0);
-        return counter;
+        return new ShnyPair<>(counter, result);
     }
 
     /**
