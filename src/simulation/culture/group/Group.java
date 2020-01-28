@@ -48,8 +48,8 @@ public class Group {
     private CulturalCenter culturalCenter;
     private double spreadability;
     private Territory territory = new Territory();
-    private Function<Tile, Integer> tileValueMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() +
-            3 * t.hasResources(getResourceRequirements());//TODO function is awful, it works inside out
+    private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() +
+            3 * t.hasResources(getResourceRequirements());
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
@@ -364,21 +364,21 @@ public class Group {
             return false;
         }
         if (population <= minPopulationPerTile * territory.size()) {
-            parentGroup.getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tileValueMapper));
+            parentGroup.getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tilePotentialMapper));
             if (population <= minPopulationPerTile * territory.size()) {
-                parentGroup.getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tileValueMapper));
+                parentGroup.getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tilePotentialMapper));
             }
         }
 
         claimTile(territory.getMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
-                isTileReachable(newTile), tileValueMapper));
+                isTileReachable(newTile), tilePotentialMapper));
         return true;
     }
 
     boolean migrate() {
         if (state == State.Dead) {
             return false;
-        }//TODO migration
+        }
         if (!shouldMigrate()) {
             return false;
         }
@@ -395,7 +395,7 @@ public class Group {
 
     private Tile getMigrationTile() {
         return territory.getCenter().getNeighbours().stream()
-                .max(Comparator.comparingInt(tile -> tileValueMapper.apply(tile))).orElse(null);
+                .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile))).orElse(null);
     }
 
     private boolean shouldMigrate() {

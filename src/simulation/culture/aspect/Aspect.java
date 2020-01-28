@@ -34,6 +34,10 @@ public class Aspect {
      * Group which owns this aspect.
      */
     protected Group group;
+    /**
+     * Whether this Aspect can insert meaning.
+     */
+    public boolean canInsertMeaning = false;
 
     /**
      * Base constructor.
@@ -195,18 +199,19 @@ public class Aspect {
                     isFinished = true;
                     int newDelta = meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource);
                     AspectResult _p = dependency1.useDependency(new AspectController(controller.ceiling -
-                            newDelta, controller.floor - newDelta, controller.evaluator, controller.isMeaningNeeded));
+                            newDelta, controller.floor - newDelta, controller.evaluator,
+                            shouldPassMeaningNeed(controller.isMeaningNeeded)));
                     if (!_p.isFinished) {
                         continue;
                     }
                     meaningfulPack.add(_p.resources);
-                    if (controller.evaluator.evaluate(meaningfulPack) >= controller.ceiling) {
+                    if (controller.isCeilingExceeded(meaningfulPack)) {
                         break;
                     }
                 } else {
                     int newDelta = _rp.getAmountOfResourcesWithTag(dependency1.getType());
                     AspectResult result = dependency1.useDependency(new AspectController(controller.ceiling -
-                            newDelta, controller.floor - newDelta, controller.evaluator, controller.isMeaningNeeded));
+                            newDelta, controller.floor - newDelta, controller.evaluator, false));
                     _rp.add(result.resources);
                     if (!result.isFinished) {
                         continue;
@@ -228,10 +233,14 @@ public class Aspect {
                 return new AspectResult(false, node);
             }
         }
-        if (controller.evaluator.evaluate(meaningfulPack) >= controller.floor) {
+        if (controller.isFloorExceeded(meaningfulPack)) {
             markAsUsed();
         }
         return new AspectResult(meaningfulPack, node);
+    }
+
+    boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
+        return isMeaningNeeded;
     }
 
     protected void markAsUsed() {

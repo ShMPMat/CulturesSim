@@ -30,7 +30,7 @@ public class LineDependency extends AbstractDependency {
     }
 
     @Override
-    public boolean isCycleDependency(Aspect aspect) {//TODO prohibit dependencies from same aspect which are not separated by other aspects;
+    public boolean isCycleDependency(Aspect aspect) {
         if (isAlreadyUsed) {
             return false;
         }
@@ -42,7 +42,7 @@ public class LineDependency extends AbstractDependency {
     }
 
     @Override
-    public boolean isCycleDependencyInner(Aspect aspect) {//TODO prohibit dependencies from same aspect which are not separated by other aspects;
+    public boolean isCycleDependencyInner(Aspect aspect) {
         if (isAlreadyUsed) {
             return false;
         }
@@ -56,14 +56,14 @@ public class LineDependency extends AbstractDependency {
     @Override
     public AspectResult useDependency(AspectController controller) {
         try {
-        ResourcePack resourcePack = new ResourcePack();
-        if (isAlreadyUsed || controller.ceiling <= 0) {
-            return new AspectResult(resourcePack, null);
-        }
-        isAlreadyUsed = true;
+            ResourcePack resourcePack = new ResourcePack();
+            if (isAlreadyUsed || controller.ceiling <= 0 || !foodForInsertMeaning() && controller.isMeaningNeeded) {
+                return new AspectResult(resourcePack, null);
+            }
+            isAlreadyUsed = true;
             AspectResult _p = group.getAspect(line.second).use(new AspectController(controller.ceiling, controller.floor,
                     new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
-                            rp -> rp.getAmountOfResource(line.first.resource))));
+                            rp -> rp.getAmountOfResource(line.first.resource)), controller.isMeaningNeeded));
             resourcePack.add(_p.resources.getResource(line.first.resource).getResources().stream()
                     .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, controller.ceiling).stream()).collect(Collectors.toList()));
             resourcePack.add(_p.resources);
@@ -72,6 +72,10 @@ public class LineDependency extends AbstractDependency {
         } catch (NullPointerException e) {
             throw new RuntimeException("No such aspect in Group");
         }
+    }
+
+    private boolean foodForInsertMeaning() {
+        return !tag.equals(AspectTag.phony()) || getNextWrapper().canInsertMeaning;
     }
 
     public ConverseWrapper getNextWrapper() {

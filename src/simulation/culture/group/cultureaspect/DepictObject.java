@@ -38,8 +38,8 @@ public class DepictObject extends AbstractCultureAspect {
         if (result.isFinished) {
             group.cherishedResources.add(result.resources);
             resourceBehaviour.procedeResources(result.resources);
+            group.getCulturalCenter().getMemePool().strengthenMeme(meme);
         }
-        group.getCulturalCenter().getMemePool().strengthenMeme(meme);
         group.getCulturalCenter().clearCurrentMeme();
     }
 

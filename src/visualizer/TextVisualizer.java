@@ -24,7 +24,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ import static extra.OutputFunc.*;
 /**
  * Main class, running and visualizing simulation.
  */
-public class TextVisualizer implements Visualizer{
+public class TextVisualizer implements Visualizer {
     /**
      * Symbols for representation of groups on the Map.
      */
@@ -54,15 +53,17 @@ public class TextVisualizer implements Visualizer{
      */
     private Map<String, Set<Tile>> lastClaimedTiles;
     private int mapCut;
-
     /**
      * Main controller of the simulation
      */
     private Controller controller;
+
+    ;
     private World world;
     private WorldMap map;
     private InteractionModel interactionModel;
     private Scanner s;
+    private Turner currentTurner;
 
     /**
      * Base constructor.
@@ -73,6 +74,83 @@ public class TextVisualizer implements Visualizer{
         world = controller.world;
         map = world.map;
         interactionModel = controller.interactionModel;
+    }
+
+    public static void main(String[] args) {
+        TextVisualizer textVisualizer = new TextVisualizer();
+        textVisualizer.initialize();
+        textVisualizer.run();
+    }
+
+    private String vapourMapper(Tile tile) {
+        String colour = "";
+        int level = tile.getResourcesWithMoved().stream().filter(resource ->
+                resource.getSimpleName().equals("Vapour")).reduce(0,
+                (x, y) -> x + y.getAmount(), Integer::sum);
+        if (level == 0) {
+            colour = "\033[44m";
+        } else if (level < 50) {
+            colour = "\033[104m";
+        } else if (level < 100) {
+            colour = "\033[46m";
+        } else if (level < 150) {
+            colour = "\033[47m";
+        } else if (level < 200) {
+            colour = "\033[43m";
+        } else {
+            colour = "\033[41m";
+        }
+        return "\033[90m" + colour + (level / 10) % 10;
+    }
+
+    private String platesMapper(Tile tile) {
+        List<Tile> affectedTiles = new ArrayList<>();
+        for (TectonicPlate tectonicPlate : map.getTectonicPlates()) {
+            affectedTiles.addAll(tectonicPlate.getAffectedTiles().stream()
+                    .map(pair -> pair.first).collect(Collectors.toList()));
+        }
+        for (int i = 0; i < map.getTectonicPlates().size(); i++) {
+            if (map.getTectonicPlates().get(i).contains(tile)) {
+                if (affectedTiles.contains(tile)) {
+                    return "\033[" + (30 + i) + "mX";
+                }
+                String direction = "0";
+                switch (map.getTectonicPlates().get(i).getDirection()) {
+                    case D:
+                        direction = "v";
+                        break;
+                    case L:
+                        direction = "<";
+                        break;
+                    case R:
+                        direction = ">";
+                        break;
+                    case U:
+                        direction = "^";
+                        break;
+                }
+                return "\033[" + (30 + i) + "m" + direction;
+            }
+        }
+        return " ";
+    }
+
+    private String temperatureMapper(Tile tile) {
+        String colour;
+        if (tile.getTemperature() < -20) {
+            colour = "\033[44m";
+        } else if (tile.getTemperature() < -10) {
+            colour = "\033[104m";
+        } else if (tile.getTemperature() < 0) {
+            colour = "\033[46m";
+        } else if (tile.getTemperature() < 10) {
+            colour = "\033[47m";
+        } else if (tile.getTemperature() < 20) {
+            colour = "\033[43m";
+        } else {
+            colour = "\033[41m";
+        }
+        return "\033[90m" + colour + Math.abs(tile.getTemperature() % 10);
     }
 
     private void initialize() {
@@ -113,12 +191,6 @@ public class TextVisualizer implements Visualizer{
             }
         }
         mapCut = (gapStart + gapFinish) / 2;
-    }
-
-    public static void main(String[] args) {
-        TextVisualizer textVisualizer = new TextVisualizer();
-        textVisualizer.initialize();
-        textVisualizer.run();
     }
 
     /**
@@ -202,7 +274,7 @@ public class TextVisualizer implements Visualizer{
             List<Aspect> aspects = new ArrayList<>(group.getAspects());
             aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
             for (Aspect aspect : aspects) {
-                if (aspect.getUsefulness() <= 0 ) {
+                if (aspect.getUsefulness() <= 0) {
                     break;
                 }
                 stringBuilder.append("(").append(aspect.getName()).append(" ").append(aspect.getUsefulness())
@@ -489,6 +561,12 @@ public class TextVisualizer implements Visualizer{
                 String[] _s;
                 String line = br.readLine();
                 if (line != null) {
+                    if (currentTurner != null) {
+                        currentTurner.isAskedToStop.set(true);
+                        currentTurner = null;
+                        print();
+                        continue;
+                    }
                     switch (getCommand(line)) {
                         case Group:
                             printGroup(world.groups.get(Integer.parseInt(line.substring(1))));
@@ -504,56 +582,10 @@ public class TextVisualizer implements Visualizer{
                                     Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut));
                             break;
                         case Plates:
-                            printMap(tile -> {
-                                List<Tile> affectedTiles = new ArrayList<>();
-                                for (TectonicPlate tectonicPlate : map.getTectonicPlates()) {
-                                    affectedTiles.addAll(tectonicPlate.getAffectedTiles().stream()
-                                            .map(pair -> pair.first).collect(Collectors.toList()));
-                                }
-                                for (int i = 0; i < map.getTectonicPlates().size(); i++) {
-                                    if (map.getTectonicPlates().get(i).contains(tile)) {
-                                        if (affectedTiles.contains(tile)) {
-                                            return "\033[" + (30 + i) + "mX";
-                                        }
-                                        String direction = "0";
-                                        switch (map.getTectonicPlates().get(i).getDirection()) {
-                                            case D:
-                                                direction = "v";
-                                                break;
-                                            case L:
-                                                direction = "<";
-                                                break;
-                                            case R:
-                                                direction = ">";
-                                                break;
-                                            case U:
-                                                direction = "^";
-                                                break;
-                                        }
-                                        return "\033[" + (30 + i) + "m" + direction;
-                                    }
-                                }
-                                return " ";
-                            });
+                            printMap(this::platesMapper);
                             break;
                         case Temperature:
-                            printMap(tile -> {
-                                String colour;
-                                if (tile.getTemperature() < -20) {
-                                    colour = "\033[44m";
-                                } else if (tile.getTemperature() < -10) {
-                                    colour = "\033[104m";
-                                } else if (tile.getTemperature() < 0) {
-                                    colour = "\033[46m";
-                                } else if (tile.getTemperature() < 10) {
-                                    colour = "\033[47m";
-                                } else if (tile.getTemperature() < 20){
-                                    colour = "\033[43m";
-                                } else {
-                                    colour = "\033[41m";
-                                }
-                                return "\033[90m" + colour + Math.abs(tile.getTemperature() % 10);
-                            });
+                            printMap(this::temperatureMapper);
                             break;
                         case Wind:
                             printMap(tile -> {
@@ -566,7 +598,7 @@ public class TextVisualizer implements Visualizer{
                                     direction = "\033[43m";
                                 } else if (level > 2) {
                                     direction = "\033[47m";
-                                } else if (level > 1){
+                                } else if (level > 1) {
                                     direction = "\033[46m";
                                 } else {
                                     direction = "\033[44m";
@@ -609,7 +641,7 @@ public class TextVisualizer implements Visualizer{
                                     colour = "\033[46m";
                                 } else if (tile.getSecondLevel() < 110) {
                                     colour = "\033[47m";
-                                } else if (tile.getSecondLevel() < 130){
+                                } else if (tile.getSecondLevel() < 130) {
                                     colour = "\033[43m";
                                 } else {
                                     colour = "\033[41m";
@@ -618,26 +650,7 @@ public class TextVisualizer implements Visualizer{
                             });
                             break;
                         case Vapour:
-                            printMap(tile -> {
-                                String colour = "";
-                                int level = tile.getResourcesWithMoved().stream().filter(resource ->
-                                        resource.getSimpleName().equals("Vapour")).reduce(0,
-                                        (x, y) -> x + y.getAmount(), Integer::sum);
-                                if (level == 0) {
-                                    colour = "\033[44m";
-                                } else if (level < 50) {
-                                    colour = "\033[104m";
-                                } else if (level < 100) {
-                                    colour = "\033[46m";
-                                } else if (level < 150) {
-                                    colour = "\033[47m";
-                                } else if (level < 200) {
-                                    colour = "\033[43m";
-                                } else {
-                                    colour = "\033[41m";
-                                }
-                                return "\033[90m" + colour + (level / 10) % 10;
-                            });
+                            printMap(this::vapourMapper);
                             break;
                         case Fixed:
                             printMap(tile -> tile.fixedWater ? "\033[41mX" : "");
@@ -692,6 +705,11 @@ public class TextVisualizer implements Visualizer{
                             controller.geologicTurn();
                             print();
                             break;
+                        case Turner:
+                            currentTurner = new Turner(Integer.parseInt(line.substring(0, line.length() - 1)),
+                                    controller);
+                            (new Thread(currentTurner)).start();
+                            break;
                         default:
                             controller.turn();
                             print();
@@ -715,11 +733,11 @@ public class TextVisualizer implements Visualizer{
         /**
          * Command for making sequence of turns.
          */
-        Turns("\\d+"),
+        Turns("\\d+t"),
         /**
          * Command for making turns until something important happens.
          */
-        IdleGo("go"),
+        IdleGo("go"),//TODO does it work still even?
         /**
          * Command for printing group information.
          */
@@ -755,9 +773,13 @@ public class TextVisualizer implements Visualizer{
         AddWant("^want G\\d+ \\w+"),
         AddResource("\\d+ \\d+ \\w+"),
         GeologicalTurn("Geo"),
-        Turn("");
+        Turn(""),
+        Turner("\\d+");
 
         Pattern pattern;
-        Command(String command) {pattern = Pattern.compile(command);}
+
+        Command(String command) {
+            pattern = Pattern.compile(command);
+        }
     }
 }

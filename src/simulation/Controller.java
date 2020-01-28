@@ -37,10 +37,10 @@ public class Controller {
      */
     public final int stabilizationTurns = 100;
     public final int fillCycles = 1;
+    public final int cultureTurns = 0;
     /**
      * Below what level World will be covered under water.
      */
-    public final int cultureTurns = 200;
     public final int defaultWaterLevel = 98;
     public final int startResourceAmountMin = 40 * proportionCoef * proportionCoef;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoef * proportionCoef;

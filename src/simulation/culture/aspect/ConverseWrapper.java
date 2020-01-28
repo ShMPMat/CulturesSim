@@ -4,7 +4,6 @@ import extra.ShnyPair;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.Group;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
 
 import java.util.*;
@@ -23,10 +22,6 @@ public class ConverseWrapper extends Aspect {
      * Resource on which aspect is applied.
      */
     public Resource resource;
-    /**
-     * Whether this ConverseWrapper can insert meaning.
-     */
-    public boolean canInsertMeaning = false;
     private ConverseWrapper traversedCopy;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
@@ -41,7 +36,7 @@ public class ConverseWrapper extends Aspect {
         }
         getRequirements().add(AspectTag.phony());
         getRequirements().addAll(aspect.getRequirements().stream().filter(tag -> !tag.isConverseCondition)
-                .collect(Collectors.toList())); //TODO Bake and Roast are broken now
+                .collect(Collectors.toList()));
     }
 
     public AspectTag getRequirement() {
@@ -75,27 +70,27 @@ public class ConverseWrapper extends Aspect {
         }
     }
 
-    public ConverseWrapper stripToMeaning() {
-        if (traversedCopy != null) {
-            return traversedCopy;
-        }
-        ConverseWrapper converseWrapper = copy(dependencies, group);
-        traversedCopy = converseWrapper;
-        converseWrapper.dependencies.put(AspectTag.phony(), new HashSet<>());
-        for (Dependency dependency : dependencies.get(AspectTag.phony())) {
-            if (!(dependency instanceof LineDependency)) {
-                continue;
-            }
-            ConverseWrapper next = ((LineDependency) dependency).getNextWrapper();
-            if (next != null && next.canInsertMeaning) {
-                converseWrapper.dependencies.get(AspectTag.phony()).add(new LineDependency(dependency.getType(), group,
-                        new ShnyPair<>(converseWrapper, next.stripToMeaning())));
-                next.stripToMeaning();
-            }
-        }
-        traversedCopy = null;
-        return converseWrapper;
-    }
+//    public ConverseWrapper stripToMeaning() {
+//        if (traversedCopy != null) {
+//            return traversedCopy;
+//        }
+//        ConverseWrapper converseWrapper = copy(dependencies, group);
+//        traversedCopy = converseWrapper;
+//        converseWrapper.dependencies.put(AspectTag.phony(), new HashSet<>());
+//        for (Dependency dependency : dependencies.get(AspectTag.phony())) {
+//            if (!(dependency instanceof LineDependency)) {
+//                continue;
+//            }
+//            ConverseWrapper next = ((LineDependency) dependency).getNextWrapper();
+//            if (next != null && next.canInsertMeaning) {
+//                converseWrapper.dependencies.get(AspectTag.phony()).add(new LineDependency(dependency.getType(), group,
+//                        new ShnyPair<>(converseWrapper, next.stripToMeaning())));
+//                next.stripToMeaning();
+//            }
+//        }
+//        traversedCopy = null;
+//        return converseWrapper;
+//    }
 
     @Override
     public boolean isDependenciesOk(Map<AspectTag, Set<Dependency>> dependencies) {

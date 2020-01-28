@@ -35,9 +35,15 @@ public class MeaningInserter extends ConverseWrapper {
     }
 
     @Override
-    public MeaningInserter stripToMeaning() {
-        return copy(dependencies, group);
+    boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
+        return false;
     }
+
+
+    //    @Override
+//    public MeaningInserter stripToMeaning() {
+//        return copy(dependencies, group);
+//    }
 
     @Override
     public MeaningInserter copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {

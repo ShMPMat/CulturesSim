@@ -314,10 +314,7 @@ public class Tile {
     }
 
     public int hasResources(Collection<Resource> requirements) {
-        if (resources.stream().anyMatch(requirements::contains)) {
-            return 1;
-        }
-        return 0;
+        return resources.stream().filter(requirements::contains).map(Resource::getAmount).reduce(0, Integer::sum);
     }
 
     public boolean canSettle(Group group) {
