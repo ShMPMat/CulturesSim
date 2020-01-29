@@ -1,26 +1,23 @@
 package simulation.culture.group.cultureaspect;
 
-import extra.ShnyPair;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.ResourceBehaviour;
+import simulation.culture.group.reason.Reason;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
-import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
 
-public class DepictObject extends AbstractCultureAspect {
-    private Meme meme;
+public class AspectRitual extends Ritual {//TODO I stopped here somewhere
     private ResourceBehaviour resourceBehaviour;
     private ConverseWrapper converseWrapper;
 
-    public DepictObject(Group group, Meme meme, ConverseWrapper converseWrapper, ResourceBehaviour resourceBehaviour) {
-        super(group);
-        this.meme = meme;
+    public AspectRitual(Group group, ConverseWrapper converseWrapper, ResourceBehaviour resourceBehaviour, Reason reason) {
+        super(group, reason);
         this.converseWrapper = converseWrapper;
         this.resourceBehaviour = resourceBehaviour;
     }
@@ -32,32 +29,29 @@ public class DepictObject extends AbstractCultureAspect {
 
     @Override
     public void use() {
-        group.getCulturalCenter().putCurrentMeme(meme.toString());
         AspectResult result = converseWrapper.use(new AspectController(1, 1,
-                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true)); //TODO maybe I should take only needed resource
+                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
         if (result.isFinished) {
             group.cherishedResources.add(result.resources);
             resourceBehaviour.procedeResources(result.resources);
-            group.getCulturalCenter().getMemePool().strengthenMeme(meme);
         }
-        group.getCulturalCenter().clearCurrentMeme();
     }
 
     @Override
     public String toString() {
-        return "Depict " + meme.toString() + " with " + converseWrapper.getName() + " " + resourceBehaviour;
+        return "Ritual with " + converseWrapper.getName() + " " + resourceBehaviour + " because " + reason;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DepictObject that = (DepictObject) o;
-        return Objects.equals(meme, that.meme) && Objects.equals(converseWrapper, that.converseWrapper);
+        AspectRitual that = (AspectRitual) o;
+        return Objects.equals(converseWrapper, that.converseWrapper);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meme, converseWrapper);
+        return Objects.hash(converseWrapper);
     }
 }

@@ -131,6 +131,10 @@ public class Group {
         return parentGroup;
     }
 
+    public void setParentGroup(GroupConglomerate parentGroup) {
+        this.parentGroup = parentGroup;
+    }
+
     private void die() {
         state = State.Dead;
         population = 0;
@@ -229,11 +233,15 @@ public class Group {
 
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
         Stratum stratum = getStratumByAspect(aspect);
-        if (stratum.getAmount() < amount) {
-            amount = min(amount, getFreePopulation());
+        try {
+            if (stratum.getAmount() < amount) {
+                amount = min(amount, getFreePopulation());
+            }
+            stratum.useAmount(amount);
+            return amount;
+        } catch (NullPointerException e) {
+            throw new RuntimeException("No stratum for Aspect");
         }
-        stratum.useAmount(amount);
-        return amount;
     }
 
     void updateRequests() {
@@ -346,14 +354,39 @@ public class Group {
             return false;
         }
         if (parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupExiting)) {
-            parentGroup.removeGroup(this);
-            GroupConglomerate group = new GroupConglomerate(0, getCenter());
-            group.addGroup(this);
-            parentGroup = group;
-            session.world.addGroup(group);
+            if (checkCoherencyAndDiverge()) {
+                createNewConglomerate(Collections.singleton(this));
+            }
             return true;
         }
         return false;
+    }
+
+    private boolean checkCoherencyAndDiverge() {
+        Queue<Group> queue = new ArrayDeque<>();
+        queue.add(this);
+        Set<Group> cluster = new HashSet<>();
+        while (!queue.isEmpty()) {
+            Group cur = queue.poll();
+            cluster.add(cur);
+            queue.addAll(cur.territory.getBorder().stream()
+                    .filter(t -> t.group != null && t.group.parentGroup == parentGroup && !cluster.contains(t.group))
+                    .map(tile -> tile.group).collect(Collectors.toList()));
+        }
+        if (parentGroup.subgroups.size() == cluster.size()) {
+            return false;
+        }
+        createNewConglomerate(cluster);
+        return true;
+    }
+
+    private void createNewConglomerate(Collection<Group> groups) {
+        GroupConglomerate conglomerate = new GroupConglomerate(0, getCenter());
+        for (Group group: groups) {
+            parentGroup.removeGroup(group);
+            conglomerate.addGroup(group);
+        }
+        session.world.addGroup(conglomerate);
     }
 
     boolean expand() {
@@ -394,7 +427,7 @@ public class Group {
     }
 
     private Tile getMigrationTile() {
-        return territory.getCenter().getNeighbours().stream()
+        return territory.getCenter().getNeighbours(tile -> tile.canSettle(this) && tile.group == null).stream()
                 .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile))).orElse(null);
     }
 
@@ -405,6 +438,9 @@ public class Group {
     private void claimTile(Tile tile) {
         if (tile == null) {
             return;
+        }
+        if (tile.group != this && tile.group != null) {
+            throw new RuntimeException();
         }
         parentGroup.claimTile(tile);
         tile.group = this;

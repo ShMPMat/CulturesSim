@@ -64,6 +64,7 @@ public class TextVisualizer implements Visualizer {
     private InteractionModel interactionModel;
     private Scanner s;
     private Turner currentTurner;
+    private Thread turnerThread;
 
     /**
      * Base constructor.
@@ -563,6 +564,7 @@ public class TextVisualizer implements Visualizer {
                 if (line != null) {
                     if (currentTurner != null) {
                         currentTurner.isAskedToStop.set(true);
+                        turnerThread.join();
                         currentTurner = null;
                         print();
                         continue;
@@ -572,7 +574,7 @@ public class TextVisualizer implements Visualizer {
                             printGroup(world.groups.get(Integer.parseInt(line.substring(1))));
                             break;
                         case Turns:
-                            for (int i = 0; i < Integer.parseInt(line); i++) {
+                            for (int i = 0; i < Integer.parseInt(line.substring(0, line.length() - 1)); i++) {
                                 controller.turn();
                             }
                             print();
@@ -706,9 +708,10 @@ public class TextVisualizer implements Visualizer {
                             print();
                             break;
                         case Turner:
-                            currentTurner = new Turner(Integer.parseInt(line.substring(0, line.length() - 1)),
+                            currentTurner = new Turner(Integer.parseInt(line),
                                     controller);
-                            (new Thread(currentTurner)).start();
+                            turnerThread = new Thread(currentTurner);
+                            turnerThread.start();
                             break;
                         default:
                             controller.turn();

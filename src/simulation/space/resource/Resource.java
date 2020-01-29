@@ -32,7 +32,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     /**
      * Tile on which this Resource is placed.
      */
-    private Tile tile;
+    private Tile tile = null;
     /**
      * How many turns has this Resource been existing.
      */
@@ -52,7 +52,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         this.amount = amount;
         this.resourceCore = resourceCore;
         computeHash();
-        setTile(null);
         events.add(new Event(Event.Type.Creation,
                 "Resource was created", "name", getFullName()));
     }
@@ -155,6 +154,9 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public void setTile(Tile tile) {
+        if (tile == null) {
+            int i = 0;
+        }
         if (resourceCore.isMovable()) {
             this.tile = tile;
 //            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
@@ -222,8 +224,11 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public boolean update() {
+        if (tile == null) {
+            int i = 0;
+        }
         if (amount <= 0) {
-            getTile().removeResource(this);
+            tile.removeResource(this);
             return false;
         }
         for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {

@@ -37,7 +37,7 @@ public class Controller {
      */
     public final int stabilizationTurns = 100;
     public final int fillCycles = 1;
-    public final int cultureTurns = 0;
+    public final int cultureTurns = 300;
     /**
      * Below what level World will be covered under water.
      */

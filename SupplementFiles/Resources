@@ -41,7 +41,7 @@
         ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
         #Water
 
--Grass           0.25    0.1    5          5       30   2000      0             1 0 0  Plant        @PlantFibre
+-Grass           0.25    0.1    5          5       30   1000      0             1 0 0  Plant        @PlantFibre
         ~Vapour:0.00001:2:0:CONSUME
         ^Leaf:3
         #Water

@@ -190,6 +190,7 @@ public class GroupConglomerate {
         subgroups.add(group);
         computePopulation();
         group.getTerritory().getTiles().forEach(this::claimTile);
+        group.setParentGroup(this);
     }
 
     int getClosestInnerGroupDistance(Tile tile) {
@@ -203,8 +204,7 @@ public class GroupConglomerate {
     void removeGroup(Group group) {
         population -= group.population;
         if (!subgroups.remove(group)) {
-            System.err.println("Trying to remove non-child subgroup " + group.name + " from Group " + name);
-            return;
+            throw new RuntimeException("Trying to remove non-child subgroup " + group.name + " from Group " + name);
         }
         group.getTerritory().getTiles().forEach(this::removeTile);
     }

@@ -4,11 +4,9 @@ import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.Dependency;
-import simulation.culture.aspect.dependency.LineDependency;
-import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
-import simulation.culture.group.cultureaspect.CultureAspect;
-import simulation.culture.group.cultureaspect.DepictObject;
-import simulation.culture.group.cultureaspect.Tale;
+import simulation.culture.group.cultureaspect.*;
+import simulation.culture.group.reason.Reason;
+import simulation.culture.group.reason.Reasons;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
@@ -21,6 +19,7 @@ import simulation.space.resource.ResourcePack;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static extra.ProbFunc.*;
 import static simulation.Controller.*;
@@ -54,6 +53,12 @@ public class CulturalCenter {
 
     Set<Aspect> getAspects() {
         return aspects;
+    }
+
+    public List<ConverseWrapper> getConverseWrappers() {
+        return aspects.stream()
+                .filter(aspect -> aspect instanceof ConverseWrapper).map(aspect -> (ConverseWrapper) aspect)
+                .collect(Collectors.toList());
     }
 
     Set<ConverseWrapper> getMeaningAspects() {
@@ -259,7 +264,7 @@ public class CulturalCenter {
             return;
         }
         CultureAspect cultureAspect = null;
-        switch (randomInt(3)){
+        switch (randomInt(4)){
             case 0:
                 List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
                 if (!_l.isEmpty()) {
@@ -282,6 +287,13 @@ public class CulturalCenter {
                         .max(Comparator.comparingInt(Resource::getBaseDesireability)).orElse(null);
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group));
+                    break;
+                }
+            case 3://TODO should I add such a thing here even?
+                ConverseWrapper converseWrapper = randomElement(getConverseWrappers());
+                Reason reason = Reasons.randomReason(group);
+                if (converseWrapper != null && reason != null) {
+                    cultureAspect = new AspectRitual(group, converseWrapper, ResourceBehaviour.getRandom(group), reason);
                     break;
                 }
         }
@@ -327,11 +339,11 @@ public class CulturalCenter {
                 if (getChances(0.1)) {
                     options.addAll(session.world.aspectPool);
                 } else {
-                    options.addAll(getAllConverseWrappers());
+                    options.addAll(getAllPossibleConverseWrappers());
                 }
             } else {
                 options.addAll(session.world.aspectPool);
-                options.addAll(getAllConverseWrappers());
+                options.addAll(getAllPossibleConverseWrappers());
             }
 
             Aspect _a = randomElement(options, aspect -> true);
@@ -419,7 +431,7 @@ public class CulturalCenter {
             }
         }
 
-        getAllConverseWrappers().stream().filter(aspiration::isAcceptable)
+        getAllPossibleConverseWrappers().stream().filter(aspiration::isAcceptable)
                 .forEach(wrapper -> options.add(new ShnyPair<>(wrapper, null)));
 
         Set<ShnyPair<Aspect, Group>> aspects = getNeighboursAspects();
@@ -433,7 +445,7 @@ public class CulturalCenter {
         return options;
     }
 
-    private List<ConverseWrapper> getAllConverseWrappers() {
+    private List<ConverseWrapper> getAllPossibleConverseWrappers() {
         List<ConverseWrapper> options = new ArrayList<>(_converseWrappers); //TODO maybe do it after the middle part?
         Set<Resource> newResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
         newResources.addAll(getAllProducedResources().stream().map(pair -> pair.first).collect(Collectors.toSet()));
