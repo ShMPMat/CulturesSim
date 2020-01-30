@@ -9,9 +9,11 @@ import simulation.culture.group.ResourceBehaviour;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DepictObject extends AbstractCultureAspect {
     private Meme meme;
@@ -34,9 +36,10 @@ public class DepictObject extends AbstractCultureAspect {
     public void use() {
         group.getCulturalCenter().putCurrentMeme(meme.toString());
         AspectResult result = converseWrapper.use(new AspectController(1, 1,
-                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true)); //TODO maybe I should take only needed resource
+                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
         if (result.isFinished) {
-            group.cherishedResources.add(result.resources);
+            group.cherishedResources.add(result.resources.getResources().stream().filter(Resource::hasMeaning)
+                    .collect(Collectors.toList()));//TODO disband (split and shove);
             resourceBehaviour.procedeResources(result.resources);
             group.getCulturalCenter().getMemePool().strengthenMeme(meme);
         }

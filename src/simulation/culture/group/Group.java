@@ -50,8 +50,18 @@ public class Group {
     private CulturalCenter culturalCenter;
     private double spreadability;
     private Territory territory = new Territory();
+    private Function<Group, Double> hostilityByDifferenceCoef = g -> (compareDifferenceToGroup(g) - 1) / 2;
+    private Function<Tile, Integer> tileRelationAspectMapper = t -> {
+        int accumulator = 0;
+        for (Relation relation: relations.values()) {
+            if (relation.getPositive() < 0) {
+                accumulator += relation.getPositive() * 10000 / relation.other.territory.getCenter().getDistance(t);
+            }
+        }
+        return accumulator;
+    };
     private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() +
-            3 * t.hasResources(getResourceRequirements());
+            3 * t.hasResources(getResourceRequirements()) + tileRelationAspectMapper.apply(t);
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
@@ -74,7 +84,7 @@ public class Group {
             culturalCenter.hardAspectAdd(aspect.copy(aspect.getDependencies(), this));
         }
         culturalCenter.getAspects().forEach(Aspect::swapDependencies);
-        culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool()); //TODO seems like memes can become unbinded with CultureAspects
+        culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
     }
 
     public Set<Aspect> getAspects() {
@@ -323,13 +333,19 @@ public class Group {
                     relations.put(relation.other, relation);
                 }
             }
+            List<Group> dead = new ArrayList<>();
+            for (Relation relation: relations.values()) {
+                if (relation.other.state == State.Dead) {
+                    dead.add(relation.other);
+                } else {
+                    relation.setPositive(hostilityByDifferenceCoef.apply(relation.other));
+                }
+            }
+            dead.forEach(relations::remove);
         }
     }
 
     Relation addMirrorRelation(Relation relation) {
-//        if (relations.containsKey(relation.owner)) {
-//            return relations.get(relation.owner);
-//        }
         Relation newRelation = new Relation(relation.other, relation.owner);
         newRelation.setPair(relation);
         relations.put(relation.owner, newRelation);
@@ -338,10 +354,14 @@ public class Group {
 
     public void finishUpdate() {
         getCulturalCenter().finishUpdate();
-        Tile tile = ProbFunc.randomTile(getOverallTerritory());
+        Tile tile = getDisbandTile();
         resourcePack.disbandOnTile(tile);
         addEvent(new Event(Event.Type.DisbandResources, "Resources were disbanded on tile " + tile.x + " " +
                 tile.y, "tile", tile));
+    }
+
+    public Tile getDisbandTile() {
+        return ProbFunc.randomTile(getOverallTerritory());
     }
 
     void starve(double fraction) {
@@ -377,7 +397,7 @@ public class Group {
     }
 
     boolean diverge() {
-        if (!session.groupDiverge) {//TODO diverge if too far from others
+        if (!session.groupDiverge) {
             return false;
         }
         if (parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupExiting)) {
@@ -488,6 +508,18 @@ public class Group {
         parentGroup.removeTile(tile);
     }
 
+    private double compareDifferenceToGroup(Group group) {
+        double matched = 1;
+        double overall = 1;
+        for (Aspect aspect: getAspects()) {
+            if (group.getAspect(aspect) != null) {
+                matched++;
+            }
+            overall++;
+        }
+        return matched / overall;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -529,13 +561,17 @@ public class Group {
         }
         s.append((culturalCenter.getCultureAspects().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
-        stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n");
+        stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
-                .append("\n");
+                .append("\n\n");
         for (Stratum stratum : strata) {
             if (stratum.getAmount() != 0) {
                 stringBuilder.append(stratum).append("\n");
             }
+        }
+        stringBuilder.append("\n");
+        for (Relation relation: relations.values()) {
+            stringBuilder.append(relation).append("\n");
         }
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
 

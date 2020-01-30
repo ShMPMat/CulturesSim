@@ -12,7 +12,7 @@ import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
 
-public class AspectRitual extends Ritual {//TODO I stopped here somewhere
+public class AspectRitual extends Ritual {
     private ResourceBehaviour resourceBehaviour;
     private ConverseWrapper converseWrapper;
 

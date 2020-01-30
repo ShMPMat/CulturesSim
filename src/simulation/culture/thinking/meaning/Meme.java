@@ -50,7 +50,7 @@ abstract public class Meme {
         return this;
     }
 
-    public List<Meme> splitOn(Collection<String> splitters) {//TODO empty if only splitters are there
+    public List<Meme> splitOn(Collection<String> splitters) {
         List<Meme> memes = new ArrayList<>();
         Queue<Meme> newMemes = new ArrayDeque<>();
         Meme copy = copy();
@@ -58,11 +58,15 @@ abstract public class Meme {
         newMemes.add(copy);
         while (!newMemes.isEmpty()) {
             Meme current = newMemes.poll();
-            List<Meme> memeList = current.predicates;
-            for (int i = 0; i < memeList.size(); i++) {
-                Meme child = memeList.get(i);
+            if (splitters.contains(current.observerWord)) {
+                memes.addAll(current.predicates);
+                continue;
+            }
+            List<Meme> children = current.predicates;
+            for (int i = 0; i < children.size(); i++) {
+                Meme child = children.get(i);
                 if (splitters.contains(child.observerWord)) {
-                    memeList.remove(i);
+                    children.remove(i);
                     i--;
                     memes.addAll(child.predicates);
                 }

@@ -324,60 +324,12 @@ public class Tile {
      * Starts update for this Tile.
      */
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
-        for (Tile tile: getNeighbours()) {
-            for (Resource resource:tile.resources) {
-                if (resource.getTile() == null || resource.getTile() != tile) {
-                    int i = 0;
-                }
-            }
-        }
-        for (Resource resource:resources) {
-            if (resource.getTile() == null || resource.getTile() != this) {
-                int i = 0;
-            }
-        }
         _newWind = new Wind();
         checkIce();
         updateResources();
-        for (Resource resource:resources) {
-            if (resource.getTile() == null || resource.getTile() != this) {
-                int i = 0;
-            }
-        }
-        for (Tile tile: getNeighbours()) {
-            for (Resource resource:tile.resources) {
-                if (resource.getTile() == null || resource.getTile() != tile) {
-                    int i = 0;
-                }
-            }
-        }
         useWind();
-        for (Tile tile: getNeighbours()) {
-            for (Resource resource:tile.resources) {
-                if (resource.getTile() == null || resource.getTile() != tile) {
-                    int i = 0;
-                }
-            }
-        }
-        for (Resource resource:resources) {
-            if (resource.getTile() == null || resource.getTile() != this) {
-                int i = 0;
-            }
-        }
         updateTemperature();
         updateType();
-        for (Tile tile: getNeighbours()) {
-            for (Resource resource:tile.resources) {
-                if (resource.getTile() == null || resource.getTile() != tile) {
-                    int i = 0;
-                }
-            }
-        }
-        for (Resource resource: resources) {
-            if (resource.getTile() == null || resource.getTile() != this) {
-                int i = 0;
-            }
-        }
     }
 
     public void middleUpdate() {
@@ -416,18 +368,6 @@ public class Tile {
 
     public void finishUpdate() {
         wind = _newWind;
-        for (Resource resource:resources) {
-            if (resource.getTile() == null || resource.getTile() != this) {
-                int i = 0;
-            }
-        }
-        for (Tile tile: getNeighbours()) {
-            for (Resource resource:tile.resources) {
-                if (resource.getTile() == null || resource.getTile() != tile) {
-                    int i = 0;
-                }
-            }
-        }
     }
 
     private void updateTemperature() {

@@ -63,8 +63,11 @@ public class GroupConglomerate {
         this(session.getVacantGroupName(), 100 + ProbFunc.randomInt(100), numberOfSubgroups, root);
     }
 
-
-    public Set<Aspect> getAspects() { //TODO BAD importance lost (?)
+    /**
+     * @return All aspects which exist in any of Groups.
+     * Each of them belongs to one of the Groups, it is not guarantied to which one.
+     */
+    public Set<Aspect> getAspects() {
         return subgroups.stream().map(Group::getAspects).reduce(new HashSet<>(), (x, y) -> {
             x.addAll(y);
             return x;

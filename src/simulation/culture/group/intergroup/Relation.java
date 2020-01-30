@@ -15,6 +15,10 @@ public class Relation {
         this.other = other;
     }
 
+    public double getPositive() {
+        return positive;
+    }
+
     public void setPair(Relation pair) {
         this.pair = pair;
     }
@@ -28,5 +32,10 @@ public class Relation {
     public void increaseRelationsTwoSided(double delta) {
         setPositive(positive + delta);
         pair.setPositive(pair.positive + delta);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s is %f", other.name, positive);
     }
 }
