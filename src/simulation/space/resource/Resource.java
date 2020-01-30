@@ -154,19 +154,15 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public void setTile(Tile tile) {
-        if (tile == null) {
+        if (tile != null && !tile.getResourcesWithMoved().contains(this)) {
             int i = 0;
         }
-        if (resourceCore.isMovable()) {
+        if (isMovable()) {
             this.tile = tile;
-//            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
-//                    "tile", tile));
             return;
         }
         if (this.tile == null || deathTurn == 0) {
             this.tile = tile;
-//            events.add(new Event(Event.Type.Move, "Resource was moved", "name", getFullName(),
-//                    "tile", tile));
         } else {
             System.err.println("Unmovable resource being moved! - " + getFullName());
             this.tile = tile;
@@ -179,13 +175,15 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 
     public Resource merge(Resource resource) {
         if (!resource.getBaseName().equals(getBaseName())) {
-            System.err.println("Different resource tried to merge - " + getFullName() + " and " + resource.getFullName());
-            return this;
+            throw new RuntimeException(String.format("Different resource tried to merge - %s and %s",
+                    getFullName(), resource.getFullName()));
         }
         if (this == resource) {
-            int i = 0;//TODO this happens, yes
+            return this;
+//            int i = 0;//TODO this happens, yes
         }
         addAmount(resource.amount);
+        resource.amount = 0;
         return this;
     }
 

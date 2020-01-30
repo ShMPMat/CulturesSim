@@ -1,12 +1,12 @@
 package simulation.culture.thinking.meaning;
 
 import extra.ProbFunc;
+import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.space.resource.Resource;
 import simulation.space.resource.dependency.ConsumeDependency;
 import simulation.space.resource.dependency.ResourceDependency;
-import simulation.space.resource.dependency.ResourceDependencyDep;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,33 +85,54 @@ public class GroupMemes extends MemePool {
     }
 
     public void addAspectMemes(Aspect aspect) {
-        add(Meme.getMeme(aspect));
-        if (aspect instanceof ConverseWrapper) {
-            addResourceMemes(((ConverseWrapper) aspect).resource);
-            ((ConverseWrapper) aspect).getResult().forEach(this::addResourceMemes);
-        }
+        addPairMemes(getAspectMemes(aspect));
     }
 
     public void addResourceMemes(Resource resource) {
-        Meme meme = Meme.getMeme(resource);
-        if (!add(meme)) {
-            return;
-        }
-        addResourceInformationMemes(resource);
+        addPairMemes(getResourceMemes(resource));
     }
 
-    public void addResourceInformationMemes(Resource resource) {
+    public void addPairMemes(ShnyPair<List<Meme>, List<Meme>> memes) {
+        memes.first.forEach(this::add);
+        memes.second.forEach(this::addMemeCombination);
+    }
+
+    public ShnyPair<List<Meme>, List<Meme>> getAspectMemes(Aspect aspect) {
+        ShnyPair<List<Meme>, List<Meme>> aspectMemes = new ShnyPair<>(new ArrayList<>(), new ArrayList<>());
+        aspectMemes.first.add(Meme.getMeme(aspect));
+        if (aspect instanceof ConverseWrapper) {
+            ShnyPair<List<Meme>, List<Meme>> resourceMemes = getResourceMemes(((ConverseWrapper) aspect).resource);
+            aspectMemes.first.addAll(resourceMemes.first);
+            aspectMemes.second.addAll(resourceMemes.second);
+            ((ConverseWrapper) aspect).getResult().forEach(resource -> {
+                ShnyPair<List<Meme>, List<Meme>> resMemes = getResourceMemes(resource);
+                aspectMemes.first.addAll(resMemes.first);
+                aspectMemes.second.addAll(resMemes.second);
+            });
+        }
+        return aspectMemes;
+    }
+
+    public ShnyPair<List<Meme>, List<Meme>> getResourceMemes(Resource resource) {
+        ShnyPair<List<Meme>, List<Meme>> resourceMemes = getResourceInformationMemes(resource);
+        resourceMemes.first.add(Meme.getMeme(resource));
+        return resourceMemes;
+    }
+
+    public ShnyPair<List<Meme>, List<Meme>> getResourceInformationMemes(Resource resource) {
+        ShnyPair<List<Meme>, List<Meme>> infoMemes = new ShnyPair<>(new ArrayList<>(), new ArrayList<>());
         for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
             if (resourceDependency instanceof ConsumeDependency) {
                 for (String res : ((ConsumeDependency) resourceDependency).lastConsumed) {
                     Meme subject = new MemeSubject(res.toLowerCase());
-                    add(subject);
+                    infoMemes.first.add(subject);
                     Meme object = Meme.getMeme(resource).addPredicate(getMemeCopy("consume"));
                     object.predicates.get(0).addPredicate(subject);
-                    addMemeCombination(object);
+                    infoMemes.second.add(object);
                 }
             }
         }
+        return infoMemes;
     }
 
     public void addMemeCombination(Meme meme) {

@@ -166,6 +166,7 @@ public class GroupConglomerate {
                 i--;
             }
         }
+        subgroups.forEach(Group::intergroupUpdate);
     }
 
     private void updatePopulation() {

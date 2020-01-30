@@ -61,6 +61,7 @@ public class Controller {
     public final boolean groupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
     public final int     stratumTurnsBeforeInstrumentRenewal = 30;
+    public final int     groupTurnsBeforeBorderCheck = 10;
 
     public final double windPropagation = 0.025;
     public final double windFillIn = 0.1;

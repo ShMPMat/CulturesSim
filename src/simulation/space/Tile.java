@@ -112,25 +112,12 @@ public class Tile {
      * @return List of neighbour Tiles which satisfy the Predicate.
      */
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
-        List<Tile> goodTiles = new ArrayList<>();
         WorldMap map = session.world.map;
-        Tile newTile = map.get(x, y + 1);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        newTile = map.get(x, y - 1);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        newTile = map.get(x + 1, y);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        newTile = map.get(x - 1, y);
-        if (newTile != null && predicate.test(newTile)) {
-            goodTiles.add(newTile);
-        }
-        return goodTiles;
+        return Arrays.stream(new Tile[]{map.get(x, y + 1),
+                                        map.get(x, y - 1),
+                                        map.get(x + 1, y),
+                                        map.get(x - 1, y)})
+                .filter(obj -> Objects.nonNull(obj) && predicate.test(obj)).collect(Collectors.toList());
     }
 
     /**
@@ -277,6 +264,9 @@ public class Tile {
         }
         resources.add(resource);
         resource.setTile(this);
+        if (resource.getTile() == null || resource.getTile() != this) {
+            int i = 0;
+        }
     }
 
     /**
@@ -287,6 +277,10 @@ public class Tile {
         resources.removeIf(res -> res.fullEquals(resource));
     }
 
+    public void removeExactResource(Resource resource) {
+        resources.removeIf(res -> res == resource);
+    }
+
     /**
      * Adds resources which will be available on this Tile on the next turn.
      * @param resource resource which will be added.
@@ -295,10 +289,9 @@ public class Tile {
         if (resource.getAmount() == 0) {
             return;
         }
-//        if (resource.isMovable()) {
-//            System.err.println("Movable resource added in Delayed resources.");
-//            return;
-//        }
+        if (resource.getTile() != null) {
+            resource.getTile().removeExactResource(resource);
+        }
         _delayedResources.add(resource);
         resource.setTile(this);
     }
@@ -331,46 +324,68 @@ public class Tile {
      * Starts update for this Tile.
      */
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
-        _newWind = new Wind();
-        checkIce();
-        for (int i = 0; i < resources.size(); i++) {
-            Resource resource = resources.get(i);
-            if (!resource.update()) {
-                resources.remove(resource);
-                i--;
-            }
-        }
-        for (Resource resource : resources) {
-            if (!resource.isMovable()) {
-                continue;
-            }
-            double overallWindLevel = wind.affectedTiles.stream().reduce((double) 0, (x, y) -> x + y.second, Double::sum);
-            for (ShnyPair<Tile, Double> pair : wind.affectedTiles) {
-                int part = (int) (resource.getAmount() * pair.second / overallWindLevel *
-                        Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
-                if (part > 0) {
-                    pair.first.addDelayedResource(resource.getCleanPart(part));
+        for (Tile tile: getNeighbours()) {
+            for (Resource resource:tile.resources) {
+                if (resource.getTile() == null || resource.getTile() != tile) {
+                    int i = 0;
                 }
             }
         }
-        updateTemperature();
-        if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
-            if (resources.stream().anyMatch(resource -> resource.getSimpleName().matches("Tree|JungleTree"))) {
-                setType(Type.Woods, false);
-            } else if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
-                setType(Type.Growth, false);
-            } else {
-                setType(Type.Normal, false);
+        for (Resource resource:resources) {
+            if (resource.getTile() == null || resource.getTile() != this) {
+                int i = 0;
             }
-        } else if (getType() == Type.Water) {
-            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
         }
-        if (resources.contains(session.world.getPoolResource("Water"))) {
-            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
+        _newWind = new Wind();
+        checkIce();
+        updateResources();
+        for (Resource resource:resources) {
+            if (resource.getTile() == null || resource.getTile() != this) {
+                int i = 0;
+            }
+        }
+        for (Tile tile: getNeighbours()) {
+            for (Resource resource:tile.resources) {
+                if (resource.getTile() == null || resource.getTile() != tile) {
+                    int i = 0;
+                }
+            }
+        }
+        useWind();
+        for (Tile tile: getNeighbours()) {
+            for (Resource resource:tile.resources) {
+                if (resource.getTile() == null || resource.getTile() != tile) {
+                    int i = 0;
+                }
+            }
+        }
+        for (Resource resource:resources) {
+            if (resource.getTile() == null || resource.getTile() != this) {
+                int i = 0;
+            }
+        }
+        updateTemperature();
+        updateType();
+        for (Tile tile: getNeighbours()) {
+            for (Resource resource:tile.resources) {
+                if (resource.getTile() == null || resource.getTile() != tile) {
+                    int i = 0;
+                }
+            }
+        }
+        for (Resource resource: resources) {
+            if (resource.getTile() == null || resource.getTile() != this) {
+                int i = 0;
+            }
         }
     }
 
     public void middleUpdate() {
+        for (Resource resource: resources) {
+            if (resource.getTile() == null || resource.getTile() != this) {
+                int i = 0;
+            }
+        }
         _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
         _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
@@ -397,18 +412,72 @@ public class Tile {
         propagateWindFillIn(map.get(x + 1, y), map.get(x + 2, y));
         propagateWindFillIn(map.get(x, y - 1), map.get(x, y - 2));
         propagateWindFillIn(map.get(x, y + 1), map.get(x, y + 2));
+    }
 
-//        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y - 1), map.get(x, y - 1));
-//        propagateWindWithCondition(map.get(x - 1, y), map.get(x + 1, y + 1), map.get(x, y + 1));
-//
-//        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y - 1), map.get(x, y - 1));
-//        propagateWindWithCondition(map.get(x + 1, y), map.get(x - 1, y + 1), map.get(x, y + 1));
-//
-//        propagateWindWithCondition(map.get(x, y + 1), map.get(x - 1, y - 1), map.get(x - 1, y));
-//        propagateWindWithCondition(map.get(x, y + 1), map.get(x + 1, y - 1), map.get(x + 1, y));
-//
-//        propagateWindWithCondition(map.get(x, y - 1), map.get(x - 1, y + 1), map.get(x - 1, y));
-//        propagateWindWithCondition(map.get(x, y - 1), map.get(x + 1, y + 1), map.get(x + 1, y));
+    public void finishUpdate() {
+        wind = _newWind;
+        for (Resource resource:resources) {
+            if (resource.getTile() == null || resource.getTile() != this) {
+                int i = 0;
+            }
+        }
+        for (Tile tile: getNeighbours()) {
+            for (Resource resource:tile.resources) {
+                if (resource.getTile() == null || resource.getTile() != tile) {
+                    int i = 0;
+                }
+            }
+        }
+    }
+
+    private void updateTemperature() {
+        temperature = session.temperatureBaseStart +
+                x*(session.temperatureBaseFinish - session.temperatureBaseStart) /session.mapSizeX -
+                Math.max(0, (level - 110) / 2) -
+                (type == Type.Water || type == Type.Ice ? 10 : 0);
+    }
+
+    private void updateResources() {
+        for (int i = 0; i < resources.size(); i++) {
+            Resource resource = resources.get(i);
+            if (!resource.update()) {
+                resources.remove(resource);
+                i--;
+            }
+        }
+    }
+
+    private void updateType() {
+        if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
+            if (resources.stream().anyMatch(resource -> resource.getSimpleName().matches("Tree|JungleTree"))) {
+                setType(Type.Woods, false);
+            } else if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
+                setType(Type.Growth, false);
+            } else {
+                setType(Type.Normal, false);
+            }
+        } else if (getType() == Type.Water) {
+            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
+        }
+        if (resources.contains(session.world.getPoolResource("Water"))) {
+            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
+        }
+    }
+
+    private void useWind() {
+        for (Resource resource : resources) {
+            if (!resource.isMovable()) {
+                continue;
+            }
+            double overallWindLevel = wind.affectedTiles.stream().reduce((double) 0, (x, y) -> x + y.second, Double::sum);
+            for (ShnyPair<Tile, Double> pair : wind.affectedTiles) {
+                int part = (int) (resource.getAmount() * pair.second / overallWindLevel *
+                        Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
+                if (part > 0) {
+                    pair.first.addDelayedResource(resource.getCleanPart(part));
+                }
+            }
+        }
     }
 
     private void setWindByTemperature(Tile tile) {
@@ -438,17 +507,6 @@ public class Tile {
                 _newWind.changeLevelOnTile(tile, level);
             }
         }
-    }
-
-    public void finishUpdate() {
-        wind = _newWind;
-    }
-
-    private void updateTemperature() {
-        temperature = session.temperatureBaseStart +
-                x*(session.temperatureBaseFinish - session.temperatureBaseStart) /session.mapSizeX -
-                Math.max(0, (level - 110) / 2) -
-                (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
 
     public void levelUpdate() {//TODO works bad on Ice; wind should affect mountains mb they will stop grow

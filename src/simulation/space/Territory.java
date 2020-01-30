@@ -46,8 +46,7 @@ public class Territory {
     }
 
     public List<Tile> getBrink() {
-        return getBrinkWithImportance(tile -> true, tile -> 0).stream().map(pair -> pair.first)
-                .collect(Collectors.toList());
+        return new ArrayList<>(brink);
     }
 
     public List<Tile> getBrinkWithCondition(Predicate<Tile> predicate) {

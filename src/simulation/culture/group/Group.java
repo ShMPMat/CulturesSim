@@ -7,6 +7,7 @@ import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
+import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemeSubject;
@@ -40,6 +41,7 @@ public class Group {
      */
     public int population;
 
+    private Map<Group, Relation> relations = new HashMap<>();
     private int maxPopulation = session.defaultGroupMaxPopulation;
     private int fertility = session.defaultGroupFertility;
     private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
@@ -307,6 +309,31 @@ public class Group {
             group.culturalCenter.initializeFromCenter(culturalCenter);//TODO maybe put in constructor somehow
             parentGroup.addGroup(group);
         }
+    }
+
+    void intergroupUpdate() {
+        if (session.world.getLesserTurnNumber() % session.groupTurnsBeforeBorderCheck == 0) {
+            List<Group> groups = getOverallTerritory()
+                    .getBrinkWithCondition(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
+                    .stream().map(tile -> tile.group).distinct().collect(Collectors.toList());
+            for (Group group: groups) {
+                if (!relations.containsKey(group)) {
+                    Relation relation = new Relation(this, group);
+                    relation.setPair(group.addMirrorRelation(relation));
+                    relations.put(relation.other, relation);
+                }
+            }
+        }
+    }
+
+    Relation addMirrorRelation(Relation relation) {
+//        if (relations.containsKey(relation.owner)) {
+//            return relations.get(relation.owner);
+//        }
+        Relation newRelation = new Relation(relation.other, relation.owner);
+        newRelation.setPair(relation);
+        relations.put(relation.owner, newRelation);
+        return newRelation;
     }
 
     public void finishUpdate() {
