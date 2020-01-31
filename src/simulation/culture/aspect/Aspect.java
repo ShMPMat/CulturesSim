@@ -106,7 +106,7 @@ public class Aspect {
 
     public Collection<AspectTag> getWrapperRequirements() {
         return aspectCore.getRequirements().stream().filter(aspectTag -> aspectTag.isConverseCondition)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public Group getGroup() {

@@ -106,7 +106,6 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
             counter += resource.amount;
         }
         resources.removeAll(result);
-        result.forEach(resource -> resource.amount = 0);
         return new ShnyPair<>(counter, result);
     }
 

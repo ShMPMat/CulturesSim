@@ -41,7 +41,6 @@ public class Group {
      */
     public int population;
 
-    private Map<Group, Relation> relations = new HashMap<>();
     private int maxPopulation = session.defaultGroupMaxPopulation;
     private int fertility = session.defaultGroupFertility;
     private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
@@ -53,7 +52,7 @@ public class Group {
     private Function<Group, Double> hostilityByDifferenceCoef = g -> (compareDifferenceToGroup(g) - 1) / 2;
     private Function<Tile, Integer> tileRelationAspectMapper = t -> {
         int accumulator = 0;
-        for (Relation relation: relations.values()) {
+        for (Relation relation: culturalCenter.relations.values()) {
             if (relation.getPositive() < 0) {
                 accumulator += relation.getPositive() * 10000 / relation.other.territory.getCenter().getDistance(t);
             }
@@ -322,7 +321,8 @@ public class Group {
     }
 
     void intergroupUpdate() {
-        if (session.world.getLesserTurnNumber() % session.groupTurnsBeforeBorderCheck == 0) {
+        Map<Group, Relation> relations = culturalCenter.relations;
+        if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> groups = getOverallTerritory()
                     .getBrinkWithCondition(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
                     .stream().map(tile -> tile.group).distinct().collect(Collectors.toList());
@@ -343,12 +343,13 @@ public class Group {
             }
             dead.forEach(relations::remove);
         }
+        culturalCenter.intergroupUpdate();
     }
 
     Relation addMirrorRelation(Relation relation) {
         Relation newRelation = new Relation(relation.other, relation.owner);
         newRelation.setPair(relation);
-        relations.put(relation.owner, newRelation);
+        culturalCenter.relations.put(relation.owner, newRelation);
         return newRelation;
     }
 
@@ -517,6 +518,12 @@ public class Group {
             }
             overall++;
         }
+        for (CultureAspect aspect: culturalCenter.getCultureAspects()) {
+            if (group.culturalCenter.getCultureAspects().contains(aspect)) {
+                matched++;
+            }
+            overall++;
+        }
         return matched / overall;
     }
 
@@ -570,7 +577,7 @@ public class Group {
             }
         }
         stringBuilder.append("\n");
-        for (Relation relation: relations.values()) {
+        for (Relation relation: culturalCenter.relations.values()) {
             stringBuilder.append(relation).append("\n");
         }
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);

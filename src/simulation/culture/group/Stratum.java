@@ -97,7 +97,7 @@ public class Stratum {
     }
 
     void update() {
-        if (session.world.getLesserTurnNumber() % session.stratumTurnsBeforeInstrumentRenewal != 0) {
+        if (session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
         for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {

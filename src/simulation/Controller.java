@@ -61,7 +61,8 @@ public class Controller {
     public final boolean groupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
     public final int     stratumTurnsBeforeInstrumentRenewal = 30;
-    public final int     groupTurnsBeforeBorderCheck = 10;
+    public final int     groupTurnsBetweenBorderCheck = 10;
+    public final int     groupTurnsBetweenAdopts = 10;
 
     public final double windPropagation = 0.025;
     public final double windFillIn = 0.1;
@@ -123,6 +124,10 @@ public class Controller {
                 visualizer.print();
             }
         }
+    }
+
+    public boolean isTime(int denominator) {
+        return world.getLesserTurnNumber() % denominator == 0;
     }
 
     /**

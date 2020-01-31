@@ -38,4 +38,8 @@ public class Relation {
     public String toString() {
         return String.format("%s is %f", other.name, positive);
     }
+
+    public double getPositiveNormalized() {
+        return positive + 1;
+    }
 }

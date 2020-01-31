@@ -70,12 +70,12 @@ public class ProbFunc {
         return randomElement(randomElement(map.map));
     }
 
-    public static <E> E randomElementWithProbability(List<E> list, Function<E, Integer> mapper) {
-        List<Integer> probabilities = list.stream().map(mapper).collect(Collectors.toList());
-        int result = randomInt(probabilities.stream().reduce(0, Integer::sum));
+    public static <E> E randomElementWithProbability(List<E> list, Function<E, Double> mapper) {
+        List<Double> probabilities = list.stream().map(mapper).collect(Collectors.toList());
+        double result = Math.random() * probabilities.stream().reduce((double) 0, Double::sum);
         for (int i = 0; i < probabilities.size(); i++) {
-            Integer probability = probabilities.get(i);
-            if (result < probability) {
+            double probability = probabilities.get(i);
+            if (result <= probability) {
                 return list.get(i);
             }
             result -= probability;
