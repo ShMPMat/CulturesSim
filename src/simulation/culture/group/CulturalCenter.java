@@ -5,6 +5,7 @@ import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.cultureaspect.*;
+import simulation.culture.group.reason.BetterAspectUseReason;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.reason.Reasons;
 import simulation.culture.group.request.Request;
@@ -69,6 +70,10 @@ public class CulturalCenter {
 
     Aspect getAspect(Aspect aspect) {
         return getAspects().stream().filter(aspect::equals).findFirst().orElse(null);
+    }
+
+    Aspect getAspect(String name) {
+        return getAspects().stream().filter(aspect -> aspect.getName().equals(name)).findFirst().orElse(null);
     }
 
     List<Request> getRequests() {
@@ -265,7 +270,7 @@ public class CulturalCenter {
         }
         CultureAspect cultureAspect = null;
         switch (randomInt(4)){
-            case 0:
+            case 0: {
                 List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
                 if (!_l.isEmpty()) {
                     Meme meme = constructMeme();
@@ -275,13 +280,13 @@ public class CulturalCenter {
                         break;
                     }
                 }
-            case 1:
+            } case 1: {
                 Meme meme = constructTale();
                 if (meme != null) {
                     cultureAspect = new Tale(group, meme);
                     break;
                 }
-            case 2:
+            } case 2: {
                 Resource resource = getAllProducedResources().stream().map(pair -> pair.first)
                         .filter(r -> !aestheticallyPleasingResources.contains(r))
                         .max(Comparator.comparingInt(Resource::getBaseDesireability)).orElse(null);
@@ -289,13 +294,60 @@ public class CulturalCenter {
                     cultureAspect = new AestheticallyPleasingObject(group, resource, ResourceBehaviour.getRandom(group));
                     break;
                 }
-            case 3://TODO should I add such a thing here even?
+            } case 3: {//TODO recursively go in dependencies;
+                ConverseWrapper converseWrapper = randomElementWithProbability(new ArrayList<>(getConverseWrappers()),
+                        cw -> Math.max(cw.getUsefulness(), 1));
+                if (converseWrapper == null) {
+                    break;
+                }
+                Reason reason = new BetterAspectUseReason(group, converseWrapper);
+                ShnyPair<List<Meme>, List<Meme>> temp = memePool.getAspectMemes(converseWrapper);
+                List<Meme> aspectMemes = temp.first;
+                aspectMemes.addAll(temp.second);
+                Collections.shuffle(aspectMemes);
+                for (Meme meme: aspectMemes) {//TODO maybe depth check
+                    if (meme.getObserverWord().equals(converseWrapper.getName())) {
+                        continue;
+                    }
+                    Aspect myAspect = getAspect(meme.getObserverWord());
+                    if (myAspect instanceof ConverseWrapper) {
+                        cultureAspect = new AspectRitual(group, (ConverseWrapper) myAspect,
+                                ResourceBehaviour.getRandom(group), reason);
+                        break;
+                    }
+                    List<ConverseWrapper> options = getAllProducedResources().stream()
+                            .filter(pair -> pair.first.getBaseName().equals(meme.getObserverWord()))
+                            .map(pair -> pair.second).collect(Collectors.toList());
+                    if (!options.isEmpty()) {
+                        cultureAspect = new AspectRitual(group, randomElement(options),
+                                ResourceBehaviour.getRandom(group), reason);
+                        break;
+                    }
+                    switch (randomInt(2)) {
+                        case 0:
+                            List<ConverseWrapper> meaningAspects = new ArrayList<>(getMeaningAspects());
+                            if (!meaningAspects.isEmpty()) {
+                                cultureAspect = new CultureAspectRitual(group,
+                                        new DepictObject(group, randomElement(aspectMemes),
+                                                randomElement(meaningAspects), ResourceBehaviour.getRandom(group)),
+                                        reason);
+                            }
+                            break;
+                        case 1:
+                            cultureAspect = new CultureAspectRitual(group, new Tale(group, randomElement(aspectMemes)),
+                                    reason);//TODO make more complex tale;
+                            break;
+                    }
+                }
+                break;//TODO make new constructors for all CA without RB and Reasons
+            } case 4: {//TODO should I add such a thing here even? (I did break in previous section for now)
                 ConverseWrapper converseWrapper = randomElement(getConverseWrappers());
                 Reason reason = Reasons.randomReason(group);
                 if (converseWrapper != null && reason != null) {
                     cultureAspect = new AspectRitual(group, converseWrapper, ResourceBehaviour.getRandom(group), reason);
                     break;
                 }
+            }
         }
         addCultureAspect(cultureAspect);
     }

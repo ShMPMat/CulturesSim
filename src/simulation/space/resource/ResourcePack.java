@@ -50,7 +50,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
 
     public ResourcePack getResourceAndRemove(Resource resource) {
         ResourcePack _r = getResource(resource);
-        _r.resources.forEach(this::removeResource);
+        _r.resources.forEach(this::remove);
         return _r;
     }
 
@@ -168,7 +168,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         resources.forEach(this::add);
     }
 
-    public void removeResource(Resource resource) {
+    public void remove(Resource resource) {
         for (int i = 0; i < resources.size(); i++) {
             Resource res = resources.get(i);
             if (res.fullEquals(resource)) {
@@ -176,6 +176,10 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
                 return;
             }
         }
+    }
+
+    public void removeAll(Collection<Resource> resources) {
+        resources.forEach(this::remove);
     }
 
     public void destroyAllResourcesWithTag(AspectTag tag) {

@@ -149,6 +149,7 @@ public class GroupConglomerate {
         if (state == State.Dead) {
             return;
         }
+        subgroups.removeIf(group -> group.state == Group.State.Dead);
         int size = subgroups.size();
         subgroups.forEach(Group::updateRequests);
         subgroups.forEach(Group::executeRequests);

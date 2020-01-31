@@ -9,6 +9,7 @@ import simulation.space.Tile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -67,6 +68,19 @@ public class ProbFunc {
      */
     public static Tile randomTile(WorldMap map) {
         return randomElement(randomElement(map.map));
+    }
+
+    public static <E> E randomElementWithProbability(List<E> list, Function<E, Integer> mapper) {
+        List<Integer> probabilities = list.stream().map(mapper).collect(Collectors.toList());
+        int result = randomInt(probabilities.stream().reduce(0, Integer::sum));
+        for (int i = 0; i < probabilities.size(); i++) {
+            Integer probability = probabilities.get(i);
+            if (result < probability) {
+                return list.get(i);
+            }
+            result -= probability;
+        }
+        return null;
     }
 
     /**

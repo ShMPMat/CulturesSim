@@ -37,6 +37,10 @@ abstract public class Meme {
         return importance;
     }
 
+    public String getObserverWord() {
+        return observerWord;
+    }
+
     public boolean isSimple() {
         return predicates.isEmpty();
     }

@@ -216,6 +216,9 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 
     public Resource insertMeaning(Meme meaning, AspectResult result) {
         Resource resource = new Resource(resourceCore.insertMeaning(meaning, result), amount);
+        if (tile == null) {
+            int i = 0;
+        }
         tile.addDelayedResource(resource);
         this.amount = 0;
         return resource;

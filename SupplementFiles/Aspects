@@ -27,7 +27,7 @@
     &@_colour--#Dye:1
 
 -Killing                                                                     #weapon
--Plant
+-PlantSeed
 -TakeApart
 -Take
     &!gas--isMovable--#MATCHED:1

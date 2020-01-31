@@ -42,7 +42,7 @@
         #Water
 
 -Grass           0.25    0.1    5          5       30   1000      0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.00001:2:0:CONSUME
+        ~Vapour:0.0000001:2:0:CONSUME
         ^Leaf:3
         #Water
 
@@ -114,7 +114,7 @@
 -Fruit           0       0.1    5          -500    500  100000000 0             1 1 0  None         @Pulp
 
 -Seed            0       0.01   100        -500    500  100000000 0             1 1 0  None         @Seed
-        +Plant:LEGACY:1
+        +PlantSeed:LEGACY:1
 
 
 
