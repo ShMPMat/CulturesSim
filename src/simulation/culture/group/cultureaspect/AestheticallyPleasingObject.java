@@ -47,6 +47,11 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
     }
 
     @Override
+    public AestheticallyPleasingObject copy(Group group) {
+        return new AestheticallyPleasingObject(group, resource, resourceBehaviour);
+    }
+
+    @Override
     public String toString() {
         return "Aesthetically pleasing " + resource.getFullName() + " " + resourceBehaviour;
     }

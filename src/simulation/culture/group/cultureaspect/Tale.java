@@ -30,6 +30,11 @@ public class Tale extends AbstractCultureAspect {
     }
 
     @Override
+    public Tale copy(Group group) {
+        return new Tale(group, meme);
+    }
+
+    @Override
     public String toString() {
         return "Tale about " + meme;
     }

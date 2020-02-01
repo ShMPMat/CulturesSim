@@ -54,6 +54,11 @@ public class DepictObject extends AbstractCultureAspect {
     }
 
     @Override
+    public DepictObject copy(Group group) {
+        return new DepictObject(group, meme, converseWrapper, resourceBehaviour);
+    }
+
+    @Override
     public String toString() {
         return "Depict " + meme.toString() + " with " + converseWrapper.getName() + " " + resourceBehaviour;
     }

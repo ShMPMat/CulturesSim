@@ -31,6 +31,11 @@ public class CultureAspectRitual extends Ritual {
     }
 
     @Override
+    public CultureAspectRitual copy(Group group) {
+        return new CultureAspectRitual(group, aspect.copy(group), reason);
+    }
+
+    @Override
     public String toString() {
         return String.format("Ritual with %s because %s", aspect, reason);
     }

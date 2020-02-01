@@ -7,4 +7,5 @@ public interface CultureAspect {
     Request getRequest();
     void use();
     Group getGroup();
+    CultureAspect copy(Group group);
 }

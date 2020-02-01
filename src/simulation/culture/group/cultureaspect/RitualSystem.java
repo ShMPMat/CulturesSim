@@ -8,6 +8,7 @@ import simulation.culture.group.request.Request;
 import simulation.culture.thinking.meaning.Meme;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RitualSystem extends AbstractCultureAspect {
     private Set<Ritual> rituals;
@@ -34,6 +35,13 @@ public class RitualSystem extends AbstractCultureAspect {
         if (ritual != null) {
             rituals.add(ritual);
         }
+    }
+
+    @Override
+    public RitualSystem copy(Group group) {
+        return new RitualSystem(group, rituals.stream()
+                .map(r -> (Ritual) r.copy(group)).collect(Collectors.toList()),
+                reason);
     }
 
     @Override
