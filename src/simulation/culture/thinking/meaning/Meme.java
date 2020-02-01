@@ -41,6 +41,10 @@ abstract public class Meme {
         return observerWord;
     }
 
+    public List<Meme> getPredicates() {
+        return predicates;
+    }
+
     public boolean isSimple() {
         return predicates.isEmpty();
     }

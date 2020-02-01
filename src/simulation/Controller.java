@@ -1,6 +1,7 @@
 package simulation;
 
 import simulation.culture.interactionmodel.InteractionModel;
+import simulation.culture.thinking.language.templates.TemplateBase;
 import visualizer.Visualizer;
 
 /**
@@ -15,6 +16,7 @@ public class Controller {
      * Interaction Model, which governs how world is updated.
      */
     public InteractionModel interactionModel;
+    public TemplateBase templateBase;
 
     public final int proportionCoef = 1;
     public final boolean doTurns = true;
@@ -85,6 +87,7 @@ public class Controller {
         session = this;
         world = new World();
         world.initializeZero();
+        templateBase = new TemplateBase();
         this.interactionModel = interactionModel;
     }
 

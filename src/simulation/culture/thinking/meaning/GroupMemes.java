@@ -19,7 +19,7 @@ public class GroupMemes extends MemePool {
         memesCombinations = new HashMap<>();
         String[] subjects = {"group"};
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
-        String[] predicates = {"die", "acquireAspect", "consume", "and"};
+        String[] predicates = {"die", "acquireAspect", "consume", "exist", "and"};
         addAll(Arrays.stream(predicates).map(MemeSubject::new).collect(Collectors.toList()));
     }
 
