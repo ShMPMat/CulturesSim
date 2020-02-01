@@ -181,7 +181,7 @@ public class Aspect {
     }
 
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
-        boolean isFinished;
+        boolean isFinished;//TODO put dependency resources only in node; otherwise they may merge with phony
         ResourcePack meaningfulPack = new ResourcePack();
         controller.ceiling = group.changeStratumAmountByAspect(this, controller.ceiling);
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);

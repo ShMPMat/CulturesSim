@@ -18,6 +18,10 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
         this.resourceBehaviour = resourceBehaviour;
     }
 
+    public AestheticallyPleasingObject(Group group, Resource resource) {
+        this(group, resource, ResourceBehaviour.getRandom(group));
+    }
+
     @Override
     public Request getRequest() {
         return new ResourceRequest(group, resource, 1, 10, (pair, percent) -> {

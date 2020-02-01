@@ -27,6 +27,10 @@ public class DepictObject extends AbstractCultureAspect {
         this.resourceBehaviour = resourceBehaviour;
     }
 
+    public DepictObject(Group group, Meme meme, ConverseWrapper converseWrapper) {
+        this(group, meme, converseWrapper, ResourceBehaviour.getRandom(group));
+    }
+
     @Override
     public Request getRequest() {
         return null;

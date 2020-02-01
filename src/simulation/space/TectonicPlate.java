@@ -138,11 +138,11 @@ public class TectonicPlate extends Territory {
      * Moves plate in its direction and changes landscape.
      */
     public void move() {//TODO volcanoes
-        if (ProbFunc.getChances(0.7) && isMoved) {
+        if (ProbFunc.testProbability(0.7) && isMoved) {
             return;
         }
         for (ShnyPair<Tile, Double> pair: getAffectedTiles()) {
-            if (ProbFunc.getChances(pair.second)) {
+            if (ProbFunc.testProbability(pair.second)) {
                 pair.first.setLevel(isMoved ? pair.first.getLevel() + 1 :
                         pair.first.getLevel() + 5 + ProbFunc.randomInt(5));
             }

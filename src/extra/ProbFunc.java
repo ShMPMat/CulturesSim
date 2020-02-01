@@ -22,7 +22,7 @@ public class ProbFunc {
      * @param probability double from 0 to 1 inclusively.
      * @return true with Probability, otherwise returns false.
      */
-    public static boolean getChances(double probability) {
+    public static boolean testProbability(double probability) {
         return Math.random() <= probability;
     }
 
@@ -120,7 +120,7 @@ public class ProbFunc {
                                                                         Collection<ShnyPair<Aspect, Group>> pool,
                                                                         Predicate<ShnyPair<Aspect, Group>> predicate,
                                                                         double probability) {
-        if (!getChances(probability)) {
+        if (!testProbability(probability)) {
             return null;
         }
         ShnyPair<Aspect, Group> pair = getRandomAspectWithPairExcept(pool, predicate);

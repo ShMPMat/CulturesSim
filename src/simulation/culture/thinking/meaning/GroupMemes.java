@@ -60,7 +60,7 @@ public class GroupMemes extends MemePool {
     }
 
     public Meme getMemeWithComplexityBias() {
-        if (ProbFunc.getChances(0.5)) {
+        if (ProbFunc.testProbability(0.5)) {
             return getValuableMeme();
         }
         return chooseMeme(new ArrayList<>(memesCombinations.values()));

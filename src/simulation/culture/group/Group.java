@@ -290,7 +290,7 @@ public class Group {
             die();
             return;
         }
-        if ((getMaxPopulation() == population || ProbFunc.getChances(session.defaultGroupDiverge))
+        if ((getMaxPopulation() == population || ProbFunc.testProbability(session.defaultGroupDiverge))
                 && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
                     parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
@@ -401,7 +401,7 @@ public class Group {
         if (!session.groupDiverge) {
             return false;
         }
-        if (parentGroup.subgroups.size() > 1 && ProbFunc.getChances(session.defaultGroupExiting)) {
+        if (parentGroup.subgroups.size() > 1 && ProbFunc.testProbability(session.defaultGroupExiting)) {
             if (checkCoherencyAndDiverge()) {
                 createNewConglomerate(Collections.singleton(this));
             }
@@ -441,7 +441,7 @@ public class Group {
         if (state == State.Dead) {
             return false;
         }
-        if (!ProbFunc.getChances(spreadability)) {
+        if (!ProbFunc.testProbability(spreadability)) {
             return false;
         }
         if (population <= minPopulationPerTile * territory.size()) {

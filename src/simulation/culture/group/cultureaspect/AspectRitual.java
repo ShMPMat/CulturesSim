@@ -6,6 +6,7 @@ import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.ResourceBehaviour;
 import simulation.culture.group.reason.Reason;
+import simulation.culture.group.reason.Reasons;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
@@ -20,6 +21,14 @@ public class AspectRitual extends Ritual {
         super(group, reason);
         this.converseWrapper = converseWrapper;
         this.resourceBehaviour = resourceBehaviour;
+    }
+
+    public AspectRitual(Group group, ConverseWrapper converseWrapper, Reason reason) {
+        this(group, converseWrapper, ResourceBehaviour.getRandom(group), reason);
+    }
+
+    public AspectRitual(Group group, ConverseWrapper converseWrapper) {
+        this(group, converseWrapper, ResourceBehaviour.getRandom(group), Reasons.randomReason(group));
     }
 
     @Override

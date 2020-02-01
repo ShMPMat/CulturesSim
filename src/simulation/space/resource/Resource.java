@@ -8,7 +8,6 @@ import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
-import simulation.space.resource.dependency.ResourceDependencyDep;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -247,7 +246,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             return false;
         }
         deathTurn++;
-        if (ProbFunc.getChances(resourceCore.getSpreadProbability())) {
+        if (ProbFunc.testProbability(resourceCore.getSpreadProbability())) {
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
@@ -297,7 +296,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                 }
             }
         } else if (getSimpleName().equals("Snow")) {
-            if (tile.getType() == Tile.Type.Mountain && ProbFunc.getChances(1)) {
+            if (tile.getType() == Tile.Type.Mountain && ProbFunc.testProbability(1)) {
 //                if ((tile.x + " " + tile.y).equals("21 118")) {
 //                    int i = 0;
 //                }

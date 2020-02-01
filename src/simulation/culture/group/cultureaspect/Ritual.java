@@ -10,4 +10,8 @@ public abstract class Ritual extends AbstractCultureAspect {
         super(group);
         this.reason = reason;
     }
+
+    public Reason getReason() {
+        return reason;
+    }
 }

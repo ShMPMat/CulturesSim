@@ -36,7 +36,7 @@ public class Controller {
      * How many turns will be spent after filling Resources in the World.
      */
     public final int stabilizationTurns = 100;
-    public final int fillCycles = 1;
+    public final int fillCycles = 2;
     public final int cultureTurns = 300;
     /**
      * Below what level World will be covered under water.
@@ -48,21 +48,23 @@ public class Controller {
 
     public final double tileScale = 10;
 
-    public final double  defaultGroupSpreadability = 1;
-    public final int     defaultGroupMaxPopulation = 1000;
+    public final double  defaultGroupSpreadability        = 1;
+    public final int     defaultGroupMaxPopulation        = 1000;
     public final int     defaultGroupMinPopulationPerTile = 1;
-    public final int     defaultGroupFertility = 10;
-    public final double  defaultGroupExiting = 0.0005;
-    public final double  defaultGroupDiverge = 0.002;
-    public final double  rAspectAcquisition = 0.1;
-    public final double  rAspectLending = 0.25;
-    public final double  cultureAspectBaseProbability = 0.02;
-    public final boolean groupDiverge = true;
-    public final boolean groupMultiplication = true;
-    public final boolean independentCvSimpleAspectAdding = true;
-    public final int     stratumTurnsBeforeInstrumentRenewal = 30;
-    public final int     groupTurnsBetweenBorderCheck = 10;
-    public final int     groupTurnsBetweenAdopts = 10;
+    public final int     defaultGroupFertility            = 10;
+    public final double  defaultGroupExiting              = 0.0005;
+    public final double  defaultGroupDiverge              = 0.002;
+    public final double  rAspectAcquisition               = 0.1;
+    public final double  cultureAspectBaseProbability     = 0.02;
+    public final double  groupCultureAspectCollapse       = 0.01;
+    public final double  groupCollapsedAspectUpdate       = 0.01;
+    public final boolean groupDiverge                     = true;
+    public final boolean groupMultiplication              = true;
+    public final boolean independentCvSimpleAspectAdding  = true;
+
+    public final int stratumTurnsBeforeInstrumentRenewal = 30;
+    public final int groupTurnsBetweenBorderCheck = 10;
+    public final int groupTurnsBetweenAdopts = 10;
 
     public final double windPropagation = 0.025;
     public final double windFillIn = 0.1;
