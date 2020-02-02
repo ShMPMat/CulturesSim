@@ -15,6 +15,7 @@ import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
@@ -325,7 +326,7 @@ public class CulturalCenter {
                 addCultureAspect(constructRitualForReason(constructReason()));
                 break;
             } case 4: {
-                Meme template = session.templateBase.getRandomTemplate();
+                Meme template = session.templateBase.getRandomSentenceTemplate();
                 TextInfo info = generateTextInfo();
                 if (template != null && info != null) {
                     cultureAspect = new SyntacticTale(group, template, info);
@@ -344,8 +345,44 @@ public class CulturalCenter {
     }
 
     private TextInfo generateTextInfo() {//TODO too slow
-        return randomElement(getConverseWrappers().stream()
-                .flatMap(cw -> memePool.getAspectTextInfo(cw).stream()).collect(Collectors.toList()));
+        return complicateInfo(randomElement(getConverseWrappers().stream()
+                .flatMap(cw -> memePool.getAspectTextInfo(cw).stream()).collect(Collectors.toList())));
+    }
+
+    private TextInfo complicateInfo(TextInfo info) {
+        if (info == null) {
+            return null;
+        }
+        Map<String, Meme> substitutions = new HashMap<>();
+        for (Map.Entry<String, Meme> entry: info.getMap().entrySet()) {
+            if (entry.getKey().charAt(0) == '!') {
+                Meme dummy = new MemeSubject("dummy")
+                        .addPredicate(randomElement(session.templateBase.nounClauseBase));
+                Queue<Meme> queue = new ArrayDeque<>();
+                queue.add(dummy);
+                while (!queue.isEmpty()) {
+                    Meme current = queue.poll();
+                    List<Meme> predicates = current.getPredicates();
+                    for (int i = 0; i < predicates.size(); i++) {
+                        Meme child = predicates.get(i);
+                        if (child.getObserverWord().equals("!n!")) {
+                            current.getPredicates().set(i, entry.getValue());
+                            child.getPredicates().forEach(current.getPredicates().get(i)::addPredicate);
+                        } else if (session.templateBase.templateChars.contains(child.getObserverWord().charAt(0))) {
+                            substitutions.put(entry.getKey() + child.getObserverWord(),
+                                    randomElement(session.templateBase.wordBase.get(child.getObserverWord())));
+                            Meme newChild = new MemePredicate(entry.getKey() + child.getObserverWord());
+                            child.getPredicates().forEach(newChild::addPredicate);
+                            current.getPredicates().set(i, newChild);
+                        }
+                    }
+                    queue.addAll(current.getPredicates());
+                }
+                substitutions.put(entry.getKey(), dummy.getPredicates().get(0));
+            }
+        }
+        substitutions.forEach((key, value) -> info.getMap().put(key, value));
+        return info;
     }
 
     private Reason constructReason() {

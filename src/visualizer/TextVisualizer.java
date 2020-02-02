@@ -506,7 +506,7 @@ public class TextVisualizer implements Visualizer {
             group.getCulturalCenter().addAspect(((ConverseWrapper) aspect).aspect);
             group.getCulturalCenter().pushAspects();
             if (group.getAspect(((ConverseWrapper) aspect).aspect) == null) {
-                System.err.println("Cannot add aspect to the group: cant add base aspect for the Converse Wrapper.");
+                System.err.println("Cannot add aspect to the group: cant add sentenceBase aspect for the Converse Wrapper.");
                 return;
             }
         }

@@ -1,12 +1,14 @@
 package simulation.culture.thinking.meaning;
 
+import simulation.Controller;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MemeTemplate extends Meme {
     MemeTemplate(String observerWord, List<Meme> predicates) {
         super(observerWord, predicates);
-        if (observerWord.charAt(0) != '!') {
+        if (!Controller.session.templateBase.templateChars.contains(observerWord.charAt(0))) {
             throw new RuntimeException("Wrong template observerWord");
         }
     }

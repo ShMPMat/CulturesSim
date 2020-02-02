@@ -240,7 +240,7 @@ public class World {
      * Returns Resource by name.
      *
      * @param name name of the Resource.
-     * @return Resource with this base name. If there is no such Resource in the resourcePool
+     * @return Resource with this sentenceBase name. If there is no such Resource in the resourcePool
      * returns null and prints a warning.
      */
     public ResourceIdeal getPoolResource(String name) {

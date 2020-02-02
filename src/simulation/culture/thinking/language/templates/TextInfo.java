@@ -1,5 +1,6 @@
 package simulation.culture.thinking.language.templates;
 
+import simulation.Controller;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
 
@@ -10,8 +11,12 @@ public class TextInfo {
 
     public TextInfo(Meme actor, Meme verb, Meme receiver) {
         map.put("!actor", actor);
-        map.put("!verb", verb);
+        map.put("@verb", verb);
         map.put("!receiver", receiver);
+    }
+
+    public Map<String, Meme> getMap() {
+        return map;
     }
 
     public Meme substitute(Meme meme) {
@@ -24,7 +29,7 @@ public class TextInfo {
             List<Meme> predicates = current.getPredicates();
             for (int i = 0; i < predicates.size(); i++) {
                 Meme child = predicates.get(i);
-                if (child.getObserverWord().charAt(0) == '!') {
+                if (Controller.session.templateBase.templateChars.contains(child.getObserverWord().charAt(0))) {
                     Meme substitution = map.get(child.getObserverWord());
                     if (substitution == null) {
                         throw new RuntimeException();

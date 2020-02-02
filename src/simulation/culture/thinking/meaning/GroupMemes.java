@@ -2,6 +2,7 @@ package simulation.culture.thinking.meaning;
 
 import extra.ProbFunc;
 import extra.ShnyPair;
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.thinking.language.templates.TextInfo;
@@ -22,6 +23,9 @@ public class GroupMemes extends MemePool {
         addAll(Arrays.stream(subjects).map(MemeSubject::new).collect(Collectors.toList()));
         String[] predicates = {"die", "acquireAspect", "consume", "exist", "and"};
         addAll(Arrays.stream(predicates).map(MemeSubject::new).collect(Collectors.toList()));
+        addAll(Controller.session.templateBase.wordBase.values().stream()
+                .flatMap(Collection::stream)
+                .map(Meme::copy).collect(Collectors.toList()));
     }
 
     public void addAll(GroupMemes groupMemes) {
@@ -156,13 +160,17 @@ public class GroupMemes extends MemePool {
         for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
             if (resourceDependency instanceof ConsumeDependency) {
                 for (String res : ((ConsumeDependency) resourceDependency).lastConsumed) {
-                    infos.add(new TextInfo(Meme.getMeme(resource),
+                    infos.add(generateInfo(Meme.getMeme(resource),
                             getMemeCopy("consume"),
                             new MemeSubject(res.toLowerCase())));
                 }
             }
         }
         return infos;
+    }
+
+    private TextInfo generateInfo(Meme actor, Meme verb, Meme receiver) {
+        return new TextInfo(actor, verb, receiver);
     }
 
     public void addMemeCombination(Meme meme) {

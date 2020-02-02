@@ -85,9 +85,9 @@ public class Controller {
      */
     public Controller(InteractionModel interactionModel) {
         session = this;
+        templateBase = new TemplateBase();
         world = new World();
         world.initializeZero();
-        templateBase = new TemplateBase();
         this.interactionModel = interactionModel;
     }
 
