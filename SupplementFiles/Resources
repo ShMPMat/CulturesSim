@@ -7,17 +7,17 @@
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -Plant           0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.0025:2:0:CONSUME
+        ~Vapour:0.00025:2:0:CONSUME
         ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
         #Water
 
 -ColdPlant       0.1     1      15         -30     0   50         0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.001:2:0:CONSUME
+        ~Vapour:0.0001:2:0:CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
         #Water
 
 -DwarfBirch      0.1     1      15         -30     20  40         0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.001:2:0:CONSUME
+        ~Vapour:0.0001:2:0:CONSUME
         ^SoftBranch:15 ^Leaf:30              ^Seed:2 ^SoftRoot:5
         #Water
 
@@ -27,17 +27,17 @@
         #Water
 
 -Tree            0.05    5      40         0       30   100       0             0 0 0  Plant        @Wood
-        ~Vapour:0.01:2:0:CONSUME
+        ~Vapour:0.001:2:0:CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
 
 -JungleTree      0.05    5      40         20       40   150       0             0 0 0  Plant        @Wood
-        ~Vapour:1:2:0:CONSUME
+        ~Vapour:0.1:2:0:CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
 
 -Reed            0.25    1      5          5       30   50        0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.1:2:0:CONSUME
+        ~Vapour:0.01:2:0:CONSUME
         ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
         #Water
 

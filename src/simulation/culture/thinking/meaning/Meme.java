@@ -1,9 +1,12 @@
 package simulation.culture.thinking.meaning;
 
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.space.resource.Resource;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 abstract public class Meme {
@@ -84,6 +87,37 @@ abstract public class Meme {
         return memes.stream().distinct().collect(Collectors.toList());
     }
 
+    public Meme refactor(Function<Meme, Meme> mapper) {
+        Meme dummy = new MemeSubject("dummy").addPredicate(this.copy());
+        Queue<Meme> queue = new ArrayDeque<>();
+        queue.add(dummy);
+        while (!queue.isEmpty()) {
+            Meme current = queue.poll();
+            List<Meme> predicates = current.getPredicates();
+            for (int i = 0; i < predicates.size(); i++) {
+                Meme child = predicates.get(i);
+                Meme substitution = mapper.apply(child);
+                child.getPredicates().forEach(substitution::addPredicate);
+                predicates.set(i, substitution);
+            }
+            queue.addAll(predicates);
+        }
+        return dummy.predicates.get(0);
+    }
+
+    public boolean anyMatch(Predicate<Meme> predicate) {
+        Queue<Meme> queue = new ArrayDeque<>();
+        queue.add(this);
+        while (!queue.isEmpty()) {
+            Meme current = queue.poll();
+            if (current.getPredicates().stream().anyMatch(predicate)) {
+                return true;
+            }
+            queue.addAll(current.predicates);
+        }
+        return false;
+    }
+
     public boolean hasPart(Meme that, Collection<String> splitters) {
         Collection<Meme> thatMemes = that.splitOn(splitters);
         return splitOn(splitters).stream().anyMatch(thatMemes::contains);
@@ -106,4 +140,6 @@ abstract public class Meme {
     }
 
     public abstract Meme copy();
+
+    public abstract Meme topCopy();
 }

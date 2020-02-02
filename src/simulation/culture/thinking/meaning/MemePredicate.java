@@ -25,4 +25,9 @@ public class MemePredicate extends Meme {
     public Meme copy() {
         return new MemePredicate(observerWord, new ArrayList<>(predicates), importance);
     }
+
+    @Override
+    public MemePredicate topCopy() {
+        return new MemePredicate(observerWord);
+    }
 }

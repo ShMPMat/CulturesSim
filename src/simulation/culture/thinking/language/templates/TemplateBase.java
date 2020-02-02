@@ -4,7 +4,6 @@ import extra.ProbFunc;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 

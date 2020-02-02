@@ -29,4 +29,9 @@ public class MemeSubject extends Meme {
     public Meme copy() {
         return new MemeSubject(observerWord, new ArrayList<>(predicates), importance);
     }
+
+    @Override
+    public MemeSubject topCopy() {
+        return new MemeSubject(observerWord);
+    }
 }

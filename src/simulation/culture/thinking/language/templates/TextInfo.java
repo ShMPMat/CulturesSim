@@ -2,9 +2,9 @@ package simulation.culture.thinking.language.templates;
 
 import simulation.Controller;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemePredicate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TextInfo {
     Map<String, Meme> map = new HashMap<>();
@@ -20,27 +20,16 @@ public class TextInfo {
     }
 
     public Meme substitute(Meme meme) {
-        Meme dummy = new MemePredicate("dummy");
-        dummy.addPredicate(meme.copy());
-        Queue<Meme> queue = new ArrayDeque<>();
-        queue.add(dummy);
-        while (!queue.isEmpty()) {
-            Meme current = queue.poll();
-            List<Meme> predicates = current.getPredicates();
-            for (int i = 0; i < predicates.size(); i++) {
-                Meme child = predicates.get(i);
-                if (Controller.session.templateBase.templateChars.contains(child.getObserverWord().charAt(0))) {
-                    Meme substitution = map.get(child.getObserverWord());
-                    if (substitution == null) {
-                        throw new RuntimeException();
-                    }
-                    substitution = substitution.copy();
-                    child.getPredicates().forEach(substitution::addPredicate);
-                    predicates.set(i, substitution);
+        return meme.refactor(m -> {
+            if (Controller.session.templateBase.templateChars.contains(m.getObserverWord().charAt(0))) {
+                Meme substitution = map.get(m.getObserverWord());
+                if (substitution == null) {
+                    throw new RuntimeException();
                 }
+                return substitution.copy();
+            } else {
+                return m.topCopy();
             }
-            queue.addAll(current.getPredicates());
-        }
-        return dummy.getPredicates().get(0);
+        });
     }
 }

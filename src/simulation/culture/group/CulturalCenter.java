@@ -356,29 +356,18 @@ public class CulturalCenter {
         Map<String, Meme> substitutions = new HashMap<>();
         for (Map.Entry<String, Meme> entry: info.getMap().entrySet()) {
             if (entry.getKey().charAt(0) == '!') {
-                Meme dummy = new MemeSubject("dummy")
-                        .addPredicate(randomElement(session.templateBase.nounClauseBase));
-                Queue<Meme> queue = new ArrayDeque<>();
-                queue.add(dummy);
-                while (!queue.isEmpty()) {
-                    Meme current = queue.poll();
-                    List<Meme> predicates = current.getPredicates();
-                    for (int i = 0; i < predicates.size(); i++) {
-                        Meme child = predicates.get(i);
-                        if (child.getObserverWord().equals("!n!")) {
-                            current.getPredicates().set(i, entry.getValue());
-                            child.getPredicates().forEach(current.getPredicates().get(i)::addPredicate);
-                        } else if (session.templateBase.templateChars.contains(child.getObserverWord().charAt(0))) {
-                            substitutions.put(entry.getKey() + child.getObserverWord(),
-                                    randomElement(session.templateBase.wordBase.get(child.getObserverWord())));
-                            Meme newChild = new MemePredicate(entry.getKey() + child.getObserverWord());
-                            child.getPredicates().forEach(newChild::addPredicate);
-                            current.getPredicates().set(i, newChild);
-                        }
+                substitutions.put(entry.getKey(), randomElement(session.templateBase.nounClauseBase).refactor(m -> {
+                    if (m.getObserverWord().equals("!n!")) {
+                        return entry.getValue().topCopy();
+                    } else if (session.templateBase.templateChars.contains(m.getObserverWord().charAt(0))) {
+                        substitutions.put(entry.getKey() + m.getObserverWord(),
+                                randomElementWithProbability(session.templateBase.wordBase.get(m.getObserverWord()),
+                                        n -> (double) memePool.getMeme(n.getObserverWord()).getImportance()));
+                        return new MemePredicate(entry.getKey() + m.getObserverWord());
+                    } else {
+                        return m.topCopy();
                     }
-                    queue.addAll(current.getPredicates());
-                }
-                substitutions.put(entry.getKey(), dummy.getPredicates().get(0));
+                }));
             }
         }
         substitutions.forEach((key, value) -> info.getMap().put(key, value));
