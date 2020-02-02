@@ -4,6 +4,7 @@ import extra.ProbFunc;
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.space.resource.Resource;
 import simulation.space.resource.dependency.ConsumeDependency;
 import simulation.space.resource.dependency.ResourceDependency;
@@ -133,6 +134,35 @@ public class GroupMemes extends MemePool {
             }
         }
         return infoMemes;
+    }
+
+    public List<TextInfo> getAspectTextInfo(Aspect aspect) {
+        List<TextInfo> infos = new ArrayList<>();
+        if (aspect instanceof ConverseWrapper) {
+            infos.addAll(getResourceTextInfo(((ConverseWrapper) aspect).resource));
+            ((ConverseWrapper) aspect).getResult().forEach(resource -> {
+                infos.addAll(getResourceTextInfo(resource));
+            });
+        }
+        return infos;
+    }
+
+    public List<TextInfo> getResourceTextInfo(Resource resource) {
+        return getResourceInformationTextInfo(resource);
+    }
+
+    public List<TextInfo> getResourceInformationTextInfo(Resource resource) {
+        List<TextInfo> infos = new ArrayList<>();
+        for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
+            if (resourceDependency instanceof ConsumeDependency) {
+                for (String res : ((ConsumeDependency) resourceDependency).lastConsumed) {
+                    infos.add(new TextInfo(Meme.getMeme(resource),
+                            getMemeCopy("consume"),
+                            new MemeSubject(res.toLowerCase())));
+                }
+            }
+        }
+        return infos;
     }
 
     public void addMemeCombination(Meme meme) {

@@ -8,8 +8,10 @@ import java.util.*;
 public class TextInfo {
     Map<String, Meme> map = new HashMap<>();
 
-    public TextInfo(Meme actor) {
+    public TextInfo(Meme actor, Meme verb, Meme receiver) {
         map.put("!actor", actor);
+        map.put("!verb", verb);
+        map.put("!receiver", receiver);
     }
 
     public Meme substitute(Meme meme) {
@@ -23,15 +25,16 @@ public class TextInfo {
             for (int i = 0; i < predicates.size(); i++) {
                 Meme child = predicates.get(i);
                 if (child.getObserverWord().charAt(0) == '!') {
-                    Meme substitution = map.get(child.getObserverWord().substring(1));
+                    Meme substitution = map.get(child.getObserverWord());
                     if (substitution == null) {
                         throw new RuntimeException();
                     }
                     substitution = substitution.copy();
+                    child.getPredicates().forEach(substitution::addPredicate);
                     predicates.set(i, substitution);
                 }
-                queue.addAll(meme.getPredicates());
             }
+            queue.addAll(current.getPredicates());
         }
         return dummy.getPredicates().get(0);
     }

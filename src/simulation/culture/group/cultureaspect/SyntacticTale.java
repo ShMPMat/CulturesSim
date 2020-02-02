@@ -1,22 +1,23 @@
 package simulation.culture.group.cultureaspect;
 
-import extra.ShnyPair;
-import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceBehaviour;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
 
-public class Tale extends AbstractCultureAspect {
+public class SyntacticTale extends AbstractCultureAspect {
+    private Meme template;
+    private TextInfo info;
+
     private Meme meme;
 
-    public Tale(Group group, Meme meme) {
+    public SyntacticTale(Group group, Meme template, TextInfo info) {
         super(group);
-        this.meme = meme;
+        this.template = template;
+        this.info = info;
+        this.meme = info.substitute(template);
     }
 
     @Override
@@ -30,20 +31,20 @@ public class Tale extends AbstractCultureAspect {
     }
 
     @Override
-    public Tale copy(Group group) {
-        return new Tale(group, meme);
+    public SyntacticTale copy(Group group) {
+        return new SyntacticTale(group, template, info);
     }
 
     @Override
     public String toString() {
-        return "STale about " + meme;
+        return "Tale about " + meme;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tale that = (Tale) o;
+        SyntacticTale that = (SyntacticTale) o;
         return Objects.equals(meme, that.meme);
     }
 

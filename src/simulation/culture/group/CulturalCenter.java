@@ -12,6 +12,7 @@ import simulation.culture.group.reason.Reasons;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
+import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;
@@ -296,43 +297,55 @@ public class CulturalCenter {
             return;
         }
         CultureAspect cultureAspect = null;
-        switch (randomInt(4)){
+        switch (randomInt(5)){
             case 0: {
                 List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
                 if (!_l.isEmpty()) {
                     Meme meme = constructMeme();
                     if (meme != null) {
                         cultureAspect = new DepictObject(group, meme, randomElement(_l));
-                        break;
                     }
                 }
+                break;
             } case 1: {
                 Meme meme = constructTale();
                 if (meme != null) {
                     cultureAspect = new Tale(group, meme);
-                    break;
                 }
+                break;
             } case 2: {
                 Resource resource = getAllProducedResources().stream().map(pair -> pair.first)
                         .filter(r -> !aestheticallyPleasingResources.contains(r))
                         .max(Comparator.comparingInt(Resource::getBaseDesireability)).orElse(null);
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource);
-                    break;
                 }
+                break;
             } case 3: {//TODO recursively go in dependencies;
                 addCultureAspect(constructRitualForReason(constructReason()));
-                break;//TODO make new constructors for all CA without RB and Reasons
-            } case 4: {//TODO should I add such a thing here even? (I did break in previous section for now)
+                break;
+            } case 4: {
+                Meme template = session.templateBase.getRandomTemplate();
+                TextInfo info = generateTextInfo();
+                if (template != null && info != null) {
+                    cultureAspect = new SyntacticTale(group, template, info);
+                }
+                break;
+            } case 5: {//TODO should I add such a thing here even? (I did break in previous section for now)
                 ConverseWrapper converseWrapper = randomElement(getConverseWrappers());
                 Reason reason = Reasons.randomReason(group);
                 if (converseWrapper != null && reason != null) {
                     cultureAspect = new AspectRitual(group, converseWrapper, reason);
-                    break;
                 }
+                break;
             }
         }
         addCultureAspect(cultureAspect);
+    }
+
+    private TextInfo generateTextInfo() {//TODO too slow
+        return randomElement(getConverseWrappers().stream()
+                .flatMap(cw -> memePool.getAspectTextInfo(cw).stream()).collect(Collectors.toList()));
     }
 
     private Reason constructReason() {
