@@ -33,7 +33,7 @@ public class Territory {
     }
 
     public List<Tile> getTilesWithPredicate(Predicate<Tile> predicate) {
-        return tiles.stream().filter(predicate::test).collect(Collectors.toList());
+        return tiles.stream().filter(predicate).collect(Collectors.toList());
     }
 
     public Tile getCenter() {
@@ -57,10 +57,6 @@ public class Territory {
 
     public List<ShnyPair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
         Set<ShnyPair<Tile, Integer>> goodTiles = new HashSet<>();
-//        for (Tile tile : tiles) {
-//            goodTiles.addAll(tile.getNeighbours(tile1 -> predicate.test(tile1) && !tiles.contains(tile1)).stream()
-//                    .map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1))).collect(Collectors.toList()));
-//        }
         goodTiles.addAll(brink.stream().filter(predicate).map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1)))
                 .collect(Collectors.toList()));
         return new ArrayList<>(goodTiles);

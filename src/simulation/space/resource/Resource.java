@@ -1,6 +1,7 @@
 package simulation.space.resource;
 
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
+import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
@@ -60,7 +61,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public Resource(String[] tags) {
-        this(tags, 100 + ProbFunc.randomInt(10));
+        this(tags, 100 + ProbabilityFuncs.randomInt(10));
     }
 
     public Resource(ResourceCore resourceCore) {
@@ -246,7 +247,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             return false;
         }
         deathTurn++;
-        if (ProbFunc.testProbability(resourceCore.getSpreadProbability())) {
+        if (ProbabilityFuncs.testProbability(resourceCore.getSpreadProbability())) {
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
@@ -277,7 +278,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                         if (!tiles.isEmpty()) {
                             int min = tiles.stream().min(Comparator.comparingInt(Tile::getLevelWithWater)).get()
                                     .getLevelWithWater();
-                            ProbFunc.randomElement(tiles.stream().filter(t -> t.getLevelWithWater() == min).collect(Collectors.toList()))
+                            ProbabilityFuncs.randomElement(tiles.stream().filter(t -> t.getLevelWithWater() == min).collect(Collectors.toList()))
                                     .addDelayedResource(getCleanPart(amount <= 1 ? 1 : 1));
                         }
                     } else {
@@ -296,7 +297,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                 }
             }
         } else if (getSimpleName().equals("Snow")) {
-            if (tile.getType() == Tile.Type.Mountain && ProbFunc.testProbability(1)) {
+            if (tile.getType() == Tile.Type.Mountain && ProbabilityFuncs.testProbability(1)) {
 //                if ((tile.x + " " + tile.y).equals("21 118")) {
 //                    int i = 0;
 //                }
@@ -363,13 +364,13 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     private boolean expand() {
         List<Tile> l = new ArrayList<>();
         l.add(getTile());
-        Tile newTile = ProbFunc.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile) &&
-                getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile)));
+        Tile newTile = SpaceProbabilityFuncs.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile)
+                && getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile)));
         if (newTile == null) {
             if (getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile))) {
                 newTile = tile;
             } else {
-                newTile = ProbFunc.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile));
+                newTile = SpaceProbabilityFuncs.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile));
                 if (newTile == null) {
                     newTile = tile;
                 }

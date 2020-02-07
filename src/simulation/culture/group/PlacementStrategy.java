@@ -1,6 +1,7 @@
 package simulation.culture.group;
 
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
+import extra.SpaceProbabilityFuncs;
 import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.resource.ResourcePack;
@@ -10,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static extra.ProbFunc.*;
+import static extra.ProbabilityFuncs.*;
 
 public class PlacementStrategy {
     enum Strategy {
@@ -36,7 +37,7 @@ public class PlacementStrategy {
             case Sprinkle:
             case OneTile:
             case Clumps:
-                specialTiles.add(randomTile(controlledTerritory));
+                specialTiles.add(SpaceProbabilityFuncs.randomTile(controlledTerritory));
                 break;
         }
         this.strategy = strategy;
@@ -62,14 +63,16 @@ public class PlacementStrategy {
             case Homogeneous:
                 tiles = controlledTerritory.getTiles().stream().filter(tile ->
                         !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
-                return tiles.isEmpty() ? randomTile(controlledTerritory) : ProbFunc.randomElement(tiles);
+                return tiles.isEmpty()
+                        ? SpaceProbabilityFuncs.randomTile(controlledTerritory)
+                        : ProbabilityFuncs.randomElement(tiles);
             case Sprinkle:
                 return chooseSpecialTile();
             case Clumps:
                 Tile tile = chooseSpecialTile();
                 tiles = tile.getNeighbours();
                 tiles.add(tile);
-                return ProbFunc.randomElement(tiles);
+                return ProbabilityFuncs.randomElement(tiles);
         }
         return null;
     }
@@ -80,7 +83,7 @@ public class PlacementStrategy {
             return specialTiles.get(index);
         }
         for (int i = 0; i < 5; i++) {
-            Tile tile = randomTile(controlledTerritory);
+            Tile tile = SpaceProbabilityFuncs.randomTile(controlledTerritory);
             if (!controlledTerritory.contains(tile)) {
                 specialTiles.add(tile);
                 return tile;
@@ -89,7 +92,7 @@ public class PlacementStrategy {
         if (specialTiles.size() == 0) {
             int i = 0;
         }
-        return ProbFunc.randomElement(specialTiles);
+        return ProbabilityFuncs.randomElement(specialTiles);
     }
 
     void place(ResourcePack resourcePack) {

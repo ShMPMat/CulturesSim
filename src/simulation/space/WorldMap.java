@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static extra.ProbFunc.*;
+import static extra.ProbabilityFuncs.*;
 import static simulation.Controller.*;
 
 /**

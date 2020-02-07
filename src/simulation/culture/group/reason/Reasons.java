@@ -3,7 +3,7 @@ package simulation.culture.group.reason;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 
-import static extra.ProbFunc.*;
+import static extra.ProbabilityFuncs.*;
 
 public class Reasons {
     public static Reason randomReason(Group group) {

@@ -8,44 +8,30 @@ import visualizer.Visualizer;
  * Class which wraps the World with its Interaction Model.
  */
 public class Controller {
+    public static Controller session;
     /**
      * Main world, where all simulated objects placed.
      */
     public World world;
-    /**
-     * Interaction Model, which governs how world is updated.
-     */
     public InteractionModel interactionModel;
     public TemplateBase templateBase;
 
-    public final int proportionCoef = 1;
+    public final int proportionCoefficient = 1;
     public final boolean doTurns = true;
 
-    public final int mapSizeX = 45 * proportionCoef;
-    public final int mapSizeY = 135 * proportionCoef;
-    public final int amountOfPlates = 10 * proportionCoef;
+    public final int mapSizeX = 45 * proportionCoefficient;
+    public final int mapSizeY = 135 * proportionCoefficient;
+    public final int amountOfPlates = 10 * proportionCoefficient;
     public final int temperatureBaseStart = -15;
     public final int temperatureBaseFinish = 29;
-    /**
-     * How many initial geology turns will pass in the beginning of the simulation.
-     */
     public final int geologyTurns = 50;
-    /**
-     * How many turns will be spent before filling Resources in the World.
-     */
     public final int initialTurns = 100;
-    /**
-     * How many turns will be spent after filling Resources in the World.
-     */
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
     public final int cultureTurns = 300;
-    /**
-     * Below what level World will be covered under water.
-     */
     public final int defaultWaterLevel = 98;
-    public final int startResourceAmountMin = 40 * proportionCoef * proportionCoef;
-    public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoef * proportionCoef;
+    public final int startResourceAmountMin = 40 * proportionCoefficient * proportionCoefficient;
+    public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;
     public final int startGroupAmount = 10;
 
     public final double tileScale = 10;
@@ -72,7 +58,6 @@ public class Controller {
     public final double windFillIn = 0.1;
     public final double maximalWind = 10;
 
-    public static Controller session;
     public static Visualizer visualizer;
     public static final boolean doPrint = false;
 

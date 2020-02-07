@@ -363,6 +363,9 @@ public class ResourceCore {
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {
+        if (aspect.getName().equals("Take") && !genome.willResist()) {
+            return true;
+        }
         if (getTags().containsAll(aspect.getWrapperRequirements()) && !aspect.getWrapperRequirements().isEmpty()) {
             return true;
         }

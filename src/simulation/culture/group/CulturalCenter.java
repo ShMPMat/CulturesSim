@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import static extra.ProbFunc.*;
+import static extra.ProbabilityFuncs.*;
 import static simulation.Controller.*;
 
 /**

@@ -1,7 +1,7 @@
 package simulation;
 
 import extra.InputDatabase;
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.GroupConglomerate;
@@ -93,7 +93,7 @@ public class World {
 
     private Tile getTileForGroup() {
         while (true) {
-            Tile tile = ProbFunc.randomTile(session.world.map);
+            Tile tile = ProbabilityFuncs.randomTile(session.world.map);
             if (tile.group == null && tile.canSettle()) {
                 return tile;
             }

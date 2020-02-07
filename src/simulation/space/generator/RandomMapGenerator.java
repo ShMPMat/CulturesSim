@@ -1,6 +1,6 @@
 package simulation.space.generator;
 
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
@@ -54,10 +54,10 @@ public class RandomMapGenerator {
             List<String> tags = new ArrayList<>();
             tags.add("r" + i);
             tags.add(((Double) (Math.random() / 100)).toString());
-            int n = ProbFunc.randomInt(aspectTagPool.size());
+            int n = ProbabilityFuncs.randomInt(aspectTagPool.size());
             for (int j = 0; j < n; j++) {
                 while (true) {
-                    String name = ProbFunc.randomElement(aspectTagPool).name;
+                    String name = ProbabilityFuncs.randomElement(aspectTagPool).name;
                     if (!tags.contains("-" + name)) {
                         tags.add("-" + name);
                         break;
@@ -91,7 +91,7 @@ public class RandomMapGenerator {
                 continue;
             }
             scatter(resource, session.startResourceAmountMin +
-                    ProbFunc.randomInt(session.startResourceAmountMax -
+                    ProbabilityFuncs.randomInt(session.startResourceAmountMax -
                             session.startResourceAmountMin));
         }
     }
@@ -102,12 +102,12 @@ public class RandomMapGenerator {
         for (int i = 0; i < n; i++) {
             Tile tile;
             if (goodTiles.isEmpty()) {
-                tile = ProbFunc.randomTile(session.world.map);
+                tile = ProbabilityFuncs.randomTile(session.world.map);
                 while (!resource.getGenome().isAcceptable(tile)) {
-                    tile = ProbFunc.randomTile(session.world.map);
+                    tile = ProbabilityFuncs.randomTile(session.world.map);
                 }
             } else {
-                tile = ProbFunc.randomElement(goodTiles);
+                tile = ProbabilityFuncs.randomElement(goodTiles);
             }
             tile.addDelayedResource(resource.copy());
             addDependencies(resource, tile);

@@ -1,6 +1,6 @@
 package simulation.space;
 
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
 import extra.ShnyPair;
 
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ public class TectonicPlate extends Territory {
     private boolean isMoved = false;
 
     TectonicPlate() {
-        direction = ProbFunc.randomElement(Direction.values());
-        type = ProbFunc.randomElement(Type.values());
+        direction = ProbabilityFuncs.randomElement(Direction.values());
+        type = ProbabilityFuncs.randomElement(Type.values());
     }
 
     /**
@@ -138,13 +138,13 @@ public class TectonicPlate extends Territory {
      * Moves plate in its direction and changes landscape.
      */
     public void move() {//TODO volcanoes
-        if (ProbFunc.testProbability(0.7) && isMoved) {
+        if (ProbabilityFuncs.testProbability(0.7) && isMoved) {
             return;
         }
         for (ShnyPair<Tile, Double> pair: getAffectedTiles()) {
-            if (ProbFunc.testProbability(pair.second)) {
+            if (ProbabilityFuncs.testProbability(pair.second)) {
                 pair.first.setLevel(isMoved ? pair.first.getLevel() + 1 :
-                        pair.first.getLevel() + 5 + ProbFunc.randomInt(5));
+                        pair.first.getLevel() + 5 + ProbabilityFuncs.randomInt(5));
             }
         }
         isMoved = true;

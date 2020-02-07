@@ -1,6 +1,6 @@
 package simulation.culture.thinking.language.templates;
 
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
 
@@ -48,6 +48,6 @@ public class TemplateBase {
     }
 
     public Meme getRandomSentenceTemplate() {
-        return ProbFunc.randomElement(sentenceBase);
+        return ProbabilityFuncs.randomElement(sentenceBase);
     }
 }

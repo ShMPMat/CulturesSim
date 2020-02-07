@@ -9,6 +9,7 @@ import simulation.space.Tile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Functions related to random and probability.
  */
-public class ProbFunc {
+public class ProbabilityFuncs {
     /**
      * Returns boolean with Probability.
      * @param probability double from 0 to 1 inclusively.
@@ -32,8 +33,7 @@ public class ProbFunc {
      * @return random int from 0 to ceiling.
      */
     public static int randomInt(int ceiling) {
-        int n = (int) (Math.random() * ceiling);
-        return  (n == ceiling ? n - 1 : n);
+        return ThreadLocalRandom.current().nextInt(ceiling);
     }
 
     /**
@@ -81,52 +81,5 @@ public class ProbFunc {
             result -= probability;
         }
         return null;
-    }
-
-    /**
-     *
-     * @param tiles any set of tiles.
-     * @param predicate predicate which tiles on brink will satisfy.
-     * @return random Tile on brink of tiles, which satisfies predicate.
-     * If such Tile does not exists, returns null.
-     */
-    public static Tile randomTileOnBrink(Collection<Tile> tiles, Predicate<Tile> predicate) {
-        return randomElement(new Territory(tiles).getBrinkWithCondition(predicate));
-    }
-
-    /**
-     * @param territory A Territory from which a random Tile will be chosen.
-     * @return A random Tile from the Territory.
-     */
-    public static Tile randomTile(Territory territory) {
-        return randomElement(territory.getTiles());
-    }
-
-    private static ShnyPair<Aspect, Group> getRandomAspectWithPairExcept(Collection<ShnyPair<Aspect, Group>> pool,
-                                                                         Predicate<ShnyPair<Aspect, Group>> predicate) {
-        List<ShnyPair<Aspect, Group>> pairs = new ArrayList<>();
-        for (ShnyPair<Aspect, Group> pair : pool) {
-            if (predicate.test(pair)) {
-                pairs.add(pair);
-            }
-        }
-        if (pairs.size() == 0) {
-            return null;
-        }
-        return randomElement(pairs);
-    }
-
-    public static ShnyPair<Aspect, Group> addRandomAspectWithPairExcept(Collection<Aspect> target,
-                                                                        Collection<ShnyPair<Aspect, Group>> pool,
-                                                                        Predicate<ShnyPair<Aspect, Group>> predicate,
-                                                                        double probability) {
-        if (!testProbability(probability)) {
-            return null;
-        }
-        ShnyPair<Aspect, Group> pair = getRandomAspectWithPairExcept(pool, predicate);
-        if (pair == null) {
-            return null;
-        }
-        return pair;
     }
 }

@@ -58,7 +58,6 @@ public class TextVisualizer implements Visualizer {
      */
     private Controller controller;
 
-    ;
     private World world;
     private WorldMap map;
     private InteractionModel interactionModel;
@@ -69,8 +68,8 @@ public class TextVisualizer implements Visualizer {
     /**
      * Base constructor.
      */
-    public TextVisualizer() {
-        controller = new Controller(new MapModel());
+    public TextVisualizer(Controller controller) {
+        this.controller = controller;
         Controller.visualizer = this;
         world = controller.world;
         map = world.map;
@@ -78,7 +77,7 @@ public class TextVisualizer implements Visualizer {
     }
 
     public static void main(String[] args) {
-        TextVisualizer textVisualizer = new TextVisualizer();
+        TextVisualizer textVisualizer = new TextVisualizer(new Controller(new MapModel()));
         textVisualizer.initialize();
         textVisualizer.run();
     }

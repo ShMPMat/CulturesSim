@@ -1,8 +1,9 @@
 package simulation.culture.group;
 
 import extra.OutputFunc;
-import extra.ProbFunc;
+import extra.ProbabilityFuncs;
 import extra.ShnyPair;
+import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.dependency.*;
@@ -152,8 +153,8 @@ public class Group {
         for (Tile tile : territory.getTiles()) {
             tile.group = null;
         }
-        cherishedResources.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
-        uniqueArtifacts.disbandOnTile(ProbFunc.randomElement(territory.getTiles()));
+        cherishedResources.disbandOnTile(ProbabilityFuncs.randomElement(territory.getTiles()));
+        uniqueArtifacts.disbandOnTile(ProbabilityFuncs.randomElement(territory.getTiles()));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : session.world.map.getAllNearGroups(this)) {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
@@ -290,7 +291,7 @@ public class Group {
             die();
             return;
         }
-        if ((getMaxPopulation() == population || ProbFunc.testProbability(session.defaultGroupDiverge))
+        if ((getMaxPopulation() == population || ProbabilityFuncs.testProbability(session.defaultGroupDiverge))
                 && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
                     parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
@@ -301,7 +302,7 @@ public class Group {
                 return;
             }
             population = population / 2;
-            Tile tile = ProbFunc.randomElement(tiles);
+            Tile tile = ProbabilityFuncs.randomElement(tiles);
             Group group = new Group(parentGroup, this, parentGroup.name + "_" + parentGroup.subgroups.size(),
                     population, tile);
             for (Stratum stratum: strata) {
@@ -362,7 +363,7 @@ public class Group {
     }
 
     public Tile getDisbandTile() {
-        return ProbFunc.randomTile(getOverallTerritory());
+        return SpaceProbabilityFuncs.randomTile(getOverallTerritory());
     }
 
     void starve(double fraction) {
@@ -401,7 +402,7 @@ public class Group {
         if (!session.groupDiverge) {
             return false;
         }
-        if (parentGroup.subgroups.size() > 1 && ProbFunc.testProbability(session.defaultGroupExiting)) {
+        if (parentGroup.subgroups.size() > 1 && ProbabilityFuncs.testProbability(session.defaultGroupExiting)) {
             if (checkCoherencyAndDiverge()) {
                 createNewConglomerate(Collections.singleton(this));
             }
@@ -441,7 +442,7 @@ public class Group {
         if (state == State.Dead) {
             return false;
         }
-        if (!ProbFunc.testProbability(spreadability)) {
+        if (!ProbabilityFuncs.testProbability(spreadability)) {
             return false;
         }
         if (population <= minPopulationPerTile * territory.size()) {
