@@ -254,19 +254,6 @@ public class CulturalCenter {
         }
 
         cultureAspects.forEach(cultureAspect -> addRequest(cultureAspect.getRequest()));
-//        for (ShnyPair<Resource, ResourceBehaviour> want : wants) {
-//            requests.add(new ResourceRequest(group, want.first, 1, 10, (pair, percent) -> {
-//                pair.first.cherishedResources.add(pair.second);
-//                addAspiration(new Aspiration(5, want.first));
-//                want.second.procedeResources(pair.second);
-//                return null;
-//            },
-//                    (pair, percent) -> {
-//                pair.first.cherishedResources.add(pair.second);
-//                want.second.procedeResources(pair.second);
-//                return null;
-//                    }));
-//        }
     }
 
     void update() {

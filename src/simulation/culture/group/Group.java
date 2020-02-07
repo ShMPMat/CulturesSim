@@ -49,19 +49,8 @@ public class Group {
     private GroupConglomerate parentGroup;
     private CulturalCenter culturalCenter;
     private double spreadability;
-    private Territory territory = new Territory();
-    private Function<Group, Double> hostilityByDifferenceCoef = g -> (compareDifferenceToGroup(g) - 1) / 2;
-    private Function<Tile, Integer> tileRelationAspectMapper = t -> {
-        int accumulator = 0;
-        for (Relation relation: culturalCenter.relations.values()) {
-            if (relation.getPositive() < 0) {
-                accumulator += relation.getPositive() * 10000 / relation.other.territory.getCenter().getDistance(t);
-            }
-        }
-        return accumulator;
-    };
-    private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.equals(tile1.group)).size() +
-            3 * t.hasResources(getResourceRequirements()) + tileRelationAspectMapper.apply(t);
+    private TerritoryCenter territoryCenter = new TerritoryCenter(this);
+    private Function<Group, Double> hostilityByDifferenceCoef = g -> (Groups.getGroupsDifference(this, g) - 1) / 2;
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
@@ -72,7 +61,7 @@ public class Group {
         this.population = population;
         this.spreadability = spreadability;
         culturalCenter = new CulturalCenter(this);
-        claimTile(root);
+        territoryCenter.claimTile(root);
     }
 
     Group(GroupConglomerate group, Group subgroup, String name, int population, Tile tile) {
@@ -95,8 +84,16 @@ public class Group {
         return culturalCenter.getAspect(aspect);
     }
 
+    double getSpreadability() {
+        return spreadability;
+    }
+
+    int getMinPopulationPerTile() {
+        return minPopulationPerTile;
+    }
+
     public List<Tile> getTiles() {
-        return territory.getTiles();
+        return getTerritory().getTiles();
     }
 
     /**
@@ -106,12 +103,16 @@ public class Group {
         return culturalCenter;
     }
 
+    public TerritoryCenter getTerritoryCenter() {
+        return territoryCenter;
+    }
+
     int getFertility() {
         return fertility;
     }
 
     public Territory getTerritory() {
-        return territory;
+        return territoryCenter.getTerritory();
     }
 
     public List<Stratum> getStrata() {
@@ -134,7 +135,7 @@ public class Group {
         return getParentGroup().getOverallTerritory();
     }
 
-    private Collection<Resource> getResourceRequirements() {
+    Collection<Resource> getResourceRequirements() {
         return getAspects().stream().filter(aspect -> aspect instanceof ConverseWrapper)
                 .map(aspect -> ((ConverseWrapper) aspect).resource).distinct().collect(Collectors.toList());
     }
@@ -143,18 +144,18 @@ public class Group {
         return parentGroup;
     }
 
-    public void setParentGroup(GroupConglomerate parentGroup) {
+    void setParentGroup(GroupConglomerate parentGroup) {
         this.parentGroup = parentGroup;
     }
 
     private void die() {
         state = State.Dead;
         population = 0;
-        for (Tile tile : territory.getTiles()) {
+        for (Tile tile : getTiles()) {
             tile.group = null;
         }
-        cherishedResources.disbandOnTile(ProbabilityFuncs.randomElement(territory.getTiles()));
-        uniqueArtifacts.disbandOnTile(ProbabilityFuncs.randomElement(territory.getTiles()));
+        cherishedResources.disbandOnTile(ProbabilityFuncs.randomElement(getTiles()));
+        uniqueArtifacts.disbandOnTile(ProbabilityFuncs.randomElement(getTiles()));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : session.world.map.getAllNearGroups(this)) {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
@@ -193,7 +194,7 @@ public class Group {
     }
 
     private void addResourceDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep) {
-        List<Resource> _r = territory.getResourcesWithAspectTag(requirement);
+        List<Resource> _r = getTerritory().getResourcesWithAspectTag(requirement);
         if (_r != null) {
             addDependenciesInMap(dep, _r.stream().map(resource -> /*new Dependency_(requirement, this, resource)*/
                     new ResourceDependency(requirement, this, resource))
@@ -212,7 +213,7 @@ public class Group {
             }
 //            addDependenciesInMap(dep, culturalCenter.getAllProducedResources().stream()
 //                    .filter(pair -> pair.first.));
-            addDependenciesInMap(dep, territory.getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
+            addDependenciesInMap(dep, getTerritory().getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
                             .map(resource -> /*new Dependency_(requirement, this, new ShnyPair<>(resource, selfAspect))*/
                             new ConversionDependency(requirement, this, new ShnyPair<>(resource, selfAspect)))
                             .filter(dependency -> !dependency.isCycleDependency(aspect)).collect(Collectors.toList()),
@@ -236,11 +237,7 @@ public class Group {
     }
 
     public Tile getCenter() {
-        return territory.getCenter();
-    }
-
-    private boolean isTileReachable(Tile tile) {
-        return getCenter().getDistance(tile) < 4;
+        return getTerritory().getCenter();
     }
 
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
@@ -257,7 +254,7 @@ public class Group {
     }
 
     void updateRequests() {
-        if (territory.isEmpty()) {
+        if (getTerritory().isEmpty()) {
             int i = 0;
         }
         getCulturalCenter().updateRequests();
@@ -313,7 +310,7 @@ public class Group {
                 }
                 stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
             }
-            if (group.territory.isEmpty()) {
+            if (group.getTerritory().isEmpty()) {
                 int i = 0;
             }
             group.culturalCenter.initializeFromCenter(culturalCenter);//TODO maybe put in constructor somehow
@@ -418,7 +415,7 @@ public class Group {
         while (!queue.isEmpty()) {
             Group cur = queue.poll();
             cluster.add(cur);
-            queue.addAll(cur.territory.getBorder().stream()
+            queue.addAll(cur.getTerritory().getBorder().stream()
                     .filter(t -> t.group != null && t.group.parentGroup == parentGroup && !cluster.contains(t.group))
                     .map(tile -> tile.group).collect(Collectors.toList()));
         }
@@ -436,96 +433,6 @@ public class Group {
             conglomerate.addGroup(group);
         }
         session.world.addGroup(conglomerate);
-    }
-
-    boolean expand() {
-        if (state == State.Dead) {
-            return false;
-        }
-        if (!ProbabilityFuncs.testProbability(spreadability)) {
-            return false;
-        }
-        if (population <= minPopulationPerTile * territory.size()) {
-            parentGroup.getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tilePotentialMapper));
-            if (population <= minPopulationPerTile * territory.size()) {
-                parentGroup.getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tilePotentialMapper));
-            }
-        }
-
-        claimTile(territory.getMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(this) &&
-                isTileReachable(newTile), tilePotentialMapper));
-        return true;
-    }
-
-    boolean migrate() {
-        if (state == State.Dead) {
-            return false;
-        }
-        if (!shouldMigrate()) {
-            return false;
-        }
-
-        Tile newCenter = getMigrationTile();
-        if (newCenter == null) {
-            return false;
-        }
-        territory.setCenter(newCenter);
-        claimTile(newCenter);
-        removeTiles(territory.getTilesWithPredicate(tile -> !isTileReachable(tile)));
-        return true;
-    }
-
-    private Tile getMigrationTile() {
-        return territory.getCenter().getNeighbours(tile -> tile.canSettle(this) && tile.group == null).stream()
-                .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile))).orElse(null);
-    }
-
-    private boolean shouldMigrate() {
-        return !culturalCenter.getAspirations().isEmpty();
-    }
-
-    private void claimTile(Tile tile) {
-        if (tile == null) {
-            return;
-        }
-        if (tile.group != this && tile.group != null) {
-            throw new RuntimeException();
-        }
-        parentGroup.claimTile(tile);
-        tile.group = this;
-        territory.add(tile);
-        addEvent(new Event(Event.Type.TileAcquisition, "Group " + name + " claimed tile " + tile.x + " " +
-                tile.y, "group", this, "tile", tile));
-    }
-
-    private void removeTiles(Collection<Tile> tiles) {
-        tiles.forEach(this::removeTile);
-    }
-
-    private void removeTile(Tile tile) {
-        if (tile == null) {
-            return;
-        }
-        territory.removeTile(tile);
-        parentGroup.removeTile(tile);
-    }
-
-    private double compareDifferenceToGroup(Group group) {
-        double matched = 1;
-        double overall = 1;
-        for (Aspect aspect: getAspects()) {
-            if (group.getAspect(aspect) != null) {
-                matched++;
-            }
-            overall++;
-        }
-        for (CultureAspect aspect: culturalCenter.getCultureAspects()) {
-            if (group.culturalCenter.getCultureAspects().contains(aspect)) {
-                matched++;
-            }
-            overall++;
-        }
-        return matched / overall;
     }
 
     @Override
