@@ -96,14 +96,11 @@ public class Group {
         return getTerritory().getTiles();
     }
 
-    /**
-     * link to the main World class instance.
-     */
     public CulturalCenter getCulturalCenter() {
         return culturalCenter;
     }
 
-    public TerritoryCenter getTerritoryCenter() {
+    TerritoryCenter getTerritoryCenter() {
         return territoryCenter;
     }
 
@@ -115,7 +112,7 @@ public class Group {
         return territoryCenter.getTerritory();
     }
 
-    public List<Stratum> getStrata() {
+    List<Stratum> getStrata() {
         return strata;
     }
 
@@ -161,75 +158,6 @@ public class Group {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
-    }
-
-    Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
-        Map<AspectTag, Set<Dependency>> dep = new HashMap<>();
-        if (aspect instanceof ConverseWrapper) {
-            addForConverseWrapper((ConverseWrapper) aspect, dep);
-        }
-        for (AspectTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals(AspectTag.phony().name) || requirement.isWrapperCondition()) {
-                continue;
-            }
-            addAspectDependencies(requirement, dep, aspect);
-        }
-        return dep;
-    }
-
-    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<AspectTag, Set<Dependency>> dep) {
-        if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
-            if (converseWrapper.canTakeResources() && getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
-                addDependenciesInMap(dep, Collections.singleton(
-                        new ConversionDependency(converseWrapper.getRequirement(), this,
-                        new ShnyPair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
-            }
-            addDependenciesInMap(dep, getCulturalCenter().getAllProducedResources().stream()
-                            .filter(pair -> pair.first.equals(converseWrapper.resource))
-                            .map(pair -> new LineDependency(converseWrapper.getRequirement(), this,
-                                    new ShnyPair<>(converseWrapper, pair.second))).filter(dependency ->
-                                    !dependency.isCycleDependency(converseWrapper)).collect(Collectors.toList()),
-                    converseWrapper.getRequirement());
-        }
-    }
-
-    private void addResourceDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep) {
-        List<Resource> _r = getTerritory().getResourcesWithAspectTag(requirement);
-        if (_r != null) {
-            addDependenciesInMap(dep, _r.stream().map(resource -> /*new Dependency_(requirement, this, resource)*/
-                    new ResourceDependency(requirement, this, resource))
-                    .collect(Collectors.toList()), requirement);
-        }
-    }
-
-    private void addAspectDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep, Aspect aspect) {
-        for (Aspect selfAspect : getAspects()) {
-            if (selfAspect.getTags().contains(requirement)) {
-                Dependency dependency = new AspectDependency(requirement, selfAspect);
-                if (dependency.isCycleDependency(selfAspect) || dependency.isCycleDependencyInner(aspect)) {
-                    continue;
-                }
-                addDependenciesInMap(dep, Collections.singleton(dependency), requirement);
-            }
-//            addDependenciesInMap(dep, culturalCenter.getAllProducedResources().stream()
-//                    .filter(pair -> pair.first.));
-            addDependenciesInMap(dep, getTerritory().getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
-                            .map(resource -> /*new Dependency_(requirement, this, new ShnyPair<>(resource, selfAspect))*/
-                            new ConversionDependency(requirement, this, new ShnyPair<>(resource, selfAspect)))
-                            .filter(dependency -> !dependency.isCycleDependency(aspect)).collect(Collectors.toList()),
-                    requirement);
-        }
-    }
-
-    private void addDependenciesInMap(Map<AspectTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
-                                      AspectTag requirement) {
-        if (dependencies.isEmpty()) {
-            return;
-        }
-        if (!dep.containsKey(requirement)) {
-            dep.put(requirement, new HashSet<>());
-        }
-        dep.get(requirement).addAll(dependencies);
     }
 
     public void addEvent(Event event) {

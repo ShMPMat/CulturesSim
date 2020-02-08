@@ -145,7 +145,7 @@ public class GroupConglomerate {
         return getCenter().getDistance(tile) < 4;
     }
 
-    public void update() {
+    public void update() {//TODO simplify
         if (state == State.Dead) {
             return;
         }
