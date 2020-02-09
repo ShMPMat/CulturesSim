@@ -34,16 +34,12 @@ public class CulturalCenter {
     private AspectCenter aspectCenter;
     private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
-    private Set<Aspect> aspects = new HashSet<>();
     private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
-    private Set<Aspect> changedAspects = new HashSet<>(); // always equals to aspects except while making a turn
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
     private Set<CultureAspect> cultureAspects = new HashSet<>();
     private GroupMemes memePool = new GroupMemes();
 
-    private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
-    private List<Resource> _lastResourcesForCw = new ArrayList<>();
     private Set<Reason> reasonsWithSystems = new HashSet<>();
 
     private static int constructProbes = 5;
@@ -62,27 +58,27 @@ public class CulturalCenter {
     }
 
     Set<Aspect> getAspects() {
-        return aspects;
+        return aspectCenter.getAspects();
     }
 
     public List<ConverseWrapper> getConverseWrappers() {
-        return aspects.stream()
-                .filter(aspect -> aspect instanceof ConverseWrapper).map(aspect -> (ConverseWrapper) aspect)
-                .collect(Collectors.toList());
+        return aspectCenter.getConverseWrappers();
     }
 
     Set<ConverseWrapper> getMeaningAspects() {
-        return aspects.stream()
-                .filter(aspect -> aspect instanceof ConverseWrapper && aspect.canReturnMeaning())
-                .map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toSet());
+        return aspectCenter.getMeaningAspects();
     }
 
     Aspect getAspect(Aspect aspect) {
-        return getAspects().stream().filter(aspect::equals).findFirst().orElse(null);
+        return aspectCenter.getAspect(aspect);
     }
 
     Aspect getAspect(String name) {
-        return getAspects().stream().filter(aspect -> aspect.getName().equals(name)).findFirst().orElse(null);
+        return aspectCenter.getAspect(name);
+    }
+
+    public List<ShnyPair<Resource, ConverseWrapper>> getAllProducedResources() {
+        return aspectCenter.getAllProducedResources();
     }
 
     List<Request> getRequests() {
@@ -90,7 +86,7 @@ public class CulturalCenter {
     }
 
     Set<Aspect> getChangedAspects() {
-        return changedAspects;
+        return aspectCenter.getChangedAspects();
     }
 
     List<Event> getEvents() {
@@ -108,7 +104,7 @@ public class CulturalCenter {
         return groups;
     }
 
-    private List<Aspect> getNeighboursAspects() {
+    List<Aspect> getNeighboursAspects() {
         List<Aspect> allExistingAspects = new ArrayList<>();
         for (Group neighbour : relations.keySet()) {
             allExistingAspects.addAll(neighbour.getAspects().stream()
@@ -124,17 +120,6 @@ public class CulturalCenter {
             allExistingAspects.addAll(neighbour.getCulturalCenter().getCultureAspects());
         }
         return allExistingAspects;
-    }
-
-    public List<ShnyPair<Resource, ConverseWrapper>> getAllProducedResources() {
-        List<ShnyPair<Resource, ConverseWrapper>> _m = new ArrayList<>();
-        for (ConverseWrapper converseWrapper : aspects.stream().filter(aspect -> aspect instanceof ConverseWrapper)
-                .map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toList())) {
-            for (Resource resource : converseWrapper.getResult()) {
-                _m.add(new ShnyPair<>(resource, converseWrapper));
-            }
-        }
-        return _m;
     }
 
     public GroupMemes getMemePool() {
@@ -156,131 +141,16 @@ public class CulturalCenter {
     }
 
     public boolean addAspect(Aspect aspect) {
-        if (!aspect.isValid()) {
-            return false;
-        }
-        if (aspects.contains(aspect)) {
-            aspect = aspects.stream().filter(aspect::equals).findFirst().orElse(aspect);
-        }
-        Map<AspectTag, Set<Dependency>> _m = canAddAspect(aspect);
-        if (!aspect.isDependenciesOk(_m)) {
-            return false;
-        }
-        if (aspect.getName().contains("Incrust")) {
-            int i = 0;
-        }
-
-        addAspectNow(aspect, _m);
-        Aspect finalAspect = aspect;
-        return true;
-    }
-
-    void addAspectNow(Aspect aspect, Map<AspectTag, Set<Dependency>> dependencies) {
-        Aspect _a = null;
-        if (getChangedAspects().contains(aspect)) {
-            for (Aspect as : getChangedAspects()) {
-                if (as.equals(aspect)) {
-                    as.addOneDependency(dependencies);
-                    _a = as;
-                }
-            }
-        } else {
-            _a = aspect.copy(dependencies, group);
-            getChangedAspects().add(_a);
-            if (!(_a instanceof ConverseWrapper)) {//TODO maybe should do the same in straight
-                Set<Resource> allResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
-                allResources.addAll(getAllProducedResources().stream().map(pair -> pair.first).collect(Collectors.toSet()));
-                for (Resource resource : allResources) {
-                    addConverseWrapper(_a, resource);
-                }
-            }
-        }
-        memePool.addAspectMemes(aspect);
-        addMemeCombination((new MemeSubject(group.name).addPredicate(
-                session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
-        neededAdding(_a);
+        return aspectCenter.addAspect(aspect);
     }
 
     void hardAspectAdd(Aspect aspect) {
-        changedAspects.add(aspect);
-        aspects.add(aspect);
-        neededAdding(aspect);
-    }
-
-    void neededAdding(Aspect aspect) {
-        if (group.getStrata().stream().noneMatch(stratum -> stratum.containsAspect(aspect))) {
-            group.getStrata().add(new Stratum(0, aspect, group));
-        }
+        aspectCenter.hardAspectAdd(aspect);
     }
 
 
     Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
-        Map<AspectTag, Set<Dependency>> dep = new HashMap<>();
-        if (aspect instanceof ConverseWrapper) {
-            addForConverseWrapper((ConverseWrapper) aspect, dep);
-        }
-        for (AspectTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals(AspectTag.phony().name) || requirement.isWrapperCondition()) {
-                continue;
-            }
-            addAspectDependencies(requirement, dep, aspect);
-        }
-        return dep;
-    }
-
-    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<AspectTag, Set<Dependency>> dep) {
-        if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
-            if (converseWrapper.canTakeResources() && group.getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
-                addDependenciesInMap(dep, Collections.singleton(
-                        new ConversionDependency(converseWrapper.getRequirement(), group,
-                                new ShnyPair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
-            }
-            addDependenciesInMap(dep, getAllProducedResources().stream()
-                            .filter(pair -> pair.first.equals(converseWrapper.resource))
-                            .map(pair -> new LineDependency(converseWrapper.getRequirement(), group,
-                                    new ShnyPair<>(converseWrapper, pair.second)))
-                            .filter(dependency -> !dependency.isCycleDependency(converseWrapper))
-                            .collect(Collectors.toList()),
-                    converseWrapper.getRequirement());
-        }
-    }
-
-    private void addResourceDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep) {
-        List<Resource> _r = group.getTerritory().getResourcesWithAspectTag(requirement);
-        if (_r != null) {
-            addDependenciesInMap(dep, _r.stream()
-                    .map(resource -> new ResourceDependency(requirement, group, resource))
-                    .collect(Collectors.toList()), requirement);
-        }
-    }
-
-    private void addAspectDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep, Aspect aspect) {
-        for (Aspect selfAspect : getAspects()) {
-            if (selfAspect.getTags().contains(requirement)) {
-                Dependency dependency = new AspectDependency(requirement, selfAspect);
-                if (dependency.isCycleDependency(selfAspect) || dependency.isCycleDependencyInner(aspect)) {
-                    continue;
-                }
-                addDependenciesInMap(dep, Collections.singleton(dependency), requirement);
-            }
-            addDependenciesInMap(dep, group.getTerritory().getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
-                            .map(resource ->
-                                    new ConversionDependency(requirement, group, new ShnyPair<>(resource, selfAspect)))
-                            .filter(dependency -> !dependency.isCycleDependency(aspect))
-                            .collect(Collectors.toList()),
-                    requirement);
-        }
-    }
-
-    private void addDependenciesInMap(Map<AspectTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
-                                      AspectTag requirement) {
-        if (dependencies.isEmpty()) {
-            return;
-        }
-        if (!dep.containsKey(requirement)) {
-            dep.put(requirement, new HashSet<>());
-        }
-        dep.get(requirement).addAll(dependencies);
+        return aspectCenter.canAddAspect(aspect);
     }
 
     public void addCultureAspect(CultureAspect cultureAspect) {
@@ -330,7 +200,7 @@ public class CulturalCenter {
 
     void update() {
         tryToFulfillAspirations();
-        mutateAspects();
+        aspectCenter.mutateAspects();
         createArtifact();
         useCultureAspects();
         addCultureAspect();
@@ -513,33 +383,6 @@ public class CulturalCenter {
         aspirations.remove(aspiration);
     }
 
-    private void mutateAspects() { //TODO separate adding of new aspects and updating old
-        if (testProbability(session.rAspectAcquisition)) {
-            List<Aspect> options = new ArrayList<>();
-            if (session.independentCvSimpleAspectAdding) {
-                if (testProbability(0.1)) {
-                    options.addAll(session.world.aspectPool);
-                } else {
-                    options.addAll(getAllPossibleConverseWrappers());
-                }
-            } else {
-                options.addAll(session.world.aspectPool);
-                options.addAll(getAllPossibleConverseWrappers());
-            }
-
-            Aspect _a = randomElement(options, aspect -> true);
-            if (_a != null) {
-                if (_a instanceof ConverseWrapper && ((ConverseWrapper) _a).aspect.getName().equals("Paint")) {
-                    int i = 0;
-                }
-                if (addAspect(_a)) {
-                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                            " got aspect " + _a.getName() + " by itself", "group", group));
-                }
-            }
-        }
-    }
-
     private void mutateCultureAspects() {
         if (!testProbability(session.groupCultureAspectCollapse)) {
             return;
@@ -617,7 +460,6 @@ public class CulturalCenter {
             if (_a == null) {
                 return;
             }
-            //ConverseWrapper _b = _a.stripToMeaning();
             generateCurrentMeme();
             AspectResult result = _a.use(new AspectController(1, 1,
                     new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
@@ -653,7 +495,7 @@ public class CulturalCenter {
         Optional _o = getAspirations().stream().max((Comparator.comparingInt(o -> o.level)));
         if (_o.isPresent()) {
             Aspiration aspiration = (Aspiration) _o.get();
-            List<ShnyPair<Aspect, Group>> options = findOptions(aspiration);
+            List<ShnyPair<Aspect, Group>> options = aspectCenter.findOptions(aspiration);
             ShnyPair<Aspect, Group> pair = randomElement(options);
             if (pair == null) {
                 return;
@@ -670,72 +512,15 @@ public class CulturalCenter {
         }
     }
 
-    private List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
-        List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
-
-        for (Aspect aspect : session.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
-            Map<AspectTag, Set<Dependency>> _m = canAddAspect(aspect);
-            if (aspect.isDependenciesOk(_m)) {
-                options.add(new ShnyPair<>(aspect.copy(_m, group), null));
-            }
-        }
-
-        getAllPossibleConverseWrappers().stream().filter(aspiration::isAcceptable)
-                .forEach(wrapper -> options.add(new ShnyPair<>(wrapper, null)));
-
-        List<Aspect> aspects = getNeighboursAspects();
-        for (Aspect aspect : aspects) {
-            Map<AspectTag, Set<Dependency>> _m = canAddAspect(aspect);
-            if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
-                aspect = aspect.copy(_m, group);
-                options.add(new ShnyPair<>(aspect, aspect.getGroup()));
-            }
-        }
-        return options;
-    }
-
-    private List<ConverseWrapper> getAllPossibleConverseWrappers() {
-        List<ConverseWrapper> options = new ArrayList<>(_converseWrappers); //TODO maybe do it after the middle part?
-        Set<Resource> newResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
-        newResources.addAll(getAllProducedResources().stream().map(pair -> pair.first).collect(Collectors.toSet()));
-        newResources.removeAll(_lastResourcesForCw);
-        for (Aspect aspect : aspects.stream().filter(aspect -> !(aspect instanceof ConverseWrapper))
-                .collect(Collectors.toList())) {
-            for (Resource resource : newResources) {
-                addConverseWrapper(aspect, resource);
-            }
-        }
-        _lastResourcesForCw.addAll(newResources);
-        newResources.forEach(resource -> getMemePool().addResourceMemes(resource));
-        return options;
-    }
-
-    private void addConverseWrapper(Aspect aspect, Resource resource) { //TODO I'm adding a lot of garbage
-        ConverseWrapper _w;
-        if (aspect.canApplyMeaning()) {
-            _w = new MeaningInserter(aspect, resource,
-                    group);
-        } else {
-            _w = new ConverseWrapper(aspect, resource,
-                    group);
-        }
-        if (!_w.isValid()) {
-            return;
-        }
-        _converseWrappers.add(_w);
-    }
-
     void finishUpdate() {
-        aspects.forEach(Aspect::finishUpdate);
-        pushAspects();
+        aspectCenter.finishUpdate();
     }
 
     public void pushAspects() {
-        aspects = new HashSet<>();
-        aspects.addAll(getChangedAspects());
+        aspectCenter.pushAspects();
     }
 
     public void initializeFromCenter(CulturalCenter culturalCenter) {
-        culturalCenter.aspects.forEach(this::addAspect);
+        culturalCenter.getAspects().forEach(this::addAspect);
     }
 }
