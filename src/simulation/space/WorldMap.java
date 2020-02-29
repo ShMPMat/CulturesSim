@@ -1,5 +1,6 @@
 package simulation.space;
 
+import extra.SpaceProbabilityFuncs;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceIdeal;
@@ -23,11 +24,15 @@ public class WorldMap {
      * Array which contains Map Tiles.
      */
     public List<List<Tile>> map;
-    public List<TectonicPlate> tectonicPlates;
+    private List<TectonicPlate> tectonicPlates;
     public List<ResourceIdeal> resourcePool;
 
     public WorldMap(int x, int y, List<ResourceIdeal> resources) {
         this.resourcePool = resources;
+        createTiles(x, y);
+    }
+
+    private void createTiles(int x, int y) {
         map = new ArrayList<>();
         for (int i = 0; i < x; i++) {
             map.add(new ArrayList<>());
@@ -42,9 +47,9 @@ public class WorldMap {
         tectonicPlates = new ArrayList<>();
         for (int i = 0; i < session.amountOfPlates; i++) {
             TectonicPlate tectonicPlate = new TectonicPlate();
-            Tile tile = randomTile(this);
+            Tile tile = SpaceProbabilityFuncs.randomTile(this);
             while (usedTiles.contains(tile)) {
-                tile = randomTile(this);
+                tile = SpaceProbabilityFuncs.randomTile(this);
             }
             tectonicPlate.add(tile);
             tectonicPlates.add(tectonicPlate);
@@ -66,12 +71,6 @@ public class WorldMap {
         }
     }
 
-    /**
-     *
-     * @param x X coordinate of the Tile.
-     * @param y Y coordinate os the Tile.
-     * @return Tile on this coordinates or null if coordinates are out of bounds.
-     */
     public Tile get(int x, int y) {
         if (x < 0) {
             return null;

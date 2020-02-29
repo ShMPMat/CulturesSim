@@ -1,5 +1,6 @@
 package extra;
 
+import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.Group;
 import simulation.space.Territory;
@@ -59,15 +60,6 @@ public class ProbabilityFuncs {
      */
     public static <E> E randomElement(E[] array) {
         return array[randomInt(array.length)];
-    }
-
-    /**
-     * Returns random tile from map.
-     * @param map any non-empty map.
-     * @return random Tile from map.
-     */
-    public static Tile randomTile(WorldMap map) {
-        return randomElement(randomElement(map.map));
     }
 
     public static <E> E randomElementWithProbability(List<E> list, Function<E, Double> mapper) {

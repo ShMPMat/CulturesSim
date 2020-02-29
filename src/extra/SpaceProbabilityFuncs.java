@@ -2,6 +2,7 @@ package extra;
 
 import simulation.space.Territory;
 import simulation.space.Tile;
+import simulation.space.WorldMap;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -24,5 +25,9 @@ public class SpaceProbabilityFuncs {
      */
     public static Tile randomTile(Territory territory) {
         return ProbabilityFuncs.randomElement(territory.getTiles());
+    }
+
+    public static Tile randomTile(WorldMap map) {
+        return ProbabilityFuncs.randomElement(ProbabilityFuncs.randomElement(map.map));
     }
 }

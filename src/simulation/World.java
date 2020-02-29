@@ -2,6 +2,7 @@ package simulation;
 
 import extra.InputDatabase;
 import extra.ProbabilityFuncs;
+import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.GroupConglomerate;
@@ -93,7 +94,7 @@ public class World {
 
     private Tile getTileForGroup() {
         while (true) {
-            Tile tile = ProbabilityFuncs.randomTile(session.world.map);
+            Tile tile = SpaceProbabilityFuncs.randomTile(session.world.map);
             if (tile.group == null && tile.canSettle()) {
                 return tile;
             }

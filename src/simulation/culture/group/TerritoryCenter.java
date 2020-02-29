@@ -16,7 +16,7 @@ public class TerritoryCenter {
     private Group group;
     private Function<Tile, Integer> tileRelationAspectMapper = t -> {//TODO move functions somewhere else
         int accumulator = 0;
-        for (Relation relation: group.getCulturalCenter().relations.values()) {
+        for (Relation relation : group.getCulturalCenter().relations.values()) {
             if (relation.getPositive() < 0) {
                 accumulator += relation.getPositive() * 10000 / relation.other.getTerritory().getCenter().getDistance(t);
             }

@@ -1,6 +1,7 @@
 package simulation.space.generator;
 
 import extra.ProbabilityFuncs;
+import extra.SpaceProbabilityFuncs;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.TectonicPlate;
@@ -102,9 +103,9 @@ public class RandomMapGenerator {
         for (int i = 0; i < n; i++) {
             Tile tile;
             if (goodTiles.isEmpty()) {
-                tile = ProbabilityFuncs.randomTile(session.world.map);
+                tile = SpaceProbabilityFuncs.randomTile(session.world.map);
                 while (!resource.getGenome().isAcceptable(tile)) {
-                    tile = ProbabilityFuncs.randomTile(session.world.map);
+                    tile = SpaceProbabilityFuncs.randomTile(session.world.map);
                 }
             } else {
                 tile = ProbabilityFuncs.randomElement(goodTiles);
