@@ -1,7 +1,8 @@
 package simulation.culture.group;
 
-import extra.ProbabilityFuncs;
 import extra.SpaceProbabilityFuncs;
+import shmp.random.RandomCollectionsKt;
+import simulation.Controller;
 import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.resource.ResourcePack;
@@ -11,7 +12,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static extra.ProbabilityFuncs.*;
+import static shmp.random.RandomCollectionsKt.*;
+import static simulation.Controller.*;
 
 public class PlacementStrategy {
     enum Strategy {
@@ -59,26 +61,28 @@ public class PlacementStrategy {
                 List<Tile> border = controlledTerritory.getBorder();
                 tiles = border.stream().filter(tile ->
                         !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
-                return tiles.isEmpty() ? randomElement(border) : randomElement(tiles);
+                return tiles.isEmpty()
+                        ? randomElement(border, session.random)
+                        : randomElement(tiles, session.random);
             case Homogeneous:
                 tiles = controlledTerritory.getTiles().stream().filter(tile ->
                         !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
                 return tiles.isEmpty()
                         ? SpaceProbabilityFuncs.randomTile(controlledTerritory)
-                        : ProbabilityFuncs.randomElement(tiles);
+                        : randomElement(tiles, session.random);
             case Sprinkle:
                 return chooseSpecialTile();
             case Clumps:
                 Tile tile = chooseSpecialTile();
                 tiles = tile.getNeighbours();
                 tiles.add(tile);
-                return ProbabilityFuncs.randomElement(tiles);
+                return randomElement(tiles, session.random);
         }
         return null;
     }
 
     private Tile chooseSpecialTile() {
-        int index = randomInt(specialTiles.size() + 1);
+        int index = session.random.nextInt(specialTiles.size() + 1);
         if (index < specialTiles.size()) {
             return specialTiles.get(index);
         }
@@ -92,7 +96,7 @@ public class PlacementStrategy {
         if (specialTiles.size() == 0) {
             int i = 0;
         }
-        return ProbabilityFuncs.randomElement(specialTiles);
+        return randomElement(specialTiles, session.random);
     }
 
     void place(ResourcePack resourcePack) {

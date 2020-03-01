@@ -1,6 +1,5 @@
 package simulation.space.resource;
 
-import extra.ProbabilityFuncs;
 import simulation.culture.aspect.AspectTag;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
@@ -284,7 +283,7 @@ public class Genome { //TODO make template genome
         genome.setName(name + "_Mutation" + _mutationCount);
         _mutationCount++;
         for (Resource part : parts) {
-            part.amount += ProbabilityFuncs.randomInt(2) - 1;
+            part.amount += session.random.nextInt(2) - 1;
         }
         return genome;
     }

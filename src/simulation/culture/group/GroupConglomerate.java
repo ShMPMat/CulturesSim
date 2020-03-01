@@ -1,7 +1,6 @@
 package simulation.culture.group;
 
 import extra.OutputFunc;
-import extra.ProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
@@ -60,7 +59,7 @@ public class GroupConglomerate {
     }
 
     public GroupConglomerate(int numberOfSubgroups, Tile root) {
-        this(session.getVacantGroupName(), 100 + ProbabilityFuncs.randomInt(100), numberOfSubgroups, root);
+        this(session.getVacantGroupName(), 100 + session.random.nextInt(100), numberOfSubgroups, root);
     }
 
     /**

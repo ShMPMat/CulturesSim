@@ -1,6 +1,5 @@
 package simulation.space.generator;
 
-import extra.ProbabilityFuncs;
 import extra.SpaceProbabilityFuncs;
 import simulation.World;
 import simulation.culture.aspect.AspectTag;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static shmp.random.RandomCollectionsKt.*;
 import static simulation.Controller.*;
 
 /**
@@ -55,10 +55,10 @@ public class RandomMapGenerator {
             List<String> tags = new ArrayList<>();
             tags.add("r" + i);
             tags.add(((Double) (Math.random() / 100)).toString());
-            int n = ProbabilityFuncs.randomInt(aspectTagPool.size());
+            int n = session.random.nextInt(aspectTagPool.size());
             for (int j = 0; j < n; j++) {
                 while (true) {
-                    String name = ProbabilityFuncs.randomElement(aspectTagPool).name;
+                    String name = randomElement(aspectTagPool, session.random).name;
                     if (!tags.contains("-" + name)) {
                         tags.add("-" + name);
                         break;
@@ -92,7 +92,7 @@ public class RandomMapGenerator {
                 continue;
             }
             scatter(resource, session.startResourceAmountMin +
-                    ProbabilityFuncs.randomInt(session.startResourceAmountMax -
+                    session.random.nextInt(session.startResourceAmountMax -
                             session.startResourceAmountMin));
         }
     }
@@ -108,7 +108,7 @@ public class RandomMapGenerator {
                     tile = SpaceProbabilityFuncs.randomTile(session.world.map);
                 }
             } else {
-                tile = ProbabilityFuncs.randomElement(goodTiles);
+                tile = randomElement(goodTiles, session.random);
             }
             tile.addDelayedResource(resource.copy());
             addDependencies(resource, tile);

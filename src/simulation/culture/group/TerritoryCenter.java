@@ -1,6 +1,6 @@
 package simulation.culture.group;
 
-import extra.ProbabilityFuncs;
+import simulation.Controller;
 import simulation.culture.Event;
 import simulation.culture.group.intergroup.Relation;
 import simulation.space.Territory;
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Function;
+
+import static shmp.random.RandomProbabilitiesKt.*;
 
 public class TerritoryCenter {
     private Territory territory = new Territory();
@@ -70,7 +72,7 @@ public class TerritoryCenter {
         if (group.state == Group.State.Dead) {
             return false;
         }
-        if (!ProbabilityFuncs.testProbability(group.getSpreadability())) {
+        if (!testProbability(group.getSpreadability(), Controller.session.random)) {
             return false;
         }
         if (group.population <= group.getMinPopulationPerTile() * territory.size()) {

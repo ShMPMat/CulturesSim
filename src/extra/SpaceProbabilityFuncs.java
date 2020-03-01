@@ -1,11 +1,16 @@
 package extra;
 
+import simulation.Controller;
 import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
+
+import static shmp.random.RandomCollectionsKt.*;
+import static simulation.Controller.*;
 
 public class SpaceProbabilityFuncs {
     /**
@@ -16,7 +21,10 @@ public class SpaceProbabilityFuncs {
      * If such Tile does not exists, returns null.
      */
     public static Tile randomTileOnBrink(Collection<Tile> tiles, Predicate<Tile> predicate) {
-        return ProbabilityFuncs.randomElement(new Territory(tiles).getBrinkWithCondition(predicate));
+        List<Tile> brink = new Territory(tiles).getBrinkWithCondition(predicate);
+        return brink.isEmpty()
+                ? null
+                : randomElement(brink, session.random);
     }
 
     /**
@@ -24,10 +32,10 @@ public class SpaceProbabilityFuncs {
      * @return A random Tile from the Territory.
      */
     public static Tile randomTile(Territory territory) {
-        return ProbabilityFuncs.randomElement(territory.getTiles());
+        return randomElement(territory.getTiles(), session.random);
     }
 
     public static Tile randomTile(WorldMap map) {
-        return ProbabilityFuncs.randomElement(ProbabilityFuncs.randomElement(map.map));
+        return randomElement(randomElement(map.map, session.random), session.random);
     }
 }

@@ -1,5 +1,7 @@
 package simulation;
 
+import kotlin.random.Random;
+import kotlin.random.RandomKt;
 import simulation.culture.interactionmodel.InteractionModel;
 import simulation.culture.thinking.language.templates.TemplateBase;
 import visualizer.Visualizer;
@@ -15,6 +17,8 @@ public class Controller {
     public World world;
     public InteractionModel interactionModel;
     public TemplateBase templateBase;
+
+    public final Random random = RandomKt.Random(100);
 
     public final int proportionCoefficient = 1;
     public final boolean doTurns = true;

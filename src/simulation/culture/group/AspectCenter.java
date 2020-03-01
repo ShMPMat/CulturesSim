@@ -1,6 +1,8 @@
 package simulation.culture.group;
 
 import extra.ShnyPair;
+import kotlin.random.Random;
+import kotlin.random.RandomKt;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectTag;
@@ -9,12 +11,13 @@ import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
+import kotlin.random.RandomKt.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static extra.ProbabilityFuncs.randomElement;
-import static extra.ProbabilityFuncs.testProbability;
+import static shmp.random.RandomCollectionsKt.*;
+import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static simulation.Controller.session;
 
 public class AspectCenter {
@@ -225,10 +228,10 @@ public class AspectCenter {
     }
 
     void mutateAspects() { //TODO separate adding of new aspects and updating old
-        if (testProbability(session.rAspectAcquisition)) {
+        if (testProbability(session.rAspectAcquisition, session.random)) {
             List<Aspect> options = new ArrayList<>();
             if (session.independentCvSimpleAspectAdding) {
-                if (testProbability(0.1)) {
+                if (testProbability(0.1, session.random)) {
                     options.addAll(session.world.aspectPool);
                 } else {
                     options.addAll(getAllPossibleConverseWrappers());
@@ -238,8 +241,8 @@ public class AspectCenter {
                 options.addAll(getAllPossibleConverseWrappers());
             }
 
-            Aspect _a = randomElement(options, aspect -> true);
-            if (_a != null) {
+            if (!options.isEmpty()) {
+                Aspect _a = randomElement(options, session.random);
                 if (addAspect(_a)) {
                     group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
                             " got aspect " + _a.getName() + " by itself", "group", group));

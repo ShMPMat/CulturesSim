@@ -1,12 +1,16 @@
 package simulation.space;
 
-import extra.ProbabilityFuncs;
 import extra.ShnyPair;
+import kotlin.collections.ArraysKt;
+import simulation.Controller;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static shmp.random.RandomCollectionsKt.*;
+import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 
 public class TectonicPlate extends Territory {
@@ -49,8 +53,8 @@ public class TectonicPlate extends Territory {
     private boolean isMoved = false;
 
     TectonicPlate() {
-        direction = ProbabilityFuncs.randomElement(Direction.values());
-        type = ProbabilityFuncs.randomElement(Type.values());
+        direction = randomElement(ArraysKt.toList(Direction.values()), session.random);
+        type = randomElement(ArraysKt.toList(Type.values()), session.random);
     }
 
     /**
@@ -138,13 +142,13 @@ public class TectonicPlate extends Territory {
      * Moves plate in its direction and changes landscape.
      */
     public void move() {//TODO volcanoes
-        if (ProbabilityFuncs.testProbability(0.7) && isMoved) {
+        if (testProbability(0.7, session.random) && isMoved) {
             return;
         }
         for (ShnyPair<Tile, Double> pair: getAffectedTiles()) {
-            if (ProbabilityFuncs.testProbability(pair.second)) {
+            if (testProbability(pair.second, session.random)) {
                 pair.first.setLevel(isMoved ? pair.first.getLevel() + 1 :
-                        pair.first.getLevel() + 5 + ProbabilityFuncs.randomInt(5));
+                        pair.first.getLevel() + 5 + session.random.nextInt(5));
             }
         }
         isMoved = true;

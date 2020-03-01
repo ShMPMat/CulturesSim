@@ -1,6 +1,7 @@
 package simulation.culture.group;
 
-import extra.ProbabilityFuncs;
+import kotlin.collections.ArraysKt;
+import simulation.Controller;
 import simulation.space.resource.ResourcePack;
 
 public class ResourceBehaviour {
@@ -21,6 +22,9 @@ public class ResourceBehaviour {
 
     public static ResourceBehaviour getRandom(Group group) {
         return new ResourceBehaviour(new PlacementStrategy(group.getOverallTerritory(),
-                ProbabilityFuncs.randomElement(PlacementStrategy.Strategy.values())));
+                shmp.random.RandomCollectionsKt.randomElement(
+                        ArraysKt.toList(PlacementStrategy.Strategy.values()),
+                        Controller.session.random)
+        ));
     }
 }

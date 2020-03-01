@@ -1,7 +1,8 @@
 package simulation.culture.group;
 
 import extra.OutputFunc;
-import extra.ProbabilityFuncs;
+import static shmp.random.RandomProbabilitiesKt.testProbability;
+import static shmp.random.RandomCollectionsKt.*;
 import extra.ShnyPair;
 import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
@@ -151,8 +152,8 @@ public class Group {
         for (Tile tile : getTiles()) {
             tile.group = null;
         }
-        cherishedResources.disbandOnTile(ProbabilityFuncs.randomElement(getTiles()));
-        uniqueArtifacts.disbandOnTile(ProbabilityFuncs.randomElement(getTiles()));
+        cherishedResources.disbandOnTile(randomElement(getTiles(), session.random));
+        uniqueArtifacts.disbandOnTile(randomElement(getTiles(), session.random));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : session.world.map.getAllNearGroups(this)) {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
@@ -216,7 +217,7 @@ public class Group {
             die();
             return;
         }
-        if ((getMaxPopulation() == population || ProbabilityFuncs.testProbability(session.defaultGroupDiverge))
+        if ((getMaxPopulation() == population || testProbability(session.defaultGroupDiverge, session.random))
                 && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
                     parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
@@ -227,7 +228,7 @@ public class Group {
                 return;
             }
             population = population / 2;
-            Tile tile = ProbabilityFuncs.randomElement(tiles);
+            Tile tile = randomElement(tiles, session.random);
             Group group = new Group(parentGroup, this, parentGroup.name + "_" + parentGroup.subgroups.size(),
                     population, tile);
             for (Stratum stratum: strata) {
@@ -327,7 +328,7 @@ public class Group {
         if (!session.groupDiverge) {
             return false;
         }
-        if (parentGroup.subgroups.size() > 1 && ProbabilityFuncs.testProbability(session.defaultGroupExiting)) {
+        if (parentGroup.subgroups.size() > 1 && testProbability(session.defaultGroupExiting, session.random)) {
             if (checkCoherencyAndDiverge()) {
                 createNewConglomerate(Collections.singleton(this));
             }

@@ -1,7 +1,6 @@
 package simulation;
 
 import extra.InputDatabase;
-import extra.ProbabilityFuncs;
 import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;

@@ -1,6 +1,6 @@
 package simulation.culture.group.cultureaspect;
 
-import extra.ProbabilityFuncs;
+import shmp.random.RandomProbabilitiesKt;
 import simulation.Controller;
 import simulation.culture.group.Group;
 import simulation.culture.group.reason.Reason;
@@ -27,7 +27,10 @@ public class RitualSystem extends AbstractCultureAspect {
     @Override
     public void use() {
         rituals.forEach(CultureAspect::use);
-        if (!ProbabilityFuncs.testProbability(Controller.session.groupCollapsedAspectUpdate)) {
+        if (!RandomProbabilitiesKt.testProbability(
+                Controller.session.groupCollapsedAspectUpdate,
+                Controller.session.random)
+        ) {
             return;
         }
         Ritual ritual = group.getCulturalCenter().constructRitualForReason(reason);

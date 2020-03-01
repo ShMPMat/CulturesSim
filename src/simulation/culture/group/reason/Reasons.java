@@ -1,17 +1,23 @@
 package simulation.culture.group.reason;
 
+import shmp.random.RandomCollectionsKt;
+import simulation.Controller;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 
-import static extra.ProbabilityFuncs.*;
+import java.util.List;
 
 public class Reasons {
     public static Reason randomReason(Group group) {
         Reason reason = null;
-        switch (randomInt(1)) {
+        switch (Controller.session.random.nextInt(1)) {
             case 0:
-                ConverseWrapper converseWrapper = randomElement(group.getCulturalCenter().getConverseWrappers());
-                if (converseWrapper != null) {
+                List<ConverseWrapper> wrappers = group.getCulturalCenter().getConverseWrappers();
+                if (!wrappers.isEmpty()) {
+                    ConverseWrapper converseWrapper = RandomCollectionsKt.randomElement(
+                            wrappers,
+                            Controller.session.random
+                    );
                     reason = new BetterAspectUseReason(group, converseWrapper);
                     break;
                 }

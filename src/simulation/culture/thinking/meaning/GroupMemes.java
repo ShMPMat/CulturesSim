@@ -1,7 +1,7 @@
 package simulation.culture.thinking.meaning;
 
-import extra.ProbabilityFuncs;
 import extra.ShnyPair;
+import shmp.random.RandomProbabilitiesKt;
 import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
@@ -65,14 +65,16 @@ public class GroupMemes extends MemePool {
     }
 
     public Meme getMemeWithComplexityBias() {
-        if (ProbabilityFuncs.testProbability(0.5)) {
+        if (RandomProbabilitiesKt.testProbability(0.5, Controller.session.random)) {
             return getValuableMeme();
         }
         return chooseMeme(new ArrayList<>(memesCombinations.values()));
     }
 
     private Meme chooseMeme(List<Meme> memeList) {
-        int prob = ProbabilityFuncs.randomInt(memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum));
+        int prob = Controller.session.random.nextInt(
+                memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum)
+        );
         memeList.sort(Comparator.comparingInt(meme -> meme.importance));
         for (Meme meme: memeList) {
             prob -= meme.importance;

@@ -1,6 +1,7 @@
 package simulation.space;
 
 import extra.SpaceProbabilityFuncs;
+import shmp.random.RandomCollectionsKt;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceIdeal;
@@ -12,7 +13,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static extra.ProbabilityFuncs.*;
 import static simulation.Controller.*;
 
 /**
@@ -63,7 +63,7 @@ public class WorldMap {
                 if (tiles.isEmpty()) {
                     continue;
                 }
-                Tile tile = randomElement(tiles);
+                Tile tile = RandomCollectionsKt.randomElement(tiles, session.random);
                 territory.add(tile);
                 usedTiles.add(tile);
                 sw = true;
@@ -174,7 +174,7 @@ public class WorldMap {
      * MOves all the Plates on the Map.
      */
     public void movePlates() {
-        for (TectonicPlate plate: getTectonicPlates()) {
+        for (TectonicPlate plate : getTectonicPlates()) {
             plate.move();
         }
     }

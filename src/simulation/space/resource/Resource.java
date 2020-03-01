@@ -1,6 +1,5 @@
 package simulation.space.resource;
 
-import extra.ProbabilityFuncs;
 import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
@@ -13,6 +12,8 @@ import simulation.space.resource.dependency.ResourceDependency;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static shmp.random.RandomCollectionsKt.*;
+import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.*;
 
 /**
@@ -61,7 +62,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public Resource(String[] tags) {
-        this(tags, 100 + ProbabilityFuncs.randomInt(10));
+        this(tags, 100 + session.random.nextInt(10));
     }
 
     public Resource(ResourceCore resourceCore) {
@@ -247,7 +248,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             return false;
         }
         deathTurn++;
-        if (ProbabilityFuncs.testProbability(resourceCore.getSpreadProbability())) {
+        if (testProbability(resourceCore.getSpreadProbability(), session.random)) {
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
@@ -278,7 +279,12 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                         if (!tiles.isEmpty()) {
                             int min = tiles.stream().min(Comparator.comparingInt(Tile::getLevelWithWater)).get()
                                     .getLevelWithWater();
-                            ProbabilityFuncs.randomElement(tiles.stream().filter(t -> t.getLevelWithWater() == min).collect(Collectors.toList()))
+                            randomElement(
+                                    tiles.stream()
+                                            .filter(t -> t.getLevelWithWater() == min)
+                                            .collect(Collectors.toList()),
+                                    session.random
+                            )
                                     .addDelayedResource(getCleanPart(amount <= 1 ? 1 : 1));
                         }
                     } else {
@@ -297,7 +303,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                 }
             }
         } else if (getSimpleName().equals("Snow")) {
-            if (tile.getType() == Tile.Type.Mountain && ProbabilityFuncs.testProbability(1)) {
+            if (tile.getType() == Tile.Type.Mountain && testProbability(1, session.random)) {
 //                if ((tile.x + " " + tile.y).equals("21 118")) {
 //                    int i = 0;
 //                }

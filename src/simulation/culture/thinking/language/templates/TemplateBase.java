@@ -1,11 +1,13 @@
 package simulation.culture.thinking.language.templates;
 
-import extra.ProbabilityFuncs;
+import simulation.Controller;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static shmp.random.RandomCollectionsKt.*;
 
 public class TemplateBase {
     public static TemplateBase sessionBase;
@@ -48,6 +50,6 @@ public class TemplateBase {
     }
 
     public Meme getRandomSentenceTemplate() {
-        return ProbabilityFuncs.randomElement(sentenceBase);
+        return randomElement(sentenceBase, Controller.session.random);
     }
 }
