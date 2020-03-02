@@ -25,10 +25,8 @@ public class WorldMap {
      */
     public List<List<Tile>> map;
     private List<TectonicPlate> tectonicPlates;
-    public List<ResourceIdeal> resourcePool;
 
-    public WorldMap(int x, int y, List<ResourceIdeal> resources) {
-        this.resourcePool = resources;
+    public WorldMap(int x, int y) {
         createTiles(x, y);
     }
 

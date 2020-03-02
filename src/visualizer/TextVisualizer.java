@@ -215,7 +215,7 @@ public class TextVisualizer implements Visualizer {
      */
     private void readSymbols() throws IOException {
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsResourceLibrary"));
-        for (Resource resource : world.resourcePool) {
+        for (Resource resource : world.getAllResources()) {
             resourceSymbols.put(resource, s.nextLine());
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
@@ -390,7 +390,7 @@ public class TextVisualizer implements Visualizer {
      */
     private StringBuilder printedResources() {
         StringBuilder resources = new StringBuilder();
-        for (Resource resource : map.resourcePool) {
+        for (Resource resource : world.getAllResources()) {
             resources.append("\033[31m").append(resourceSymbols.get(resource)).append(" - ")
                     .append(resource.getBaseName()).append("\n");
         }

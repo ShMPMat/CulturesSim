@@ -2,13 +2,16 @@ package simulation;
 
 import extra.InputDatabase;
 import extra.SpaceProbabilityFuncs;
+import kotlin.ranges.IntRange;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.ResourcePool;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
+import simulation.space.generator.MapGeneratorSupplement;
 import simulation.space.generator.RandomMapGenerator;
 import simulation.space.resource.Material;
 import simulation.space.resource.Property;
@@ -39,7 +42,7 @@ public class World {
     /**
      * List of all Resources in the world.
      */
-    public List<ResourceIdeal> resourcePool = new ArrayList<>();
+    private ResourcePool resourcePool;
     /**
      * Base MemePool for the World. Contains all standard Memes.
      */
@@ -73,13 +76,19 @@ public class World {
 
     void initializeZero() {
         fillResourcePool();
-        map = new WorldMap(session.mapSizeX, session.mapSizeY, resourcePool);
+        map = new WorldMap(session.mapSizeX, session.mapSizeY);
         map.initializePlates();
-        RandomMapGenerator.fill();
+        RandomMapGenerator.fill(map);
     }
 
     public void fillResources() {
-        RandomMapGenerator.fillResources();
+        RandomMapGenerator.fillResources(
+                map,
+                resourcePool,
+                new MapGeneratorSupplement(
+                        new IntRange(session.startResourceAmountMin, session.startResourceAmountMax)
+                ),
+                session.random);
     }
 
     public void initializeFirst() {
@@ -170,6 +179,7 @@ public class World {
      * Reads all Resources from supplement file and fills resourcePool with them.
      */
     private void fillResourcePool() {
+        List<ResourceIdeal> resourceIdeals = new ArrayList<>();
         InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Resources");
         String line;
         String[] tags;
@@ -179,10 +189,11 @@ public class World {
                 break;
             }
             tags = line.split("\\s+");
-            resourcePool.add(new ResourceIdeal(tags));
+            resourceIdeals.add(new ResourceIdeal(tags));
         }
-        resourcePool.forEach(Resource::actualizeLinks);
-        resourcePool.forEach(Resource::actualizeParts);
+        resourcePool = new ResourcePool(resourceIdeals);
+        resourceIdeals.forEach(Resource::actualizeLinks);
+        resourceIdeals.forEach(Resource::actualizeParts);
     }
 
     private boolean isLineBad(String line) {
@@ -243,18 +254,17 @@ public class World {
      * @return Resource with this sentenceBase name. If there is no such Resource in the resourcePool
      * returns null and prints a warning.
      */
-    public ResourceIdeal getPoolResource(String name) {
-        for (ResourceIdeal resource : resourcePool) {
-            if (resource.getBaseName().equals(name)) {
-                return resource;
-            }
-        }
-        System.err.println("Unrecognized Resource request - " + name);
-        return null;
+    public Resource getPoolResource(String name) {
+        return resourcePool.getResource(name);
+    }
+
+    public List<Resource> getAllResources() {
+        return resourcePool.getResourcesWithPredicate(t -> true);
     }
 
     /**
      * Returns Meme by name.
+     *
      * @param name name of the Meme.
      * @return Meme with this name.
      */
