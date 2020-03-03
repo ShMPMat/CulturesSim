@@ -2,6 +2,10 @@ package simulation.culture.group;
 
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.cultureaspect.CultureAspect;
+import simulation.space.Tile;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Groups {
     /**
@@ -24,5 +28,14 @@ public class Groups {
             overall++;
         }
         return matched / overall;
+    }
+
+    public static Set<Group> getAllNearGroups(Group group) {
+        Set<Group> groups = new HashSet<>();
+        for (Tile tile : group.getTiles()) {
+            tile.getNeighbours(t -> t.group != null).forEach(t -> groups.add(t.group));
+        }
+        groups.remove(group);
+        return groups;
     }
 }

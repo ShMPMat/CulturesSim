@@ -1,6 +1,5 @@
 package extra;
 
-import simulation.Controller;
 import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
@@ -36,6 +35,6 @@ public class SpaceProbabilityFuncs {
     }
 
     public static Tile randomTile(WorldMap map) {
-        return randomElement(randomElement(map.map, session.random), session.random);
+        return randomElement(randomElement(map.getTiles(), session.random), session.random);
     }
 }

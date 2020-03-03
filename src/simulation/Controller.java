@@ -25,7 +25,7 @@ public class Controller {
 
     public final int mapSizeX = 45 * proportionCoefficient;
     public final int mapSizeY = 135 * proportionCoefficient;
-    public final int amountOfPlates = 10 * proportionCoefficient;
+    public final int platesAmount = 10 * proportionCoefficient;
     public final int temperatureBaseStart = -15;
     public final int temperatureBaseFinish = 29;
     public final int geologyTurns = 50;

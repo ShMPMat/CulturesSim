@@ -155,7 +155,7 @@ public class Group {
         cherishedResources.disbandOnTile(randomElement(getTiles(), session.random));
         uniqueArtifacts.disbandOnTile(randomElement(getTiles(), session.random));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
-        for (Group group : session.world.map.getAllNearGroups(this)) {
+        for (Group group : Groups.getAllNearGroups(this)) {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }

@@ -55,6 +55,7 @@ public class Tile {
     /**
      * Wind which is present on this Tile.
      */
+    private List<Tile> neighbours = null;
     private Wind wind;
     private Wind _newWind;
     public boolean fixedWater = false;
@@ -68,6 +69,13 @@ public class Tile {
         setType(Type.Normal, true);
         resources = new ArrayList<>();
         _delayedResources = new ArrayList<>();
+    }
+
+    public void setNeighbours(List<Tile> neighbours) {
+        if (this.neighbours != null) {
+            throw new IndexOutOfBoundsException("Neighbours are already set");//TODO normal exception
+        }
+        this.neighbours = neighbours;
     }
 
     /**
@@ -112,12 +120,9 @@ public class Tile {
      * @return List of neighbour Tiles which satisfy the Predicate.
      */
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
-        WorldMap map = session.world.map;
-        return Arrays.stream(new Tile[]{map.get(x, y + 1),
-                                        map.get(x, y - 1),
-                                        map.get(x + 1, y),
-                                        map.get(x - 1, y)})
-                .filter(obj -> Objects.nonNull(obj) && predicate.test(obj)).collect(Collectors.toList());
+        return neighbours.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -1,109 +1,66 @@
 package simulation.space;
 
-import extra.SpaceProbabilityFuncs;
-import shmp.random.RandomCollectionsKt;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourceIdeal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static simulation.Controller.*;
 
 /**
  * Represents tile map of the world
  */
 public class WorldMap {
-    List<Boolean> _execution;
-    /**
-     * Array which contains Map Tiles.
-     */
-    public List<List<Tile>> map;
-    private List<TectonicPlate> tectonicPlates;
+    private List<List<Tile>> tiles;
+    private int x;
+    private int y;
+    private List<TectonicPlate> tectonicPlates = new ArrayList<>();
 
-    public WorldMap(int x, int y) {
-        createTiles(x, y);
+    public WorldMap(List<List<Tile>> tiles) {
+        this.tiles = tiles;
+        x = tiles.size();
+        y = tiles.get(0).size();
     }
 
-    private void createTiles(int x, int y) {
-        map = new ArrayList<>();
-        for (int i = 0; i < x; i++) {
-            map.add(new ArrayList<>());
-            for (int j = 0; j < y; j++) {
-                map.get(i).add(new Tile(i, j));
-            }
-        }
+    public int getX() {
+        return x;
     }
 
-    public void initializePlates() {
-        Set<Tile> usedTiles = new HashSet<>();
-        tectonicPlates = new ArrayList<>();
-        for (int i = 0; i < session.amountOfPlates; i++) {
-            TectonicPlate tectonicPlate = new TectonicPlate();
-            Tile tile = SpaceProbabilityFuncs.randomTile(this);
-            while (usedTiles.contains(tile)) {
-                tile = SpaceProbabilityFuncs.randomTile(this);
-            }
-            tectonicPlate.add(tile);
-            tectonicPlates.add(tectonicPlate);
-            usedTiles.add(tile);
-        }
-        boolean sw = true;
-        while (sw) {
-            sw = false;
-            for (Territory territory : tectonicPlates) {
-                List<Tile> tiles = territory.getBrinkWithCondition(t -> !usedTiles.contains(t));
-                if (tiles.isEmpty()) {
-                    continue;
-                }
-                Tile tile = RandomCollectionsKt.randomElement(tiles, session.random);
-                territory.add(tile);
-                usedTiles.add(tile);
-                sw = true;
-            }
-        }
+    public int getY() {
+        return y;
+    }
+
+    public List<List<Tile>> getTiles() {
+        return tiles;
+    }
+
+    public List<TectonicPlate> getTectonicPlates() {
+        return tectonicPlates;
+    }
+
+    public void addPlate(TectonicPlate plate) {
+        tectonicPlates.add(plate);
     }
 
     public Tile get(int x, int y) {
         if (x < 0) {
             return null;
-        } else if (x >= session.mapSizeX) {
+        } else if (x >= getX()) {
             return null;
         }
         while (y < 0) {
-            y += session.mapSizeY;
+            y += getY();
         }
-        y %= session.mapSizeY;
-        return map.get(x).get(y);
-    }
-
-    public Set<Group> getAllNearGroups(Group group) {
-        Set<Group> groups = new HashSet<>();
-        for (Tile tile : group.getTiles()) {
-            tile.getNeighbours(t -> t.group != null).forEach(t -> groups.add(t.group));
-        }
-        groups.remove(group);
-        return groups;
+        y %= getY();
+        return getTiles().get(x).get(y);
     }
 
     public List<Resource> getAllResourceInstancesWithName(String name) {
-        List<Resource> resources = new ArrayList<>();
-        for (List<Tile> line : map) {
-            for (Tile tile : line) {
-                resources.addAll(tile.getResources().stream().filter(resource -> resource.getBaseName().equals(name))
-                        .collect(Collectors.toList()));
-            }
-        }
-        return resources;
-    }
-
-    public List<TectonicPlate> getTectonicPlates() {
-        return tectonicPlates;
+        return tiles.stream()
+                .flatMap(Collection::stream)
+                .flatMap(t -> t.getResources().stream())
+                .filter(r -> r.getBaseName().equals(name))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -111,67 +68,44 @@ public class WorldMap {
      * @return All Tiles from the map which satisfy the Predicate.
      */
     public List<Tile> getTilesWithPredicate(Predicate<Tile> predicate) {
-        List<Tile> goodTiles = new ArrayList<>();
-        for (List<Tile> tiles : map) {
-            goodTiles.addAll(tiles.stream().filter(predicate).collect(Collectors.toList()));
-        }
-        return goodTiles;
+        return tiles.stream()
+                .flatMap(Collection::stream)
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     public synchronized void update() {//TODO parallel
-//        int i = 0, a = 5, ct = 0;
-//        _execution = new CopyOnWriteArrayList<Boolean>();
-//        for (int j = 0; j < (map.size() - 1) / a + 1; j++) {
-//            _execution.add(false);
-//        }
-//        while (i < map.size()) {
-//            new Thread(new MapUpdater(ct, i, i + a, this)).start();
-//            i += a;
-//            ct++;
-//        }
-//        try {
-//            for (int j = 0; j < _execution.size(); j++) {
-//                while (!_execution.get(j)) {
-//                    wait();
-//                }
-//            }
-//        } catch (InterruptedException e) {
-//
-//        }
-        for (List<Tile> line : map) {
+        for (List<Tile> line : getTiles()) {
             for (Tile tile : line) {
                 tile.startUpdate();
             }
         }
 
-        for (List<Tile> line : map) {
+        for (List<Tile> line : getTiles()) {
             for (Tile tile : line) {
                 tile.middleUpdate();
             }
         }
     }
 
-    public void geologicUpdate() {
-        for (List<Tile> line : map) {
-            for (Tile tile : line) {
-                tile.levelUpdate();
-            }
-        }
-        movePlates();
-    }
-
     public synchronized void finishUpdate() {
-        for (List<Tile> line : map) {
+        for (List<Tile> line : getTiles()) {
             for (Tile tile : line) {
                 tile.finishUpdate();
             }
         }
     }
 
-    /**
-     * MOves all the Plates on the Map.
-     */
-    public void movePlates() {
+    public void geologicUpdate() {
+        for (List<Tile> line : getTiles()) {
+            for (Tile tile : line) {
+                tile.levelUpdate();
+            }
+        }
+        platesUpdate();
+    }
+
+    public void platesUpdate() {
         for (TectonicPlate plate : getTectonicPlates()) {
             plate.move();
         }

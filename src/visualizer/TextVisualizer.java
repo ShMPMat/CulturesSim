@@ -240,7 +240,7 @@ public class TextVisualizer implements Visualizer {
             lastClaimedTiles.get(((Group) event.getAttribute("group")).name).add((Tile) event.getAttribute("tile"));
         }
         System.out.print(main.append(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
-                map.map.size() + 2), printedEvents(interactionModel.getEvents(), false),
+                map.getTiles().size() + 2), printedEvents(interactionModel.getEvents(), false),
                 false), true)));
         interactionModel.clearEvents();
     }
@@ -253,7 +253,7 @@ public class TextVisualizer implements Visualizer {
      *                  for a tile, output of the function will be drawn above the tile.
      */
     private void printMap(Function<Tile, String> condition) {
-        System.out.print(addToRight(printedMap(condition), chompToLines(printedResources(), map.map.size() + 2),
+        System.out.print(addToRight(printedMap(condition), chompToLines(printedResources(), map.getTiles().size() + 2),
                 true));
     }
 
@@ -310,21 +310,21 @@ public class TextVisualizer implements Visualizer {
         StringBuilder main = new StringBuilder();
         WorldMap worldMap = controller.world.map;
         main.append("  ");
-        for (int i = 0; i < worldMap.map.get(0).size(); i++) {
+        for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
             main.append((i < 100 ? " " : i / 100 % 100));
         }
         main.append("\n").append("  ");
-        for (int i = 0; i < worldMap.map.get(0).size(); i++) {
+        for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
             main.append((i < 10 ? " " : i / 10 % 10));
         }
         main.append("\n").append("  ");
-        for (int i = 0; i < worldMap.map.get(0).size(); i++) {
+        for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
             main.append(i % 10);
         }
         main.append("\n");
         StringBuilder map = new StringBuilder();
         for (int i = 0; i < controller.mapSizeX; i++) {
-            List<Tile> line = worldMap.map.get(i);
+            List<Tile> line = worldMap.getTiles().get(i);
             String token;
             map.append((i < 10 ? " " + i : i));
             for (int j = 0; j < controller.mapSizeY; j++) {

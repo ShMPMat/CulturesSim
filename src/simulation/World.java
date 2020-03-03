@@ -9,6 +9,7 @@ import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.ResourcePool;
+import simulation.space.TectonicPlate;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static simulation.Controller.*;
 
@@ -76,9 +78,7 @@ public class World {
 
     void initializeZero() {
         fillResourcePool();
-        map = new WorldMap(session.mapSizeX, session.mapSizeY);
-        map.initializePlates();
-        RandomMapGenerator.fill(map);
+        map = RandomMapGenerator.generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
     }
 
     public void fillResources() {

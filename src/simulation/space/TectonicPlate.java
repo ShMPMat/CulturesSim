@@ -3,6 +3,7 @@ package simulation.space;
 import extra.ShnyPair;
 import kotlin.collections.ArraysKt;
 import simulation.Controller;
+import simulation.World;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -52,9 +53,9 @@ public class TectonicPlate extends Territory {
      */
     private boolean isMoved = false;
 
-    TectonicPlate() {
-        direction = randomElement(ArraysKt.toList(Direction.values()), session.random);
-        type = randomElement(ArraysKt.toList(Type.values()), session.random);
+    public TectonicPlate(Direction direction, Type type) {
+        this.direction = direction;
+        this.type = type;
     }
 
     /**
@@ -91,23 +92,22 @@ public class TectonicPlate extends Territory {
             return affectedTiles;
         }
         List<Tile> startTiles = getBrinkWithCondition(tile -> {
-            Tile t;
+            List<Tile> affectedTiles = new ArrayList<>();
             switch (direction) {
                 case U:
-                    t = session.world.map.get(tile.x + 1, tile.y);
-                    return t!= null && t.getPlate() == this;
+                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x + 1 && t.y == tile.y);
+                    break;
                 case R:
-                    t = session.world.map.get(tile.x, tile.y - 1);
-                    return t!= null && t.getPlate() == this;
+                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x && t.y == tile.y - 1);
+                    break;
                 case L:
-                    t = session.world.map.get(tile.x, tile.y + 1);
-                    return t!= null && t.getPlate() == this;
+                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x && t.y == tile.y + 1);
+                    break;
                 case D:
-                    t = session.world.map.get(tile.x - 1, tile.y);
-                    return t!= null && t.getPlate() == this;
-                default:
-                    return false;
+                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x - 1 && t.y == tile.y);
+                    break;
             }
+            return !affectedTiles.isEmpty() && affectedTiles.get(0).getPlate() == this;
         });
         List<Tile> tiles = new ArrayList<>();
         for (Tile tile: startTiles) {
