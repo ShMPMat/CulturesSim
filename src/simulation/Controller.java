@@ -38,8 +38,6 @@ public class Controller {
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;
     public final int startGroupAmount = 10;
 
-    public final double tileScale = 10;
-
     public final double  defaultGroupSpreadability        = 1;
     public final int     defaultGroupMaxPopulation        = 1000;
     public final int     defaultGroupMinPopulationPerTile = 1;
@@ -60,7 +58,6 @@ public class Controller {
 
     public final double windPropagation = 0.025;
     public final double windFillIn = 0.1;
-    public final double maximalWind = 10;
 
     public static Visualizer visualizer;
     public static final boolean doPrint = false;

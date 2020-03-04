@@ -1,21 +1,19 @@
 package simulation.space;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static simulation.Controller.*;
-
 public class Wind {
     boolean isFilling = false;
-    List<ShnyPair<Tile, Double>> affectedTiles;
+    List<Pair<Tile, Double>> affectedTiles;
 
     public Wind() {
         affectedTiles = new ArrayList<>();
     }
 
-    public List<ShnyPair<Tile, Double>> getAffectedTiles() {
+    public List<Pair<Tile, Double>> getAffectedTiles() {
         return affectedTiles;
     }
 
@@ -24,18 +22,24 @@ public class Wind {
     }
 
     public double getMaxLevel() {
-        return affectedTiles.stream().reduce((double) 0, (x, y) -> Math.max(x, y.second), Double::max);
+        return affectedTiles.stream()
+                .map(Pair<Tile, Double>::getSecond)
+                .reduce(Double::max)
+                .orElse(0.0);
     }
 
     public void changeLevelOnTile(Tile tile, double change) {
-        if (tile == null) {
+        if (tile == null) {//TODO da hell?
             return;
         }
         for (int i = 0; i < affectedTiles.size(); i++) {
-            ShnyPair<Tile, Double> pair = affectedTiles.get(i);
-            if (pair.first.equals(tile)) {
-                pair.second = Math.min(change + pair.second, session.maximalWind);
-                if (pair.second <= 0) {
+            Pair<Tile, Double> pair = affectedTiles.get(i);
+            if (pair.getFirst().equals(tile)) {
+                pair = new Pair<>(
+                        pair.getFirst(),
+                        Math.min(change + pair.getSecond(), SpaceData.INSTANCE.getData().getMaximalWind())
+                );
+                if (pair.getSecond() <= 0) {
                     affectedTiles.remove(i);
                 }
                 return;
@@ -44,16 +48,20 @@ public class Wind {
         if (change <= 0) {
             return;
         }
-        affectedTiles.add(new ShnyPair<>(tile, change));
+        affectedTiles.add(new Pair<>(tile, change));
     }
 
     public double getLevelByTile(Tile tile) {
-        for (ShnyPair<Tile, Double> pair: affectedTiles) {
-            if (pair.first.equals(tile)) {
-                return pair.second;
+        for (Pair<Tile, Double> pair: affectedTiles) {
+            if (pair.getFirst().equals(tile)) {
+                return pair.getSecond();
             }
         }
-        return 0;
+        return affectedTiles.stream()
+                .filter(p -> p.getFirst().equals(tile))
+                .map(Pair<Tile, Double>::getSecond)
+                .findFirst()
+                .orElse(0.0);
     }
 
     public double getPureLevelByTile(Tile tile) {

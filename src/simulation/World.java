@@ -9,11 +9,10 @@ import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.ResourcePool;
-import simulation.space.TectonicPlate;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
-import simulation.space.generator.RandomMapGenerator;
+import simulation.space.generator.RandomMapGeneratorKt;
 import simulation.space.resource.Material;
 import simulation.space.resource.Property;
 import simulation.space.resource.Resource;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static simulation.Controller.*;
+import static simulation.space.generator.RandomMapGeneratorKt.generateMap;
 
 /**
  * Class which stores all entities in the simulation.
@@ -78,11 +78,11 @@ public class World {
 
     void initializeZero() {
         fillResourcePool();
-        map = RandomMapGenerator.generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
+        map = generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
     }
 
     public void fillResources() {
-        RandomMapGenerator.fillResources(
+        RandomMapGeneratorKt.fillResources(
                 map,
                 resourcePool,
                 new MapGeneratorSupplement(

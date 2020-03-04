@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static shmp.random.RandomCollectionsKt.*;
 import static shmp.random.RandomProbabilitiesKt.*;
-import static simulation.Controller.*;
+import static simulation.Controller.session;
 
 /**
  * Represents consumable objects found in the world.
@@ -59,10 +59,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 
     Resource(String[] tags, int amount) {
         this(new ResourceCore(tags), amount);
-    }
-
-    public Resource(String[] tags) {
-        this(tags, 100 + session.random.nextInt(10));
     }
 
     public Resource(ResourceCore resourceCore) {
@@ -304,9 +300,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             }
         } else if (getSimpleName().equals("Snow")) {
             if (tile.getType() == Tile.Type.Mountain && testProbability(1, session.random)) {
-//                if ((tile.x + " " + tile.y).equals("21 118")) {
-//                    int i = 0;
-//                }
                 Resource water = session.world.getPoolResource("Water").copy(2);
                 if (tile.getResource(water).getAmount() < 2 && (tile.getNeighboursInRadius(t ->
                         t.getType() == Tile.Type.Mountain &&
@@ -359,7 +352,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 
     public List<Resource> applyAndConsumeAspect(Aspect aspect, int part) {
         Resource _r = getPart(part);
-        int p = part > _r.amount ? _r.amount : part;
+        int p = Math.min(part, _r.amount);
         List<Resource> result = _r.resourceCore.applyAspect(aspect);
         result.forEach(resource -> resource.amount *= p);
         result.forEach(this::movableModificator);

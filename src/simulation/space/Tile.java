@@ -1,6 +1,6 @@
 package simulation.space;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.group.Group;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
@@ -414,12 +414,15 @@ public class Tile {
             if (!resource.isMovable()) {
                 continue;
             }
-            double overallWindLevel = wind.affectedTiles.stream().reduce((double) 0, (x, y) -> x + y.second, Double::sum);
-            for (ShnyPair<Tile, Double> pair : wind.affectedTiles) {
-                int part = (int) (resource.getAmount() * pair.second / overallWindLevel *
-                        Math.min(pair.second * 0.0001 / resource.getGenome().getMass(), 1));
+            double overallWindLevel = wind.affectedTiles.stream()
+                    .map(Pair<Tile, Double>::getSecond)
+                    .reduce(Double::sum)
+                    .orElse(0.0);
+            for (Pair<Tile, Double> pair : wind.affectedTiles) {
+                int part = (int) (resource.getAmount() * pair.getSecond() / overallWindLevel *
+                        Math.min(pair.getSecond() * 0.0001 / resource.getGenome().getMass(), 1));
                 if (part > 0) {
-                    pair.first.addDelayedResource(resource.getCleanPart(part));
+                    pair.getFirst().addDelayedResource(resource.getCleanPart(part));
                 }
             }
         }

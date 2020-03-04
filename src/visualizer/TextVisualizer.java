@@ -592,7 +592,9 @@ public class TextVisualizer implements Visualizer {
                             printMap(tile -> {
                                 String direction;
                                 int level = tile.getWind().getAffectedTiles().stream()
-                                        .reduce(Integer.MIN_VALUE, (x, y) -> Math.max(x, (int) Math.ceil(y.second)), Integer::compareTo);
+                                        .map(p -> (int) Math.ceil(p.getSecond()))
+                                        .reduce(Integer::compareTo)
+                                        .orElse(0);
                                 if (level > 4) {
                                     direction = "\033[41m";
                                 } else if (level > 3) {
@@ -606,15 +608,18 @@ public class TextVisualizer implements Visualizer {
                                 }
                                 if (tile.getWind().getAffectedTiles().size() >= 1) {
                                     Tile affected = tile.getWind().getAffectedTiles().stream()
-                                            .sorted(Comparator.comparingDouble(pair -> -pair.second))
-                                            .collect(Collectors.toList()).get(0).first;
+                                            .sorted(Comparator.comparingDouble(p -> -p.getSecond()))
+                                            .collect(Collectors.toList()).get(0).getFirst();
                                     if (affected.getX() - tile.getX() == 1 && affected.getY() - tile.getY() == 1) {
                                         direction += "J";
-                                    } else if (affected.getX() - tile.getX() == 1 && affected.getY() - tile.getY() == -1) {
+                                    } else if (affected.getX() - tile.getX() == 1
+                                            && affected.getY() - tile.getY() == -1) {
                                         direction += "L";
-                                    } else if (affected.getX() - tile.getX() == -1 && affected.getY() - tile.getY() == 1) {
+                                    } else if (affected.getX() - tile.getX() == -1
+                                            && affected.getY() - tile.getY() == 1) {
                                         direction += "⏋";
-                                    } else if (affected.getX() - tile.getX() == -1 && affected.getY() - tile.getY() == -1) {
+                                    } else if (affected.getX() - tile.getX() == -1
+                                            && affected.getY() - tile.getY() == -1) {
                                         direction += "Г";
                                     } else if (affected.getX() - tile.getX() == 1) {
                                         direction += "V";

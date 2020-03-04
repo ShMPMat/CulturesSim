@@ -9,7 +9,7 @@ import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.AvoidTiles;
 import simulation.space.resource.dependency.ConsumeDependency;
-import simulation.space.resource.dependency.ResourceDependencyDep;
+import simulation.space.resource.dependency.ResourceNeedDependency;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,8 +64,8 @@ public class ResourceCore {
                                 elements[3].equals("1"), Double.parseDouble(elements[1]),
                                 Arrays.asList(elements[0].substring(1).split(","))));
                     } else {
-                        genome.addDependency(new ResourceDependencyDep(
-                                ResourceDependencyDep.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
+                        genome.addDependency(new ResourceNeedDependency(
+                                ResourceNeedDependency.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
                                 Double.parseDouble(elements[2]), elements[3].equals("1"), Arrays.asList(elements[0].substring(1).split(","))));
                     }
                     break;

@@ -1,6 +1,7 @@
 package simulation.space.resource;
 
 import simulation.culture.aspect.AspectTag;
+import simulation.space.SpaceData;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.dependency.TemperatureMax;
@@ -9,7 +10,6 @@ import simulation.space.resource.dependency.TemperatureMin;
 import java.util.ArrayList;
 import java.util.List;
 
-import static simulation.Controller.session;
 
 public class Genome { //TODO make template genome
     /**
@@ -87,7 +87,7 @@ public class Genome { //TODO make template genome
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
-        naturalDensity = (int) Math.ceil(session.tileScale * defaultAmount);
+        naturalDensity = (int) Math.ceil(SpaceData.INSTANCE.getData().getResourceDenseCoefficient() * defaultAmount);
         if (naturalDensity > 1000000000) {
             System.err.println("Very high density in Genome " + name + " - " + naturalDensity);
         }
@@ -254,6 +254,7 @@ public class Genome { //TODO make template genome
 
     /**
      * Adds part to Genome.
+     *
      * @param part Part which will be added. Legacy must by ALREADY inserted inside it.
      */
     void addPart(Resource part) {
@@ -274,7 +275,7 @@ public class Genome { //TODO make template genome
         tags.add(tag);
     }
 
-    public Genome mutate() {
+    public Genome mutate() {//TODO
         if (!isMutable()) {
             System.err.println("Method mutate called from non-mutable genome!");
             return null;
@@ -283,12 +284,12 @@ public class Genome { //TODO make template genome
         genome.setName(name + "_Mutation" + _mutationCount);
         _mutationCount++;
         for (Resource part : parts) {
-            part.amount += session.random.nextInt(2) - 1;
+//            part.amount += session.random.nextInt(2) - 1;//TODO
         }
         return genome;
     }
 
-    public enum Type{
+    public enum Type {
         Plant,
         Animal,
         Mineral,

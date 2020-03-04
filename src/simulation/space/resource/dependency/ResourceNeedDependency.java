@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ResourceDependencyDep implements ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
+public class ResourceNeedDependency implements ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
     private List<String> resourceNames = new ArrayList<>();
     private List<String> materialNames = new ArrayList<>();
     private double amount;
@@ -18,8 +18,8 @@ public class ResourceDependencyDep implements ResourceDependency {//TODO please,
     private Type type;
     public Set<String> lastConsumed = new HashSet<>();
 
-    public ResourceDependencyDep(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
-                                 List<String> names) {
+    public ResourceNeedDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
+                                  List<String> names) {
         for (String name: names) {
             if (name.charAt(0) == '@') {
                 this.materialNames.add(name.substring(1));
