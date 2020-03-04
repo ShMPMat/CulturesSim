@@ -3,7 +3,7 @@ package simulation.culture.group;
 import extra.OutputFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.thinking.meaning.Meme;
@@ -121,8 +121,8 @@ public class GroupConglomerate {
         population = 0;
     }
 
-    private void addDependenciesInMap(Map<AspectTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
-                                      AspectTag requirement) {
+    private void addDependenciesInMap(Map<ResourceTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
+                                      ResourceTag requirement) {
         if (dependencies.isEmpty()) {
             return;
         }

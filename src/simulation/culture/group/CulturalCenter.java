@@ -17,9 +17,9 @@ import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
-import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -151,7 +151,7 @@ public class CulturalCenter {
     }
 
 
-    Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
+    Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
         return aspectCenter.canAddAspect(aspect);
     }
 
@@ -173,16 +173,16 @@ public class CulturalCenter {
         int foodFloor = group.population / group.getFertility() + 1;
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
             pair.first.starve(percent);
-            pair.second.destroyAllResourcesWithTag(new AspectTag("food"));
+            pair.second.destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
         BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
             pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
             pair.first.population = Math.min(pair.first.population, group.getMaxPopulation());
-            pair.second.destroyAllResourcesWithTag(new AspectTag("food"));
+            pair.second.destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
-        requests.add(new TagRequest(group, new AspectTag("food"), foodFloor,
+        requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
                 foodFloor + group.population / 100 + 1, foodPenalty, foodReward));
 
         if (group.getTerritory().getMinTemperature() < 0) {
@@ -193,7 +193,7 @@ public class CulturalCenter {
             BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> {
                 return null;
             };
-            requests.add(new TagRequest(group, new AspectTag("warmth"), group.population,
+            requests.add(new TagRequest(group, new ResourceTag("warmth"), group.population,
                     group.population, warmthPenalty, warmthReward));
         }
 

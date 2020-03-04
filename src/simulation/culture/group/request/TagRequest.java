@@ -1,7 +1,7 @@
 package simulation.culture.group.request;
 
 import extra.ShnyPair;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
@@ -11,15 +11,15 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 
 public class TagRequest extends Request {
-    private AspectTag tag;
+    private ResourceTag tag;
 
-    public TagRequest(Group group, AspectTag tag, int floor, int ceiling, BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> penalty,
-                   BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward) {
+    public TagRequest(Group group, ResourceTag tag, int floor, int ceiling, BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> penalty,
+                      BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward) {
         super(group, floor, ceiling, penalty, reward);
         this.tag = tag;
     }
 
-    private boolean hasTagFrom(Collection<AspectTag> tags) {
+    private boolean hasTagFrom(Collection<ResourceTag> tags) {
         return tags.contains(tag);
     }
 

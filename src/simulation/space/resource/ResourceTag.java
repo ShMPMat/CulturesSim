@@ -1,7 +1,4 @@
-package simulation.culture.aspect;
-
-import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+package simulation.space.resource;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -9,7 +6,7 @@ import java.util.Objects;
 /**
  * Class which represents cultural meaning of an object, material.
  */
-public class AspectTag {
+public class ResourceTag {
     /**
      * Name of the AspectTag
      */
@@ -21,11 +18,11 @@ public class AspectTag {
     /**
      * Whether Resource doesn't waste on use.
      */
-    boolean isInstrumental;
-    boolean isConverseCondition;
+    public boolean isInstrumental;
+    public boolean isConverseCondition;
     public int level;
 
-    public AspectTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition, int level) {
+    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition, int level) {
         this.name = name;
         this.isAbstract = isAbstract;
         this.isInstrumental = isInstrumental;
@@ -33,16 +30,16 @@ public class AspectTag {
         this.level = level;
     }
 
-    public AspectTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition) {
+    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition) {
         this(name, isAbstract, isInstrumental, isConverseCondition, 1);
     }
 
-    public AspectTag(String name) {
+    public ResourceTag(String name) {
         this(name, false, false, false);
     }
 
 
-    public AspectTag(String name, int level) {
+    public ResourceTag(String name, int level) {
         this(name, false, false, false, level);
     }
 
@@ -66,13 +63,13 @@ public class AspectTag {
         return resourceResult;
     }
 
-    public AspectTag copy() {
-        return new AspectTag(name, isAbstract, isInstrumental, isConverseCondition, level);
+    public ResourceTag copy() {
+        return new ResourceTag(name, isAbstract, isInstrumental, isConverseCondition, level);
     }
 
 
-    public static AspectTag phony() {
-        return new AspectTag("phony");
+    public static ResourceTag phony() {
+        return new ResourceTag("phony");
     }
 
     @Override
@@ -84,8 +81,8 @@ public class AspectTag {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AspectTag aspectTag = (AspectTag) o;
-        return name.equals(aspectTag.name);
+        ResourceTag resourceTag = (ResourceTag) o;
+        return name.equals(resourceTag.name);
     }
 
     @Override

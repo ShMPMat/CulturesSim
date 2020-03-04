@@ -7,7 +7,6 @@ import extra.ShnyPair;
 import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
-import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
@@ -17,6 +16,7 @@ import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 import java.util.function.Function;
@@ -294,12 +294,12 @@ public class Group {
 
     void starve(double fraction) {
         decreasePopulation((population / 10) * (1 - fraction) + 1);
-        getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("food")));
+        getCulturalCenter().addAspiration(new Aspiration(10, new ResourceTag("food")));
     }
 
     void freeze(double fraction) {
         decreasePopulation((population / 10) * (1 - fraction) + 1);
-        getCulturalCenter().addAspiration(new Aspiration(10, new AspectTag("warmth")));
+        getCulturalCenter().addAspiration(new Aspiration(10, new ResourceTag("warmth")));
     }
 
     private void decreasePopulation(double amount) {

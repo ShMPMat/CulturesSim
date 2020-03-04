@@ -2,9 +2,9 @@ package simulation.space.resource;
 
 import simulation.World;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectTag;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents material from which objects can be made.
@@ -54,33 +54,32 @@ public class Material {
         _aspectConversion = null;
     }
 
-    public List<AspectTag> getTags(ResourceCore resourceCore) {
+    public List<ResourceTag> getTags(ResourceCore resourceCore) {
         return computeTags(resourceCore);
     }
 
-    private List<AspectTag> computeTags(ResourceCore resourceCore) {//TODO where do I add the goddamn goodForEngraving tag?
-        List<AspectTag> _t = properties.stream().map(Property::getTags).reduce(new ArrayList<>(), (l1, l2) -> {
-            l1.addAll(l2);
-            return l1;
-        });
-        if (!resourceCore.containsTag(new AspectTag("goodForClothes")) &&
+    private List<ResourceTag> computeTags(ResourceCore resourceCore) {//TODO where do I add the goddamn goodForEngraving tag?
+        List<ResourceTag> _t = properties.stream()
+                .flatMap(p -> p.getTags().stream())
+                .collect(Collectors.toList());
+        if (!resourceCore.containsTag(new ResourceTag("goodForClothes")) &&
                 properties.contains(world.getPoolProperty("flexible")) &&
                 properties.contains(world.getPoolProperty("solid")) &&
                 properties.contains(world.getPoolProperty("soft"))) {
-            _t.add(new AspectTag("goodForClothes"));
+            _t.add(new ResourceTag("goodForClothes"));
         }
-        if (!resourceCore.containsTag(new AspectTag("weapon")) &&
+        if (!resourceCore.containsTag(new ResourceTag("weapon")) &&
                 properties.contains(world.getPoolProperty("hard")) &&
                 properties.contains(world.getPoolProperty("sturdy")) &&
                 resourceCore.getSize() >= 0.05 && resourceCore.isMovable()) {
-            _t.add(new AspectTag("weapon"));
+            _t.add(new ResourceTag("weapon"));
         }
-        if (!resourceCore.containsTag(new AspectTag("goodForEngraving")) &&
+        if (!resourceCore.containsTag(new ResourceTag("goodForEngraving")) &&
                 properties.contains(world.getPoolProperty("hard")) &&
                 properties.contains(world.getPoolProperty("sturdy"))) {
-            _t.add(new AspectTag("goodForEngraving"));
+            _t.add(new ResourceTag("goodForEngraving"));
         }
-        properties.forEach(property -> _t.add(new AspectTag(property.getName())));
+        properties.forEach(property -> _t.add(new ResourceTag(property.getName())));
         return _t;
     }
 

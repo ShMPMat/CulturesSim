@@ -1,7 +1,6 @@
 package simulation.space.resource;
 
 import simulation.World;
-import simulation.culture.aspect.AspectTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class Property {
     /**
      * List of AspectTags associated with this Property.
      */
-    private List<AspectTag> tags;
+    private List<ResourceTag> tags;
     /**
      * Level of intensity of this Property.
      * All children Tags will inherit it.
@@ -40,17 +39,17 @@ public class Property {
             } else {
                 switch ((tag.charAt(0))) {
                     case '-':
-                        this.tags.add(new AspectTag(tag.substring(1)));
+                        this.tags.add(new ResourceTag(tag.substring(1)));
                 }
             }
         }
         setAspectLevel();
     }
 
-    private Property(String name, World world, List<AspectTag> tags, int level) {
+    private Property(String name, World world, List<ResourceTag> tags, int level) {
         this.name = name;
         this.world = world;
-        this.tags = tags.stream().map(AspectTag::copy).collect(Collectors.toList());
+        this.tags = tags.stream().map(ResourceTag::copy).collect(Collectors.toList());
         this.level = level;
         setAspectLevel();
     }
@@ -66,7 +65,7 @@ public class Property {
      * Getter for tags.
      * @return AspectTags associated with this Property.
      */
-    public List<AspectTag> getTags() {
+    public List<ResourceTag> getTags() {
         return tags;
     }
 

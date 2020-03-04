@@ -3,8 +3,8 @@ package simulation.culture.aspect;
 import simulation.World;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class Aspect {
      * Map which stores for every requirement some Dependencies, from which
      * we can get get resource for using this aspect.
      */
-    Map<AspectTag, Set<Dependency>> dependencies = new HashMap<>();
+    Map<ResourceTag, Set<Dependency>> dependencies = new HashMap<>();
     /**
      * Coefficient which represents how much this aspect is used by its owner.
      */
@@ -45,7 +45,7 @@ public class Aspect {
      * @param aspectCore   core with common properties.
      * @param dependencies dependencies for all requirements.
      */
-    Aspect(AspectCore aspectCore, Map<AspectTag, Set<Dependency>> dependencies, Group group) {
+    Aspect(AspectCore aspectCore, Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         this.aspectCore = aspectCore;
         this.group = group;
         initDependencies(dependencies);
@@ -57,17 +57,17 @@ public class Aspect {
      * @param tags         tags for common Aspect properties.
      * @param dependencies dependencies for all requirements.
      */
-    public Aspect(String[] tags, Map<AspectTag, Set<Dependency>> dependencies, Group group) {
+    public Aspect(String[] tags, Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         this(new AspectCore(tags), dependencies, group);
     }
 
-    public static Collection<Aspect> getAllAspectsWithTag(AspectTag aspectTag, World world) {
-        return world.aspectPool.stream().filter(aspect -> aspect.getTags().contains(aspectTag))
+    public static Collection<Aspect> getAllAspectsWithTag(ResourceTag resourceTag, World world) {
+        return world.aspectPool.stream().filter(aspect -> aspect.getTags().contains(resourceTag))
                 .collect(Collectors.toList());
     }
 
-    void initDependencies(Map<AspectTag, Set<Dependency>> dependencies) {
-        for (Map.Entry<AspectTag, Set<Dependency>> entry: dependencies.entrySet()) {
+    void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.entrySet()) {
             this.dependencies.put(entry.getKey(),
                     entry.getValue().stream().map(dependency -> dependency.copy(group)).collect(Collectors.toSet()));
         }
@@ -91,7 +91,7 @@ public class Aspect {
      *
      * @return tags of this Aspect.
      */
-    public Collection<AspectTag> getTags() {
+    public Collection<ResourceTag> getTags() {
         return aspectCore.getTags();
     }
 
@@ -100,11 +100,11 @@ public class Aspect {
      *
      * @return requirements for this Aspect.
      */
-    public Collection<AspectTag> getRequirements() {
+    public Collection<ResourceTag> getRequirements() {
         return aspectCore.getRequirements();
     }
 
-    public Collection<AspectTag> getWrapperRequirements() {
+    public Collection<ResourceTag> getWrapperRequirements() {
         return aspectCore.getRequirements().stream().filter(aspectTag -> aspectTag.isConverseCondition)
                 .collect(Collectors.toList());
     }
@@ -118,7 +118,7 @@ public class Aspect {
      *
      * @return dependencies for this Aspect.
      */
-    public Map<AspectTag, Set<Dependency>> getDependencies() {
+    public Map<ResourceTag, Set<Dependency>> getDependencies() {
         return dependencies;
     }
 
@@ -142,7 +142,7 @@ public class Aspect {
         return this instanceof ConverseWrapper && ((ConverseWrapper) this).canInsertMeaning;
     }
 
-    public boolean isDependenciesOk(Map<AspectTag, Set<Dependency>> dependencies) {
+    public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {
         return getRequirements().size() - getWrapperRequirements().size() == dependencies.size();
     }
 
@@ -156,13 +156,13 @@ public class Aspect {
             return;
         }
 
-        for (AspectTag tag : dependencies.keySet()) {
+        for (ResourceTag tag : dependencies.keySet()) {
             dependencies.get(tag).addAll(aspect.dependencies.get(tag));
         }
     }
 
-    public void addOneDependency(Map<AspectTag, Set<Dependency>> newDependencies) {
-        for (AspectTag tag : dependencies.keySet()) {
+    public void addOneDependency(Map<ResourceTag, Set<Dependency>> newDependencies) {
+        for (ResourceTag tag : dependencies.keySet()) {
             try {
                 for (Dependency dependency1 : newDependencies.get(tag)) {
                     if (!dependencies.get(tag).contains(dependency1)) {
@@ -176,7 +176,7 @@ public class Aspect {
         }
     }
 
-    public Aspect copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
+    public Aspect copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         return aspectCore.copy(dependencies, group);
     }
 
@@ -185,7 +185,7 @@ public class Aspect {
         ResourcePack meaningfulPack = new ResourcePack();
         controller.ceiling = group.changeStratumAmountByAspect(this, controller.ceiling);
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
-        for (Map.Entry<AspectTag, Set<Dependency>> entry : getDependencies().entrySet()) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry : getDependencies().entrySet()) {
             Set<Dependency> dependency = entry.getValue();
             ResourcePack usedForDependency = new ResourcePack();
             isFinished = false;
@@ -276,7 +276,7 @@ public class Aspect {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Aspect " + aspectCore.name + ", usefulness - " + usefulness +
                 ", dependencies:");
-        for (Map.Entry<AspectTag, Set<Dependency>> entry : dependencies.entrySet()) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.entrySet()) {
             stringBuilder.append("\n**").append(entry.getKey().name).append(":");
             for (Dependency dependency : entry.getValue()) {
                 stringBuilder.append("\n**").append(dependency.getName());

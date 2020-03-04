@@ -1,10 +1,10 @@
 package simulation.culture.aspect;
 
-import extra.ShnyPair;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,17 +34,17 @@ public class ConverseWrapper extends Aspect {
         for (Resource res : resource.applyAspect(aspect)) {
             aspectCore.addAllTags(res.getTags());
         }
-        getRequirements().add(AspectTag.phony());
+        getRequirements().add(ResourceTag.phony());
         getRequirements().addAll(aspect.getRequirements().stream().filter(tag -> !tag.isConverseCondition)
                 .collect(Collectors.toList()));
     }
 
-    public AspectTag getRequirement() {
-        return AspectTag.phony();
+    public ResourceTag getRequirement() {
+        return ResourceTag.phony();
     }
 
     @Override
-    public Collection<AspectTag> getWrapperRequirements() {
+    public Collection<ResourceTag> getWrapperRequirements() {
         return aspect.getWrapperRequirements();
     }
 
@@ -53,7 +53,7 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public Map<AspectTag, Set<Dependency>> getDependencies() {
+    public Map<ResourceTag, Set<Dependency>> getDependencies() {
         return dependencies;
     }
 
@@ -93,7 +93,7 @@ public class ConverseWrapper extends Aspect {
 //    }
 
     @Override
-    public boolean isDependenciesOk(Map<AspectTag, Set<Dependency>> dependencies) {
+    public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {
         return getRequirements().size() == dependencies.size();
     }
 
@@ -114,11 +114,11 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public ConverseWrapper copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
+    public ConverseWrapper copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         ConverseWrapper copy = new ConverseWrapper(aspect, resource, group);
         copy.initDependencies(dependencies);
         try {
-            copy.canInsertMeaning = dependencies.get(AspectTag.phony()).stream().anyMatch(dependency ->
+            copy.canInsertMeaning = dependencies.get(ResourceTag.phony()).stream().anyMatch(dependency ->
                     dependency instanceof LineDependency &&
                             ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
             return copy;

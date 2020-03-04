@@ -1,6 +1,5 @@
 package simulation.space.resource;
 
-import simulation.culture.aspect.AspectTag;
 import simulation.space.SpaceData;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
@@ -59,7 +58,7 @@ public class Genome { //TODO make template genome
      * From which template Resource was created.
      */
     private ResourceCore templateLegacy;
-    private List<AspectTag> tags = new ArrayList<>();
+    private List<ResourceTag> tags = new ArrayList<>();
 
     private Material primaryMaterial;
     private int _mutationCount = 0;
@@ -206,7 +205,7 @@ public class Genome { //TODO make template genome
         return dependencies;
     }
 
-    public List<AspectTag> getTags() {
+    public List<ResourceTag> getTags() {
         return tags;
     }
 
@@ -271,7 +270,7 @@ public class Genome { //TODO make template genome
         dependencies.add(dependency);
     }
 
-    void addAspectTag(AspectTag tag) {
+    void addAspectTag(ResourceTag tag) {
         tags.add(tag);
     }
 

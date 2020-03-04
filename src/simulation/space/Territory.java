@@ -2,7 +2,7 @@ package simulation.space;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.space.resource.Resource;
 
 import java.util.*;
@@ -62,11 +62,11 @@ public class Territory {
         return new ArrayList<>(goodTiles);
     }
 
-    public List<Resource> getResourcesWithAspectTag(AspectTag aspectTag) {
+    public List<Resource> getResourcesWithAspectTag(ResourceTag resourceTag) {
         List<Resource> resources = new ArrayList<>();
         for (Tile tile : tiles) {
             for (Resource resource : tile.getResources()) {
-                if (resource.getTags().contains(aspectTag) && !resources.contains(resource)) {
+                if (resource.getTags().contains(resourceTag) && !resources.contains(resource)) {
                     resources.add(resource);
                 }
             }
@@ -89,7 +89,7 @@ public class Territory {
         return resources;
     }
 
-    public List<Resource> getResourcesWhichConverseToTag(Aspect aspect, AspectTag tag) {
+    public List<Resource> getResourcesWhichConverseToTag(Aspect aspect, ResourceTag tag) {
         List<Resource> resources = new ArrayList<>();
         for (Resource resource : getDifferentResources()) {
             List<Resource> _l = resource.applyAspect(aspect);

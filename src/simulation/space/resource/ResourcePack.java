@@ -1,7 +1,6 @@
 package simulation.space.resource;
 
 import extra.ShnyPair;
-import simulation.culture.aspect.AspectTag;
 import simulation.space.Tile;
 
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
      * @param tag Tag which will be looked up.
      * @return New ResourcePack with all Resources which contain required Tag.
      */
-    public ResourcePack getAllResourcesWithTag(AspectTag tag) {
+    public ResourcePack getAllResourcesWithTag(ResourceTag tag) {
         return new ResourcePack(resources.stream().filter(resource -> resource.getTags().contains(tag))
                 .collect(Collectors.toList()));
     }
@@ -54,11 +53,11 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         return _r;
     }
 
-    public int getAmountOfResourcesWithTag(AspectTag tag) {
+    public int getAmountOfResourcesWithTag(ResourceTag tag) {
         return getAllResourcesWithTag(tag).getResources().stream().reduce(0, (i, r) -> i + r.amount, Integer::sum);
     }
 
-    public ResourcePack getResourcesWithTagPart(AspectTag tag, int amount) {
+    public ResourcePack getResourcesWithTagPart(ResourceTag tag, int amount) {
         ResourcePack _r = getAllResourcesWithTag(tag);
         ResourcePack result = new ResourcePack();
         int counter = 0;
@@ -94,7 +93,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         return resourcePack;
     }
 
-    public ShnyPair<Integer, List<Resource>> getAmountOfResourcesWithTagAndErase(AspectTag tag, int amount) {
+    public ShnyPair<Integer, List<Resource>> getAmountOfResourcesWithTagAndErase(ResourceTag tag, int amount) {
         Collection<Resource> _r = getAllResourcesWithTag(tag).getResources();
         List<Resource> result = new ArrayList<>();
         int counter = 0;
@@ -181,7 +180,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         resources.forEach(this::remove);
     }
 
-    public void destroyAllResourcesWithTag(AspectTag tag) {
+    public void destroyAllResourcesWithTag(ResourceTag tag) {
         ResourcePack result = getAllResourcesWithTag(tag);
         resources.removeAll(result.resources);
         result.resources.forEach(resource -> resource.amount = 0);

@@ -2,6 +2,7 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 
@@ -16,11 +17,11 @@ class AspectCore {
     /**
      * AspectTags which represent which resources are provided by this Aspect.
      */
-    private List<AspectTag> tags = new ArrayList<>();
+    private List<ResourceTag> tags = new ArrayList<>();
     /**
      * Requirements for an Aspect to be added to the group.
      */
-    private List<AspectTag> requirements = new ArrayList<>();
+    private List<ResourceTag> requirements = new ArrayList<>();
     /**
      * Whether it can apply meaning.
      */
@@ -35,24 +36,24 @@ class AspectCore {
             } else {
                 switch ((tag.charAt(0))) {
                     case '-':
-                        this.tags.add(new AspectTag(tag.substring(1), false, false, false));
+                        this.tags.add(new ResourceTag(tag.substring(1), false, false, false));
                         i++;
                         break;
                     case '+':
-                        this.tags.add(new AspectTag(tag.substring(1), true, false, false));
+                        this.tags.add(new ResourceTag(tag.substring(1), true, false, false));
                         i++;
                         break;
                     case '/':
-                        this.requirements.add(new AspectTag(tag.substring(1), false, false, false));
+                        this.requirements.add(new ResourceTag(tag.substring(1), false, false, false));
                         break;
                     case '*':
-                        this.requirements.add(new AspectTag(tag.substring(1), false, false, true));
+                        this.requirements.add(new ResourceTag(tag.substring(1), false, false, true));
                         break;
                     case '#':
                         if (tag.substring(1).equals("MEANING")) {
                             applyMeaning = true;
                         } else {
-                            this.requirements.add(new AspectTag(tag.substring(1), false, true, false));
+                            this.requirements.add(new ResourceTag(tag.substring(1), false, true, false));
                         }
                         break;
                     case '&':
@@ -68,16 +69,16 @@ class AspectCore {
         return name;
     }
 
-    List<AspectTag> getTags() {
+    List<ResourceTag> getTags() {
         return tags;
     }
 
-    Collection<AspectTag> getRequirements() {
+    Collection<ResourceTag> getRequirements() {
         return requirements;
     }
 
-    void addAllTags(Collection<AspectTag> tags) {
-        for (AspectTag tag : tags) {
+    void addAllTags(Collection<ResourceTag> tags) {
+        for (ResourceTag tag : tags) {
             if (!this.tags.contains(tag)) {
                 this.tags.add(tag);
             } else if (this.tags.get(this.tags.indexOf(tag)).level < tag.level) {
@@ -87,7 +88,7 @@ class AspectCore {
         }
     }
 
-    Aspect copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
+    Aspect copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         return new Aspect(this, dependencies, group);
     }
 }

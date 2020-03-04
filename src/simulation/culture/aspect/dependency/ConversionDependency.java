@@ -3,9 +3,9 @@ package simulation.culture.aspect.dependency;
 import extra.ShnyPair;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -14,7 +14,7 @@ public class ConversionDependency extends AbstractDependency {
     private ShnyPair<Resource, Aspect> conversion;
     private Group group;
 
-    public ConversionDependency(AspectTag tag, Group group, ShnyPair<Resource, Aspect> conversion) {
+    public ConversionDependency(ResourceTag tag, Group group, ShnyPair<Resource, Aspect> conversion) {
         super(tag);
         this.conversion = conversion;
         this.group = group;

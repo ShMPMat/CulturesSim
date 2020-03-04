@@ -1,17 +1,14 @@
 package simulation.culture.group;
 
 import extra.ShnyPair;
-import kotlin.random.Random;
-import kotlin.random.RandomKt;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
-import kotlin.random.RandomKt.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -93,7 +90,7 @@ public class AspectCenter {
                     .findFirst()
                     .orElse(aspect);
         }
-        Map<AspectTag, Set<Dependency>> _m = canAddAspect(aspect);
+        Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
         if (!aspect.isDependenciesOk(_m)) {
             return false;
         }
@@ -103,7 +100,7 @@ public class AspectCenter {
         return true;
     }
 
-    void addAspectNow(Aspect aspect, Map<AspectTag, Set<Dependency>> dependencies) {
+    void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
         Aspect _a = null;
         if (getChangedAspects().contains(aspect)) {
             for (Aspect as : getChangedAspects()) {
@@ -143,13 +140,13 @@ public class AspectCenter {
     }
 
 
-    Map<AspectTag, Set<Dependency>> canAddAspect(Aspect aspect) {
-        Map<AspectTag, Set<Dependency>> dep = new HashMap<>();
+    Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
+        Map<ResourceTag, Set<Dependency>> dep = new HashMap<>();
         if (aspect instanceof ConverseWrapper) {
             addForConverseWrapper((ConverseWrapper) aspect, dep);
         }
-        for (AspectTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals(AspectTag.phony().name) || requirement.isWrapperCondition()) {
+        for (ResourceTag requirement : aspect.getRequirements()) {
+            if (requirement.name.equals(ResourceTag.phony().name) || requirement.isWrapperCondition()) {
                 continue;
             }
             addAspectDependencies(requirement, dep, aspect);
@@ -157,7 +154,7 @@ public class AspectCenter {
         return dep;
     }
 
-    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<AspectTag, Set<Dependency>> dep) {
+    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<ResourceTag, Set<Dependency>> dep) {
         if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
             if (converseWrapper.canTakeResources() && group.getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
                 addDependenciesInMap(dep, Collections.singleton(
@@ -174,7 +171,7 @@ public class AspectCenter {
         }
     }
 
-    private void addResourceDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep) {
+    private void addResourceDependencies(ResourceTag requirement, Map<ResourceTag, Set<Dependency>> dep) {
         List<Resource> _r = group.getTerritory().getResourcesWithAspectTag(requirement);
         if (_r != null) {
             addDependenciesInMap(dep, _r.stream()
@@ -183,7 +180,7 @@ public class AspectCenter {
         }
     }
 
-    private void addAspectDependencies(AspectTag requirement, Map<AspectTag, Set<Dependency>> dep, Aspect aspect) {
+    private void addAspectDependencies(ResourceTag requirement, Map<ResourceTag, Set<Dependency>> dep, Aspect aspect) {
         for (Aspect selfAspect : getAspects()) {
             if (selfAspect.getTags().contains(requirement)) {
                 Dependency dependency = new AspectDependency(requirement, selfAspect);
@@ -201,8 +198,8 @@ public class AspectCenter {
         }
     }
 
-    private void addDependenciesInMap(Map<AspectTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
-                                      AspectTag requirement) {
+    private void addDependenciesInMap(Map<ResourceTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
+                                      ResourceTag requirement) {
         if (dependencies.isEmpty()) {
             return;
         }
@@ -281,7 +278,7 @@ public class AspectCenter {
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
         for (Aspect aspect : session.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
-            Map<AspectTag, Set<Dependency>> _m = canAddAspect(aspect);
+            Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new ShnyPair<>(aspect.copy(_m, group), null));
             }
@@ -292,7 +289,7 @@ public class AspectCenter {
 
         List<Aspect> aspects = group.getCulturalCenter().getNeighboursAspects();
         for (Aspect aspect : aspects) {
-            Map<AspectTag, Set<Dependency>> _m = canAddAspect(aspect);
+            Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
                 aspect = aspect.copy(_m, group);
                 options.add(new ShnyPair<>(aspect, aspect.getGroup()));

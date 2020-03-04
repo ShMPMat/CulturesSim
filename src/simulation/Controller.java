@@ -56,7 +56,6 @@ public class Controller {
     public final int groupTurnsBetweenBorderCheck = 10;
     public final int groupTurnsBetweenAdopts = 10;
 
-    public final double windPropagation = 0.025;
     public final double windFillIn = 0.1;
 
     public static Visualizer visualizer;

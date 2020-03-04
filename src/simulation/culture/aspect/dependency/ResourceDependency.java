@@ -1,12 +1,10 @@
 package simulation.culture.aspect.dependency;
 
-import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.culture.group.Group;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
@@ -16,7 +14,7 @@ public class ResourceDependency extends AbstractDependency {
     private Resource resource;
     private Group group;
 
-    public ResourceDependency(AspectTag tag, Group group, Resource resource) {
+    public ResourceDependency(ResourceTag tag, Group group, Resource resource) {
         super(tag);
         this.resource = resource;
         this.group = group;
@@ -47,7 +45,7 @@ public class ResourceDependency extends AbstractDependency {
         return new AspectResult(resourcePack, null);
     }
 
-    public AspectTag getType() {
+    public ResourceTag getType() {
         return tag;
     }
 

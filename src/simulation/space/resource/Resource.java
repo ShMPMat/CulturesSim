@@ -4,7 +4,6 @@ import extra.SpaceProbabilityFuncs;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
@@ -40,7 +39,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     private int deathTurn = 0;
     /**
      * How many additional years added to this Resource due to bad environment.
-     * Large numbers resources in sooner death.
+     * Large numbers results in sooner death.
      */
     private int deathOverhead = 0;
     /**
@@ -53,8 +52,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         this.amount = amount;
         this.resourceCore = resourceCore;
         computeHash();
-        events.add(new Event(Event.Type.Creation,
-                "Resource was created", "name", getFullName()));
+        events.add(new Event(Event.Type.Creation, "Resource was created", "name", getFullName()));
     }
 
     Resource(String[] tags, int amount) {
@@ -101,11 +99,11 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         return resourceCore.getSpreadProbability();
     }
 
-    public List<AspectTag> getTags() {
+    public List<ResourceTag> getTags() {
         return resourceCore.getTags();
     }
 
-    public int getTagLevel(AspectTag tag) {
+    public int getTagLevel(ResourceTag tag) {
         int index = getTags().indexOf(tag);
         return index == -1 ? 0 : getTags().get(index).level;
     }
@@ -264,9 +262,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                 tile.fixedWater = true;
             } else {
                 tile.fixedWater = false;
-//            if ((tile.x + " " + tile.y).equals("21 118")) {
-//                int i = 0;
-//            }
                 if (tile.getType() != Tile.Type.Water && tile.getNeighbours(t -> t.getType() == Tile.Type.Water).isEmpty()) {
                     List<Tile> tiles = tile.getNeighbours(t -> t.getLevelWithWater() <= tile.getLevelWithWater());
                     List<Tile> tilesWithWater = tiles.stream().filter(t -> t.getResourcesWithMoved().contains(this))
@@ -333,8 +328,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         if (amount > 0) {
             deathPart = (this.amount * deathPart) / (this.amount + amount);
         }
-//        events.add(new Event(Event.Type.Change, "Resource amount increased", "name", getFullName(),
-//                "oldAmount", this.amount, "newAmount", this.amount + amount));
         this.amount += amount;
     }
 
@@ -411,8 +404,8 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
                 (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", natural density - " +
                 getGenome().getNaturalDensity() + ", spread probability - " + getSpreadProbability() + ", mass - " +
                 getGenome().getMass() + ", amount - " + amount + ", tags: ");
-        for (AspectTag aspectTag : resourceCore.getTags()) {
-            stringBuilder.append(aspectTag.name).append(" ");
+        for (ResourceTag resourceTag : resourceCore.getTags()) {
+            stringBuilder.append(resourceTag.name).append(" ");
         }
         return stringBuilder.toString();
     }

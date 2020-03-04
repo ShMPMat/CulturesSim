@@ -4,7 +4,6 @@ import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectMatcher;
 import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.AspectTag;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.AvoidTiles;
@@ -27,7 +26,7 @@ public class ResourceCore {
     private Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion;
     private Map<Aspect, String[]> _aspectConversion;
     private List<String> _parts;
-    private List<AspectTag> tags;
+    private List<ResourceTag> tags;
     private Meme meaning;
 
     ResourceCore(String[] tags) {
@@ -75,7 +74,7 @@ public class ResourceCore {
                     break;
                 case '$':
                     elements = tag.split(":");
-                    genome.addAspectTag(new AspectTag(elements[0].substring(1), Integer.parseInt(elements[1])));
+                    genome.addAspectTag(new ResourceTag(elements[0].substring(1), Integer.parseInt(elements[1])));
                     break;
                 case 'R':
                     genome.setWillResist(true);
@@ -199,12 +198,12 @@ public class ResourceCore {
         if (materials.isEmpty() && !genome.isTemplate()) {
             System.err.println("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()){
-            this.tags.addAll(genome.getTags());
-            this.tags.addAll(materials.get(0).getTags(this));
+            tags.addAll(genome.getTags());
+            tags.addAll(materials.get(0).getTags(this));
         }
     }
 
-    public List<AspectTag> getTags() {
+    public List<ResourceTag> getTags() {
         return tags;
     }
 
@@ -260,7 +259,7 @@ public class ResourceCore {
         return genome.isMovable();
     }
 
-    boolean containsTag(AspectTag tag) {
+    boolean containsTag(ResourceTag tag) {
         return tags.contains(tag);
     }
 
@@ -318,7 +317,7 @@ public class ResourceCore {
                 result.node.aspect.getName());
         if (result.node.resourceUsed.size() > 1) {
             List<String> names = result.node.resourceUsed.entrySet().stream()
-                    .filter(entry -> !entry.getKey().name.equals(AspectTag.phony().name))
+                    .filter(entry -> !entry.getKey().name.equals(ResourceTag.phony().name))
                     .flatMap(entry -> entry.getValue().resources.stream().map(Resource::getFullName)).distinct()
                     .collect(Collectors.toList());
             meaningPostfix.append("(");

@@ -1,11 +1,9 @@
 package simulation.culture.group;
 
-import extra.ShnyPair;
-import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
@@ -29,7 +27,7 @@ public class Stratum {
      */
     private int usedAmount = 0;
     private List<Aspect> aspects = new ArrayList<>();
-    private Map<AspectTag, ResourcePack> dependencies = new HashMap<>();
+    private Map<ResourceTag, ResourcePack> dependencies = new HashMap<>();
     private Group group;
 
     public Stratum(int amount, Group group) {
@@ -47,7 +45,7 @@ public class Stratum {
         });
     }
 
-    public ResourcePack getInstrumentByTag(AspectTag tag) {
+    public ResourcePack getInstrumentByTag(ResourceTag tag) {
         ResourcePack resourcePack = dependencies.get(tag);
         return resourcePack == null ? new ResourcePack() : resourcePack;
     }
@@ -100,7 +98,7 @@ public class Stratum {
         if (session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
-        for (Map.Entry<AspectTag, ResourcePack> entry: dependencies.entrySet()) {
+        for (Map.Entry<ResourceTag, ResourcePack> entry: dependencies.entrySet()) {
             int currentAmount = entry.getValue().getAmount();
             if (currentAmount >= amount) {
                 continue;

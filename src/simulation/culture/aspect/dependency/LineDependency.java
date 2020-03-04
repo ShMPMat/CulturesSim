@@ -5,6 +5,7 @@ import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ public class LineDependency extends AbstractDependency {
     private Group group;
     private ShnyPair<ConverseWrapper, ConverseWrapper> line;
 
-    public LineDependency(AspectTag tag, Group group, ShnyPair<ConverseWrapper, ConverseWrapper> line) {
+    public LineDependency(ResourceTag tag, Group group, ShnyPair<ConverseWrapper, ConverseWrapper> line) {
         super(tag);
         this.group = group;
         this.line = line;
@@ -75,7 +76,7 @@ public class LineDependency extends AbstractDependency {
     }
 
     private boolean foodForInsertMeaning() {
-        return !tag.equals(AspectTag.phony()) || getNextWrapper().canInsertMeaning;
+        return !tag.equals(ResourceTag.phony()) || getNextWrapper().canInsertMeaning;
     }
 
     public ConverseWrapper getNextWrapper() {

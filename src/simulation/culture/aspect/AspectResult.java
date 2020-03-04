@@ -1,10 +1,9 @@
 package simulation.culture.aspect;
 
-import simulation.culture.aspect.dependency.Dependency;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AspectResult {
@@ -28,7 +27,7 @@ public class AspectResult {
 
     public static class ResultNode {
         public Aspect aspect;
-        public Map<AspectTag, ResourcePack> resourceUsed = new HashMap<>();
+        public Map<ResourceTag, ResourcePack> resourceUsed = new HashMap<>();
 
         public ResultNode(Aspect aspect) {
             this.aspect = aspect;

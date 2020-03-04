@@ -2,8 +2,8 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,13 +46,13 @@ public class MeaningInserter extends ConverseWrapper {
 //    }
 
     @Override
-    public MeaningInserter copy(Map<AspectTag, Set<Dependency>> dependencies, Group group) {
+    public MeaningInserter copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         MeaningInserter copy = new MeaningInserter(aspect, resource, group);
         copy.initDependencies(dependencies);
-        Collection<AspectTag> unwantedTags = new ArrayList<>();
-        for (AspectTag aspectTag : dependencies.keySet()) {
-            if (!(aspectTag.isInstrumental || aspectTag.name.equals("phony"))) {
-                unwantedTags.add(aspectTag);
+        Collection<ResourceTag> unwantedTags = new ArrayList<>();
+        for (ResourceTag resourceTag : dependencies.keySet()) {
+            if (!(resourceTag.isInstrumental || resourceTag.name.equals("phony"))) {
+                unwantedTags.add(resourceTag);
             }
         }
         unwantedTags.forEach(dependencies::remove);

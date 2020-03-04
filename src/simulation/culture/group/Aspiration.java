@@ -1,7 +1,7 @@
 package simulation.culture.group;
 
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.space.resource.Resource;
 
@@ -12,10 +12,10 @@ import java.util.Objects;
  */
 public class Aspiration {
     int level;
-    private AspectTag need;
+    private ResourceTag need;
     private Resource resource;
 
-    public Aspiration(int level, AspectTag need) {
+    public Aspiration(int level, ResourceTag need) {
         this.level = level;
         this.need = need;
         resource = null;

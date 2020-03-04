@@ -440,7 +440,7 @@ public class Tile {
 
     private void propagateWindStraight(Tile target, Tile tile) {
         if (tile != null && target != null) {
-            double level = tile.wind.getPureLevelByTile(this) - session.windPropagation;
+            double level = tile.wind.getPureLevelByTile(this) - SpaceData.INSTANCE.getData().getWindPropagation();
             if (level > 0) {
                 _newWind.changeLevelOnTile(target, level);
             }

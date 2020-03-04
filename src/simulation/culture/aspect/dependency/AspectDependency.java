@@ -1,10 +1,9 @@
 package simulation.culture.aspect.dependency;
 
-import extra.ShnyPair;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.ResourceTag;
 
 import java.util.Objects;
 
@@ -12,7 +11,7 @@ public class AspectDependency extends AbstractDependency {
     static int debug = 0;
     private Aspect aspect;
 
-    public AspectDependency(AspectTag tag, Aspect aspect) {
+    public AspectDependency(ResourceTag tag, Aspect aspect) {
         super(tag);
         this.aspect = aspect;
     }

@@ -1,13 +1,13 @@
 package simulation.culture.aspect.dependency;
 
-import simulation.culture.aspect.AspectTag;
+import simulation.space.resource.ResourceTag;
 
 import java.util.Objects;
 
 abstract class AbstractDependency implements Dependency {
-    protected AspectTag tag;
+    protected ResourceTag tag;
 
-    AbstractDependency(AspectTag tag) {
+    AbstractDependency(ResourceTag tag) {
         this.tag = tag;
     }
 
@@ -17,7 +17,7 @@ abstract class AbstractDependency implements Dependency {
     }
 
     @Override
-    public AspectTag getType() {
+    public ResourceTag getType() {
         return tag;
     }
 
