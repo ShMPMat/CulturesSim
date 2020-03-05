@@ -34,7 +34,7 @@ public class ResourceCore {
                 new Genome(tags[0], Genome.Type.valueOf(tags[11]), Double.parseDouble(tags[2]),
                         Double.parseDouble(tags[1]), Integer.parseInt(tags[4]), Integer.parseInt(tags[5]),
                         Integer.parseInt(tags[7]), tags[9].equals("1"), false, tags[8].equals("1"),
-                        false, tags[9].equals("1"), Integer.parseInt(tags[3]), Integer.parseInt(tags[6]),
+                        tags[9].equals("1"), Integer.parseInt(tags[3]), Integer.parseInt(tags[6]),
                         null, null, null),
                 new HashMap<>(), null);
         String[] elements;
@@ -47,7 +47,7 @@ public class ResourceCore {
                     break;
                 case '@':
                     if (tag.substring(1).equals("TEMPLATE")) {
-                        genome.setTemplate(true);
+                        genome = new GenomeTemplate(genome);
                         break;
                     }
                     materials.add(session.world.getPoolMaterial(tag.substring(1)));
@@ -195,8 +195,9 @@ public class ResourceCore {
     }
 
     private void computeMaterials() {
-        if (materials.isEmpty() && !genome.isTemplate()) {
+        if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {//TODO it happens in initialization
             System.err.println("Resource " + genome.getName() + " has no materials.");
+//            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()){
             tags.addAll(genome.getTags());
             tags.addAll(materials.get(0).getTags(this));
@@ -293,7 +294,7 @@ public class ResourceCore {
         return new Resource(this);
     }
 
-    Resource copyWithLegacyInsertion(ResourceCore creator) {
+    Resource copyWithLegacyInsertion(ResourceCore creator) {//TODO WHAT IS IT?
         Resource resource = new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
                 new Genome(genome), aspectConversion, meaning));
         resource.resourceCore._aspectConversion = _aspectConversion;
@@ -306,8 +307,22 @@ public class ResourceCore {
     }
 
     Resource fullCopy() {
+        if (genome instanceof GenomeTemplate) {
+            throw new ExceptionInInitializerError("Cant make a full copy of a template");//TODO normal exception
+        }
         return new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
                 new Genome(genome), aspectConversion, meaning));
+    }
+
+    private ResourceCore instantiateTemplateCopy(ResourceCore legacy) {
+        if (!(genome instanceof GenomeTemplate)) {
+            throw new ExceptionInInitializerError("Cant make a instantiated copy not from a template");//TODO normal exception
+        }
+        ResourceCore resourceCore = new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(legacy.materials),
+                ((GenomeTemplate) genome).getInstantiatedGenome(legacy), aspectConversion, meaning);
+        resourceCore.materials.addAll(legacy.materials);
+        resourceCore.computeMaterials();
+        return resourceCore;
     }
 
     public ResourceCore insertMeaning(Meme meaning, AspectResult result) {
@@ -334,16 +349,12 @@ public class ResourceCore {
 
     List<Resource> applyAspect(Aspect aspect) {
         if (aspectConversion.containsKey(aspect)) {
-            List<Resource> resourceList = aspectConversion.get(aspect).stream().map(pair -> pair.first.copy(pair.second))
-                    .collect(Collectors.toList());
+            List<Resource> resourceList = aspectConversion.get(aspect).stream()
+                    .map(pair -> pair.first.copy(pair.second))
+                    .collect(Collectors.toList());//TODO throw an exception on any attempt to copy template
             resourceList.forEach(resource -> {
-                if (resource.resourceCore.genome.isTemplate()) {//TODO links
-                    resource.resourceCore = resource.resourceCore.fullCopy().resourceCore;
-                    resource.resourceCore.materials.addAll(materials);
-                    resource.resourceCore.computeMaterials();
-                    //resource.resourceCore.setName(resource.resourceCore.name + name + resource.resourceCore.meaningPostfix,
-                      //      resource.resourceCore);
-                    resource.getGenome().setTemplateLegacy(this);
+                if (resource.resourceCore.genome instanceof GenomeTemplate) {//TODO links
+                    resource.resourceCore = resource.resourceCore.instantiateTemplateCopy(this);
                     resource.computeHash();
                 }
             });

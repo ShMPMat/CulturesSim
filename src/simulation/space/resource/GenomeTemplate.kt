@@ -1,6 +1,6 @@
 package simulation.space.resource
 
-class GenomeTemplate internal constructor(genome: Genome?) : Genome(genome) {
+class GenomeTemplate(genome: Genome) : Genome(genome) {
     fun getInstantiatedGenome(templateLegacy: ResourceCore): Genome {
         val genome = Genome(this)
         genome.deathTime = templateLegacy.deathTime

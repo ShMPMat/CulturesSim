@@ -41,15 +41,11 @@ public class Genome { //TODO make template genome
     private double spreadProbability;
 
     private boolean isMovable;
-    /**
-     * Whether it is a template genome.
-     */
-    private boolean isTemplate;
     private boolean hasLegacy;
     /**
      * How many turns does the Resource live.
      */
-    private int deathTime;
+    protected int deathTime;
     private int defaultAmount;
     private int temperatureMin;
     private int temperatureMax;
@@ -57,7 +53,7 @@ public class Genome { //TODO make template genome
     /**
      * From which template Resource was created.
      */
-    private ResourceCore templateLegacy;
+    protected ResourceCore templateLegacy;
     private List<ResourceTag> tags = new ArrayList<>();
 
     private Material primaryMaterial;
@@ -65,7 +61,7 @@ public class Genome { //TODO make template genome
     private int baseDesirability;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
-           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean isTemplate,
+           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable,
            boolean hasLegacy, int deathTime, int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy,
            Material primaryMaterial) {
         this.name = name;
@@ -82,7 +78,6 @@ public class Genome { //TODO make template genome
         this.canMove = canMove;
         this.isMutable = isMutable;
         this.isMovable = isMovable;
-        this.isTemplate = isTemplate;
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
@@ -96,7 +91,7 @@ public class Genome { //TODO make template genome
 
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
-                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.isTemplate,
+                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable,
                 genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
                 genome.primaryMaterial);
         genome.parts.forEach(this::addPart);
@@ -165,13 +160,6 @@ public class Genome { //TODO make template genome
         this.legacy = legacy;
     }
 
-    public void setTemplateLegacy(ResourceCore templateLegacy) {
-        setTemplate(false);
-        this.deathTime = templateLegacy.getDeathTime();
-        this.templateLegacy = templateLegacy;
-        setPrimaryMaterial(templateLegacy.getGenome().primaryMaterial);
-    }
-
     public int getTemperatureMin() {
         return temperatureMin;
     }
@@ -223,10 +211,6 @@ public class Genome { //TODO make template genome
         return isMovable;
     }
 
-    boolean isTemplate() {
-        return isTemplate;
-    }
-
     boolean isMutable() {
         return isMutable;
     }
@@ -237,10 +221,6 @@ public class Genome { //TODO make template genome
 
     boolean hasLegacy() {
         return hasLegacy;
-    }
-
-    void setTemplate(boolean template) {
-        isTemplate = template;
     }
 
     public void setPrimaryMaterial(Material primaryMaterial) {
