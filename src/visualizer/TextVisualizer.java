@@ -662,10 +662,10 @@ public class TextVisualizer implements Visualizer {
                             printMap(tile -> tile.fixedWater ? "\033[41mX" : "");
                             break;
                         case Resource:
-                            Resource resource = world.getPoolResource(line.substring(2));
-                            if (resource != null) {
+                            try {
+                                Resource resource = world.getPoolResource(line.substring(2));
                                 printResource(resource);
-                            } else {
+                            } catch (NoSuchElementException e) {
                                 Optional<Resource> _oo = resourceSymbols.entrySet().stream()
                                         .filter(entry -> entry.getValue().equals(line.substring(2)))
                                         .map(Map.Entry::getKey).findFirst();

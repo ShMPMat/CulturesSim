@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Genome { //TODO make template genome
-    /**
-     * Base name of the Resource.
-     */
+public class Genome {
     private String name;
     /**
      * Type of the Resource.
@@ -27,7 +24,7 @@ public class Genome { //TODO make template genome
      * Whether it can move at its will.
      */
     private boolean canMove;
-    private boolean willResist = false;
+    private boolean willResist;
     /**
      * Size of the Resource.
      */
@@ -37,14 +34,11 @@ public class Genome { //TODO make template genome
      * Parts from which Resource consists.
      */
     private List<Resource> parts = new ArrayList<>();
-    private List<ResourceDependency> dependencies = new ArrayList<>();
+    private List<ResourceDependency> dependencies;
     private double spreadProbability;
 
     private boolean isMovable;
     private boolean hasLegacy;
-    /**
-     * How many turns does the Resource live.
-     */
     protected int deathTime;
     private int defaultAmount;
     private int temperatureMin;
@@ -61,8 +55,9 @@ public class Genome { //TODO make template genome
     private int baseDesirability;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
-           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable,
+           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean willResist,
            boolean hasLegacy, int deathTime, int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy,
+           List<ResourceDependency> dependencies,
            Material primaryMaterial) {
         this.name = name;
         this.type = type;
@@ -70,14 +65,16 @@ public class Genome { //TODO make template genome
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
         this.temperatureMax = temperatureMax;
-        dependencies.add(new TemperatureMin(temperatureMin, 2));
-        dependencies.add(new TemperatureMax(temperatureMax, 2));
+        this.dependencies = new ArrayList<>(dependencies);
+        this.dependencies.add(new TemperatureMin(temperatureMin, 2));
+        this.dependencies.add(new TemperatureMax(temperatureMax, 2));
         setLegacy(legacy);
         this.templateLegacy = templateLegacy;
         this.size = size;
         this.canMove = canMove;
         this.isMutable = isMutable;
         this.isMovable = isMovable;
+        this.willResist = willResist;
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
@@ -91,11 +88,12 @@ public class Genome { //TODO make template genome
 
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
-                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable,
+                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.willResist,
                 genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
+                genome.dependencies,
                 genome.primaryMaterial);
         genome.parts.forEach(this::addPart);
-        genome.tags.forEach(this::addAspectTag);
+        genome.tags.forEach(this::addResourceTag);
     }
 
     private void computePrimaryMaterial() {
@@ -250,22 +248,8 @@ public class Genome { //TODO make template genome
         dependencies.add(dependency);
     }
 
-    void addAspectTag(ResourceTag tag) {
+    void addResourceTag(ResourceTag tag) {
         tags.add(tag);
-    }
-
-    public Genome mutate() {//TODO
-        if (!isMutable()) {
-            System.err.println("Method mutate called from non-mutable genome!");
-            return null;
-        }
-        Genome genome = new Genome(this);
-        genome.setName(name + "_Mutation" + _mutationCount);
-        _mutationCount++;
-        for (Resource part : parts) {
-//            part.amount += session.random.nextInt(2) - 1;//TODO
-        }
-        return genome;
     }
 
     public enum Type {
