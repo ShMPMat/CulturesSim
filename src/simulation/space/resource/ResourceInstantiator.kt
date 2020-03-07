@@ -4,6 +4,7 @@ import extra.InputDatabase
 import extra.ShnyPair
 import simulation.Controller
 import simulation.culture.aspect.Aspect
+import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
 import simulation.space.Tile
 import simulation.space.resource.dependency.AvoidTiles
@@ -13,7 +14,7 @@ import simulation.space.resource.dependency.ResourceNeedDependency
 import java.util.*
 import java.util.stream.Collectors
 
-fun createPool(path: String): ResourcePool {
+fun createPool(path: String, aspectPool: AspectPool): ResourcePool {
     val resourceIdeals = ArrayList<ResourceTemplate>()
     val inputDatabase = InputDatabase(path)
     var line: String?
@@ -21,15 +22,15 @@ fun createPool(path: String): ResourcePool {
     while (true) {
         line = inputDatabase.readLine() ?: break
         tags = line.split("\\s+".toRegex()).toTypedArray()
-        resourceIdeals.add(createResource(tags))
+        resourceIdeals.add(createResource(tags, aspectPool))
     }
-    val pool = ResourcePool(resourceIdeals.map { it.resourceIdeal })
-    resourceIdeals.forEach { actualizeLinks(it, pool, Controller.session.world.aspectPool) }//TODO remove all Controller calls
-    resourceIdeals.forEach { actualizeParts(it, pool) }
-    return pool
+    val resourcePool = ResourcePool(resourceIdeals.map { it.resourceIdeal })
+    resourceIdeals.forEach { actualizeLinks(it, resourcePool, aspectPool) }//TODO remove all Controller calls
+    resourceIdeals.forEach { actualizeParts(it, resourcePool, aspectPool) }
+    return resourcePool
 }
 
-private fun createResource(tags: Array<String>): ResourceTemplate {
+private fun createResource(tags: Array<String>, aspectPool: AspectPool): ResourceTemplate {
     val name = tags.getOrNull(0) ?: throw SpaceError("Tags for Resource are empty")
     var willResist = false
     var isTemplate = false
@@ -45,7 +46,7 @@ private fun createResource(tags: Array<String>): ResourceTemplate {
         val key = tags[i][0]
         val tag = tags[i].substring(1)
         when (key) {
-            '+' -> aspectConversion[Controller.session.world.getPoolAspect(tag.substring(0, tag.indexOf(':')))] =
+            '+' -> aspectConversion[aspectPool.get(tag.substring(0, tag.indexOf(':')))] =
                     tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
             '@' -> {
                 if (tag == "TEMPLATE") {
@@ -120,7 +121,7 @@ private fun createResource(tags: Array<String>): ResourceTemplate {
     return ResourceTemplate(ResourceIdeal(resourceCore), mutableMapOf(), mutableListOf())
 }
 
-fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool, aspectPool: List<Aspect>) {
+fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool, aspectPool: AspectPool) {
     val (resource, aspectConversion, _) = template
     for (aspect in aspectConversion.keys) {
         resource.resourceCore.aspectConversion.put(
@@ -136,7 +137,7 @@ fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool, aspec
         return
     }
     val material: Material = resource.resourceCore.mainMaterial
-    for (aspect in aspectPool) {//TODO why is it here?
+    for (aspect in aspectPool.getAll()) {//TODO why is it here?
         for (matcher in aspect.matchers) {
             if (matcher.match(resource.resourceCore)) {
                 resource.resourceCore.addAspectConversion(
@@ -148,10 +149,10 @@ fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool, aspec
     }
 }
 
-fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool) {
+fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool, aspectPool: AspectPool) {
     val (resource, aspectConversion, parts) = template
     for (part in parts) {
-        var partResource = resourcePool.getResource(part.split(":".toRegex()).toTypedArray()[0])
+        var partResource = resourcePool.get(part.split(":".toRegex()).toTypedArray()[0])
         partResource = if (partResource.resourceCore.genome.hasLegacy())//TODO seems strange
             partResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
         else
@@ -160,11 +161,11 @@ fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool) {
         resource.resourceCore.genome.addPart(partResource)
     }
     if (resource.resourceCore.genome.parts.isNotEmpty()
-            && !aspectConversion.containsKey(Controller.session.world.getPoolAspect("TakeApart"))) {//TODO aspects shouldn't be here I recon
+            && !aspectConversion.containsKey(aspectPool.get("TakeApart"))) {//TODO aspects shouldn't be here I recon
         val resourceList: MutableList<ShnyPair<Resource, Int>> = ArrayList()
         for (partResource in resource.resourceCore.genome.getParts()) {
             resourceList.add(ShnyPair(partResource, partResource.amount))
-            resource.resourceCore.aspectConversion[Controller.session.world.getPoolAspect("TakeApart")] = resourceList
+            resource.resourceCore.aspectConversion[aspectPool.get("TakeApart")] = resourceList
         }
     }
 }

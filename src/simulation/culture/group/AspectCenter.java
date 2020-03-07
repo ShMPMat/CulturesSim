@@ -229,12 +229,12 @@ public class AspectCenter {
             List<Aspect> options = new ArrayList<>();
             if (session.independentCvSimpleAspectAdding) {
                 if (testProbability(0.1, session.random)) {
-                    options.addAll(session.world.aspectPool);
+                    options.addAll(session.world.getAspectPool().getAll());
                 } else {
                     options.addAll(getAllPossibleConverseWrappers());
                 }
             } else {
-                options.addAll(session.world.aspectPool);
+                options.addAll(session.world.getAspectPool().getAll());
                 options.addAll(getAllPossibleConverseWrappers());
             }
 

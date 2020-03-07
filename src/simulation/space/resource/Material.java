@@ -37,7 +37,7 @@ public class Material {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
                 case '+':
-                    this._aspectConversion.put(world.getPoolAspect(tag.substring(1, tag.indexOf(':'))),
+                    this._aspectConversion.put(world.getAspectPool().get(tag.substring(1, tag.indexOf(':'))),
                             tag.substring(tag.indexOf(':') + 1));
                     break;
                 case '-':

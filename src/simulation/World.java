@@ -5,6 +5,7 @@ import extra.SpaceProbabilityFuncs;
 import kotlin.ranges.IntRange;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectPool;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
@@ -12,7 +13,7 @@ import simulation.space.resource.*;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
-import simulation.space.generator.RandomMapGeneratorKt;
+import simulation.space.generator.MapGeneratorKt;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,20 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import static simulation.Controller.*;
-import static simulation.space.generator.RandomMapGeneratorKt.generateMap;
+import static simulation.space.generator.MapGeneratorKt.generateMap;
 
 /**
  * Class which stores all entities in the simulation.
  */
 public class World {
-    /**
-     * List of all Groups in the world, which are not groups.
-     */
     public List<GroupConglomerate> groups = new ArrayList<>();
-    /**
-     * List of all Aspects in the world.
-     */
-    public List<Aspect> aspectPool = new ArrayList<>();
+    private AspectPool aspectPool;
     /**
      * List of all Resources in the world.
      */
@@ -72,12 +67,12 @@ public class World {
     }
 
     void initializeZero() {
-        resourcePool = ResourceInstantiatorKt.createPool("SupplementFiles/Resources");
+        resourcePool = ResourceInstantiatorKt.createPool("SupplementFiles/Resources", aspectPool);
         map = generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
     }
 
     public void fillResources() {
-        RandomMapGeneratorKt.fillResources(
+        MapGeneratorKt.fillResources(
                 map,
                 resourcePool,
                 new MapGeneratorSupplement(
@@ -90,8 +85,12 @@ public class World {
         for (int i = 0; i < session.startGroupAmount; i++) {
             groups.add(new GroupConglomerate(1, getTileForGroup()));
         }
-        groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("TakeApart"))));
-        groups.forEach(group -> group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(getPoolAspect("Take"))));
+        groups.forEach(group ->
+                group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(aspectPool.get("TakeApart")))
+        );
+        groups.forEach(group ->
+                group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(aspectPool.get("Take")))
+        );
         groups.forEach(GroupConglomerate::finishUpdate);
     }
 
@@ -157,6 +156,7 @@ public class World {
      * Reads all Aspects from supplement file and fills aspectPool with them.
      */
     private void fillAspectPool() {
+        List<Aspect> aspects = new ArrayList<>();
         InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Aspects");
         String line;
         String[] tags;
@@ -166,8 +166,9 @@ public class World {
                 break;
             }
             tags = line.split("\\s+");
-            aspectPool.add(new Aspect(tags, new HashMap<>(), null));
+            aspects.add(new Aspect(tags, new HashMap<>(), null));
         }
+        aspectPool = new AspectPool(aspects);
     }
 
     private boolean isLineBad(String line) {
@@ -187,21 +188,8 @@ public class World {
         return turn;
     }
 
-    /**
-     * Returns Aspect by name.
-     *
-     * @param name name of the Aspect.
-     * @return Aspect with this name. If there is no such Aspect in the aspectPool
-     * returns null and prints a warning.
-     */
-    public Aspect getPoolAspect(String name) {
-        for (Aspect aspect : aspectPool) {
-            if (aspect.getName().equals(name)) {
-                return aspect;
-            }
-        }
-        System.err.println("Unrecognized Aspect request - " + name);
-        return null;
+    public AspectPool getAspectPool() {
+        return aspectPool;
     }
 
     /**
@@ -229,11 +217,11 @@ public class World {
      * returns null and prints a warning.
      */
     public Resource getPoolResource(String name) {
-        return resourcePool.getResource(name);
+        return resourcePool.get(name);
     }
 
     public List<Resource> getAllResources() {
-        return resourcePool.getResourcesWithPredicate(t -> true);
+        return resourcePool.getWithPredicate(t -> true);
     }
 
     /**
@@ -269,7 +257,7 @@ public class World {
     }
 
     public Collection<Aspect> getAllDefaultAspects() {
-        return aspectPool;
+        return aspectPool.getAll();
     }
 
     /**

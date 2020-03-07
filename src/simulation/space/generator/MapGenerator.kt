@@ -33,7 +33,7 @@ fun fillResources(
         supplement: MapGeneratorSupplement,
         random: Random
 ) {
-    for (resource in resourcePool.getResourcesWithPredicate {
+    for (resource in resourcePool.getWithPredicate {
         it.spreadProbability != 0.0
                 || it.genome.type == Genome.Type.Mineral
     }) {
@@ -153,14 +153,14 @@ private fun addDependencies(resource: Resource, tile: Tile, resourcePool: Resour
         }
         if (dependency is ResourceNeedDependency) {
             for (name in dependency.resourceNames) {
-                val dep = resourcePool.getResource(name)
+                val dep = resourcePool.get(name)
                 if (dep.genome.isAcceptable(tile)) {
                     tile.addDelayedResource(dep)
                 }
                 addDependencies(dep, tile, resourcePool)
             }
             for (name in dependency.materialNames) {
-                for (dep in resourcePool.getResourcesWithPredicate {
+                for (dep in resourcePool.getWithPredicate {
                     it.spreadProbability > 0
                             && it.simpleName != resource.simpleName
                             && it.genome.primaryMaterial != null

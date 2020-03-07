@@ -73,6 +73,6 @@ public class AspectMatcher {
 
     public List<ShnyPair<Resource, Integer>> getResults(Resource resource, ResourcePool resourcePool) {
         return results.stream().map(pair -> new ShnyPair<>(pair.first.equals("MATCHED") ?
-                resource : resourcePool.getResource(pair.first), pair.second)).collect(Collectors.toList());
+                resource : resourcePool.get(pair.first), pair.second)).collect(Collectors.toList());
     }
 }

@@ -69,7 +69,7 @@ public class ResourceCore {
             return;
         }
         Material material = getMainMaterial();
-        for (Aspect aspect : session.world.aspectPool) {
+        for (Aspect aspect : session.world.getAspectPool().getAll()) {
             for (AspectMatcher matcher : aspect.getMatchers()) {
                 if (matcher.match(this)) {
                     addAspectConversion(aspect.getName(), matcher.getResults(copy(), resourcePool));
@@ -79,7 +79,7 @@ public class ResourceCore {
     }
 
     public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) {
-        aspectConversion.put(session.world.getPoolAspect(aspectName), resourceList);
+        aspectConversion.put(session.world.getAspectPool().get(aspectName), resourceList);
     }
 
     ShnyPair<Resource, Integer> readConversion(String s, ResourcePool resourcePool) {
@@ -95,7 +95,7 @@ public class ResourceCore {
                             : resource,
                     Integer.parseInt(s.split(":")[1]));
         }
-        Resource resource = resourcePool.getResource(s.split(":")[0]);
+        Resource resource = resourcePool.get(s.split(":")[0]);
         ShnyPair<Resource, Integer> pair = new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
                 resource.resourceCore.copyWithLegacyInsertion(this, resourcePool) : resource,
                 Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;

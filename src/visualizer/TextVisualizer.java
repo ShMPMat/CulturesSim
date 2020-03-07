@@ -484,7 +484,7 @@ public class TextVisualizer implements Visualizer {
                 System.err.println("Cannot add aspect to the group");
                 return;
             }
-            Aspect a = world.getPoolAspect(aspectName.split("On")[0]);
+            Aspect a = world.getAspectPool().get(aspectName.split("On")[0]);
             if (a == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;
@@ -495,7 +495,7 @@ public class TextVisualizer implements Visualizer {
                 aspect = new ConverseWrapper(a, resource, group);
             }
         } else {
-            aspect = world.getPoolAspect(aspectName);
+            aspect = world.getAspectPool().get(aspectName);
             if (aspect == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;

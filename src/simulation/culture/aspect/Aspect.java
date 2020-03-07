@@ -61,11 +61,6 @@ public class Aspect {
         this(new AspectCore(tags), dependencies, group);
     }
 
-    public static Collection<Aspect> getAllAspectsWithTag(ResourceTag resourceTag, World world) {
-        return world.aspectPool.stream().filter(aspect -> aspect.getTags().contains(resourceTag))
-                .collect(Collectors.toList());
-    }
-
     void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies) {
         for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.entrySet()) {
             this.dependencies.put(entry.getKey(),

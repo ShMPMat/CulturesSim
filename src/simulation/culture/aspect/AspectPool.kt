@@ -1,7 +1,7 @@
 package simulation.culture.aspect
 
 class AspectPool(private val aspects: List<Aspect>) {
-    fun getResource(name: String): Aspect {
+    fun get(name: String): Aspect {
         for (aspect in aspects) {
             if (aspect.name == name) {
                 return aspect
@@ -10,8 +10,8 @@ class AspectPool(private val aspects: List<Aspect>) {
         throw NoSuchElementException("No aspect with name $name")
     }
 
-    fun getResourcesWithPredicate(predicate: (Aspect) -> Boolean): List<Aspect> = aspects
+    fun getWithPredicate(predicate: (Aspect) -> Boolean): List<Aspect> = aspects
             .filter(predicate)
 
-    fun getResources(): List<Aspect> = aspects
+    fun getAll(): List<Aspect> = aspects
 }
