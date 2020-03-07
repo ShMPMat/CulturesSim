@@ -118,9 +118,8 @@ public class ResourceCore {
     }
 
     private void computeMaterials() {
-        if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {//TODO it happens in initialization
-            System.err.println("Resource " + genome.getName() + " has no materials.");
-//            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
+        if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {
+            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()) {
             tags.addAll(genome.getTags());
             tags.addAll(materials.get(0).getTags(this));

@@ -72,7 +72,7 @@ public class World {
     }
 
     void initializeZero() {
-        resourcePool = ResourceInstantiatorKt.createPool();
+        resourcePool = ResourceInstantiatorKt.createPool("SupplementFiles/Resources");
         map = generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
     }
 

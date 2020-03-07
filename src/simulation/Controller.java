@@ -18,7 +18,8 @@ public class Controller {
     public InteractionModel interactionModel;
     public TemplateBase templateBase;
 
-    public final Random random = RandomKt.Random(100);
+    public final int seed = (int) (Math.random() * 10000000);
+    public final Random random = RandomKt.Random(seed);
 
     public final int proportionCoefficient = 1;
     public final boolean doTurns = true;

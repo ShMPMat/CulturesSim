@@ -13,9 +13,9 @@ import simulation.space.resource.dependency.ResourceNeedDependency
 import java.util.*
 import java.util.stream.Collectors
 
-fun createPool(): ResourcePool {
+fun createPool(path: String): ResourcePool {
     val resourceIdeals = ArrayList<ResourceTemplate>()
-    val inputDatabase = InputDatabase("SupplementFiles/Resources")
+    val inputDatabase = InputDatabase(path)
     var line: String?
     var tags: Array<String>
     while (true) {
@@ -107,7 +107,7 @@ private fun createResource(tags: Array<String>): ResourceTemplate {
             primaryMaterial,
             secondaryMaterials)
     if (isTemplate) {
-        var genome = GenomeTemplate(genome)
+        genome = GenomeTemplate(genome)
     }
     val resourceCore = ResourceCore(
             genome.name,
