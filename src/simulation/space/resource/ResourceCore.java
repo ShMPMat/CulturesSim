@@ -31,7 +31,7 @@ public class ResourceCore {
     private List<ResourceTag> tags;
     private Meme meaning;
 
-    ResourceCore(String[] tags) {
+    public ResourceCore(String[] tags) {
         String name = tags[0];
         initializeMutualFields(
                 name,
@@ -41,8 +41,10 @@ public class ResourceCore {
         );
         boolean willResist = false;
         boolean isTemplate = false;
-        ArrayList<ResourceTag> resourceTags = new ArrayList<>();
-        ArrayList<ResourceDependency> resourceDependencies = new ArrayList<>();
+        List<ResourceTag> resourceTags = new ArrayList<>();
+        List<ResourceDependency> resourceDependencies = new ArrayList<>();
+        Material primaryMaterial = null;
+        List<Material> secondaryMaterials = new ArrayList<>();
         String[] elements;
         for (int i = 12; i < tags.length; i++) {
             String tag = tags[i];
@@ -56,7 +58,12 @@ public class ResourceCore {
                         isTemplate = true;
                         break;
                     }
-                    materials.add(session.world.getPoolMaterial(tag.substring(1)));
+                    Material material = session.world.getPoolMaterial(tag.substring(1));
+                    if (primaryMaterial == null) {
+                        primaryMaterial = material;
+                    } else {
+                        secondaryMaterials.add(material);
+                    }
                     break;
                 case '^':
                     _parts.add(tag.substring(1));
@@ -99,15 +106,20 @@ public class ResourceCore {
                 Double.parseDouble(tags[1]), Integer.parseInt(tags[4]), Integer.parseInt(tags[5]),
                 Integer.parseInt(tags[7]), tags[9].equals("1"), false, tags[8].equals("1"), willResist,
                 tags[9].equals("1"), Integer.parseInt(tags[3]), Integer.parseInt(tags[6]),
-                null, null, resourceDependencies, null);
-        if (!materials.isEmpty()) {
-            genome.setPrimaryMaterial(materials.get(0));
-        }
-        resourceTags.forEach(t -> genome.addResourceTag(t));
+                null, null,
+                resourceDependencies,
+                resourceTags,
+                primaryMaterial,
+                secondaryMaterials);
         if (isTemplate) {
             genome = new GenomeTemplate(genome);
         }
-        setName(name);
+        materials = new ArrayList<>();
+        if (primaryMaterial != null) {
+            materials.add(primaryMaterial);
+            materials.addAll(secondaryMaterials);
+        }
+        setName(genome.getName());
         computeMaterials();
     }
 

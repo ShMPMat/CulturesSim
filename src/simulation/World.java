@@ -13,6 +13,7 @@ import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
 import simulation.space.generator.RandomMapGeneratorKt;
+import simulation.space.generator.ResourceInstantiatorKt;
 import simulation.space.resource.Material;
 import simulation.space.resource.Property;
 import simulation.space.resource.Resource;
@@ -189,7 +190,7 @@ public class World {
                 break;
             }
             tags = line.split("\\s+");
-            resourceIdeals.add(new ResourceIdeal(tags));
+            resourceIdeals.add(ResourceInstantiatorKt.createResource(tags));
         }
         resourcePool = new ResourcePool(resourceIdeals);
         resourceIdeals.forEach(Resource::actualizeLinks);
@@ -332,11 +333,6 @@ public class World {
 
     public void incrementTurnGeology() {
         millionTurns++;
-    }
-
-    public void addResources(List<Resource> resources) {
-        resources.stream().filter(resource -> getPoolResource(resource.getBaseName()) == null)
-                .forEach(resource -> resources.add(new ResourceIdeal(resource)));
     }
 
     @Override

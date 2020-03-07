@@ -12,27 +12,12 @@ import java.util.List;
 
 public class Genome {
     private String name;
-    /**
-     * Type of the Resource.
-     */
     private Type type;
-    /**
-     * Whether this Genome can mutate itself.
-     */
     private boolean isMutable;
-    /**
-     * Whether it can move at its will.
-     */
     private boolean canMove;
     private boolean willResist;
-    /**
-     * Size of the Resource.
-     */
     private double size;
     private int naturalDensity;
-    /**
-     * Parts from which Resource consists.
-     */
     private List<Resource> parts = new ArrayList<>();
     private List<ResourceDependency> dependencies;
     private double spreadProbability;
@@ -44,27 +29,28 @@ public class Genome {
     private int temperatureMin;
     private int temperatureMax;
     private ResourceCore legacy;
-    /**
-     * From which template Resource was created.
-     */
     protected ResourceCore templateLegacy;
-    private List<ResourceTag> tags = new ArrayList<>();
+    private List<ResourceTag> tags;
 
     private Material primaryMaterial;
-    private int _mutationCount = 0;
+    private List<Material> secondaryMaterials;
     private int baseDesirability;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
            int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean willResist,
            boolean hasLegacy, int deathTime, int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy,
            List<ResourceDependency> dependencies,
-           Material primaryMaterial) {
+           List<ResourceTag> tags,
+           Material primaryMaterial,
+           List<Material> secondaryMaterials
+           ) {
         this.name = name;
         this.type = type;
         this.baseDesirability = baseDesirability;
         this.spreadProbability = spreadProbability;
         this.temperatureMin = temperatureMin;
         this.temperatureMax = temperatureMax;
+        this.tags = new ArrayList<>(tags);
         this.dependencies = new ArrayList<>(dependencies);
         this.dependencies.add(new TemperatureMin(temperatureMin, 2));
         this.dependencies.add(new TemperatureMax(temperatureMax, 2));
@@ -84,6 +70,7 @@ public class Genome {
         }
         setPrimaryMaterial(primaryMaterial);
         computePrimaryMaterial();
+        this.secondaryMaterials = new ArrayList<>(secondaryMaterials);
     }
 
     Genome(Genome genome) {
@@ -91,7 +78,10 @@ public class Genome {
                 genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.willResist,
                 genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
                 genome.dependencies,
-                genome.primaryMaterial);
+                genome.tags,
+                genome.primaryMaterial,
+                genome.secondaryMaterials
+        );
         genome.parts.forEach(this::addPart);
         genome.tags.forEach(this::addResourceTag);
     }

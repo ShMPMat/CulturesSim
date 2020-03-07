@@ -55,10 +55,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         events.add(new Event(Event.Type.Creation, "Resource was created", "name", getFullName()));
     }
 
-    Resource(String[] tags, int amount) {
-        this(new ResourceCore(tags), amount);
-    }
-
     public Resource(ResourceCore resourceCore) {
         this(resourceCore, resourceCore.getDefaultAmount());
     }
