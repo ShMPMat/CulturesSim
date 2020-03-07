@@ -96,6 +96,15 @@ public class Genome {
         return secondaryMaterials;
     }
 
+    public List<Material> getMaterials() {
+        List<Material> materials = new ArrayList<>();
+        if (primaryMaterial != null) {
+            materials.add(primaryMaterial);
+            materials.addAll(secondaryMaterials);
+        }
+        return materials;
+    }
+
     public Material getPrimaryMaterial() {
         return primaryMaterial;
     }

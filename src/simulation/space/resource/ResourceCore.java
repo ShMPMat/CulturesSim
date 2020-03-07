@@ -6,11 +6,6 @@ import simulation.culture.aspect.AspectMatcher;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.SpaceError;
-import simulation.space.Tile;
-import simulation.space.resource.dependency.AvoidTiles;
-import simulation.space.resource.dependency.ConsumeDependency;
-import simulation.space.resource.dependency.ResourceDependency;
-import simulation.space.resource.dependency.ResourceNeedDependency;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,100 +26,14 @@ public class ResourceCore {
     private List<ResourceTag> tags;
     private Meme meaning;
 
-    public ResourceCore(String[] tags) {
-        String name = tags[0];
-        initializeMutualFields(
-                name,
-                new ArrayList<>(),
-                null,
-                new HashMap<>(), null
-        );
-        boolean willResist = false;
-        boolean isTemplate = false;
-        List<ResourceTag> resourceTags = new ArrayList<>();
-        List<ResourceDependency> resourceDependencies = new ArrayList<>();
-        Material primaryMaterial = null;
-        List<Material> secondaryMaterials = new ArrayList<>();
-        String[] elements;
-        for (int i = 12; i < tags.length; i++) {
-            String tag = tags[i];
-            switch ((tag.charAt(0))) {
-                case '+':
-                    this._aspectConversion.put(session.world.getPoolAspect(tag.substring(1, tag.indexOf(':'))),
-                            tag.substring(tag.indexOf(':') + 1).split(","));
-                    break;
-                case '@':
-                    if (tag.substring(1).equals("TEMPLATE")) {
-                        isTemplate = true;
-                        break;
-                    }
-                    Material material = session.world.getPoolMaterial(tag.substring(1));
-                    if (primaryMaterial == null) {
-                        primaryMaterial = material;
-                    } else {
-                        secondaryMaterials.add(material);
-                    }
-                    break;
-                case '^':
-                    _parts.add(tag.substring(1));
-                    break;
-                case '~':
-                    elements = tag.split(":");
-                    if (elements[4].equals("CONSUME")) {
-                        resourceDependencies.add(new ConsumeDependency(
-                                Double.parseDouble(elements[2]),
-                                elements[3].equals("1"),
-                                Double.parseDouble(elements[1]),
-                                Arrays.asList(elements[0].substring(1).split(","))
-                        ));
-                    } else {
-                        resourceDependencies.add(new ResourceNeedDependency(
-                                ResourceNeedDependency.Type.valueOf(elements[4]), Double.parseDouble(elements[1]),
-                                Double.parseDouble(elements[2]),
-                                elements[3].equals("1"),
-                                Arrays.asList(elements[0].substring(1).split(","))
-                        ));
-                    }
-                    break;
-                case '#':
-                    resourceDependencies.add(new AvoidTiles(
-                            Arrays.stream(tag.substring(1).split(":"))
-                                    .map(Tile.Type::valueOf)
-                                    .collect(Collectors.toSet())
-                    ));
-                    break;
-                case '$':
-                    elements = tag.split(":");
-                    resourceTags.add(new ResourceTag(elements[0].substring(1), Integer.parseInt(elements[1])));
-                    break;
-                case 'R':
-                    willResist = true;
-                    break;
-            }
-        }
-        genome = new Genome(tags[0], Genome.Type.valueOf(tags[11]), Double.parseDouble(tags[2]),
-                Double.parseDouble(tags[1]), Integer.parseInt(tags[4]), Integer.parseInt(tags[5]),
-                Integer.parseInt(tags[7]), tags[9].equals("1"), false, tags[8].equals("1"), willResist,
-                tags[9].equals("1"), Integer.parseInt(tags[3]), Integer.parseInt(tags[6]),
-                null, null,
-                resourceDependencies,
-                resourceTags,
-                primaryMaterial,
-                secondaryMaterials);
-        if (isTemplate) {
-            genome = new GenomeTemplate(genome);
-        }
-        materials = new ArrayList<>();
-        if (genome.getPrimaryMaterial() != null) {
-            materials.add(genome.getPrimaryMaterial());
-            materials.addAll(genome.getSecondaryMaterials());
-        }
-        setName(genome.getName());
-        computeMaterials();
-    }
-
-    private ResourceCore(String name, String meaningPostfix, List<Material> materials, Genome genome,
-                         Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion, Meme meaning) {
+    ResourceCore(
+            String name,
+            String meaningPostfix,
+            List<Material> materials,
+            Genome genome,
+            Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion,
+            Meme meaning
+    ) {
         initializeMutualFields(name + meaningPostfix, materials, genome, aspectConversion, meaning);
         setName(name);
         computeMaterials();
@@ -173,31 +82,7 @@ public class ResourceCore {
         aspectConversion.put(session.world.getPoolAspect(aspectName), resourceList);
     }
 
-    void actualizeParts(ResourcePool resourcePool) {
-        for (String part : _parts) {
-            Resource resource = resourcePool.getResource(part.split(":")[0]);
-            resource = resource.resourceCore.genome.hasLegacy()
-                    ? resource.resourceCore.copyWithLegacyInsertion(this, resourcePool)
-                    : resource;
-            resource.amount = Integer.parseInt(part.split(":")[1]);
-            genome.addPart(resource);
-        }
-        _parts.clear();
-        if (!materials.isEmpty() && genome.getPrimaryMaterial() != null
-                && !materials.get(0).equals(genome.getPrimaryMaterial())) {
-            System.err.println("Genome-computed primary material differs from stated material in Resource " + genome.getName());
-        }
-        if (!genome.getParts().isEmpty() && !_aspectConversion.containsKey(session.world.getPoolAspect("TakeApart"))) {
-            List<ShnyPair<Resource, Integer>> resourceList = new ArrayList<>();
-            for (Resource resource : genome.getParts()) {
-                resourceList.add(new ShnyPair<>(resource, resource.amount));
-                aspectConversion.put(session.world.getPoolAspect("TakeApart"), resourceList);
-            }
-        }
-        _aspectConversion = null;
-    }
-
-    private ShnyPair<Resource, Integer> readConversion(String s, ResourcePool resourcePool) {
+    ShnyPair<Resource, Integer> readConversion(String s, ResourcePool resourcePool) {
         if (s.split(":")[0].equals("LEGACY")) {
             if (genome.getLegacy() == null) {
                 //System.err.println("No legacy for LEGACY conversion in genome " + genome.getName());
@@ -230,10 +115,6 @@ public class ResourceCore {
         } else {
             genome.setName(fullName);
         }
-    }
-
-    private void setMaterials(List<Material> materials) {
-        this.materials = materials;
     }
 
     private void computeMaterials() {
