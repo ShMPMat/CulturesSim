@@ -1,14 +1,13 @@
 package simulation.culture.aspect;
 
 import extra.ShnyPair;
+import simulation.space.resource.ResourcePool;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceCore;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static simulation.Controller.session;
 
 public class AspectMatcher {
     private AspectCore core;
@@ -72,8 +71,8 @@ public class AspectMatcher {
         return true;
     }
 
-    public List<ShnyPair<Resource, Integer>> getResults(Resource resource) {
+    public List<ShnyPair<Resource, Integer>> getResults(Resource resource, ResourcePool resourcePool) {
         return results.stream().map(pair -> new ShnyPair<>(pair.first.equals("MATCHED") ?
-                resource : session.world.getPoolResource(pair.first), pair.second)).collect(Collectors.toList());
+                resource : resourcePool.getResource(pair.first), pair.second)).collect(Collectors.toList());
     }
 }

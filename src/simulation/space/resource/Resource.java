@@ -63,14 +63,6 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         _hash = Objects.hash(getFullName());
     }
 
-    public void actualizeLinks() {
-        resourceCore.actualizeLinks();
-    }
-
-    public void actualizeParts() {
-        resourceCore.actualizeParts();
-    }
-
     public String getSimpleName() {
         return resourceCore.getSimpleName();
     }

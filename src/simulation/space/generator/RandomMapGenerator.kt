@@ -2,7 +2,7 @@ package simulation.space.generator
 
 import shmp.random.randomElement
 import shmp.random.randomTile
-import simulation.space.ResourcePool
+import simulation.space.resource.ResourcePool
 import simulation.space.TectonicPlate
 import simulation.space.Tile
 import simulation.space.WorldMap

@@ -92,6 +92,10 @@ public class Genome {
         }
     }
 
+    public List<Material> getSecondaryMaterials() {
+        return secondaryMaterials;
+    }
+
     public Material getPrimaryMaterial() {
         return primaryMaterial;
     }

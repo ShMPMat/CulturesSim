@@ -8,16 +8,11 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.ResourcePool;
+import simulation.space.resource.*;
 import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
 import simulation.space.generator.RandomMapGeneratorKt;
-import simulation.space.generator.ResourceInstantiatorKt;
-import simulation.space.resource.Material;
-import simulation.space.resource.Property;
-import simulation.space.resource.Resource;
-import simulation.space.resource.ResourceIdeal;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static simulation.Controller.*;
 import static simulation.space.generator.RandomMapGeneratorKt.generateMap;
@@ -78,7 +72,7 @@ public class World {
     }
 
     void initializeZero() {
-        fillResourcePool();
+        resourcePool = ResourceInstantiatorKt.createPool();
         map = generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
     }
 
@@ -174,27 +168,6 @@ public class World {
             tags = line.split("\\s+");
             aspectPool.add(new Aspect(tags, new HashMap<>(), null));
         }
-    }
-
-    /**
-     * Reads all Resources from supplement file and fills resourcePool with them.
-     */
-    private void fillResourcePool() {
-        List<ResourceIdeal> resourceIdeals = new ArrayList<>();
-        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Resources");
-        String line;
-        String[] tags;
-        while (true) {
-            line = inputDatabase.readLine();
-            if (line == null) {
-                break;
-            }
-            tags = line.split("\\s+");
-            resourceIdeals.add(ResourceInstantiatorKt.createResource(tags));
-        }
-        resourcePool = new ResourcePool(resourceIdeals);
-        resourceIdeals.forEach(Resource::actualizeLinks);
-        resourceIdeals.forEach(Resource::actualizeParts);
     }
 
     private boolean isLineBad(String line) {
