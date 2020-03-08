@@ -22,7 +22,6 @@ public class ResourceCore {
     private List<Material> materials;
     private Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion;
     private Map<Aspect, String[]> _aspectConversion;
-    private List<String> _parts;
     private List<ResourceTag> tags;
     private Meme meaning;
 
@@ -34,9 +33,14 @@ public class ResourceCore {
             Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion,
             Meme meaning
     ) {
-        initializeMutualFields(name + meaningPostfix, materials, genome, aspectConversion, meaning);
-        setName(name);
-        computeMaterials();
+        this.meaning = meaning;
+        this.aspectConversion = new HashMap<>(aspectConversion);
+        this._aspectConversion = new HashMap<>();
+        this.tags = new ArrayList<>();
+        this.materials = materials;
+        this.genome = genome;
+        setName(name + meaningPostfix);
+        computeTagsFromMaterials();
     }
 
     private void replaceLinks() {
@@ -47,17 +51,6 @@ public class ResourceCore {
                 }
             }
         }
-    }
-
-    private void initializeMutualFields(String name, List<Material> materials, Genome genome,
-                                        Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion, Meme meaning) {
-        this.meaning = meaning;
-        this.aspectConversion = new HashMap<>(aspectConversion);
-        this._aspectConversion = new HashMap<>();
-        this._parts = new ArrayList<>();
-        this.tags = new ArrayList<>();
-        this.materials = materials;
-        this.genome = genome;
     }
 
     void actualizeLinks(ResourcePool resourcePool) {
@@ -117,7 +110,7 @@ public class ResourceCore {
         }
     }
 
-    private void computeMaterials() {
+    private void computeTagsFromMaterials() {
         if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {
             throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()) {
@@ -243,7 +236,7 @@ public class ResourceCore {
         ResourceCore resourceCore = new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(legacy.materials),
                 ((GenomeTemplate) genome).getInstantiatedGenome(legacy), aspectConversion, meaning);
         resourceCore.materials.addAll(legacy.materials);
-        resourceCore.computeMaterials();
+        resourceCore.computeTagsFromMaterials();
         return resourceCore;
     }
 

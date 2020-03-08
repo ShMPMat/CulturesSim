@@ -129,15 +129,12 @@ class ResourceInstantiation(private val aspectPool: AspectPool) {
 
     fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool) {
         val (resource, aspectConversion, _) = template
-        for (aspect in aspectConversion.keys) {
-            resource.resourceCore.aspectConversion.put(
-                    aspect,
-                    aspectConversion[aspect]
-                            ?.map {
-                                resource.resourceCore.readConversion(it, resourcePool)
-                                        ?: throw SpaceError("Impossible error")
-                            }//TODO better iteration
-            )
+        for (entry in aspectConversion.entries) {
+            resource.resourceCore.aspectConversion[entry.key] = entry.value
+                    .map {
+                        resource.resourceCore.readConversion(it, resourcePool)
+                                ?: throw SpaceError("Impossible error")
+                    }
         }
         if (resource.resourceCore.materials.isEmpty()) {
             return
