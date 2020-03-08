@@ -242,7 +242,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
 //                }
             }
             if (tile.getTemperature() < 0) {
-                tile.addDelayedResource(session.world.getPoolResource("Snow").copy(amount / 2));
+                tile.addDelayedResource(session.world.getResourcePool().get("Snow").copy(amount / 2));
                 amount -= amount / 2;
             }
         } else if (getSimpleName().equals("Water")) {
@@ -283,7 +283,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             }
         } else if (getSimpleName().equals("Snow")) {
             if (tile.getType() == Tile.Type.Mountain && testProbability(1, session.random)) {
-                Resource water = session.world.getPoolResource("Water").copy(2);
+                Resource water = session.world.getResourcePool().get("Water").copy(2);
                 if (tile.getResource(water).getAmount() < 2 && (tile.getNeighboursInRadius(t ->
                         t.getType() == Tile.Type.Mountain &&
                         t.getResource(this).getAmount() != 0 && t.getResource(water).getAmount() != 0, 5).isEmpty() ||

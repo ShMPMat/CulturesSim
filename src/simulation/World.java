@@ -1,6 +1,5 @@
 package simulation;
 
-import extra.InputDatabase;
 import extra.SpaceProbabilityFuncs;
 import kotlin.ranges.IntRange;
 import simulation.culture.Event;
@@ -15,7 +14,7 @@ import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
 import simulation.space.generator.MapGeneratorKt;
-import simulation.space.resource.material.Material;
+import simulation.space.resource.material.MaterialInstantiation;
 import simulation.space.resource.material.MaterialPool;
 
 import java.util.ArrayList;
@@ -30,8 +29,10 @@ import static simulation.space.generator.MapGeneratorKt.generateMap;
  */
 public class World {
     public List<GroupConglomerate> groups = new ArrayList<>();
-    private AspectPool aspectPool = (new AspectInstantiation()).createPool("SupplementFiles/Aspects");
-    private MaterialPool materialPool;
+    private AspectPool aspectPool = (new AspectInstantiation())
+            .createPool("SupplementFiles/Aspects");
+    private MaterialPool materialPool = (new MaterialInstantiation(aspectPool))
+            .createPool("SupplementFiles/Materials");
     private ResourcePool resourcePool;
     /**
      * Base MemePool for the World. Contains all standard Memes.
@@ -48,7 +49,6 @@ public class World {
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
 
     World() {
-        fillMaterialPool();
     }
 
     void initializeZero() {
@@ -93,24 +93,6 @@ public class World {
     }
 
     /**
-     * Reads all Materials from supplement file and fills materialPool with them.
-     */
-    private void fillMaterialPool() {
-        List<Material> materials = new ArrayList<>();
-        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Materials");
-        while (true) {
-            String line = inputDatabase.readLine();
-            if (line == null) {
-                break;
-            }
-            String[] tags = line.split("\\s+");
-            materials.add(new Material(tags, aspectPool));
-        }
-        materialPool = new MaterialPool(materials);
-        materials.forEach(material -> material.actualizeLinks(materialPool));
-    }
-
-    /**
      * Getter for turn.
      *
      * @return how many turns passed since the beginning of the simulation.
@@ -131,19 +113,8 @@ public class World {
         return materialPool;
     }
 
-    /**
-     * Returns Resource by name.
-     *
-     * @param name name of the Resource.
-     * @return Resource with this sentenceBase name. If there is no such Resource in the resourcePool
-     * returns null and prints a warning.
-     */
-    public Resource getPoolResource(String name) {
-        return resourcePool.get(name);
-    }
-
-    public List<Resource> getAllResources() {
-        return resourcePool.getWithPredicate(t -> true);
+    public ResourcePool getResourcePool() {
+        return resourcePool;
     }
 
     /**

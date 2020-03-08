@@ -215,7 +215,7 @@ public class TextVisualizer implements Visualizer {
      */
     private void readSymbols() throws IOException {
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsResourceLibrary"));
-        for (Resource resource : world.getAllResources()) {
+        for (Resource resource : world.getResourcePool().getAll()) {
             resourceSymbols.put(resource, s.nextLine());
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
@@ -364,7 +364,7 @@ public class TextVisualizer implements Visualizer {
                                 break;
                             case Mountain:
                                 token = (tile.getLevel() > 130 ? "\033[43m" : "") +
-                                        (tile.getResources().contains(world.getPoolResource("Snow")) ? "\033[30m" : "\033[93m") + "^";
+                                        (tile.getResources().contains(world.getResourcePool().get("Snow")) ? "\033[30m" : "\033[93m") + "^";
                                 break;
                             default:
                                 token += " ";
@@ -390,7 +390,7 @@ public class TextVisualizer implements Visualizer {
      */
     private StringBuilder printedResources() {
         StringBuilder resources = new StringBuilder();
-        for (Resource resource : world.getAllResources()) {
+        for (Resource resource : world.getResourcePool().getAll()) {
             resources.append("\033[31m").append(resourceSymbols.get(resource)).append(" - ")
                     .append(resource.getBaseName()).append("\n");
         }
@@ -529,12 +529,12 @@ public class TextVisualizer implements Visualizer {
             System.err.println("Cannot add aspect to the group");
             return;
         }
-        Resource resource = world.getPoolResource(wantName);
-        if (resource == null) {
+        try {
+            Resource resource = world.getResourcePool().get(wantName);
+            group.getCulturalCenter().addResourceWant(resource);
+        } catch (NoSuchElementException e) {
             System.err.println("Cannot add want to the group");
-            return;
         }
-        group.getCulturalCenter().addResourceWant(resource);
     }
 
     private void addResourceOnTile(Tile tile, String resourceName) {
@@ -542,12 +542,12 @@ public class TextVisualizer implements Visualizer {
             System.err.println("No such Tile");
             return;
         }
-        Resource resource = world.getPoolResource(resourceName);
-        if (resource == null) {
+        try {
+            Resource resource = world.getResourcePool().get(resourceName);
+            tile.addDelayedResource(resource.copy());
+        } catch (NoSuchElementException e){
             System.err.println("No such Resource");
-            return;
         }
-        tile.addDelayedResource(resource.copy());
     }
 
     /**
@@ -663,7 +663,7 @@ public class TextVisualizer implements Visualizer {
                             break;
                         case Resource:
                             try {
-                                Resource resource = world.getPoolResource(line.substring(2));
+                                Resource resource = world.getResourcePool().get(line.substring(2));
                                 printResource(resource);
                             } catch (NoSuchElementException e) {
                                 Optional<Resource> _oo = resourceSymbols.entrySet().stream()

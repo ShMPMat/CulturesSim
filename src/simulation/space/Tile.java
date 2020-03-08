@@ -110,7 +110,7 @@ public class Tile {
     }
 
     public Resource getResource(String name) {
-        Resource resource = session.world.getPoolResource(name);
+        Resource resource = session.world.getResourcePool().get(name);
         int index = resources.indexOf(resource);
         return index == -1 ? resource.cleanCopy(0) : resources.get(index);
     }
@@ -183,7 +183,7 @@ public class Tile {
     }
 
     public int getLevelWithWater() {
-        int index = resources.indexOf(session.world.getPoolResource("Water"));
+        int index = resources.indexOf(session.world.getResourcePool().get("Water"));
         return getLevel() + (index == -1 ? 0 : resources.get(index).getAmount());
     }
 
@@ -402,10 +402,10 @@ public class Tile {
                 setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
+            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
         }
-        if (resources.contains(session.world.getPoolResource("Water"))) {
-            addDelayedResource(session.world.getPoolResource("Vapour").copy(50));
+        if (resources.contains(session.world.getResourcePool().get("Water"))) {
+            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
         }
     }
 
