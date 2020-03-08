@@ -161,20 +161,12 @@ class ResourceInstantiation(
             resource: ResourceIdeal,
             s: String,
             resourcePool: ResourcePool
-    ): ShnyPair<Resource?, Int>? {//TODO ordinary Pair pls
+    ): ShnyPair<Resource, Int> {//TODO ordinary Pairs pls
         val resourceNames = s.split(":".toRegex()).toTypedArray()
         if (resourceNames[0] == "LEGACY") {
-            if (resource.genome.legacy == null) { //System.err.println("No legacy for LEGACY conversion in genome " + genome.getName());
-                return ShnyPair(null, resourceNames[1].toInt()) //TODO insert legacy in another place
-            }
-            val legacyResource: Resource = resource.genome.legacy.copy()
-            return ShnyPair(
-                    if (legacyResource.genome.hasLegacy())
-                        legacyResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
-                    else
-                        legacyResource, resourceNames[1].toInt())
+            return manageLegacyConversion(resource, resourceNames[1].toInt(), resourcePool)
         }
-        var nextTemplate: ResourceTemplate = resourceTemplates.first { it.resourceIdeal.baseName == resourceNames[0] }
+        val nextTemplate: ResourceTemplate = resourceTemplates.first { it.resourceIdeal.baseName == resourceNames[0] }
         val templateResource = if (nextTemplate.resourceIdeal.genome.hasLegacy())
             nextTemplate.resourceIdeal.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
         else nextTemplate.resourceIdeal
@@ -182,7 +174,24 @@ class ResourceInstantiation(
         return ShnyPair(nextTemplate.resourceIdeal, resourceNames[1].toInt())//TODO insert amount in Resource amount;
     }
 
-    fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool) {
+    private fun manageLegacyConversion(
+            resource: ResourceIdeal,
+            amount: Int,
+            resourcePool: ResourcePool
+    ): ShnyPair<Resource, Int> {
+        if (resource.genome.legacy == null) {
+            throw SpaceError("No legacy for legacy conversion")
+        }
+        val legacyResource: Resource = resource.genome.legacy.copy()
+        return ShnyPair(
+                if (legacyResource.genome.hasLegacy())
+                    legacyResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
+                else
+                    legacyResource,
+                amount)
+    }
+
+    private fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool) {
         val (resource, aspectConversion, parts) = template
         for (part in parts) {
             var partResource = resourcePool.get(part.split(":".toRegex()).toTypedArray()[0])

@@ -54,25 +54,7 @@ public class ResourceCore {
         }
     }
 
-    void actualizeLinks(ResourcePool resourcePool) {
-        for (Aspect aspect : _aspectConversion.keySet()) {
-            aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
-                    .map(s -> readConversion(s, resourcePool)).collect(Collectors.toList()));
-        }
-        if (materials.isEmpty()) {
-            return;
-        }
-        Material material = getMainMaterial();
-        for (Aspect aspect : session.world.getAspectPool().getAll()) {
-            for (AspectMatcher matcher : aspect.getMatchers()) {
-                if (matcher.match(this)) {
-                    addAspectConversion(aspect.getName(), matcher.getResults(copy(), resourcePool));
-                }
-            }
-        }
-    }
-
-    public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) {
+    void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) {
         aspectConversion.put(session.world.getAspectPool().get(aspectName), resourceList);
     }
 
@@ -96,6 +78,23 @@ public class ResourceCore {
         pair.first.resourceCore._aspectConversion = new HashMap<>(resource.resourceCore._aspectConversion);
         pair.first.resourceCore.actualizeLinks(resourcePool);
         return pair;
+    }
+
+    void actualizeLinks(ResourcePool resourcePool) {
+        for (Aspect aspect : _aspectConversion.keySet()) {
+            aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
+                    .map(s -> readConversion(s, resourcePool)).collect(Collectors.toList()));
+        }
+        if (materials.isEmpty()) {
+            return;
+        }
+        for (Aspect aspect : session.world.getAspectPool().getAll()) {
+            for (AspectMatcher matcher : aspect.getMatchers()) {
+                if (matcher.match(this)) {
+                    addAspectConversion(aspect.getName(), matcher.getResults(copy(), resourcePool));
+                }
+            }
+        }
     }
 
     public Map<Aspect, List<ShnyPair<Resource, Integer>>> getAspectConversion() {
@@ -174,6 +173,22 @@ public class ResourceCore {
         return tags.contains(tag);
     }
 
+    void setHasMeaning(boolean b) {
+        hasMeaning = b;
+    }
+
+    Resource copy() {
+        return new Resource(this);
+    }
+
+    ResourceIdeal copyWithLegacyInsertion(ResourceCore creator, ResourcePool resourcePool) {
+        ResourceIdeal resource = new ResourceIdeal(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
+                new Genome(genome), aspectConversion, meaning));
+        resource.resourceCore._aspectConversion = _aspectConversion;
+        resource.resourceCore.setLegacy(creator, resourcePool);
+        return resource;//TODO is legacy passed to parts in genome?
+    }
+
     void setLegacy(ResourceCore legacy, ResourcePool resourcePool) {
         genome.setLegacy(legacy);
 
@@ -194,22 +209,6 @@ public class ResourceCore {
             }
         }
         replaceLinks();
-    }
-
-    void setHasMeaning(boolean b) {
-        hasMeaning = b;
-    }
-
-    Resource copy() {
-        return new Resource(this);
-    }
-
-    ResourceIdeal copyWithLegacyInsertion(ResourceCore creator, ResourcePool resourcePool) {//TODO WHAT IS IT?
-        ResourceIdeal resource = new ResourceIdeal(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
-                new Genome(genome), aspectConversion, meaning));
-        resource.resourceCore._aspectConversion = _aspectConversion;
-        resource.resourceCore.setLegacy(creator, resourcePool);
-        return resource;//TODO is legacy passed to parts in genome?
     }
 
     Resource copy(int amount) {
