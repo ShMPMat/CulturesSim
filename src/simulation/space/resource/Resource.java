@@ -56,7 +56,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public Resource(ResourceCore resourceCore) {
-        this(resourceCore, resourceCore.getDefaultAmount());
+        this(resourceCore, resourceCore.getGenome().getDefaultAmount());
     }
 
     void computeHash() {
@@ -64,7 +64,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public String getSimpleName() {
-        return resourceCore.getSimpleName();
+        return resourceCore.getGenome().getName();
     }
 
     public String getBaseName() {
@@ -84,7 +84,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public double getSpreadProbability() {
-        return resourceCore.getSpreadProbability();
+        return resourceCore.getGenome().getSpreadProbability();
     }
 
     public List<ResourceTag> getTags() {
@@ -129,7 +129,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
     }
 
     public boolean isMovable() {
-        return resourceCore.isMovable();
+        return resourceCore.getGenome().isMovable();
     }
 
     public boolean hasMeaning() {
@@ -217,9 +217,9 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
         }
         for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {
             double part = dependency.satisfactionPercent(tile, this);
-            deathOverhead += (1 - part) * resourceCore.getDeathTime();
+            deathOverhead += (1 - part) * resourceCore.getGenome().getDeathTime();
         }
-        if (deathTurn + deathOverhead >= resourceCore.getDeathTime()) {
+        if (deathTurn + deathOverhead >= resourceCore.getGenome().getDeathTime()) {
             amount -= deathPart*amount;
             deathTurn = 0;
             deathOverhead = 0;
@@ -230,7 +230,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             return false;
         }
         deathTurn++;
-        if (testProbability(resourceCore.getSpreadProbability(), session.random)) {
+        if (testProbability(resourceCore.getGenome().getSpreadProbability(), session.random)) {
             expand();
         }
         if (getSimpleName().equals("Vapour")) {
@@ -357,7 +357,7 @@ public class Resource {//TODO check parts it seems that simple Plant has Fruits 
             }
         }
         Resource resource = copy();
-        resource.amount = Math.min(resourceCore.getDefaultAmount(), amount);
+        resource.amount = Math.min(resourceCore.getGenome().getDefaultAmount(), amount);
         newTile.addDelayedResource(resource);
         return true;
     }

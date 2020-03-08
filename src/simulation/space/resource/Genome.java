@@ -171,8 +171,8 @@ public class Genome {
     }
 
     String getLegacyPostfix() {
-        return (templateLegacy == null ? "" : "_of_" + templateLegacy.getGenome().getName() + templateLegacy.getLegacyPostfix()) +
-                (legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getLegacyPostfix());
+        return (templateLegacy == null ? "" : "_of_" + templateLegacy.getGenome().getName() + templateLegacy.getGenome().getLegacyPostfix()) +
+                (legacy == null ? "" : "_of_" + legacy.getGenome().getName() + legacy.getGenome().getLegacyPostfix());
     }
 
     int getDeathTime() {
@@ -209,7 +209,7 @@ public class Genome {
                 .allMatch(d -> d.satisfactionPercent(tile, null) >= 0.9);
     }
 
-    boolean isMovable() {
+    public boolean isMovable() {
         return isMovable;
     }
 

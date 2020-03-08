@@ -31,7 +31,6 @@ import static simulation.space.generator.MapGeneratorKt.generateMap;
 public class World {
     public List<GroupConglomerate> groups = new ArrayList<>();
     private AspectPool aspectPool = (new AspectInstantiation()).createPool("SupplementFiles/Aspects");
-    private List<Property> propertyPool;
     private MaterialPool materialPool;
     private ResourcePool resourcePool;
     /**
@@ -49,7 +48,6 @@ public class World {
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
 
     World() {
-        fillPropertiesPool();
         fillMaterialPool();
     }
 
@@ -95,22 +93,6 @@ public class World {
     }
 
     /**
-     * Reads all Properties from supplement file and fills propertyPool with them.
-     */
-    private void fillPropertiesPool() {
-        propertyPool = new ArrayList<>();
-        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Properties");
-        while (true) {
-            String line = inputDatabase.readLine();
-            if (line == null) {
-                break;
-            }
-            String[] tags = line.split("\\s+");
-            propertyPool.add(new Property(tags));
-        }
-    }
-
-    /**
      * Reads all Materials from supplement file and fills materialPool with them.
      */
     private void fillMaterialPool() {
@@ -122,14 +104,10 @@ public class World {
                 break;
             }
             String[] tags = line.split("\\s+");
-            materials.add(new Material(tags, this, aspectPool));
+            materials.add(new Material(tags, aspectPool));
         }
-        this.materialPool = new MaterialPool(materials);
-        materials.forEach(Material::actualizeLinks);
-    }
-
-    private boolean isLineBad(String line) {
-        return line.trim().isEmpty() || line.charAt(0) == '/';
+        materialPool = new MaterialPool(materials);
+        materials.forEach(material -> material.actualizeLinks(materialPool));
     }
 
     /**
@@ -151,23 +129,6 @@ public class World {
 
     public MaterialPool getMaterialPool() {
         return materialPool;
-    }
-
-    /**
-     * Returns Property by name.
-     *
-     * @param name name of the Property.
-     * @return Property with this name. If there is no such Property in the propertyPool
-     * returns null and prints a warning.
-     */
-    public Property getPoolProperty(String name) {
-        for (Property property : propertyPool) {
-            if (property.getName().equals(name)) {
-                return property;
-            }
-        }
-        System.err.println("Unrecognized Property request - " + name);
-        return null;
     }
 
     /**

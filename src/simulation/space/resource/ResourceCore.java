@@ -47,7 +47,7 @@ public class ResourceCore {
     private void replaceLinks() {
         for (List<ShnyPair<Resource, Integer>> resources : aspectConversion.values()) {
             for (ShnyPair<Resource, Integer> resource : resources) {
-                if (resource.first.getSimpleName().equals(this.getSimpleName())) {
+                if (resource.first.getSimpleName().equals(genome.getName())) {
                     resource.first = this.copy();
                 }
             }
@@ -116,8 +116,30 @@ public class ResourceCore {
             throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()) {
             tags.addAll(genome.getTags());
-            tags.addAll(materials.get(0).getTags(this));
+            tags.addAll(computeTags());
         }
+    }
+
+    private List<ResourceTag> computeTags() {
+        List<ResourceTag> _t = new ArrayList<>(materials.get(0).getTags());
+        if (!containsTag(new ResourceTag("goodForClothes")) &&
+                _t.contains(new ResourceTag("flexible")) &&
+                _t.contains(new ResourceTag("solid")) &&
+                _t.contains(new ResourceTag("soft"))) {
+            _t.add(new ResourceTag("goodForClothes"));
+        }
+        if (!containsTag(new ResourceTag("weapon")) &&
+                _t.contains(new ResourceTag("hard")) &&
+                _t.contains(new ResourceTag("sturdy")) &&
+                genome.getSize() >= 0.05 && getGenome().isMovable()) {
+            _t.add(new ResourceTag("weapon"));
+        }
+        if (!containsTag(new ResourceTag("goodForEngraving")) &&
+                _t.contains(new ResourceTag("hard")) &&
+                _t.contains(new ResourceTag("sturdy"))) {
+            _t.add(new ResourceTag("goodForEngraving"));
+        }
+        return _t;
     }
 
     public List<ResourceTag> getTags() {
@@ -128,14 +150,6 @@ public class ResourceCore {
         return materials.get(0);
     }
 
-    public int getDeathTime() {
-        return genome.getDeathTime();
-    }
-
-    public int getDefaultAmount() {
-        return genome.getDefaultAmount();
-    }
-
     public Genome getGenome() {
         return genome;
     }
@@ -144,36 +158,16 @@ public class ResourceCore {
         return materials;
     }
 
-    double getSpreadProbability() {
-        return genome.getSpreadProbability();
-    }
-
-    String getLegacyPostfix() {
-        return genome.getLegacyPostfix();
-    }
-
     String getMeaningPostfix() {
         return meaningPostfix;
     }
 
-    public double getSize() {
-        return genome.getSize();
-    }
-
     public String getBaseName() {
-        return genome.hasLegacy() ? genome.getName() + getLegacyPostfix() : genome.getName();
-    }
-
-    public String getSimpleName() {
-        return genome.getName();
+        return genome.hasLegacy() ? genome.getName() + getGenome().getLegacyPostfix() : genome.getName();
     }
 
     boolean isHasMeaning() {
         return hasMeaning;
-    }
-
-    public boolean isMovable() {
-        return genome.isMovable();
     }
 
     public boolean containsTag(ResourceTag tag) {

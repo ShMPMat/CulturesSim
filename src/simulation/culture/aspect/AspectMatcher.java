@@ -55,16 +55,16 @@ public class AspectMatcher {
                 .anyMatch(name -> name.equals(this.core.name))) {
             return false;
         }
-        if (neededProperties.stream().anyMatch(property -> !core.getMainMaterial().hasPropertyWithName(property))) {
+        if (neededProperties.stream().anyMatch(property -> !core.getMainMaterial().hasTagWithName(property))) {
             return false;
         }
-        if (badProperties.stream().anyMatch(property -> core.getMainMaterial().hasPropertyWithName(property))) {
+        if (badProperties.stream().anyMatch(property -> core.getMainMaterial().hasTagWithName(property))) {
             return false;
         }
-        if (isMovable && !core.isMovable()) {
+        if (isMovable && !core.getGenome().isMovable()) {
             return false;
         }
-        if (core.getSize() < size) {
+        if (core.getGenome().getSize() < size) {
             return false;
         }
 
