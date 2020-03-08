@@ -18,8 +18,6 @@ import simulation.space.generator.MapGeneratorKt;
 import simulation.space.resource.material.Material;
 import simulation.space.resource.material.MaterialPool;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -108,7 +106,7 @@ public class World {
                 break;
             }
             String[] tags = line.split("\\s+");
-            propertyPool.add(new Property(tags, this));
+            propertyPool.add(new Property(tags));
         }
     }
 

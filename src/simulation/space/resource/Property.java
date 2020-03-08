@@ -11,27 +11,12 @@ import java.util.stream.Collectors;
  * Basic property of an object or a material.
  */
 public class Property {
-    /**
-     * Name of the property.
-     */
     private String name;
-    /**
-     * Link to the World in which property exists.
-     */
-    private World world;
-    /**
-     * List of AspectTags associated with this Property.
-     */
     private List<ResourceTag> tags;
-    /**
-     * Level of intensity of this Property.
-     * All children Tags will inherit it.
-     */
     private int level = 1;
 
-    public Property(String[] tags, World world) {
+    public Property(String[] tags) {
         this.tags = new ArrayList<>();
-        this.world = world;
         for (int i = 0; i < tags.length; i++) {
             String tag = tags[i];
             if (i == 0) {
@@ -46,9 +31,8 @@ public class Property {
         setAspectLevel();
     }
 
-    private Property(String name, World world, List<ResourceTag> tags, int level) {
+    private Property(String name, List<ResourceTag> tags, int level) {
         this.name = name;
-        this.world = world;
         this.tags = tags.stream().map(ResourceTag::copy).collect(Collectors.toList());
         this.level = level;
         setAspectLevel();
@@ -82,7 +66,7 @@ public class Property {
      * @return New instance of This Property with a new level.
      */
     public Property copy(int level) {
-        return new Property(name, world, tags, level);
+        return new Property(name, tags, level);
     }
 
     @Override
