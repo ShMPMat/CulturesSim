@@ -5,6 +5,7 @@ import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.dependency.TemperatureMax;
 import simulation.space.resource.dependency.TemperatureMin;
+import simulation.space.resource.material.Material;
 
 import java.util.ArrayList;
 import java.util.List;

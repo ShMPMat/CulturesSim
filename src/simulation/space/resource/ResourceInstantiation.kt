@@ -2,7 +2,6 @@ package simulation.space.resource
 
 import extra.InputDatabase
 import extra.ShnyPair
-import simulation.Controller
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
@@ -11,22 +10,29 @@ import simulation.space.resource.dependency.AvoidTiles
 import simulation.space.resource.dependency.ConsumeDependency
 import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.dependency.ResourceNeedDependency
+import simulation.space.resource.material.Material
+import simulation.space.resource.material.MaterialPool
 import java.util.*
 
-class ResourceInstantiation(private val aspectPool: AspectPool) {
-    fun createPool(path: String): ResourcePool {
-        val resourceIdeals = ArrayList<ResourceTemplate>()
+class ResourceInstantiation(
+        private val path: String,
+        private val aspectPool: AspectPool,
+        private val materialPool: MaterialPool
+) {
+    private val resourceTemplates = ArrayList<ResourceTemplate>()
+
+    fun createPool(): ResourcePool {
         val inputDatabase = InputDatabase(path)
         var line: String?
         var tags: Array<String>
         while (true) {
             line = inputDatabase.readLine() ?: break
             tags = line.split("\\s+".toRegex()).toTypedArray()
-            resourceIdeals.add(createResource(tags))
+            resourceTemplates.add(createResource(tags))
         }
-        val resourcePool = ResourcePool(resourceIdeals.map { it.resourceIdeal })
-        resourceIdeals.forEach { actualizeLinks(it, resourcePool) }//TODO remove all Controller calls
-        resourceIdeals.forEach { actualizeParts(it, resourcePool) }
+        val resourcePool = ResourcePool(resourceTemplates.map { it.resourceIdeal })
+        resourceTemplates.forEach { actualizeLinks(it, resourcePool) }//TODO remove all Controller calls
+        resourceTemplates.forEach { actualizeParts(it, resourcePool) }//TODO Maybe legacy resources dont have parts!
         return resourcePool
     }
 
@@ -52,7 +58,7 @@ class ResourceInstantiation(private val aspectPool: AspectPool) {
                     if (tag == "TEMPLATE") {
                         isTemplate = true
                     } else {
-                        val material = Controller.session.world.getPoolMaterial(tag)
+                        val material = materialPool.get(tag)
                         if (primaryMaterial == null) {
                             primaryMaterial = material
                         } else {
@@ -127,12 +133,12 @@ class ResourceInstantiation(private val aspectPool: AspectPool) {
         return ResourceTemplate(ResourceIdeal(resourceCore), mutableMapOf(), mutableListOf())
     }
 
-    fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool) {
+    private fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool) {
         val (resource, aspectConversion, _) = template
         for (entry in aspectConversion.entries) {
             resource.resourceCore.aspectConversion[entry.key] = entry.value
                     .map {
-                        resource.resourceCore.readConversion(it, resourcePool)
+                        readConversion(resource, it, resourcePool)
                                 ?: throw SpaceError("Impossible error")
                     }
         }
@@ -149,6 +155,31 @@ class ResourceInstantiation(private val aspectPool: AspectPool) {
                 }
             }
         }
+    }
+
+    private fun readConversion(
+            resource: ResourceIdeal,
+            s: String,
+            resourcePool: ResourcePool
+    ): ShnyPair<Resource?, Int>? {//TODO ordinary Pair pls
+        val resourceNames = s.split(":".toRegex()).toTypedArray()
+        if (resourceNames[0] == "LEGACY") {
+            if (resource.genome.legacy == null) { //System.err.println("No legacy for LEGACY conversion in genome " + genome.getName());
+                return ShnyPair(null, resourceNames[1].toInt()) //TODO insert legacy in another place
+            }
+            val legacyResource: Resource = resource.genome.legacy.copy()
+            return ShnyPair(
+                    if (legacyResource.genome.hasLegacy())
+                        legacyResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
+                    else
+                        legacyResource, resourceNames[1].toInt())
+        }
+        var nextTemplate: ResourceTemplate = resourceTemplates.first { it.resourceIdeal.baseName == resourceNames[0] }
+        val templateResource = if (nextTemplate.resourceIdeal.genome.hasLegacy())
+            nextTemplate.resourceIdeal.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
+        else nextTemplate.resourceIdeal
+        actualizeLinks(ResourceTemplate(templateResource, nextTemplate.aspectConversion, listOf()), resourcePool)
+        return ShnyPair(nextTemplate.resourceIdeal, resourceNames[1].toInt())//TODO insert amount in Resource amount;
     }
 
     fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool) {

@@ -6,6 +6,7 @@ import simulation.culture.aspect.AspectMatcher;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.SpaceError;
+import simulation.space.resource.material.Material;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -175,7 +176,7 @@ public class ResourceCore {
         return genome.isMovable();
     }
 
-    boolean containsTag(ResourceTag tag) {
+    public boolean containsTag(ResourceTag tag) {
         return tags.contains(tag);
     }
 
@@ -209,8 +210,8 @@ public class ResourceCore {
         return new Resource(this);
     }
 
-    Resource copyWithLegacyInsertion(ResourceCore creator, ResourcePool resourcePool) {//TODO WHAT IS IT?
-        Resource resource = new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
+    ResourceIdeal copyWithLegacyInsertion(ResourceCore creator, ResourcePool resourcePool) {//TODO WHAT IS IT?
+        ResourceIdeal resource = new ResourceIdeal(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
                 new Genome(genome), aspectConversion, meaning));
         resource.resourceCore._aspectConversion = _aspectConversion;
         resource.resourceCore.setLegacy(creator, resourcePool);

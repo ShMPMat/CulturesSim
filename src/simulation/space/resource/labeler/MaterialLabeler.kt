@@ -1,6 +1,6 @@
 package simulation.space.resource.labeler
 
-import simulation.space.resource.Material
+import simulation.space.resource.material.Material
 import simulation.space.resource.Resource
 
 class MaterialLabeler(private val material: Material) : ResourceTagLabeler {

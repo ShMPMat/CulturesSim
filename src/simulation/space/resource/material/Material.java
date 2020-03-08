@@ -1,7 +1,11 @@
-package simulation.space.resource;
+package simulation.space.resource.material;
 
 import simulation.World;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectPool;
+import simulation.space.resource.Property;
+import simulation.space.resource.ResourceCore;
+import simulation.space.resource.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +30,7 @@ public class Material {
     private Map<Aspect, String> _aspectConversion;
     private double density;
 
-    public Material(String[] tags, World world) {
+    public Material(String[] tags, World world, AspectPool aspectPool) {
         this.world = world;
         this.aspectConversion = new HashMap<>();
         this._aspectConversion = new HashMap<>();
@@ -37,7 +41,7 @@ public class Material {
             String tag = tags[i];
             switch ((tag.charAt(0))) {
                 case '+':
-                    this._aspectConversion.put(world.getAspectPool().get(tag.substring(1, tag.indexOf(':'))),
+                    this._aspectConversion.put(aspectPool.get(tag.substring(1, tag.indexOf(':'))),
                             tag.substring(tag.indexOf(':') + 1));
                     break;
                 case '-':
@@ -49,7 +53,7 @@ public class Material {
 
     public void actualizeLinks() {
         for (Aspect aspect : _aspectConversion.keySet()) {
-            aspectConversion.put(aspect, world.getPoolMaterial(_aspectConversion.get(aspect)));
+            aspectConversion.put(aspect, world.getMaterialPool().get(_aspectConversion.get(aspect)));
         }
         _aspectConversion = null;
     }

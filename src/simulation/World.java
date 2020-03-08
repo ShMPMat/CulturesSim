@@ -1,5 +1,6 @@
 package simulation;
 
+import extra.InputDatabase;
 import extra.SpaceProbabilityFuncs;
 import kotlin.ranges.IntRange;
 import simulation.culture.Event;
@@ -14,6 +15,8 @@ import simulation.space.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
 import simulation.space.generator.MapGeneratorKt;
+import simulation.space.resource.material.Material;
+import simulation.space.resource.material.MaterialPool;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,7 +34,7 @@ public class World {
     public List<GroupConglomerate> groups = new ArrayList<>();
     private AspectPool aspectPool = (new AspectInstantiation()).createPool("SupplementFiles/Aspects");
     private List<Property> propertyPool;
-    private List<Material> materialPool;
+    private MaterialPool materialPool;
     private ResourcePool resourcePool;
     /**
      * Base MemePool for the World. Contains all standard Memes.
@@ -53,7 +56,11 @@ public class World {
     }
 
     void initializeZero() {
-        resourcePool = (new ResourceInstantiation(aspectPool)).createPool("SupplementFiles/Resources");
+        resourcePool = (new ResourceInstantiation(
+                "SupplementFiles/Resources",
+                aspectPool,
+                materialPool
+        )).createPool();
         map = generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
     }
 
@@ -94,22 +101,14 @@ public class World {
      */
     private void fillPropertiesPool() {
         propertyPool = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Properties"))) {
-            String line;
-            String[] tags;
-            while (true) {
-                line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (isLineBad(line)) {
-                    continue;
-                }
-                tags = line.split("\\s+");
-                propertyPool.add(new Property(tags, this));
+        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Properties");
+        while (true) {
+            String line = inputDatabase.readLine();
+            if (line == null) {
+                break;
             }
-        } catch (Throwable t) {
-            System.err.println(t.toString());
+            String[] tags = line.split("\\s+");
+            propertyPool.add(new Property(tags, this));
         }
     }
 
@@ -117,25 +116,18 @@ public class World {
      * Reads all Materials from supplement file and fills materialPool with them.
      */
     private void fillMaterialPool() {
-        materialPool = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("SupplementFiles/Materials"))) {
-            String line;
-            String[] tags;
-            while (true) {
-                line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (isLineBad(line)) {
-                    continue;
-                }
-                tags = line.split("\\s+");
-                materialPool.add(new Material(tags, this));
+        List<Material> materials = new ArrayList<>();
+        InputDatabase inputDatabase = new InputDatabase("SupplementFiles/Materials");
+        while (true) {
+            String line = inputDatabase.readLine();
+            if (line == null) {
+                break;
             }
-        } catch (Throwable t) {
-            System.err.println(t.toString());
+            String[] tags = line.split("\\s+");
+            materials.add(new Material(tags, this, aspectPool));
         }
-        materialPool.forEach(Material::actualizeLinks);
+        this.materialPool = new MaterialPool(materials);
+        materials.forEach(Material::actualizeLinks);
     }
 
     private boolean isLineBad(String line) {
@@ -157,6 +149,10 @@ public class World {
 
     public AspectPool getAspectPool() {
         return aspectPool;
+    }
+
+    public MaterialPool getMaterialPool() {
+        return materialPool;
     }
 
     /**
@@ -203,23 +199,6 @@ public class World {
         } catch (Exception e) {
             int i = 0;
         }
-        return null;
-    }
-
-    /**
-     * Returns Material by name.
-     *
-     * @param name name of the Material.
-     * @return Material with this name. If there is no such Material in the materialPool
-     * returns null and prints a warning.
-     */
-    public Material getPoolMaterial(String name) {
-        for (Material material : materialPool) {
-            if (material.getName().equals(name)) {
-                return material;
-            }
-        }
-        System.err.println("Unrecognized Material request - " + name);
         return null;
     }
 
