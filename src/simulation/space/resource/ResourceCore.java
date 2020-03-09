@@ -22,7 +22,6 @@ public class ResourceCore {
     private Genome genome;
     private List<Material> materials;
     private Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion;
-    private Map<Aspect, String[]> _aspectConversion;
     private List<ResourceTag> tags;
     private Meme meaning;
 
@@ -36,7 +35,6 @@ public class ResourceCore {
     ) {
         this.meaning = meaning;
         this.aspectConversion = new HashMap<>(aspectConversion);
-        this._aspectConversion = new HashMap<>();
         this.tags = new ArrayList<>();
         this.materials = materials;
         this.genome = genome;
@@ -44,63 +42,8 @@ public class ResourceCore {
         computeTagsFromMaterials();
     }
 
-    void replaceLinks() {
-        for (List<ShnyPair<Resource, Integer>> resources : aspectConversion.values()) {
-            for (ShnyPair<Resource, Integer> resource : resources) {
-                try {
-                    if (resource.first == null) {
-                        resource.first = genome.getLegacy().copy();
-                    } else if (resource.first.getSimpleName().equals(genome.getName())) {
-                        resource.first = this.copy();
-                    }
-                } catch (NullPointerException r) {
-                    int i = 0;
-                }
-            }
-        }
-    }
-
     public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) { //TODO must be package-private
         aspectConversion.put(session.world.getAspectPool().get(aspectName), resourceList);
-    }
-
-    ShnyPair<Resource, Integer> readConversion(String s, ResourcePool resourcePool) {
-        if (s.split(":")[0].equals("LEGACY")) {
-            if (genome.getLegacy() == null) {
-                //System.err.println("No legacy for LEGACY conversion in genome " + genome.getName());
-                return new ShnyPair<>(null, Integer.parseInt(s.split(":")[1]));//TODO insert legacy in another place
-            }
-            Resource resource = genome.getLegacy().copy();
-            return new ShnyPair<>(
-                    resource.resourceCore.genome.hasLegacy()
-                            ? resource.resourceCore.copyWithLegacyInsertion(this, resourcePool)
-                            : resource,
-                    Integer.parseInt(s.split(":")[1]));
-        }
-        Resource resource = resourcePool.get(s.split(":")[0]);
-        ShnyPair<Resource, Integer> pair = new ShnyPair<>(resource.resourceCore.genome.hasLegacy() ?
-                resource.resourceCore.copyWithLegacyInsertion(this, resourcePool) : resource,
-                Integer.parseInt(s.split(":")[1]));//TODO insert amount in Resource amount;
-        pair.first.resourceCore._aspectConversion = new HashMap<>(resource.resourceCore._aspectConversion);
-        pair.first.resourceCore.actualizeLinks(resourcePool);
-        return pair;
-    }
-
-    void actualizeLinks(ResourcePool resourcePool) {
-        for (Aspect aspect : _aspectConversion.keySet()) {
-            aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
-                    .map(s -> readConversion(s, resourcePool)).collect(Collectors.toList()));
-        }
-        if (materials.isEmpty()) {
-            return;
-        }
-        for (Aspect aspect : session.world.getAspectPool().getAll()) {
-            for (AspectMatcher matcher : aspect.getMatchers()) {
-                if (matcher.match(this)) {
-                    addAspectConversion(aspect.getName(), matcher.getResults(copy(), resourcePool));
-                }
-            }
-        }
     }
 
     public Map<Aspect, List<ShnyPair<Resource, Integer>>> getAspectConversion() {
@@ -186,26 +129,6 @@ public class ResourceCore {
 
     Resource copy() {
         return new Resource(this);
-    }
-
-    ResourceIdeal copyWithLegacyInsertion(ResourceCore creator, ResourcePool resourcePool) {
-        ResourceIdeal resource = new ResourceIdeal(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
-                new Genome(genome), aspectConversion, meaning));
-        resource.resourceCore._aspectConversion = _aspectConversion;
-        resource.resourceCore.setLegacy(creator, resourcePool);
-        return resource;//TODO is legacy passed to parts in genome?
-    }
-
-    void setLegacy(ResourceCore legacy, ResourcePool resourcePool) {
-        genome.setLegacy(legacy);
-
-        for (Aspect aspect : _aspectConversion.keySet()) {
-            if (Arrays.stream(_aspectConversion.get(aspect)).anyMatch(s -> s.split(":")[0].equals("LEGACY"))) {
-                aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
-                        .map(s -> readConversion(s, resourcePool)).collect(Collectors.toList()));
-            }
-        }
-        replaceLinks();
     }
 
     Resource copy(int amount) {

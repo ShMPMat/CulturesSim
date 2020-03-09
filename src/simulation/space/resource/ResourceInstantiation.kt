@@ -12,7 +12,6 @@ import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.dependency.ResourceNeedDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
-import kotlin.collections.ArrayList
 
 class ResourceInstantiation(
         private val path: String,
@@ -183,12 +182,13 @@ class ResourceInstantiation(
         if (resource.genome.legacy == null) {
             return ShnyPair(null, amount) //TODO this is so wrong
         }
-        val legacyResource = resource.genome.legacy.copy()
+//        val legacyResource = resource.genome.legacy.copy()
+        val legacyTemplate = getTemplateWithName(resource.genome.legacy.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
         return ShnyPair(
-                if (legacyResource.genome.hasLegacy())
-                    legacyResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
+                if (legacyTemplate.resource.genome.hasLegacy())
+                    copyWithLegacyInsertion(legacyTemplate, resource.resourceCore).resource
                 else
-                    legacyResource,
+                    legacyTemplate.resource,
                 amount)
     }
 
@@ -219,7 +219,23 @@ class ResourceInstantiation(
                         .map { readConversion(template, it) }//TODO should I do it if in upper level I call actualizeLinks?
             }
         }
-        resource.resourceCore.replaceLinks()
+        replaceLinks(resource)
+    }
+
+    private fun replaceLinks(resource: ResourceIdeal) {
+        for (resources in resource.resourceCore.aspectConversion.values) {
+            for (conversionResource in resources) {
+                try {
+                    if (conversionResource.first == null) {
+                        conversionResource.first = resource.genome.legacy.copy()
+                    } else if (conversionResource.first!!.simpleName == resource.genome.name) {
+                        conversionResource.first = resource.resourceCore.copy()
+                    }
+                } catch (r: NullPointerException) {
+                    val i = 0
+                }
+            }
+        }
     }
 
     private fun actualizeParts(template: ResourceTemplate) {

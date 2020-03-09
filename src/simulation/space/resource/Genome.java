@@ -55,7 +55,7 @@ public class Genome {
         this.dependencies = new ArrayList<>(dependencies);
         this.dependencies.add(new TemperatureMin(temperatureMin, 2));
         this.dependencies.add(new TemperatureMax(temperatureMax, 2));
-        setLegacy(legacy);
+        this.legacy = legacy;
         this.templateLegacy = templateLegacy;
         this.size = size;
         this.canMove = canMove;
