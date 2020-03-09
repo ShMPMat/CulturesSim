@@ -130,7 +130,7 @@ class ResourceInstantiation(
                 mutableMapOf<Aspect?, MutableList<ShnyPair<Resource?, Int?>?>?>(),
                 null
         )
-        return ResourceTemplate(ResourceIdeal(resourceCore), mutableMapOf(), mutableListOf())
+        return ResourceTemplate(ResourceIdeal(resourceCore), aspectConversion, parts)
     }
 
     private fun actualizeLinks(template: ResourceTemplate, resourcePool: ResourcePool) {
@@ -161,7 +161,7 @@ class ResourceInstantiation(
             resource: ResourceIdeal,
             s: String,
             resourcePool: ResourcePool
-    ): ShnyPair<Resource, Int> {//TODO ordinary Pairs pls
+    ): ShnyPair<Resource?, Int> {//TODO ordinary Pairs pls
         val resourceNames = s.split(":".toRegex()).toTypedArray()
         if (resourceNames[0] == "LEGACY") {
             return manageLegacyConversion(resource, resourceNames[1].toInt(), resourcePool)
@@ -178,9 +178,9 @@ class ResourceInstantiation(
             resource: ResourceIdeal,
             amount: Int,
             resourcePool: ResourcePool
-    ): ShnyPair<Resource, Int> {
+    ): ShnyPair<Resource?, Int> {
         if (resource.genome.legacy == null) {
-            throw SpaceError("No legacy for legacy conversion")
+            return ShnyPair(null, amount) //TODO this is so wrong
         }
         val legacyResource: Resource = resource.genome.legacy.copy()
         return ShnyPair(

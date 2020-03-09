@@ -47,8 +47,14 @@ public class ResourceCore {
     private void replaceLinks() {
         for (List<ShnyPair<Resource, Integer>> resources : aspectConversion.values()) {
             for (ShnyPair<Resource, Integer> resource : resources) {
-                if (resource.first.getSimpleName().equals(genome.getName())) {
-                    resource.first = this.copy();
+                try {
+                    if (resource.first == null) {
+                        resource.first = genome.getLegacy().copy();
+                    } else if (resource.first.getSimpleName().equals(genome.getName())) {
+                        resource.first = this.copy();
+                    }
+                } catch (NullPointerException r) {
+                    int i = 0;
                 }
             }
         }
@@ -112,7 +118,8 @@ public class ResourceCore {
 
     private void computeTagsFromMaterials() {
         if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {
-            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
+            System.err.println("Resource " + genome.getName() + " has no materials.");
+//            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()) {
             tags.addAll(genome.getTags());
             tags.addAll(computeTags());
