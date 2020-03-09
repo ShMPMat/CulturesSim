@@ -7,6 +7,7 @@ import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,13 +16,7 @@ import static shmp.random.RandomCollectionsKt.*;
 import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 
-/**
- * Represents consumable objects found in the world.
- */
-public class Resource {//TODO check parts it seems that simple Plant has Fruits of ColdPlant
-    /**
-     * How many instances are in this Resources.
-     */
+public class Resource {
     int amount;
     ResourceCore resourceCore;
 

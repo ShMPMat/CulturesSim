@@ -2,7 +2,7 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
 

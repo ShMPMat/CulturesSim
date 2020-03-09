@@ -1,7 +1,7 @@
 package simulation.culture.group.request;
 
 import extra.ShnyPair;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;

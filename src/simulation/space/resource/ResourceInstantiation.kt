@@ -11,6 +11,7 @@ import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.dependency.ResourceNeedDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
+import simulation.space.resource.tag.ResourceTag
 
 class ResourceInstantiation(
         private val path: String,
@@ -161,7 +162,7 @@ class ResourceInstantiation(
     private fun readConversion(
             template: ResourceTemplate,
             conversionString: String
-    ): Pair<Resource?, Int> {//TODO ordinary Pairs pls
+    ): Pair<Resource?, Int> {
         val resourceNames = conversionString.split(":".toRegex()).toTypedArray()
         if (resourceNames[0] == "LEGACY") {
             return manageLegacyConversion(template.resource, resourceNames[1].toInt())

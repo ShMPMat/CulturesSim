@@ -2,6 +2,7 @@ package simulation.space.resource;
 
 import extra.ShnyPair;
 import simulation.space.Tile;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.ArrayList;
 import java.util.Collection;

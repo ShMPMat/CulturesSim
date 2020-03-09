@@ -19,7 +19,7 @@ import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
 import java.util.function.BiFunction;

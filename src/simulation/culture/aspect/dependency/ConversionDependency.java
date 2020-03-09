@@ -5,7 +5,7 @@ import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Collection;
 import java.util.Objects;

@@ -1,7 +1,7 @@
 package simulation.space.resource.material
 
 import simulation.culture.aspect.Aspect
-import simulation.space.resource.ResourceTag
+import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class Material(val name: String, val density: Double, val tags: List<ResourceTag>) {

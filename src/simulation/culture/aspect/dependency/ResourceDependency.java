@@ -3,7 +3,7 @@ package simulation.culture.aspect.dependency;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;

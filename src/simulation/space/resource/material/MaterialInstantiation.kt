@@ -3,7 +3,7 @@ package simulation.space.resource.material
 import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
-import simulation.space.resource.ResourceTag
+import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.collections.ArrayList
 

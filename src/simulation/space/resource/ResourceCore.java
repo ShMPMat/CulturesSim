@@ -1,12 +1,12 @@
 package simulation.space.resource;
 
-import extra.ShnyPair;
 import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.SpaceError;
 import simulation.space.resource.material.Material;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;

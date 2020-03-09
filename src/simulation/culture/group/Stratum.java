@@ -3,7 +3,7 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;

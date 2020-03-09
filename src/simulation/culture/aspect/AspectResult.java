@@ -1,7 +1,7 @@
 package simulation.culture.aspect;
 
 import simulation.space.resource.ResourcePack;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.HashMap;
 import java.util.Map;

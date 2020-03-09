@@ -1,7 +1,7 @@
 package simulation.culture.group;
 
 import simulation.culture.aspect.Aspect;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.space.resource.Resource;
 

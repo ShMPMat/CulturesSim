@@ -1,4 +1,7 @@
-package simulation.space.resource;
+package simulation.space.resource.tag;
+
+import simulation.space.resource.Resource;
+import simulation.space.resource.ResourcePack;
 
 import java.util.Collection;
 import java.util.Objects;

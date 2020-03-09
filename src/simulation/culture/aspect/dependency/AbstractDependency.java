@@ -1,6 +1,6 @@
 package simulation.culture.aspect.dependency;
 
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Objects;
 

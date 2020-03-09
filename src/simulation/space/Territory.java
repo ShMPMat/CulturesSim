@@ -2,7 +2,7 @@ package simulation.space;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.Resource;
 
 import java.util.*;

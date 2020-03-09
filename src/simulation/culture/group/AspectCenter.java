@@ -3,7 +3,7 @@ package simulation.culture.group;
 import extra.ShnyPair;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.aspect.dependency.*;

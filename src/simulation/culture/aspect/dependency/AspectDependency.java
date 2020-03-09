@@ -3,7 +3,7 @@ package simulation.culture.aspect.dependency;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
-import simulation.space.resource.ResourceTag;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Objects;
 
