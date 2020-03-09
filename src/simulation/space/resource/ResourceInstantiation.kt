@@ -12,7 +12,7 @@ import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.dependency.ResourceNeedDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
-import java.util.*
+import kotlin.collections.ArrayList
 
 class ResourceInstantiation(
         private val path: String,
@@ -31,7 +31,7 @@ class ResourceInstantiation(
             resourceTemplates.add(createResource(tags))
         }
         val resourcePool = ResourcePool(resourceTemplates.map { it.resourceIdeal })
-        resourceTemplates.forEach { actualizeLinks(it, resourcePool) }//TODO remove all Controller calls
+        resourceTemplates.forEach { actualizeLinks(it, resourcePool) }
         resourceTemplates.forEach { actualizeParts(it, resourcePool) }//TODO Maybe legacy resources dont have parts!
         return resourcePool
     }
@@ -138,8 +138,7 @@ class ResourceInstantiation(
         for (entry in aspectConversion.entries) {
             resource.resourceCore.aspectConversion[entry.key] = entry.value
                     .map {
-                        readConversion(resource, it, resourcePool)
-                                ?: throw SpaceError("Impossible error")
+                        readConversion(template, it, resourcePool)
                     }
         }
         if (resource.resourceCore.materials.isEmpty()) {
@@ -158,19 +157,19 @@ class ResourceInstantiation(
     }
 
     private fun readConversion(
-            resource: ResourceIdeal,
+            template: ResourceTemplate,
             s: String,
             resourcePool: ResourcePool
     ): ShnyPair<Resource?, Int> {//TODO ordinary Pairs pls
         val resourceNames = s.split(":".toRegex()).toTypedArray()
         if (resourceNames[0] == "LEGACY") {
-            return manageLegacyConversion(resource, resourceNames[1].toInt(), resourcePool)
+            return manageLegacyConversion(template.resourceIdeal, resourceNames[1].toInt(), resourcePool)
         }
-        val nextTemplate: ResourceTemplate = resourceTemplates.first { it.resourceIdeal.baseName == resourceNames[0] }
-        val templateResource = if (nextTemplate.resourceIdeal.genome.hasLegacy())
-            nextTemplate.resourceIdeal.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
-        else nextTemplate.resourceIdeal
-        actualizeLinks(ResourceTemplate(templateResource, nextTemplate.aspectConversion, listOf()), resourcePool)
+        var nextTemplate: ResourceTemplate = resourceTemplates.first { it.resourceIdeal.baseName == resourceNames[0] }
+        nextTemplate = if (nextTemplate.resourceIdeal.genome.hasLegacy())
+            copyWithLegacyInsertion(nextTemplate, template.resourceIdeal.resourceCore, resourcePool)
+        else nextTemplate
+        actualizeLinks(nextTemplate, resourcePool)
         return ShnyPair(nextTemplate.resourceIdeal, resourceNames[1].toInt())//TODO insert amount in Resource amount;
     }
 
@@ -182,13 +181,31 @@ class ResourceInstantiation(
         if (resource.genome.legacy == null) {
             return ShnyPair(null, amount) //TODO this is so wrong
         }
-        val legacyResource: Resource = resource.genome.legacy.copy()
-        return ShnyPair(
-                if (legacyResource.genome.hasLegacy())
-                    legacyResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
-                else
-                    legacyResource,
-                amount)
+        throw SpaceError("Unexpected Legacy")
+//        val legacyResource: Resource = resource.genome.legacy.copy()
+//        return ShnyPair(
+//                if (legacyResource.genome.hasLegacy())
+//                    legacyResource.resourceCore.copyWithLegacyInsertion(resource.resourceCore, resourcePool)
+//                else
+//                    legacyResource,
+//                amount)
+    }
+
+    fun copyWithLegacyInsertion(
+            template: ResourceTemplate,
+            creator: ResourceCore,
+            resourcePool: ResourcePool
+    ): ResourceTemplate {
+        val (resource, aspectConversion, parts) = template
+        val legacyResource = ResourceIdeal(ResourceCore(
+                resource.genome.name,
+                "",
+                ArrayList<Material>(resource.resourceCore.materials),
+                Genome(resource.genome),
+                mutableMapOf(),
+                null))
+        legacyResource.resourceCore.setLegacy(creator, resourcePool)
+        return ResourceTemplate(legacyResource, aspectConversion, parts) //TODO is legacy passed to parts in genome?
     }
 
     private fun actualizeParts(template: ResourceTemplate, resourcePool: ResourcePool) {
@@ -215,6 +232,6 @@ class ResourceInstantiation(
 
 data class ResourceTemplate(
         val resourceIdeal: ResourceIdeal,
-        val aspectConversion: Map<Aspect, Array<String>>,
+        val aspectConversion: MutableMap<Aspect, Array<String>>,
         val parts: List<String>
 )

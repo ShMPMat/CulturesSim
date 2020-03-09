@@ -60,7 +60,7 @@ public class ResourceCore {
         }
     }
 
-    void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) {
+    public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) { //TODO must be package-private
         aspectConversion.put(session.world.getAspectPool().get(aspectName), resourceList);
     }
 

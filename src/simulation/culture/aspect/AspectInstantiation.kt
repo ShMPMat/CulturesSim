@@ -19,4 +19,8 @@ class AspectInstantiation {
         }
         return AspectPool(aspects)
     }
+
+    fun postResourceInstantiation() { //TODO all the creation must be moved after the resources
+
+    }
 }
