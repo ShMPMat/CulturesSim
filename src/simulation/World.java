@@ -49,9 +49,6 @@ public class World {
     private int turn = 0, thousandTurns = 0, millionTurns = 0;
 
     World() {
-    }
-
-    void initializeZero() {
         resourcePool = (new ResourceInstantiation(
                 "SupplementFiles/Resources",
                 aspectPool,

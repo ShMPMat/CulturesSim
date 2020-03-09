@@ -73,7 +73,6 @@ public class Controller {
         session = this;
         templateBase = new TemplateBase();
         world = new World();
-        world.initializeZero();
         this.interactionModel = interactionModel;
     }
 

@@ -151,7 +151,7 @@ class ResourceInstantiation(
             for (matcher in aspect.matchers) {
                 if (matcher.match(resource.resourceCore)) {
                     resource.resourceCore.addAspectConversion(
-                            aspect.name,
+                            aspectPool.get(aspect.name),
                             matcher.getResults(resource.resourceCore.copy(), resourcePool)
                     )
                 }

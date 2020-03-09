@@ -405,7 +405,7 @@ public class TextVisualizer implements Visualizer {
      */
     private void printGroup(GroupConglomerate group) {
         printMap(tile -> (group.getTiles().contains(tile) ?
-                (group.subgroups.stream().anyMatch(sg -> sg.getTiles().contains(tile)) ? "\033[31mO" :
+                (group.subgroups.stream().anyMatch(sg -> sg.getTerritoryCenter().getTerritory().getTiles().contains(tile)) ? "\033[31mO" :
                         (tile.getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
                                 "\033[31m+" : "\033[31mX")) : ""));
         System.out.println(group);

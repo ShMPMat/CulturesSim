@@ -2,7 +2,6 @@ package simulation.space.resource;
 
 import extra.ShnyPair;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectMatcher;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.SpaceError;
@@ -42,8 +41,8 @@ public class ResourceCore {
         computeTagsFromMaterials();
     }
 
-    public void addAspectConversion(String aspectName, List<ShnyPair<Resource, Integer>> resourceList) { //TODO must be package-private
-        aspectConversion.put(session.world.getAspectPool().get(aspectName), resourceList);
+    public void addAspectConversion(Aspect aspect, List<ShnyPair<Resource, Integer>> resourceList) { //TODO must be package-private
+        aspectConversion.put(aspect, resourceList);
     }
 
     public Map<Aspect, List<ShnyPair<Resource, Integer>>> getAspectConversion() {

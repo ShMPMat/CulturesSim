@@ -29,18 +29,8 @@ import static simulation.Controller.*;
  * Entity with Aspects, which develops through time.
  */
 public class Group {
-    /**
-     * Whether group live or dead
-     */
     public State state = State.Live;
-    /**
-     * Abstract name of the group;
-     */
     public String name;
-    /**
-     * Population of the group. For group with groups must be equal
-     * to sum of subgroup populations.
-     */
     public int population;
 
     private int maxPopulation = session.defaultGroupMaxPopulation;
@@ -101,7 +91,7 @@ public class Group {
         return culturalCenter;
     }
 
-    TerritoryCenter getTerritoryCenter() {
+    public TerritoryCenter getTerritoryCenter() {
         return territoryCenter;
     }
 
@@ -149,10 +139,10 @@ public class Group {
     private void die() {
         state = State.Dead;
         population = 0;
-        for (Tile tile : getTiles()) {
+        for (Tile tile : getTerritoryCenter().getTerritory().getTiles()) {
             tile.group = null;
         }
-        cherishedResources.disbandOnTile(randomElement(getTiles(), session.random));
+        cherishedResources.disbandOnTile(randomElement(territoryCenter.getTerritory().getTiles(), session.random));
         uniqueArtifacts.disbandOnTile(randomElement(getTiles(), session.random));
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : Groups.getAllNearGroups(this)) {
