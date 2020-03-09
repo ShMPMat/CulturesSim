@@ -3,7 +3,6 @@ package simulation;
 import extra.SpaceProbabilityFuncs;
 import kotlin.ranges.IntRange;
 import simulation.culture.Event;
-import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectInstantiation;
 import simulation.culture.aspect.AspectPool;
 import simulation.culture.group.GroupConglomerate;
@@ -18,7 +17,6 @@ import simulation.space.resource.material.MaterialInstantiation;
 import simulation.space.resource.material.MaterialPool;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static simulation.Controller.*;
@@ -39,9 +37,6 @@ public class World {
      */
     private GroupMemes memePool = new GroupMemes();
     public WorldMap map;
-    /**
-     * All events which are linked to the world as a whole.
-     */
     public List<Event> events = new ArrayList<>();
     /**
      * How many turns passed from the beginning of the simulation.
@@ -127,10 +122,6 @@ public class World {
             int i = 0;
         }
         return null;
-    }
-
-    public Collection<Aspect> getAllDefaultAspects() {
-        return aspectPool.getAll();
     }
 
     /**

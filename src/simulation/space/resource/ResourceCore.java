@@ -1,6 +1,7 @@
 package simulation.space.resource;
 
 import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
@@ -10,8 +11,6 @@ import simulation.space.resource.material.Material;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static simulation.Controller.session;
-
 /**
  * Class which contains all general information about all Resources with the same name.
  */
@@ -20,7 +19,7 @@ public class ResourceCore {
     private boolean hasMeaning = false;
     private Genome genome;
     private List<Material> materials;
-    private Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion;
+    private Map<Aspect, List<Pair<Resource, Integer>>> aspectConversion;
     private List<ResourceTag> tags;
     private Meme meaning;
 
@@ -29,7 +28,7 @@ public class ResourceCore {
             String meaningPostfix,
             List<Material> materials,
             Genome genome,
-            Map<Aspect, List<ShnyPair<Resource, Integer>>> aspectConversion,
+            Map<Aspect, List<Pair<Resource, Integer>>> aspectConversion,
             Meme meaning
     ) {
         this.meaning = meaning;
@@ -41,11 +40,11 @@ public class ResourceCore {
         computeTagsFromMaterials();
     }
 
-    public void addAspectConversion(Aspect aspect, List<ShnyPair<Resource, Integer>> resourceList) { //TODO must be package-private
+    public void addAspectConversion(Aspect aspect, List<Pair<Resource, Integer>> resourceList) { //TODO must be package-private
         aspectConversion.put(aspect, resourceList);
     }
 
-    public Map<Aspect, List<ShnyPair<Resource, Integer>>> getAspectConversion() {
+    public Map<Aspect, List<Pair<Resource, Integer>>> getAspectConversion() {
         return aspectConversion;
     }
 
@@ -178,7 +177,7 @@ public class ResourceCore {
     List<Resource> applyAspect(Aspect aspect) {
         if (aspectConversion.containsKey(aspect)) {
             List<Resource> resourceList = aspectConversion.get(aspect).stream()
-                    .map(pair -> pair.first.copy(pair.second))
+                    .map(pair -> pair.getFirst().copy(pair.getSecond()))
                     .collect(Collectors.toList());//TODO throw an exception on any attempt to copy template
             resourceList.forEach(resource -> {
                 if (resource.resourceCore.genome instanceof GenomeTemplate) {//TODO links

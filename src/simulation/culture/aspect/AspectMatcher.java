@@ -1,6 +1,7 @@
 package simulation.culture.aspect;
 
 import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.space.resource.ResourcePool;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceCore;
@@ -13,7 +14,7 @@ public class AspectMatcher {
     private AspectCore core;
     private List<String> neededProperties = new ArrayList<>();
     private List<String> badProperties = new ArrayList<>();
-    private List<ShnyPair<String, Integer>> results = new ArrayList<>();
+    private List<Pair<String, Integer>> results = new ArrayList<>();
     private boolean isMovable = false;
     private double size = 0;
 
@@ -29,7 +30,7 @@ public class AspectMatcher {
                     break;
                 case '#':
                     String[] temp = tag.substring(1).split(":");
-                    results.add(new ShnyPair<>(temp[0], Integer.parseInt(temp[1])));
+                    results.add(new Pair<>(temp[0], Integer.parseInt(temp[1])));
                     break;
                 case 'i':
                     if (tag.equals("isMovable")) {
@@ -71,8 +72,8 @@ public class AspectMatcher {
         return true;
     }
 
-    public List<ShnyPair<Resource, Integer>> getResults(Resource resource, ResourcePool resourcePool) {
-        return results.stream().map(pair -> new ShnyPair<>(pair.first.equals("MATCHED") ?
-                resource : resourcePool.get(pair.first), pair.second)).collect(Collectors.toList());
+    public List<Pair<Resource, Integer>> getResults(Resource resource, ResourcePool resourcePool) {
+        return results.stream().map(pair -> new Pair<>(pair.getFirst().equals("MATCHED") ?
+                resource : resourcePool.get(pair.getFirst()), pair.getSecond())).collect(Collectors.toList());
     }
 }

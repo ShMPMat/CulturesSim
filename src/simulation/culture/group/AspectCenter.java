@@ -277,7 +277,7 @@ public class AspectCenter {
     List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
         List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
 
-        for (Aspect aspect : session.world.getAllDefaultAspects().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
+        for (Aspect aspect : session.world.getAspectPool().getAll().stream().filter(aspiration::isAcceptable).collect(Collectors.toList())) {
             Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new ShnyPair<>(aspect.copy(_m, group), null));

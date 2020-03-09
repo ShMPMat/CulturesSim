@@ -1,7 +1,6 @@
 package simulation.space.resource
 
 import extra.InputDatabase
-import extra.ShnyPair
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
@@ -130,7 +129,7 @@ class ResourceInstantiation(
                 "",
                 genome.materials,
                 genome,
-                mutableMapOf<Aspect?, MutableList<ShnyPair<Resource?, Int?>?>?>(),
+                mutableMapOf<Aspect?, MutableList<Pair<Resource?, Int?>?>?>(),
                 null
         )
         return ResourceTemplate(ResourceIdeal(resourceCore), aspectConversion, parts)
@@ -162,7 +161,7 @@ class ResourceInstantiation(
     private fun readConversion(
             template: ResourceTemplate,
             conversionString: String
-    ): ShnyPair<Resource?, Int> {//TODO ordinary Pairs pls
+    ): Pair<Resource?, Int> {//TODO ordinary Pairs pls
         val resourceNames = conversionString.split(":".toRegex()).toTypedArray()
         if (resourceNames[0] == "LEGACY") {
             return manageLegacyConversion(template.resource, resourceNames[1].toInt())
@@ -172,19 +171,19 @@ class ResourceInstantiation(
             copyWithLegacyInsertion(nextTemplate, template.resource.resourceCore)
         else nextTemplate
         actualizeLinks(nextTemplate)
-        return ShnyPair(nextTemplate.resource, resourceNames[1].toInt())//TODO insert amount in Resource amount;
+        return Pair(nextTemplate.resource, resourceNames[1].toInt())//TODO insert amount in Resource amount;
     }
 
     private fun manageLegacyConversion(
             resource: ResourceIdeal,
             amount: Int
-    ): ShnyPair<Resource?, Int> {
+    ): Pair<Resource?, Int> {
         if (resource.genome.legacy == null) {
-            return ShnyPair(null, amount) //TODO this is so wrong
+            return Pair(null, amount) //TODO this is so wrong
         }
 //        val legacyResource = resource.genome.legacy.copy()
         val legacyTemplate = getTemplateWithName(resource.genome.legacy.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
-        return ShnyPair(
+        return Pair(
                 if (legacyTemplate.resource.genome.hasLegacy())
                     copyWithLegacyInsertion(legacyTemplate, resource.resourceCore).resource
                 else
@@ -224,15 +223,12 @@ class ResourceInstantiation(
 
     private fun replaceLinks(resource: ResourceIdeal) {
         for (resources in resource.resourceCore.aspectConversion.values) {
-            for (conversionResource in resources) {
-                try {
-                    if (conversionResource.first == null) {
-                        conversionResource.first = resource.genome.legacy.copy()
-                    } else if (conversionResource.first!!.simpleName == resource.genome.name) {
-                        conversionResource.first = resource.resourceCore.copy()
-                    }
-                } catch (r: NullPointerException) {
-                    val i = 0
+            for (i in resources.indices) {
+                val (conversionResource, conversionResourceAmount) = resources[i]
+                if (conversionResource == null) {
+                    resources[i] = Pair(resource.genome.legacy.copy(), conversionResourceAmount)
+                } else if (conversionResource.simpleName == resource.genome.name) {
+                    resources[i] = Pair(resource.resourceCore.copy(), conversionResourceAmount)
                 }
             }
         }
@@ -256,9 +252,9 @@ class ResourceInstantiation(
         val (resource, aspectConversion, _) = template
         if (resource.resourceCore.genome.parts.isNotEmpty()
                 && !aspectConversion.containsKey(aspectPool.get("TakeApart"))) {//TODO aspects shouldn't be here I recon
-            val resourceList: MutableList<ShnyPair<Resource, Int>> = ArrayList()
-            for (partResource in resource.resourceCore.genome.getParts()) {
-                resourceList.add(ShnyPair(partResource, partResource.amount))
+            val resourceList: MutableList<Pair<Resource, Int>> = ArrayList()
+            for (partResource in resource.resourceCore.genome.parts) {
+                resourceList.add(Pair(partResource, partResource.amount))
                 resource.resourceCore.aspectConversion[aspectPool.get("TakeApart")] = resourceList
             }
         }
