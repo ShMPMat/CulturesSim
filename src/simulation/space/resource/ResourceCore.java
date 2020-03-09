@@ -44,7 +44,7 @@ public class ResourceCore {
         computeTagsFromMaterials();
     }
 
-    private void replaceLinks() {
+    void replaceLinks() {
         for (List<ShnyPair<Resource, Integer>> resources : aspectConversion.values()) {
             for (ShnyPair<Resource, Integer> resource : resources) {
                 try {
@@ -199,20 +199,10 @@ public class ResourceCore {
     void setLegacy(ResourceCore legacy, ResourcePool resourcePool) {
         genome.setLegacy(legacy);
 
-        if (_aspectConversion != null) {
-            for (Aspect aspect : _aspectConversion.keySet()) {
-                if (Arrays.stream(_aspectConversion.get(aspect)).anyMatch(s -> s.split(":")[0].equals("LEGACY"))) {
-                    aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
-                            .map(s -> readConversion(s, resourcePool)).collect(Collectors.toList()));
-                }
-            }
-        } else {
-            for (Aspect aspect : aspectConversion.keySet()) {
-                for (ShnyPair<Resource, Integer> pair : aspectConversion.get(aspect)) {
-                    if (pair.first == null) {
-                        pair.first = legacy.fullCopy();
-                    }
-                }
+        for (Aspect aspect : _aspectConversion.keySet()) {
+            if (Arrays.stream(_aspectConversion.get(aspect)).anyMatch(s -> s.split(":")[0].equals("LEGACY"))) {
+                aspectConversion.put(aspect, Arrays.stream(_aspectConversion.get(aspect))
+                        .map(s -> readConversion(s, resourcePool)).collect(Collectors.toList()));
             }
         }
         replaceLinks();
