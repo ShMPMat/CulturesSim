@@ -1,0 +1,15 @@
+// Labelers which assign new tags depending on the old ones
+// Grammar:
+//      first name is the new tag
+//      t: - needed tags
+//      >=, <= sizes
+//      movable - isMovable
+//
+//
+-goodForClothes          t:flexible   t:solid       t:soft
+
+-weapon                  t:hard       t:sturdy
+    >=0.05
+    movable
+
+-goodForEngraving        t:hard       t:sturdy
