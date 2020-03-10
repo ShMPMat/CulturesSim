@@ -123,7 +123,9 @@ public class TectonicPlate extends Territory {
             }
             tiles.addAll(neighbours);
         }
-        this.affectedTiles = tiles.stream().map(tile -> new ShnyPair<>(tile, (Math.random() + 0.1)/1.1)).collect(Collectors.toList());
+        this.affectedTiles = tiles.stream()
+                .map(tile -> new ShnyPair<>(tile, (session.random.nextDouble() + 0.1)/1.1))
+                .collect(Collectors.toList());
         return this.affectedTiles;
     }
 

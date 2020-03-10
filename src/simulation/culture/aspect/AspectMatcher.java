@@ -1,6 +1,5 @@
 package simulation.culture.aspect;
 
-import extra.ShnyPair;
 import kotlin.Pair;
 import simulation.space.resource.ResourcePool;
 import simulation.space.resource.Resource;
@@ -11,15 +10,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AspectMatcher {
-    private AspectCore core;
+    private String coreName;
     private List<String> neededProperties = new ArrayList<>();
     private List<String> badProperties = new ArrayList<>();
     private List<Pair<String, Integer>> results = new ArrayList<>();
     private boolean isMovable = false;
     private double size = 0;
 
-    AspectMatcher(String[] tags, AspectCore core) {
-        this.core = core;
+    AspectMatcher(String[] tags, String coreName) {
+        this.coreName = coreName;
         for (String tag: tags) {
             switch (tag.charAt(0)) {
                 case '@':
@@ -52,8 +51,9 @@ public class AspectMatcher {
     }
 
     public boolean match(ResourceCore core) {
-        if (core.getAspectConversion().keySet().stream().map(Aspect::getName)
-                .anyMatch(name -> name.equals(this.core.name))) {
+        if (core.getAspectConversion().keySet().stream()
+                .map(Aspect::getName)
+                .anyMatch(name -> name.equals(coreName))) {
             return false;
         }
         if (neededProperties.stream().anyMatch(property -> !core.getMainMaterial().hasTagWithName(property))) {

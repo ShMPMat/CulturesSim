@@ -87,9 +87,9 @@ public class Resource {
      */
     public Resource getPart(int part) {
         int result;
-        double prob = Math.random() * 0.5;
+        double prob = session.random.nextDouble() * 0.5;
         if (part <= amount * prob) {
-            result = (amount > part ? part : amount);
+            result = Math.min(amount, part);
         } else {
             result = amount * prob + 1 < amount ? (int) (amount * prob) + 1 : amount;
         }
@@ -98,7 +98,7 @@ public class Resource {
     }
 
     public Resource getCleanPart(int part) {
-        int result = (amount > part ? part : amount);
+        int result = Math.min(amount, part);
         amount -= result;
         return cleanCopy(result);
     }

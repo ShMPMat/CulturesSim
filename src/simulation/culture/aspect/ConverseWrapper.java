@@ -24,7 +24,11 @@ public class ConverseWrapper extends Aspect {
     public Resource resource;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
-        super(new AspectCore(new String[]{aspect.getName()+"On"+resource.getBaseName()}), new HashMap<>(), group);
+        super(
+                AspectInstantiationKt.createCore(new String[]{aspect.getName() + "On" + resource.getBaseName()}),
+                new HashMap<>(),
+                group
+        );
         this.aspect = aspect;
         this.resource = resource.cleanCopy();
         for (Resource res : resource.applyAspect(aspect)) {
@@ -57,7 +61,7 @@ public class ConverseWrapper extends Aspect {
     public AspectResult use(AspectController controller) {
         try {
             group.getAspect(aspect).markAsUsed();
-        return super.use(controller);
+            return super.use(controller);
         } catch (Exception e) {
             throw new RuntimeException("");
         }
@@ -101,6 +105,6 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public int hashCode() {
-        return Objects.hash(aspectCore.name, aspect, resource);
+        return Objects.hash(aspectCore.getName(), aspect, resource);
     }
 }

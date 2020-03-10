@@ -10,52 +10,28 @@ import java.util.*;
  * Class which contains all general information about all Aspects with the same name.
  */
 class AspectCore {
-    String name;
+    private String name;
     /**
      * AspectTags which represent which resources are provided by this Aspect.
      */
-    private List<ResourceTag> tags = new ArrayList<>();
+    private List<ResourceTag> tags;
     /**
      * Requirements for an Aspect to be added to the group.
      */
-    private List<ResourceTag> requirements = new ArrayList<>();
-    List<AspectMatcher> matchers = new ArrayList<>();
-    boolean applyMeaning = false;
+    private List<ResourceTag> requirements;
+    private List<AspectMatcher> matchers;
+    boolean applyMeaning;
 
-    AspectCore(String[] tags) {
-        for (int i = 0; i < tags.length; i++) {
-            String tag = tags[i];
-            if (i == 0) {
-                this.name = tag;
-            } else {
-                switch ((tag.charAt(0))) {
-                    case '-':
-                        this.tags.add(new ResourceTag(tag.substring(1), false, false, false));
-                        i++;
-                        break;
-                    case '+':
-                        this.tags.add(new ResourceTag(tag.substring(1), true, false, false));
-                        i++;
-                        break;
-                    case '/':
-                        this.requirements.add(new ResourceTag(tag.substring(1), false, false, false));
-                        break;
-                    case '*':
-                        this.requirements.add(new ResourceTag(tag.substring(1), false, false, true));
-                        break;
-                    case '#':
-                        if (tag.substring(1).equals("MEANING")) {
-                            applyMeaning = true;
-                        } else {
-                            this.requirements.add(new ResourceTag(tag.substring(1), false, true, false));
-                        }
-                        break;
-                    case '&':
-                        matchers.add(new AspectMatcher(tag.substring(1).split("-+"), this));
-                        break;
-                }
-            }
-        }
+    public AspectCore(String name,
+                      ArrayList<ResourceTag> aspectTags,
+                      ArrayList<ResourceTag> requirements,
+                      ArrayList<AspectMatcher> matchers,
+                      boolean applyMeaning) {
+        this.name = name;
+        this.tags = aspectTags;
+        this.requirements = requirements;
+        this.matchers = matchers;
+        this.applyMeaning = applyMeaning;
     }
 
 
@@ -69,6 +45,10 @@ class AspectCore {
 
     Collection<ResourceTag> getRequirements() {
         return requirements;
+    }
+
+    public List<AspectMatcher> getMatchers() {
+        return matchers;
     }
 
     void addAllTags(Collection<ResourceTag> tags) {

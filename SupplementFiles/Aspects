@@ -7,7 +7,7 @@
 /                          * - what Resource should possess to satisfy CW on this Aspect
 /
 
--MountainLiving             +mountainLiving       1
+-MountainLiving             +mountainLiving
 
 -Incinerate
     &@_can_be_ignited--#Fire:1--#Ash:1
@@ -37,21 +37,3 @@
 -Carve                                                                       *goodForEngraving   #MEANING
 -Paint                                                     *solid        #colour                 #MEANING
 -Incrust                                                   *hard         /hard                   #MEANING
-
-/Riding                                                                      /ridingAnimals
-/Farming                    -food                  1                        /seeds
-/Dishes                                                                     /material
-/Religion                   +religion              1
-/Totems                                                                     /material           *religion
-/SeaShips                                                                   /material
-/Clothing                   -clothing             1                         /material
-/WaterLiving                +waterLiving          1
-/Nomadism
-/Philosophy
-/FamilyClans
-/Monarchy
-/Etiquette
-/Meditation
-/Travel
-/Headhunt
-/Bandits

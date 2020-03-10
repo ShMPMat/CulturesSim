@@ -94,17 +94,12 @@ public class Aspect {
         return group;
     }
 
-    /**
-     * Dependencies getter.
-     *
-     * @return dependencies for this Aspect.
-     */
     public Map<ResourceTag, Set<Dependency>> getDependencies() {
         return dependencies;
     }
 
     public List<AspectMatcher> getMatchers() {
-        return aspectCore.matchers;
+        return aspectCore.getMatchers();
     }
 
     public int getUsefulness() {
@@ -152,6 +147,7 @@ public class Aspect {
                     }
                 }
             } catch (Exception e) {
+                System.err.println(e);
                 int i = 0;
             }
         }
@@ -254,17 +250,17 @@ public class Aspect {
             return false;
         }
         Aspect aspect = (Aspect) o;
-        return aspectCore.name.equals(aspect.aspectCore.name);
+        return aspectCore.getName().equals(aspect.aspectCore.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(aspectCore.name);
+        return Objects.hash(aspectCore.getName());
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Aspect " + aspectCore.name + ", usefulness - " + usefulness +
+        StringBuilder stringBuilder = new StringBuilder("Aspect " + aspectCore.getName() + ", usefulness - " + usefulness +
                 ", dependencies:");
         for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.entrySet()) {
             stringBuilder.append("\n**").append(entry.getKey().name).append(":");
