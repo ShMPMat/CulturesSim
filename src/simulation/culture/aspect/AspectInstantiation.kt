@@ -2,7 +2,9 @@ package simulation.culture.aspect
 
 import extra.InputDatabase
 import simulation.space.resource.tag.ResourceTag
+import simulation.space.resource.tag.makeLabeler
 import java.util.*
+import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 
 class AspectInstantiation {
@@ -44,7 +46,16 @@ internal fun createCore(tags: Array<String>): AspectCore {
             } else {
                 requirements.add(ResourceTag(tag, false, true, false))
             }
-            '&' -> matchers.add(AspectMatcher(tag.split("-+".toRegex()).toTypedArray(), name))
+            '&' -> {
+                val matcherTags = tag.split("-+".toRegex()).toTypedArray()
+                val (resultsTags, labelerTags) = matcherTags.partition { it[0] == '#' }
+                val labeler = makeLabeler(labelerTags)
+                val results = resultsTags.map {
+                            val temp = it.drop(1).split(":".toRegex()).toTypedArray()
+                            Pair(temp[0], temp[1].toInt())
+                        }
+                matchers.add(AspectMatcher(labeler, results, name))
+            }
         }
     }
     return AspectCore(name, aspectTags, requirements, matchers, applyMeaning)

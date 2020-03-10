@@ -1,6 +1,4 @@
-/ Grammar for matches:     @ - needed property, ! - bad property
-/                          isMovable - if Resource needs to be movable
-/                          s%f       - if Resource needs to be greater in size then %f
+/ Grammar for matches:     main grammar is the grammar for ResourceTagLabelers
 /                          # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
 /
 / Grammar for other tags:  # - needed instrument, / - needed ingredient,
@@ -10,7 +8,7 @@
 -MountainLiving             +mountainLiving
 
 -Incinerate
-    &@_can_be_ignited--#Fire:1--#Ash:1
+    &t:_can_be_ignited--#Fire:1--#Ash:1
 -Bake                                                                        /burns
 -Roast                                                                       /burns
 
@@ -20,17 +18,17 @@
 -Chisel
 
 -BuildHouse
-    &@hard--s0.5--#House:1
+    &t:hard-->=0.5--#House:1
 -MakeDish
-    &@hard--s0.05--#Dish:1
+    &t:hard-->=0.05--#Dish:1
 -MakeDye
-    &@_colour--#Dye:1
+    &t:_colour--#Dye:1
 
 -Killing                                                                     #weapon
 -PlantSeed
 -TakeApart
 -Take
-    &!gas--isMovable--#MATCHED:1
+    &!!t:gas--mv--#MATCHED:1
 
 -ShapeMalleable                                                              *malleable          #MEANING
 -Engrave                                                                     *goodForEngraving   #MEANING
