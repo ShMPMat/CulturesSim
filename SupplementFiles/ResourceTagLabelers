@@ -3,13 +3,13 @@
 //      first name is the new tag
 //      t: - needed tags
 //      >=, <= sizes
-//      movable - isMovable
+//      mм - isMovable
 //
 //
 -goodForClothes          t:flexible   t:solid       t:soft
 
 -weapon                  t:hard       t:sturdy
     >=0.05
-    movable
+    mv
 
 -goodForEngraving        t:hard       t:sturdy
