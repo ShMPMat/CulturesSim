@@ -59,7 +59,7 @@ public class ResourceCore {
 
     private void computeTagsFromMaterials() {
         if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {
-            System.err.println("Resource " + genome.getName() + " has no materials.");
+//            System.err.println("Resource " + genome.getName() + " has no materials.");
 //            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()) {
             tags.addAll(genome.getTags());

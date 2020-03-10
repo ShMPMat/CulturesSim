@@ -55,7 +55,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
     }
 
     public int getAmountOfResourcesWithTag(ResourceTag tag) {
-        return getAllResourcesWithTag(tag).getResources().stream().reduce(0, (i, r) -> i + r.amount, Integer::sum);
+        return getAllResourcesWithTag(tag).getResources().stream().reduce(0, (i, r) -> i + r.getAmount(), Integer::sum);
     }
 
     public ResourcePack getResourcesWithTagPart(ResourceTag tag, int amount) {
@@ -67,7 +67,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
                 break;
             }
             result.add(resource);
-            counter += resource.amount;
+            counter += resource.getAmount();
         }
         return result;
     }
@@ -77,7 +77,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
      * @return Amount of all instances of this Resource in the Pack.
      */
     public int getAmountOfResource(Resource resource) {
-        return getResource(resource).getResources().stream().reduce(0, (i, r) -> i += r.amount, Integer::sum);
+        return getResource(resource).getResources().stream().reduce(0, (i, r) -> i += r.getAmount(), Integer::sum);
     }
 
     public ResourcePack getResourcePart(Resource resource, int ceiling) {
@@ -89,7 +89,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
                 break;
             }
             resourcePack.add(res.getCleanPart(ceiling - counter));
-            counter += res.amount;
+            counter += res.getAmount();
         }
         return resourcePack;
     }
@@ -103,7 +103,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
                 break;
             }
             result.add(resource);
-            counter += resource.amount;
+            counter += resource.getAmount();
         }
         resources.removeAll(result);
         return new ShnyPair<>(counter, result);
@@ -125,7 +125,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         if (tile == null) {
             int i = 0;
         }
-        resources.stream().filter(resource -> resource.getTile() == null).forEach(tile::addDelayedResource);
+        resources.stream().filter(resource -> resource.getGenome().isMovable()).forEach(tile::addDelayedResource);
         resources.clear();
     }
 
@@ -133,11 +133,11 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
      * @return the amount of all resources in pack.
      */
     public int getAmount() {
-        return resources.stream().reduce(0, (i, r2) -> i + r2.amount, Integer::sum);
+        return resources.stream().reduce(0, (i, r2) -> i + r2.getAmount(), Integer::sum);
     }
 
     public void add(Resource resource) {
-        if (resource.amount == 0) {
+        if (resource.getAmount() == 0) {
             return;
         }
         int i = -1;
@@ -189,11 +189,12 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
 
     @Override
     public String toString() {
-        resources.removeIf(resource -> resource.amount == 0);
+        resources.removeIf(resource -> resource.getAmount() == 0);
         StringBuilder stringBuilder = new StringBuilder();
         for (Resource resource : resources) {
-            stringBuilder.append(resource.getFullName()).append(" ").append(resource.amount).append("; ")
-                    .append(resource.getTile() != null ? resource.getTile().x + " " + resource.getTile().y : "")
+            stringBuilder.append(resource.getFullName()).append(" ")
+                    .append(resource.getAmount())
+                    .append("; ")
                     .append("\n");
         }
         return stringBuilder.toString();

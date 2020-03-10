@@ -29,17 +29,9 @@ public class ResourceIdeal extends Resource {
     }
 
     @Override
-    public void setTile(Tile tile) {
-        if (tile != null) {
-            System.err.println("Ideal is changing");
-        }
-        super.setTile(tile);
-    }
-
-    @Override
-    public boolean update() {
+    public boolean update(Tile tile) {
         System.err.println("Ideal is changing");
-        return super.update();
+        return super.update(tile);
     }
 
     @Override

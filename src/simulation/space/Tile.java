@@ -11,13 +11,7 @@ import java.util.stream.Collectors;
 
 import static simulation.Controller.session;
 
-/**
- * Basic tile of map
- */
 public class Tile {
-    /**
-     * Coordinates of this Tile on the WorldMap.
-     */
     public int x, y;
     /**
      * Group which is settled on this tile.
@@ -258,9 +252,6 @@ public class Tile {
         if (resource.getAmount() == 0) {
             return;
         }
-        if (!resource.isMovable() && resource.getTile() != null) {
-            return;
-        }
         for (Resource res : resources) {
             if (res.fullEquals(resource)) {
                 res.merge(resource);
@@ -268,10 +259,6 @@ public class Tile {
             }
         }
         resources.add(resource);
-        resource.setTile(this);
-        if (resource.getTile() == null || resource.getTile() != this) {
-            int i = 0;
-        }
     }
 
     /**
@@ -294,11 +281,7 @@ public class Tile {
         if (resource.getAmount() == 0) {
             return;
         }
-        if (resource.getTile() != null) {
-            resource.getTile().removeExactResource(resource);
-        }
         _delayedResources.add(resource);
-        resource.setTile(this);
     }
 
     private void checkIce() {
@@ -338,13 +321,6 @@ public class Tile {
     }
 
     public void middleUpdate() {
-        for (Resource resource: resources) {
-            if (resource.getTile() == null || resource.getTile() != this) {
-                int i = 0;
-            }
-        }
-        _delayedResources = _delayedResources.stream().filter(resource -> this.equals(resource.getTile())).collect(Collectors.toList());
-        _delayedResources.forEach(resource -> resource.setTile(null));
         _delayedResources.forEach(this::addResource);
         _delayedResources.clear();
         WorldMap map = session.world.map;
@@ -385,7 +361,7 @@ public class Tile {
     private void updateResources() {
         for (int i = 0; i < resources.size(); i++) {
             Resource resource = resources.get(i);
-            if (!resource.update()) {
+            if (!resource.update(this)) {
                 resources.remove(resource);
                 i--;
             }

@@ -25,10 +25,6 @@ public class Resource {
      */
     private int _hash;
     /**
-     * Tile on which this Resource is placed.
-     */
-    private Tile tile = null;
-    /**
      * How many turns has this Resource been existing.
      */
     private int deathTurn = 0;
@@ -74,10 +70,6 @@ public class Resource {
         return amount;
     }
 
-    public int getBaseDesireability() {
-        return getGenome().getBaseDesirability();
-    }
-
     public double getSpreadProbability() {
         return resourceCore.getGenome().getSpreadProbability();
     }
@@ -115,9 +107,6 @@ public class Resource {
         return cleanCopy(result);
     }
 
-    public Tile getTile() {
-        return tile;
-    }
 
     public Genome getGenome() {
         return resourceCore.getGenome();
@@ -129,22 +118,6 @@ public class Resource {
 
     public boolean hasMeaning() {
         return resourceCore.isHasMeaning();
-    }
-
-    public void setTile(Tile tile) {
-        if (tile != null && !tile.getResourcesWithMoved().contains(this)) {
-            int i = 0;
-        }
-        if (isMovable()) {
-            this.tile = tile;
-            return;
-        }
-        if (this.tile == null || deathTurn == 0) {
-            this.tile = tile;
-        } else {
-            System.err.println("Unmovable resource being moved! - " + getFullName());
-            this.tile = tile;
-        }
     }
 
     public void setHasMeaning(boolean b) {
@@ -185,29 +158,18 @@ public class Resource {
         return resourceCore.fullCopy();
     }
 
-    private Resource movableModificator(Resource resource) {
-        if (tile != null) {
-            tile.addDelayedResource(resource);
-        }
+    private Resource movableModificator(Resource resource) {//TODO useless now
         return resource;
     }
 
     public Resource insertMeaning(Meme meaning, AspectResult result) {
         Resource resource = new Resource(resourceCore.insertMeaning(meaning, result), amount);
-        if (tile == null) {
-            int i = 0;
-        }
-        tile.addDelayedResource(resource);
         this.amount = 0;
         return resource;
     }
 
-    public boolean update() {
-        if (tile == null) {
-            int i = 0;
-        }
+    public boolean update(Tile tile) {
         if (amount <= 0) {
-            tile.removeResource(this);
             return false;
         }
         for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {
@@ -221,12 +183,11 @@ public class Resource {
             deathPart = 1;
         }
         if (amount <= 0) {
-            getTile().removeResource(this);
             return false;
         }
         deathTurn++;
         if (testProbability(resourceCore.getGenome().getSpreadProbability(), session.random)) {
-            expand();
+            expand(tile);
         }
         if (getSimpleName().equals("Vapour")) {
             if (amount > 100000) {//TODO debug off
@@ -287,14 +248,14 @@ public class Resource {
                 }
             }
         }
-        distribute();
+        distribute(tile);
         return true;
     }
 
-    private void distribute() {
+    private void distribute(Tile tile) {
         if (getGenome().canMove() && amount > getGenome().getNaturalDensity()) {
             List<Tile> tiles = tile.getNeighbours(t -> getGenome().isAcceptable(t));
-            tiles.sort(Comparator.comparingInt(tile -> tile.getResource(this).amount));
+            tiles.sort(Comparator.comparingInt(t -> t.getResource(this).amount));
             for (Tile neighbour: tiles) {
                 if (amount <= getGenome().getNaturalDensity() / 2) {
                     break;
@@ -336,16 +297,16 @@ public class Resource {
         return result;
     }
 
-    private boolean expand() {
+    private boolean expand(Tile tile) {
         List<Tile> l = new ArrayList<>();
-        l.add(getTile());
-        Tile newTile = SpaceProbabilityFuncs.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile)
-                && getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile)));
+        l.add(tile);
+        Tile newTile = SpaceProbabilityFuncs.randomTileOnBrink(l, t -> getGenome().isAcceptable(t)
+                && getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(t)));
         if (newTile == null) {
             if (getGenome().getDependencies().stream().allMatch(dependency -> dependency.hasNeeded(tile))) {
                 newTile = tile;
             } else {
-                newTile = SpaceProbabilityFuncs.randomTileOnBrink(l, tile -> getGenome().isAcceptable(tile));
+                newTile = SpaceProbabilityFuncs.randomTileOnBrink(l, t -> getGenome().isAcceptable(t));
                 if (newTile == null) {
                     newTile = tile;
                 }
@@ -372,8 +333,7 @@ public class Resource {
         if (_hash != resource._hash) {
             return false;
         }
-        return getFullName().equals(resource.getFullName()) && resourceCore.equals(resource.resourceCore) &&
-                (tile == null || resource.tile == null || tile.equals(resource.tile));
+        return getFullName().equals(resource.getFullName()) && resourceCore.equals(resource.resourceCore);
     }
 
     @Override
@@ -383,8 +343,8 @@ public class Resource {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() +
-                (getTile() != null ? " on tile " + getTile().x + " " + getTile().y : "") + ", natural density - " +
+        StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName()
+                + ", natural density - " +
                 getGenome().getNaturalDensity() + ", spread probability - " + getSpreadProbability() + ", mass - " +
                 getGenome().getMass() + ", amount - " + amount + ", tags: ");
         for (ResourceTag resourceTag : resourceCore.getTags()) {

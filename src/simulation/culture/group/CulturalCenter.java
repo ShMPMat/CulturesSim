@@ -250,7 +250,7 @@ public class CulturalCenter {
             case 2: {
                 Resource resource = getAllProducedResources().stream().map(pair -> pair.first)
                         .filter(r -> !aestheticallyPleasingResources.contains(r))
-                        .max(Comparator.comparingInt(Resource::getBaseDesireability)).orElse(null);
+                        .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability())).orElse(null);
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource);
                 }
