@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
  * Cultural token, which is owned by group and represents some cultural value.
  */
 public class Aspect {
-    /**
-     * Core which stores all properties non-mutable for all Aspects with same name.
-     */
     AspectCore aspectCore;
     /**
      * Map which stores for every requirement some Dependencies, from which
@@ -177,14 +174,14 @@ public class Aspect {
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         boolean isFinished;//TODO put dependency resources only in node; otherwise they may merge with phony
         ResourcePack meaningfulPack = new ResourcePack();
-        controller.ceiling = group.changeStratumAmountByAspect(this, controller.ceiling);
+        controller.setCeiling(controller.getGroup().changeStratumAmountByAspect(this, controller.getCeiling()));
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         for (Map.Entry<ResourceTag, Set<Dependency>> entry : getDependencies().entrySet()) {
             Set<Dependency> dependency = entry.getValue();
             ResourcePack usedForDependency = new ResourcePack();
             isFinished = false;
             ResourcePack _rp = new ResourcePack();
-            ResourcePack provided = group.getStratumByAspect(this).getInstrumentByTag(entry.getKey());
+            ResourcePack provided = controller.getGroup().getStratumByAspect(this).getInstrumentByTag(entry.getKey());
             if (provided != null) {
                 _rp.add(provided);
             }
@@ -192,9 +189,13 @@ public class Aspect {
                 if (dependency1.isPhony()) {
                     isFinished = true;
                     int newDelta = meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource);
-                    AspectResult _p = dependency1.useDependency(new AspectController(controller.ceiling -
-                            newDelta, controller.floor - newDelta, controller.evaluator,
-                            shouldPassMeaningNeed(controller.isMeaningNeeded)));
+                    AspectResult _p = dependency1.useDependency(new AspectController(
+                            controller.getCeiling() - newDelta,
+                            controller.getFloor() - newDelta,
+                            controller.getEvaluator(),
+                            controller.getGroup(),
+                            shouldPassMeaningNeed(controller.isMeaningNeeded())
+                    ));
                     if (!_p.isFinished) {
                         continue;
                     }
@@ -204,15 +205,20 @@ public class Aspect {
                     }
                 } else {
                     int newDelta = _rp.getAmountOfResourcesWithTag(dependency1.getType());
-                    AspectResult result = dependency1.useDependency(new AspectController(controller.ceiling -
-                            newDelta, controller.floor - newDelta, controller.evaluator, false));
+                    AspectResult result = dependency1.useDependency(new AspectController(
+                            controller.getCeiling() - newDelta,
+                            controller.getFloor() - newDelta,
+                            controller.getEvaluator(),
+                            controller.getGroup(),
+                            false
+                    ));
                     _rp.add(result.resources);
                     if (!result.isFinished) {
                         continue;
                     }
-                    if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= controller.ceiling) {
+                    if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= controller.getCeiling()) {
                         if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
-                            usedForDependency.add(_rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), controller.ceiling).second);
+                            usedForDependency.add(_rp.getAmountOfResourcesWithTagAndErase(dependency1.getType(), controller.getCeiling()).second);
                         } else {
                             usedForDependency.add(_rp.getAllResourcesWithTag(dependency1.getType()));
                         }

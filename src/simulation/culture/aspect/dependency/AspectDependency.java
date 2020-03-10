@@ -52,7 +52,13 @@ public class AspectDependency extends AbstractDependency {
     @Override
     public AspectResult useDependency(AspectController controller) {
         try {
-            return aspect.use(new AspectController(controller.ceiling, controller.floor, new ResourceEvaluator()));
+            return aspect.use(new AspectController(
+                    controller.getCeiling(),
+                    controller.getFloor(),
+                    new ResourceEvaluator(),
+                    controller.getGroup(),
+                    false
+            ));
         } catch (StackOverflowError e) {
             throw new RuntimeException("Infinite Dependency");
         }

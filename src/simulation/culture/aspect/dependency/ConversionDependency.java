@@ -40,11 +40,11 @@ public class ConversionDependency extends AbstractDependency {
         ResourcePack resourcePack = new ResourcePack();
         Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
         for (Resource res : resourceInstances) {
-            if (controller.ceiling <= controller.evaluator.evaluate(resourcePack)) {
+            if (controller.getCeiling() <= controller.getEvaluator().evaluate(resourcePack)) {
                 break;
             }
             resourcePack.add(res.applyAndConsumeAspect(conversion.second,
-                    controller.ceiling - controller.evaluator.evaluate(resourcePack)));
+                    controller.getCeiling() - controller.getEvaluator().evaluate(resourcePack)));
         }
         return new AspectResult(resourcePack, null);
     }

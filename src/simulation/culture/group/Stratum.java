@@ -118,7 +118,13 @@ public class Stratum {
                 if (deps != null) {
                     for (Dependency dependency: deps) {
                         AspectResult result = dependency.useDependency(
-                                new AspectController(amount - currentAmount, 1, evaluator));
+                                new AspectController(
+                                        amount - currentAmount,
+                                        1,
+                                        evaluator,
+                                        group,
+                                        false
+                                ));
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);
                             entry.getValue().add(evaluator.pick(result.resources));//TODO disband

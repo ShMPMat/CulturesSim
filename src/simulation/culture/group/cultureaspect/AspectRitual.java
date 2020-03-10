@@ -39,8 +39,13 @@ public class AspectRitual extends Ritual {
 
     @Override
     public void use() {
-        AspectResult result = converseWrapper.use(new AspectController(1, 1,
-                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
+        AspectResult result = converseWrapper.use(new AspectController(
+                1,
+                1,
+                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
+                group,
+                true
+        ));
         if (result.isFinished) {
             group.cherishedResources.add(result.resources);
             resourceBehaviour.procedeResources(result.resources);

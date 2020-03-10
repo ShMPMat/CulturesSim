@@ -191,8 +191,13 @@ public class Group {
                 if (amount >= request.ceiling) {
                     break;
                 }
-                resourcePack.add(pair.first.use(new AspectController(request.ceiling - amount, request.floor,
-                        pair.second)));
+                resourcePack.add(pair.first.use(new AspectController(
+                        request.ceiling - amount,
+                        request.floor,
+                        pair.second,
+                        this,
+                        false
+                )));
             }
             request.end(resourcePack);
         }

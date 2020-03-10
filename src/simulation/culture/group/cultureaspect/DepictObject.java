@@ -39,8 +39,13 @@ public class DepictObject extends AbstractCultureAspect {
     @Override
     public void use() {
         group.getCulturalCenter().putCurrentMeme(meme.toString());
-        AspectResult result = converseWrapper.use(new AspectController(1, 1,
-                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount), true));
+        AspectResult result = converseWrapper.use(new AspectController(
+                1,
+                1,
+                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
+                group,
+                true
+        ));
         if (result.isFinished) {
             ResourcePack meaningful = new ResourcePack(result.resources.getResources().stream().filter(Resource::hasMeaning)
                     .collect(Collectors.toList()));

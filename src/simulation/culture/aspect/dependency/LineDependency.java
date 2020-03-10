@@ -58,15 +58,21 @@ public class LineDependency extends AbstractDependency {
     public AspectResult useDependency(AspectController controller) {
         try {
             ResourcePack resourcePack = new ResourcePack();
-            if (isAlreadyUsed || controller.ceiling <= 0 || !foodForInsertMeaning() && controller.isMeaningNeeded) {
+            if (isAlreadyUsed || controller.getCeiling() <= 0 || !foodForInsertMeaning() && controller.isMeaningNeeded()) {
                 return new AspectResult(resourcePack, null);
             }
             isAlreadyUsed = true;
-            AspectResult _p = group.getAspect(line.second).use(new AspectController(controller.ceiling, controller.floor,
-                    new ResourceEvaluator(rp -> rp.getResource(line.first.resource),
-                            rp -> rp.getAmountOfResource(line.first.resource)), controller.isMeaningNeeded));
+            AspectResult _p = group.getAspect(line.second).use(new AspectController(
+                    controller.getCeiling(),
+                    controller.getFloor(),
+                    new ResourceEvaluator(
+                            rp -> rp.getResource(line.first.resource),
+                            rp -> rp.getAmountOfResource(line.first.resource)
+                    ),
+                    group,
+                    controller.isMeaningNeeded()));
             resourcePack.add(_p.resources.getResource(line.first.resource).getResources().stream()
-                    .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, controller.ceiling).stream()).collect(Collectors.toList()));
+                    .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, controller.getCeiling()).stream()).collect(Collectors.toList()));
             resourcePack.add(_p.resources);
             isAlreadyUsed = false;
             return new AspectResult(_p.isFinished, resourcePack, null);

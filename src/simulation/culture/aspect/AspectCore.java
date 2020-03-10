@@ -10,9 +10,6 @@ import java.util.*;
  * Class which contains all general information about all Aspects with the same name.
  */
 class AspectCore {
-    /**
-     * Name of the Aspect.
-     */
     String name;
     /**
      * AspectTags which represent which resources are provided by this Aspect.
@@ -22,9 +19,6 @@ class AspectCore {
      * Requirements for an Aspect to be added to the group.
      */
     private List<ResourceTag> requirements = new ArrayList<>();
-    /**
-     * Whether it can apply meaning.
-     */
     List<AspectMatcher> matchers = new ArrayList<>();
     boolean applyMeaning = false;
 

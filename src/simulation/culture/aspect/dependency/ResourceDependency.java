@@ -40,7 +40,7 @@ public class ResourceDependency extends AbstractDependency {
         ResourcePack resourcePack = new ResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
             return new AspectResult(tag.consumeAndGetResult(group.getParentGroup().getTerritory()
-                    .getResourceInstances(resource), controller.ceiling), null);
+                    .getResourceInstances(resource), controller.getCeiling()), null);
         }
         return new AspectResult(resourcePack, null);
     }
