@@ -197,6 +197,9 @@ class ResourceInstantiation(
             creator: ResourceCore
     ): ResourceTemplate {
         val (resource, aspectConversion, parts) = template
+        if (template.resource.genome is GenomeTemplate) {
+            return ResourceTemplate(resource, aspectConversion, parts)//TODO give instantiated resource
+        }
         val legacyResource = ResourceIdeal(ResourceCore(
                 resource.genome.name,
                 "",

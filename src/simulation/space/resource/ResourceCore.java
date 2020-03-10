@@ -59,8 +59,7 @@ public class ResourceCore {
 
     private void computeTagsFromMaterials() {
         if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {
-//            System.err.println("Resource " + genome.getName() + " has no materials.");
-//            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
+            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
         } else if (!materials.isEmpty()) {
             tags.addAll(genome.getTags());
             tags.addAll(computeTags());
@@ -196,7 +195,7 @@ public class ResourceCore {
         Genome genome = new Genome(this.genome);
         genome.setSpreadProbability(0);
         return new ResourceCore(genome.getName() + (newMaterials.equals(materials) ? "" : "_" + aspect.getName()),
-                meaningPostfix, newMaterials, genome, aspectConversion, meaning);//TODO dangerous shit for genome
+                meaningPostfix, newMaterials, genome, aspectConversion, meaning);//TODO dangerous stuff for genome
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {

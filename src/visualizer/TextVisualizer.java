@@ -324,7 +324,6 @@ public class TextVisualizer implements Visualizer {
         main.append("\n");
         StringBuilder map = new StringBuilder();
         for (int i = 0; i < controller.mapSizeX; i++) {
-            List<Tile> line = worldMap.getTiles().get(i);
             String token;
             map.append((i < 10 ? " " + i : i));
             for (int j = 0; j < controller.mapSizeY; j++) {
@@ -484,19 +483,21 @@ public class TextVisualizer implements Visualizer {
                 System.err.println("Cannot add aspect to the group");
                 return;
             }
-            Aspect a = world.getAspectPool().get(aspectName.split("On")[0]);
-            if (a == null) {
+            try {
+                Aspect a = world.getAspectPool().get(aspectName.split("On")[0]);
+                if (a.canApplyMeaning()) {
+                    aspect = new MeaningInserter(a, resource, group);
+                } else {
+                    aspect = new ConverseWrapper(a, resource, group);
+                }
+            } catch (NoSuchElementException e) {
                 System.err.println("Cannot add aspect to the group");
                 return;
             }
-            if (a.canApplyMeaning()) {
-                aspect = new MeaningInserter(a, resource, group);
-            } else {
-                aspect = new ConverseWrapper(a, resource, group);
-            }
         } else {
-            aspect = world.getAspectPool().get(aspectName);
-            if (aspect == null) {
+            try {
+                aspect = world.getAspectPool().get(aspectName);
+            } catch (NoSuchElementException e) {
                 System.err.println("Cannot add aspect to the group");
                 return;
             }
