@@ -184,7 +184,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
     public void destroyAllResourcesWithTag(ResourceTag tag) {
         ResourcePack result = getAllResourcesWithTag(tag);
         resources.removeAll(result.resources);
-        result.resources.forEach(resource -> resource.amount = 0);
+        result.resources.forEach(resource -> resource.setAmount(0));
     }
 
     @Override

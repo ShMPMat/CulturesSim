@@ -127,7 +127,7 @@ public class Genome {
         return size;
     }
 
-    double getSpreadProbability() {
+    public double getSpreadProbability() {
         return spreadProbability;
     }
 

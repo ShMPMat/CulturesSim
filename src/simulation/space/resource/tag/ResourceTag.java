@@ -6,13 +6,7 @@ import simulation.space.resource.ResourcePack;
 import java.util.Collection;
 import java.util.Objects;
 
-/**
- * Class which represents cultural meaning of an object, material.
- */
 public class ResourceTag {
-    /**
-     * Name of the AspectTag
-     */
     public String name;
     /**
      * Whether it don't need any resource.

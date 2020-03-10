@@ -17,7 +17,7 @@ import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 
 public class Resource {
-    int amount;
+    private int amount;
     ResourceCore resourceCore;
 
     /**
@@ -70,10 +70,6 @@ public class Resource {
         return amount;
     }
 
-    public double getSpreadProbability() {
-        return resourceCore.getGenome().getSpreadProbability();
-    }
-
     public List<ResourceTag> getTags() {
         return resourceCore.getTags();
     }
@@ -107,13 +103,8 @@ public class Resource {
         return cleanCopy(result);
     }
 
-
     public Genome getGenome() {
         return resourceCore.getGenome();
-    }
-
-    public boolean isMovable() {
-        return resourceCore.getGenome().isMovable();
     }
 
     public boolean hasMeaning() {
@@ -139,7 +130,7 @@ public class Resource {
     }
 
     public Resource copy() {
-        return movableModificator(resourceCore.copy());
+        return resourceCore.copy();
     }
 
     public Resource cleanCopy() {
@@ -147,7 +138,7 @@ public class Resource {
     }
 
     public Resource copy(int amount) {
-        return movableModificator(resourceCore.copy(amount));
+        return resourceCore.copy(amount);
     }
 
     public Resource cleanCopy(int amount) {
@@ -156,10 +147,6 @@ public class Resource {
 
     public Resource fullClearCopy() {
         return resourceCore.fullCopy();
-    }
-
-    private Resource movableModificator(Resource resource) {//TODO useless now
-        return resource;
     }
 
     public Resource insertMeaning(Meme meaning, AspectResult result) {
@@ -292,7 +279,6 @@ public class Resource {
         int p = Math.min(part, _r.amount);
         List<Resource> result = _r.resourceCore.applyAspect(aspect);
         result.forEach(resource -> resource.amount *= p);
-        result.forEach(this::movableModificator);
         _r.amount -= p;
         return result;
     }
@@ -345,7 +331,7 @@ public class Resource {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName()
                 + ", natural density - " +
-                getGenome().getNaturalDensity() + ", spread probability - " + getSpreadProbability() + ", mass - " +
+                getGenome().getNaturalDensity() + ", spread probability - " + getGenome().getSpreadProbability() + ", mass - " +
                 getGenome().getMass() + ", amount - " + amount + ", tags: ");
         for (ResourceTag resourceTag : resourceCore.getTags()) {
             stringBuilder.append(resourceTag.name).append(" ");

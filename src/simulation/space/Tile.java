@@ -28,12 +28,12 @@ public class Tile {
     /**
      * Resources which are located on this Tile.
      */
-    private List<Resource> resources;//TODO make it set
+    private List<Resource> resources = new ArrayList<>();;//TODO make it set
     /**
      * Resources which were added on this Tile during this turn. They are
      * stored here before the end of the turn.
      */
-    private List<Resource> _delayedResources;
+    private List<Resource> _delayedResources = new ArrayList<>();;
     /**
      * Level of this Tile.
      */
@@ -59,22 +59,16 @@ public class Tile {
         this.y = y;
         wind = new Wind();
         updateTemperature();
-        group = null;
         setType(Type.Normal, true);
-        resources = new ArrayList<>();
-        _delayedResources = new ArrayList<>();
     }
 
     public void setNeighbours(List<Tile> neighbours) {
         if (this.neighbours != null) {
-            throw new IndexOutOfBoundsException("Neighbours are already set");//TODO normal exception
+            throw new SpaceError("Neighbours are already set");
         }
         this.neighbours = neighbours;
     }
 
-    /**
-     * @return all available Resources which are placed on this Tile
-     */
     public List<Resource> getResources() {
         return resources;
     }
@@ -387,7 +381,7 @@ public class Tile {
 
     private void useWind() {
         for (Resource resource : resources) {
-            if (!resource.isMovable()) {
+            if (!resource.getGenome().isMovable()) {
                 continue;
             }
             double overallWindLevel = wind.affectedTiles.stream()

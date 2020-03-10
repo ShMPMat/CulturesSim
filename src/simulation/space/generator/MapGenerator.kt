@@ -34,7 +34,7 @@ fun fillResources(
         random: Random
 ) {
     for (resource in resourcePool.getWithPredicate {
-        it.spreadProbability != 0.0
+        it.genome.spreadProbability != 0.0
                 || it.genome.type == Genome.Type.Mineral
     }) {
         scatter(
@@ -161,7 +161,7 @@ private fun addDependencies(resource: Resource, tile: Tile, resourcePool: Resour
             }
             for (name in dependency.materialNames) {
                 for (dep in resourcePool.getWithPredicate {
-                    it.spreadProbability > 0
+                    it.genome.spreadProbability > 0
                             && it.simpleName != resource.simpleName
                             && it.genome.primaryMaterial != null
                             && it.genome.primaryMaterial.name == name
