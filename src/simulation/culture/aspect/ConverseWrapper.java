@@ -22,13 +22,9 @@ public class ConverseWrapper extends Aspect {
      * Resource on which aspect is applied.
      */
     public Resource resource;
-    private ConverseWrapper traversedCopy;
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
-        super(new String[]{aspect.getName()+"On"+resource.getBaseName()}, new HashMap<>(), group);
-        if (aspect.getName().equals("Paint")) {
-            int i = 0;
-        }
+        super(new AspectCore(new String[]{aspect.getName()+"On"+resource.getBaseName()}), new HashMap<>(), group);
         this.aspect = aspect;
         this.resource = resource.cleanCopy();
         for (Resource res : resource.applyAspect(aspect)) {
@@ -61,36 +57,11 @@ public class ConverseWrapper extends Aspect {
     public AspectResult use(AspectController controller) {
         try {
             group.getAspect(aspect).markAsUsed();
-        if (aspect.getName().equals("Paint")) {
-            int i = 0;
-        }
         return super.use(controller);
         } catch (Exception e) {
             throw new RuntimeException("");
         }
     }
-
-//    public ConverseWrapper stripToMeaning() {
-//        if (traversedCopy != null) {
-//            return traversedCopy;
-//        }
-//        ConverseWrapper converseWrapper = copy(dependencies, group);
-//        traversedCopy = converseWrapper;
-//        converseWrapper.dependencies.put(AspectTag.phony(), new HashSet<>());
-//        for (Dependency dependency : dependencies.get(AspectTag.phony())) {
-//            if (!(dependency instanceof LineDependency)) {
-//                continue;
-//            }
-//            ConverseWrapper next = ((LineDependency) dependency).getNextWrapper();
-//            if (next != null && next.canInsertMeaning) {
-//                converseWrapper.dependencies.get(AspectTag.phony()).add(new LineDependency(dependency.getType(), group,
-//                        new ShnyPair<>(converseWrapper, next.stripToMeaning())));
-//                next.stripToMeaning();
-//            }
-//        }
-//        traversedCopy = null;
-//        return converseWrapper;
-//    }
 
     @Override
     public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {

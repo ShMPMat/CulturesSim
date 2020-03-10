@@ -22,7 +22,7 @@ class AspectCore {
     List<AspectMatcher> matchers = new ArrayList<>();
     boolean applyMeaning = false;
 
-    public AspectCore(String[] tags) {
+    AspectCore(String[] tags) {
         for (int i = 0; i < tags.length; i++) {
             String tag = tags[i];
             if (i == 0) {

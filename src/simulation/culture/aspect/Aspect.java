@@ -47,16 +47,6 @@ public class Aspect {
         initDependencies(dependencies);
     }
 
-    /**
-     * Constructor from core tags.
-     *
-     * @param tags         tags for common Aspect properties.
-     * @param dependencies dependencies for all requirements.
-     */
-    public Aspect(String[] tags, Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
-        this(new AspectCore(tags), dependencies, group);
-    }
-
     void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies) {
         for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.entrySet()) {
             this.dependencies.put(entry.getKey(),

@@ -20,7 +20,7 @@ public class Turner implements Runnable {
         for (int i = 0; i < turns; i++) {
             controller.turn();
             if (i % printTurnDelta == 0) {
-                System.out.println(controller.world.getTurn());
+                Controller.visualizer.print();
             }
             if (isAskedToStop.get()) {
                 System.out.println("Terminating Turner thread");
