@@ -169,18 +169,20 @@ public class ResourceCore {
         return _r;
     }
 
-    List<Resource> applyAspect(Aspect aspect) {
+    List<Resource> applyAspect(Aspect aspect) {//TODO throw an exception on any attempt to copy template
         if (aspectConversion.containsKey(aspect)) {
-            List<Resource> resourceList = aspectConversion.get(aspect).stream()
-                    .map(pair -> pair.getFirst().copy(pair.getSecond()))
-                    .collect(Collectors.toList());//TODO throw an exception on any attempt to copy template
-            resourceList.forEach(resource -> {
-                if (resource.resourceCore.genome instanceof GenomeTemplate) {//TODO links
-                    resource.resourceCore = resource.resourceCore.instantiateTemplateCopy(this);
-                    resource.computeHash();
-                }
-            });
-            return resourceList;
+            return aspectConversion.get(aspect).stream()
+                    .map(pair -> {
+                        Resource resource = pair.getFirst();
+                        if (resource.resourceCore.genome instanceof GenomeTemplate) {
+                            resource = resource.copy(pair.getSecond());
+                            resource.resourceCore = resource.resourceCore.instantiateTemplateCopy(this);
+                            resource.computeHash();
+                            return resource;
+                        } else {
+                            return resource.copy(pair.getSecond());
+                        }
+                    }).collect(Collectors.toList());
         }
         return Collections.singletonList(applyAspectToMaterials(aspect).copy(1));
     }

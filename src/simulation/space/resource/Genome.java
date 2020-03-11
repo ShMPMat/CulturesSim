@@ -45,7 +45,7 @@ public class Genome {
            List<ResourceTag> tags,
            Material primaryMaterial,
            List<Material> secondaryMaterials
-           ) {
+    ) {
         this.name = name;
         this.type = type;
         this.baseDesirability = baseDesirability;
@@ -92,10 +92,6 @@ public class Genome {
         if (parts.size() == 1) {
             primaryMaterial = parts.get(0).resourceCore.getMaterials().get(0);
         }
-    }
-
-    public List<Material> getSecondaryMaterials() {
-        return secondaryMaterials;
     }
 
     public List<Material> getMaterials() {
@@ -147,28 +143,12 @@ public class Genome {
         return legacy;
     }
 
-    public ResourceCore getTemplateLegacy() {
-        return templateLegacy;
-    }
-
-    public void setResisting(boolean resisting) {
-        this.isResisting = resisting;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
     public void setLegacy(ResourceCore legacy) {
         this.legacy = legacy;
-    }
-
-    public int getTemperatureMin() {
-        return temperatureMin;
-    }
-
-    public int getTemperatureMax() {
-        return temperatureMax;
     }
 
     String getLegacyPostfix() {
@@ -214,10 +194,6 @@ public class Genome {
         return isMovable;
     }
 
-    boolean isMutable() {
-        return isMutable;
-    }
-
     public boolean canMove() {
         return canMove;
     }
@@ -230,15 +206,6 @@ public class Genome {
         this.primaryMaterial = primaryMaterial;
     }
 
-    public void setMutable(boolean mutable) {
-        isMutable = mutable;
-    }
-
-    /**
-     * Adds part to Genome.
-     *
-     * @param part Part which will be added. Legacy must by ALREADY inserted inside it.
-     */
     void addPart(Resource part) {
         int i = parts.indexOf(part);
         if (i == -1) {
@@ -247,10 +214,6 @@ public class Genome {
         } else {
             parts.get(i).addAmount(part.getAmount());
         }
-    }
-
-    void addDependency(ResourceDependency dependency) {
-        dependencies.add(dependency);
     }
 
     void addResourceTag(ResourceTag tag) {

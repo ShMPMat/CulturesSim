@@ -1,11 +1,11 @@
 package simulation.culture.group.request;
 
-import extra.ShnyPair;
-import simulation.space.resource.tag.ResourceTag;
+import kotlin.Pair;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
+import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Collection;
 import java.util.function.BiFunction;
@@ -13,8 +13,8 @@ import java.util.function.BiFunction;
 public class TagRequest extends Request {
     private ResourceTag tag;
 
-    public TagRequest(Group group, ResourceTag tag, int floor, int ceiling, BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> penalty,
-                      BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward) {
+    public TagRequest(Group group, ResourceTag tag, int floor, int ceiling, BiFunction<Pair<Group, ResourcePack>, Double, Void> penalty,
+                      BiFunction<Pair<Group, ResourcePack>, Double, Void> reward) {
         super(group, floor, ceiling, penalty, reward);
         this.tag = tag;
     }
@@ -49,10 +49,10 @@ public class TagRequest extends Request {
         _rp.add(_r);
 
         if (amount < floor) {
-            penalty.apply(new ShnyPair<>(group, _rp), amount / ((double) floor));
+            penalty.apply(new Pair<>(group, _rp), amount / ((double) floor));
             return;
         }
-        reward.apply(new ShnyPair<>(group, _rp), amount / ((double) floor) - 1);
+        reward.apply(new Pair<>(group, _rp), amount / ((double) floor) - 1);
     }
 
     @Override

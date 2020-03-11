@@ -1,6 +1,6 @@
 package simulation.culture.group.request;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
@@ -17,10 +17,10 @@ public abstract class Request {
     protected Group group;
     public int floor;
     public int ceiling;
-    BiFunction<ShnyPair<Group, ResourcePack>, Double,Void> penalty, reward;
+    BiFunction<Pair<Group, ResourcePack>, Double,Void> penalty, reward;
 
-    Request(Group group, int floor, int ceiling, BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> penalty,
-            BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> reward) {
+    Request(Group group, int floor, int ceiling, BiFunction<Pair<Group, ResourcePack>, Double, Void> penalty,
+            BiFunction<Pair<Group, ResourcePack>, Double, Void> reward) {
         this.group = group;
         this.floor = floor;
         this.ceiling = ceiling;

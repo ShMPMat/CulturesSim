@@ -1,6 +1,7 @@
 package simulation.culture.group;
 
 import extra.ShnyPair;
+import kotlin.Pair;
 import shmp.random.RandomException;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
@@ -171,28 +172,26 @@ public class CulturalCenter {
     void updateRequests() {
         requests = new ArrayList<>();
         int foodFloor = group.population / group.getFertility() + 1;
-        BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
-            pair.first.starve(percent);
-            pair.second.destroyAllResourcesWithTag(new ResourceTag("food"));
+        BiFunction<Pair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
+            pair.getFirst().starve(percent);
+            pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
-        BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
-            pair.first.population += ((int) (percent * pair.first.population)) / 10 + 1;
-            pair.first.population = Math.min(pair.first.population, group.getMaxPopulation());
-            pair.second.destroyAllResourcesWithTag(new ResourceTag("food"));
+        BiFunction<Pair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
+            pair.getFirst().population += ((int) (percent * pair.getFirst().population)) / 10 + 1;
+            pair.getFirst().population = Math.min(pair.getFirst().population, group.getMaxPopulation());
+            pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
         requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
                 foodFloor + group.population / 100 + 1, foodPenalty, foodReward));
 
         if (group.getTerritory().getMinTemperature() < 0) {
-            BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
-                pair.first.freeze(percent);
+            BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
+                pair.getFirst().freeze(percent);
                 return null;
             };
-            BiFunction<ShnyPair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> {
-                return null;
-            };
+            BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> null;
             requests.add(new TagRequest(group, new ResourceTag("warmth"), group.population,
                     group.population, warmthPenalty, warmthReward));
         }
