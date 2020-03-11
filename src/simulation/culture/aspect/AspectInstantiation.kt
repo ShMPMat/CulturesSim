@@ -2,9 +2,8 @@ package simulation.culture.aspect
 
 import extra.InputDatabase
 import simulation.space.resource.tag.ResourceTag
-import simulation.space.resource.tag.makeLabeler
+import simulation.space.resource.tag.labeler.makeLabeler
 import java.util.*
-import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 
 class AspectInstantiation {

@@ -3,8 +3,8 @@ package simulation.culture.group;
 import extra.OutputFunc;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
-import extra.ShnyPair;
 import extra.SpaceProbabilityFuncs;
+import kotlin.Pair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
@@ -181,20 +181,20 @@ public class Group {
 
     void executeRequests() {
         for (Request request : getCulturalCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
-            List<ShnyPair<Stratum, ResourceEvaluator>> pairs = strata.stream()
-                    .map(stratum -> new ShnyPair<>(stratum, request.isAcceptable(stratum)))
-                    .filter(pair -> pair.second != null).sorted(Comparator.comparingInt(pair ->
-                            request.satisfactionLevel(pair.first)))
+            List<Pair<Stratum, ResourceEvaluator>> pairs = strata.stream()
+                    .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
+                    .filter(pair -> pair.getSecond() != null)
+                    .sorted(Comparator.comparingInt(pair -> request.satisfactionLevel(pair.getFirst())))
                     .collect(Collectors.toList());
-            for (ShnyPair<Stratum, ResourceEvaluator> pair : pairs) {
-                int amount = pair.second.evaluate(resourcePack);
+            for (Pair<Stratum, ResourceEvaluator> pair : pairs) {
+                int amount = pair.getSecond().evaluate(resourcePack);
                 if (amount >= request.ceiling) {
                     break;
                 }
-                resourcePack.add(pair.first.use(new AspectController(
+                resourcePack.add(pair.getFirst().use(new AspectController(
                         request.ceiling - amount,
                         request.floor,
-                        pair.second,
+                        pair.getSecond(),
                         this,
                         false
                 )));

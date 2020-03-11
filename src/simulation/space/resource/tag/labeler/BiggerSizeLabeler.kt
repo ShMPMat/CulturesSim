@@ -1,4 +1,4 @@
-package simulation.space.resource.tag
+package simulation.space.resource.tag.labeler
 
 import simulation.space.resource.ResourceCore
 

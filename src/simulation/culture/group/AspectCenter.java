@@ -1,6 +1,7 @@
 package simulation.culture.group;
 
 import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.space.resource.tag.ResourceTag;
@@ -159,12 +160,12 @@ public class AspectCenter {
             if (converseWrapper.canTakeResources() && group.getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
                 addDependenciesInMap(dep, Collections.singleton(
                         new ConversionDependency(converseWrapper.getRequirement(), group,
-                                new ShnyPair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
+                                new Pair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
             }
             addDependenciesInMap(dep, getAllProducedResources().stream()
                             .filter(pair -> pair.first.equals(converseWrapper.resource))
                             .map(pair -> new LineDependency(converseWrapper.getRequirement(), group,
-                                    new ShnyPair<>(converseWrapper, pair.second)))
+                                    new Pair<>(converseWrapper, pair.second)))
                             .filter(dependency -> !dependency.isCycleDependency(converseWrapper))
                             .collect(Collectors.toList()),
                     converseWrapper.getRequirement());
@@ -191,7 +192,7 @@ public class AspectCenter {
             }
             addDependenciesInMap(dep, group.getTerritory().getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
                             .map(resource ->
-                                    new ConversionDependency(requirement, group, new ShnyPair<>(resource, selfAspect)))
+                                    new ConversionDependency(requirement, group, new Pair<>(resource, selfAspect)))
                             .filter(dependency -> !dependency.isCycleDependency(aspect))
                             .collect(Collectors.toList()),
                     requirement);

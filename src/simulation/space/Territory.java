@@ -1,6 +1,6 @@
 package simulation.space;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.Resource;
@@ -50,14 +50,14 @@ public class Territory {
     }
 
     public List<Tile> getBrinkWithCondition(Predicate<Tile> predicate) {
-        List<Tile> collect = getBrinkWithImportance(predicate, tile -> 0).stream().map(pair -> pair.first)
+        List<Tile> collect = getBrinkWithImportance(predicate, tile -> 0).stream().map(Pair::getFirst)
                 .collect(Collectors.toList());
         return collect;
     }
 
-    public List<ShnyPair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
-        Set<ShnyPair<Tile, Integer>> goodTiles = new HashSet<>();
-        goodTiles.addAll(brink.stream().filter(predicate).map(tile1 -> new ShnyPair<>(tile1, mapper.apply(tile1)))
+    public List<Pair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
+        Set<Pair<Tile, Integer>> goodTiles = new HashSet<>();
+        goodTiles.addAll(brink.stream().filter(predicate).map(tile1 -> new Pair<>(tile1, mapper.apply(tile1)))
                 .collect(Collectors.toList()));
         return new ArrayList<>(goodTiles);
     }
@@ -179,9 +179,9 @@ public class Territory {
     }
 
     public Tile getMostUsefulTile(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
-        Optional<ShnyPair<Tile, Integer>> _o = getBrinkWithImportance(predicate, mapper).stream()
-                .max(Comparator.comparingInt(o -> o.second));
-        return _o.map(tileIntegerShnyPair -> tileIntegerShnyPair.first).orElse(null);
+        Optional<Pair<Tile, Integer>> _o = getBrinkWithImportance(predicate, mapper).stream()
+                .max(Comparator.comparingInt(Pair::getSecond));
+        return _o.map(Pair::getFirst).orElse(null);
     }
 
     public List<Tile> getBorder() {

@@ -1,13 +1,8 @@
 package simulation.culture.group.cultureaspect;
 
-import extra.ShnyPair;
-import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceBehaviour;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
 

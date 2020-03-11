@@ -1,16 +1,10 @@
 package simulation.space;
 
 import extra.ShnyPair;
-import kotlin.collections.ArraysKt;
-import simulation.Controller;
-import simulation.World;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static shmp.random.RandomCollectionsKt.*;
 import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 

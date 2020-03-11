@@ -1,6 +1,6 @@
 package simulation.culture.aspect.dependency;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 public class LineDependency extends AbstractDependency {
     private boolean isAlreadyUsed = false;
     private Group group;
-    private ShnyPair<ConverseWrapper, ConverseWrapper> line;
+    private Pair<ConverseWrapper, ConverseWrapper> line;
 
-    public LineDependency(ResourceTag tag, Group group, ShnyPair<ConverseWrapper, ConverseWrapper> line) {
+    public LineDependency(ResourceTag tag, Group group, Pair<ConverseWrapper, ConverseWrapper> line) {
         super(tag);
         this.group = group;
         this.line = line;
@@ -23,10 +23,10 @@ public class LineDependency extends AbstractDependency {
 
     @Override
     public String getName() {
-        return line.first.getName() + " from " + line.second.getName();
+        return line.getFirst().getName() + " from " + line.getSecond().getName();
     }
 
-    public ShnyPair<ConverseWrapper, ConverseWrapper> getLine() {
+    public Pair<ConverseWrapper, ConverseWrapper> getLine() {
         return line;
     }
 
@@ -36,8 +36,8 @@ public class LineDependency extends AbstractDependency {
             return false;
         }
         isAlreadyUsed = true;
-        boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect));
+        boolean b = line.getSecond().getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.getSecond().equals(aspect));
         isAlreadyUsed = false;
         return b;
     }
@@ -48,8 +48,8 @@ public class LineDependency extends AbstractDependency {
             return false;
         }
         isAlreadyUsed = true;
-        boolean b = line.second.getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
-                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.second.equals(aspect));
+        boolean b = line.getSecond().getDependencies().values().stream().anyMatch(dependencies -> dependencies.stream()
+                .anyMatch(dependency -> dependency.isCycleDependencyInner(aspect))) || (line.getSecond().equals(aspect));
         isAlreadyUsed = false;
         return b;
     }
@@ -62,17 +62,18 @@ public class LineDependency extends AbstractDependency {
                 return new AspectResult(resourcePack, null);
             }
             isAlreadyUsed = true;
-            AspectResult _p = group.getAspect(line.second).use(new AspectController(
+            AspectResult _p = group.getAspect(line.getSecond()).use(new AspectController(
                     controller.getCeiling(),
                     controller.getFloor(),
                     new ResourceEvaluator(
-                            rp -> rp.getResource(line.first.resource),
-                            rp -> rp.getAmountOfResource(line.first.resource)
+                            rp -> rp.getResource(line.getFirst().resource),
+                            rp -> rp.getAmountOfResource(line.getFirst().resource)
                     ),
                     group,
                     controller.isMeaningNeeded()));
-            resourcePack.add(_p.resources.getResource(line.first.resource).getResources().stream()
-                    .flatMap(res -> res.applyAndConsumeAspect(line.first.aspect, controller.getCeiling()).stream()).collect(Collectors.toList()));
+            resourcePack.add(_p.resources.getResource(line.getFirst().resource).getResources().stream()
+                    .flatMap(res -> res.applyAndConsumeAspect(line.getFirst().aspect, controller.getCeiling()).stream())
+                    .collect(Collectors.toList()));
             resourcePack.add(_p.resources);
             isAlreadyUsed = false;
             return new AspectResult(_p.isFinished, resourcePack, null);
@@ -86,7 +87,7 @@ public class LineDependency extends AbstractDependency {
     }
 
     public ConverseWrapper getNextWrapper() {
-        return line.second;
+        return line.getSecond();
     }
 
     @Override
@@ -96,10 +97,10 @@ public class LineDependency extends AbstractDependency {
 
     @Override
     public void swapDependencies(Group group) {
-        line = new ShnyPair<>((ConverseWrapper) group.getAspect(line.first), (ConverseWrapper) group.getAspect(line.second));
-        if (line.first == null || line.second == null) {
-            throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
-        }
+        line = new Pair<>(
+                (ConverseWrapper) group.getAspect(line.getSecond()),
+                (ConverseWrapper) group.getAspect(line.getSecond())
+        );
     }
 
     @Override

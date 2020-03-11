@@ -1,6 +1,6 @@
 package simulation.space.resource;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.space.Tile;
 import simulation.space.resource.tag.ResourceTag;
 
@@ -94,7 +94,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         return resourcePack;
     }
 
-    public ShnyPair<Integer, List<Resource>> getAmountOfResourcesWithTagAndErase(ResourceTag tag, int amount) {
+    public Pair<Integer, List<Resource>> getAmountOfResourcesWithTagAndErase(ResourceTag tag, int amount) {
         Collection<Resource> _r = getAllResourcesWithTag(tag).getResources();
         List<Resource> result = new ArrayList<>();
         int counter = 0;
@@ -106,7 +106,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
             counter += resource.getAmount();
         }
         resources.removeAll(result);
-        return new ShnyPair<>(counter, result);
+        return new Pair<>(counter, result);
     }
 
     /**

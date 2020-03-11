@@ -3,7 +3,7 @@ package simulation.culture.aspect
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceCore
 import simulation.space.resource.ResourcePool
-import simulation.space.resource.tag.ResourceTagLabeler
+import simulation.space.resource.tag.labeler.ResourceTagLabeler
 
 class AspectMatcher(
         private val labeler: ResourceTagLabeler,

@@ -1,6 +1,6 @@
 package simulation.culture.aspect.dependency;
 
-import extra.ShnyPair;
+import kotlin.Pair;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class ConversionDependency extends AbstractDependency {
-    private ShnyPair<Resource, Aspect> conversion;
+    private Pair<Resource, Aspect> conversion;
     private Group group;
 
-    public ConversionDependency(ResourceTag tag, Group group, ShnyPair<Resource, Aspect> conversion) {
+    public ConversionDependency(ResourceTag tag, Group group, Pair<Resource, Aspect> conversion) {
         super(tag);
         this.conversion = conversion;
         this.group = group;
@@ -22,28 +22,28 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public String getName() {
-        return conversion.second.getName() + " on " + conversion.first.getBaseName();
+        return conversion.getSecond().getName() + " on " + conversion.getFirst().getBaseName();
     }
 
     @Override
     public boolean isCycleDependency(Aspect aspect) {
-        return aspect instanceof ConverseWrapper && conversion.second.equals(((ConverseWrapper) aspect).aspect);
+        return aspect instanceof ConverseWrapper && conversion.getSecond().equals(((ConverseWrapper) aspect).aspect);
     }
 
     public boolean isCycleDependencyInner(Aspect aspect) {
-        return aspect instanceof ConverseWrapper && conversion.second.equals(((ConverseWrapper) aspect).aspect) ||
-                conversion.second.equals(aspect);
+        return aspect instanceof ConverseWrapper && conversion.getSecond().equals(((ConverseWrapper) aspect).aspect) ||
+                conversion.getSecond().equals(aspect);
     }
 
     @Override
     public AspectResult useDependency(AspectController controller) {
         ResourcePack resourcePack = new ResourcePack();
-        Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.first);
+        Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.getFirst());
         for (Resource res : resourceInstances) {
             if (controller.getCeiling() <= controller.getEvaluator().evaluate(resourcePack)) {
                 break;
             }
-            resourcePack.add(res.applyAndConsumeAspect(conversion.second,
+            resourcePack.add(res.applyAndConsumeAspect(conversion.getSecond(),
                     controller.getCeiling() - controller.getEvaluator().evaluate(resourcePack)));
         }
         return new AspectResult(resourcePack, null);
@@ -56,8 +56,8 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public void swapDependencies(Group group) {
-        conversion = new ShnyPair<>(conversion.first, group.getAspect(conversion.second));
-        if (conversion.second == null) {
+        conversion = new Pair<>(conversion.getFirst(), group.getAspect(conversion.getSecond()));
+        if (conversion.getSecond() == null) {
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
         }
     }

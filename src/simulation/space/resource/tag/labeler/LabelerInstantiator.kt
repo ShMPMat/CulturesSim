@@ -1,4 +1,6 @@
-package simulation.space.resource.tag
+package simulation.space.resource.tag.labeler
+
+import simulation.space.resource.tag.*
 
 fun makeLabeler(tags: Collection<String>): ResourceTagLabeler {
     val labelers = ArrayList<ResourceTagLabeler>()
