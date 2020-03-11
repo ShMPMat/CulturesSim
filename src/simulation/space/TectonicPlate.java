@@ -1,6 +1,7 @@
 package simulation.space;
 
-import extra.ShnyPair;
+import kotlin.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +19,8 @@ public class TectonicPlate extends Territory {
         L(0, -1),
         R(0, 1);
 
-        ShnyPair<Integer, Integer> vector;
-        Direction(int x, int y) {vector = new ShnyPair<>(x, y);}
+        Pair<Integer, Integer> vector;
+        Direction(int x, int y) {vector = new Pair<>(x, y);}
     }
 
     /**
@@ -41,7 +42,7 @@ public class TectonicPlate extends Territory {
     /**
      * Which Tiles are affected by this Plate movement.
      */
-    private List<ShnyPair<Tile, Double>> affectedTiles;
+    private List<Pair<Tile, Double>> affectedTiles;
     /**
      * Whether it was moved for the first time.
      */
@@ -81,7 +82,7 @@ public class TectonicPlate extends Territory {
     /**
      * @return Tiles affected by this Plate.
      */
-    public List<ShnyPair<Tile, Double>> getAffectedTiles() {
+    public List<Pair<Tile, Double>> getAffectedTiles() {
         if (affectedTiles != null) {
             return affectedTiles;
         }
@@ -118,17 +119,19 @@ public class TectonicPlate extends Territory {
             tiles.addAll(neighbours);
         }
         this.affectedTiles = tiles.stream()
-                .map(tile -> new ShnyPair<>(tile, (session.random.nextDouble() + 0.1)/1.1))
+                .map(tile -> new Pair<>(tile, (session.random.nextDouble() + 0.1)/1.1))
                 .collect(Collectors.toList());
         return this.affectedTiles;
     }
 
     private int getInteractionCoof(TectonicPlate tectonicPlate) {
-        ShnyPair<Integer, Integer> result = new ShnyPair<>(Math.abs(direction.vector.first - tectonicPlate.direction.vector.first),
-                Math.abs(direction.vector.second - tectonicPlate.direction.vector.second));
-        if (result.first == 0 && result.second == 0) {
+        Pair<Integer, Integer> result = new Pair<>(
+                Math.abs(direction.vector.getSecond() - tectonicPlate.direction.vector.getSecond()),
+                Math.abs(direction.vector.getSecond() - tectonicPlate.direction.vector.getSecond())
+        );
+        if (result.getFirst() == 0 && result.getFirst() == 0) {
             return 0;
-        } else if (result.first <= 1 && result.second <= 1) {
+        } else if (result.getFirst() <= 1 && result.getFirst() <= 1) {
             return 1;
         }
         return 2;
@@ -141,10 +144,10 @@ public class TectonicPlate extends Territory {
         if (testProbability(0.7, session.random) && isMoved) {
             return;
         }
-        for (ShnyPair<Tile, Double> pair: getAffectedTiles()) {
-            if (testProbability(pair.second, session.random)) {
-                pair.first.setLevel(isMoved ? pair.first.getLevel() + 1 :
-                        pair.first.getLevel() + 5 + session.random.nextInt(5));
+        for (Pair<Tile, Double> pair: getAffectedTiles()) {
+            if (testProbability(pair.getSecond(), session.random)) {
+                pair.getFirst().setLevel(isMoved ? pair.getFirst().getLevel() + 1 :
+                        pair.getFirst().getLevel() + 5 + session.random.nextInt(5));
             }
         }
         isMoved = true;

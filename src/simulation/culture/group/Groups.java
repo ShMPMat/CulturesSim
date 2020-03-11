@@ -29,13 +29,4 @@ public class Groups {
         }
         return matched / overall;
     }
-
-    public static Set<Group> getAllNearGroups(Group group) {
-        Set<Group> groups = new HashSet<>();
-        for (Tile tile : group.getTiles()) {
-            tile.getNeighbours(t -> t.group != null).forEach(t -> groups.add(t.group));
-        }
-        groups.remove(group);
-        return groups;
-    }
 }

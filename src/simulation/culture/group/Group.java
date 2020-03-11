@@ -1,9 +1,10 @@
 package simulation.culture.group;
 
 import extra.OutputFunc;
+
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
-import extra.SpaceProbabilityFuncs;
+
 import kotlin.Pair;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
@@ -11,6 +12,7 @@ import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
@@ -46,25 +48,23 @@ public class Group {
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
 
-    private Group(String name, int population, double spreadability, Tile root, GroupConglomerate parentGroup) {
+    Group(
+            GroupConglomerate parentGroup,
+            String name,
+            int population,
+            Tile tile,
+            List<Aspect> aspects,
+            GroupMemes memePool,
+            double defaultSpreadAbility
+    ) {
         this.name = name;
         this.parentGroup = parentGroup;
         this.population = population;
-        this.spreadability = spreadability;
-        culturalCenter = new CulturalCenter(this);
-        territoryCenter.claimTile(root);
-    }
+        this.spreadability = defaultSpreadAbility;
 
-    Group(GroupConglomerate group, Group subgroup, String name, int population, Tile tile) {
-        this(name, population, session.defaultGroupSpreadability, tile, group);
-        if (subgroup == null) {
-            return;
-        }
-        for (Aspect aspect : subgroup.getAspects()) {
-            culturalCenter.hardAspectAdd(aspect.copy(aspect.getDependencies(), this));
-        }
-        culturalCenter.getAspects().forEach(Aspect::swapDependencies);
-        culturalCenter.getMemePool().addAll(subgroup.culturalCenter.getMemePool());
+        culturalCenter = new CulturalCenter(this, memePool, aspects);
+
+        territoryCenter.claimTile(tile);
     }
 
     public Set<Aspect> getAspects() {
@@ -81,10 +81,6 @@ public class Group {
 
     int getMinPopulationPerTile() {
         return minPopulationPerTile;
-    }
-
-    public List<Tile> getTiles() {
-        return getTerritory().getTiles();
     }
 
     public CulturalCenter getCulturalCenter() {
@@ -112,7 +108,7 @@ public class Group {
     }
 
     int getMaxPopulation() {
-        return getTerritory().size() * maxPopulation;
+        return getTerritoryCenter().getTerritory().size() * maxPopulation;
     }
 
     public int getFreePopulation() {
@@ -139,13 +135,9 @@ public class Group {
     private void die() {
         state = State.Dead;
         population = 0;
-        for (Tile tile : getTerritoryCenter().getTerritory().getTiles()) {
-            tile.group = null;
-        }
-        cherishedResources.disbandOnTile(randomElement(territoryCenter.getTerritory().getTiles(), session.random));
-        uniqueArtifacts.disbandOnTile(randomElement(getTiles(), session.random));
+        territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
-        for (Group group : Groups.getAllNearGroups(this)) {
+        for (Group group : territoryCenter.getAllNearGroups()) {
             group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
@@ -153,10 +145,6 @@ public class Group {
 
     public void addEvent(Event event) {
         getCulturalCenter().getEvents().add(event);
-    }
-
-    public Tile getCenter() {
-        return getTerritory().getCenter();
     }
 
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
@@ -173,7 +161,7 @@ public class Group {
     }
 
     void updateRequests() {
-        if (getTerritory().isEmpty()) {
+        if (getTerritoryCenter().getTerritory().isEmpty()) {
             int i = 0;
         }
         getCulturalCenter().updateRequests();
@@ -224,9 +212,21 @@ public class Group {
             }
             population = population / 2;
             Tile tile = randomElement(tiles, session.random);
-            Group group = new Group(parentGroup, this, parentGroup.name + "_" + parentGroup.subgroups.size(),
-                    population, tile);
-            for (Stratum stratum: strata) {
+            List<Aspect> aspects = culturalCenter.getAspects().stream()
+                    .map(a -> a.copy(a.getDependencies(), this))
+                    .collect(Collectors.toList());
+            GroupMemes memes = new GroupMemes();
+            memes.addAll(culturalCenter.getMemePool());
+            Group group = new Group(
+                    parentGroup,
+                    parentGroup.name + "_" + parentGroup.subgroups.size(),
+                    population,
+                    tile,
+                    aspects,
+                    memes,
+                    spreadability
+            );
+            for (Stratum stratum : strata) {
                 try {
                     group.strata.get(group.strata.indexOf(stratum)).useAmount(stratum.getAmount() / 2);
                 } catch (Exception e) {
@@ -234,7 +234,7 @@ public class Group {
                 }
                 stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
             }
-            if (group.getTerritory().isEmpty()) {
+            if (group.getTerritoryCenter().getTerritory().isEmpty()) {
                 int i = 0;
             }
             group.culturalCenter.initializeFromCenter(culturalCenter);//TODO maybe put in constructor somehow
@@ -248,7 +248,7 @@ public class Group {
             List<Group> groups = getOverallTerritory()
                     .getBrinkWithCondition(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
                     .stream().map(tile -> tile.group).distinct().collect(Collectors.toList());
-            for (Group group: groups) {
+            for (Group group : groups) {
                 if (!relations.containsKey(group)) {
                     Relation relation = new Relation(this, group);
                     relation.setPair(group.addMirrorRelation(relation));
@@ -256,7 +256,7 @@ public class Group {
                 }
             }
             List<Group> dead = new ArrayList<>();
-            for (Relation relation: relations.values()) {
+            for (Relation relation : relations.values()) {
                 if (relation.other.state == State.Dead) {
                     dead.add(relation.other);
                 } else {
@@ -277,14 +277,7 @@ public class Group {
 
     public void finishUpdate() {
         getCulturalCenter().finishUpdate();
-        Tile tile = getDisbandTile();
-        resourcePack.disbandOnTile(tile);
-        addEvent(new Event(Event.Type.DisbandResources, "Resources were disbanded on tile " + tile.x + " " +
-                tile.y, "tile", tile));
-    }
-
-    public Tile getDisbandTile() {
-        return SpaceProbabilityFuncs.randomTile(getOverallTerritory());
+        resourcePack.disbandOnTile(territoryCenter.getDisbandTile());
     }
 
     void starve(double fraction) {
@@ -308,7 +301,7 @@ public class Group {
         amount = min(population, amount);
         int delta = amount - getFreePopulation();
         if (delta > 0) {
-            for (Stratum stratum: strata) {
+            for (Stratum stratum : strata) {
                 int part = (int) min(amount * (((double) stratum.getAmount()) / population) + 1, stratum.getAmount());
                 stratum.freeAmount(part);
             }
@@ -339,7 +332,7 @@ public class Group {
         while (!queue.isEmpty()) {
             Group cur = queue.poll();
             cluster.add(cur);
-            queue.addAll(cur.getTerritory().getBorder().stream()
+            queue.addAll(cur.getTerritoryCenter().getTerritory().getBorder().stream()
                     .filter(t -> t.group != null && t.group.parentGroup == parentGroup && !cluster.contains(t.group))
                     .map(tile -> tile.group).collect(Collectors.toList()));
         }
@@ -351,8 +344,11 @@ public class Group {
     }
 
     private void createNewConglomerate(Collection<Group> groups) {
-        GroupConglomerate conglomerate = new GroupConglomerate(0, getCenter());
-        for (Group group: groups) {
+        GroupConglomerate conglomerate = new GroupConglomerate(
+                0,
+                getTerritoryCenter().getTerritory().getCenter()
+        );
+        for (Group group : groups) {
             parentGroup.removeGroup(group);
             conglomerate.addGroup(group);
         }
@@ -409,7 +405,7 @@ public class Group {
             }
         }
         stringBuilder.append("\n");
-        for (Relation relation: culturalCenter.relations.values()) {
+        for (Relation relation : culturalCenter.relations.values()) {
             stringBuilder.append(relation).append("\n");
         }
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);

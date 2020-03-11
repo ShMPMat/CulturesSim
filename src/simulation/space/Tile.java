@@ -13,27 +13,18 @@ import static simulation.Controller.session;
 
 public class Tile {
     public int x, y;
-    /**
-     * Group which is settled on this tile.
-     */
     public Group group;
-    /**
-     * Type of this Tile.
-     */
     private Type type;
-    /**
-     * TectonicPlate by which this Tile is owned.
-     */
     private TectonicPlate plate;
     /**
      * Resources which are located on this Tile.
      */
-    private List<Resource> resources = new ArrayList<>();;//TODO make it set
+    private List<Resource> resources = new ArrayList<>();//TODO make it set
     /**
      * Resources which were added on this Tile during this turn. They are
      * stored here before the end of the turn.
      */
-    private List<Resource> _delayedResources = new ArrayList<>();;
+    private List<Resource> _delayedResources = new ArrayList<>();
     /**
      * Level of this Tile.
      */
@@ -103,19 +94,12 @@ public class Tile {
         return index == -1 ? resource.cleanCopy(0) : resources.get(index);
     }
 
-    /**
-     * @param predicate Predicate on which neighbour Tiles will bw tested.
-     * @return List of neighbour Tiles which satisfy the Predicate.
-     */
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
         return neighbours.stream()
                 .filter(predicate)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @return All neighbour Tiles.
-     */
     public List<Tile> getNeighbours() {
         return getNeighbours(t -> true);
     }

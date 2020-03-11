@@ -1,14 +1,13 @@
 package simulation.culture.group;
 
+import extra.SpaceProbabilityFuncs;
 import simulation.Controller;
 import simulation.culture.Event;
 import simulation.culture.group.intergroup.Relation;
 import simulation.space.Territory;
 import simulation.space.Tile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.*;
 import java.util.function.Function;
 
 import static shmp.random.RandomProbabilitiesKt.*;
@@ -20,7 +19,7 @@ public class TerritoryCenter {
         int accumulator = 0;
         for (Relation relation : group.getCulturalCenter().relations.values()) {
             if (relation.getPositive() < 0) {
-                accumulator += relation.getPositive() * 10000 / relation.other.getTerritory().getCenter().getDistance(t);
+                accumulator += relation.getPositive() * 10000 / relation.other.getTerritoryCenter().getTerritory().getCenter().getDistance(t);
             }
         }
         return accumulator;
@@ -34,6 +33,15 @@ public class TerritoryCenter {
 
     public Territory getTerritory() {
         return territory;
+    }
+
+    public Set<Group> getAllNearGroups() {
+        Set<Group> groups = new HashSet<>();
+        for (Tile tile : getTerritory().getTiles()) {
+            tile.getNeighbours(t -> t.group != null).forEach(t -> groups.add(t.group));
+        }
+        groups.remove(group);
+        return groups;
     }
 
     void update() {
@@ -61,17 +69,18 @@ public class TerritoryCenter {
 
     private boolean shouldMigrate() {
         return !group.getCulturalCenter().getAspirations().isEmpty();
-    }//TODO move to cc
+    }
 
     private Tile getMigrationTile() {
         return getTerritory().getCenter().getNeighbours(tile -> tile.canSettle(group) && tile.group == null).stream()
                 .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile))).orElse(null);
     }
 
+    public Tile getDisbandTile() {
+        return SpaceProbabilityFuncs.randomTile(getTerritory());
+    }
+
     private boolean expand() {
-        if (group.state == Group.State.Dead) {
-            return false;
-        }
         if (!testProbability(group.getSpreadability(), Controller.session.random)) {
             return false;
         }
@@ -103,6 +112,12 @@ public class TerritoryCenter {
         getTerritory().add(tile);
         group.addEvent(new Event(Event.Type.TileAcquisition, "Group " + group.name + " claimed tile " + tile.x + " " +
                 tile.y, "group", this, "tile", tile));
+    }
+
+    void die() {
+        for (Tile tile : getTerritory().getTiles()) {
+            tile.group = null;
+        }
     }
 
     private void leaveTile(Tile tile) {

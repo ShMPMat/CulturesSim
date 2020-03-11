@@ -1,6 +1,7 @@
 package visualizer;
 //TODO check smart territory acquisition it seems not to work
 
+import kotlin.Pair;
 import simulation.Controller;
 import simulation.World;
 import simulation.culture.Event;
@@ -107,7 +108,7 @@ public class TextVisualizer implements Visualizer {
         List<Tile> affectedTiles = new ArrayList<>();
         for (TectonicPlate tectonicPlate : map.getTectonicPlates()) {
             affectedTiles.addAll(tectonicPlate.getAffectedTiles().stream()
-                    .map(pair -> pair.first).collect(Collectors.toList()));
+                    .map(Pair::getFirst).collect(Collectors.toList()));
         }
         for (int i = 0; i < map.getTectonicPlates().size(); i++) {
             if (map.getTectonicPlates().get(i).contains(tile)) {

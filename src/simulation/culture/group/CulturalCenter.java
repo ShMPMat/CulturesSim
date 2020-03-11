@@ -17,6 +17,7 @@ import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.culture.thinking.meaning.MemePool;
 import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
@@ -41,7 +42,7 @@ public class CulturalCenter {
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
     private Set<CultureAspect> cultureAspects = new HashSet<>();
-    private GroupMemes memePool = new GroupMemes();
+    private GroupMemes memePool;
 
     private Set<Reason> reasonsWithSystems = new HashSet<>();
 
@@ -51,9 +52,12 @@ public class CulturalCenter {
 
     Map<Group, Relation> relations = new HashMap<>();
 
-    CulturalCenter(Group group) {
+    CulturalCenter(Group group, GroupMemes memePool, List<Aspect> aspects) {
         this.group = group;
+        this.memePool = memePool;
         this.aspectCenter = new AspectCenter(group);
+        aspects.forEach(a -> hardAspectAdd(a));
+        getAspects().forEach(Aspect::swapDependencies);
     }
 
     List<Aspiration> getAspirations() {

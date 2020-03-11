@@ -3,6 +3,7 @@ package simulation.culture.group;
 import extra.OutputFunc;
 import simulation.culture.Event;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
@@ -53,8 +54,15 @@ public class GroupConglomerate {
         claimTile(root);
 
         for (int i = 0; i < numberOfSubGroups; i++) {
-            addGroup(new Group(this, null, name + "_" + i, population / numberOfSubGroups,
-                    getCenter()));
+            addGroup(new Group(
+                    this,
+                    name + "_" + i,
+                    population / numberOfSubGroups,
+                    getCenter(),
+                    new ArrayList<>(),
+                    new GroupMemes(),
+                    session.defaultGroupSpreadability
+            ));
         }
     }
 
@@ -87,7 +95,7 @@ public class GroupConglomerate {
     public List<Meme> getMemes() {
         return subgroups.stream().map(group -> group.getCulturalCenter().getMemePool().getMemes())
                 .reduce(new ArrayList<>(), (x, y) -> {
-                    for (Meme meme: y) {
+                    for (Meme meme : y) {
                         int i = x.indexOf(meme);
                         if (i == -1) {
                             x.add(meme.copy());
@@ -198,8 +206,10 @@ public class GroupConglomerate {
 
     int getClosestInnerGroupDistance(Tile tile) {
         int d = Integer.MAX_VALUE;
-        for (Group subgroup: subgroups) {
-            d = min(d, tile.getClosestDistance(Collections.singleton(subgroup.getCenter())));
+        for (Group subgroup : subgroups) {
+            d = min(d, tile.getClosestDistance(
+                    Collections.singleton(subgroup.getTerritoryCenter().getTerritory().getCenter())
+            ));
         }
         return d;
     }

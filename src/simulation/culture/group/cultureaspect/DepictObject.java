@@ -52,7 +52,7 @@ public class DepictObject extends AbstractCultureAspect {
             result.resources.removeAll(meaningful.resources);
             group.cherishedResources.add(meaningful);
             resourceBehaviour.procedeResources(meaningful);
-            result.resources.disbandOnTile(group.getDisbandTile());
+            result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
             group.getCulturalCenter().getMemePool().strengthenMeme(meme);
         }
         group.getCulturalCenter().clearCurrentMeme();
