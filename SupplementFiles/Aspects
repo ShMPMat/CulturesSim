@@ -28,7 +28,7 @@
 -PlantSeed
 -TakeApart
 -Take
-    &!!t:gas--mv--#MATCHED:1
+    &!!t:gas--mv--!!rs--#MATCHED:1
 
 -ShapeMalleable                                                              *malleable          #MEANING
 -Engrave                                                                     *goodForEngraving   #MEANING

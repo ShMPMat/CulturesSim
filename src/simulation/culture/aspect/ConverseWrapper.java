@@ -99,7 +99,7 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public boolean isValid() {
-        if (resource.getGenome().willResist() && aspect.getName().equals("Take")) {
+        if (resource.getGenome().isResisting() && aspect.getName().equals("Take")) {
             return false;
         }
         if (!resource.hasApplicationForAspect(aspect)) {

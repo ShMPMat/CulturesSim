@@ -17,7 +17,7 @@ public class Genome {
     private Type type;
     private boolean isMutable;
     private boolean canMove;
-    private boolean willResist;
+    private boolean isResisting;
     private double size;
     private int naturalDensity;
     private List<Resource> parts = new ArrayList<>();
@@ -39,7 +39,7 @@ public class Genome {
     private int baseDesirability;
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
-           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean willResist,
+           int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean isResisting,
            boolean hasLegacy, int deathTime, int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy,
            List<ResourceDependency> dependencies,
            List<ResourceTag> tags,
@@ -62,7 +62,7 @@ public class Genome {
         this.canMove = canMove;
         this.isMutable = isMutable;
         this.isMovable = isMovable;
-        this.willResist = willResist;
+        this.isResisting = isResisting;
         this.hasLegacy = hasLegacy;
         this.deathTime = deathTime;
         this.defaultAmount = defaultAmount;
@@ -77,7 +77,7 @@ public class Genome {
 
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
-                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.willResist,
+                genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.isResisting,
                 genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
                 genome.dependencies,
                 genome.tags,
@@ -139,8 +139,8 @@ public class Genome {
         return defaultAmount;
     }
 
-    public boolean willResist() {
-        return willResist;
+    public boolean isResisting() {
+        return isResisting;
     }
 
     ResourceCore getLegacy() {
@@ -151,8 +151,8 @@ public class Genome {
         return templateLegacy;
     }
 
-    public void setWillResist(boolean willResist) {
-        this.willResist = willResist;
+    public void setResisting(boolean resisting) {
+        this.isResisting = resisting;
     }
 
     public void setName(String name) {

@@ -92,10 +92,6 @@ public class ResourceCore {
         return tags;
     }
 
-    public Material getMainMaterial() {
-        return materials.get(0);
-    }
-
     public Genome getGenome() {
         return genome;
     }
@@ -199,9 +195,6 @@ public class ResourceCore {
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {
-        if (aspect.getName().equals("Take") && !genome.willResist()) {
-            return true;
-        }
         if (getTags().containsAll(aspect.getWrapperRequirements()) && !aspect.getWrapperRequirements().isEmpty()) {
             return true;
         }

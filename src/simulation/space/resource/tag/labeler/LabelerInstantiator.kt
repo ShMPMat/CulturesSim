@@ -15,6 +15,7 @@ private fun getLabel(key: String, value: String): ResourceTagLabeler = when (key
     "<=" -> SmallerSizeLabeler(value.toDouble())
     ">=" -> BiggerSizeLabeler(value.toDouble())
     "mv" -> IsMovableLabeler()
+    "rs" -> IsResistingLabeler()
     "!!" -> NegateLabeler(getLabel(value.take(2), value.drop(2)))
     else -> throw RuntimeException("Wrong tag for a labeler")
 }
