@@ -25,18 +25,43 @@ public class ConverseWrapper extends Aspect {
 
     public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
         super(
-                AspectInstantiationKt.createCore(new String[]{aspect.getName() + "On" + resource.getBaseName()}),
+                new AspectCore(
+                        aspect.getName() + "On" + resource.getBaseName(),
+                        getReducedTags(resource, aspect),
+                        getDependencies(aspect),
+                        new ArrayList<>(),
+                        false
+                        ),
                 new HashMap<>(),
                 group
         );
         this.aspect = aspect;
         this.resource = resource.cleanCopy();
-        for (Resource res : resource.applyAspect(aspect)) {
-            aspectCore.addAllTags(res.getTags());
+    }
+
+    private static List<ResourceTag> getReducedTags(Resource resource, Aspect aspect) {
+        List<ResourceTag> result = new ArrayList<>();
+        List<ResourceTag> allTags = resource.applyAspect(aspect).stream()
+                .flatMap(r -> r.getTags().stream())
+                .collect(Collectors.toList());
+        for (ResourceTag tag: allTags) {
+            if (!result.contains(tag)) {
+                result.add(tag);
+            } else if (result.get(result.indexOf(tag)).level < tag.level) {
+                result.remove(tag);
+                result.add(tag);
+            }
         }
-        getRequirements().add(ResourceTag.phony());
-        getRequirements().addAll(aspect.getRequirements().stream().filter(tag -> !tag.isConverseCondition)
+        return result;
+    }
+
+    private static List<ResourceTag> getDependencies(Aspect aspect) {
+        List<ResourceTag> result = new ArrayList<>();
+        result.add(ResourceTag.phony());
+        result.addAll(aspect.getRequirements().stream()
+                .filter(tag -> !tag.isConverseCondition)
                 .collect(Collectors.toList()));
+        return result;
     }
 
     public ResourceTag getRequirement() {

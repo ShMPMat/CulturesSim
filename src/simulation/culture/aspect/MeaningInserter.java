@@ -39,12 +39,6 @@ public class MeaningInserter extends ConverseWrapper {
         return false;
     }
 
-
-    //    @Override
-//    public MeaningInserter stripToMeaning() {
-//        return copy(dependencies, group);
-//    }
-
     @Override
     public MeaningInserter copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         MeaningInserter copy = new MeaningInserter(aspect, resource, group);

@@ -111,7 +111,7 @@ public class Aspect {
     }
 
     public boolean canApplyMeaning() {
-        return aspectCore.applyMeaning;
+        return aspectCore.getApplyMeaning();
     }
 
     public boolean canReturnMeaning() {
