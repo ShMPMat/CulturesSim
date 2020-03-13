@@ -2,10 +2,6 @@ package simulation.culture.group;
 
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.cultureaspect.CultureAspect;
-import simulation.space.Tile;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class Groups {
     /**
@@ -16,7 +12,7 @@ public class Groups {
         double matched = 1;
         double overall = 1;
         for (Aspect aspect: g1.getAspects()) {
-            if (g2.getAspect(aspect) != null) {
+            if (g2.getCulturalCenter().getAspectCenter().getAspectPool().contains(aspect)) {
                 matched++;
             }
             overall++;

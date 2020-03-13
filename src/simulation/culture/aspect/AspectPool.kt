@@ -6,8 +6,20 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     val aspects: Set<Aspect>
         get() = aspectMap.keys
 
+    fun getConverseWrappers() = aspects.filterIsInstance<ConverseWrapper>()
+
+    fun getMeaningAspects() = aspects
+            .filterIsInstance<ConverseWrapper>()
+            .filter { it.canReturnMeaning() }
+            .toSet()
+
     fun get(name: String) = aspects.firstOrNull { it.name == name }
             ?: throw NoSuchElementException("No aspect with name $name")
+
+    fun get(aspect: Aspect) = aspectMap[aspect]
+            ?: throw NoSuchElementException("No aspect with name ${aspect.name}")
+
+    fun contains(aspect: Aspect) = aspectMap[aspect] != null
 
     fun getWithPredicate(predicate: (Aspect) -> Boolean): List<Aspect> = aspects
             .filter(predicate)

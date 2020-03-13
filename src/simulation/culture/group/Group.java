@@ -68,11 +68,11 @@ public class Group {
     }
 
     public Set<Aspect> getAspects() {
-        return getCulturalCenter().getAspects();
+        return getCulturalCenter().getAspectCenter().getAspectPool().getAll();
     }
 
     public Aspect getAspect(Aspect aspect) {
-        return culturalCenter.getAspect(aspect);
+        return culturalCenter.getAspectCenter().getAspectPool().get(aspect);
     }
 
     double getSpreadability() {
@@ -212,7 +212,7 @@ public class Group {
             }
             population = population / 2;
             Tile tile = randomElement(tiles, session.random);
-            List<Aspect> aspects = culturalCenter.getAspects().stream()
+            List<Aspect> aspects = culturalCenter.getAspectCenter().getAspectPool().getAll().stream()
                     .map(a -> a.copy(a.getDependencies(), this))
                     .collect(Collectors.toList());
             GroupMemes memes = new GroupMemes();

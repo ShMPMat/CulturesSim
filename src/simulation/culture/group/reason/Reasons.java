@@ -12,7 +12,8 @@ public class Reasons {
         Reason reason = null;
         switch (Controller.session.random.nextInt(1)) {
             case 0:
-                List<ConverseWrapper> wrappers = group.getCulturalCenter().getConverseWrappers();
+                List<ConverseWrapper> wrappers =
+                        group.getCulturalCenter().getAspectCenter().getAspectPool().getConverseWrappers();
                 if (!wrappers.isEmpty()) {
                     ConverseWrapper converseWrapper = RandomCollectionsKt.randomElement(
                             wrappers,

@@ -56,31 +56,15 @@ public class CulturalCenter {
         this.memePool = memePool;
         this.aspectCenter = new AspectCenter(group);
         aspects.forEach(this::hardAspectAdd);
-        getAspects().forEach(Aspect::swapDependencies);
+        aspectCenter.getAspectPool().getAspects().forEach(Aspect::swapDependencies);//TODO will it swap though?
     }
 
     List<Aspiration> getAspirations() {
         return aspirations;
     }
 
-    Set<Aspect> getAspects() {
-        return aspectCenter.getAspects();
-    }
-
-    public List<ConverseWrapper> getConverseWrappers() {
-        return aspectCenter.getAspectPool().getConverseWrappers();
-    }
-
-    Set<ConverseWrapper> getMeaningAspects() {
-        return aspectCenter.getAspectPool().getMeaningAspects();
-    }
-
-    Aspect getAspect(Aspect aspect) {
-        return aspectCenter.getAspectPool().get(aspect.getName());
-    }
-
-    Aspect getAspect(String name) {
-        return aspectCenter.getAspectPool().get(name);
+    public AspectCenter getAspectCenter() {
+        return aspectCenter;
     }
 
     public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
@@ -107,7 +91,8 @@ public class CulturalCenter {
         List<Aspect> allExistingAspects = new ArrayList<>();
         for (Group neighbour : relations.keySet()) {
             allExistingAspects.addAll(neighbour.getAspects().stream()
-                    .filter(aspect -> !(aspect instanceof ConverseWrapper) || getAspect(((ConverseWrapper) aspect).aspect) != null)
+                    .filter(aspect -> !(aspect instanceof ConverseWrapper)
+                                    || aspectCenter.getAspectPool().contains(((ConverseWrapper) aspect).aspect))
                     .collect(Collectors.toList()));
         }
         return allExistingAspects;
@@ -266,7 +251,7 @@ public class CulturalCenter {
                 break;
             }
             case 5: {//TODO should I add such a thing here even? (I did break in previous section for now)
-                List<ConverseWrapper> wrappers = getConverseWrappers();
+                List<ConverseWrapper> wrappers = aspectCenter.getAspectPool().getConverseWrappers();
                 if (!wrappers.isEmpty()) {
                     ConverseWrapper converseWrapper = randomElement(wrappers, session.random);
                     Reason reason = Reasons.randomReason(group);
@@ -281,7 +266,7 @@ public class CulturalCenter {
     }
 
     private TextInfo generateTextInfo() {//TODO too slow
-        List<TextInfo> textInfos = getConverseWrappers().stream()
+        List<TextInfo> textInfos = aspectCenter.getAspectPool().getConverseWrappers().stream()
                 .flatMap(cw -> memePool.getAspectTextInfo(cw).stream())
                 .collect(Collectors.toList());
         return textInfos.isEmpty() ? null : complicateInfo(randomElement(textInfos, session.random));
@@ -321,7 +306,7 @@ public class CulturalCenter {
         Reason reason;
         int i = 0;
         do {
-            List<ConverseWrapper> wrappers = new ArrayList<>(getConverseWrappers());
+            List<ConverseWrapper> wrappers = new ArrayList<>(aspectCenter.getAspectPool().getConverseWrappers());
             if (wrappers.isEmpty()) {
                 return null;
             }
@@ -352,7 +337,7 @@ public class CulturalCenter {
                     continue;
                 }
                 try {
-                    Aspect myAspect = getAspect(meme.getObserverWord());
+                    Aspect myAspect = aspectCenter.getAspectPool().get(meme.getObserverWord());
                     if (myAspect instanceof ConverseWrapper) {
                         return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
                     }
@@ -366,7 +351,8 @@ public class CulturalCenter {
                     }
                     switch (session.random.nextInt(2)) {
                         case 0:
-                            List<ConverseWrapper> meaningAspects = new ArrayList<>(getMeaningAspects());
+                            List<ConverseWrapper> meaningAspects =
+                                    new ArrayList<>(aspectCenter.getAspectPool().getMeaningAspects());
                             if (!meaningAspects.isEmpty()) {
                                 return new CultureAspectRitual(group,
                                         new DepictObject(
@@ -492,7 +478,7 @@ public class CulturalCenter {
             if (memePool.isEmpty()) {
                 return;
             }
-            List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
+            List<ConverseWrapper> _l = new ArrayList<>(aspectCenter.getAspectPool().getMeaningAspects());
             if (_l.isEmpty()) {
                 return;
             }
@@ -534,9 +520,9 @@ public class CulturalCenter {
     }
 
     private void tryToFulfillAspirations() {
-        Optional _o = getAspirations().stream().max((Comparator.comparingInt(o -> o.level)));
+        Optional<Aspiration> _o = getAspirations().stream().max((Comparator.comparingInt(o -> o.level)));
         if (_o.isPresent()) {
-            Aspiration aspiration = (Aspiration) _o.get();
+            Aspiration aspiration = _o.get();
             List<ShnyPair<Aspect, Group>> options = aspectCenter.findOptions(aspiration);
             if (options.isEmpty()) {
                 return;
@@ -562,7 +548,7 @@ public class CulturalCenter {
         aspectCenter.pushAspects();
     }
 
-    public void initializeFromCenter(CulturalCenter culturalCenter) {
-        culturalCenter.getAspects().forEach(this::addAspect);
+    public void initializeFromCenter(CulturalCenter culturalCenter) {//TODO da hell is this?
+        culturalCenter.getAspectCenter().getAspectPool().getAll().forEach(this::addAspect);
     }
 }

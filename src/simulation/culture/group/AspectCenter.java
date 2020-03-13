@@ -28,12 +28,8 @@ public class AspectCenter {
         this.group = group;
     }
 
-    public MutableAspectPool getAspectPool() {
+    public AspectPool getAspectPool() {
         return aspectPool;
-    }
-
-    public Set<Aspect> getAspects() {
-        return aspectPool.getAll();
     }
 
     Set<Aspect> getChangedAspects() {
@@ -54,7 +50,7 @@ public class AspectCenter {
         if (!aspect.isValid()) {
             return false;
         }
-        if (getAspects().contains(aspect)) {
+        if (aspectPool.contains(aspect)) {
             aspect = aspectPool.get(aspect.getName());
         }
         Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
@@ -142,7 +138,7 @@ public class AspectCenter {
     }
 
     private void addAspectDependencies(ResourceTag requirement, Map<ResourceTag, Set<Dependency>> dep, Aspect aspect) {
-        for (Aspect selfAspect : getAspects()) {
+        for (Aspect selfAspect : aspectPool.getAll()) {
             if (selfAspect.getTags().contains(requirement)) {
                 Dependency dependency = new AspectDependency(requirement, selfAspect);
                 if (dependency.isCycleDependency(selfAspect) || dependency.isCycleDependencyInner(aspect)) {
@@ -216,8 +212,7 @@ public class AspectCenter {
                 .map(Pair::getFirst)
                 .collect(Collectors.toSet()));
         newResources.removeAll(_lastResourcesForCw);
-        for (Aspect aspect : getAspects().stream().filter(aspect -> !(aspect instanceof ConverseWrapper))
-                .collect(Collectors.toList())) {
+        for (Aspect aspect : aspectPool.getWithPredicate(aspect -> !(aspect instanceof ConverseWrapper))) {
             for (Resource resource : newResources) {
                 addConverseWrapper(aspect, resource);
             }
@@ -228,7 +223,7 @@ public class AspectCenter {
     }
 
     void finishUpdate() {
-        getAspects().forEach(Aspect::finishUpdate);
+        aspectPool.getAll().forEach(Aspect::finishUpdate);
         pushAspects();
     }
 
