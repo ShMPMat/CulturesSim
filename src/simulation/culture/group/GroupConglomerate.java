@@ -75,17 +75,17 @@ public class GroupConglomerate {
      * Each of them belongs to one of the Groups, it is not guarantied to which one.
      */
     public Set<Aspect> getAspects() {
-        return subgroups.stream().map(Group::getAspects).reduce(new HashSet<>(), (x, y) -> {
-            x.addAll(y);
-            return x;
-        });
+        return subgroups.stream()
+                .flatMap(g -> g.getCulturalCenter().getAspectCenter().getAspectPool().getAll().stream())
+                .collect(Collectors.toSet());
     }
 
     /**
      * @return all CultureAspects of child Groups.
      */
     public List<CultureAspect> getCultureAspects() {
-        return subgroups.stream().flatMap(group -> group.getCulturalCenter().getCultureAspects().stream())
+        return subgroups.stream()
+                .flatMap(group -> group.getCulturalCenter().getCultureAspectCenter().getCultureAspects().stream())
                 .collect(Collectors.toList());
     }
 

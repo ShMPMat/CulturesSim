@@ -43,9 +43,8 @@ public class CulturalCenter {
     CulturalCenter(Group group, GroupMemes memePool, List<Aspect> aspects) {
         this.group = group;
         this.memePool = memePool;
-        this.aspectCenter = new AspectCenter(group);
+        this.aspectCenter = new AspectCenter(group, aspects);
         this.cultureAspectCenter = new CultureAspectCenter(group, new HashSet<>());
-        aspects.forEach(this::hardAspectAdd);
         aspectCenter.getAspectPool().getAspects().forEach(Aspect::swapDependencies);//TODO will it swap though?
     }
 
@@ -65,22 +64,14 @@ public class CulturalCenter {
         return requests;
     }
 
-    Set<Aspect> getChangedAspects() {
-        return aspectCenter.getChangedAspects();
-    }
-
     List<Event> getEvents() {
         return events;
-    }
-
-    public Set<CultureAspect> getCultureAspects() {
-        return cultureAspectCenter.getCultureAspects();
     }
 
     List<Aspect> getNeighboursAspects() {
         List<Aspect> allExistingAspects = new ArrayList<>();
         for (Group neighbour : relations.keySet()) {
-            allExistingAspects.addAll(neighbour.getAspects().stream()
+            allExistingAspects.addAll(neighbour.getCulturalCenter().getAspectCenter().getAspectPool().getAll().stream()
                     .filter(aspect -> !(aspect instanceof ConverseWrapper)
                             || aspectCenter.getAspectPool().contains(((ConverseWrapper) aspect).aspect))
                     .collect(Collectors.toList()));
@@ -91,7 +82,7 @@ public class CulturalCenter {
     private List<CultureAspect> getNeighboursCultureAspects() {
         List<CultureAspect> allExistingAspects = new ArrayList<>();
         for (Group neighbour : relations.keySet()) {
-            allExistingAspects.addAll(neighbour.getCulturalCenter().getCultureAspects());
+            allExistingAspects.addAll(neighbour.getCulturalCenter().getCultureAspectCenter().getCultureAspects());
         }
         return allExistingAspects;
     }
@@ -112,14 +103,6 @@ public class CulturalCenter {
         if (aspirations.stream().noneMatch(aspir -> aspir.equals(aspiration))) {
             aspirations.add(aspiration);
         }
-    }
-
-    public boolean addAspect(Aspect aspect) {
-        return aspectCenter.addAspect(aspect);
-    }
-
-    void hardAspectAdd(Aspect aspect) {
-        aspectCenter.hardAspectAdd(aspect);
     }
 
     public void addResourceWant(Resource resource) {
@@ -185,7 +168,7 @@ public class CulturalCenter {
             return;
         }
         List<Aspect> allExistingAspects = getNeighboursAspects().stream()
-                .filter(aspect -> !getChangedAspects().contains(aspect))
+                .filter(aspect -> !aspectCenter.getChangedAspects().contains(aspect))
                 .collect(Collectors.toList());
 
         if (!allExistingAspects.isEmpty()) {
@@ -195,7 +178,7 @@ public class CulturalCenter {
                         a -> a.getUsefulness() * getNormalizedRelation(a.getGroup()),
                         session.random
                 );
-                if (addAspect(aspect)) {
+                if (aspectCenter.addAspect(aspect)) {
                     group.addEvent(new Event(Event.Type.AspectGaining,
                             String.format("Group %s got aspect %s from group %s",
                                     group.name, aspect.getName(), aspect.getGroup().name),
@@ -215,7 +198,8 @@ public class CulturalCenter {
                 return;
             }
             List<CultureAspect> cultureAspects = getNeighboursCultureAspects().stream()
-                    .filter(aspect -> !getCultureAspects().contains(aspect)).collect(Collectors.toList());
+                    .filter(aspect -> !cultureAspectCenter.getCultureAspects().contains(aspect))
+                    .collect(Collectors.toList());
             if (!cultureAspects.isEmpty()) {
                 CultureAspect aspect = randomElementWithProbability(
                         cultureAspects,
@@ -288,7 +272,7 @@ public class CulturalCenter {
                 return;
             }
             ShnyPair<Aspect, Group> pair = randomElement(options, session.random);
-            addAspect(pair.first);
+            aspectCenter.addAspect(pair.first);
             removeAspiration(aspiration);
             if (pair.second == null) {
                 group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
@@ -318,6 +302,6 @@ public class CulturalCenter {
     }
 
     public void initializeFromCenter(CulturalCenter culturalCenter) {//TODO da hell is this?
-        culturalCenter.getAspectCenter().getAspectPool().getAll().forEach(this::addAspect);
+        culturalCenter.getAspectCenter().getAspectPool().getAll().forEach(a -> aspectCenter.addAspect(a));
     }
 }

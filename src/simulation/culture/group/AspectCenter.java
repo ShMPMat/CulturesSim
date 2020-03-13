@@ -24,8 +24,9 @@ public class AspectCenter {
     private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
     private List<Resource> _lastResourcesForCw = new ArrayList<>();
 
-    public AspectCenter(Group group) {
+    public AspectCenter(Group group, List<Aspect> aspects) {
         this.group = group;
+        aspects.forEach(this::hardAspectAdd);
     }
 
     public AspectPool getAspectPool() {
@@ -46,7 +47,7 @@ public class AspectCenter {
         return _m;
     }
 
-    boolean addAspect(Aspect aspect) {
+    public boolean addAspect(Aspect aspect) {
         if (!aspect.isValid()) {
             return false;
         }
@@ -212,7 +213,7 @@ public class AspectCenter {
                 .map(Pair::getFirst)
                 .collect(Collectors.toSet()));
         newResources.removeAll(_lastResourcesForCw);
-        for (Aspect aspect : aspectPool.getWithPredicate(aspect -> !(aspect instanceof ConverseWrapper))) {
+        for (Aspect aspect : aspectPool.filter(aspect -> !(aspect instanceof ConverseWrapper))) {
             for (Resource resource : newResources) {
                 addConverseWrapper(aspect, resource);
             }

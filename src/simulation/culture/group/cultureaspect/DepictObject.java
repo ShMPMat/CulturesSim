@@ -60,7 +60,12 @@ public class DepictObject extends AbstractCultureAspect {
 
     @Override
     public DepictObject copy(Group group) {
-        return new DepictObject(group, meme, (ConverseWrapper) group.getAspect(converseWrapper), resourceBehaviour);
+        return new DepictObject(
+                group,
+                meme,
+                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(converseWrapper),
+                resourceBehaviour
+        );
     }
 
     @Override

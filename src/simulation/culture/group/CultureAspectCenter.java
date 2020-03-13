@@ -25,7 +25,7 @@ import static simulation.Controller.session;
 
 public class CultureAspectCenter {
     private Group group;
-    private Set<CultureAspect> cultureAspects;
+    private Set<CultureAspect> cultureAspects;//TODO make pool and check all getCultureAspect calls
     private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
 
     private Set<Reason> reasonsWithSystems = new HashSet<>();

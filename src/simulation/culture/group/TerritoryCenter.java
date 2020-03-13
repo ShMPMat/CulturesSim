@@ -25,7 +25,8 @@ public class TerritoryCenter {
         return accumulator;
     };
     private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size() +
-            3 * t.hasResources(group.getResourceRequirements()) + tileRelationAspectMapper.apply(t);
+            3 * t.hasResources(group.getCulturalCenter().getAspectCenter().getAspectPool().getResourceRequirements())
+            + tileRelationAspectMapper.apply(t);
 
     TerritoryCenter(Group group) {
         this.group = group;

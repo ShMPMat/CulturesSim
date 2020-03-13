@@ -56,7 +56,10 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public void swapDependencies(Group group) {
-        conversion = new Pair<>(conversion.getFirst(), group.getAspect(conversion.getSecond()));
+        conversion = new Pair<>(
+                conversion.getFirst(),
+                group.getCulturalCenter().getAspectCenter().getAspectPool().get(conversion.getSecond())
+        );
         if (conversion.getSecond() == null) {
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
         }

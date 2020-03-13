@@ -16,7 +16,6 @@ import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
-import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
@@ -67,14 +66,6 @@ public class Group {
         territoryCenter.claimTile(tile);
     }
 
-    public Set<Aspect> getAspects() {
-        return getCulturalCenter().getAspectCenter().getAspectPool().getAll();
-    }
-
-    public Aspect getAspect(Aspect aspect) {
-        return culturalCenter.getAspectCenter().getAspectPool().get(aspect);
-    }
-
     double getSpreadability() {
         return spreadability;
     }
@@ -117,11 +108,6 @@ public class Group {
 
     public Territory getOverallTerritory() {
         return getParentGroup().getOverallTerritory();
-    }
-
-    Collection<Resource> getResourceRequirements() {
-        return getAspects().stream().filter(aspect -> aspect instanceof ConverseWrapper)
-                .map(aspect -> ((ConverseWrapper) aspect).resource).distinct().collect(Collectors.toList());
     }
 
     public GroupConglomerate getParentGroup() {
@@ -376,7 +362,7 @@ public class Group {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
                 ", population=" + population + ", aspects:\n");
-        for (Aspect aspect : getAspects()) {
+        for (Aspect aspect : culturalCenter.getAspectCenter().getAspectPool().getAll()) {
             stringBuilder.append(aspect).append("\n\n");
         }
         stringBuilder.append("Aspirations: ");
@@ -391,10 +377,10 @@ public class Group {
         stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
         s.append("Aspects: ");
-        for (CultureAspect aspect : culturalCenter.getCultureAspects()) {
+        for (CultureAspect aspect : culturalCenter.getCultureAspectCenter().getCultureAspects()) {
             s.append(aspect).append(", ");
         }
-        s.append((culturalCenter.getCultureAspects().isEmpty() ? "none\n" : "\n"));
+        s.append((culturalCenter.getCultureAspectCenter().getCultureAspects().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())

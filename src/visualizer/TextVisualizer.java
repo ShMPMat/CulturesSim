@@ -507,14 +507,17 @@ public class TextVisualizer implements Visualizer {
             }
         }
         if (aspect instanceof ConverseWrapper) {
-            group.getCulturalCenter().addAspect(((ConverseWrapper) aspect).aspect);
+            group.getCulturalCenter().getAspectCenter().addAspect(((ConverseWrapper) aspect).aspect);
             group.getCulturalCenter().pushAspects();
-            if (group.getAspect(((ConverseWrapper) aspect).aspect) == null) {
-                System.err.println("Cannot add aspect to the group: cant add sentenceBase aspect for the Converse Wrapper.");
+            Aspect inner = ((ConverseWrapper) aspect).aspect;
+            if (!group.getCulturalCenter().getAspectCenter().getAspectPool().contains(inner)) {
+                System.err.println(
+                        "Cannot add aspect to the group: cant add sentenceBase aspect for the Converse Wrapper."
+                );
                 return;
             }
         }
-        group.getCulturalCenter().addAspect(aspect);
+        group.getCulturalCenter().getAspectCenter().addAspect(aspect);
         group.getCulturalCenter().pushAspects();
     }
 

@@ -11,14 +11,14 @@ public class Groups {
     public static double getGroupsDifference(Group g1, Group g2) {
         double matched = 1;
         double overall = 1;
-        for (Aspect aspect: g1.getAspects()) {
+        for (Aspect aspect: g1.getCulturalCenter().getAspectCenter().getAspectPool().getAll()) {
             if (g2.getCulturalCenter().getAspectCenter().getAspectPool().contains(aspect)) {
                 matched++;
             }
             overall++;
         }
-        for (CultureAspect aspect: g1.getCulturalCenter().getCultureAspects()) {
-            if (g2.getCulturalCenter().getCultureAspects().contains(aspect)) {
+        for (CultureAspect aspect: g1.getCulturalCenter().getCultureAspectCenter().getCultureAspects()) {
+            if (g2.getCulturalCenter().getCultureAspectCenter().getCultureAspects().contains(aspect)) {
                 matched++;
             }
             overall++;

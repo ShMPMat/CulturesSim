@@ -54,7 +54,11 @@ public class AspectRitual extends Ritual {
 
     @Override
     public AspectRitual copy(Group group) {
-        return new AspectRitual(group, (ConverseWrapper) group.getAspect(converseWrapper), reason);
+        return new AspectRitual(
+                group,
+                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(converseWrapper),
+                reason
+        );
     }
 
     @Override

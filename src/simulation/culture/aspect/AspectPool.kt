@@ -21,8 +21,11 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
 
     fun contains(aspect: Aspect) = aspectMap[aspect] != null
 
-    fun getWithPredicate(predicate: (Aspect) -> Boolean): List<Aspect> = aspects
+    fun filter(predicate: (Aspect) -> Boolean): List<Aspect> = aspects
             .filter(predicate)
 
     fun getAll(): Set<Aspect> = aspects
+
+    fun getResourceRequirements() = getConverseWrappers()
+            .map { it.resource } .distinct()
 }

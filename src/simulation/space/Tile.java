@@ -224,6 +224,7 @@ public class Tile {
 
     /**
      * Adds Resource to the Resources available on this Tile.
+     *
      * @param resource Resource which will be added.
      */
     private void addResource(Resource resource) {
@@ -241,6 +242,7 @@ public class Tile {
 
     /**
      * Removes resource from this Tile if it is present.
+     *
      * @param resource resource which will be deleted.
      */
     public void removeResource(Resource resource) {
@@ -253,6 +255,7 @@ public class Tile {
 
     /**
      * Adds resources which will be available on this Tile on the next turn.
+     *
      * @param resource resource which will be added.
      */
     public void addDelayedResource(Resource resource) {
@@ -278,8 +281,11 @@ public class Tile {
 
     public boolean canSettle(Group group) {
         return getType() != Type.Water && getType() != Type.Mountain ||
-                (getType() == Type.Mountain && group.getAspects().stream().anyMatch(aspect -> aspect.getTags().stream()
-                        .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving"))));
+                (getType() == Type.Mountain
+                        && !group.getCulturalCenter().getAspectCenter().getAspectPool().filter(a ->
+                        a.getTags().stream()
+                                .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))
+                        .isEmpty());
     }
 
     public boolean canSettle() {
@@ -331,7 +337,7 @@ public class Tile {
 
     private void updateTemperature() {
         temperature = session.temperatureBaseStart +
-                x*(session.temperatureBaseFinish - session.temperatureBaseStart) /session.mapSizeX -
+                x * (session.temperatureBaseFinish - session.temperatureBaseStart) / session.mapSizeX -
                 Math.max(0, (level - 110) / 2) -
                 (type == Type.Water || type == Type.Ice ? 10 : 0);
     }

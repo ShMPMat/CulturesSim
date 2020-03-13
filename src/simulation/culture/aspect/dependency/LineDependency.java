@@ -62,15 +62,16 @@ public class LineDependency extends AbstractDependency {
                 return new AspectResult(resourcePack, null);
             }
             isAlreadyUsed = true;
-            AspectResult _p = group.getAspect(line.getSecond()).use(new AspectController(
-                    controller.getCeiling(),
-                    controller.getFloor(),
-                    new ResourceEvaluator(
-                            rp -> rp.getResource(line.getFirst().resource),
-                            rp -> rp.getAmountOfResource(line.getFirst().resource)
-                    ),
-                    group,
-                    controller.isMeaningNeeded()));
+            AspectResult _p = group.getCulturalCenter().getAspectCenter().getAspectPool().get(line.getSecond())
+                    .use(new AspectController(
+                            controller.getCeiling(),
+                            controller.getFloor(),
+                            new ResourceEvaluator(
+                                    rp -> rp.getResource(line.getFirst().resource),
+                                    rp -> rp.getAmountOfResource(line.getFirst().resource)
+                            ),
+                            group,
+                            controller.isMeaningNeeded()));
             resourcePack.add(_p.resources.getResource(line.getFirst().resource).getResources().stream()
                     .flatMap(res -> res.applyAndConsumeAspect(line.getFirst().aspect, controller.getCeiling()).stream())
                     .collect(Collectors.toList()));
@@ -98,8 +99,8 @@ public class LineDependency extends AbstractDependency {
     @Override
     public void swapDependencies(Group group) {
         line = new Pair<>(
-                (ConverseWrapper) group.getAspect(line.getSecond()),
-                (ConverseWrapper) group.getAspect(line.getSecond())
+                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(line.getSecond()),
+                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(line.getSecond())
         );
     }
 

@@ -67,10 +67,12 @@ public class World {
             groups.add(new GroupConglomerate(1, getTileForGroup()));
         }
         groups.forEach(group ->
-                group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(aspectPool.get("TakeApart")))
+                group.subgroups.forEach(s ->
+                        s.getCulturalCenter().getAspectCenter().addAspect(aspectPool.get("TakeApart")))
         );
         groups.forEach(group ->
-                group.subgroups.forEach(s -> s.getCulturalCenter().addAspect(aspectPool.get("Take")))
+                group.subgroups.forEach(s ->
+                        s.getCulturalCenter().getAspectCenter().addAspect(aspectPool.get("Take")))
         );
         groups.forEach(GroupConglomerate::finishUpdate);
     }
