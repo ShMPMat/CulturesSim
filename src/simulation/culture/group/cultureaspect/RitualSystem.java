@@ -33,7 +33,7 @@ public class RitualSystem extends AbstractCultureAspect {
         ) {
             return;
         }
-        Ritual ritual = group.getCulturalCenter().constructRitualForReason(reason);
+        Ritual ritual = group.getCulturalCenter().getCultureAspectCenter().constructRitualForReason(reason);
         if (ritual != null) {
             rituals.add(ritual);
         }

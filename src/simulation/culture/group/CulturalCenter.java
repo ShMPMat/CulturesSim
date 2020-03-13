@@ -5,19 +5,13 @@ import kotlin.Pair;
 import shmp.random.RandomException;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
-import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.*;
 import simulation.culture.group.intergroup.Relation;
-import simulation.culture.group.reason.BetterAspectUseReason;
-import simulation.culture.group.reason.Reason;
-import simulation.culture.group.reason.Reasons;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
-import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
@@ -35,17 +29,12 @@ import static simulation.Controller.*;
  */
 public class CulturalCenter {
     private AspectCenter aspectCenter;
+    private CultureAspectCenter cultureAspectCenter;
     private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
-    private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
-    private Set<CultureAspect> cultureAspects = new HashSet<>();
     private GroupMemes memePool;
-
-    private Set<Reason> reasonsWithSystems = new HashSet<>();
-
-    private static int constructProbes = 5;
 
     private Meme currentMeme;
 
@@ -55,6 +44,7 @@ public class CulturalCenter {
         this.group = group;
         this.memePool = memePool;
         this.aspectCenter = new AspectCenter(group);
+        this.cultureAspectCenter = new CultureAspectCenter(group, new HashSet<>());
         aspects.forEach(this::hardAspectAdd);
         aspectCenter.getAspectPool().getAspects().forEach(Aspect::swapDependencies);//TODO will it swap though?
     }
@@ -67,8 +57,8 @@ public class CulturalCenter {
         return aspectCenter;
     }
 
-    public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
-        return aspectCenter.getAllProducedResources();
+    public CultureAspectCenter getCultureAspectCenter() {
+        return cultureAspectCenter;
     }
 
     List<Request> getRequests() {
@@ -84,7 +74,7 @@ public class CulturalCenter {
     }
 
     public Set<CultureAspect> getCultureAspects() {
-        return cultureAspects;
+        return cultureAspectCenter.getCultureAspects();
     }
 
     List<Aspect> getNeighboursAspects() {
@@ -92,7 +82,7 @@ public class CulturalCenter {
         for (Group neighbour : relations.keySet()) {
             allExistingAspects.addAll(neighbour.getAspects().stream()
                     .filter(aspect -> !(aspect instanceof ConverseWrapper)
-                                    || aspectCenter.getAspectPool().contains(((ConverseWrapper) aspect).aspect))
+                            || aspectCenter.getAspectPool().contains(((ConverseWrapper) aspect).aspect))
                     .collect(Collectors.toList()));
         }
         return allExistingAspects;
@@ -132,22 +122,8 @@ public class CulturalCenter {
         aspectCenter.hardAspectAdd(aspect);
     }
 
-
-    Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
-        return aspectCenter.canAddAspect(aspect);
-    }
-
-    public void addCultureAspect(CultureAspect cultureAspect) {
-        if (cultureAspect != null) {
-            cultureAspects.add(cultureAspect);
-        }
-        if (cultureAspect instanceof AestheticallyPleasingObject) {
-            aestheticallyPleasingResources.add(((AestheticallyPleasingObject) cultureAspect).getResource());
-        }
-    }
-
     public void addResourceWant(Resource resource) {
-        addCultureAspect(new AestheticallyPleasingObject(group, resource));
+        cultureAspectCenter.addCultureAspect(new AestheticallyPleasingObject(group, resource));
     }
 
     void updateRequests() {
@@ -177,25 +153,21 @@ public class CulturalCenter {
                     group.population, warmthPenalty, warmthReward));
         }
 
-        cultureAspects.forEach(cultureAspect -> addRequest(cultureAspect.getRequest()));
+        cultureAspectCenter.getAspectRequests().forEach(this::addRequest);
     }
 
     void update() {
         tryToFulfillAspirations();
         aspectCenter.mutateAspects();
         createArtifact();
-        useCultureAspects();
-        addCultureAspect();
-        mutateCultureAspects();
+        cultureAspectCenter.useCultureAspects();
+        cultureAspectCenter.addRandomCultureAspect();
+        cultureAspectCenter.mutateCultureAspects();
     }
 
     void intergroupUpdate() {
         adoptAspects();
         adoptCultureAspects();
-    }
-
-    private void useCultureAspects() {
-        cultureAspects.forEach(CultureAspect::use);
     }
 
     private void addRequest(Request request) {
@@ -204,220 +176,8 @@ public class CulturalCenter {
         }
     }
 
-    private void addCultureAspect() {
-        if (!testProbability(session.cultureAspectBaseProbability, session.random)) {
-            return;
-        }
-        CultureAspect cultureAspect = null;
-        switch (session.random.nextInt(5)) {
-            case 0: {
-                List<ConverseWrapper> _l = new ArrayList<>(aspectCenter.getAspectPool().getMeaningAspects());
-                if (!_l.isEmpty()) {
-                    Meme meme = constructMeme();
-                    if (meme != null) {
-                        cultureAspect = new DepictObject(group, meme, randomElement(_l, session.random));
-                    }
-                }
-                break;
-            }
-            case 1: {
-                Meme meme = constructTale();
-                if (meme != null) {
-                    cultureAspect = new Tale(group, meme);
-                }
-                break;
-            }
-            case 2: {
-                Resource resource = getAllProducedResources().stream()
-                        .map(Pair::getFirst)
-                        .filter(r -> !aestheticallyPleasingResources.contains(r))
-                        .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
-                        .orElse(null);
-                if (resource != null) {
-                    cultureAspect = new AestheticallyPleasingObject(group, resource);
-                }
-                break;
-            }
-            case 3: {//TODO recursively go in dependencies;
-                addCultureAspect(constructRitualForReason(constructReason()));
-                break;
-            }
-            case 4: {
-                Meme template = session.templateBase.getRandomSentenceTemplate();
-                TextInfo info = generateTextInfo();
-                if (template != null && info != null) {
-                    cultureAspect = new SyntacticTale(group, template, info);
-                }
-                break;
-            }
-            case 5: {//TODO should I add such a thing here even? (I did break in previous section for now)
-                List<ConverseWrapper> wrappers = aspectCenter.getAspectPool().getConverseWrappers();
-                if (!wrappers.isEmpty()) {
-                    ConverseWrapper converseWrapper = randomElement(wrappers, session.random);
-                    Reason reason = Reasons.randomReason(group);
-                    if (reason != null) {
-                        cultureAspect = new AspectRitual(group, converseWrapper, reason);
-                    }
-                }
-                break;
-            }
-        }
-        addCultureAspect(cultureAspect);
-    }
-
-    private TextInfo generateTextInfo() {//TODO too slow
-        List<TextInfo> textInfos = aspectCenter.getAspectPool().getConverseWrappers().stream()
-                .flatMap(cw -> memePool.getAspectTextInfo(cw).stream())
-                .collect(Collectors.toList());
-        return textInfos.isEmpty() ? null : complicateInfo(randomElement(textInfos, session.random));
-    }
-
-    private TextInfo complicateInfo(TextInfo info) {
-        if (info == null) {
-            return null;
-        }
-        Map<String, Meme> substitutions = new HashMap<>();
-        for (Map.Entry<String, Meme> entry : info.getMap().entrySet()) {
-            if (entry.getKey().charAt(0) == '!') {
-                substitutions.put(entry.getKey(), randomElement(session.templateBase.nounClauseBase, session.random)
-                        .refactor(m -> {
-                            if (m.getObserverWord().equals("!n!")) {
-                                return entry.getValue().topCopy();
-                            } else if (session.templateBase.templateChars.contains(m.getObserverWord().charAt(0))) {
-                                substitutions.put(entry.getKey() + m.getObserverWord(),
-                                        randomElementWithProbability(
-                                                session.templateBase.wordBase.get(m.getObserverWord()),
-                                                n -> (double) memePool.getMeme(n.getObserverWord()).getImportance(),
-                                                session.random)
-                                );
-                                return new MemePredicate(entry.getKey() + m.getObserverWord());
-                            } else {
-                                return m.topCopy();
-                            }
-                        }));
-            }
-        }
-        substitutions.forEach((key, value) -> info.getMap().put(key, value));
-        return info;
-    }
-
-    private Reason constructReason() {
-        ConverseWrapper converseWrapper;
-        Reason reason;
-        int i = 0;
-        do {
-            List<ConverseWrapper> wrappers = new ArrayList<>(aspectCenter.getAspectPool().getConverseWrappers());
-            if (wrappers.isEmpty()) {
-                return null;
-            }
-            converseWrapper = randomElementWithProbability(
-                    wrappers,
-                    cw -> Math.max(cw.getUsefulness(), (double) 1),
-                    session.random
-            );
-            reason = new BetterAspectUseReason(group, converseWrapper);
-            i++;
-        } while (i <= constructProbes && !reasonsWithSystems.contains(reason));
-        return reasonsWithSystems.contains(reason) ? null : reason;
-    }
-
-    public Ritual constructRitualForReason(Reason reason) {
-        if (reason == null) {
-            return null;
-        }
-        if (reason instanceof BetterAspectUseReason) {
-            ConverseWrapper converseWrapper = ((BetterAspectUseReason) reason).getConverseWrapper();
-
-            ShnyPair<List<Meme>, List<Meme>> temp = memePool.getAspectMemes(converseWrapper);
-            List<Meme> aspectMemes = temp.first;
-            aspectMemes.addAll(temp.second);
-            Collections.shuffle(aspectMemes);
-            for (Meme meme : aspectMemes) {//TODO maybe depth check
-                if (meme.getObserverWord().equals(converseWrapper.getName())) {
-                    continue;
-                }
-                try {
-                    Aspect myAspect = aspectCenter.getAspectPool().get(meme.getObserverWord());
-                    if (myAspect instanceof ConverseWrapper) {
-                        return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
-                    }
-                } catch (NoSuchElementException e) {
-                    List<ConverseWrapper> options = getAllProducedResources().stream()
-                            .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
-                            .map(Pair::getSecond)
-                            .collect(Collectors.toList());
-                    if (!options.isEmpty()) {
-                        return new AspectRitual(group, randomElement(options, session.random), reason);
-                    }
-                    switch (session.random.nextInt(2)) {
-                        case 0:
-                            List<ConverseWrapper> meaningAspects =
-                                    new ArrayList<>(aspectCenter.getAspectPool().getMeaningAspects());
-                            if (!meaningAspects.isEmpty()) {
-                                return new CultureAspectRitual(group,
-                                        new DepictObject(
-                                                group,
-                                                randomElement(aspectMemes, session.random),
-                                                randomElement(meaningAspects, session.random)),
-                                        reason);
-                            }
-                            break;
-                        case 1:
-                            return new CultureAspectRitual(group, new Tale(group, randomElement(aspectMemes, session.random)),
-                                    reason);//TODO make more complex tale;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private Meme constructTale() {
-        return constructMeme();
-    }
-
-    private Meme constructMeme() {
-        Meme meme = getMemePool().getMemeWithComplexityBias();
-        if (testProbability(0.5, session.random)) {
-            Meme second;
-            do {
-                second = getMemePool().getMemeWithComplexityBias().copy();
-            } while (second.hasPart(meme, Collections.singleton("and")));
-            meme = meme.copy().addPredicate(getMemePool().getMemeCopy("and").addPredicate(second));
-            getMemePool().addMemeCombination(meme);
-        }
-        return meme;
-    }
-
     private void removeAspiration(Aspiration aspiration) {
         aspirations.remove(aspiration);
-    }
-
-    private void mutateCultureAspects() {
-        if (!testProbability(session.groupCultureAspectCollapse, session.random)) {
-            return;
-        }
-        List<Ritual> rituals = cultureAspects.stream()
-                .filter(ca -> ca instanceof Ritual)
-                .map(ca -> (Ritual) ca).collect(Collectors.toList());
-        Map<Reason, List<Ritual>> dividedRituals = new HashMap<>();
-        rituals.forEach(r -> {
-            if (dividedRituals.containsKey(r.getReason())) {
-                dividedRituals.get(r.getReason()).add(r);
-            } else {
-                List<Ritual> temp = new ArrayList<>();
-                temp.add(r);
-                dividedRituals.put(r.getReason(), temp);
-            }
-        });
-        List<Ritual> popularReasonRituals = dividedRituals.values().stream()
-                .max(Comparator.comparingInt(List::size))
-                .orElse(new ArrayList<>());
-        if (popularReasonRituals.size() >= 3) {
-            addCultureAspect(new RitualSystem(group, popularReasonRituals, popularReasonRituals.get(0).getReason()));
-            cultureAspects.removeAll(popularReasonRituals);
-            reasonsWithSystems.add(popularReasonRituals.get(0).getReason());
-        }
     }
 
     private void adoptAspects() {
@@ -462,7 +222,7 @@ public class CulturalCenter {
                         a -> getNormalizedRelation(a.getGroup()),
                         session.random
                 );
-                addCultureAspect(aspect);
+                cultureAspectCenter.addCultureAspect(aspect);
             }
         } catch (NullPointerException e) {
             throw new RuntimeException();
@@ -534,8 +294,17 @@ public class CulturalCenter {
                 group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
                         " developed aspect " + pair.first.getName(), "group", this));
             } else {
-                group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                        " took aspect " + pair.first.getName() + " from group " + pair.second.name, "group", this));
+                group.addEvent(
+                        new Event(Event.Type.AspectGaining,
+                                String.format(
+                                        "Group %s took aspect %s from group %s",
+                                        group.name,
+                                        pair.first.getName(),
+                                        pair.second.name
+                                ),
+                                "group",
+                                this
+                        ));
             }
         }
     }

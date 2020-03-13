@@ -478,7 +478,7 @@ public class TextVisualizer implements Visualizer {
             String resourceName = aspectName.split("On")[1];
             Resource resource = group.getOverallTerritory().getDifferentResources().stream()
                     .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
-                    .orElse(group.getCulturalCenter().getAllProducedResources().stream()
+                    .orElse(group.getCulturalCenter().getAspectCenter().getAllProducedResources().stream()
                             .map(Pair::getFirst)
                             .filter(res -> res.getSimpleName().equals(resourceName))
                             .findFirst()

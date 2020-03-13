@@ -36,7 +36,7 @@ public class AspectCenter {
         return changedAspectPool.getAll();
     }
 
-    List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
+    public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
         List<Pair<Resource, ConverseWrapper>> _m = new ArrayList<>();
         for (ConverseWrapper converseWrapper : aspectPool.getConverseWrappers()) {
             for (Resource resource : converseWrapper.getResult()) {
