@@ -17,7 +17,6 @@ import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemePool;
 import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
@@ -69,19 +68,19 @@ public class CulturalCenter {
     }
 
     public List<ConverseWrapper> getConverseWrappers() {
-        return aspectCenter.getConverseWrappers();
+        return aspectCenter.getAspectPool().getConverseWrappers();
     }
 
     Set<ConverseWrapper> getMeaningAspects() {
-        return aspectCenter.getMeaningAspects();
+        return aspectCenter.getAspectPool().getMeaningAspects();
     }
 
     Aspect getAspect(Aspect aspect) {
-        return aspectCenter.getAspect(aspect.getName());
+        return aspectCenter.getAspectPool().get(aspect.getName());
     }
 
     Aspect getAspect(String name) {
-        return aspectCenter.getAspect(name);
+        return aspectCenter.getAspectPool().get(name);
     }
 
     public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
@@ -102,13 +101,6 @@ public class CulturalCenter {
 
     public Set<CultureAspect> getCultureAspects() {
         return cultureAspects;
-    }
-
-    public Set<Group> getNeighbourGroups() {
-        Set<Group> groups = new HashSet<>(group.getParentGroup().subgroups);
-        groups.remove(group);
-        groups.addAll(relations.keySet());
-        return groups;
     }
 
     List<Aspect> getNeighboursAspects() {
@@ -234,7 +226,7 @@ public class CulturalCenter {
         CultureAspect cultureAspect = null;
         switch (session.random.nextInt(5)) {
             case 0: {
-                List<ConverseWrapper> _l = new ArrayList<>(getMeaningAspects());
+                List<ConverseWrapper> _l = new ArrayList<>(aspectCenter.getAspectPool().getMeaningAspects());
                 if (!_l.isEmpty()) {
                     Meme meme = constructMeme();
                     if (meme != null) {
@@ -359,32 +351,35 @@ public class CulturalCenter {
                 if (meme.getObserverWord().equals(converseWrapper.getName())) {
                     continue;
                 }
-                Aspect myAspect = getAspect(meme.getObserverWord());
-                if (myAspect instanceof ConverseWrapper) {
-                    return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
-                }
-                List<ConverseWrapper> options = getAllProducedResources().stream()
-                        .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
-                        .map(Pair::getSecond)
-                        .collect(Collectors.toList());
-                if (!options.isEmpty()) {
-                    return new AspectRitual(group, randomElement(options, session.random), reason);
-                }
-                switch (session.random.nextInt(2)) {
-                    case 0:
-                        List<ConverseWrapper> meaningAspects = new ArrayList<>(getMeaningAspects());
-                        if (!meaningAspects.isEmpty()) {
-                            return new CultureAspectRitual(group,
-                                    new DepictObject(
-                                            group,
-                                            randomElement(aspectMemes, session.random),
-                                            randomElement(meaningAspects, session.random)),
-                                    reason);
-                        }
-                        break;
-                    case 1:
-                        return new CultureAspectRitual(group, new Tale(group, randomElement(aspectMemes, session.random)),
-                                reason);//TODO make more complex tale;
+                try {
+                    Aspect myAspect = getAspect(meme.getObserverWord());
+                    if (myAspect instanceof ConverseWrapper) {
+                        return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
+                    }
+                } catch (NoSuchElementException e) {
+                    List<ConverseWrapper> options = getAllProducedResources().stream()
+                            .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
+                            .map(Pair::getSecond)
+                            .collect(Collectors.toList());
+                    if (!options.isEmpty()) {
+                        return new AspectRitual(group, randomElement(options, session.random), reason);
+                    }
+                    switch (session.random.nextInt(2)) {
+                        case 0:
+                            List<ConverseWrapper> meaningAspects = new ArrayList<>(getMeaningAspects());
+                            if (!meaningAspects.isEmpty()) {
+                                return new CultureAspectRitual(group,
+                                        new DepictObject(
+                                                group,
+                                                randomElement(aspectMemes, session.random),
+                                                randomElement(meaningAspects, session.random)),
+                                        reason);
+                            }
+                            break;
+                        case 1:
+                            return new CultureAspectRitual(group, new Tale(group, randomElement(aspectMemes, session.random)),
+                                    reason);//TODO make more complex tale;
+                    }
                 }
             }
         }
@@ -444,7 +439,8 @@ public class CulturalCenter {
             return;
         }
         List<Aspect> allExistingAspects = getNeighboursAspects().stream()
-                .filter(aspect -> !getChangedAspects().contains(aspect)).collect(Collectors.toList());
+                .filter(aspect -> !getChangedAspects().contains(aspect))
+                .collect(Collectors.toList());
 
         if (!allExistingAspects.isEmpty()) {
             try {

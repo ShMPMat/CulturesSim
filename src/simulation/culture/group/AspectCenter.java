@@ -28,20 +28,12 @@ public class AspectCenter {
         this.group = group;
     }
 
+    public MutableAspectPool getAspectPool() {
+        return aspectPool;
+    }
+
     public Set<Aspect> getAspects() {
         return aspectPool.getAll();
-    }
-
-    Aspect getAspect(String name) {
-        return aspectPool.get(name);
-    }
-
-    List<ConverseWrapper> getConverseWrappers() {
-        return aspectPool.getConverseWrappers();
-    }
-
-    Set<ConverseWrapper> getMeaningAspects() {
-        return aspectPool.getMeaningAspects();
     }
 
     Set<Aspect> getChangedAspects() {
@@ -50,10 +42,7 @@ public class AspectCenter {
 
     List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
         List<Pair<Resource, ConverseWrapper>> _m = new ArrayList<>();
-        for (ConverseWrapper converseWrapper : getAspects().stream()
-                .filter(aspect -> aspect instanceof ConverseWrapper)
-                .map(aspect -> (ConverseWrapper) aspect)
-                .collect(Collectors.toList())) {
+        for (ConverseWrapper converseWrapper : aspectPool.getConverseWrappers()) {
             for (Resource resource : converseWrapper.getResult()) {
                 _m.add(new Pair<>(resource, converseWrapper));
             }
@@ -66,10 +55,7 @@ public class AspectCenter {
             return false;
         }
         if (getAspects().contains(aspect)) {
-            aspect = getAspects().stream()
-                    .filter(aspect::equals)
-                    .findFirst()
-                    .orElse(aspect);
+            aspect = aspectPool.get(aspect.getName());
         }
         Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
         if (!aspect.isDependenciesOk(_m)) {
@@ -80,7 +66,7 @@ public class AspectCenter {
         return true;
     }
 
-    void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
+    private void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
         Aspect _a = null;
         if (getChangedAspects().contains(aspect)) {
             for (Aspect as : getChangedAspects()) {
@@ -91,7 +77,7 @@ public class AspectCenter {
             }
         } else {
             _a = aspect.copy(dependencies, group);
-            getChangedAspects().add(_a);
+            changedAspectPool.add(_a);
             if (!(_a instanceof ConverseWrapper)) {//TODO maybe should do the same in straight
                 Set<Resource> allResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
                 allResources.addAll(getAllProducedResources().stream()

@@ -1,14 +1,13 @@
 package simulation.culture.aspect
 
-open class AspectPool(protected open val aspects: Set<Aspect>) {
-    fun get(name: String): Aspect {
-        for (aspect in aspects) {
-            if (aspect.name == name) {
-                return aspect
-            }
-        }
-        throw NoSuchElementException("No aspect with name $name")
-    }
+open class AspectPool(initialAspects: MutableSet<Aspect>) {
+    protected val aspectMap = initialAspects.zip(initialAspects).toMap().toMutableMap()
+
+    val aspects: Set<Aspect>
+        get() = aspectMap.keys
+
+    fun get(name: String) = aspects.firstOrNull { it.name == name }
+            ?: throw NoSuchElementException("No aspect with name $name")
 
     fun getWithPredicate(predicate: (Aspect) -> Boolean): List<Aspect> = aspects
             .filter(predicate)

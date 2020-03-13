@@ -1,11 +1,6 @@
 package simulation.culture.aspect
 
-class MutableAspectPool(initialAspects: MutableSet<Aspect>) : AspectPool(HashSet()) {
-    private val aspectMap = initialAspects.zip(initialAspects).toMap().toMutableMap()
-
-    override val aspects: Set<Aspect>
-        get() = aspectMap.keys
-
+class MutableAspectPool(initialAspects: MutableSet<Aspect>) : AspectPool(initialAspects) {
     fun add(aspect: Aspect) = aspectMap.set(aspect, aspect)
 
     fun addAll(aspects: Collection<Aspect>) = aspects.forEach { add(it) }
