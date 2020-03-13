@@ -478,8 +478,11 @@ public class TextVisualizer implements Visualizer {
             String resourceName = aspectName.split("On")[1];
             Resource resource = group.getOverallTerritory().getDifferentResources().stream()
                     .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
-                    .orElse(group.getCulturalCenter().getAllProducedResources().stream().map(pair -> pair.first)
-                            .filter(res -> res.getSimpleName().equals(resourceName)).findFirst().orElse(null));
+                    .orElse(group.getCulturalCenter().getAllProducedResources().stream()
+                            .map(Pair::getFirst)
+                            .filter(res -> res.getSimpleName().equals(resourceName))
+                            .findFirst()
+                            .orElse(null));
             if (resource == null) {
                 System.err.println("Cannot add aspect to the group");
                 return;

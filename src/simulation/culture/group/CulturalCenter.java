@@ -56,7 +56,7 @@ public class CulturalCenter {
         this.group = group;
         this.memePool = memePool;
         this.aspectCenter = new AspectCenter(group);
-        aspects.forEach(a -> hardAspectAdd(a));
+        aspects.forEach(this::hardAspectAdd);
         getAspects().forEach(Aspect::swapDependencies);
     }
 
@@ -77,14 +77,14 @@ public class CulturalCenter {
     }
 
     Aspect getAspect(Aspect aspect) {
-        return aspectCenter.getAspect(aspect);
+        return aspectCenter.getAspect(aspect.getName());
     }
 
     Aspect getAspect(String name) {
         return aspectCenter.getAspect(name);
     }
 
-    public List<ShnyPair<Resource, ConverseWrapper>> getAllProducedResources() {
+    public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
         return aspectCenter.getAllProducedResources();
     }
 
@@ -251,9 +251,11 @@ public class CulturalCenter {
                 break;
             }
             case 2: {
-                Resource resource = getAllProducedResources().stream().map(pair -> pair.first)
+                Resource resource = getAllProducedResources().stream()
+                        .map(Pair::getFirst)
                         .filter(r -> !aestheticallyPleasingResources.contains(r))
-                        .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability())).orElse(null);
+                        .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
+                        .orElse(null);
                 if (resource != null) {
                     cultureAspect = new AestheticallyPleasingObject(group, resource);
                 }
@@ -362,8 +364,9 @@ public class CulturalCenter {
                     return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
                 }
                 List<ConverseWrapper> options = getAllProducedResources().stream()
-                        .filter(pair -> pair.first.getBaseName().equals(meme.getObserverWord()))
-                        .map(pair -> pair.second).collect(Collectors.toList());
+                        .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
+                        .map(Pair::getSecond)
+                        .collect(Collectors.toList());
                 if (!options.isEmpty()) {
                     return new AspectRitual(group, randomElement(options, session.random), reason);
                 }

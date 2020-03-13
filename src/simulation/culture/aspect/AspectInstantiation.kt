@@ -5,10 +5,11 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeLabeler
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class AspectInstantiation {
     fun createPool(path: String): AspectPool {
-        val aspects: MutableList<Aspect> = ArrayList()
+        val aspects: MutableSet<Aspect> = HashSet()
         val inputDatabase = InputDatabase(path)
         while (true) {
             val line = inputDatabase.readLine() ?: break

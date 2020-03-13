@@ -156,7 +156,7 @@ public class Group {
             stratum.useAmount(amount);
             return amount;
         } catch (NullPointerException e) {
-            throw new RuntimeException("No stratum for Aspect");
+            throw new RuntimeException("No stratum for Aspect");//TODOit happens
         }
     }
 

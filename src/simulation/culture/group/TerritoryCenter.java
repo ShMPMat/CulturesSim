@@ -45,14 +45,14 @@ public class TerritoryCenter {
     }
 
     void update() {
+        if (group.state == Group.State.Dead) {
+            return;
+        }
         migrate();
         expand();
     }
 
     private boolean migrate() {
-        if (group.state == Group.State.Dead) {
-            return false;
-        }
         if (!shouldMigrate()) {
             return false;
         }
