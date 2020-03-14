@@ -1,7 +1,7 @@
 package simulation.culture.group;
 
-import extra.ShnyPair;
 import kotlin.Pair;
+import shmp.random.RandomException;
 import simulation.culture.Event;
 import simulation.culture.aspect.*;
 import simulation.space.resource.tag.ResourceTag;
@@ -10,6 +10,7 @@ import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static shmp.random.RandomCollectionsKt.*;
@@ -27,6 +28,7 @@ public class AspectCenter {
     public AspectCenter(Group group, List<Aspect> aspects) {
         this.group = group;
         aspects.forEach(this::hardAspectAdd);
+        aspectPool.getAll().forEach(Aspect::swapDependencies);//TODO will it swap though?
     }
 
     public AspectPool getAspectPool() {
@@ -85,8 +87,8 @@ public class AspectCenter {
                 }
             }
         }
-        group.getCulturalCenter().getMemePool().addAspectMemes(aspect);
-        group.getCulturalCenter().addMemeCombination((new MemeSubject(group.name).addPredicate(
+        group.getCultureCenter().getMemePool().addAspectMemes(aspect);
+        group.getCultureCenter().addMemeCombination((new MemeSubject(group.name).addPredicate(
                 session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         neededAdding(_a);
     }
@@ -219,7 +221,7 @@ public class AspectCenter {
             }
         }
         _lastResourcesForCw.addAll(newResources);
-        newResources.forEach(resource -> group.getCulturalCenter().getMemePool().addResourceMemes(resource));
+        newResources.forEach(resource -> group.getCultureCenter().getMemePool().addResourceMemes(resource));
         return options;
     }
 
@@ -232,29 +234,73 @@ public class AspectCenter {
         aspectPool.addAll(getChangedAspects());
     }
 
-    List<ShnyPair<Aspect, Group>> findOptions(Aspiration aspiration) {
-        List<ShnyPair<Aspect, Group>> options = new ArrayList<>();
+    List<Pair<Aspect, Group>> findOptions(Aspiration aspiration) {
+        List<Pair<Aspect, Group>> options = new ArrayList<>();
 
         for (Aspect aspect : session.world.getAspectPool().getAll().stream()
                 .filter(aspiration::isAcceptable)
                 .collect(Collectors.toList())) {
             Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
-                options.add(new ShnyPair<>(aspect.copy(_m, group), null));
+                options.add(new Pair<>(aspect.copy(_m, group), null));
             }
         }
 
         getAllPossibleConverseWrappers().stream().filter(aspiration::isAcceptable)
-                .forEach(wrapper -> options.add(new ShnyPair<>(wrapper, null)));
+                .forEach(wrapper -> options.add(new Pair<>(wrapper, null)));
 
-        List<Aspect> aspects = group.getCulturalCenter().getNeighboursAspects();
+        List<Aspect> aspects = getNeighbourAspects();
         for (Aspect aspect : aspects) {
             Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
                 aspect = aspect.copy(_m, group);
-                options.add(new ShnyPair<>(aspect, aspect.getGroup()));
+                options.add(new Pair<>(aspect, aspect.getGroup()));
             }
         }
         return options;
+    }
+
+    List<Aspect> getNeighbourAspects() {
+        List<Aspect> allExistingAspects = new ArrayList<>();
+        for (Group neighbour : group.getCultureCenter().getRelatedGroups()) {
+            allExistingAspects.addAll(neighbour.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream()
+                    .filter(aspect -> !(aspect instanceof ConverseWrapper)
+                            || aspectPool.contains(((ConverseWrapper) aspect).aspect))
+                    .collect(Collectors.toList()));
+        }
+        return allExistingAspects;
+    }
+
+    List<Aspect> getNeighbourAspects(Predicate<Aspect> predicate) {
+        return getNeighbourAspects().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+    }
+
+    void adoptAspects() {
+        if (!session.isTime(session.groupTurnsBetweenAdopts)) {
+            return;
+        }
+        List<Aspect> allExistingAspects = getNeighbourAspects(a -> !getChangedAspects().contains(a));
+
+        if (!allExistingAspects.isEmpty()) {
+            try {
+                Aspect aspect = randomElementWithProbability(
+                        allExistingAspects,
+                        a -> a.getUsefulness() * group.getCultureCenter().getNormalizedRelation(a.getGroup()),
+                        session.random
+                );
+                if (addAspect(aspect)) {
+                    group.addEvent(new Event(Event.Type.AspectGaining,
+                            String.format("Group %s got aspect %s from group %s",
+                                    group.name, aspect.getName(), aspect.getGroup().name),
+                            "group", group));
+                }
+            } catch (Exception e) {
+                if (e instanceof RandomException) {
+                    int i = 0;//TODO
+                }
+            }
+        }
     }
 }

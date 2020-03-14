@@ -76,7 +76,7 @@ public class GroupConglomerate {
      */
     public Set<Aspect> getAspects() {
         return subgroups.stream()
-                .flatMap(g -> g.getCulturalCenter().getAspectCenter().getAspectPool().getAll().stream())
+                .flatMap(g -> g.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream())
                 .collect(Collectors.toSet());
     }
 
@@ -85,7 +85,7 @@ public class GroupConglomerate {
      */
     public List<CultureAspect> getCultureAspects() {
         return subgroups.stream()
-                .flatMap(group -> group.getCulturalCenter().getCultureAspectCenter().getCultureAspects().stream())
+                .flatMap(group -> group.getCultureCenter().getCultureAspectCenter().getCultureAspects().stream())
                 .collect(Collectors.toList());
     }
 
@@ -93,7 +93,7 @@ public class GroupConglomerate {
      * @return all Memes of child Groups.
      */
     public List<Meme> getMemes() {
-        return subgroups.stream().map(group -> group.getCulturalCenter().getMemePool().getMemes())
+        return subgroups.stream().map(group -> group.getCultureCenter().getMemePool().getMemes())
                 .reduce(new ArrayList<>(), (x, y) -> {
                     for (Meme meme : y) {
                         int i = x.indexOf(meme);
@@ -169,7 +169,7 @@ public class GroupConglomerate {
             return;
         }
         subgroups.forEach(group -> group.getTerritoryCenter().update());
-        subgroups.forEach(group -> group.getCulturalCenter().update());
+        subgroups.forEach(group -> group.getCultureCenter().update());
         for (int i = 0; i < subgroups.size(); i++) {
             Group subgroup = subgroups.get(i);
             if (subgroup.diverge()) {

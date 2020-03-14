@@ -4,7 +4,6 @@ import simulation.culture.group.Group;
 import simulation.culture.group.request.Request;
 import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemeTemplate;
 
 import java.util.Objects;
 
@@ -28,9 +27,9 @@ public class SyntacticTale extends AbstractCultureAspect {
 
     @Override
     public void use() {
-        group.getCulturalCenter().getMemePool().strengthenMeme(meme);
+        group.getCultureCenter().getMemePool().strengthenMeme(meme);
         info.getMap().values().forEach(m -> {
-            group.getCulturalCenter().getMemePool().strengthenMeme(info.substitute(m));
+            group.getCultureCenter().getMemePool().strengthenMeme(info.substitute(m));
         });
     }
 

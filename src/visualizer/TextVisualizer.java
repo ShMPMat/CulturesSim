@@ -478,7 +478,7 @@ public class TextVisualizer implements Visualizer {
             String resourceName = aspectName.split("On")[1];
             Resource resource = group.getOverallTerritory().getDifferentResources().stream()
                     .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
-                    .orElse(group.getCulturalCenter().getAspectCenter().getAllProducedResources().stream()
+                    .orElse(group.getCultureCenter().getAspectCenter().getAllProducedResources().stream()
                             .map(Pair::getFirst)
                             .filter(res -> res.getSimpleName().equals(resourceName))
                             .findFirst()
@@ -507,18 +507,18 @@ public class TextVisualizer implements Visualizer {
             }
         }
         if (aspect instanceof ConverseWrapper) {
-            group.getCulturalCenter().getAspectCenter().addAspect(((ConverseWrapper) aspect).aspect);
-            group.getCulturalCenter().pushAspects();
+            group.getCultureCenter().getAspectCenter().addAspect(((ConverseWrapper) aspect).aspect);
+            group.getCultureCenter().pushAspects();
             Aspect inner = ((ConverseWrapper) aspect).aspect;
-            if (!group.getCulturalCenter().getAspectCenter().getAspectPool().contains(inner)) {
+            if (!group.getCultureCenter().getAspectCenter().getAspectPool().contains(inner)) {
                 System.err.println(
                         "Cannot add aspect to the group: cant add sentenceBase aspect for the Converse Wrapper."
                 );
                 return;
             }
         }
-        group.getCulturalCenter().getAspectCenter().addAspect(aspect);
-        group.getCulturalCenter().pushAspects();
+        group.getCultureCenter().getAspectCenter().addAspect(aspect);
+        group.getCultureCenter().pushAspects();
     }
 
     private void addWantToGroup(GroupConglomerate group, String wantName) {
@@ -539,7 +539,7 @@ public class TextVisualizer implements Visualizer {
         }
         try {
             Resource resource = world.getResourcePool().get(wantName);
-            group.getCulturalCenter().addResourceWant(resource);
+            group.getCultureCenter().addResourceWant(resource);
         } catch (NoSuchElementException e) {
             System.err.println("Cannot add want to the group");
         }

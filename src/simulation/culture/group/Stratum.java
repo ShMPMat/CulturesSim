@@ -83,9 +83,9 @@ public class Stratum {
         for (Aspect aspect: aspects) {
             AspectResult result = aspect.use(controller);
             if (!result.resources.isEmpty()) {
-                group.getCulturalCenter().getMemePool().strengthenMeme(Meme.getMeme(aspect));
+                group.getCultureCenter().getMemePool().strengthenMeme(Meme.getMeme(aspect));
                 result.resources.getResources().forEach(resource ->
-                        group.getCulturalCenter().getMemePool().strengthenMeme(Meme.getMeme(resource)));
+                        group.getCultureCenter().getMemePool().strengthenMeme(Meme.getMeme(resource)));
             }
             if (result.isFinished) {
                 resourcePack.add(result.resources);

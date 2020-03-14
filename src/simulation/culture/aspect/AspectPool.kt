@@ -3,7 +3,7 @@ package simulation.culture.aspect
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected val aspectMap = initialAspects.zip(initialAspects).toMap().toMutableMap()
 
-    val aspects: Set<Aspect>
+    protected val aspects: Set<Aspect>
         get() = aspectMap.keys
 
     fun getConverseWrappers() = aspects.filterIsInstance<ConverseWrapper>()

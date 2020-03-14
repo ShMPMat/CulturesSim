@@ -39,7 +39,7 @@ public class Group {
     private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
     private List<Stratum> strata = new ArrayList<>();
     private GroupConglomerate parentGroup;
-    private CulturalCenter culturalCenter;
+    private CultureCenter cultureCenter;
     private double spreadability;
     private TerritoryCenter territoryCenter = new TerritoryCenter(this);
     private Function<Group, Double> hostilityByDifferenceCoef = g -> (Groups.getGroupsDifference(this, g) - 1) / 2;
@@ -61,7 +61,7 @@ public class Group {
         this.population = population;
         this.spreadability = defaultSpreadAbility;
 
-        culturalCenter = new CulturalCenter(this, memePool, aspects);
+        cultureCenter = new CultureCenter(this, memePool, aspects);
 
         territoryCenter.claimTile(tile);
     }
@@ -74,8 +74,8 @@ public class Group {
         return minPopulationPerTile;
     }
 
-    public CulturalCenter getCulturalCenter() {
-        return culturalCenter;
+    public CultureCenter getCultureCenter() {
+        return cultureCenter;
     }
 
     public TerritoryCenter getTerritoryCenter() {
@@ -124,13 +124,13 @@ public class Group {
         territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : territoryCenter.getAllNearGroups()) {
-            group.culturalCenter.addMemeCombination(session.world.getPoolMeme("group")
+            group.cultureCenter.addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
     }
 
     public void addEvent(Event event) {
-        getCulturalCenter().getEvents().add(event);
+        getCultureCenter().getEvents().add(event);
     }
 
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
@@ -150,11 +150,11 @@ public class Group {
         if (getTerritoryCenter().getTerritory().isEmpty()) {
             int i = 0;
         }
-        getCulturalCenter().updateRequests();
+        getCultureCenter().updateRequests();
     }
 
     void executeRequests() {
-        for (Request request : getCulturalCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
+        for (Request request : getCultureCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
             List<Pair<Stratum, ResourceEvaluator>> pairs = strata.stream()
                     .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
                     .filter(pair -> pair.getSecond() != null)
@@ -198,11 +198,11 @@ public class Group {
             }
             population = population / 2;
             Tile tile = randomElement(tiles, session.random);
-            List<Aspect> aspects = culturalCenter.getAspectCenter().getAspectPool().getAll().stream()
+            List<Aspect> aspects = cultureCenter.getAspectCenter().getAspectPool().getAll().stream()
                     .map(a -> a.copy(a.getDependencies(), this))
                     .collect(Collectors.toList());
             GroupMemes memes = new GroupMemes();
-            memes.addAll(culturalCenter.getMemePool());
+            memes.addAll(cultureCenter.getMemePool());
             Group group = new Group(
                     parentGroup,
                     parentGroup.name + "_" + parentGroup.subgroups.size(),
@@ -223,13 +223,13 @@ public class Group {
             if (group.getTerritoryCenter().getTerritory().isEmpty()) {
                 int i = 0;
             }
-            group.culturalCenter.initializeFromCenter(culturalCenter);//TODO maybe put in constructor somehow
+            group.cultureCenter.initializeFromCenter(cultureCenter);//TODO maybe put in constructor somehow
             parentGroup.addGroup(group);
         }
     }
 
     void intergroupUpdate() {
-        Map<Group, Relation> relations = culturalCenter.relations;
+        Map<Group, Relation> relations = cultureCenter.relations;
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> groups = getOverallTerritory()
                     .getBrinkWithCondition(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
@@ -251,29 +251,29 @@ public class Group {
             }
             dead.forEach(relations::remove);
         }
-        culturalCenter.intergroupUpdate();
+        cultureCenter.intergroupUpdate();
     }
 
     Relation addMirrorRelation(Relation relation) {
         Relation newRelation = new Relation(relation.other, relation.owner);
         newRelation.setPair(relation);
-        culturalCenter.relations.put(relation.owner, newRelation);
+        cultureCenter.relations.put(relation.owner, newRelation);
         return newRelation;
     }
 
     public void finishUpdate() {
-        getCulturalCenter().finishUpdate();
+        getCultureCenter().finishUpdate();
         resourcePack.disbandOnTile(territoryCenter.getDisbandTile());
     }
 
     void starve(double fraction) {
         decreasePopulation((population / 10) * (1 - fraction) + 1);
-        getCulturalCenter().addAspiration(new Aspiration(10, new ResourceTag("food")));
+        getCultureCenter().addAspiration(new Aspiration(10, new ResourceTag("food")));
     }
 
     void freeze(double fraction) {
         decreasePopulation((population / 10) * (1 - fraction) + 1);
-        getCulturalCenter().addAspiration(new Aspiration(10, new ResourceTag("warmth")));
+        getCultureCenter().addAspiration(new Aspiration(10, new ResourceTag("warmth")));
     }
 
     private void decreasePopulation(double amount) {
@@ -362,25 +362,25 @@ public class Group {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
                 ", population=" + population + ", aspects:\n");
-        for (Aspect aspect : culturalCenter.getAspectCenter().getAspectPool().getAll()) {
+        for (Aspect aspect : cultureCenter.getAspectCenter().getAspectPool().getAll()) {
             stringBuilder.append(aspect).append("\n\n");
         }
         stringBuilder.append("Aspirations: ");
-        for (Aspiration aspiration : getCulturalCenter().getAspirations()) {
+        for (Aspiration aspiration : getCultureCenter().getAspirations()) {
             stringBuilder.append(aspiration).append(", ");
         }
-        stringBuilder.append((culturalCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
+        stringBuilder.append((cultureCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append("Requests: ");
-        for (Request request : culturalCenter.getRequests()) {
+        for (Request request : cultureCenter.getRequests()) {
             stringBuilder.append(request).append(", ");
         }
-        stringBuilder.append((culturalCenter.getRequests().isEmpty() ? "none\n" : "\n"));
+        stringBuilder.append((cultureCenter.getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
         s.append("Aspects: ");
-        for (CultureAspect aspect : culturalCenter.getCultureAspectCenter().getCultureAspects()) {
+        for (CultureAspect aspect : cultureCenter.getCultureAspectCenter().getCultureAspects()) {
             s.append(aspect).append(", ");
         }
-        s.append((culturalCenter.getCultureAspectCenter().getCultureAspects().isEmpty() ? "none\n" : "\n"));
+        s.append((cultureCenter.getCultureAspectCenter().getCultureAspects().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
@@ -391,7 +391,7 @@ public class Group {
             }
         }
         stringBuilder.append("\n");
-        for (Relation relation : culturalCenter.relations.values()) {
+        for (Relation relation : cultureCenter.relations.values()) {
             stringBuilder.append(relation).append("\n");
         }
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);

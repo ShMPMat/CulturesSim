@@ -11,7 +11,6 @@ import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class DepictObject extends AbstractCultureAspect {
 
     @Override
     public void use() {
-        group.getCulturalCenter().putCurrentMeme(meme.toString());
+        group.getCultureCenter().putCurrentMeme(meme.toString());
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
@@ -53,9 +52,9 @@ public class DepictObject extends AbstractCultureAspect {
             group.cherishedResources.add(meaningful);
             resourceBehaviour.procedeResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
-            group.getCulturalCenter().getMemePool().strengthenMeme(meme);
+            group.getCultureCenter().getMemePool().strengthenMeme(meme);
         }
-        group.getCulturalCenter().clearCurrentMeme();
+        group.getCultureCenter().clearCurrentMeme();
     }
 
     @Override
@@ -63,7 +62,7 @@ public class DepictObject extends AbstractCultureAspect {
         return new DepictObject(
                 group,
                 meme,
-                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(converseWrapper),
+                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(converseWrapper),
                 resourceBehaviour
         );
     }

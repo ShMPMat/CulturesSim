@@ -16,6 +16,7 @@ import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.space.resource.Resource;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static shmp.random.RandomCollectionsKt.randomElement;
@@ -70,7 +71,7 @@ public class CultureAspectCenter {
         switch (session.random.nextInt(5)) {
             case 0: {
                 List<ConverseWrapper> _l = new ArrayList<>(
-                        group.getCulturalCenter().getAspectCenter().getAspectPool().getMeaningAspects()
+                        group.getCultureCenter().getAspectCenter().getAspectPool().getMeaningAspects()
                 );
                 if (!_l.isEmpty()) {
                     Meme meme = constructMeme();
@@ -88,7 +89,7 @@ public class CultureAspectCenter {
                 break;
             }
             case 2: {
-                Resource resource = group.getCulturalCenter().getAspectCenter().getAllProducedResources().stream()
+                Resource resource = group.getCultureCenter().getAspectCenter().getAllProducedResources().stream()
                         .map(Pair::getFirst)
                         .filter(r -> !aestheticallyPleasingResources.contains(r))
                         .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
@@ -112,7 +113,7 @@ public class CultureAspectCenter {
             }
             case 5: {//TODO should I add such a thing here even? (I did break in previous section for now)
                 List<ConverseWrapper> wrappers =
-                        group.getCulturalCenter().getAspectCenter().getAspectPool().getConverseWrappers();
+                        group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers();
                 if (!wrappers.isEmpty()) {
                     ConverseWrapper converseWrapper = randomElement(wrappers, session.random);
                     Reason reason = Reasons.randomReason(group);
@@ -127,9 +128,9 @@ public class CultureAspectCenter {
     }
 
     private TextInfo generateTextInfo() {//TODO too slow
-        List<TextInfo> textInfos = group.getCulturalCenter().getAspectCenter().getAspectPool().getConverseWrappers()
+        List<TextInfo> textInfos = group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers()
                 .stream()
-                .flatMap(cw -> group.getCulturalCenter().getMemePool().getAspectTextInfo(cw).stream())
+                .flatMap(cw -> group.getCultureCenter().getMemePool().getAspectTextInfo(cw).stream())
                 .collect(Collectors.toList());
         return textInfos.isEmpty() ? null : complicateInfo(randomElement(textInfos, session.random));
     }
@@ -149,7 +150,7 @@ public class CultureAspectCenter {
                                 substitutions.put(entry.getKey() + m.getObserverWord(),
                                         randomElementWithProbability(
                                                 session.templateBase.wordBase.get(m.getObserverWord()),
-                                                n -> (double) group.getCulturalCenter()
+                                                n -> (double) group.getCultureCenter()
                                                         .getMemePool()
                                                         .getMeme(n.getObserverWord())
                                                         .getImportance(),
@@ -172,7 +173,7 @@ public class CultureAspectCenter {
         int i = 0;
         do {
             List<ConverseWrapper> wrappers = new ArrayList<>(
-                    group.getCulturalCenter().getAspectCenter().getAspectPool().getConverseWrappers()
+                    group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers()
             );
             if (wrappers.isEmpty()) {
                 return null;
@@ -220,16 +221,16 @@ public class CultureAspectCenter {
     }
 
     private Meme constructMeme() {
-        Meme meme = group.getCulturalCenter().getMemePool().getMemeWithComplexityBias();
+        Meme meme = group.getCultureCenter().getMemePool().getMemeWithComplexityBias();
         if (testProbability(0.5, session.random)) {
             Meme second;
             do {
-                second = group.getCulturalCenter().getMemePool().getMemeWithComplexityBias().copy();
+                second = group.getCultureCenter().getMemePool().getMemeWithComplexityBias().copy();
             } while (second.hasPart(meme, Collections.singleton("and")));
             meme = meme.copy().addPredicate(
-                    group.getCulturalCenter().getMemePool().getMemeCopy("and").addPredicate(second)
+                    group.getCultureCenter().getMemePool().getMemeCopy("and").addPredicate(second)
             );
-            group.getCulturalCenter().getMemePool().addMemeCombination(meme);
+            group.getCultureCenter().getMemePool().addMemeCombination(meme);
         }
         return meme;
     }
@@ -242,7 +243,7 @@ public class CultureAspectCenter {
             ConverseWrapper converseWrapper = ((BetterAspectUseReason) reason).getConverseWrapper();
 
             ShnyPair<List<Meme>, List<Meme>> temp =
-                    group.getCulturalCenter().getMemePool().getAspectMemes(converseWrapper);
+                    group.getCultureCenter().getMemePool().getAspectMemes(converseWrapper);
             List<Meme> aspectMemes = temp.first;
             aspectMemes.addAll(temp.second);
             Collections.shuffle(aspectMemes);
@@ -251,14 +252,14 @@ public class CultureAspectCenter {
                     continue;
                 }
                 try {
-                    Aspect myAspect = group.getCulturalCenter().getAspectCenter()
+                    Aspect myAspect = group.getCultureCenter().getAspectCenter()
                             .getAspectPool().get(meme.getObserverWord());
                     if (myAspect instanceof ConverseWrapper) {
                         return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
                     }
                 } catch (NoSuchElementException e) {
                     List<ConverseWrapper> options =
-                            group.getCulturalCenter().getAspectCenter().getAllProducedResources().stream()
+                            group.getCultureCenter().getAspectCenter().getAllProducedResources().stream()
                                     .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
                                     .map(Pair::getSecond)
                                     .collect(Collectors.toList());
@@ -269,7 +270,7 @@ public class CultureAspectCenter {
                         case 0:
                             List<ConverseWrapper> meaningAspects =
                                     new ArrayList<>(
-                                            group.getCulturalCenter()
+                                            group.getCultureCenter()
                                                     .getAspectCenter()
                                                     .getAspectPool()
                                                     .getMeaningAspects()
@@ -297,5 +298,38 @@ public class CultureAspectCenter {
             }
         }
         return null;
+    }
+
+    public List<CultureAspect> getNeighbourCultureAspects() {
+        List<CultureAspect> allExistingAspects = new ArrayList<>();
+        for (Group neighbour : group.getCultureCenter().getRelatedGroups()) {
+            allExistingAspects.addAll(neighbour.getCultureCenter().getCultureAspectCenter().getCultureAspects());
+        }
+        return allExistingAspects;
+    }
+
+    public List<CultureAspect> getNeighbourCultureAspects(Predicate<CultureAspect> predicate) {
+        return getNeighbourCultureAspects().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+    }
+
+    void adoptCultureAspects() {
+        try {
+            if (!session.isTime(session.groupTurnsBetweenAdopts)) {
+                return;
+            }
+            List<CultureAspect> cultureAspects = getNeighbourCultureAspects(a -> !getCultureAspects().contains(a));
+            if (!cultureAspects.isEmpty()) {
+                CultureAspect aspect = randomElementWithProbability(
+                        cultureAspects,
+                        a -> group.getCultureCenter().getNormalizedRelation(a.getGroup()),
+                        session.random
+                );
+                addCultureAspect(aspect);
+            }
+        } catch (NullPointerException e) {
+            throw new RuntimeException();
+        }
     }
 }

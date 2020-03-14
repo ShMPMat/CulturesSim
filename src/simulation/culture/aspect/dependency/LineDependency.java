@@ -62,7 +62,7 @@ public class LineDependency extends AbstractDependency {
                 return new AspectResult(resourcePack, null);
             }
             isAlreadyUsed = true;
-            AspectResult _p = group.getCulturalCenter().getAspectCenter().getAspectPool().get(line.getSecond())
+            AspectResult _p = group.getCultureCenter().getAspectCenter().getAspectPool().get(line.getSecond())
                     .use(new AspectController(
                             controller.getCeiling(),
                             controller.getFloor(),
@@ -99,8 +99,8 @@ public class LineDependency extends AbstractDependency {
     @Override
     public void swapDependencies(Group group) {
         line = new Pair<>(
-                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(line.getSecond()),
-                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(line.getSecond())
+                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(line.getSecond()),
+                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(line.getSecond())
         );
     }
 

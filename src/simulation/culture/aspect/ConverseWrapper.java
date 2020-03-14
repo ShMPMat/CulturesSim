@@ -85,7 +85,7 @@ public class ConverseWrapper extends Aspect {
     @Override
     public AspectResult use(AspectController controller) {
         try {
-            group.getCulturalCenter().getAspectCenter().getAspectPool().get(aspect).markAsUsed();
+            group.getCultureCenter().getAspectCenter().getAspectPool().get(aspect).markAsUsed();
             return super.use(controller);
         } catch (Exception e) {
             throw new RuntimeException("");

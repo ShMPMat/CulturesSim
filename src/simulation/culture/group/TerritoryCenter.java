@@ -17,7 +17,7 @@ public class TerritoryCenter {
     private Group group;
     private Function<Tile, Integer> tileRelationAspectMapper = t -> {//TODO move functions somewhere else
         int accumulator = 0;
-        for (Relation relation : group.getCulturalCenter().relations.values()) {
+        for (Relation relation : group.getCultureCenter().relations.values()) {
             if (relation.getPositive() < 0) {
                 accumulator += relation.getPositive() * 10000 / relation.other.getTerritoryCenter().getTerritory().getCenter().getDistance(t);
             }
@@ -25,7 +25,7 @@ public class TerritoryCenter {
         return accumulator;
     };
     private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size() +
-            3 * t.hasResources(group.getCulturalCenter().getAspectCenter().getAspectPool().getResourceRequirements())
+            3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
             + tileRelationAspectMapper.apply(t);
 
     TerritoryCenter(Group group) {
@@ -69,7 +69,7 @@ public class TerritoryCenter {
     }
 
     private boolean shouldMigrate() {
-        return !group.getCulturalCenter().getAspirations().isEmpty();
+        return !group.getCultureCenter().getAspirations().isEmpty();
     }
 
     private Tile getMigrationTile() {

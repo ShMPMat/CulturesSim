@@ -71,7 +71,7 @@ public class AspectDependency extends AbstractDependency {
 
     @Override
     public void swapDependencies(Group group) {
-        aspect = group.getCulturalCenter().getAspectCenter().getAspectPool().get(aspect);
+        aspect = group.getCultureCenter().getAspectCenter().getAspectPool().get(aspect);
         if (aspect == null) {
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
         }

@@ -1,6 +1,5 @@
 package simulation.culture.group.cultureaspect;
 
-import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
@@ -56,7 +55,7 @@ public class AspectRitual extends Ritual {
     public AspectRitual copy(Group group) {
         return new AspectRitual(
                 group,
-                (ConverseWrapper) group.getCulturalCenter().getAspectCenter().getAspectPool().get(converseWrapper),
+                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(converseWrapper),
                 reason
         );
     }
