@@ -1,6 +1,6 @@
 package simulation.culture.group;
 
-import simulation.culture.Event;
+import simulation.Event;
 
 import java.util.*;
 

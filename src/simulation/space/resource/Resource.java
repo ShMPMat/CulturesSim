@@ -1,7 +1,7 @@
 package simulation.space.resource;
 
 import extra.SpaceProbabilityFuncs;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;

@@ -1,6 +1,4 @@
-package simulation.culture;
-
-import simulation.Controller;
+package simulation;
 
 import java.util.HashMap;
 import java.util.Map;

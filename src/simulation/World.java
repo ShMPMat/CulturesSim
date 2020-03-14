@@ -2,7 +2,6 @@ package simulation;
 
 import extra.SpaceProbabilityFuncs;
 import kotlin.ranges.IntRange;
-import simulation.culture.Event;
 import simulation.culture.aspect.AspectInstantiation;
 import simulation.culture.aspect.AspectPool;
 import simulation.culture.group.GroupConglomerate;

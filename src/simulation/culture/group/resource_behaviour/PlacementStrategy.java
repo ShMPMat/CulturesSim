@@ -1,4 +1,4 @@
-package simulation.culture.group;
+package simulation.culture.group.resource_behaviour;
 
 import extra.SpaceProbabilityFuncs;
 import shmp.random.RandomCollectionsKt;
@@ -16,7 +16,7 @@ import static shmp.random.RandomCollectionsKt.*;
 import static simulation.Controller.*;
 
 public class PlacementStrategy {
-    enum Strategy {
+    public enum Strategy {
         DoNothing,
         OneTile,
         Border,
@@ -43,11 +43,6 @@ public class PlacementStrategy {
                 break;
         }
         this.strategy = strategy;
-    }
-
-    PlacementStrategy(Territory controlledTerritory, Strategy strategy, Collection<Tile> tiles) {
-        this(controlledTerritory, strategy);
-        this.specialTiles.addAll(tiles);
     }
 
     private Tile getTileForPlacement(ResourcePack resourcePack) {
@@ -99,7 +94,7 @@ public class PlacementStrategy {
         return randomElement(specialTiles, session.random);
     }
 
-    void place(ResourcePack resourcePack) {
+    public void place(ResourcePack resourcePack) {
         Tile tile = getTileForPlacement(resourcePack);
         if (tile != null) {
             resourcePack.resources.forEach(tile::addDelayedResource);

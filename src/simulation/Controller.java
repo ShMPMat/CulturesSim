@@ -2,7 +2,7 @@ package simulation;
 
 import kotlin.random.Random;
 import kotlin.random.RandomKt;
-import simulation.culture.interactionmodel.InteractionModel;
+import simulation.interactionmodel.InteractionModel;
 import simulation.culture.thinking.language.templates.TemplateBase;
 import visualizer.Visualizer;
 

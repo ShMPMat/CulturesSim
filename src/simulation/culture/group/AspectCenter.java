@@ -2,7 +2,7 @@ package simulation.culture.group;
 
 import kotlin.Pair;
 import shmp.random.RandomException;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.MutableAspectPool;
 import simulation.space.resource.tag.ResourceTag;

@@ -2,7 +2,7 @@ package simulation.culture.group;
 
 import extra.SpaceProbabilityFuncs;
 import simulation.Controller;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.group.intergroup.Relation;
 import simulation.space.Territory;
 import simulation.space.Tile;

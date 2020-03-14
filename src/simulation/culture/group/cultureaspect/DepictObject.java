@@ -1,12 +1,14 @@
 package simulation.culture.group.cultureaspect;
 
+import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceBehaviour;
+import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
@@ -27,7 +29,7 @@ public class DepictObject extends AbstractCultureAspect {
     }
 
     public DepictObject(Group group, Meme meme, ConverseWrapper converseWrapper) {
-        this(group, meme, converseWrapper, ResourceBehaviour.getRandom(group));
+        this(group, meme, converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random));
     }
 
     @Override
@@ -50,7 +52,7 @@ public class DepictObject extends AbstractCultureAspect {
                     .collect(Collectors.toList()));
             result.resources.removeAll(meaningful.resources);
             group.cherishedResources.add(meaningful);
-            resourceBehaviour.procedeResources(meaningful);
+            resourceBehaviour.proceedResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
             group.getCultureCenter().getMemePool().strengthenMeme(meme);
         }

@@ -1,7 +1,7 @@
 package simulation.culture.group;
 
 import extra.OutputFunc;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.space.resource.tag.ResourceTag;

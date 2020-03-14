@@ -26,7 +26,7 @@ import static simulation.Controller.session;
 
 public class CultureAspectCenter {
     private Group group;
-    private MutableCultureAspectPool aspectPool;//TODO make pool and check all getCultureAspect calls
+    private MutableCultureAspectPool aspectPool;
     private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
 
     private Set<Reason> reasonsWithSystems = new HashSet<>();

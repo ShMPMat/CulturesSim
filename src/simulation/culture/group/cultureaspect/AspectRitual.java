@@ -1,14 +1,16 @@
 package simulation.culture.group.cultureaspect;
 
+import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceBehaviour;
+import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.reason.Reasons;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
@@ -24,11 +26,15 @@ public class AspectRitual extends Ritual {
     }
 
     public AspectRitual(Group group, ConverseWrapper converseWrapper, Reason reason) {
-        this(group, converseWrapper, ResourceBehaviour.getRandom(group), reason);
+        this(group, converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random), reason);
     }
 
     public AspectRitual(Group group, ConverseWrapper converseWrapper) {
-        this(group, converseWrapper, ResourceBehaviour.getRandom(group), Reasons.randomReason(group));
+        this(
+                group,
+                converseWrapper,
+                ResourceBehaviourKt.getRandom(group, Controller.session.random), Reasons.randomReason(group)
+        );
     }
 
     @Override
@@ -47,7 +53,7 @@ public class AspectRitual extends Ritual {
         ));
         if (result.isFinished) {
             group.cherishedResources.add(result.resources);
-            resourceBehaviour.procedeResources(result.resources);
+            resourceBehaviour.proceedResources(result.resources);
         }
     }
 

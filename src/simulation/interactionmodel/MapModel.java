@@ -1,7 +1,7 @@
-package simulation.culture.interactionmodel;
+package simulation.interactionmodel;
 
 import simulation.World;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.group.GroupConglomerate;
 
 import java.util.*;

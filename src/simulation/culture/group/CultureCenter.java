@@ -1,7 +1,7 @@
 package simulation.culture.group;
 
 import kotlin.Pair;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.*;
 import simulation.culture.group.intergroup.Relation;

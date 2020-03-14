@@ -1,9 +1,11 @@
 package simulation.culture.group.cultureaspect;
 
+import simulation.Controller;
 import simulation.culture.group.Group;
-import simulation.culture.group.ResourceBehaviour;
+import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceRequest;
+import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.space.resource.Resource;
 
 import java.util.Objects;
@@ -19,19 +21,19 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
     }
 
     public AestheticallyPleasingObject(Group group, Resource resource) {
-        this(group, resource, ResourceBehaviour.getRandom(group));
+        this(group, resource, ResourceBehaviourKt.getRandom(group, Controller.session.random));
     }
 
     @Override
     public Request getRequest() {
         return new ResourceRequest(group, resource, 1, 10, (pair, percent) -> {
             pair.getFirst().cherishedResources.add(pair.getSecond());
-            resourceBehaviour.procedeResources(pair.getSecond());
+            resourceBehaviour.proceedResources(pair.getSecond());
             return null;
         },
                 (pair, percent) -> {
                     pair.getFirst().cherishedResources.add(pair.getSecond());
-                    resourceBehaviour.procedeResources(pair.getSecond());
+                    resourceBehaviour.proceedResources(pair.getSecond());
                     return null;
                 });
     }

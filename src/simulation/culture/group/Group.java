@@ -6,7 +6,7 @@ import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
 
 import kotlin.Pair;
-import simulation.culture.Event;
+import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.intergroup.Relation;
