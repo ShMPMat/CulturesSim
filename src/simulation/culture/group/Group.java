@@ -377,10 +377,10 @@ public class Group {
         stringBuilder.append((cultureCenter.getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
         s.append("Aspects: ");
-        for (CultureAspect aspect : cultureCenter.getCultureAspectCenter().getCultureAspects()) {
+        for (CultureAspect aspect : cultureCenter.getCultureAspectCenter().getAspectPool().getAll()) {
             s.append(aspect).append(", ");
         }
-        s.append((cultureCenter.getCultureAspectCenter().getCultureAspects().isEmpty() ? "none\n" : "\n"));
+        s.append((cultureCenter.getCultureAspectCenter().getAspectPool().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())

@@ -5,11 +5,11 @@ import extra.ShnyPair;
 import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.cultureaspect.MutableCultureAspectPool;
 import simulation.culture.group.cultureaspect.*;
 import simulation.culture.group.reason.BetterAspectUseReason;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.reason.Reasons;
-import simulation.culture.group.request.Request;
 import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
@@ -26,7 +26,7 @@ import static simulation.Controller.session;
 
 public class CultureAspectCenter {
     private Group group;
-    private Set<CultureAspect> cultureAspects;//TODO make pool and check all getCultureAspect calls
+    private MutableCultureAspectPool aspectPool;//TODO make pool and check all getCultureAspect calls
     private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
 
     private Set<Reason> reasonsWithSystems = new HashSet<>();
@@ -35,22 +35,16 @@ public class CultureAspectCenter {
 
     CultureAspectCenter(Group group, Set<CultureAspect> cultureAspects) {
         this.group = group;
-        this.cultureAspects = cultureAspects;
+        this.aspectPool = new MutableCultureAspectPool(cultureAspects);
     }
 
-    public Set<CultureAspect> getCultureAspects() {
-        return cultureAspects;
-    }
-
-    List<Request> getAspectRequests() {
-        return cultureAspects.stream()
-                .map(CultureAspect::getRequest)
-                .collect(Collectors.toList());
+    public MutableCultureAspectPool getAspectPool() {
+        return aspectPool;
     }
 
     public void addCultureAspect(CultureAspect cultureAspect) {
         if (cultureAspect != null) {
-            cultureAspects.add(cultureAspect);
+            aspectPool.add(cultureAspect);
         }
         if (cultureAspect instanceof AestheticallyPleasingObject) {
             aestheticallyPleasingResources.add(
@@ -60,7 +54,7 @@ public class CultureAspectCenter {
     }
 
     void useCultureAspects() {
-        cultureAspects.forEach(CultureAspect::use);
+        aspectPool.getAll().forEach(CultureAspect::use);
     }
 
     void addRandomCultureAspect() {
@@ -193,9 +187,11 @@ public class CultureAspectCenter {
         if (!testProbability(session.groupCultureAspectCollapse, session.random)) {
             return;
         }
-        List<Ritual> rituals = cultureAspects.stream()
+        List<Ritual> rituals = aspectPool
                 .filter(ca -> ca instanceof Ritual)
-                .map(ca -> (Ritual) ca).collect(Collectors.toList());
+                .stream()
+                .map(ca -> (Ritual) ca)
+                .collect(Collectors.toList());
         Map<Reason, List<Ritual>> dividedRituals = new HashMap<>();
         rituals.forEach(r -> {
             if (dividedRituals.containsKey(r.getReason())) {
@@ -211,7 +207,7 @@ public class CultureAspectCenter {
                 .orElse(new ArrayList<>());
         if (popularReasonRituals.size() >= 3) {
             addCultureAspect(new RitualSystem(group, popularReasonRituals, popularReasonRituals.get(0).getReason()));
-            cultureAspects.removeAll(popularReasonRituals);
+            aspectPool.removeAll(popularReasonRituals);
             reasonsWithSystems.add(popularReasonRituals.get(0).getReason());
         }
     }
@@ -303,7 +299,7 @@ public class CultureAspectCenter {
     public List<CultureAspect> getNeighbourCultureAspects() {
         List<CultureAspect> allExistingAspects = new ArrayList<>();
         for (Group neighbour : group.getCultureCenter().getRelatedGroups()) {
-            allExistingAspects.addAll(neighbour.getCultureCenter().getCultureAspectCenter().getCultureAspects());
+            allExistingAspects.addAll(neighbour.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll());
         }
         return allExistingAspects;
     }
@@ -319,7 +315,7 @@ public class CultureAspectCenter {
             if (!session.isTime(session.groupTurnsBetweenAdopts)) {
                 return;
             }
-            List<CultureAspect> cultureAspects = getNeighbourCultureAspects(a -> !getCultureAspects().contains(a));
+            List<CultureAspect> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
             if (!cultureAspects.isEmpty()) {
                 CultureAspect aspect = randomElementWithProbability(
                         cultureAspects,

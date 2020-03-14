@@ -17,8 +17,8 @@ public class Groups {
             }
             overall++;
         }
-        for (CultureAspect aspect: g1.getCultureCenter().getCultureAspectCenter().getCultureAspects()) {
-            if (g2.getCultureCenter().getCultureAspectCenter().getCultureAspects().contains(aspect)) {
+        for (CultureAspect aspect: g1.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll()) {
+            if (g2.getCultureCenter().getCultureAspectCenter().getAspectPool().contains(aspect)) {
                 matched++;
             }
             overall++;

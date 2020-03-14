@@ -85,7 +85,7 @@ public class GroupConglomerate {
      */
     public List<CultureAspect> getCultureAspects() {
         return subgroups.stream()
-                .flatMap(group -> group.getCultureCenter().getCultureAspectCenter().getCultureAspects().stream())
+                .flatMap(group -> group.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll().stream())
                 .collect(Collectors.toList());
     }
 

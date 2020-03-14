@@ -117,7 +117,7 @@ public class CultureCenter {
                     group.population, warmthPenalty, warmthReward));
         }
 
-        cultureAspectCenter.getAspectRequests().forEach(this::addRequest);
+        cultureAspectCenter.getAspectPool().getAspectRequests().forEach(this::addRequest);
     }
 
     void update() {
