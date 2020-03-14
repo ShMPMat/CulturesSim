@@ -298,7 +298,7 @@ public class CultureAspectCenter {
 
     public List<CultureAspect> getNeighbourCultureAspects() {
         List<CultureAspect> allExistingAspects = new ArrayList<>();
-        for (Group neighbour : group.getCultureCenter().getRelatedGroups()) {
+        for (Group neighbour : group.getRelationCenter().getRelatedGroups()) {
             allExistingAspects.addAll(neighbour.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll());
         }
         return allExistingAspects;
@@ -319,7 +319,7 @@ public class CultureAspectCenter {
             if (!cultureAspects.isEmpty()) {
                 CultureAspect aspect = randomElementWithProbability(
                         cultureAspects,
-                        a -> group.getCultureCenter().getNormalizedRelation(a.getGroup()),
+                        a -> group.getRelationCenter().getNormalizedRelation(a.getGroup()),
                         session.random
                 );
                 addCultureAspect(aspect);

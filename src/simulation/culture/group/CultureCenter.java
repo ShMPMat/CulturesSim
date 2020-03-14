@@ -35,8 +35,6 @@ public class CultureCenter {
 
     private Meme currentMeme;
 
-    Map<Group, Relation> relations = new HashMap<>();
-
     CultureCenter(Group group, GroupMemes memePool, List<Aspect> aspects) {
         this.group = group;
         this.memePool = memePool;
@@ -62,10 +60,6 @@ public class CultureCenter {
 
     List<Event> getEvents() {
         return events;
-    }
-
-    public Set<Group> getRelatedGroups() {
-        return relations.keySet();
     }
 
     public GroupMemes getMemePool() {
@@ -105,7 +99,7 @@ public class CultureCenter {
         requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
                 foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, foodPenalty, foodReward));
 
-        if (group.getTerritory().getMinTemperature() < 0) {
+        if (group.getTerritoryCenter().getTerritory().getMinTemperature() < 0) {
             BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
                 pair.getFirst().freeze(percent);
                 return null;
@@ -146,10 +140,6 @@ public class CultureCenter {
 
     private void removeAspiration(Aspiration aspiration) {
         aspirations.remove(aspiration);
-    }
-
-    double getNormalizedRelation(Group group) {
-        return relations.containsKey(group) ? relations.get(group).getPositiveNormalized() : 2;
     }
 
     private void createArtifact() {

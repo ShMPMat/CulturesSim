@@ -18,7 +18,6 @@ import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static simulation.Controller.*;
@@ -32,7 +31,7 @@ public class Group {
     private CultureCenter cultureCenter;
     private TerritoryCenter territoryCenter;
     private PopulationCenter populationCenter;
-    private Function<Group, Double> hostilityByDifferenceCoef = g -> (Groups.getGroupsDifference(this, g) - 1) / 2;
+    private RelationCenter relationCenter;
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
     ResourcePack uniqueArtifacts = new ResourcePack();
@@ -51,6 +50,7 @@ public class Group {
         this.populationCenter = populationCenter;
         cultureCenter = new CultureCenter(this, memePool, aspects);
         territoryCenter = new TerritoryCenter(this, spreadAbility, tile);
+        this.relationCenter = new RelationCenter(g -> (Groups.getGroupsDifference(this, g) - 1) / 2);
     }
 
     public CultureCenter getCultureCenter() {
@@ -65,8 +65,8 @@ public class Group {
         return populationCenter;
     }
 
-    public Territory getTerritory() {
-        return territoryCenter.getTerritory();
+    public RelationCenter getRelationCenter() {
+        return relationCenter;
     }
 
     public Territory getOverallTerritory() {
@@ -155,36 +155,16 @@ public class Group {
     }
 
     void intergroupUpdate() {
-        Map<Group, Relation> relations = cultureCenter.relations;
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
-            List<Group> groups = getOverallTerritory()
-                    .getBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
-                    .stream().map(tile -> tile.group).distinct().collect(Collectors.toList());
-            for (Group group : groups) {
-                if (!relations.containsKey(group)) {
-                    Relation relation = new Relation(this, group);
-                    relation.setPair(group.addMirrorRelation(relation));
-                    relations.put(relation.other, relation);
-                }
-            }
-            List<Group> dead = new ArrayList<>();
-            for (Relation relation : relations.values()) {
-                if (relation.other.state == State.Dead) {
-                    dead.add(relation.other);
-                } else {
-                    relation.setPositive(hostilityByDifferenceCoef.apply(relation.other));
-                }
-            }
-            dead.forEach(relations::remove);
+            relationCenter.updateNewConnections(
+                    getOverallTerritory()
+                            .getBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
+                            .stream().map(tile -> tile.group).distinct().collect(Collectors.toList()),
+                    this
+            );
+            relationCenter.updateRelations();
         }
         cultureCenter.intergroupUpdate();
-    }
-
-    Relation addMirrorRelation(Relation relation) {
-        Relation newRelation = new Relation(relation.other, relation.owner);
-        newRelation.setPair(relation);
-        cultureCenter.relations.put(relation.owner, newRelation);
-        return newRelation;
     }
 
     public void finishUpdate() {
@@ -295,7 +275,7 @@ public class Group {
             }
         }
         stringBuilder.append("\n");
-        for (Relation relation : cultureCenter.relations.values()) {
+        for (Relation relation : relationCenter.getRelations()) {
             stringBuilder.append(relation).append("\n");
         }
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);

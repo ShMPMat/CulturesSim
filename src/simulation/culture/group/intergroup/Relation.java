@@ -25,8 +25,8 @@ public class Relation {
 
     public void setPositive(double positive) {
         this.positive = positive;
-        if (this.positive > 1) positive = 1;
-        if (this.positive < -1) positive = -1;
+        if (this.positive > 1) this.positive = 1;
+        if (this.positive < -1) this.positive = -1;
     }
 
     public void increaseRelationsTwoSided(double delta) {

@@ -150,7 +150,10 @@ public class AspectCenter {
                 }
                 addDependenciesInMap(dep, Collections.singleton(dependency), requirement);
             }
-            addDependenciesInMap(dep, group.getTerritory().getResourcesWhichConverseToTag(selfAspect, requirement).stream() //Make converse Dependency_
+            addDependenciesInMap(dep, group.getTerritoryCenter().getTerritory().getResourcesWhichConverseToTag(
+                    selfAspect,
+                    requirement
+                    ).stream() //Make converse Dependency_
                             .map(resource ->
                                     new ConversionDependency(requirement, group, new Pair<>(resource, selfAspect)))
                             .filter(dependency -> !dependency.isCycleDependency(aspect))
@@ -263,7 +266,7 @@ public class AspectCenter {
 
     List<Aspect> getNeighbourAspects() {
         List<Aspect> allExistingAspects = new ArrayList<>();
-        for (Group neighbour : group.getCultureCenter().getRelatedGroups()) {
+        for (Group neighbour : group.getRelationCenter().getRelatedGroups()) {
             allExistingAspects.addAll(neighbour.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream()
                     .filter(aspect -> !(aspect instanceof ConverseWrapper)
                             || aspectPool.contains(((ConverseWrapper) aspect).aspect))
@@ -288,7 +291,7 @@ public class AspectCenter {
             try {
                 Aspect aspect = randomElementWithProbability(
                         allExistingAspects,
-                        a -> a.getUsefulness() * group.getCultureCenter().getNormalizedRelation(a.getGroup()),
+                        a -> a.getUsefulness() * group.getRelationCenter().getNormalizedRelation(a.getGroup()),
                         session.random
                 );
                 if (addAspect(aspect)) {

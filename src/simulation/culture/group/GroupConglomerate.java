@@ -198,7 +198,7 @@ public class GroupConglomerate {
     void addGroup(Group group) {
         subgroups.add(group);
         computePopulation();
-        group.getTerritory().getTiles().forEach(this::claimTile);
+        group.getTerritoryCenter().getTerritory().getTiles().forEach(this::claimTile);
         group.setParentGroup(this);
     }
 
@@ -217,7 +217,7 @@ public class GroupConglomerate {
         if (!subgroups.remove(group)) {
             throw new RuntimeException("Trying to remove non-child subgroup " + group.name + " from Group " + name);
         }
-        group.getTerritory().getTiles().forEach(this::removeTile);
+        group.getTerritoryCenter().getTerritory().getTiles().forEach(this::removeTile);
     }
 
     public void finishUpdate() {
