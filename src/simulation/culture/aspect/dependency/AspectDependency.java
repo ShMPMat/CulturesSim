@@ -56,7 +56,7 @@ public class AspectDependency extends AbstractDependency {
                     controller.getCeiling(),
                     controller.getFloor(),
                     new ResourceEvaluator(),
-                    controller.getGroup(),
+                    controller.getPopulationCenter(),
                     false
             ));
         } catch (StackOverflowError e) {

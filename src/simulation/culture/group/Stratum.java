@@ -18,14 +18,11 @@ import static simulation.Controller.session;
  * Represents certain people who do particular work in Group
  */
 public class Stratum {
-    /**
-     * Overall amount of people in Stratum
-     */
     private int amount;
     /**
      * How many people already worked on this turn;
      */
-    private int usedAmount = 0;
+    private int workedAmount = 0;
     private List<Aspect> aspects = new ArrayList<>();
     private Map<ResourceTag, ResourcePack> dependencies = new HashMap<>();
     private Group group;
@@ -62,8 +59,12 @@ public class Stratum {
         return aspects.contains(aspect);
     }
 
+    public void decreaseAmount(int delta) {
+        this.amount -= delta;
+    }
+
     public void useAmount(int amount) {
-        this.usedAmount = amount;
+        this.workedAmount = amount;
         this.amount = Math.max(amount, this.amount);
         if (amount < 0) {
             int i = 0; //TODO still happens
@@ -122,7 +123,7 @@ public class Stratum {
                                         amount - currentAmount,
                                         1,
                                         evaluator,
-                                        group,
+                                        group.getPopulationCenter(),
                                         false
                                 ));
                         if (result.isFinished) {
@@ -136,8 +137,8 @@ public class Stratum {
                 }
             }
         }
-        amount -= amount > usedAmount ? 1 : 0;
-        usedAmount = 0;
+        amount -= amount > workedAmount ? 1 : 0;
+        workedAmount = 0;
     }
 
     @Override

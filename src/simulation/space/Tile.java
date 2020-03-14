@@ -279,18 +279,9 @@ public class Tile {
         return resources.stream().filter(requirements::contains).map(Resource::getAmount).reduce(0, Integer::sum);
     }
 
-    public boolean canSettle(Group group) {
-        return getType() != Type.Water && getType() != Type.Mountain ||
-                (getType() == Type.Mountain
-                        && !group.getCultureCenter().getAspectCenter().getAspectPool().filter(a ->
-                        a.getTags().stream()
-                                .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))
-                        .isEmpty());
-    }
-
     public boolean canSettle() {
         return getType() != Type.Water && getType() != Type.Mountain;
-    }
+    }//TODO move it otta here
 
     /**
      * Starts update for this Tile.

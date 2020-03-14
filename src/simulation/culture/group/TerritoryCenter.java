@@ -9,6 +9,7 @@ import simulation.space.Tile;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static shmp.random.RandomProbabilitiesKt.*;
 
@@ -43,28 +44,16 @@ public class TerritoryCenter {
         return spreadAbility;
     }
 
-    public Set<Group> getAllNearGroups() {
+    public Set<Group> getAllNearGroups(Group exception) {
         Set<Group> groups = new HashSet<>();
         for (Tile tile : getTerritory().getTiles()) {
             tile.getNeighbours(t -> t.group != null).forEach(t -> groups.add(t.group));
         }
-        groups.remove(group);
+        groups.remove(exception);
         return groups;
     }
 
-    void update() {
-        if (group.state == Group.State.Dead) {
-            return;
-        }
-        migrate();
-        expand();
-    }
-
-    private boolean migrate() {
-        if (!shouldMigrate()) {
-            return false;
-        }
-
+    boolean migrate() {
         Tile newCenter = getMigrationTile();
         if (newCenter == null) {
             return false;
@@ -75,33 +64,32 @@ public class TerritoryCenter {
         return true;
     }
 
-    private boolean shouldMigrate() {
-        return !group.getCultureCenter().getAspirations().isEmpty();
-    }
-
     private Tile getMigrationTile() {
-        return getTerritory().getCenter().getNeighbours(tile -> tile.canSettle(group) && tile.group == null).stream()
-                .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile))).orElse(null);
+        return getTerritory().getCenter().getNeighbours(t -> canSettle(t, tile -> tile.group == null)).stream()
+                .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile)))
+                .orElse(null);
     }
 
     public Tile getDisbandTile() {
         return SpaceProbabilityFuncs.randomTile(getTerritory());
     }
 
-    private boolean expand() {
+    boolean expand() {
         if (!testProbability(spreadAbility, Controller.session.random)) {
             return false;
         }
-        if (!group.getPopulationCenter().isMinPassed(territory)) {
-            group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(
-                    new ArrayList<>(),
-                    tilePotentialMapper
-            ));
-        }
-
-        claimTile(territory.getMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(group) &&
-                isTileReachable(newTile), tilePotentialMapper));
+        claimTile(territory.getMostUsefulTile(
+                t -> canSettle(t, t2 -> t2.group == null && isTileReachable(t2)),
+                tilePotentialMapper
+        ));
         return true;
+    }
+
+    void shrink() {
+        group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(
+                new ArrayList<>(),
+                tilePotentialMapper
+        ));
     }
 
     private boolean isTileReachable(Tile tile) {
@@ -138,5 +126,18 @@ public class TerritoryCenter {
 
     private void leaveTiles(Collection<Tile> tiles) {
         tiles.forEach(this::leaveTile);
+    }
+
+    public boolean canSettle(Tile tile) {
+        return tile.getType() != Tile.Type.Water && tile.getType() != Tile.Type.Mountain
+                || (tile.getType() == Tile.Type.Mountain
+                && !group.getCultureCenter().getAspectCenter().getAspectPool().filter(a ->
+                        a.getTags().stream()
+                                .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))
+                        .isEmpty());
+    }
+
+    public boolean canSettle(Tile tile, Predicate<Tile> additionalCondition) {
+        return canSettle(tile) && additionalCondition.test(tile);
     }
 }

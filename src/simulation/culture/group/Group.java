@@ -40,7 +40,7 @@ public class Group {
     Group(
             GroupConglomerate parentGroup,
             String name,
-            int population,
+            PopulationCenter populationCenter,
             Tile tile,
             List<Aspect> aspects,
             GroupMemes memePool,
@@ -48,11 +48,7 @@ public class Group {
     ) {
         this.name = name;
         this.parentGroup = parentGroup;
-        populationCenter = new PopulationCenter(
-                population,
-                session.defaultGroupMaxPopulation,
-                session.defaultGroupMinPopulationPerTile
-        );
+        this.populationCenter = populationCenter;
         cultureCenter = new CultureCenter(this, memePool, aspects);
         territoryCenter = new TerritoryCenter(this, spreadAbility, tile);
     }
@@ -69,16 +65,12 @@ public class Group {
         return populationCenter;
     }
 
-    int getFertility() {
-        return fertility;
-    }
-
     public Territory getTerritory() {
         return territoryCenter.getTerritory();
     }
 
     public Territory getOverallTerritory() {
-        return getParentGroup().getOverallTerritory();
+        return getParentGroup().getTerritory();
     }
 
     public GroupConglomerate getParentGroup() {
@@ -94,7 +86,7 @@ public class Group {
         populationCenter.die();
         territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
-        for (Group group : territoryCenter.getAllNearGroups()) {
+        for (Group group : territoryCenter.getAllNearGroups(this)) {
             group.cultureCenter.addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
@@ -105,51 +97,61 @@ public class Group {
     }
 
     void update() {
-        cultureCenter.updateRequests();
-        populationCenter.executeRequests(getCultureCenter().getRequests(), this);
+        cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
+        populationCenter.executeRequests(getCultureCenter().getRequests());
         getPopulationCenter().strataUpdate();
-        getTerritoryCenter().update();
-        getCultureCenter().update();
+        if (state != State.Dead) {
+            if (shouldMigrate()) {
+                territoryCenter.migrate();
+            }
+            if (populationCenter.isMinPassed(territoryCenter.getTerritory())) {
+                territoryCenter.expand();
+            } else {
+                territoryCenter.shrink();
+            }
+            getCultureCenter().update();
+        }
     }
 
-    void populationUpdate() {
+    private boolean shouldMigrate() {
+        return !cultureCenter.getAspirations().isEmpty();
+    }
+
+    Group populationUpdate() {
         if (populationCenter.getPopulation() == 0) {
             die();
-            return;
+            return null;
         }
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
                 || testProbability(session.defaultGroupDiverge, session.random))
                 && parentGroup.subgroups.size() < 10) {
-            List<Tile> tiles = getOverallTerritory().getBrink(t -> t.group == null &&
-                    parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
+            List<Tile> tiles = getOverallTerritory().getBrink(t -> territoryCenter.canSettle(
+                    t,
+                    t2 -> t2.group == null && parentGroup.getClosestInnerGroupDistance(t2) > 2
+            ));
             if (tiles.isEmpty()) {
-                return;
+                return null;
             }
             if (!session.groupMultiplication) {
-                return;
+                return null;
             }
-            populationCenter.setPopulation(populationCenter.getPopulation() / 2);
             Tile tile = randomElement(tiles, session.random);
             List<Aspect> aspects = cultureCenter.getAspectCenter().getAspectPool().getAll().stream()
                     .map(a -> a.copy(a.getDependencies(), this))
                     .collect(Collectors.toList());
             GroupMemes memes = new GroupMemes();
             memes.addAll(cultureCenter.getMemePool());
-            Group group = new Group(
+            return new Group(
                     parentGroup,
                     parentGroup.name + "_" + parentGroup.subgroups.size(),
-                    populationCenter.getPopulation(),
+                    populationCenter.getPart(0.5),
                     tile,
                     aspects,
                     memes,
                     territoryCenter.getSpreadAbility()
             );
-            for (Stratum stratum : populationCenter.getStrata()) {
-                stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
-            }
-            group.cultureCenter.initializeFromCenter(cultureCenter);//TODO maybe put in constructor somehow
-            parentGroup.addGroup(group);
         }
+        return null;
     }
 
     void intergroupUpdate() {
@@ -221,7 +223,8 @@ public class Group {
             cluster.add(cur);
             queue.addAll(cur.getTerritoryCenter().getTerritory().getBorder().stream()
                     .filter(t -> t.group != null && t.group.parentGroup == parentGroup && !cluster.contains(t.group))
-                    .map(tile -> tile.group).collect(Collectors.toList()));
+                    .map(tile -> tile.group)
+                    .collect(Collectors.toList()));
         }
         if (parentGroup.subgroups.size() == cluster.size()) {
             return false;

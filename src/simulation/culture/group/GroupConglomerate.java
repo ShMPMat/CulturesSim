@@ -57,7 +57,11 @@ public class GroupConglomerate {
             addGroup(new Group(
                     this,
                     name + "_" + i,
-                    population / numberOfSubGroups,
+                    new PopulationCenter(
+                            population / numberOfSubGroups,
+                            session.defaultGroupMaxPopulation,
+                            session.defaultGroupMinPopulationPerTile
+                    ),
                     getCenter(),
                     new ArrayList<>(),
                     new GroupMemes(),
@@ -115,14 +119,9 @@ public class GroupConglomerate {
         return territory;
     }
 
-    public List<Event> overgroupGetEvents() {
+    public List<Event> getEvents() {
         return culturalCenterOvergroup.getEvents();
     }
-
-    public Territory getOverallTerritory() {
-        return territory;
-    }
-
 
     private void overgroupDie() {
         state = State.Dead;
@@ -160,7 +159,10 @@ public class GroupConglomerate {
         subgroups.forEach(Group::update);
         int size = subgroups.size();
         for (int i = 0; i < size; i++) {
-            subgroups.get(i).populationUpdate();
+            Group newGroup = subgroups.get(i).populationUpdate();
+            if (newGroup != null) {
+                subgroups.add(newGroup);
+            }
         }
         updatePopulation();
         if (state == State.Dead) {

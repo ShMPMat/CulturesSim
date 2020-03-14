@@ -14,6 +14,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static simulation.Controller.session;
+
 public class PopulationCenter {
     private int population;
     private List<Stratum> strata = new ArrayList<>();
@@ -111,7 +113,7 @@ public class PopulationCenter {
         }
     }
 
-    void executeRequests(Collection<Request> requests, Group group) {
+    void executeRequests(Collection<Request> requests) {
         for (Request request : requests) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
             List<Pair<Stratum, ResourceEvaluator>> pairs = getStrata().stream()
                     .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
@@ -127,11 +129,25 @@ public class PopulationCenter {
                         request.ceiling - amount,
                         request.floor,
                         pair.getSecond(),
-                        group,
+                        this,
                         false
                 )));
             }
             request.end(turnResources);
         }
+    }
+
+    PopulationCenter getPart(double fraction) {
+        int populationPart = (int) fraction * population;
+        population -= populationPart;
+        PopulationCenter populationCenter = new PopulationCenter(
+                populationPart,
+                maxPopulation,
+                minPopulation
+        );
+        for (Stratum stratum : getStrata()) {
+            stratum.decreaseAmount((int) (stratum.getAmount() * fraction));
+        }
+        return populationCenter;
     }
 }

@@ -90,9 +90,8 @@ public class CultureCenter {
         cultureAspectCenter.addCultureAspect(new AestheticallyPleasingObject(group, resource));
     }
 
-    void updateRequests() {
+    void updateRequests(int foodFloor) {
         requests = new ArrayList<>();
-        int foodFloor = group.getPopulationCenter().getPopulation() / group.getFertility() + 1;
         BiFunction<Pair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
             pair.getFirst().starve(percent);
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
@@ -168,7 +167,7 @@ public class CultureCenter {
                     1,
                     1,
                     new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
-                    group,
+                    group.getPopulationCenter(),
                     true
             ));
             clearCurrentMeme();
@@ -211,10 +210,10 @@ public class CultureCenter {
             aspectCenter.addAspect(pair.getFirst());
             removeAspiration(aspiration);
             if (pair.getSecond() == null) {
-                group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
+                events.add(new Event(Event.Type.AspectGaining, "Group " + group.name +
                         " developed aspect " + pair.getFirst().getName(), "group", this));
             } else {
-                group.addEvent(
+                events.add(
                         new Event(Event.Type.AspectGaining,
                                 String.format(
                                         "Group %s took aspect %s from group %s",
@@ -235,9 +234,5 @@ public class CultureCenter {
 
     public void pushAspects() {
         aspectCenter.pushAspects();
-    }
-
-    public void initializeFromCenter(CultureCenter cultureCenter) {//TODO da hell is this?
-        cultureCenter.getAspectCenter().getAspectPool().getAll().forEach(a -> aspectCenter.addAspect(a));
     }
 }

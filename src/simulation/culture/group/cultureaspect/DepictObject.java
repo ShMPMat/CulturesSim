@@ -44,7 +44,7 @@ public class DepictObject extends AbstractCultureAspect {
                 1,
                 1,
                 new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
-                group,
+                group.getPopulationCenter(),
                 true
         ));
         if (result.isFinished) {
