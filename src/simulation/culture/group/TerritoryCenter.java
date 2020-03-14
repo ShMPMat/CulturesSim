@@ -27,13 +27,20 @@ public class TerritoryCenter {
     private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size() +
             3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
             + tileRelationAspectMapper.apply(t);
+    private double spreadAbility;
 
-    TerritoryCenter(Group group) {
+    TerritoryCenter(Group group, double spreadAbility, Tile tile) {
         this.group = group;
+        this.spreadAbility = spreadAbility;
+        claimTile(tile);
     }
 
     public Territory getTerritory() {
         return territory;
+    }
+
+    public double getSpreadAbility() {
+        return spreadAbility;
     }
 
     public Set<Group> getAllNearGroups() {
@@ -64,7 +71,7 @@ public class TerritoryCenter {
         }
         getTerritory().setCenter(newCenter);
         claimTile(newCenter);//TODO move claim and leave here
-        leaveTiles(getTerritory().getTilesWithPredicate(tile -> !isTileReachable(tile)));
+        leaveTiles(getTerritory().getTiles(tile -> !isTileReachable(tile)));
         return true;
     }
 
@@ -82,7 +89,7 @@ public class TerritoryCenter {
     }
 
     private boolean expand() {
-        if (!testProbability(group.getSpreadability(), Controller.session.random)) {
+        if (!testProbability(spreadAbility, Controller.session.random)) {
             return false;
         }
         if (!group.getPopulationCenter().isMinPassed(territory)) {

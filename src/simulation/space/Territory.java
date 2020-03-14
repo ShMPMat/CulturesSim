@@ -21,7 +21,6 @@ public class Territory {
     public Territory(Collection<Tile> tiles) {
         this.tiles = new ArrayList<>();
         addAll(tiles);
-
     }
 
     public Territory() {
@@ -32,7 +31,7 @@ public class Territory {
         return tiles;
     }
 
-    public List<Tile> getTilesWithPredicate(Predicate<Tile> predicate) {
+    public List<Tile> getTiles(Predicate<Tile> predicate) {
         return tiles.stream().filter(predicate).collect(Collectors.toList());
     }
 
@@ -49,17 +48,17 @@ public class Territory {
         return new ArrayList<>(brink);
     }
 
-    public List<Tile> getBrinkWithCondition(Predicate<Tile> predicate) {
-        List<Tile> collect = getBrinkWithImportance(predicate, tile -> 0).stream().map(Pair::getFirst)
+    public List<Tile> getBrink(Predicate<Tile> predicate) {
+        return getBrink().stream()
+                .filter(predicate)
                 .collect(Collectors.toList());
-        return collect;
     }
 
     public List<Pair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
-        Set<Pair<Tile, Integer>> goodTiles = new HashSet<>();
-        goodTiles.addAll(brink.stream().filter(predicate).map(tile1 -> new Pair<>(tile1, mapper.apply(tile1)))
-                .collect(Collectors.toList()));
-        return new ArrayList<>(goodTiles);
+        return getBrink(predicate).stream()
+                .map(t -> new Pair<>(t, mapper.apply(t)))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Resource> getResourcesWithAspectTag(ResourceTag resourceTag) {
@@ -185,7 +184,8 @@ public class Territory {
     }
 
     public List<Tile> getBorder() {
-        return tiles.stream().filter(tile -> !tile.getNeighbours(t -> !this.contains(t)).isEmpty())
+        return tiles.stream()
+                .filter(tile -> !tile.getNeighbours(t -> !this.contains(t)).isEmpty())
                 .collect(Collectors.toList());
     }
 

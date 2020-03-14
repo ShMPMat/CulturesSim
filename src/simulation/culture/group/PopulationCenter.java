@@ -1,10 +1,18 @@
 package simulation.culture.group;
 
+import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectController;
+import simulation.culture.group.request.Request;
+import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.Territory;
+import simulation.space.resource.ResourcePack;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PopulationCenter {
     private int population;
@@ -12,6 +20,8 @@ public class PopulationCenter {
 
     private int maxPopulation;
     private int minPopulation;
+
+    private ResourcePack turnResources = new ResourcePack();
 
     PopulationCenter(int population, int maxPopulation, int minPopulation) {
         this.population = population;
@@ -71,7 +81,7 @@ public class PopulationCenter {
         }
     }
 
-    void update() {
+    void strataUpdate() {
         strata.forEach(Stratum::update);
     }
 
@@ -98,6 +108,30 @@ public class PopulationCenter {
         population -= amount;
         if (getFreePopulation() < 0) {
             int i = 0; //TODO still happens
+        }
+    }
+
+    void executeRequests(Collection<Request> requests, Group group) {
+        for (Request request : requests) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
+            List<Pair<Stratum, ResourceEvaluator>> pairs = getStrata().stream()
+                    .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
+                    .filter(pair -> pair.getSecond() != null)
+                    .sorted(Comparator.comparingInt(pair -> request.satisfactionLevel(pair.getFirst())))
+                    .collect(Collectors.toList());
+            for (Pair<Stratum, ResourceEvaluator> pair : pairs) {
+                int amount = pair.getSecond().evaluate(turnResources);
+                if (amount >= request.ceiling) {
+                    break;
+                }
+                turnResources.add(pair.getFirst().use(new AspectController(
+                        request.ceiling - amount,
+                        request.floor,
+                        pair.getSecond(),
+                        group,
+                        false
+                )));
+            }
+            request.end(turnResources);
         }
     }
 }

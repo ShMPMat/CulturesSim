@@ -5,13 +5,11 @@ import extra.OutputFunc;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
 
-import kotlin.Pair;
 import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
@@ -25,9 +23,6 @@ import java.util.stream.Collectors;
 
 import static simulation.Controller.*;
 
-/**
- * Entity with Aspects, which develops through time.
- */
 public class Group {
     public State state = State.Live;
     public String name;
@@ -35,9 +30,8 @@ public class Group {
     private int fertility = session.defaultGroupFertility;
     private GroupConglomerate parentGroup;
     private CultureCenter cultureCenter;
-    private TerritoryCenter territoryCenter = new TerritoryCenter(this);
+    private TerritoryCenter territoryCenter;
     private PopulationCenter populationCenter;
-    private double spreadability;
     private Function<Group, Double> hostilityByDifferenceCoef = g -> (Groups.getGroupsDifference(this, g) - 1) / 2;
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
@@ -50,25 +44,17 @@ public class Group {
             Tile tile,
             List<Aspect> aspects,
             GroupMemes memePool,
-            double defaultSpreadAbility
+            double spreadAbility
     ) {
         this.name = name;
         this.parentGroup = parentGroup;
-        this.spreadability = defaultSpreadAbility;
-
-        this.populationCenter = new PopulationCenter(
+        populationCenter = new PopulationCenter(
                 population,
                 session.defaultGroupMaxPopulation,
                 session.defaultGroupMinPopulationPerTile
         );
-
         cultureCenter = new CultureCenter(this, memePool, aspects);
-
-        territoryCenter.claimTile(tile);
-    }
-
-    double getSpreadability() {
-        return spreadability;
+        territoryCenter = new TerritoryCenter(this, spreadAbility, tile);
     }
 
     public CultureCenter getCultureCenter() {
@@ -118,35 +104,12 @@ public class Group {
         getCultureCenter().getEvents().add(event);
     }
 
-    void updateRequests() {
-        if (getTerritoryCenter().getTerritory().isEmpty()) {
-            int i = 0;
-        }
-        getCultureCenter().updateRequests();
-    }
-
-    void executeRequests() {
-        for (Request request : getCultureCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
-            List<Pair<Stratum, ResourceEvaluator>> pairs = populationCenter.getStrata().stream()
-                    .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
-                    .filter(pair -> pair.getSecond() != null)
-                    .sorted(Comparator.comparingInt(pair -> request.satisfactionLevel(pair.getFirst())))
-                    .collect(Collectors.toList());
-            for (Pair<Stratum, ResourceEvaluator> pair : pairs) {
-                int amount = pair.getSecond().evaluate(resourcePack);
-                if (amount >= request.ceiling) {
-                    break;
-                }
-                resourcePack.add(pair.getFirst().use(new AspectController(
-                        request.ceiling - amount,
-                        request.floor,
-                        pair.getSecond(),
-                        this,
-                        false
-                )));
-            }
-            request.end(resourcePack);
-        }
+    void update() {
+        cultureCenter.updateRequests();
+        populationCenter.executeRequests(getCultureCenter().getRequests(), this);
+        getPopulationCenter().strataUpdate();
+        getTerritoryCenter().update();
+        getCultureCenter().update();
     }
 
     void populationUpdate() {
@@ -157,7 +120,7 @@ public class Group {
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
                 || testProbability(session.defaultGroupDiverge, session.random))
                 && parentGroup.subgroups.size() < 10) {
-            List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
+            List<Tile> tiles = getOverallTerritory().getBrink(t -> t.group == null &&
                     parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
             if (tiles.isEmpty()) {
                 return;
@@ -179,14 +142,9 @@ public class Group {
                     tile,
                     aspects,
                     memes,
-                    spreadability
+                    territoryCenter.getSpreadAbility()
             );
             for (Stratum stratum : populationCenter.getStrata()) {
-//                try {
-//                    group.strata.get(group.strata.indexOf(stratum)).useAmount(stratum.getAmount() / 2);//TODO commended, don't think i need it
-//                } catch (Exception e) {
-//                    int i = 0;
-//                }
                 stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
             }
             group.cultureCenter.initializeFromCenter(cultureCenter);//TODO maybe put in constructor somehow
@@ -198,7 +156,7 @@ public class Group {
         Map<Group, Relation> relations = cultureCenter.relations;
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> groups = getOverallTerritory()
-                    .getBrinkWithCondition(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
+                    .getBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
                     .stream().map(tile -> tile.group).distinct().collect(Collectors.toList());
             for (Group group : groups) {
                 if (!relations.containsKey(group)) {
@@ -229,7 +187,6 @@ public class Group {
 
     public void finishUpdate() {
         getCultureCenter().finishUpdate();
-        resourcePack.disbandOnTile(territoryCenter.getDisbandTile());
     }
 
     void starve(double fraction) {

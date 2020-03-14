@@ -97,7 +97,7 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
     while (sw) {
         sw = false
         for (territory in tectonicPlates) {
-            val brink = territory.getBrinkWithCondition { !usedTiles.contains(it) }
+            val brink = territory.getBrink { !usedTiles.contains(it) }
             if (brink.isEmpty()) {
                 continue
             }

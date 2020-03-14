@@ -156,11 +156,9 @@ public class GroupConglomerate {
         if (state == State.Dead) {
             return;
         }
-        subgroups.removeIf(group -> group.state == Group.State.Dead);//TODO make update method in the Group
+        subgroups.removeIf(group -> group.state == Group.State.Dead);
+        subgroups.forEach(Group::update);
         int size = subgroups.size();
-        subgroups.forEach(Group::updateRequests);
-        subgroups.forEach(Group::executeRequests);
-        subgroups.forEach(g -> g.getPopulationCenter().update());
         for (int i = 0; i < size; i++) {
             subgroups.get(i).populationUpdate();
         }
@@ -168,8 +166,6 @@ public class GroupConglomerate {
         if (state == State.Dead) {
             return;
         }
-        subgroups.forEach(group -> group.getTerritoryCenter().update());
-        subgroups.forEach(group -> group.getCultureCenter().update());
         for (int i = 0; i < subgroups.size(); i++) {
             Group subgroup = subgroups.get(i);
             if (subgroup.diverge()) {
