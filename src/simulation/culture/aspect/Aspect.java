@@ -160,14 +160,18 @@ public class Aspect {
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         boolean isFinished;//TODO put dependency resources only in node; otherwise they may merge with phony
         ResourcePack meaningfulPack = new ResourcePack();
-        controller.setCeiling(controller.getGroup().changeStratumAmountByAspect(this, controller.getCeiling()));
+        controller.setCeiling(controller.getGroup().getPopulationCenter().changeStratumAmountByAspect(
+                this,
+                controller.getCeiling()
+        ));
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         for (Map.Entry<ResourceTag, Set<Dependency>> entry : getDependencies().entrySet()) {
             Set<Dependency> dependency = entry.getValue();
             ResourcePack usedForDependency = new ResourcePack();
             isFinished = false;
             ResourcePack _rp = new ResourcePack();
-            ResourcePack provided = controller.getGroup().getStratumByAspect(this).getInstrumentByTag(entry.getKey());
+            ResourcePack provided = controller.getGroup().getPopulationCenter().getStratumByAspect(this)
+                    .getInstrumentByTag(entry.getKey());
             if (provided != null) {
                 _rp.add(provided);
             }

@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.min;
 import static simulation.Controller.*;
 
 /**
@@ -32,16 +31,13 @@ import static simulation.Controller.*;
 public class Group {
     public State state = State.Live;
     public String name;
-    public int population;
 
-    private int maxPopulation = session.defaultGroupMaxPopulation;
     private int fertility = session.defaultGroupFertility;
-    private int minPopulationPerTile = session.defaultGroupMinPopulationPerTile;
-    private List<Stratum> strata = new ArrayList<>();
     private GroupConglomerate parentGroup;
     private CultureCenter cultureCenter;
-    private double spreadability;
     private TerritoryCenter territoryCenter = new TerritoryCenter(this);
+    private PopulationCenter populationCenter;
+    private double spreadability;
     private Function<Group, Double> hostilityByDifferenceCoef = g -> (Groups.getGroupsDifference(this, g) - 1) / 2;
     ResourcePack resourcePack = new ResourcePack();
     public ResourcePack cherishedResources = new ResourcePack();
@@ -58,8 +54,13 @@ public class Group {
     ) {
         this.name = name;
         this.parentGroup = parentGroup;
-        this.population = population;
         this.spreadability = defaultSpreadAbility;
+
+        this.populationCenter = new PopulationCenter(
+                population,
+                session.defaultGroupMaxPopulation,
+                session.defaultGroupMinPopulationPerTile
+        );
 
         cultureCenter = new CultureCenter(this, memePool, aspects);
 
@@ -70,10 +71,6 @@ public class Group {
         return spreadability;
     }
 
-    int getMinPopulationPerTile() {
-        return minPopulationPerTile;
-    }
-
     public CultureCenter getCultureCenter() {
         return cultureCenter;
     }
@@ -82,28 +79,16 @@ public class Group {
         return territoryCenter;
     }
 
+    public PopulationCenter getPopulationCenter() {
+        return populationCenter;
+    }
+
     int getFertility() {
         return fertility;
     }
 
     public Territory getTerritory() {
         return territoryCenter.getTerritory();
-    }
-
-    List<Stratum> getStrata() {
-        return strata;
-    }
-
-    public Stratum getStratumByAspect(Aspect aspect) {
-        return strata.stream().filter(stratum -> stratum.containsAspect(aspect)).findFirst().orElse(null);
-    }
-
-    int getMaxPopulation() {
-        return getTerritoryCenter().getTerritory().size() * maxPopulation;
-    }
-
-    public int getFreePopulation() {
-        return population - strata.stream().reduce(0, (x, y) -> x + y.getAmount(), Integer::sum);
     }
 
     public Territory getOverallTerritory() {
@@ -120,7 +105,7 @@ public class Group {
 
     private void die() {
         state = State.Dead;
-        population = 0;
+        populationCenter.die();
         territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : territoryCenter.getAllNearGroups()) {
@@ -133,19 +118,6 @@ public class Group {
         getCultureCenter().getEvents().add(event);
     }
 
-    public int changeStratumAmountByAspect(Aspect aspect, int amount) {
-        Stratum stratum = getStratumByAspect(aspect);
-        try {
-            if (stratum.getAmount() < amount) {
-                amount = min(amount, getFreePopulation());
-            }
-            stratum.useAmount(amount);
-            return amount;
-        } catch (NullPointerException e) {
-            throw new RuntimeException("No stratum for Aspect");//TODOit happens
-        }
-    }
-
     void updateRequests() {
         if (getTerritoryCenter().getTerritory().isEmpty()) {
             int i = 0;
@@ -155,7 +127,7 @@ public class Group {
 
     void executeRequests() {
         for (Request request : getCultureCenter().getRequests()) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
-            List<Pair<Stratum, ResourceEvaluator>> pairs = strata.stream()
+            List<Pair<Stratum, ResourceEvaluator>> pairs = populationCenter.getStrata().stream()
                     .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
                     .filter(pair -> pair.getSecond() != null)
                     .sorted(Comparator.comparingInt(pair -> request.satisfactionLevel(pair.getFirst())))
@@ -177,16 +149,13 @@ public class Group {
         }
     }
 
-    void strataUpdate() {
-        strata.forEach(Stratum::update);
-    }
-
     void populationUpdate() {
-        if (population == 0) {
+        if (populationCenter.getPopulation() == 0) {
             die();
             return;
         }
-        if ((getMaxPopulation() == population || testProbability(session.defaultGroupDiverge, session.random))
+        if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
+                || testProbability(session.defaultGroupDiverge, session.random))
                 && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getBrinkWithCondition(t -> t.group == null &&
                     parentGroup.getClosestInnerGroupDistance(t) > 2 && t.canSettle(this));
@@ -196,7 +165,7 @@ public class Group {
             if (!session.groupMultiplication) {
                 return;
             }
-            population = population / 2;
+            populationCenter.setPopulation(populationCenter.getPopulation() / 2);
             Tile tile = randomElement(tiles, session.random);
             List<Aspect> aspects = cultureCenter.getAspectCenter().getAspectPool().getAll().stream()
                     .map(a -> a.copy(a.getDependencies(), this))
@@ -206,22 +175,19 @@ public class Group {
             Group group = new Group(
                     parentGroup,
                     parentGroup.name + "_" + parentGroup.subgroups.size(),
-                    population,
+                    populationCenter.getPopulation(),
                     tile,
                     aspects,
                     memes,
                     spreadability
             );
-            for (Stratum stratum : strata) {
-                try {
-                    group.strata.get(group.strata.indexOf(stratum)).useAmount(stratum.getAmount() / 2);
-                } catch (Exception e) {
-                    int i = 0;
-                }
+            for (Stratum stratum : populationCenter.getStrata()) {
+//                try {
+//                    group.strata.get(group.strata.indexOf(stratum)).useAmount(stratum.getAmount() / 2);//TODO commended, don't think i need it
+//                } catch (Exception e) {
+//                    int i = 0;
+//                }
                 stratum.useAmount(stratum.getAmount() - (stratum.getAmount() / 2));
-            }
-            if (group.getTerritoryCenter().getTerritory().isEmpty()) {
-                int i = 0;
             }
             group.cultureCenter.initializeFromCenter(cultureCenter);//TODO maybe put in constructor somehow
             parentGroup.addGroup(group);
@@ -267,35 +233,13 @@ public class Group {
     }
 
     void starve(double fraction) {
-        decreasePopulation((population / 10) * (1 - fraction) + 1);
+        populationCenter.decreasePopulation((int) ((populationCenter.getPopulation() / 10) * (1 - fraction) + 1));
         getCultureCenter().addAspiration(new Aspiration(10, new ResourceTag("food")));
     }
 
     void freeze(double fraction) {
-        decreasePopulation((population / 10) * (1 - fraction) + 1);
+        populationCenter.decreasePopulation((int) ((populationCenter.getPopulation() / 10) * (1 - fraction) + 1));
         getCultureCenter().addAspiration(new Aspiration(10, new ResourceTag("warmth")));
-    }
-
-    private void decreasePopulation(double amount) {
-        decreasePopulation((int) amount);
-    }
-
-    private void decreasePopulation(int amount) {
-        if (getFreePopulation() < 0) {
-            int i = 0; //TODO still happens
-        }
-        amount = min(population, amount);
-        int delta = amount - getFreePopulation();
-        if (delta > 0) {
-            for (Stratum stratum : strata) {
-                int part = (int) min(amount * (((double) stratum.getAmount()) / population) + 1, stratum.getAmount());
-                stratum.freeAmount(part);
-            }
-        }
-        population -= amount;
-        if (getFreePopulation() < 0) {
-            int i = 0; //TODO still happens
-        }
     }
 
     boolean diverge() {
@@ -361,7 +305,7 @@ public class Group {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
-                ", population=" + population + ", aspects:\n");
+                ", population=" + populationCenter.getPopulation() + ", aspects:\n");
         for (Aspect aspect : cultureCenter.getAspectCenter().getAspectPool().getAll()) {
             stringBuilder.append(aspect).append("\n\n");
         }
@@ -385,7 +329,7 @@ public class Group {
         stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n\n");
         stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
                 .append("\n\n");
-        for (Stratum stratum : strata) {
+        for (Stratum stratum : populationCenter.getStrata()) {
             if (stratum.getAmount() != 0) {
                 stringBuilder.append(stratum).append("\n");
             }

@@ -92,20 +92,19 @@ public class CultureCenter {
 
     void updateRequests() {
         requests = new ArrayList<>();
-        int foodFloor = group.population / group.getFertility() + 1;
+        int foodFloor = group.getPopulationCenter().getPopulation() / group.getFertility() + 1;
         BiFunction<Pair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
             pair.getFirst().starve(percent);
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
         BiFunction<Pair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
-            pair.getFirst().population += ((int) (percent * pair.getFirst().population)) / 10 + 1;
-            pair.getFirst().population = Math.min(pair.getFirst().population, group.getMaxPopulation());
+            pair.getFirst().getPopulationCenter().goodConditionsGrow(percent);
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
         requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
-                foodFloor + group.population / 100 + 1, foodPenalty, foodReward));
+                foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, foodPenalty, foodReward));
 
         if (group.getTerritory().getMinTemperature() < 0) {
             BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
@@ -113,8 +112,14 @@ public class CultureCenter {
                 return null;
             };
             BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> null;
-            requests.add(new TagRequest(group, new ResourceTag("warmth"), group.population,
-                    group.population, warmthPenalty, warmthReward));
+            requests.add(new TagRequest(
+                    group,
+                    new ResourceTag("warmth"),
+                    group.getPopulationCenter().getPopulation(),
+                    group.getPopulationCenter().getPopulation(),
+                    warmthPenalty,
+                    warmthReward
+            ));
         }
 
         cultureAspectCenter.getAspectPool().getAspectRequests().forEach(this::addRequest);

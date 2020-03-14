@@ -156,11 +156,11 @@ public class GroupConglomerate {
         if (state == State.Dead) {
             return;
         }
-        subgroups.removeIf(group -> group.state == Group.State.Dead);
+        subgroups.removeIf(group -> group.state == Group.State.Dead);//TODO make update method in the Group
         int size = subgroups.size();
         subgroups.forEach(Group::updateRequests);
         subgroups.forEach(Group::executeRequests);
-        subgroups.forEach(Group::strataUpdate);
+        subgroups.forEach(g -> g.getPopulationCenter().update());
         for (int i = 0; i < size; i++) {
             subgroups.get(i).populationUpdate();
         }
@@ -189,7 +189,7 @@ public class GroupConglomerate {
     private void computePopulation() {
         population = 0;
         for (Group subgroup : subgroups) {
-            population += subgroup.population;
+            population += subgroup.getPopulationCenter().getPopulation();
         }
     }
 
@@ -215,7 +215,7 @@ public class GroupConglomerate {
     }
 
     void removeGroup(Group group) {
-        population -= group.population;
+        population -= group.getPopulationCenter().getPopulation();
         if (!subgroups.remove(group)) {
             throw new RuntimeException("Trying to remove non-child subgroup " + group.name + " from Group " + name);
         }

@@ -85,11 +85,11 @@ public class TerritoryCenter {
         if (!testProbability(group.getSpreadability(), Controller.session.random)) {
             return false;
         }
-        if (group.population <= group.getMinPopulationPerTile() * territory.size()) {
-            group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tilePotentialMapper));
-            if (group.population <= group.getMinPopulationPerTile() * territory.size()) {
-                group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(new ArrayList<>(), tilePotentialMapper));
-            }
+        if (!group.getPopulationCenter().isMinPassed(territory)) {
+            group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(
+                    new ArrayList<>(),
+                    tilePotentialMapper
+            ));
         }
 
         claimTile(territory.getMostUsefulTile(newTile -> newTile.group == null && newTile.canSettle(group) &&
