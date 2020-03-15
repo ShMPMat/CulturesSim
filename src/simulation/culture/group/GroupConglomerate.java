@@ -62,6 +62,7 @@ public class GroupConglomerate {
                             session.defaultGroupMaxPopulation,
                             session.defaultGroupMinPopulationPerTile
                     ),
+                    new RelationCenter((t, g) -> (Groups.getGroupsDifference(t, g) - 1) / 2),
                     getCenter(),
                     new ArrayList<>(),
                     new GroupMemes(),

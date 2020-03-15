@@ -16,18 +16,10 @@ import static shmp.random.RandomProbabilitiesKt.*;
 public class TerritoryCenter {
     private Territory territory = new Territory();
     private Group group;
-    private Function<Tile, Integer> tileRelationAspectMapper = t -> {//TODO move functions somewhere else
-        int accumulator = 0;
-        for (Relation relation : group.getRelationCenter().getRelations()) {
-            if (relation.getPositive() < 0) {
-                accumulator += relation.getPositive() * 10000 / relation.other.getTerritoryCenter().getTerritory().getCenter().getDistance(t);
-            }
-        }
-        return accumulator;
-    };
-    private Function<Tile, Integer> tilePotentialMapper = t -> t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size() +
-            3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
-            + tileRelationAspectMapper.apply(t);
+    private Function<Tile, Integer> tilePotentialMapper = t ->
+            t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size()
+                    + 3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
+                    + group.getRelationCenter().evaluateTile(t);
     private double spreadAbility;
 
     TerritoryCenter(Group group, double spreadAbility, Tile tile) {
@@ -86,8 +78,10 @@ public class TerritoryCenter {
     }
 
     void shrink() {
+        if (territory.size() <= 1) {
+            return;
+        }
         group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(
-                new ArrayList<>(),
                 tilePotentialMapper
         ));
     }
@@ -132,9 +126,9 @@ public class TerritoryCenter {
         return tile.getType() != Tile.Type.Water && tile.getType() != Tile.Type.Mountain
                 || (tile.getType() == Tile.Type.Mountain
                 && !group.getCultureCenter().getAspectCenter().getAspectPool().filter(a ->
-                        a.getTags().stream()
-                                .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))
-                        .isEmpty());
+                a.getTags().stream()
+                        .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))
+                .isEmpty());
     }
 
     public boolean canSettle(Tile tile, Predicate<Tile> additionalCondition) {

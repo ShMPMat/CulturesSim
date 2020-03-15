@@ -174,13 +174,8 @@ public class Territory {
         });
     }
 
-    public Tile excludeMostUselessTileExcept(Collection<Tile> exceptions, Function<Tile, Integer> mapper) {
-        if (size() <= 1) {
-            return null;
-        }
-        Set<Tile> result = new HashSet<>(tiles);
-        result.removeAll(exceptions);
-        Optional<Tile> exclude = result.stream().min(Comparator.comparingInt(mapper::apply));
+    public Tile excludeMostUselessTileExcept(Function<Tile, Integer> mapper) {
+        Optional<Tile> exclude = tiles.stream().min(Comparator.comparingInt(mapper::apply));
         if (exclude.isPresent()) {
             removeTile(exclude.get());
             return exclude.get();

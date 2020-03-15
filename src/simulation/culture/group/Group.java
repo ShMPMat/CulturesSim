@@ -40,6 +40,7 @@ public class Group {
             GroupConglomerate parentGroup,
             String name,
             PopulationCenter populationCenter,
+            RelationCenter relationCenter,
             Tile tile,
             List<Aspect> aspects,
             GroupMemes memePool,
@@ -50,7 +51,7 @@ public class Group {
         this.populationCenter = populationCenter;
         cultureCenter = new CultureCenter(this, memePool, aspects);
         territoryCenter = new TerritoryCenter(this, spreadAbility, tile);
-        this.relationCenter = new RelationCenter(g -> (Groups.getGroupsDifference(this, g) - 1) / 2);
+        this.relationCenter = relationCenter;
     }
 
     public CultureCenter getCultureCenter() {
@@ -145,6 +146,7 @@ public class Group {
                     parentGroup,
                     parentGroup.name + "_" + parentGroup.subgroups.size(),
                     populationCenter.getPart(0.5),
+                    new RelationCenter(relationCenter.getHostilityCalculator$CulturesSimulation()),
                     tile,
                     aspects,
                     memes,
@@ -156,7 +158,7 @@ public class Group {
 
     void intergroupUpdate() {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
-            relationCenter.updateNewConnections(
+            relationCenter.update(
                     getOverallTerritory()
                             .getOuterBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
                             .stream()
@@ -165,7 +167,6 @@ public class Group {
                             .collect(Collectors.toList()),
                     this
             );
-            relationCenter.updateRelations();
         }
         cultureCenter.intergroupUpdate();
     }
