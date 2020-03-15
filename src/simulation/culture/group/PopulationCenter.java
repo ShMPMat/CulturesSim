@@ -138,7 +138,7 @@ public class PopulationCenter {
     }
 
     PopulationCenter getPart(double fraction) {
-        int populationPart = (int) fraction * population;
+        int populationPart = (int) (fraction * population);
         population -= populationPart;
         PopulationCenter populationCenter = new PopulationCenter(
                 populationPart,

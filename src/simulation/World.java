@@ -79,7 +79,7 @@ public class World {
     private Tile getTileForGroup() {
         while (true) {
             Tile tile = SpaceProbabilityFuncs.randomTile(session.world.map);
-            if (tile.group == null && tile.canSettle()) {
+            if (tile.getTagPool().getByType("Group").isEmpty() && tile.canSettle()) {//TODO remove hardcoded "Group"
                 return tile;
             }
         }

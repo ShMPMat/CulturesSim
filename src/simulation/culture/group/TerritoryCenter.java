@@ -9,6 +9,7 @@ import simulation.space.Tile;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static shmp.random.RandomProbabilitiesKt.*;
 
@@ -17,7 +18,7 @@ public class TerritoryCenter {
     private Group group;
     private GroupTileTag tileTag;
     private Function<Tile, Integer> tilePotentialMapper = t ->
-            t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size()
+            t.getNeighbours(tile1 -> tile1.getTagPool().contains(tileTag)).size()
                     + 3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
                     + group.getRelationCenter().evaluateTile(t);
     private double spreadAbility;
@@ -38,10 +39,10 @@ public class TerritoryCenter {
     }
 
     public Set<Group> getAllNearGroups(Group exception) {
-        Set<Group> groups = new HashSet<>();
-        for (Tile tile : getTerritory().getTiles()) {
-            tile.getNeighbours(t -> t.group != null).forEach(t -> groups.add(t.group));
-        }
+        Set<Group> groups = territory.getOuterBrink().stream()
+                .flatMap(t -> t.getTagPool().getByType(tileTag.getType()).stream())
+                .map(t -> ((GroupTileTag) t).getGroup())
+                .collect(Collectors.toSet());
         groups.remove(exception);
         return groups;
     }
@@ -58,7 +59,9 @@ public class TerritoryCenter {
     }
 
     private Tile getMigrationTile() {
-        return getTerritory().getCenter().getNeighbours(t -> canSettle(t, tile -> tile.group == null)).stream()
+        return getTerritory().getCenter()
+                .getNeighbours(tile -> canSettle(tile, t -> t.getTagPool().getByType(tileTag.getType()).isEmpty()))
+                .stream()
                 .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile)))
                 .orElse(null);
     }
@@ -72,7 +75,7 @@ public class TerritoryCenter {
             return false;
         }
         claimTile(territory.getMostUsefulTileOnOuterBrink(
-                t -> canSettle(t, t2 -> t2.group == null && isTileReachable(t2)),
+                t -> canSettle(t, t2 -> t2.getTagPool().getByType(tileTag.getType()).isEmpty() && isTileReachable(t2)),
                 tilePotentialMapper
         ));
         return true;
@@ -93,11 +96,11 @@ public class TerritoryCenter {
         if (tile == null) {
             return;
         }
-        if (tile.group != group && tile.group != null) {
+        if (!tile.getTagPool().contains(tileTag) && !tile.getTagPool().getByType(tileTag.getType()).isEmpty()) {
             throw new RuntimeException();
         }
         group.getParentGroup().claimTile(tile);
-        tile.group = group;
+        tile.getTagPool().add(tileTag);
         getTerritory().add(tile);
         group.addEvent(new Event(Event.Type.TileAcquisition, "Group " + group.name + " claimed tile " + tile.x + " " +
                 tile.y, "group", this, "tile", tile));
@@ -105,7 +108,7 @@ public class TerritoryCenter {
 
     void die() {
         for (Tile tile : getTerritory().getTiles()) {
-            tile.group = null;
+            tile.getTagPool().remove(tileTag);
         }
     }
 
@@ -113,7 +116,7 @@ public class TerritoryCenter {
         if (tile == null) {
             return;
         }
-        tile.group = null;
+        tile.getTagPool().remove(tileTag);
         getTerritory().removeTile(tile);
         group.getParentGroup().removeTile(tile);
     }

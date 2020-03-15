@@ -14,7 +14,6 @@ import static simulation.Controller.session;
 public class Tile {
     public int x, y;
     private MutableTileTagPool tagPool = new MutableTileTagPool();
-    public Group group;
     private Type type;
     private TectonicPlate plate;
     private List<Resource> resources = new ArrayList<>();//TODO make it set
@@ -184,9 +183,6 @@ public class Tile {
             return;
         }
         this.type = type;
-//        if (level != 0) {
-//            return;
-//        }
         if (!updateLevel) {
             return;
         }
@@ -218,11 +214,6 @@ public class Tile {
         }
     }
 
-    /**
-     * Adds Resource to the Resources available on this Tile.
-     *
-     * @param resource Resource which will be added.
-     */
     private void addResource(Resource resource) {
         if (resource.getAmount() == 0) {
             return;
@@ -234,19 +225,6 @@ public class Tile {
             }
         }
         resources.add(resource);
-    }
-
-    /**
-     * Removes resource from this Tile if it is present.
-     *
-     * @param resource resource which will be deleted.
-     */
-    public void removeResource(Resource resource) {
-        resources.removeIf(res -> res.fullEquals(resource));
-    }
-
-    public void removeExactResource(Resource resource) {
-        resources.removeIf(res -> res == resource);
     }
 
     /**
@@ -279,9 +257,6 @@ public class Tile {
         return getType() != Type.Water && getType() != Type.Mountain;
     }//TODO move it otta here
 
-    /**
-     * Starts update for this Tile.
-     */
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
         _newWind = new Wind();
         checkIce();
@@ -433,9 +408,9 @@ public class Tile {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Tile " + x + " " + y +
-                (group == null ? "" : ", group=" + group.name) + ", type=" + getType() + ", temperature=" + temperature
-                + ", level=" + level + ", resource:\n");
+        StringBuilder stringBuilder = new StringBuilder(String.format(
+                "Tile %d %d, type=%s, temperature=%d, level=%d, resources:\n", x, y, getType(), temperature, level
+                ));
         for (Resource resource : resources) {
             stringBuilder.append(resource).append("\n");
         }

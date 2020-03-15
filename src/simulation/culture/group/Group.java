@@ -128,7 +128,7 @@ public class Group {
                 && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getOuterBrink(t -> territoryCenter.canSettle(
                     t,
-                    t2 -> t2.group == null && parentGroup.getClosestInnerGroupDistance(t2) > 2
+                    t2 -> t2.getTagPool().getByType("Group").isEmpty() && parentGroup.getClosestInnerGroupDistance(t2) > 2//TODO dont like territory checks in Group
             ));
             if (tiles.isEmpty()) {
                 return null;
@@ -160,10 +160,12 @@ public class Group {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             relationCenter.update(
                     getOverallTerritory()
-                            .getOuterBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
+                            .getOuterBrink()//TODO dont like territory checks in Group
                             .stream()
-                            .map(tile -> tile.group)
+                            .flatMap(t -> t.getTagPool().getByType("Group").stream())
+                            .map(t -> ((GroupTileTag) t).getGroup())
                             .distinct()
+                            .filter(g -> g.parentGroup != parentGroup)
                             .collect(Collectors.toList()),
                     this
             );
@@ -205,9 +207,8 @@ public class Group {
         while (!queue.isEmpty()) {
             Group cur = queue.poll();
             cluster.add(cur);
-            queue.addAll(cur.getTerritoryCenter().getTerritory().getOuterBrink().stream()
-                    .filter(t -> t.group != null && t.group.parentGroup == parentGroup && !cluster.contains(t.group))
-                    .map(tile -> tile.group)
+            queue.addAll(cur.getTerritoryCenter().getAllNearGroups(cur).stream()
+                    .filter(g -> g.parentGroup == parentGroup)
                     .collect(Collectors.toList()));
         }
         if (parentGroup.subgroups.size() == cluster.size()) {

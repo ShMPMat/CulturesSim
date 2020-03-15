@@ -10,6 +10,7 @@ import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.group.Group;
 import simulation.culture.group.GroupConglomerate;
+import simulation.culture.group.GroupTileTag;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
@@ -345,7 +346,7 @@ public class TextVisualizer implements Visualizer {
                             token = "\033[103m";
                             break;
                     }
-                    if (tile.group == null) {
+                    if (tile.getTagPool().getByType("Group").isEmpty()) {//TODO remove hardcoded "Group"
                         switch (tile.getType()) {
                             case Water:
                             case Ice:
@@ -370,11 +371,12 @@ public class TextVisualizer implements Visualizer {
                                 token += " ";
                         }
                     } else {
-                        if (tile.group.state == Group.State.Dead) {
+                        Group group = ((GroupTileTag) tile.getTagPool().getByType("Group").get(0)).getGroup();
+                        if (group.state == Group.State.Dead) {
                             token += "\033[33m☠";
                         } else {
-                            token += (lastClaimedTiles.get(tile.group.getParentGroup().name).contains(tile) ? "\033[31m" :
-                                    "\033[96m\033[1m") + groupSymbols.get(tile.group.getParentGroup().name);
+                            token += (lastClaimedTiles.get(group.getParentGroup().name).contains(tile) ? "\033[31m" :
+                                    "\033[96m\033[1m") + groupSymbols.get(group.getParentGroup().name);
                         }
                     }
                 }

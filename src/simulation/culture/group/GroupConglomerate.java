@@ -158,7 +158,7 @@ public class GroupConglomerate {
         for (int i = 0; i < size; i++) {
             Group newGroup = subgroups.get(i).populationUpdate();
             if (newGroup != null) {
-                subgroups.add(newGroup);
+                addGroup(newGroup);
             }
         }
         updatePopulation();
