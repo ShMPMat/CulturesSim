@@ -225,7 +225,7 @@ public class Group {
                 getTerritoryCenter().getTerritory().getCenter()
         );
         for (Group group : groups) {
-            parentGroup.removeGroup(group);
+            group.parentGroup.removeGroup(group);
             conglomerate.addGroup(group);
         }
         session.world.addGroupConglomerate(conglomerate);
