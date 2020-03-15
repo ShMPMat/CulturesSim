@@ -160,7 +160,6 @@ public class Territory {
         if (tile == null) {
             return;
         }
-        tile.group = null;
         if (!tiles.remove(tile)) {
             return;
         }
@@ -174,16 +173,12 @@ public class Territory {
         });
     }
 
-    public Tile excludeMostUselessTileExcept(Function<Tile, Integer> mapper) {
+    public Tile getMostUselessTile(Function<Tile, Integer> mapper) {
         Optional<Tile> exclude = tiles.stream().min(Comparator.comparingInt(mapper::apply));
-        if (exclude.isPresent()) {
-            removeTile(exclude.get());
-            return exclude.get();
-        }
-        return null;
+        return exclude.orElse(null);
     }
 
-    public Tile getMostUsefulTile(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
+    public Tile getMostUsefulTileOnOuterBrink(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
         Optional<Pair<Tile, Integer>> _o = getOuterBrink(predicate).stream()
                 .map(t -> new Pair<>(t, mapper.apply(t)))
                 .max(Comparator.comparingInt(Pair::getSecond));

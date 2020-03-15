@@ -3,7 +3,6 @@ package simulation.culture.group;
 import extra.SpaceProbabilityFuncs;
 import simulation.Controller;
 import simulation.Event;
-import simulation.culture.group.intergroup.Relation;
 import simulation.space.Territory;
 import simulation.space.Tile;
 
@@ -70,7 +69,7 @@ public class TerritoryCenter {
         if (!testProbability(spreadAbility, Controller.session.random)) {
             return false;
         }
-        claimTile(territory.getMostUsefulTile(
+        claimTile(territory.getMostUsefulTileOnOuterBrink(
                 t -> canSettle(t, t2 -> t2.group == null && isTileReachable(t2)),
                 tilePotentialMapper
         ));
@@ -81,9 +80,7 @@ public class TerritoryCenter {
         if (territory.size() <= 1) {
             return;
         }
-        group.getParentGroup().getTerritory().removeTile(territory.excludeMostUselessTileExcept(
-                tilePotentialMapper
-        ));
+        leaveTile(territory.getMostUselessTile(tilePotentialMapper));
     }
 
     private boolean isTileReachable(Tile tile) {
@@ -114,6 +111,7 @@ public class TerritoryCenter {
         if (tile == null) {
             return;
         }
+        tile.group = null;
         getTerritory().removeTile(tile);
         group.getParentGroup().removeTile(tile);
     }
