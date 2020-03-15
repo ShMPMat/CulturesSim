@@ -209,6 +209,7 @@ public class Group {
             cluster.add(cur);
             queue.addAll(cur.getTerritoryCenter().getAllNearGroups(cur).stream()
                     .filter(g -> g.parentGroup == parentGroup)
+                    .filter(g -> !cluster.contains(g))
                     .collect(Collectors.toList()));
         }
         if (parentGroup.subgroups.size() == cluster.size()) {
