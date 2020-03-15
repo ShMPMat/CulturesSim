@@ -15,6 +15,7 @@ import static shmp.random.RandomProbabilitiesKt.*;
 public class TerritoryCenter {
     private Territory territory = new Territory();
     private Group group;
+    private GroupTileTag tileTag;
     private Function<Tile, Integer> tilePotentialMapper = t ->
             t.getNeighbours(tile1 -> this.group.equals(tile1.group)).size()
                     + 3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
@@ -23,6 +24,7 @@ public class TerritoryCenter {
 
     TerritoryCenter(Group group, double spreadAbility, Tile tile) {
         this.group = group;
+        this.tileTag = new GroupTileTag(group);
         this.spreadAbility = spreadAbility;
         claimTile(tile);
     }

@@ -13,12 +13,10 @@ import static simulation.Controller.session;
 
 public class Tile {
     public int x, y;
+    private MutableTileTagPool tagPool = new MutableTileTagPool();
     public Group group;
     private Type type;
     private TectonicPlate plate;
-    /**
-     * Resources which are located on this Tile.
-     */
     private List<Resource> resources = new ArrayList<>();//TODO make it set
     /**
      * Resources which were added on this Tile during this turn. They are
@@ -33,13 +31,7 @@ public class Tile {
      * Lowest level of this Tile which corresponds to the ground level.
      */
     private int secondLevel;
-    /**
-     * Temperature for this Tile.
-     */
     private int temperature;
-    /**
-     * Wind which is present on this Tile.
-     */
     private List<Tile> neighbours = null;
     private Wind wind;
     private Wind _newWind;
@@ -58,6 +50,10 @@ public class Tile {
             throw new SpaceError("Neighbours are already set");
         }
         this.neighbours = neighbours;
+    }
+
+    public MutableTileTagPool getTagPool() {
+        return tagPool;
     }
 
     public List<Resource> getResources() {
