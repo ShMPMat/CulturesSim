@@ -86,7 +86,7 @@ public class TectonicPlate extends Territory {
         if (affectedTiles != null) {
             return affectedTiles;
         }
-        List<Tile> startTiles = getBrink(tile -> {
+        List<Tile> startTiles = getOuterBrink(tile -> {
             List<Tile> affectedTiles = new ArrayList<>();
             switch (direction) {
                 case U:

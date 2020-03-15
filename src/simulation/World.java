@@ -134,8 +134,8 @@ public class World {
         events.add(event);
     }
 
-    public void addGroup(GroupConglomerate group) {
-        groups.add(group);
+    public void addGroupConglomerate(GroupConglomerate groupConglomerate) {
+        groups.add(groupConglomerate);
     }
 
     /**

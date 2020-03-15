@@ -1,16 +1,12 @@
 package simulation.culture.group.resource_behaviour;
 
 import extra.SpaceProbabilityFuncs;
-import shmp.random.RandomCollectionsKt;
-import simulation.Controller;
 import simulation.space.Territory;
 import simulation.space.Tile;
 import simulation.space.resource.ResourcePack;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static shmp.random.RandomCollectionsKt.*;
 import static simulation.Controller.*;
@@ -53,15 +49,14 @@ public class PlacementStrategy {
             case OneTile:
                 return specialTiles.get(0);
             case Border:
-                List<Tile> border = controlledTerritory.getBorder();
-                tiles = border.stream().filter(tile ->
-                        !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
-                return tiles.isEmpty()
+                List<Tile> border = controlledTerritory.getInnerBrink();
+                List<Tile> unfinishedBorder = controlledTerritory
+                        .getInnerBrink(t -> !t.getResources().containsAll(resourcePack.resources));
+                return unfinishedBorder.isEmpty()
                         ? randomElement(border, session.random)
-                        : randomElement(tiles, session.random);
+                        : randomElement(unfinishedBorder, session.random);
             case Homogeneous:
-                tiles = controlledTerritory.getTiles().stream().filter(tile ->
-                        !tile.getResources().containsAll(resourcePack.resources)).collect(Collectors.toList());
+                tiles = controlledTerritory.getTiles(t -> !t.getResources().containsAll(resourcePack.resources));
                 return tiles.isEmpty()
                         ? SpaceProbabilityFuncs.randomTile(controlledTerritory)
                         : randomElement(tiles, session.random);

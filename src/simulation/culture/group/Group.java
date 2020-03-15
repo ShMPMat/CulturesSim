@@ -125,7 +125,7 @@ public class Group {
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
                 || testProbability(session.defaultGroupDiverge, session.random))
                 && parentGroup.subgroups.size() < 10) {
-            List<Tile> tiles = getOverallTerritory().getBrink(t -> territoryCenter.canSettle(
+            List<Tile> tiles = getOverallTerritory().getOuterBrink(t -> territoryCenter.canSettle(
                     t,
                     t2 -> t2.group == null && parentGroup.getClosestInnerGroupDistance(t2) > 2
             ));
@@ -158,8 +158,11 @@ public class Group {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             relationCenter.updateNewConnections(
                     getOverallTerritory()
-                            .getBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
-                            .stream().map(tile -> tile.group).distinct().collect(Collectors.toList()),
+                            .getOuterBrink(tile -> tile.group != null && tile.group.parentGroup != parentGroup)
+                            .stream()
+                            .map(tile -> tile.group)
+                            .distinct()
+                            .collect(Collectors.toList()),
                     this
             );
             relationCenter.updateRelations();
@@ -201,7 +204,7 @@ public class Group {
         while (!queue.isEmpty()) {
             Group cur = queue.poll();
             cluster.add(cur);
-            queue.addAll(cur.getTerritoryCenter().getTerritory().getBorder().stream()
+            queue.addAll(cur.getTerritoryCenter().getTerritory().getOuterBrink().stream()
                     .filter(t -> t.group != null && t.group.parentGroup == parentGroup && !cluster.contains(t.group))
                     .map(tile -> tile.group)
                     .collect(Collectors.toList()));
@@ -222,7 +225,7 @@ public class Group {
             parentGroup.removeGroup(group);
             conglomerate.addGroup(group);
         }
-        session.world.addGroup(conglomerate);
+        session.world.addGroupConglomerate(conglomerate);
     }
 
     @Override

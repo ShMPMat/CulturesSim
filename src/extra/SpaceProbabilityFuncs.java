@@ -20,7 +20,7 @@ public class SpaceProbabilityFuncs {
      * If such Tile does not exists, returns null.
      */
     public static Tile randomTileOnBrink(Collection<Tile> tiles, Predicate<Tile> predicate) {
-        List<Tile> brink = new Territory(tiles).getBrink(predicate);
+        List<Tile> brink = new Territory(tiles).getOuterBrink(predicate);
         return brink.isEmpty()
                 ? null
                 : randomElement(brink, session.random);

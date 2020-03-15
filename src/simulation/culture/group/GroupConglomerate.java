@@ -111,10 +111,6 @@ public class GroupConglomerate {
                 });
     }
 
-    public List<Tile> getTiles() {
-        return territory.getTiles();
-    }
-
     public Territory getTerritory() {
         return territory;
     }

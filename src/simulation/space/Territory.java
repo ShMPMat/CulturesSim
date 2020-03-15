@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
  * Set of tiles.
  */
 public class Territory {
-    private List<Tile> tiles;
-    private List<Tile> brink = new ArrayList<>();
+    private Set<Tile> tiles;
+    private Set<Tile> outerBrink = new HashSet<>();
     private Tile center;
 
     public Territory(Collection<Tile> tiles) {
-        this.tiles = new ArrayList<>();
+        this.tiles = new HashSet<>();
         addAll(tiles);
     }
 
@@ -27,7 +27,7 @@ public class Territory {
         this(new ArrayList<>());
     }
 
-    public List<Tile> getTiles() {
+    public Set<Tile> getTiles() {
         return tiles;
     }
 
@@ -44,20 +44,26 @@ public class Territory {
         add(center);
     }
 
-    public List<Tile> getBrink() {
-        return new ArrayList<>(brink);
+    public List<Tile> getOuterBrink() {
+        return new ArrayList<>(outerBrink);
     }
 
-    public List<Tile> getBrink(Predicate<Tile> predicate) {
-        return getBrink().stream()
+    public List<Tile> getOuterBrink(Predicate<Tile> predicate) {
+        return getOuterBrink().stream()
                 .filter(predicate)
                 .collect(Collectors.toList());
     }
 
-    public List<Pair<Tile, Integer>> getBrinkWithImportance(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
-        return getBrink(predicate).stream()
-                .map(t -> new Pair<>(t, mapper.apply(t)))
+    public List<Tile> getInnerBrink() {
+        return outerBrink.stream()
+                .flatMap(t -> t.getNeighbours(this::contains).stream())
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Tile> getInnerBrink(Predicate<Tile> predicate) {
+        return getInnerBrink().stream()
+                .filter(predicate)
                 .collect(Collectors.toList());
     }
 
@@ -109,7 +115,9 @@ public class Territory {
     }
 
     public int getMinTemperature() {
-        return tiles.stream().reduce(Integer.MAX_VALUE, (x, y) -> Math.min(x, y.getTemperature()), Integer::compareTo);
+        return tiles.stream()
+                .map(Tile::getTemperature)
+                .reduce(Integer.MAX_VALUE, Math::min);
     }
 
     public int size() {
@@ -134,17 +142,17 @@ public class Territory {
         }
         if (!tiles.contains(tile)) {
             tiles.add(tile);
-            brink.remove(tile);
-            tile.getNeighbours().forEach(this::addToBrink);
+            outerBrink.remove(tile);
+            tile.getNeighbours().forEach(this::addToOuterBrink);
         }
         if (tiles.size() == 1) {
             center = tile;
         }
     }
 
-    private void addToBrink(Tile tile) {
-        if (!brink.contains(tile) && !tiles.contains(tile)) {
-            brink.add(tile);
+    private void addToOuterBrink(Tile tile) {
+        if (!outerBrink.contains(tile) && !tiles.contains(tile)) {
+            outerBrink.add(tile);
         }
     }
 
@@ -156,9 +164,12 @@ public class Territory {
         if (!tiles.remove(tile)) {
             return;
         }
+        if (!tile.getNeighbours(this::contains).isEmpty()) {
+            addToOuterBrink(tile);
+        }
         tile.getNeighbours().forEach(t -> {
             if (t.getNeighbours().stream().noneMatch(this::contains)) {
-                brink.remove(t);
+                outerBrink.remove(t);
             }
         });
     }
@@ -178,15 +189,10 @@ public class Territory {
     }
 
     public Tile getMostUsefulTile(Predicate<Tile> predicate, Function<Tile, Integer> mapper) {
-        Optional<Pair<Tile, Integer>> _o = getBrinkWithImportance(predicate, mapper).stream()
+        Optional<Pair<Tile, Integer>> _o = getOuterBrink(predicate).stream()
+                .map(t -> new Pair<>(t, mapper.apply(t)))
                 .max(Comparator.comparingInt(Pair::getSecond));
         return _o.map(Pair::getFirst).orElse(null);
-    }
-
-    public List<Tile> getBorder() {
-        return tiles.stream()
-                .filter(tile -> !tile.getNeighbours(t -> !this.contains(t)).isEmpty())
-                .collect(Collectors.toList());
     }
 
     public boolean isEmpty() {
