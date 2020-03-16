@@ -125,17 +125,6 @@ public class GroupConglomerate {
         population = 0;
     }
 
-    private void addDependenciesInMap(Map<ResourceTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
-                                      ResourceTag requirement) {
-        if (dependencies.isEmpty()) {
-            return;
-        }
-        if (!dep.containsKey(requirement)) {
-            dep.put(requirement, new HashSet<>());
-        }
-        dep.get(requirement).addAll(dependencies);
-    }
-
     public void addEvent(Event event) {
         culturalCenterOvergroup.getEvents().add(event);
     }
@@ -144,23 +133,17 @@ public class GroupConglomerate {
         return territory.getCenter();
     }
 
-    private boolean isTileReachable(Tile tile) {
-        return getCenter().getDistance(tile) < 4;
-    }
-
     public void update() {//TODO simplify
         if (state == State.Dead) {
             return;
         }
         subgroups.removeIf(group -> group.state == Group.State.Dead);
         subgroups.forEach(Group::update);
-        int size = subgroups.size();
-        for (int i = 0; i < size; i++) {
-            Group newGroup = subgroups.get(i).populationUpdate();
-            if (newGroup != null) {
-                addGroup(newGroup);
-            }
-        }
+        Collection<Group> newGroups = subgroups.stream()
+                .map(Group::populationUpdate)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        newGroups.forEach(this::addGroup);
         updatePopulation();
         if (state == State.Dead) {
             return;

@@ -15,16 +15,14 @@ import static shmp.random.RandomProbabilitiesKt.*;
 
 public class TerritoryCenter {
     private Territory territory = new Territory();
-    private Group group;
     private GroupTileTag tileTag;
     private Function<Tile, Integer> tilePotentialMapper = t ->
             t.getNeighbours(tile1 -> tile1.getTagPool().contains(tileTag)).size()
-                    + 3 * t.hasResources(group.getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
-                    + group.getRelationCenter().evaluateTile(t);
+                    + 3 * t.hasResources(tileTag.getGroup().getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
+                    + tileTag.getGroup().getRelationCenter().evaluateTile(t);
     private double spreadAbility;
 
     TerritoryCenter(Group group, double spreadAbility, Tile tile) {
-        this.group = group;
         this.tileTag = new GroupTileTag(group);
         this.spreadAbility = spreadAbility;
         claimTile(tile);
@@ -99,10 +97,10 @@ public class TerritoryCenter {
         if (!tile.getTagPool().contains(tileTag) && !tile.getTagPool().getByType(tileTag.getType()).isEmpty()) {
             throw new RuntimeException();
         }
-        group.getParentGroup().claimTile(tile);
+        tileTag.getGroup().getParentGroup().claimTile(tile);
         tile.getTagPool().add(tileTag);
         getTerritory().add(tile);
-        group.addEvent(new Event(Event.Type.TileAcquisition, "Group " + group.name + " claimed tile " + tile.x + " " +
+        tileTag.getGroup().addEvent(new Event(Event.Type.TileAcquisition, "Group " + tileTag.getGroup().name + " claimed tile " + tile.x + " " +
                 tile.y, "group", this, "tile", tile));
     }
 
@@ -118,7 +116,7 @@ public class TerritoryCenter {
         }
         tile.getTagPool().remove(tileTag);
         getTerritory().removeTile(tile);
-        group.getParentGroup().removeTile(tile);
+        tileTag.getGroup().getParentGroup().removeTile(tile);
     }
 
     private void leaveTiles(Collection<Tile> tiles) {
@@ -128,9 +126,9 @@ public class TerritoryCenter {
     public boolean canSettle(Tile tile) {
         return tile.getType() != Tile.Type.Water && tile.getType() != Tile.Type.Mountain
                 || (tile.getType() == Tile.Type.Mountain
-                && !group.getCultureCenter().getAspectCenter().getAspectPool().filter(a ->
+                && !tileTag.getGroup().getCultureCenter().getAspectCenter().getAspectPool().filter(a ->
                 a.getTags().stream()
-                        .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))
+                        .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))//TODO set of accessible tiles
                 .isEmpty());
     }
 
