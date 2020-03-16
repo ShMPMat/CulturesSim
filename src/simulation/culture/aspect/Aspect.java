@@ -178,7 +178,7 @@ public class Aspect {
             for (Dependency dependency1 : dependency) {
                 if (dependency1.isPhony()) {
                     isFinished = true;
-                    int newDelta = meaningfulPack.getAmountOfResource(((ConverseWrapper) this).resource);
+                    int newDelta = meaningfulPack.getResourceAmount(((ConverseWrapper) this).resource);
                     AspectResult _p = dependency1.useDependency(new AspectController(
                             controller.getCeiling() - newDelta,
                             controller.getFloor() - newDelta,
@@ -194,7 +194,7 @@ public class Aspect {
                         break;
                     }
                 } else {
-                    int newDelta = _rp.getAmountOfResourcesWithTag(dependency1.getType());
+                    int newDelta = _rp.getResourcesWithTagAmount(dependency1.getType());
                     AspectResult result = dependency1.useDependency(new AspectController(
                             controller.getCeiling() - newDelta,
                             controller.getFloor() - newDelta,
@@ -206,14 +206,14 @@ public class Aspect {
                     if (!result.isFinished) {
                         continue;
                     }
-                    if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= controller.getCeiling()) {
+                    if (_rp.getResourcesWithTagAmount(dependency1.getType()) >= controller.getCeiling()) {
                         if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
                             usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
                                     dependency1.getType(),
                                     controller.getCeiling()).getSecond()
                             );
                         } else {
-                            usedForDependency.addAll(_rp.getAllResourcesWithTag(dependency1.getType()));
+                            usedForDependency.addAll(_rp.getResourcesWithTag(dependency1.getType()));
                         }
                         meaningfulPack.addAll(_rp);
                         isFinished = true;

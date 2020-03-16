@@ -68,7 +68,7 @@ public class LineDependency extends AbstractDependency {
                             controller.getFloor(),
                             new ResourceEvaluator(
                                     rp -> rp.getResource(line.getFirst().resource),
-                                    rp -> rp.getAmountOfResource(line.getFirst().resource)
+                                    rp -> rp.getResourceAmount(line.getFirst().resource)
                             ),
                             group.getPopulationCenter(),
                             controller.isMeaningNeeded()));

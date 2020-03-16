@@ -26,8 +26,8 @@ public class TagRequest extends Request {
     @Override
     public ResourceEvaluator isAcceptable(Stratum stratum) {
         if (stratum.getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
-            return new ResourceEvaluator(resourcePack -> resourcePack.getAllResourcesWithTag(tag),
-                    resourcePack -> resourcePack.getAllResourcesWithTag(tag).getResources().stream()
+            return new ResourceEvaluator(resourcePack -> resourcePack.getResourcesWithTag(tag),
+                    resourcePack -> resourcePack.getResourcesWithTag(tag).getResources().stream()
                             .reduce(0, (x, y) -> x += y.getTagLevel(tag)*y.getAmount(), Integer::sum));
         }
         return null;

@@ -24,7 +24,7 @@ public class ResourceRequest extends Request {
             if (aspect instanceof ConverseWrapper) {
                 if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
                     return new ResourceEvaluator(resourcePack -> resourcePack.getResource(resource),
-                            resourcePack -> resourcePack.getAmountOfResource(resource));
+                            resourcePack -> resourcePack.getResourceAmount(resource));
                 } else {
                     return null;
                 }

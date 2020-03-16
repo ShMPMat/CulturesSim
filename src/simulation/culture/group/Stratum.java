@@ -108,8 +108,8 @@ public class Stratum {
                 continue;
             }
             ResourceEvaluator evaluator = new ResourceEvaluator(
-                    resourcePack -> resourcePack.getAllResourcesWithTag(entry.getKey()),
-                    resourcePack -> resourcePack.getAllResourcesWithTag(entry.getKey()).getResources().stream()
+                    resourcePack -> resourcePack.getResourcesWithTag(entry.getKey()),
+                    resourcePack -> resourcePack.getResourcesWithTag(entry.getKey()).getResources().stream()
                             .map(Resource::getAmount).reduce(0, Integer::sum));
             for (Aspect aspect: aspects) {//TODO choose the best
                 if (currentAmount >= amount) {

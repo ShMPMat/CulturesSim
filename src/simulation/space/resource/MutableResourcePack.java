@@ -23,7 +23,7 @@ public class MutableResourcePack extends ResourcePack{ //TODO subclass which sto
     }
 
     public MutableResourcePack getResourcesWithTagPartIsBigger(ResourceTag tag, int ceiling) {
-        return getPart(getAllResourcesWithTag(tag), ceiling);
+        return getPart(getResourcesWithTag(tag), ceiling);
     }
 
     public MutableResourcePack getResourcePart(Resource resource, int ceiling) {
@@ -44,7 +44,7 @@ public class MutableResourcePack extends ResourcePack{ //TODO subclass which sto
     }
 
     public Pair<Integer, List<Resource>> getAmountOfResourcesWithTagAndErase(ResourceTag tag, int amount) {//TODO looks bad
-        Collection<Resource> _r = getAllResourcesWithTag(tag).getResources();
+        Collection<Resource> _r = getResourcesWithTag(tag).getResources();
         List<Resource> result = new ArrayList<>();
         int counter = 0;
         for (Resource resource : _r) {
@@ -62,7 +62,7 @@ public class MutableResourcePack extends ResourcePack{ //TODO subclass which sto
         getResources().stream()
                 .filter(resource -> resource.getGenome().isMovable())
                 .forEach(tile::addDelayedResource);
-        resourcesMap.clear();
+        getResourceMap().clear();
     }
 
     public void add(Resource resource) {
@@ -78,7 +78,7 @@ public class MutableResourcePack extends ResourcePack{ //TODO subclass which sto
     }
 
     public void remove(Resource resource) {
-        resourcesMap.remove(resource);
+        getResourceMap().remove(resource);
     }
 
     public void removeAll(Collection<Resource> resources) {
@@ -90,7 +90,7 @@ public class MutableResourcePack extends ResourcePack{ //TODO subclass which sto
     }
 
     public void destroyAllResourcesWithTag(ResourceTag tag) {
-        ResourcePack result = getAllResourcesWithTag(tag);
+        ResourcePack result = getResourcesWithTag(tag);
         removeAll(result);
         result.getResources().forEach(resource -> resource.setAmount(0));
     }
