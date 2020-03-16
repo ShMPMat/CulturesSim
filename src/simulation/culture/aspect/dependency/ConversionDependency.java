@@ -43,7 +43,7 @@ public class ConversionDependency extends AbstractDependency {
             if (controller.getCeiling() <= controller.getEvaluator().evaluate(resourcePack)) {
                 break;
             }
-            resourcePack.add(res.applyAndConsumeAspect(conversion.getSecond(),
+            resourcePack.addAll(res.applyAndConsumeAspect(conversion.getSecond(),
                     controller.getCeiling() - controller.getEvaluator().evaluate(resourcePack)));
         }
         return new AspectResult(resourcePack, null);

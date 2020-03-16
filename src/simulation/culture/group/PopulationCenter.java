@@ -123,7 +123,7 @@ public class PopulationCenter {
                 if (amount >= request.ceiling) {
                     break;
                 }
-                turnResources.add(pair.getFirst().use(new AspectController(
+                turnResources.addAll(pair.getFirst().use(new AspectController(
                         request.ceiling - amount,
                         request.floor,
                         pair.getSecond(),

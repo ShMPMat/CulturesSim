@@ -45,7 +45,7 @@ public class ResourceRequest extends Request {
 
         ResourcePack _r = resourcePack.getResourcePart(resource, ceiling);
         amount = _r.getAmount();
-        _rp.add(_r);
+        _rp.addAll(_r);
 
         if (amount < floor) {
             penalty.apply(new Pair<>(group, _rp), amount / ((double) floor));

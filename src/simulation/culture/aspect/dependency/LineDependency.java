@@ -72,10 +72,10 @@ public class LineDependency extends AbstractDependency {
                             ),
                             group.getPopulationCenter(),
                             controller.isMeaningNeeded()));
-            resourcePack.add(_p.resources.getResource(line.getFirst().resource).getResources().stream()
+            resourcePack.addAll(_p.resources.getResource(line.getFirst().resource).getResources().stream()
                     .flatMap(res -> res.applyAndConsumeAspect(line.getFirst().aspect, controller.getCeiling()).stream())
                     .collect(Collectors.toList()));
-            resourcePack.add(_p.resources);
+            resourcePack.addAll(_p.resources);
             isAlreadyUsed = false;
             return new AspectResult(_p.isFinished, resourcePack, null);
         } catch (NullPointerException e) {

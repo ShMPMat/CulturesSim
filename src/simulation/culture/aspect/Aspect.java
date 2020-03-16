@@ -173,7 +173,7 @@ public class Aspect {
             ResourcePack provided = controller.getPopulationCenter().getStratumByAspect(this)
                     .getInstrumentByTag(entry.getKey());
             if (provided != null) {
-                _rp.add(provided);
+                _rp.addAll(provided);
             }
             for (Dependency dependency1 : dependency) {
                 if (dependency1.isPhony()) {
@@ -189,7 +189,7 @@ public class Aspect {
                     if (!_p.isFinished) {
                         continue;
                     }
-                    meaningfulPack.add(_p.resources);
+                    meaningfulPack.addAll(_p.resources);
                     if (controller.isCeilingExceeded(meaningfulPack)) {
                         break;
                     }
@@ -202,20 +202,20 @@ public class Aspect {
                             controller.getPopulationCenter(),
                             false
                     ));
-                    _rp.add(result.resources);
+                    _rp.addAll(result.resources);
                     if (!result.isFinished) {
                         continue;
                     }
                     if (_rp.getAmountOfResourcesWithTag(dependency1.getType()) >= controller.getCeiling()) {
                         if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
-                            usedForDependency.add(_rp.getAmountOfResourcesWithTagAndErase(
+                            usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
                                     dependency1.getType(),
                                     controller.getCeiling()).getSecond()
                             );
                         } else {
-                            usedForDependency.add(_rp.getAllResourcesWithTag(dependency1.getType()));
+                            usedForDependency.addAll(_rp.getAllResourcesWithTag(dependency1.getType()));
                         }
-                        meaningfulPack.add(_rp);
+                        meaningfulPack.addAll(_rp);
                         isFinished = true;
                         break;
                     }

@@ -27,12 +27,12 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
     @Override
     public Request getRequest() {
         return new ResourceRequest(group, resource, 1, 10, (pair, percent) -> {
-            pair.getFirst().cherishedResources.add(pair.getSecond());
+            pair.getFirst().cherishedResources.addAll(pair.getSecond());
             resourceBehaviour.proceedResources(pair.getSecond());
             return null;
         },
                 (pair, percent) -> {
-                    pair.getFirst().cherishedResources.add(pair.getSecond());
+                    pair.getFirst().cherishedResources.addAll(pair.getSecond());
                     resourceBehaviour.proceedResources(pair.getSecond());
                     return null;
                 });

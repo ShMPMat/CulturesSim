@@ -44,9 +44,9 @@ public class TagRequest extends Request {
         int amount = 0;
         ResourcePack _rp = new ResourcePack();
 
-        ResourcePack _r = resourcePack.getResourcesWithTagPart(tag, ceiling);
+        ResourcePack _r = resourcePack.getResourcesWithTagPartIsBigger(tag, ceiling);
         amount = _r.getAmount();
-        _rp.add(_r);
+        _rp.addAll(_r);
 
         if (amount < floor) {
             penalty.apply(new Pair<>(group, _rp), amount / ((double) floor));

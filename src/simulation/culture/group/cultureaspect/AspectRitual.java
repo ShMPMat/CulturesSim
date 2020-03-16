@@ -52,7 +52,7 @@ public class AspectRitual extends Ritual {
                 true
         ));
         if (result.isFinished) {
-            group.cherishedResources.add(result.resources);
+            group.cherishedResources.addAll(result.resources);
             resourceBehaviour.proceedResources(result.resources);
         }
     }

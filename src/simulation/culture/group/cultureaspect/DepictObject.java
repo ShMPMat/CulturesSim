@@ -51,7 +51,7 @@ public class DepictObject extends AbstractCultureAspect {
             ResourcePack meaningful = new ResourcePack(result.resources.getResources().stream().filter(Resource::hasMeaning)
                     .collect(Collectors.toList()));
             result.resources.removeAll(meaningful.getResources());
-            group.cherishedResources.add(meaningful);
+            group.cherishedResources.addAll(meaningful);
             resourceBehaviour.proceedResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
             group.getCultureCenter().getMemePool().strengthenMeme(meme);

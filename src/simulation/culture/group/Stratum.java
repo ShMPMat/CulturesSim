@@ -89,7 +89,7 @@ public class Stratum {
                         group.getCultureCenter().getMemePool().strengthenMeme(Meme.getMeme(resource)));
             }
             if (result.isFinished) {
-                resourcePack.add(result.resources);
+                resourcePack.addAll(result.resources);
             }
         }
         return resourcePack;
@@ -128,7 +128,7 @@ public class Stratum {
                                 ));
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);
-                            entry.getValue().add(evaluator.pick(result.resources));//TODO disband
+                            entry.getValue().addAll(evaluator.pick(result.resources));//TODO disband
                             if (currentAmount >= amount) {
                                 break;
                             }

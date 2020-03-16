@@ -283,7 +283,7 @@ public class Tile {
         propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1));
         propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1));
 
-        if (!_newWind.isStill()) {//TODO better to add wind for cross tiles than try to fetch it; cut wind on large level changes
+        if (!_newWind.isStill()) {//TODO better to addAll wind for cross tiles than try to fetch it; cut wind on large level changes
             return;
         }
 

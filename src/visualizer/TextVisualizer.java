@@ -472,7 +472,7 @@ public class TextVisualizer implements Visualizer {
      */
     private void addAspectToGroup(Group group, String aspectName) {
         if (group == null) {
-            System.err.println("Cannot add aspect to the group");
+            System.err.println("Cannot addAll aspect to the group");
             return;
         }
         Aspect aspect;
@@ -486,7 +486,7 @@ public class TextVisualizer implements Visualizer {
                             .findFirst()
                             .orElse(null));
             if (resource == null) {
-                System.err.println("Cannot add aspect to the group");
+                System.err.println("Cannot addAll aspect to the group");
                 return;
             }
             try {
@@ -497,14 +497,14 @@ public class TextVisualizer implements Visualizer {
                     aspect = new ConverseWrapper(a, resource, group);
                 }
             } catch (NoSuchElementException e) {
-                System.err.println("Cannot add aspect to the group");
+                System.err.println("Cannot addAll aspect to the group");
                 return;
             }
         } else {
             try {
                 aspect = world.getAspectPool().get(aspectName);
             } catch (NoSuchElementException e) {
-                System.err.println("Cannot add aspect to the group");
+                System.err.println("Cannot addAll aspect to the group");
                 return;
             }
         }
@@ -514,7 +514,7 @@ public class TextVisualizer implements Visualizer {
             Aspect inner = ((ConverseWrapper) aspect).aspect;
             if (!group.getCultureCenter().getAspectCenter().getAspectPool().contains(inner)) {
                 System.err.println(
-                        "Cannot add aspect to the group: cant add sentenceBase aspect for the Converse Wrapper."
+                        "Cannot addAll aspect to the group: cant addAll sentenceBase aspect for the Converse Wrapper."
                 );
                 return;
             }
@@ -536,14 +536,14 @@ public class TextVisualizer implements Visualizer {
      */
     private void addWantToGroup(Group group, String wantName) {
         if (group == null) {
-            System.err.println("Cannot add aspect to the group");
+            System.err.println("Cannot addAll aspect to the group");
             return;
         }
         try {
             Resource resource = world.getResourcePool().get(wantName);
             group.getCultureCenter().addResourceWant(resource);
         } catch (NoSuchElementException e) {
-            System.err.println("Cannot add want to the group");
+            System.err.println("Cannot addAll want to the group");
         }
     }
 

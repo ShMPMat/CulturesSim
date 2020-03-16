@@ -105,7 +105,7 @@ public class CultureAspectCenter {
                 }
                 break;
             }
-            case 5: {//TODO should I add such a thing here even? (I did break in previous section for now)
+            case 5: {//TODO should I addAll such a thing here even? (I did break in previous section for now)
                 List<ConverseWrapper> wrappers =
                         group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers();
                 if (!wrappers.isEmpty()) {
