@@ -47,9 +47,7 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     override fun toString(): String {
         val stringBuilder = StringBuilder()
         for (resource in resources) {
-            stringBuilder.append(resource.fullName).append(" ")
-                    .append(resource.amount)
-                    .append("; \n")
+            stringBuilder.append("${resource.fullName} ${resource.amount}; \n")
         }
         return stringBuilder.toString()
     }
