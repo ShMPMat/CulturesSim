@@ -573,8 +573,10 @@ public class TextVisualizer implements Visualizer {
                 if (line != null) {
                     if (currentTurner != null) {
                         currentTurner.isAskedToStop.set(true);
+                        System.out.println("Turner is asked to stop");
                         turnerThread.join();
                         currentTurner = null;
+                        System.out.println("Turner has stopped");
                         print();
                         continue;
                     }

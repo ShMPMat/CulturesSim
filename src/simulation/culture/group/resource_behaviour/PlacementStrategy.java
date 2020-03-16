@@ -51,12 +51,12 @@ public class PlacementStrategy {
             case Border:
                 List<Tile> border = controlledTerritory.getInnerBrink();
                 List<Tile> unfinishedBorder = controlledTerritory
-                        .getInnerBrink(t -> !t.getResources().containsAll(resourcePack.resources));
+                        .getInnerBrink(t -> !t.getResources().containsAll(resourcePack.getResources()));
                 return unfinishedBorder.isEmpty()
                         ? randomElement(border, session.random)
                         : randomElement(unfinishedBorder, session.random);
             case Homogeneous:
-                tiles = controlledTerritory.getTiles(t -> !t.getResources().containsAll(resourcePack.resources));
+                tiles = controlledTerritory.getTiles(t -> !t.getResources().containsAll(resourcePack.getResources()));
                 return tiles.isEmpty()
                         ? SpaceProbabilityFuncs.randomTile(controlledTerritory)
                         : randomElement(tiles, session.random);
@@ -92,7 +92,7 @@ public class PlacementStrategy {
     public void place(ResourcePack resourcePack) {
         Tile tile = getTileForPlacement(resourcePack);
         if (tile != null) {
-            resourcePack.resources.forEach(tile::addDelayedResource);
+            resourcePack.getResources().forEach(tile::addDelayedResource);
         }
     }
 

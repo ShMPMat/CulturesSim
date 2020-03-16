@@ -4,7 +4,6 @@ import kotlin.Pair;
 import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.*;
-import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
@@ -161,7 +160,7 @@ public class CultureCenter {
                     true
             ));
             clearCurrentMeme();
-            for (Resource resource : result.resources.resources) {
+            for (Resource resource : result.resources.getResources()) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtifacts.add(resource);
                 } else {

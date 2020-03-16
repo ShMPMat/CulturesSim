@@ -155,7 +155,7 @@ public class ResourceCore {
         if (result.node.resourceUsed.size() > 1) {
             List<String> names = result.node.resourceUsed.entrySet().stream()
                     .filter(entry -> !entry.getKey().name.equals(ResourceTag.phony().name))
-                    .flatMap(entry -> entry.getValue().resources.stream().map(Resource::getFullName)).distinct()
+                    .flatMap(entry -> entry.getValue().getResources().stream().map(Resource::getFullName)).distinct()
                     .collect(Collectors.toList());
             meaningPostfix.append("(");
             for (String name : names) {
@@ -209,7 +209,7 @@ public class ResourceCore {
         if (this == o) return true;
         if (o == null) return false;
         ResourceCore resourceCore = (ResourceCore) o;
-        return getBaseName().equals(resourceCore.getBaseName()) /*&& getTags().equals(resourceCore.getTags())*/;
+        return getBaseName().equals(resourceCore.getBaseName());
     }
 
     @Override

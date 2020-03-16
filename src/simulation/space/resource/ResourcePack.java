@@ -10,14 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Bunch of resources stored together.
- */
 public class ResourcePack { //TODO subclass which stores all instances of the same Resource on different Tiles
-    /**
-     * Resources which this pack contains.
-     */
-    public List<Resource> resources;
+    private List<Resource> resources;
 
     public ResourcePack(Collection<Resource> resources) {
         this.resources = new ArrayList<>(resources);
@@ -30,7 +24,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
     /**
      * @return Resources which are contained in this pack.
      */
-    public Collection<Resource> getResources() {
+    public List<Resource> getResources() {
         return resources;
     }
 
@@ -39,18 +33,18 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
      * @return New ResourcePack with all Resources which contain required Tag.
      */
     public ResourcePack getAllResourcesWithTag(ResourceTag tag) {
-        return new ResourcePack(resources.stream().filter(resource -> resource.getTags().contains(tag))
+        return new ResourcePack(getResources().stream().filter(resource -> resource.getTags().contains(tag))
                 .collect(Collectors.toList()));
     }
 
     public ResourcePack getResource(Resource resource) {
-        List<Resource> _r = resources.stream().filter(res -> res.fullEquals(resource)).collect(Collectors.toList());
+        List<Resource> _r = getResources().stream().filter(res -> res.fullEquals(resource)).collect(Collectors.toList());
         return _r.size() == 0 ? new ResourcePack() : new ResourcePack(_r);
     }
 
     public ResourcePack getResourceAndRemove(Resource resource) {
         ResourcePack _r = getResource(resource);
-        _r.resources.forEach(this::remove);
+        _r.getResources().forEach(this::remove);
         return _r;
     }
 
@@ -105,7 +99,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
             result.add(resource);
             counter += resource.getAmount();
         }
-        resources.removeAll(result);
+        getResources().removeAll(result);
         return new Pair<>(counter, result);
     }
 
@@ -125,15 +119,15 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
         if (tile == null) {
             int i = 0;
         }
-        resources.stream().filter(resource -> resource.getGenome().isMovable()).forEach(tile::addDelayedResource);
-        resources.clear();
+        getResources().stream().filter(resource -> resource.getGenome().isMovable()).forEach(tile::addDelayedResource);
+        getResources().clear();
     }
 
     /**
      * @return the amount of all resources in pack.
      */
     public int getAmount() {
-        return resources.stream().reduce(0, (i, r2) -> i + r2.getAmount(), Integer::sum);
+        return getResources().stream().reduce(0, (i, r2) -> i + r2.getAmount(), Integer::sum);
     }
 
     public void add(Resource resource) {
@@ -141,17 +135,17 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
             return;
         }
         int i = -1;
-        for (int j = 0; j < resources.size(); j++) {
-            if (resources.get(j).fullEquals(resource)) {
+        for (int j = 0; j < getResources().size(); j++) {
+            if (getResources().get(j).fullEquals(resource)) {
                 i = j;
                 break;
             }
         }
         if (i == -1) {
-            resources.add(resource);
+            getResources().add(resource);
             return;
         }
-        resources.get(i).merge(resource);
+        getResources().get(i).merge(resource);
     }
 
     /**
@@ -160,7 +154,7 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
      * @param resourcePack Pack from which all Resources will be added.
      */
     public void add(ResourcePack resourcePack) {
-        resourcePack.resources.forEach(this::add);
+        resourcePack.getResources().forEach(this::add);
     }
 
     public void add(Collection<Resource> resources) {
@@ -168,10 +162,10 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
     }
 
     public void remove(Resource resource) {
-        for (int i = 0; i < resources.size(); i++) {
-            Resource res = resources.get(i);
+        for (int i = 0; i < getResources().size(); i++) {
+            Resource res = getResources().get(i);
             if (res.fullEquals(resource)) {
-                resources.remove(i);
+                getResources().remove(i);
                 return;
             }
         }
@@ -183,15 +177,15 @@ public class ResourcePack { //TODO subclass which stores all instances of the sa
 
     public void destroyAllResourcesWithTag(ResourceTag tag) {
         ResourcePack result = getAllResourcesWithTag(tag);
-        resources.removeAll(result.resources);
-        result.resources.forEach(resource -> resource.setAmount(0));
+        getResources().removeAll(result.getResources());
+        result.getResources().forEach(resource -> resource.setAmount(0));
     }
 
     @Override
     public String toString() {
-        resources.removeIf(resource -> resource.getAmount() == 0);
+        getResources().removeIf(resource -> resource.getAmount() == 0);
         StringBuilder stringBuilder = new StringBuilder();
-        for (Resource resource : resources) {
+        for (Resource resource : getResources()) {
             stringBuilder.append(resource.getFullName()).append(" ")
                     .append(resource.getAmount())
                     .append("; ")

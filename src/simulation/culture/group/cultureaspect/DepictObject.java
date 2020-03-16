@@ -50,7 +50,7 @@ public class DepictObject extends AbstractCultureAspect {
         if (result.isFinished) {
             ResourcePack meaningful = new ResourcePack(result.resources.getResources().stream().filter(Resource::hasMeaning)
                     .collect(Collectors.toList()));
-            result.resources.removeAll(meaningful.resources);
+            result.resources.removeAll(meaningful.getResources());
             group.cherishedResources.add(meaningful);
             resourceBehaviour.proceedResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());

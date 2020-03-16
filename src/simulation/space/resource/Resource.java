@@ -305,11 +305,8 @@ public class Resource {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Resource resource = (Resource) o;
-        return resourceCore.equals(resource.resourceCore);
+    public boolean equals(Object o) {//TODO maybe re
+        return fullEquals(o);
     }
 
     public boolean fullEquals(Object o) {
@@ -324,7 +321,7 @@ public class Resource {
 
     @Override
     public int hashCode() {
-        return resourceCore.hashCode();
+        return Objects.hash(getFullName(), resourceCore.hashCode());
     }
 
     @Override
