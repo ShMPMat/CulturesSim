@@ -2,7 +2,7 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.Group;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
@@ -159,7 +159,7 @@ public class Aspect {
 
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         boolean isFinished;//TODO put dependency resources only in node; otherwise they may merge with phony
-        ResourcePack meaningfulPack = new ResourcePack();
+        MutableResourcePack meaningfulPack = new MutableResourcePack();
         controller.setCeiling(controller.getPopulationCenter().changeStratumAmountByAspect(
                 this,
                 controller.getCeiling()
@@ -167,10 +167,10 @@ public class Aspect {
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         for (Map.Entry<ResourceTag, Set<Dependency>> entry : getDependencies().entrySet()) {
             Set<Dependency> dependency = entry.getValue();
-            ResourcePack usedForDependency = new ResourcePack();
+            MutableResourcePack usedForDependency = new MutableResourcePack();
             isFinished = false;
-            ResourcePack _rp = new ResourcePack();
-            ResourcePack provided = controller.getPopulationCenter().getStratumByAspect(this)
+            MutableResourcePack _rp = new MutableResourcePack();
+            MutableResourcePack provided = controller.getPopulationCenter().getStratumByAspect(this)
                     .getInstrumentByTag(entry.getKey());
             if (provided != null) {
                 _rp.addAll(provided);

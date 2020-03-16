@@ -6,7 +6,7 @@ import simulation.culture.aspect.AspectController;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.Territory;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +21,7 @@ public class PopulationCenter {
     private int maxPopulation;
     private int minPopulation;
 
-    private ResourcePack turnResources = new ResourcePack();
+    private MutableResourcePack turnResources = new MutableResourcePack();
 
     PopulationCenter(int population, int maxPopulation, int minPopulation) {
         this.population = population;

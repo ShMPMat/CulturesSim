@@ -4,7 +4,7 @@ import kotlin.Pair;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Collection;
@@ -13,8 +13,8 @@ import java.util.function.BiFunction;
 public class TagRequest extends Request {
     private ResourceTag tag;
 
-    public TagRequest(Group group, ResourceTag tag, int floor, int ceiling, BiFunction<Pair<Group, ResourcePack>, Double, Void> penalty,
-                      BiFunction<Pair<Group, ResourcePack>, Double, Void> reward) {
+    public TagRequest(Group group, ResourceTag tag, int floor, int ceiling, BiFunction<Pair<Group, MutableResourcePack>, Double, Void> penalty,
+                      BiFunction<Pair<Group, MutableResourcePack>, Double, Void> reward) {
         super(group, floor, ceiling, penalty, reward);
         this.tag = tag;
     }
@@ -40,11 +40,11 @@ public class TagRequest extends Request {
     }
 
     @Override
-    public void end(ResourcePack resourcePack) {
+    public void end(MutableResourcePack resourcePack) {
         int amount = 0;
-        ResourcePack _rp = new ResourcePack();
+        MutableResourcePack _rp = new MutableResourcePack();
 
-        ResourcePack _r = resourcePack.getResourcesWithTagPartIsBigger(tag, ceiling);
+        MutableResourcePack _r = resourcePack.getResourcesWithTagPartIsBigger(tag, ceiling);
         amount = _r.getAmount();
         _rp.addAll(_r);
 

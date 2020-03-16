@@ -6,14 +6,14 @@ import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.function.BiFunction;
 
 public class ResourceRequest extends Request {
     private Resource resource;
 
-    public ResourceRequest(Group group, Resource resource, int floor, int ceiling, BiFunction<Pair<Group, ResourcePack>, Double, Void> penalty, BiFunction<Pair<Group, ResourcePack>, Double, Void> reward) {
+    public ResourceRequest(Group group, Resource resource, int floor, int ceiling, BiFunction<Pair<Group, MutableResourcePack>, Double, Void> penalty, BiFunction<Pair<Group, MutableResourcePack>, Double, Void> reward) {
         super(group, floor, ceiling, penalty, reward);
         this.resource = resource;
     }
@@ -39,11 +39,11 @@ public class ResourceRequest extends Request {
     }
 
     @Override
-    public void end(ResourcePack resourcePack) {
+    public void end(MutableResourcePack resourcePack) {
         int amount = 0;
-        ResourcePack _rp = new ResourcePack();
+        MutableResourcePack _rp = new MutableResourcePack();
 
-        ResourcePack _r = resourcePack.getResourcePart(resource, ceiling);
+        MutableResourcePack _r = resourcePack.getResourcePart(resource, ceiling);
         amount = _r.getAmount();
         _rp.addAll(_r);
 

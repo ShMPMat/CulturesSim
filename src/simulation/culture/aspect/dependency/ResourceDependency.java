@@ -6,7 +6,7 @@ import simulation.culture.aspect.AspectResult;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class ResourceDependency extends AbstractDependency {
 
     @Override
     public AspectResult useDependency(AspectController controller) {
-        ResourcePack resourcePack = new ResourcePack();
+        MutableResourcePack resourcePack = new MutableResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
             return new AspectResult(tag.consumeAndGetResult(group.getTerritoryCenter().getTerritory()//TODO mayhaps i should pass territory; because i may want to use resources from all the GroupConglomerationTiles
                     .getResourceInstances(resource), controller.getCeiling()), null);

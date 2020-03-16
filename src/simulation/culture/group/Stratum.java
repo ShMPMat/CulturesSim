@@ -8,7 +8,7 @@ import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class Stratum {
      */
     private int workedAmount = 0;
     private List<Aspect> aspects = new ArrayList<>();
-    private Map<ResourceTag, ResourcePack> dependencies = new HashMap<>();
+    private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private Group group;
 
     public Stratum(int amount, Group group) {
@@ -37,14 +37,14 @@ public class Stratum {
         aspects.add(aspect);
         aspect.getDependencies().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
-                dependencies.put(tag.copy(), new ResourcePack());
+                dependencies.put(tag.copy(), new MutableResourcePack());
             }
         });
     }
 
-    public ResourcePack getInstrumentByTag(ResourceTag tag) {
-        ResourcePack resourcePack = dependencies.get(tag);
-        return resourcePack == null ? new ResourcePack() : resourcePack;
+    public MutableResourcePack getInstrumentByTag(ResourceTag tag) {
+        MutableResourcePack resourcePack = dependencies.get(tag);
+        return resourcePack == null ? new MutableResourcePack() : resourcePack;
     }
 
     public int getAmount() {
@@ -79,8 +79,8 @@ public class Stratum {
         aspects.add(aspect);
     }
 
-    public ResourcePack use(AspectController controller) {
-        ResourcePack resourcePack = new ResourcePack();
+    public MutableResourcePack use(AspectController controller) {
+        MutableResourcePack resourcePack = new MutableResourcePack();
         for (Aspect aspect: aspects) {
             AspectResult result = aspect.use(controller);
             if (!result.resources.isEmpty()) {
@@ -99,7 +99,7 @@ public class Stratum {
         if (session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
-        for (Map.Entry<ResourceTag, ResourcePack> entry: dependencies.entrySet()) {
+        for (Map.Entry<ResourceTag, MutableResourcePack> entry: dependencies.entrySet()) {
             int currentAmount = entry.getValue().getAmount();
             if (currentAmount >= amount) {
                 continue;

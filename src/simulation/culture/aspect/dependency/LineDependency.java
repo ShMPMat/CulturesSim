@@ -4,7 +4,7 @@ import kotlin.Pair;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class LineDependency extends AbstractDependency {
     @Override
     public AspectResult useDependency(AspectController controller) {
         try {
-            ResourcePack resourcePack = new ResourcePack();
+            MutableResourcePack resourcePack = new MutableResourcePack();
             if (isAlreadyUsed || controller.getCeiling() <= 0 || !foodForInsertMeaning() && controller.isMeaningNeeded()) {
                 return new AspectResult(resourcePack, null);
             }

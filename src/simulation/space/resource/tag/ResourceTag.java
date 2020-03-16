@@ -1,7 +1,7 @@
 package simulation.space.resource.tag;
 
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -52,8 +52,8 @@ public class ResourceTag {
         return resource.getPart(ceiling);
     }
 
-    public ResourcePack consumeAndGetResult(Collection<Resource> resources, int ceiling) {
-        ResourcePack resourceResult = new ResourcePack();
+    public MutableResourcePack consumeAndGetResult(Collection<Resource> resources, int ceiling) {
+        MutableResourcePack resourceResult = new MutableResourcePack();
         for (Resource resource : resources) {
             resourceResult.add(consumeAndGetResult(resource, ceiling));
         }

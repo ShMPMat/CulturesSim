@@ -10,6 +10,7 @@ import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.Resource;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
@@ -85,12 +86,12 @@ public class CultureCenter {
 
     void updateRequests(int foodFloor) {
         requests = new ArrayList<>();
-        BiFunction<Pair<Group, ResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
+        BiFunction<Pair<Group, MutableResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
             pair.getFirst().starve(percent);
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
-        BiFunction<Pair<Group, ResourcePack>, Double, Void> foodReward = (pair, percent) -> {
+        BiFunction<Pair<Group, MutableResourcePack>, Double, Void> foodReward = (pair, percent) -> {
             pair.getFirst().getPopulationCenter().goodConditionsGrow(percent);
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
@@ -99,11 +100,11 @@ public class CultureCenter {
                 foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, foodPenalty, foodReward));
 
         if (group.getTerritoryCenter().getTerritory().getMinTemperature() < 0) {
-            BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
+            BiFunction<Pair<Group, MutableResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
                 pair.getFirst().freeze(percent);
                 return null;
             };
-            BiFunction<Pair<Group, ResourcePack>, Double, Void> warmthReward = (pair, percent) -> null;
+            BiFunction<Pair<Group, MutableResourcePack>, Double, Void> warmthReward = (pair, percent) -> null;
             requests.add(new TagRequest(
                     group,
                     new ResourceTag("warmth"),

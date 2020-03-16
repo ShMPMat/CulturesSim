@@ -4,7 +4,7 @@ import kotlin.Pair;
 import simulation.culture.aspect.*;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Collection;
@@ -37,7 +37,7 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public AspectResult useDependency(AspectController controller) {
-        ResourcePack resourcePack = new ResourcePack();
+        MutableResourcePack resourcePack = new MutableResourcePack();
         Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.getFirst());
         for (Resource res : resourceInstances) {
             if (controller.getCeiling() <= controller.getEvaluator().evaluate(resourcePack)) {

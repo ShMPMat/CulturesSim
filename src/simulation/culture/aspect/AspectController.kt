@@ -2,7 +2,7 @@ package simulation.culture.aspect
 
 import simulation.culture.group.PopulationCenter
 import simulation.culture.group.request.ResourceEvaluator
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.MutableResourcePack
 
 class AspectController(
         var ceiling: Int,
@@ -11,11 +11,11 @@ class AspectController(
         val populationCenter: PopulationCenter,
         val isMeaningNeeded: Boolean = false
 ) {
-    fun isFloorExceeded(resourcePack: ResourcePack): Boolean {
+    fun isFloorExceeded(resourcePack: MutableResourcePack): Boolean {
         return evaluator.evaluate(resourcePack) >= floor
     }
 
-    fun isCeilingExceeded(resourcePack: ResourcePack): Boolean {
+    fun isCeilingExceeded(resourcePack: MutableResourcePack): Boolean {
         return evaluator.evaluate(resourcePack) >= ceiling
     }
 

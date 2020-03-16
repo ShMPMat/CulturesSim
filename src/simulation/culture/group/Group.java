@@ -14,7 +14,7 @@ import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.Tile;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
@@ -32,9 +32,9 @@ public class Group {
     private TerritoryCenter territoryCenter;
     private PopulationCenter populationCenter;
     private RelationCenter relationCenter;
-    ResourcePack resourcePack = new ResourcePack();
-    public ResourcePack cherishedResources = new ResourcePack();
-    ResourcePack uniqueArtifacts = new ResourcePack();
+    MutableResourcePack resourcePack = new MutableResourcePack();
+    public MutableResourcePack cherishedResources = new MutableResourcePack();
+    MutableResourcePack uniqueArtifacts = new MutableResourcePack();
 
     Group(
             GroupConglomerate parentGroup,

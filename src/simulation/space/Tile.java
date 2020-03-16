@@ -1,7 +1,6 @@
 package simulation.space;
 
 import kotlin.Pair;
-import simulation.culture.group.Group;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 

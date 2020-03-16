@@ -3,7 +3,7 @@ package simulation.culture.group.resource_behaviour;
 import extra.SpaceProbabilityFuncs;
 import simulation.space.Territory;
 import simulation.space.Tile;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class PlacementStrategy {
         this.strategy = strategy;
     }
 
-    private Tile getTileForPlacement(ResourcePack resourcePack) {
+    private Tile getTileForPlacement(MutableResourcePack resourcePack) {
         List<Tile> tiles;
         switch (strategy) {
             case DoNothing:
@@ -89,7 +89,7 @@ public class PlacementStrategy {
         return randomElement(specialTiles, session.random);
     }
 
-    public void place(ResourcePack resourcePack) {
+    public void place(MutableResourcePack resourcePack) {
         Tile tile = getTileForPlacement(resourcePack);
         if (tile != null) {
             resourcePack.getResources().forEach(tile::addDelayedResource);

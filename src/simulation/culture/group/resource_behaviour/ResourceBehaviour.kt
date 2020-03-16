@@ -2,11 +2,11 @@ package simulation.culture.group.resource_behaviour
 
 import shmp.random.randomElement
 import simulation.culture.group.Group
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.MutableResourcePack
 import kotlin.random.Random
 
 class ResourceBehaviour(private val placementStrategy: PlacementStrategy) {
-    fun proceedResources(resourcePack: ResourcePack) {
+    fun proceedResources(resourcePack: MutableResourcePack) {
         placementStrategy.place(resourcePack)
     }
 

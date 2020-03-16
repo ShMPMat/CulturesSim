@@ -5,7 +5,7 @@ import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.MutableResourcePack;
 
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -17,10 +17,10 @@ public abstract class Request {
     protected Group group;
     public int floor;
     public int ceiling;
-    BiFunction<Pair<Group, ResourcePack>, Double,Void> penalty, reward;
+    BiFunction<Pair<Group, MutableResourcePack>, Double,Void> penalty, reward;
 
-    Request(Group group, int floor, int ceiling, BiFunction<Pair<Group, ResourcePack>, Double, Void> penalty,
-            BiFunction<Pair<Group, ResourcePack>, Double, Void> reward) {
+    Request(Group group, int floor, int ceiling, BiFunction<Pair<Group, MutableResourcePack>, Double, Void> penalty,
+            BiFunction<Pair<Group, MutableResourcePack>, Double, Void> reward) {
         this.group = group;
         this.floor = floor;
         this.ceiling = ceiling;
@@ -32,7 +32,7 @@ public abstract class Request {
 
     public abstract int satisfactionLevel(Resource sample);
 
-    public abstract void end(ResourcePack resourcePack);
+    public abstract void end(MutableResourcePack resourcePack);
 
     public int satisfactionLevel(Stratum stratum) {
         int result = 0;

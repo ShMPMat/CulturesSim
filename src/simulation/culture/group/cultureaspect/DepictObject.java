@@ -11,6 +11,7 @@ import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.Resource;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
@@ -48,7 +49,8 @@ public class DepictObject extends AbstractCultureAspect {
                 true
         ));
         if (result.isFinished) {
-            ResourcePack meaningful = new ResourcePack(result.resources.getResources().stream().filter(Resource::hasMeaning)
+            MutableResourcePack meaningful = new MutableResourcePack(result.resources.getResources().stream()
+                    .filter(Resource::hasMeaning)
                     .collect(Collectors.toList()));
             result.resources.removeAll(meaningful.getResources());
             group.cherishedResources.addAll(meaningful);
