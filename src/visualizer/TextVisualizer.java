@@ -353,9 +353,9 @@ public class TextVisualizer implements Visualizer {
                             case Woods:
                             case Growth:
                             case Normal:
-                                List<Resource> actual = tile.getResources().stream().filter(resource ->
-                                        resource.getGenome().getType() != Genome.Type.Plant && resource.getAmount() > 0 &&
-                                                !resource.getSimpleName().equals("Vapour")).collect(Collectors.toList());
+                                List<Resource> actual = tile.getResourcePack().getResources(r ->
+                                        r.getGenome().getType() != Genome.Type.Plant && r.getAmount() > 0 &&
+                                                !r.getSimpleName().equals("Vapour")).getResources();
                                 if (/*actual.size() > 0*/ false) {
                                     token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
                                             resourceSymbols.get(actual.get(0)));
@@ -365,7 +365,7 @@ public class TextVisualizer implements Visualizer {
                                 break;
                             case Mountain:
                                 token = (tile.getLevel() > 130 ? "\033[43m" : "") +
-                                        (tile.getResources().contains(world.getResourcePool().get("Snow")) ? "\033[30m" : "\033[93m") + "^";
+                                        (tile.getResourcePack().contains(world.getResourcePool().get("Snow")) ? "\033[30m" : "\033[93m") + "^";
                                 break;
                             default:
                                 token += " ";
@@ -408,7 +408,7 @@ public class TextVisualizer implements Visualizer {
     private void printGroup(GroupConglomerate group) {
         printMap(tile -> (group.getTerritory().contains(tile) ?
                 (group.subgroups.stream().anyMatch(sg -> sg.getTerritoryCenter().getTerritory().contains(tile)) ? "\033[31mO" :
-                        (tile.getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
+                        (tile.getResourcePack().getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
                                 "\033[31m+" : "\033[31mX")) : ""));
         System.out.println(group);
     }
@@ -419,8 +419,8 @@ public class TextVisualizer implements Visualizer {
      * @param resource Resource which will be printed.
      */
     private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
-                && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResource(resource).getAmount() % 10 : ""));
+        printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
+                && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
         System.out.println(resource);
     }
 
@@ -685,11 +685,11 @@ public class TextVisualizer implements Visualizer {
                             }
                             break;
                         case MeaningfulResources:
-                            printMap(tile -> (tile.getResources().stream().anyMatch(Resource::hasMeaning) ? "\033[31mX"
+                            printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(Resource::hasMeaning) ? "\033[31mX"
                                     : ""));
                             break;
                         case ArtificialResources:
-                            printMap(tile -> (tile.getResources().stream().anyMatch(res -> res.hasMeaning() ||
+                            printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(res -> res.hasMeaning() ||
                                     res.getBaseName().equals("House") || res.getBaseName().equals("Clothes")) ? "\033[31mX" : ""));
                             break;
                         case IdleGo:

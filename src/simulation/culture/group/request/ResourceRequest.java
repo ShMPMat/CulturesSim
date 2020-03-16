@@ -23,8 +23,8 @@ public class ResourceRequest extends Request {
         for (Aspect aspect : stratum.getAspects()) {
             if (aspect instanceof ConverseWrapper) {
                 if (((ConverseWrapper) aspect).getResult().stream().anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
-                    return new ResourceEvaluator(resourcePack -> resourcePack.getResource(resource),
-                            resourcePack -> resourcePack.getResourceAmount(resource));
+                    return new ResourceEvaluator(resourcePack -> resourcePack.getPackedResource(resource),
+                            resourcePack -> resourcePack.getAmount(resource));
                 } else {
                     return null;
                 }

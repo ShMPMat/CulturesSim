@@ -51,12 +51,12 @@ public class PlacementStrategy {
             case Border:
                 List<Tile> border = controlledTerritory.getInnerBrink();
                 List<Tile> unfinishedBorder = controlledTerritory
-                        .getInnerBrink(t -> !t.getResources().containsAll(resourcePack.getResources()));
+                        .getInnerBrink(t -> !t.getResourcePack().containsAll(resourcePack));
                 return unfinishedBorder.isEmpty()
                         ? randomElement(border, session.random)
                         : randomElement(unfinishedBorder, session.random);
             case Homogeneous:
-                tiles = controlledTerritory.getTiles(t -> !t.getResources().containsAll(resourcePack.getResources()));
+                tiles = controlledTerritory.getTiles(t -> !t.getResourcePack().containsAll(resourcePack));
                 return tiles.isEmpty()
                         ? SpaceProbabilityFuncs.randomTile(controlledTerritory)
                         : randomElement(tiles, session.random);

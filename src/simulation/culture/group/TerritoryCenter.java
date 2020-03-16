@@ -18,7 +18,9 @@ public class TerritoryCenter {
     private GroupTileTag tileTag;
     private Function<Tile, Integer> tilePotentialMapper = t ->
             t.getNeighbours(tile1 -> tile1.getTagPool().contains(tileTag)).size()
-                    + 3 * t.hasResources(tileTag.getGroup().getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements())
+                    + 3 * t.hasResources(
+                    tileTag.getGroup().getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements()
+            )
                     + tileTag.getGroup().getRelationCenter().evaluateTile(t);
     private double spreadAbility;
 

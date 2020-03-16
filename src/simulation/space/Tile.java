@@ -1,8 +1,7 @@
 package simulation.space;
 
 import kotlin.Pair;
-import simulation.space.resource.Genome;
-import simulation.space.resource.Resource;
+import simulation.space.resource.*;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -15,7 +14,7 @@ public class Tile {
     private MutableTileTagPool tagPool = new MutableTileTagPool();
     private Type type;
     private TectonicPlate plate;
-    private List<Resource> resources = new ArrayList<>();//TODO make it set
+    private MutableResourcePack resourcePack = new MutableResourcePack();
     /**
      * Resources which were added on this Tile during this turn. They are
      * stored here before the end of the turn.
@@ -50,12 +49,12 @@ public class Tile {
         this.neighbours = neighbours;
     }
 
-    public MutableTileTagPool getTagPool() {
-        return tagPool;
+    public ResourcePack getResourcePack() {
+        return resourcePack;
     }
 
-    public List<Resource> getResources() {
-        return resources;
+    public MutableTileTagPool getTagPool() {
+        return tagPool;
     }
 
     /**
@@ -63,7 +62,7 @@ public class Tile {
      * moved on this Tile on this turn and inaccessible outside of Tile.
      */
     public List<Resource> getResourcesWithMoved() {
-        List<Resource> _l = new ArrayList<>(getResources());
+        List<Resource> _l = new ArrayList<>(resourcePack.getResources());
         _l.addAll(_delayedResources);
         return _l;
     }
@@ -72,20 +71,14 @@ public class Tile {
      * @return all Resources which are available from this Tile.
      */
     public List<Resource> getAccessibleResources() {
-        List<Resource> _l = new ArrayList<>(getResources());
-        getNeighbours().forEach(tile -> _l.addAll(tile.getResources()));
+        List<Resource> _l = new ArrayList<>(resourcePack.getResources());
+        getNeighbours().forEach(tile -> _l.addAll(tile.resourcePack.getResources()));
         return _l;
     }
 
-    public Resource getResource(Resource resource) {
-        int index = resources.indexOf(resource);
-        return index == -1 ? resource.cleanCopy(0) : resources.get(index);
-    }
-
-    public Resource getResource(String name) {
+    public Resource getResource(String name) {//TODO awful
         Resource resource = session.world.getResourcePool().get(name);
-        int index = resources.indexOf(resource);
-        return index == -1 ? resource.cleanCopy(0) : resources.get(index);
+        return resourcePack.getResource(resource);
     }
 
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
@@ -95,7 +88,7 @@ public class Tile {
     }
 
     public List<Tile> getNeighbours() {
-        return getNeighbours(t -> true);
+        return neighbours;
     }
 
     public List<Tile> getNeighboursInRadius(Predicate<Tile> predicate, int radius) {
@@ -149,8 +142,8 @@ public class Tile {
     }
 
     public int getLevelWithWater() {
-        int index = resources.indexOf(session.world.getResourcePool().get("Water"));
-        return getLevel() + (index == -1 ? 0 : resources.get(index).getAmount());
+        Resource water = resourcePack.getResource(session.world.getResourcePool().get("Water"));
+        return getLevel() + water.getAmount();
     }
 
     public int getSecondLevel() {
@@ -217,13 +210,7 @@ public class Tile {
         if (resource.getAmount() == 0) {
             return;
         }
-        for (Resource res : resources) {
-            if (res.fullEquals(resource)) {
-                res.merge(resource);
-                return;
-            }
-        }
-        resources.add(resource);
+        resourcePack.add(resource);
     }
 
     /**
@@ -248,8 +235,8 @@ public class Tile {
         }
     }
 
-    public int hasResources(Collection<Resource> requirements) {
-        return resources.stream().filter(requirements::contains).map(Resource::getAmount).reduce(0, Integer::sum);
+    public int hasResources(Collection<Resource> requirements) {//TODO remove
+        return resourcePack.getResources().stream().filter(requirements::contains).map(Resource::getAmount).reduce(0, Integer::sum);
     }
 
     public boolean canSettle() {
@@ -304,20 +291,20 @@ public class Tile {
     }
 
     private void updateResources() {
-        for (int i = 0; i < resources.size(); i++) {
-            Resource resource = resources.get(i);
+        List<Resource> deletedResources = new ArrayList<>();
+        for (Resource resource: resourcePack.getResources()) {
             if (!resource.update(this)) {
-                resources.remove(resource);
-                i--;
+                deletedResources.add(resource);
             }
         }
+        resourcePack.removeAll(deletedResources);
     }
 
     private void updateType() {
         if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
-            if (resources.stream().anyMatch(resource -> resource.getSimpleName().matches("Tree|JungleTree"))) {
+            if (resourcePack.getResources().stream().anyMatch(r -> r.getSimpleName().matches("Tree|JungleTree"))) {
                 setType(Type.Woods, false);
-            } else if (resources.stream().anyMatch(resource -> resource.getGenome().getType() == Genome.Type.Plant)) {
+            } else if (resourcePack.getResources().stream().anyMatch(r -> r.getGenome().getType() == Genome.Type.Plant)) {
                 setType(Type.Growth, false);
             } else {
                 setType(Type.Normal, false);
@@ -325,13 +312,13 @@ public class Tile {
         } else if (getType() == Type.Water) {
             addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
         }
-        if (resources.contains(session.world.getResourcePool().get("Water"))) {
+        if (resourcePack.contains(session.world.getResourcePool().get("Water"))) {
             addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
         }
     }
 
     private void useWind() {
-        for (Resource resource : resources) {
+        for (Resource resource : resourcePack.getResources()) {
             if (!resource.getGenome().isMovable()) {
                 continue;
             }
@@ -410,7 +397,7 @@ public class Tile {
         StringBuilder stringBuilder = new StringBuilder(String.format(
                 "Tile %d %d, type=%s, temperature=%d, level=%d, resources:\n", x, y, getType(), temperature, level
                 ));
-        for (Resource resource : resources) {
+        for (Resource resource : resourcePack.getResources()) {
             stringBuilder.append(resource).append("\n");
         }
         return stringBuilder.toString();

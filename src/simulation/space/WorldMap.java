@@ -58,7 +58,7 @@ public class WorldMap {
     public List<Resource> getAllResourceInstancesWithName(String name) {
         return tiles.stream()
                 .flatMap(Collection::stream)
-                .flatMap(t -> t.getResources().stream())
+                .flatMap(t -> t.getResourcePack().getResources().stream())
                 .filter(r -> r.getBaseName().equals(name))
                 .collect(Collectors.toList());
     }

@@ -40,7 +40,7 @@ public abstract class ResourceMaterialDependency extends CoefficientDependency {
 
     @Override
     public boolean hasNeeded(Tile tile) {
-        return tile.getResources().stream().anyMatch(this::isResourceGood);
+        return tile.getResourcePack().getResources().stream().anyMatch(this::isResourceGood);
     }
 
     boolean isResourceGood(Resource resource) {

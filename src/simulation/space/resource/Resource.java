@@ -227,10 +227,10 @@ public class Resource {
         } else if (getSimpleName().equals("Snow")) {
             if (tile.getType() == Tile.Type.Mountain && testProbability(1, session.random)) {
                 Resource water = session.world.getResourcePool().get("Water").copy(2);
-                if (tile.getResource(water).getAmount() < 2 && (tile.getNeighboursInRadius(t ->
+                if (tile.getResourcePack().getResource(water).getAmount() < 2 && (tile.getNeighboursInRadius(t ->
                         t.getType() == Tile.Type.Mountain &&
-                        t.getResource(this).getAmount() != 0 && t.getResource(water).getAmount() != 0, 5).isEmpty() ||
-                        tile.getResource(water).getAmount() != 0)) {
+                        t.getResourcePack().getAmount(this) != 0 && t.getResourcePack().getAmount(water) != 0, 5).isEmpty() ||
+                        tile.getResourcePack().getAmount(water) != 0)) {
                     tile.addDelayedResource(water);
                 }
             }
@@ -242,13 +242,13 @@ public class Resource {
     private void distribute(Tile tile) {
         if (getGenome().canMove() && amount > getGenome().getNaturalDensity()) {
             List<Tile> tiles = tile.getNeighbours(t -> getGenome().isAcceptable(t));
-            tiles.sort(Comparator.comparingInt(t -> t.getResource(this).amount));
+            tiles.sort(Comparator.comparingInt(t -> t.getResourcePack().getAmount(this)));
             for (Tile neighbour: tiles) {
                 if (amount <= getGenome().getNaturalDensity() / 2) {
                     break;
                 }
                 int part = Math.min(amount - getGenome().getNaturalDensity() / 2,
-                        getGenome().getNaturalDensity() - neighbour.getResource(this).amount);
+                        getGenome().getNaturalDensity() - neighbour.getResourcePack().getAmount(this));
                 part = part <= 0 ? (amount - getGenome().getNaturalDensity() / 2) / tiles.size() : part;
                 neighbour.addDelayedResource(getCleanPart(part));
             }

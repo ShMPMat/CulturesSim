@@ -70,7 +70,7 @@ public class Territory {
     public List<Resource> getResourcesWithAspectTag(ResourceTag resourceTag) {
         List<Resource> resources = new ArrayList<>();
         for (Tile tile : tiles) {
-            for (Resource resource : tile.getResources()) {
+            for (Resource resource : tile.getResourcePack().getResources()) {
                 if (resource.getTags().contains(resourceTag) && !resources.contains(resource)) {
                     resources.add(resource);
                 }
@@ -85,7 +85,7 @@ public class Territory {
     public Collection<Resource> getDifferentResources() {
         List<Resource> resources = new ArrayList<>();
         for (Tile tile : tiles) {
-            for (Resource resource : tile.getResources()) {
+            for (Resource resource : tile.getResourcePack().getResources()) {
                 if (!resources.contains(resource)) {
                     resources.add(resource);
                 }
@@ -109,7 +109,9 @@ public class Territory {
     public Collection<Resource> getResourceInstances(Resource resource) {
         List<Resource> list = new ArrayList<>();
         for (Tile tile : tiles) {
-            tile.getResources().stream().filter(res -> res.equals(resource) && !res.hasMeaning()).forEach(list::add);
+            list.addAll(
+                    tile.getResourcePack().getResources(res -> res.equals(resource) && !res.hasMeaning()).getResources()
+            );
         }
         return list;
     }
