@@ -67,7 +67,7 @@ public class WorldMap {
      * @param predicate the Predicate on which Tiles will be tested.
      * @return All Tiles from the map which satisfy the Predicate.
      */
-    public List<Tile> getTilesWithPredicate(Predicate<Tile> predicate) {
+    public List<Tile> getTiles(Predicate<Tile> predicate) {
         return tiles.stream()
                 .flatMap(Collection::stream)
                 .filter(predicate)

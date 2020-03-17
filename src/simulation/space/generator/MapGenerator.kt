@@ -127,7 +127,7 @@ private fun fill(map: WorldMap) {
 }
 
 private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
-    val goodTiles = map.getTilesWithPredicate { resource.genome.isOptimal(it) }
+    val goodTiles = map.getTiles { resource.genome.isOptimal(it) }
     for (i in 0 until n) {
         var tile: Tile
         if (goodTiles.isEmpty()) {

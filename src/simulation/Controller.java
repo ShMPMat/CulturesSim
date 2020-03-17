@@ -4,6 +4,9 @@ import kotlin.random.Random;
 import kotlin.random.RandomKt;
 import simulation.interactionmodel.InteractionModel;
 import simulation.culture.thinking.language.templates.TemplateBase;
+import simulation.space.LandscapeChangesKt;
+import simulation.space.resource.Resource;
+import simulation.space.tile.Tile;
 import visualizer.Visualizer;
 
 /**
@@ -39,19 +42,19 @@ public class Controller {
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;
     public final int startGroupAmount = 10;
 
-    public final double  defaultGroupSpreadability        = 1;
-    public final int     defaultGroupMaxPopulation        = 1000;
-    public final int     defaultGroupMinPopulationPerTile = 1;
-    public final int     defaultGroupFertility            = 10;
-    public final double  defaultGroupExiting              = 0.0005;
-    public final double  defaultGroupDiverge              = 0.002;
-    public final double  rAspectAcquisition               = 0.1;
-    public final double  cultureAspectBaseProbability     = 0.02;
-    public final double  groupCultureAspectCollapse       = 0.01;
-    public final double  groupCollapsedAspectUpdate       = 0.01;
-    public final boolean groupDiverge                     = true;
-    public final boolean groupMultiplication              = true;
-    public final boolean independentCvSimpleAspectAdding  = true;
+    public final double defaultGroupSpreadability = 1;
+    public final int defaultGroupMaxPopulation = 1000;
+    public final int defaultGroupMinPopulationPerTile = 1;
+    public final int defaultGroupFertility = 10;
+    public final double defaultGroupExiting = 0.0005;
+    public final double defaultGroupDiverge = 0.002;
+    public final double rAspectAcquisition = 0.1;
+    public final double cultureAspectBaseProbability = 0.02;
+    public final double groupCultureAspectCollapse = 0.01;
+    public final double groupCollapsedAspectUpdate = 0.01;
+    public final boolean groupDiverge = true;
+    public final boolean groupMultiplication = true;
+    public final boolean independentCvSimpleAspectAdding = true;
 
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
@@ -67,7 +70,7 @@ public class Controller {
     }
 
     /**
-     * @param interactionModel  Interaction Model, which will govern how world will be updated.
+     * @param interactionModel Interaction Model, which will govern how world will be updated.
      */
     public Controller(InteractionModel interactionModel) {
         session = this;
@@ -93,6 +96,7 @@ public class Controller {
     }
 
     public void initializeSecond() {
+        Resource water = world.getResourcePool().get("Water");//TODO debug
         for (int j = 0; j < fillCycles && doTurns; j++) {
             if (j != 0) {
                 world.fillResources();
@@ -103,6 +107,16 @@ public class Controller {
                     visualizer.print();
                 }
             }
+            LandscapeChangesKt.createRivers(
+                    world.map,
+                    5,
+                    water,
+                    t -> t.getType() == Tile.Type.Mountain
+                            && t.getResourcePack().contains(world.getResourcePool().get("Snow"))
+                            && t.getNeighbours(n -> n.getResourcePack().contains(water)).isEmpty(),
+                    t -> t.getType() != Tile.Type.Ice && t.getTemperature() >= -10,
+                    random
+            );
         }
     }
 

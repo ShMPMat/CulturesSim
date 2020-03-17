@@ -225,11 +225,11 @@ public class Tile {
 
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
         _newWind = new Wind();
-        checkIce();
         updateResources();
         useWind();
         updateTemperature();
         updateType();
+        checkIce();
     }
 
     public void middleUpdate() {
@@ -281,6 +281,9 @@ public class Tile {
     }
 
     private void updateType() {
+        if (resourcePack.contains(session.world.getResourcePool().get("Water"))) {
+            setType(Type.Water, false);
+        }
         if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
             if (resourcePack.getResources().stream().anyMatch(r -> r.getSimpleName().matches("Tree|JungleTree"))) {
                 setType(Type.Woods, false);
