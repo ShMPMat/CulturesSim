@@ -22,7 +22,7 @@ public class Controller {
     public TemplateBase templateBase;
 
     public final int seed = (int) (Math.random() * 10000000);
-    public final Random random = RandomKt.Random(8565728 + 0);
+    public final Random random = RandomKt.Random(8565728 + 1);
 
     public final int proportionCoefficient = 1;
     public final boolean doTurns = true;
@@ -109,7 +109,7 @@ public class Controller {
             }
             LandscapeChangesKt.createRivers(
                     world.map,
-                    5,
+                    5 * proportionCoefficient,
                     water,
                     t -> t.getType() == Tile.Type.Mountain
                             && t.getResourcePack().contains(world.getResourcePool().get("Snow"))

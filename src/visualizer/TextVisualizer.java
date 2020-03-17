@@ -670,9 +670,6 @@ public class TextVisualizer implements Visualizer {
                         case Vapour:
                             printMap(this::vapourMapper);
                             break;
-                        case Fixed:
-                            printMap(tile -> tile.fixedWater ? "\033[41mX" : "");
-                            break;
                         case Resource:
                             try {
                                 Resource resource = world.getResourcePool().get(line.substring(2));
@@ -770,7 +767,6 @@ public class TextVisualizer implements Visualizer {
         Wind("wind"),
         TerrainLevel("level"),
         Vapour("vapour"),
-        Fixed("fixed"),
         /**
          * Command for printing resource information.
          */

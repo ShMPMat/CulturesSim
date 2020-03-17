@@ -24,7 +24,7 @@ public class Wind {
 
     public double getMaxLevel() {
         return affectedTiles.stream()
-                .map(Pair<Tile, Double>::getSecond)
+                .map(Pair::getSecond)
                 .reduce(Double::max)
                 .orElse(0.0);
     }

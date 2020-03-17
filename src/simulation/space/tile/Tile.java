@@ -1,6 +1,5 @@
 package simulation.space.tile;
 
-import kotlin.Pair;
 import simulation.space.*;
 import simulation.space.resource.*;
 
@@ -31,14 +30,11 @@ public class Tile {
     private int secondLevel;
     private int temperature;
     private List<Tile> neighbours = null;
-    private Wind wind;
-    private Wind _newWind;
-    public boolean fixedWater = false;
+    private WindCenter windCenter = new WindCenter();
 
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
-        wind = new Wind();
         updateTemperature();
         setType(Type.Normal, true);
     }
@@ -92,20 +88,6 @@ public class Tile {
         return neighbours;
     }
 
-    public List<Tile> getNeighboursInRadius(Predicate<Tile> predicate, int radius) {
-        List<Tile> tiles = new ArrayList<>();
-        Queue<Tile> candidates = new ArrayDeque<>(getNeighbours());
-        while (!candidates.isEmpty()) {
-            Tile candidate = candidates.poll();
-            if (TileDistanceKt.isCloser(this, candidate, radius) && !tiles.contains(candidate) && this != candidate) {
-                tiles.add(candidate);
-                candidates.addAll(candidate.getNeighbours());
-            }
-        }
-        tiles.removeIf(predicate.negate());
-        return tiles;
-    }
-
     public TectonicPlate getPlate() {
         return plate;
     }
@@ -118,11 +100,6 @@ public class Tile {
         return level;
     }
 
-    public int getLevelWithWater() {
-        Resource water = resourcePack.getResource(session.world.getResourcePool().get("Water"));
-        return getLevel() + water.getAmount();
-    }
-
     public int getSecondLevel() {
         return secondLevel;
     }
@@ -132,7 +109,7 @@ public class Tile {
     }
 
     public Wind getWind() {
-        return wind;
+        return windCenter.getWind();
     }
 
     public int getX() {
@@ -224,9 +201,9 @@ public class Tile {
     }//TODO move it otta here
 
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
-        _newWind = new Wind();
         updateResources();
-        useWind();
+        windCenter.startUpdate();
+        windCenter.useWind(resourcePack.getResources());
         updateTemperature();
         updateType();
         checkIce();
@@ -235,32 +212,11 @@ public class Tile {
     public void middleUpdate() {
         _delayedResources.forEach(this::addResource);
         _delayedResources.clear();
-        WorldMap map = session.world.map;
-        setWindByTemperature(map.get(x + 1, y));
-        setWindByTemperature(map.get(x - 1, y));
-        setWindByTemperature(map.get(x, y + 1));
-        setWindByTemperature(map.get(x, y - 1));
-
-        if (!_newWind.isStill()) {
-            return;
-        }
-        propagateWindStraight(map.get(x - 1, y), map.get(x + 1, y));
-        propagateWindStraight(map.get(x + 1, y), map.get(x - 1, y));
-        propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1));
-        propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1));
-
-        if (!_newWind.isStill()) {//TODO better to addAll wind for cross tiles than try to fetch it; cut wind on large level changes
-            return;
-        }
-
-        propagateWindFillIn(map.get(x - 1, y), map.get(x - 2, y));
-        propagateWindFillIn(map.get(x + 1, y), map.get(x + 2, y));
-        propagateWindFillIn(map.get(x, y - 1), map.get(x, y - 2));
-        propagateWindFillIn(map.get(x, y + 1), map.get(x, y + 2));
+        windCenter.middleUpdate(x, y);
     }
 
     public void finishUpdate() {
-        wind = _newWind;
+        windCenter.finishUpdate();
     }
 
     private void updateTemperature() {
@@ -297,54 +253,6 @@ public class Tile {
         }
         if (resourcePack.contains(session.world.getResourcePool().get("Water"))) {
             addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
-        }
-    }
-
-    private void useWind() {
-        for (Resource resource : resourcePack.getResources()) {
-            if (!resource.getGenome().isMovable()) {
-                continue;
-            }
-            double overallWindLevel = wind.affectedTiles.stream()
-                    .map(Pair<Tile, Double>::getSecond)
-                    .reduce(Double::sum)
-                    .orElse(0.0);
-            for (Pair<Tile, Double> pair : wind.affectedTiles) {
-                int part = (int) (resource.getAmount() * pair.getSecond() / overallWindLevel *
-                        Math.min(pair.getSecond() * 0.0001 / resource.getGenome().getMass(), 1));
-                if (part > 0) {
-                    pair.getFirst().addDelayedResource(resource.getCleanPart(part));
-                }
-            }
-        }
-    }
-
-    private void setWindByTemperature(Tile tile) {
-        int temperatureChange = 3;
-        if (tile != null) {
-            double level = ((double) tile.temperature - 1 - temperature) / temperatureChange;
-            if (level > 0) {
-                _newWind.changeLevelOnTile(tile, level);
-            }
-        }
-    }
-
-    private void propagateWindStraight(Tile target, Tile tile) {
-        if (tile != null && target != null) {
-            double level = tile.wind.getPureLevelByTile(this) - SpaceData.INSTANCE.getData().getWindPropagation();
-            if (level > 0) {
-                _newWind.changeLevelOnTile(target, level);
-            }
-        }
-    }
-
-    private void propagateWindFillIn(Tile tile, Tile target) {
-        if (tile != null && target != null) {
-            double level = tile.wind.getLevelByTile(target) - session.windFillIn;
-            if (level > 0) {
-                _newWind.isFilling = true;
-                _newWind.changeLevelOnTile(tile, level);
-            }
         }
     }
 
