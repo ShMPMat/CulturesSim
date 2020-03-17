@@ -4,6 +4,7 @@ import extra.OutputFunc;
 import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.thinking.meaning.GroupMemes;
+import simulation.space.TileDistanceKt;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
@@ -185,9 +186,13 @@ public class GroupConglomerate {
     int getClosestInnerGroupDistance(Tile tile) {
         int d = Integer.MAX_VALUE;
         for (Group subgroup : subgroups) {
-            d = min(d, tile.getClosestDistance(
-                    Collections.singleton(subgroup.getTerritoryCenter().getTerritory().getCenter())
-            ));
+            d = min(
+                    d,
+                    TileDistanceKt.getClosest(
+                            tile,
+                            Collections.singleton(subgroup.getTerritoryCenter().getTerritory().getCenter())
+                    ).getSecond()
+            );
         }
         return d;
     }

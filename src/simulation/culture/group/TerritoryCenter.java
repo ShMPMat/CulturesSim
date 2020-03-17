@@ -5,6 +5,7 @@ import simulation.Controller;
 import simulation.Event;
 import simulation.space.Territory;
 import simulation.space.Tile;
+import simulation.space.TileDistanceKt;
 
 import java.util.*;
 import java.util.function.Function;
@@ -89,7 +90,7 @@ public class TerritoryCenter {
     }
 
     private boolean isTileReachable(Tile tile) {
-        return getTerritory().getCenter().getDistance(tile) < 4;
+        return TileDistanceKt.getDistance(tile, getTerritory().getCenter()) < 4;
     }
 
     void claimTile(Tile tile) {

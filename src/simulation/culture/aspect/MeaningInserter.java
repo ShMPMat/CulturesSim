@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class MeaningInserter extends ConverseWrapper {
 
     public MeaningInserter(Aspect aspect, Resource resource, Group group) {
-        super(aspect, resource.fullClearCopy(), group);
+        super(aspect, resource.fullCopy(), group);
         canInsertMeaning = true;
         this.resource.setHasMeaning(true);
     }

@@ -71,9 +71,9 @@ public class Tile {
      * @return all Resources which are available from this Tile.
      */
     public List<Resource> getAccessibleResources() {
-        List<Resource> _l = new ArrayList<>(resourcePack.getResources());
-        getNeighbours().forEach(tile -> _l.addAll(tile.resourcePack.getResources()));
-        return _l;
+        List<Resource> accessibleResources = new ArrayList<>(resourcePack.getResources());
+        getNeighbours().forEach(t -> accessibleResources.addAll(t.resourcePack.getResources()));
+        return accessibleResources;
     }
 
     public Resource getResource(String name) {//TODO awful
@@ -96,7 +96,7 @@ public class Tile {
         Queue<Tile> candidates = new ArrayDeque<>(getNeighbours());
         while (!candidates.isEmpty()) {
             Tile candidate = candidates.poll();
-            if (getDistance(candidate) <= radius && !tiles.contains(candidate) && this != candidate) {
+            if (TileDistanceKt.isCloser(this, candidate, radius) && !tiles.contains(candidate) && this != candidate) {
                 tiles.add(candidate);
                 candidates.addAll(candidate.getNeighbours());
             }
@@ -107,30 +107,6 @@ public class Tile {
 
     public TectonicPlate getPlate() {
         return plate;
-    }
-
-    /**
-     * @param tile Tile to which distance will be calculated.
-     * @return distance to the Tile (it is not guarantied it will be euclidean).
-     */
-    public int getDistance(Tile tile) {
-        return Math.abs(tile.x - x) + Math.abs(tile.y - y);
-    }
-
-    /**
-     * @param tiles Collection of tiles from which closest to this Tile will be found.
-     * @return Closest Tile from tiles.
-     */
-    public Tile getClosest(Collection<Tile> tiles) {
-        return tiles.stream().min(Comparator.comparingInt(this::getDistance)).orElse(null);
-    }
-
-    /**
-     * @param tiles Collection of tiles in which distance will be calculated.
-     * @return Distance to the closest tile from tiles.
-     */
-    public int getClosestDistance(Collection<Tile> tiles) {
-        return getClosest(tiles).getDistance(this);
     }
 
     public Type getType() {
@@ -236,7 +212,10 @@ public class Tile {
     }
 
     public int hasResources(Collection<Resource> requirements) {//TODO remove
-        return resourcePack.getResources().stream().filter(requirements::contains).map(Resource::getAmount).reduce(0, Integer::sum);
+        return resourcePack.getResources().stream()
+                .filter(requirements::contains)
+                .map(Resource::getAmount)
+                .reduce(0, Integer::sum);
     }
 
     public boolean canSettle() {

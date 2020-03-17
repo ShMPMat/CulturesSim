@@ -100,7 +100,7 @@ public class Resource {
     public Resource getCleanPart(int part) {
         int result = Math.min(amount, part);
         amount -= result;
-        return cleanCopy(result);
+        return copy(result);
     }
 
     public Genome getGenome() {
@@ -117,15 +117,17 @@ public class Resource {
 
     public Resource merge(Resource resource) {
         if (!resource.getBaseName().equals(getBaseName())) {
-            throw new RuntimeException(String.format("Different resource tried to merge - %s and %s",
-                    getFullName(), resource.getFullName()));
+            throw new RuntimeException(String.format(
+                    "Different resource tried to merge - %s and %s",
+                    getFullName(),
+                    resource.getFullName()
+            ));
         }
         if (this == resource) {
             return this;
-//            int i = 0;//TODO this happens, yes
         }
         addAmount(resource.amount);
-        resource.amount = 0;
+        resource.destroy();
         return this;
     }
 
@@ -133,25 +135,17 @@ public class Resource {
         return resourceCore.copy();
     }
 
-    public Resource cleanCopy() {
-        return resourceCore.copy();
-    }
-
     public Resource copy(int amount) {
         return resourceCore.copy(amount);
     }
 
-    public Resource cleanCopy(int amount) {
-        return resourceCore.copy(amount);
-    }
-
-    public Resource fullClearCopy() {
+    public Resource fullCopy() {
         return resourceCore.fullCopy();
     }
 
     public Resource insertMeaning(Meme meaning, AspectResult result) {
         Resource resource = new Resource(resourceCore.insertMeaning(meaning, result), amount);
-        this.amount = 0;
+        destroy();
         return resource;
     }
 
@@ -270,8 +264,12 @@ public class Resource {
         return resourceCore.hasApplicationForAspect(aspect);
     }
 
-    public void setAmount(int amount) {
+    void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public void destroy() {
+        this.amount = 0;
     }
 
     public List<Resource> applyAndConsumeAspect(Aspect aspect, int part) {

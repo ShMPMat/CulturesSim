@@ -36,7 +36,7 @@ public class ConverseWrapper extends Aspect {
                 group
         );
         this.aspect = aspect;
-        this.resource = resource.cleanCopy();
+        this.resource = resource.copy();
     }
 
     private static List<ResourceTag> getReducedTags(Resource resource, Aspect aspect) {

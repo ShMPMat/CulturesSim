@@ -42,7 +42,7 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
         return ResourcePack(setOf(resourceInMap))
     }
 
-    fun getResource(resource: Resource): Resource = resourceMap[resource] ?: resource.cleanCopy(0)
+    fun getResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
 
     fun getAmount(tag: ResourceTag) = getResourcesWithTag(tag).amount
 

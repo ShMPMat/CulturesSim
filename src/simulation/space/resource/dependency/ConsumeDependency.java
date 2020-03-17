@@ -35,7 +35,7 @@ public class ConsumeDependency extends ResourceMaterialDependency {
                 if (part.getAmount() > 0) {
                     lastConsumed.add(part.getFullName());
                 }
-                part.setAmount(0);
+                part.destroy();
                 if (currentAmount >= _amount) {
                     break;
                 }

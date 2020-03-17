@@ -2,6 +2,7 @@ package simulation.culture.group
 
 import simulation.culture.group.intergroup.Relation
 import simulation.space.Tile
+import simulation.space.getDistance
 import java.util.*
 
 class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double) {
@@ -20,7 +21,7 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
     }
 
     fun evaluateTile(tile: Tile) = relations.map {
-        (it.positive * evaluationFactor / it.other.territoryCenter.territory.center.getDistance(tile)).toInt()
+        (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.territory.center)).toInt()
     }.fold(0, Int::plus)
 
     fun update(groups: Collection<Group>, owner: Group) {
