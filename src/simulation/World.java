@@ -8,7 +8,7 @@ import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.*;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 import simulation.space.WorldMap;
 import simulation.space.generator.MapGeneratorSupplement;
 import simulation.space.generator.MapGeneratorKt;

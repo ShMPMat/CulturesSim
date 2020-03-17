@@ -1,7 +1,7 @@
 package simulation.space;
 
-import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
+import simulation.space.tile.Tile;
 
 import java.util.*;
 import java.util.function.Predicate;

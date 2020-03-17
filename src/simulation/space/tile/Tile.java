@@ -1,6 +1,7 @@
-package simulation.space;
+package simulation.space.tile;
 
 import kotlin.Pair;
+import simulation.space.*;
 import simulation.space.resource.*;
 
 import java.util.*;

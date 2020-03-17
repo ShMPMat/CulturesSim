@@ -1,6 +1,6 @@
 package simulation.space.resource.dependency;
 
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 import simulation.space.resource.Resource;
 
 public abstract class CoefficientDependency implements ResourceDependency {

@@ -1,8 +1,7 @@
 package simulation.space.resource;
 
-import simulation.World;
 import simulation.culture.aspect.Aspect;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 
 import java.util.List;
 

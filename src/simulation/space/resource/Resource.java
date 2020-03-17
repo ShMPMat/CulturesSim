@@ -5,7 +5,7 @@ import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.tag.ResourceTag;
 

@@ -4,6 +4,7 @@ import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.Resource;
+import simulation.space.tile.Tile;
 
 import java.util.*;
 import java.util.function.Function;

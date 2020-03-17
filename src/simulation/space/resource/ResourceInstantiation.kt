@@ -4,7 +4,7 @@ import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
-import simulation.space.Tile
+import simulation.space.tile.Tile
 import simulation.space.resource.dependency.AvoidTiles
 import simulation.space.resource.dependency.ConsumeDependency
 import simulation.space.resource.dependency.ResourceDependency

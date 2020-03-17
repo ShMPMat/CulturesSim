@@ -1,7 +1,7 @@
 package simulation.space.resource;
 
 import simulation.space.SpaceData;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.dependency.TemperatureMax;
 import simulation.space.resource.dependency.TemperatureMin;

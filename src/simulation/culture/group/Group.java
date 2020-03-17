@@ -13,7 +13,7 @@ import simulation.culture.group.request.Request;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 

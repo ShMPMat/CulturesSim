@@ -1,5 +1,6 @@
-package simulation.space
+package simulation.space.tile
 
+import simulation.space.SpaceError
 import kotlin.math.abs
 
 fun getDistance(tile1: Tile, tile2: Tile): Int = abs(tile1.x - tile2.x) + abs(tile1.y - tile2.y)

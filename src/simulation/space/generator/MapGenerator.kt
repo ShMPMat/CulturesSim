@@ -4,7 +4,7 @@ import shmp.random.randomElement
 import shmp.random.randomTile
 import simulation.space.resource.ResourcePool
 import simulation.space.TectonicPlate
-import simulation.space.Tile
+import simulation.space.tile.Tile
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource

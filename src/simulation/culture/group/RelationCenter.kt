@@ -1,8 +1,8 @@
 package simulation.culture.group
 
 import simulation.culture.group.intergroup.Relation
-import simulation.space.Tile
-import simulation.space.getDistance
+import simulation.space.tile.Tile
+import simulation.space.tile.getDistance
 import java.util.*
 
 class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double) {

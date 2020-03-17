@@ -1,7 +1,7 @@
 package extra;
 
 import simulation.space.Territory;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
 import simulation.space.WorldMap;
 
 import java.util.Collection;

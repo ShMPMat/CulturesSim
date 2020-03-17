@@ -1,6 +1,6 @@
 package simulation.space.resource
 
-import simulation.space.Tile
+import simulation.space.tile.Tile
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 

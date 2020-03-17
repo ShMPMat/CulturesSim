@@ -1,4 +1,4 @@
-package simulation.space
+package simulation.space.tile
 
 open class TileTag(val name: String, val type: String) {
     override fun equals(other: Any?): Boolean {

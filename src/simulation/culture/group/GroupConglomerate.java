@@ -4,13 +4,11 @@ import extra.OutputFunc;
 import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.thinking.meaning.GroupMemes;
-import simulation.space.TileDistanceKt;
-import simulation.space.resource.tag.ResourceTag;
-import simulation.culture.aspect.dependency.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Territory;
-import simulation.space.Tile;
+import simulation.space.tile.Tile;
+import simulation.space.tile.TileDistanceKt;
 
 import java.util.*;
 import java.util.stream.Collectors;

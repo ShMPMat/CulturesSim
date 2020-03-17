@@ -1,6 +1,7 @@
-package simulation.space;
+package simulation.space.tile;
 
 import kotlin.Pair;
+import simulation.space.SpaceData;
 
 import java.util.ArrayList;
 import java.util.List;

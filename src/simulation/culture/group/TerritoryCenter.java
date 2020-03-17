@@ -4,8 +4,8 @@ import extra.SpaceProbabilityFuncs;
 import simulation.Controller;
 import simulation.Event;
 import simulation.space.Territory;
-import simulation.space.Tile;
-import simulation.space.TileDistanceKt;
+import simulation.space.tile.Tile;
+import simulation.space.tile.TileDistanceKt;
 
 import java.util.*;
 import java.util.function.Function;
