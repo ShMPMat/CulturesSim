@@ -5,6 +5,7 @@ import kotlin.random.RandomKt;
 import simulation.interactionmodel.InteractionModel;
 import simulation.culture.thinking.language.templates.TemplateBase;
 import simulation.space.LandscapeChangesKt;
+import simulation.space.SpaceData;
 import simulation.space.resource.Resource;
 import simulation.space.tile.Tile;
 import visualizer.Visualizer;
@@ -14,9 +15,6 @@ import visualizer.Visualizer;
  */
 public class Controller {
     public static Controller session;
-    /**
-     * Main world, where all simulated objects placed.
-     */
     public World world;
     public InteractionModel interactionModel;
     public TemplateBase templateBase;
@@ -30,8 +28,6 @@ public class Controller {
     public final int mapSizeX = 45 * proportionCoefficient;
     public final int mapSizeY = 135 * proportionCoefficient;
     public final int platesAmount = 10 * proportionCoefficient;
-    public final int temperatureBaseStart = -15;
-    public final int temperatureBaseFinish = 29;
     public final int geologyTurns = 50;
     public final int initialTurns = 100;
     public final int stabilizationTurns = 100;

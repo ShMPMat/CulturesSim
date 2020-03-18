@@ -3,7 +3,8 @@ package simulation.space.tile
 import simulation.space.SpaceError
 import kotlin.math.abs
 
-fun getDistance(tile1: Tile, tile2: Tile): Int = abs(tile1.x - tile2.x) + abs(tile1.y - tile2.y)
+fun getDistance(tile1: Tile, tile2: Tile): Int =
+        abs(tile1.getX() - tile2.getX()) + abs(tile1.getY() - tile2.getY())
 
 fun isCloser(tile1: Tile, tile2: Tile, distance: Int) = getDistance(tile1, tile2) <= distance
 

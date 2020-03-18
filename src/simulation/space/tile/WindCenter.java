@@ -44,20 +44,18 @@ public class WindCenter {
         }
     }
 
-    void middleUpdate(int x, int y) {//TODO mb just use neighbours?
+    void middleUpdate(int x, int y) {
         WorldMap map = session.world.map;
-        setWindByTemperature(map.get(x + 1, y), map.get(x, y));
-        setWindByTemperature(map.get(x - 1, y), map.get(x, y));
-        setWindByTemperature(map.get(x, y + 1), map.get(x, y));
-        setWindByTemperature(map.get(x, y - 1), map.get(x, y));
+        Tile host = map.get(x, y);
+        host.getNeighbours().forEach(n -> setWindByTemperature(n, host));
 
         if (!_newWind.isStill()) {
             return;
         }
-        propagateWindStraight(map.get(x - 1, y), map.get(x + 1, y), map.get(x, y));
-        propagateWindStraight(map.get(x + 1, y), map.get(x - 1, y), map.get(x, y));
-        propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1), map.get(x, y));
-        propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1), map.get(x, y));
+        propagateWindStraight(map.get(x - 1, y), map.get(x + 1, y), host);
+        propagateWindStraight(map.get(x + 1, y), map.get(x - 1, y), host);
+        propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1), host);
+        propagateWindStraight(map.get(x, y + 1), map.get(x, y - 1), host);
 
         if (!_newWind.isStill()) {//TODO better to addAll wind for cross tiles than try to fetch it; cut wind on large level changes
             return;

@@ -19,8 +19,9 @@ public class TerritoryCenter {
     private GroupTileTag tileTag;
     private Function<Tile, Integer> tilePotentialMapper = t ->
             t.getNeighbours(tile1 -> tile1.getTagPool().contains(tileTag)).size()
-                    + 3 * t.hasResources(
+                    + 3 * t.getResourcePack().getAmount(r ->
                     tileTag.getGroup().getCultureCenter().getAspectCenter().getAspectPool().getResourceRequirements()
+                            .contains(r)
             )
                     + tileTag.getGroup().getRelationCenter().evaluateTile(t);
     private double spreadAbility;
@@ -103,8 +104,11 @@ public class TerritoryCenter {
         tileTag.getGroup().getParentGroup().claimTile(tile);
         tile.getTagPool().add(tileTag);
         getTerritory().add(tile);
-        tileTag.getGroup().addEvent(new Event(Event.Type.TileAcquisition, "Group " + tileTag.getGroup().name + " claimed tile " + tile.x + " " +
-                tile.y, "group", this, "tile", tile));
+        tileTag.getGroup().addEvent(new Event(
+                Event.Type.TileAcquisition,
+                "Group " + tileTag.getGroup().name + " claimed tile " + tile.getX() + " " + tile.getY(),
+                "group", this, "tile", tile
+        ));
     }
 
     void die() {

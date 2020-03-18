@@ -91,16 +91,16 @@ public class TectonicPlate extends Territory {
             List<Tile> affectedTiles = new ArrayList<>();
             switch (direction) {
                 case U:
-                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x + 1 && t.y == tile.y);
+                    affectedTiles = tile.getNeighbours(t -> t.getX() == tile.getX() + 1 && t.getY() == tile.getY());
                     break;
                 case R:
-                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x && t.y == tile.y - 1);
+                    affectedTiles = tile.getNeighbours(t -> t.getX() == tile.getX() && t.getY() == tile.getY() - 1);
                     break;
                 case L:
-                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x && t.y == tile.y + 1);
+                    affectedTiles = tile.getNeighbours(t -> t.getX() == tile.getX() && t.getY() == tile.getY() + 1);
                     break;
                 case D:
-                    affectedTiles = tile.getNeighbours(t -> t.x == tile.x - 1 && t.y == tile.y);
+                    affectedTiles = tile.getNeighbours(t -> t.getX() == tile.getX() - 1 && t.getY() == tile.getY());
                     break;
             }
             return !affectedTiles.isEmpty() && affectedTiles.get(0).getPlate() == this;

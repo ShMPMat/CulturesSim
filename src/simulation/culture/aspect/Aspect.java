@@ -213,7 +213,7 @@ public class Aspect {
                                     controller.getCeiling()).getSecond()
                             );
                         } else {
-                            usedForDependency.addAll(_rp.getResourcesWithTag(dependency1.getType()));
+                            usedForDependency.addAll(_rp.getResources(dependency1.getType()));
                         }
                         meaningfulPack.addAll(_rp);
                         isFinished = true;

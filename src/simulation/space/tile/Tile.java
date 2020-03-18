@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import static simulation.Controller.session;
 
 public class Tile {
-    public int x, y;
+    private int x, y;
     private MutableTileTagPool tagPool = new MutableTileTagPool();
     private Type type;
     private TectonicPlate plate;
@@ -54,10 +54,6 @@ public class Tile {
         return tagPool;
     }
 
-    /**
-     * @return all Resources on this Tile including ones which were
-     * moved on this Tile on this turn and inaccessible outside of Tile.
-     */
     public List<Resource> getResourcesWithMoved() {
         List<Resource> _l = new ArrayList<>(resourcePack.getResources());
         _l.addAll(_delayedResources);
@@ -71,11 +67,6 @@ public class Tile {
         List<Resource> accessibleResources = new ArrayList<>(resourcePack.getResources());
         getNeighbours().forEach(t -> accessibleResources.addAll(t.resourcePack.getResources()));
         return accessibleResources;
-    }
-
-    public Resource getResource(String name) {//TODO awful
-        Resource resource = session.world.getResourcePool().get(name);
-        return resourcePack.getResource(resource);
     }
 
     public List<Tile> getNeighbours(Predicate<Tile> predicate) {
@@ -179,34 +170,12 @@ public class Tile {
         _delayedResources.add(resource);
     }
 
-    private void checkIce() {
-        if (type == Type.Water && temperature < -10) {
-            type = Type.Ice;
-            level = session.defaultWaterLevel;
-        } else if (type == Type.Ice && temperature > 0) {
-            type = Type.Water;
-            level = secondLevel;
-        }
-    }
-
-    public int hasResources(Collection<Resource> requirements) {//TODO remove
-        return resourcePack.getResources().stream()
-                .filter(requirements::contains)
-                .map(Resource::getAmount)
-                .reduce(0, Integer::sum);
-    }
-
-    public boolean canSettle() {
-        return getType() != Type.Water && getType() != Type.Mountain;
-    }//TODO move it otta here
-
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
         updateResources();
         windCenter.startUpdate();
         windCenter.useWind(resourcePack.getResources());
         updateTemperature();
         updateType();
-        checkIce();
     }
 
     public void middleUpdate() {
@@ -220,8 +189,9 @@ public class Tile {
     }
 
     private void updateTemperature() {
-        temperature = session.temperatureBaseStart +
-                x * (session.temperatureBaseFinish - session.temperatureBaseStart) / session.mapSizeX -
+        int start = SpaceData.INSTANCE.getData().getTemperatureBaseStart();
+        int finish = SpaceData.INSTANCE.getData().getTemperatureBaseFinish();
+        temperature = start + x * (finish - start) / session.mapSizeX -
                 Math.max(0, (level - 110) / 2) -
                 (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
@@ -253,6 +223,13 @@ public class Tile {
         }
         if (resourcePack.contains(session.world.getResourcePool().get("Water"))) {
             addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
+        }
+        if (type == Type.Water && temperature < -10) {
+            type = Type.Ice;
+            level = session.defaultWaterLevel;
+        } else if (type == Type.Ice && temperature > 0) {
+            type = Type.Water;
+            level = secondLevel;
         }
     }
 
