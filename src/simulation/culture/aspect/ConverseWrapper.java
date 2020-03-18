@@ -110,7 +110,9 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public boolean canTakeResources() {
-        return aspect.getName().equals("Take") || aspect.getName().equals("Killing");
+        return aspect.getName().equals("Take") ||
+                aspect.getName().equals("Killing") ||
+                aspect.getName().equals("TakeApart");
     }
 
     @Override

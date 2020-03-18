@@ -60,9 +60,6 @@ public class Controller {
         return "G" + world.groups.size();
     }
 
-    /**
-     * @param interactionModel Interaction Model, which will govern how world will be updated.
-     */
     public Controller(InteractionModel interactionModel) {
         session = this;
         SpaceDataInstanciatorKt.instantiateSpaceData(proportionCoefficient);
