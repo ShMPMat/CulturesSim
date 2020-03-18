@@ -15,6 +15,7 @@ import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.SpaceData;
 import simulation.space.TectonicPlate;
 import simulation.space.tile.Tile;
 import simulation.space.WorldMap;
@@ -170,9 +171,9 @@ public class TextVisualizer implements Visualizer {
 
     private void computeCut() {
         int gapStart = 0, gapFinish = 0, start = -1, finish = 0;
-        for (int y = 0; y < controller.mapSizeY; y++) {
+        for (int y = 0; y < SpaceData.INSTANCE.getData().getMapSizeY(); y++) {
             boolean isLineClear = true;
-            for (int x = 0; x < controller.mapSizeX; x++) {
+            for (int x = 0; x < SpaceData.INSTANCE.getData().getMapSizeX(); x++) {
                 Tile tile = map.get(x, y);
                 if (tile.getType() != Tile.Type.Water && tile.getType() != Tile.Type.Ice) {
                     isLineClear = false;
@@ -325,10 +326,10 @@ public class TextVisualizer implements Visualizer {
         }
         main.append("\n");
         StringBuilder map = new StringBuilder();
-        for (int i = 0; i < controller.mapSizeX; i++) {
+        for (int i = 0; i < SpaceData.INSTANCE.getData().getMapSizeX(); i++) {
             String token;
             map.append((i < 10 ? " " + i : i));
-            for (int j = 0; j < controller.mapSizeY; j++) {
+            for (int j = 0; j < SpaceData.INSTANCE.getData().getMapSizeY(); j++) {
                 Tile tile = worldMap.get(i, j + mapCut);
                 token = condition.apply(tile);
                 if (token.equals("")) {
@@ -653,7 +654,7 @@ public class TextVisualizer implements Visualizer {
                                 String colour = "";
                                 if (tile.getSecondLevel() < 90) {
                                     colour = "\033[44m";
-                                } else if (tile.getSecondLevel() < controller.defaultWaterLevel) {
+                                } else if (tile.getSecondLevel() < SpaceData.INSTANCE.getData().getDefaultWaterLevel()) {
                                     colour = "\033[104m";
                                 } else if (tile.getSecondLevel() < 105) {
                                     colour = "\033[46m";

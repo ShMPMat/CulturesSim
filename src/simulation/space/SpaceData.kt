@@ -21,6 +21,10 @@ class Data(
     val resourceDenseCoefficient: Double = tileScale,
     val windPropagation: Double = 0.025,
     val temperatureBaseStart: Int = -15,
-    val temperatureBaseFinish: Int = 29
+    val temperatureBaseFinish: Int = 29,
+    val mapSizeX: Int = 45,
+    val mapSizeY: Int = 135,
+    val platesAmount: Int = 10,
+    val defaultWaterLevel: Int = 98
 )
 

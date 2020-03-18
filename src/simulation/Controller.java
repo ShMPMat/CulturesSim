@@ -5,7 +5,6 @@ import kotlin.random.RandomKt;
 import simulation.interactionmodel.InteractionModel;
 import simulation.culture.thinking.language.templates.TemplateBase;
 import simulation.space.LandscapeChangesKt;
-import simulation.space.SpaceData;
 import simulation.space.resource.Resource;
 import simulation.space.tile.Tile;
 import visualizer.Visualizer;
@@ -25,15 +24,11 @@ public class Controller {
     public final int proportionCoefficient = 1;
     public final boolean doTurns = true;
 
-    public final int mapSizeX = 45 * proportionCoefficient;
-    public final int mapSizeY = 135 * proportionCoefficient;
-    public final int platesAmount = 10 * proportionCoefficient;
     public final int geologyTurns = 50;
     public final int initialTurns = 100;
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
     public final int cultureTurns = 300;
-    public final int defaultWaterLevel = 98;
     public final int startResourceAmountMin = 40 * proportionCoefficient * proportionCoefficient;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;
     public final int startGroupAmount = 10;
@@ -70,6 +65,7 @@ public class Controller {
      */
     public Controller(InteractionModel interactionModel) {
         session = this;
+        SpaceDataInstanciatorKt.instantiateSpaceData(proportionCoefficient);
         templateBase = new TemplateBase();
         world = new World();
         this.interactionModel = interactionModel;

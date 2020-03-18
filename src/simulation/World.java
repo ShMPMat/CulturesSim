@@ -7,6 +7,7 @@ import simulation.culture.aspect.AspectPool;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.SpaceData;
 import simulation.space.resource.*;
 import simulation.space.tile.Tile;
 import simulation.space.WorldMap;
@@ -48,7 +49,12 @@ public class World {
                 aspectPool,
                 materialPool
         )).createPool();
-        map = generateMap(session.mapSizeX, session.mapSizeY, session.platesAmount, session.random);
+        map = generateMap(
+                SpaceData.INSTANCE.getData().getMapSizeX(),
+                SpaceData.INSTANCE.getData().getMapSizeY(),
+                SpaceData.INSTANCE.getData().getPlatesAmount(),
+                session.random
+        );
     }
 
     public void fillResources() {

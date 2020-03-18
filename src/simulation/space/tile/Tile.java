@@ -146,7 +146,7 @@ public class Tile {
         if (level >= 110) {
             type = Type.Mountain;
         }
-        if (level < session.defaultWaterLevel) {
+        if (level < SpaceData.INSTANCE.getData().getDefaultWaterLevel()) {
             type = Type.Water;
         }
     }
@@ -191,7 +191,8 @@ public class Tile {
     private void updateTemperature() {
         int start = SpaceData.INSTANCE.getData().getTemperatureBaseStart();
         int finish = SpaceData.INSTANCE.getData().getTemperatureBaseFinish();
-        temperature = start + x * (finish - start) / session.mapSizeX -
+        int size = SpaceData.INSTANCE.getData().getMapSizeX();
+        temperature = start + x * (finish - start) / size -
                 Math.max(0, (level - 110) / 2) -
                 (type == Type.Water || type == Type.Ice ? 10 : 0);
     }
@@ -226,7 +227,7 @@ public class Tile {
         }
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
-            level = session.defaultWaterLevel;
+            level = SpaceData.INSTANCE.getData().getDefaultWaterLevel();
         } else if (type == Type.Ice && temperature > 0) {
             type = Type.Water;
             level = secondLevel;
