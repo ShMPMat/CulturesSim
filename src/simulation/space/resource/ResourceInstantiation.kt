@@ -209,6 +209,8 @@ class ResourceInstantiation(
                 null
         ))
         val legacyTemplate = ResourceTemplate(legacyResource, aspectConversion, parts)
+        actualizeLinks(legacyTemplate)
+        //TODO actualize parts?
         setLegacy(legacyTemplate, creator)
         return legacyTemplate //TODO is legacy passed to parts in genome?
     }

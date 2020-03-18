@@ -533,7 +533,7 @@ public class TextVisualizer implements Visualizer {
      *
      * @param group    group to which want will be added. Can be null.
      * @param wantName name of the Resource which will be added to the wants of the Group. Can
-     *                 *                   represent Resource which doesn't exists.
+     *represent Resource which doesn't exists.
      */
     private void addWantToGroup(Group group, String wantName) {
         if (group == null) {
