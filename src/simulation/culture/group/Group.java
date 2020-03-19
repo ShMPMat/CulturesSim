@@ -88,7 +88,7 @@ public class Group {
         territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : territoryCenter.getAllNearGroups(this)) {
-            group.cultureCenter.addMemeCombination(session.world.getPoolMeme("group")
+            group.cultureCenter.getMemePool().addMemeCombination(session.world.getPoolMeme("group")
                     .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
         }
     }
@@ -128,7 +128,8 @@ public class Group {
                 && parentGroup.subgroups.size() < 10) {
             List<Tile> tiles = getOverallTerritory().getOuterBrink(t -> territoryCenter.canSettle(
                     t,
-                    t2 -> t2.getTagPool().getByType("Group").isEmpty() && parentGroup.getClosestInnerGroupDistance(t2) > 2//TODO dont like territory checks in Group
+                    //TODO dont like territory checks in Group
+                    t2 -> t2.getTagPool().getByType("Group").isEmpty() && parentGroup.getClosestInnerGroupDistance(t2) > 2
             ));
             if (tiles.isEmpty()) {
                 return null;

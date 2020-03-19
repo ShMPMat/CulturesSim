@@ -21,9 +21,6 @@ import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
 import static simulation.Controller.*;
 
-/**
- * Takes responsibility of Group's cultural change.
- */
 public class CultureCenter {
     private AspectCenter aspectCenter;
     private CultureAspectCenter cultureAspectCenter;
@@ -32,8 +29,6 @@ public class CultureCenter {
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
     private GroupMemes memePool;
-
-    private Meme currentMeme;
 
     CultureCenter(Group group, GroupMemes memePool, List<Aspect> aspects) {
         this.group = group;
@@ -64,14 +59,6 @@ public class CultureCenter {
 
     public GroupMemes getMemePool() {
         return memePool;
-    }
-
-    public Meme getCurrentMeme() {
-        return currentMeme;
-    }
-
-    void addMemeCombination(Meme meme) {
-        memePool.addMemeCombination(meme);
     }
 
     void addAspiration(Aspiration aspiration) {
@@ -172,8 +159,7 @@ public class CultureCenter {
     }
 
     public Meme getMeaning() {
-        Meme meme = getCurrentMeme();
-        return meme == null ? memePool.getValuableMeme() : meme;
+        return memePool.getValuableMeme();
     }
 
     private void tryToFulfillAspirations() {

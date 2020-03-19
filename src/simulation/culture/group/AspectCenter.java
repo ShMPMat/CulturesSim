@@ -68,13 +68,8 @@ public class AspectCenter {
 
     private void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
         Aspect _a = null;
-        if (getChangedAspects().contains(aspect)) {
-            for (Aspect as : getChangedAspects()) {
-                if (as.equals(aspect)) {
-                    as.addOneDependency(dependencies);
-                    _a = as;
-                }
-            }
+        if (changedAspectPool.contains(aspect)) {
+            changedAspectPool.get(aspect).addOneDependency(dependencies);//TODO why one, add a l l
         } else {
             _a = aspect.copy(dependencies);
             changedAspectPool.add(_a);
@@ -89,7 +84,7 @@ public class AspectCenter {
             }
         }
         group.getCultureCenter().getMemePool().addAspectMemes(aspect);
-        group.getCultureCenter().addMemeCombination((new MemeSubject(group.name).addPredicate(
+        group.getCultureCenter().getMemePool().addMemeCombination((new MemeSubject(group.name).addPredicate(
                 session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         neededAdding(_a);
     }
