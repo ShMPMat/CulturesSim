@@ -92,7 +92,7 @@ public class AspectCenter {
 
     private void neededAdding(Aspect aspect) {
         if (group.getPopulationCenter().getStrata().stream()
-                .noneMatch(stratum -> stratum.containsAspect(aspect))) {
+                .noneMatch(s -> s.containsAspect(aspect))) {
             group.getPopulationCenter().getStrata().add(new Stratum(0, aspect, group));
         }
     }

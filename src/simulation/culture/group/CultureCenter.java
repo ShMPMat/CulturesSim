@@ -195,8 +195,8 @@ public class CultureCenter {
 
     void finishUpdate() {
         aspectCenter.finishUpdate().forEach(a -> {
-            getMemePool().addAspectMemes(a);
-            getMemePool().addMemeCombination((new MemeSubject(group.name).addPredicate(
+            memePool.addAspectMemes(a);
+            memePool.addMemeCombination((new MemeSubject(group.name).addPredicate(
                     session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(a.getName())))));
         });
     }

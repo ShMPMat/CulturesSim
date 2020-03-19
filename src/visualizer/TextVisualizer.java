@@ -85,77 +85,6 @@ public class TextVisualizer implements Visualizer {
         textVisualizer.run();
     }
 
-    private String vapourMapper(Tile tile) {
-        String colour = "";
-        int level = tile.getResourcesWithMoved().stream().filter(resource ->
-                resource.getSimpleName().equals("Vapour")).reduce(0,
-                (x, y) -> x + y.getAmount(), Integer::sum);
-        if (level == 0) {
-            colour = "\033[44m";
-        } else if (level < 50) {
-            colour = "\033[104m";
-        } else if (level < 100) {
-            colour = "\033[46m";
-        } else if (level < 150) {
-            colour = "\033[47m";
-        } else if (level < 200) {
-            colour = "\033[43m";
-        } else {
-            colour = "\033[41m";
-        }
-        return "\033[90m" + colour + (level / 10) % 10;
-    }
-
-    private String platesMapper(Tile tile) {
-        List<Tile> affectedTiles = new ArrayList<>();
-        for (TectonicPlate tectonicPlate : map.getTectonicPlates()) {
-            affectedTiles.addAll(tectonicPlate.getAffectedTiles().stream()
-                    .map(Pair::getFirst).collect(Collectors.toList()));
-        }
-        for (int i = 0; i < map.getTectonicPlates().size(); i++) {
-            if (map.getTectonicPlates().get(i).contains(tile)) {
-                if (affectedTiles.contains(tile)) {
-                    return "\033[" + (30 + i) + "mX";
-                }
-                String direction = "0";
-                switch (map.getTectonicPlates().get(i).getDirection()) {
-                    case D:
-                        direction = "v";
-                        break;
-                    case L:
-                        direction = "<";
-                        break;
-                    case R:
-                        direction = ">";
-                        break;
-                    case U:
-                        direction = "^";
-                        break;
-                }
-                return "\033[" + (30 + i) + "m" + direction;
-            }
-        }
-        return " ";
-    }
-
-    private String temperatureMapper(Tile tile) {
-        String colour;
-        if (tile.getTemperature() < -20) {
-            colour = "\033[44m";
-        } else if (tile.getTemperature() < -10) {
-            colour = "\033[104m";
-        } else if (tile.getTemperature() < 0) {
-            colour = "\033[46m";
-        } else if (tile.getTemperature() < 10) {
-            colour = "\033[47m";
-        } else if (tile.getTemperature() < 20) {
-            colour = "\033[43m";
-        } else {
-            colour = "\033[41m";
-        }
-        return "\033[90m" + colour + Math.abs(tile.getTemperature() % 10);
-    }
-
     private void initialize() {
         print();
         controller.initializeFirst();
@@ -256,8 +185,11 @@ public class TextVisualizer implements Visualizer {
      *                  for a tile, output of the function will be drawn above the tile.
      */
     private void printMap(Function<Tile, String> condition) {
-        System.out.print(addToRight(printedMap(condition), chompToLines(printedResources(), map.getTiles().size() + 2),
-                true));
+        System.out.print(addToRight(
+                printedMap(condition),
+                chompToLines(printedResources(), map.getTiles().size() + 2),
+                true
+        ));
     }
 
     private StringBuilder printedGroups() {
@@ -596,10 +528,10 @@ public class TextVisualizer implements Visualizer {
                                     Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut));
                             break;
                         case Plates:
-                            printMap(this::platesMapper);
+                            printMap(t -> TileMapperFunctionsKt.platesMapper(map.getTectonicPlates(), t));
                             break;
                         case Temperature:
-                            printMap(this::temperatureMapper);
+                            printMap(TileMapperFunctionsKt::temperatureMapper);
                             break;
                         case Wind:
                             printMap(tile -> {
@@ -669,7 +601,7 @@ public class TextVisualizer implements Visualizer {
                             });
                             break;
                         case Vapour:
-                            printMap(this::vapourMapper);
+                            printMap(TileMapperFunctionsKt::vapourMapper);
                             break;
                         case Resource:
                             try {
