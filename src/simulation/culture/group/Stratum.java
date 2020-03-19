@@ -124,7 +124,8 @@ public class Stratum {
                                         1,
                                         evaluator,
                                         group.getPopulationCenter(),
-                                        false
+                                        false,
+                                        null
                                 ));
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);

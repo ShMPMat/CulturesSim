@@ -27,15 +27,10 @@ public class Aspect {
      * Whether it was used on this turn.
      */
     private boolean used = false;
-    /**
-     * Group which owns this aspect.
-     */
-    protected Group group;
     public boolean canInsertMeaning = false;
 
     Aspect(AspectCore aspectCore, Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         this.aspectCore = aspectCore;
-        this.group = group;
         initDependencies(dependencies, group);
     }
 
@@ -166,7 +161,8 @@ public class Aspect {
                             controller.getFloor() - newDelta,
                             controller.getEvaluator(),
                             controller.getPopulationCenter(),
-                            shouldPassMeaningNeed(controller.isMeaningNeeded())
+                            shouldPassMeaningNeed(controller.isMeaningNeeded()),
+                            controller.getMeaning()
                     ));
                     if (!_p.isFinished) {
                         continue;
@@ -182,7 +178,8 @@ public class Aspect {
                             controller.getFloor() - newDelta,
                             controller.getEvaluator(),
                             controller.getPopulationCenter(),
-                            false
+                            false,
+                            controller.getMeaning()
                     ));
                     _rp.addAll(result.resources);
                     if (!result.isFinished) {

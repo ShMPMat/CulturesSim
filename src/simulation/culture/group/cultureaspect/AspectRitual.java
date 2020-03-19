@@ -49,7 +49,8 @@ public class AspectRitual extends Ritual {
                 1,
                 new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
                 group.getPopulationCenter(),
-                true
+                true,
+                group.getCultureCenter().getMeaning()
         ));
         if (result.isFinished) {
             group.cherishedResources.addAll(result.resources);

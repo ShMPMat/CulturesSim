@@ -72,7 +72,9 @@ public class LineDependency extends AbstractDependency {
                                     rp -> rp.getAmount(line.getFirst().resource)
                             ),
                             group.getPopulationCenter(),
-                            controller.isMeaningNeeded()));
+                            controller.isMeaningNeeded(),
+                            controller.getMeaning()
+                    ));
             resourcePack.addAll(_p.resources.getPackedResource(line.getFirst().resource).getResources().stream()
                     .flatMap(res -> res.applyAndConsumeAspect(line.getFirst().aspect, controller.getCeiling()).stream())
                     .collect(Collectors.toList()));

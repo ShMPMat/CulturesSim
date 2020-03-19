@@ -58,7 +58,8 @@ public class AspectDependency extends AbstractDependency {
                     controller.getFloor(),
                     new ResourceEvaluator(),
                     controller.getPopulationCenter(),
-                    false
+                    false,
+                    null
             ));
         } catch (StackOverflowError e) {
             throw new RuntimeException("Infinite Dependency");

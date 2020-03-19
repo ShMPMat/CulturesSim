@@ -40,13 +40,13 @@ public class DepictObject extends AbstractCultureAspect {
 
     @Override
     public void use() {
-        group.getCultureCenter().putCurrentMeme(meme.toString());
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
                 new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
                 group.getPopulationCenter(),
-                true
+                true,
+                group.getCultureCenter().getMemePool().getMeme(meme.toString())
         ));
         if (result.isFinished) {
             MutableResourcePack meaningful = new MutableResourcePack(result.resources.getResources().stream()
@@ -58,7 +58,6 @@ public class DepictObject extends AbstractCultureAspect {
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
             group.getCultureCenter().getMemePool().strengthenMeme(meme);
         }
-        group.getCultureCenter().clearCurrentMeme();
     }
 
     @Override

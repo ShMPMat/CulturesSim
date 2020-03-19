@@ -152,15 +152,14 @@ public class CultureCenter {
                 return;
             }
             ConverseWrapper _a = randomElement(_l, session.random);
-            generateCurrentMeme();
             AspectResult result = _a.use(new AspectController(
                     1,
                     1,
                     new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
                     group.getPopulationCenter(),
-                    true
+                    true,
+                    memePool.getValuableMeme()
             ));
-            clearCurrentMeme();
             for (Resource resource : result.resources.getResources()) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtifacts.add(resource);
@@ -169,18 +168,6 @@ public class CultureCenter {
                 }
             }
         }
-    }
-
-    public void putCurrentMeme(String memeString) {
-        currentMeme = memePool.getMeme(memeString);
-    }
-
-    public void generateCurrentMeme() {
-        currentMeme = memePool.getValuableMeme();
-    }
-
-    public void clearCurrentMeme() {
-        currentMeme = null;
     }
 
     public Meme getMeaning() {

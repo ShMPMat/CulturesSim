@@ -128,7 +128,8 @@ public class PopulationCenter {
                         request.floor,
                         pair.getSecond(),
                         this,
-                        false
+                        false,
+                        null
                 )));
             }
             request.end(turnResources);
