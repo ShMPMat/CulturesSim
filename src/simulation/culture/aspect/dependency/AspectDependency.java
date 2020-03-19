@@ -68,7 +68,7 @@ public class AspectDependency extends AbstractDependency {
     }
 
     @Override
-    public AspectDependency copy(Group group) {
+    public AspectDependency copy() {
         return new AspectDependency(tag, aspect);
     }
 

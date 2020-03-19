@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
  * Subclass of ConverseWrapper which inserts meaning in certain objects.
  */
 public class MeaningInserter extends ConverseWrapper {
-    public MeaningInserter(Aspect aspect, Resource resource, Group group) {
-        super(aspect, resource.fullCopy(), group);
+    public MeaningInserter(Aspect aspect, Resource resource) {
+        super(aspect, resource.fullCopy());
         canInsertMeaning = true;
         this.resource.setHasMeaning(true);
     }
@@ -39,9 +39,9 @@ public class MeaningInserter extends ConverseWrapper {
     }
 
     @Override
-    public MeaningInserter copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
-        MeaningInserter copy = new MeaningInserter(aspect, resource, group);
-        copy.initDependencies(dependencies, group);
+    public MeaningInserter copy(Map<ResourceTag, Set<Dependency>> dependencies) {
+        MeaningInserter copy = new MeaningInserter(aspect, resource);
+        copy.initDependencies(dependencies);
         Collection<ResourceTag> unwantedTags = new ArrayList<>();
         for (ResourceTag resourceTag : dependencies.keySet()) {
             if (!(resourceTag.isInstrumental || resourceTag.name.equals("phony"))) {

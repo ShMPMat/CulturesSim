@@ -29,17 +29,17 @@ public class Aspect {
     private boolean used = false;
     public boolean canInsertMeaning = false;
 
-    Aspect(AspectCore aspectCore, Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
+    Aspect(AspectCore aspectCore, Map<ResourceTag, Set<Dependency>> dependencies) {
         this.aspectCore = aspectCore;
-        initDependencies(dependencies, group);
+        initDependencies(dependencies);
     }
 
-    void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
+    void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies) {
         for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.entrySet()) {
             this.dependencies.put(
                     entry.getKey(),
                     entry.getValue().stream()
-                            .map(dependency -> dependency.copy(group))
+                            .map(Dependency::copy)
                             .collect(Collectors.toSet())
             );
         }
@@ -130,8 +130,8 @@ public class Aspect {
         }
     }
 
-    public Aspect copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
-        return aspectCore.copy(dependencies, group);
+    public Aspect copy(Map<ResourceTag, Set<Dependency>> dependencies) {
+        return aspectCore.copy(dependencies);
     }
 
     public AspectResult use(AspectController controller) {//TODO instrument efficiency

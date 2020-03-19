@@ -13,12 +13,10 @@ import java.util.Objects;
 
 public class ResourceDependency extends AbstractDependency {
     private Resource resource;
-    private Group group;
 
-    public ResourceDependency(ResourceTag tag, Group group, Resource resource) {
+    public ResourceDependency(ResourceTag tag, Resource resource) {
         super(tag);
         this.resource = resource;
-        this.group = group;
     }
 
     @Override
@@ -55,8 +53,8 @@ public class ResourceDependency extends AbstractDependency {
     }
 
     @Override
-    public ResourceDependency copy(Group group) {
-        return new ResourceDependency(tag, group, resource);
+    public ResourceDependency copy() {
+        return new ResourceDependency(tag, resource);
     }
 
     @Override

@@ -13,12 +13,10 @@ import java.util.Objects;
 
 public class ConversionDependency extends AbstractDependency {
     private Pair<Resource, Aspect> conversion;
-    private Group group;
 
-    public ConversionDependency(ResourceTag tag, Group group, Pair<Resource, Aspect> conversion) {
+    public ConversionDependency(ResourceTag tag, Pair<Resource, Aspect> conversion) {
         super(tag);
         this.conversion = conversion;
-        this.group = group;
     }
 
     @Override
@@ -51,8 +49,8 @@ public class ConversionDependency extends AbstractDependency {
     }
 
     @Override
-    public ConversionDependency copy(Group group) {
-        return new ConversionDependency(tag, group, conversion);
+    public ConversionDependency copy() {
+        return new ConversionDependency(tag, conversion);
     }
 
     @Override

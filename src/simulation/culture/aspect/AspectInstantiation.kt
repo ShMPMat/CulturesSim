@@ -20,7 +20,7 @@ class AspectInstantiation {
     }
 
     private fun createAspect(tags: Array<String>): Aspect {
-        return Aspect(createCore(tags), HashMap(), null)
+        return Aspect(createCore(tags), HashMap())
     }
 
     fun postResourceInstantiation() { //TODO all the creation must be moved after the resources

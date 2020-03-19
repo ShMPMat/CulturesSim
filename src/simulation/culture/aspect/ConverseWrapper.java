@@ -24,7 +24,7 @@ public class ConverseWrapper extends Aspect {
      */
     public Resource resource;
 
-    public ConverseWrapper(Aspect aspect, Resource resource, Group group) {
+    public ConverseWrapper(Aspect aspect, Resource resource) {
         super(
                 new AspectCore(
                         aspect.getName() + "On" + resource.getBaseName(),
@@ -33,8 +33,7 @@ public class ConverseWrapper extends Aspect {
                         new ArrayList<>(),
                         false
                         ),
-                new HashMap<>(),
-                group
+                new HashMap<>()
         );
         this.aspect = aspect;
         this.resource = resource.copy();
@@ -123,13 +122,12 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public ConverseWrapper copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
+    public ConverseWrapper copy(Map<ResourceTag, Set<Dependency>> dependencies) {
         ConverseWrapper copy = new ConverseWrapper(
                 aspect,
-                resource,
-                group
+                resource
         );
-        copy.initDependencies(dependencies, group);
+        copy.initDependencies(dependencies);
         try {
             copy.canInsertMeaning = dependencies.get(ResourceTag.phony()).stream().anyMatch(dependency ->
                     dependency instanceof LineDependency &&

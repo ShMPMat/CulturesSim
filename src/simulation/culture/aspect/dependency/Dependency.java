@@ -14,6 +14,6 @@ public interface Dependency {
     AspectResult useDependency(AspectController controller);
     boolean isPhony();
     ResourceTag getType();
-    Dependency copy(Group group);
+    Dependency copy();
     void swapDependencies(AspectCenter aspectCenter);
 }

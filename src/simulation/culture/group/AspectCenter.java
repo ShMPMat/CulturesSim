@@ -76,7 +76,7 @@ public class AspectCenter {
                 }
             }
         } else {
-            _a = aspect.copy(dependencies, group);
+            _a = aspect.copy(dependencies);
             changedAspectPool.add(_a);
             if (!(_a instanceof ConverseWrapper)) {//TODO maybe should do the same in straight
                 Set<Resource> allResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
@@ -125,15 +125,20 @@ public class AspectCenter {
     private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<ResourceTag, Set<Dependency>> dep) {
         if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
             if (converseWrapper.canTakeResources() && group.getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
-                addDependenciesInMap(dep, Collections.singleton(
-                        new ConversionDependency(converseWrapper.getRequirement(), group,
-                                new Pair<>(converseWrapper.resource, converseWrapper.aspect))), converseWrapper.getRequirement());
+                addDependenciesInMap(
+                        dep,
+                        Collections.singleton(
+                                new ConversionDependency(
+                                        converseWrapper.getRequirement(),
+                                        new Pair<>(converseWrapper.resource, converseWrapper.aspect)
+                                )),
+                        converseWrapper.getRequirement()
+                );
             }
             addDependenciesInMap(dep, getAllProducedResources().stream()
                             .filter(pair -> pair.getFirst().equals(converseWrapper.resource))
                             .map(pair -> new LineDependency(
                                     converseWrapper.getRequirement(),
-                                    group,
                                     new Pair<>(converseWrapper, pair.getSecond())
                             )).filter(dependency -> !dependency.isCycleDependency(converseWrapper))
                             .collect(Collectors.toList()),
@@ -155,7 +160,7 @@ public class AspectCenter {
                     requirement
                     ).stream() //Make converse Dependency_
                             .map(resource ->
-                                    new ConversionDependency(requirement, group, new Pair<>(resource, selfAspect)))
+                                    new ConversionDependency(requirement, new Pair<>(resource, selfAspect)))
                             .filter(dependency -> !dependency.isCycleDependency(aspect))
                             .collect(Collectors.toList()),
                     requirement);
@@ -176,11 +181,9 @@ public class AspectCenter {
     private void addConverseWrapper(Aspect aspect, Resource resource) { //TODO I'm adding a lot of garbage
         ConverseWrapper _w;
         if (aspect.canApplyMeaning()) {
-            _w = new MeaningInserter(aspect, resource,
-                    group);
+            _w = new MeaningInserter(aspect, resource);
         } else {
-            _w = new ConverseWrapper(aspect, resource,
-                    group);
+            _w = new ConverseWrapper(aspect, resource);
         }
         if (!_w.isValid()) {
             return;
@@ -246,7 +249,7 @@ public class AspectCenter {
                 .collect(Collectors.toList())) {
             Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspect.isDependenciesOk(_m)) {
-                options.add(new Pair<>(aspect.copy(_m, group), null));
+                options.add(new Pair<>(aspect.copy(_m), null));
             }
         }
 
@@ -259,7 +262,7 @@ public class AspectCenter {
             Group aspectGroup = pair.getSecond();
             Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
-                aspect = aspect.copy(_m, group);
+                aspect = aspect.copy(_m);
                 options.add(new Pair<>(aspect, aspectGroup));
             }
         }

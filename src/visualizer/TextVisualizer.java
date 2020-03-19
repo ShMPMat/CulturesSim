@@ -493,9 +493,9 @@ public class TextVisualizer implements Visualizer {
             try {
                 Aspect a = world.getAspectPool().get(aspectName.split("On")[0]);
                 if (a.canApplyMeaning()) {
-                    aspect = new MeaningInserter(a, resource, group);
+                    aspect = new MeaningInserter(a, resource);
                 } else {
-                    aspect = new ConverseWrapper(a, resource, group);
+                    aspect = new ConverseWrapper(a, resource);
                 }
             } catch (NoSuchElementException e) {
                 System.err.println("Cannot addAll aspect to the group");

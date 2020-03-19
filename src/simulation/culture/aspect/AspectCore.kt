@@ -15,7 +15,7 @@ internal class AspectCore(
         return requirements
     }
 
-    fun copy(dependencies: Map<ResourceTag?, Set<Dependency?>?>?, group: Group?): Aspect {
-        return Aspect(this, dependencies, group)
+    fun copy(dependencies: Map<ResourceTag, Set<Dependency>>): Aspect {
+        return Aspect(this, dependencies)
     }
 }

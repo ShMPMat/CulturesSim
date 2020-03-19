@@ -138,7 +138,7 @@ public class Group {
             }
             Tile tile = randomElement(tiles, session.random);
             List<Aspect> aspects = cultureCenter.getAspectCenter().getAspectPool().getAll().stream()
-                    .map(a -> a.copy(a.getDependencies(), this))
+                    .map(a -> a.copy(a.getDependencies()))
                     .collect(Collectors.toList());
             GroupMemes memes = new GroupMemes();
             memes.addAll(cultureCenter.getMemePool());

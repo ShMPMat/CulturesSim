@@ -13,12 +13,10 @@ import java.util.stream.Collectors;
 
 public class LineDependency extends AbstractDependency {
     private boolean isAlreadyUsed = false;
-    private Group group;
     private Pair<ConverseWrapper, ConverseWrapper> line;
 
-    public LineDependency(ResourceTag tag, Group group, Pair<ConverseWrapper, ConverseWrapper> line) {
+    public LineDependency(ResourceTag tag, Pair<ConverseWrapper, ConverseWrapper> line) {
         super(tag);
-        this.group = group;
         this.line = line;
     }
 
@@ -63,8 +61,7 @@ public class LineDependency extends AbstractDependency {
                 return new AspectResult(resourcePack, null);
             }
             isAlreadyUsed = true;
-            AspectResult _p = group.getCultureCenter().getAspectCenter().getAspectPool().get(line.getSecond())
-                    .use(new AspectController(
+            AspectResult _p = line.getSecond().use(new AspectController(
                             controller.getCeiling(),
                             controller.getFloor(),
                             new ResourceEvaluator(
@@ -96,8 +93,8 @@ public class LineDependency extends AbstractDependency {
     }
 
     @Override
-    public LineDependency copy(Group group) {
-        return new LineDependency(tag, group, line);
+    public LineDependency copy() {
+        return new LineDependency(tag, line);
     }
 
     @Override
