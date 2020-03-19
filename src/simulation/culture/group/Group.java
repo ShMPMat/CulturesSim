@@ -178,16 +178,6 @@ public class Group {
         getCultureCenter().finishUpdate();
     }
 
-    void starve(double fraction) {
-        populationCenter.decreasePopulation((int) ((populationCenter.getPopulation() / 10) * (1 - fraction) + 1));
-        getCultureCenter().addAspiration(new Aspiration(10, new ResourceTag("food")));
-    }
-
-    void freeze(double fraction) {
-        populationCenter.decreasePopulation((int) ((populationCenter.getPopulation() / 10) * (1 - fraction) + 1));
-        getCultureCenter().addAspiration(new Aspiration(10, new ResourceTag("warmth")));
-    }
-
     boolean diverge() {
         if (!session.groupDiverge) {
             return false;

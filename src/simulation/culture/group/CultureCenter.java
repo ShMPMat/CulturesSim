@@ -21,6 +21,8 @@ import java.util.function.BiFunction;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
 import static simulation.Controller.*;
+import static simulation.culture.group.GroupEffectFunctionsKt.freeze;
+import static simulation.culture.group.GroupEffectFunctionsKt.starve;
 
 public class CultureCenter {
     private AspectCenter aspectCenter;
@@ -75,7 +77,7 @@ public class CultureCenter {
     void updateRequests(int foodFloor) {
         requests = new ArrayList<>();
         BiFunction<Pair<Group, MutableResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
-            pair.getFirst().starve(percent);
+            starve(pair.getFirst(), percent);
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };
@@ -89,7 +91,7 @@ public class CultureCenter {
 
         if (group.getTerritoryCenter().getTerritory().getMinTemperature() < 0) {
             BiFunction<Pair<Group, MutableResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
-                pair.getFirst().freeze(percent);
+                freeze(pair.getFirst(), percent);
                 return null;
             };
             BiFunction<Pair<Group, MutableResourcePack>, Double, Void> warmthReward = (pair, percent) -> null;
