@@ -1,6 +1,7 @@
 package simulation.culture.aspect.dependency;
 
 import simulation.culture.aspect.*;
+import simulation.culture.group.AspectCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.tag.ResourceTag;
@@ -70,8 +71,8 @@ public class AspectDependency extends AbstractDependency {
     }
 
     @Override
-    public void swapDependencies(Group group) {
-        aspect = group.getCultureCenter().getAspectCenter().getAspectPool().get(aspect);
+    public void swapDependencies(AspectCenter aspectCenter) {
+        aspect = aspectCenter.getAspectPool().get(aspect);
         if (aspect == null) {
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));
         }

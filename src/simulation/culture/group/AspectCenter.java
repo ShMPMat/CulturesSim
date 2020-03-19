@@ -29,7 +29,7 @@ public class AspectCenter {
     public AspectCenter(Group group, List<Aspect> aspects) {
         this.group = group;
         aspects.forEach(this::hardAspectAdd);
-        aspectPool.getAll().forEach(Aspect::swapDependencies);//TODO will it swap though?
+        aspectPool.getAll().forEach(a -> a.swapDependencies(this));//TODO will it swap though?
     }
 
     public AspectPool getAspectPool() {
@@ -253,31 +253,34 @@ public class AspectCenter {
         getAllPossibleConverseWrappers().stream().filter(aspiration::isAcceptable)
                 .forEach(wrapper -> options.add(new Pair<>(wrapper, null)));
 
-        List<Aspect> aspects = getNeighbourAspects();
-        for (Aspect aspect : aspects) {
+        List<Pair<Aspect, Group>> aspects = getNeighbourAspects();
+        for (Pair<Aspect, Group> pair : aspects) {
+            Aspect aspect = pair.getFirst();
+            Group aspectGroup = pair.getSecond();
             Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
             if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
                 aspect = aspect.copy(_m, group);
-                options.add(new Pair<>(aspect, aspect.getGroup()));
+                options.add(new Pair<>(aspect, aspectGroup));
             }
         }
         return options;
     }
 
-    List<Aspect> getNeighbourAspects() {
-        List<Aspect> allExistingAspects = new ArrayList<>();
+    List<Pair<Aspect, Group>> getNeighbourAspects() {
+        List<Pair<Aspect, Group>> allExistingAspects = new ArrayList<>();
         for (Group neighbour : group.getRelationCenter().getRelatedGroups()) {
             allExistingAspects.addAll(neighbour.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream()
                     .filter(aspect -> !(aspect instanceof ConverseWrapper)
                             || aspectPool.contains(((ConverseWrapper) aspect).aspect))
+                    .map(a -> new Pair<>(a, neighbour))
                     .collect(Collectors.toList()));
         }
         return allExistingAspects;
     }
 
-    List<Aspect> getNeighbourAspects(Predicate<Aspect> predicate) {
+    List<Pair<Aspect, Group>> getNeighbourAspects(Predicate<Aspect> predicate) {
         return getNeighbourAspects().stream()
-                .filter(predicate)
+                .filter(p -> predicate.test(p.getFirst()))
                 .collect(Collectors.toList());
     }
 
@@ -285,19 +288,19 @@ public class AspectCenter {
         if (!session.isTime(session.groupTurnsBetweenAdopts)) {
             return;
         }
-        List<Aspect> allExistingAspects = getNeighbourAspects(a -> !getChangedAspects().contains(a));
+        List<Pair<Aspect, Group>> allExistingAspects = getNeighbourAspects(a -> !getChangedAspects().contains(a));
 
         if (!allExistingAspects.isEmpty()) {
             try {
-                Aspect aspect = randomElementWithProbability(
+                Pair<Aspect, Group> pair = randomElementWithProbability(
                         allExistingAspects,
-                        a -> a.getUsefulness() * group.getRelationCenter().getNormalizedRelation(a.getGroup()),
+                        p -> p.getFirst().getUsefulness() * group.getRelationCenter().getNormalizedRelation(p.getSecond()),
                         session.random
                 );
-                if (addAspect(aspect)) {
+                if (addAspect(pair.getFirst())) {
                     group.addEvent(new Event(Event.Type.AspectGaining,
                             String.format("Group %s got aspect %s from group %s",
-                                    group.name, aspect.getName(), aspect.getGroup().name),
+                                    group.name, pair.getFirst().getName(), pair.getSecond().name),
                             "group", group));
                 }
             } catch (Exception e) {

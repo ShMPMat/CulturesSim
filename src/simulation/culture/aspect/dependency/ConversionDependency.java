@@ -2,6 +2,7 @@ package simulation.culture.aspect.dependency;
 
 import kotlin.Pair;
 import simulation.culture.aspect.*;
+import simulation.culture.group.AspectCenter;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
@@ -55,10 +56,10 @@ public class ConversionDependency extends AbstractDependency {
     }
 
     @Override
-    public void swapDependencies(Group group) {
+    public void swapDependencies(AspectCenter aspectCenter) {
         conversion = new Pair<>(
                 conversion.getFirst(),
-                group.getCultureCenter().getAspectCenter().getAspectPool().get(conversion.getSecond())
+                aspectCenter.getAspectPool().get(conversion.getSecond())
         );
         if (conversion.getSecond() == null) {
             throw new RuntimeException(String.format("Wrong swapping in Dependency %s", getName()));

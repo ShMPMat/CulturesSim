@@ -2,6 +2,7 @@ package simulation.culture.aspect.dependency;
 
 import kotlin.Pair;
 import simulation.culture.aspect.*;
+import simulation.culture.group.AspectCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.resource.MutableResourcePack;
@@ -97,10 +98,10 @@ public class LineDependency extends AbstractDependency {
     }
 
     @Override
-    public void swapDependencies(Group group) {
+    public void swapDependencies(AspectCenter aspectCenter) {
         line = new Pair<>(
-                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(line.getSecond()),
-                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(line.getSecond())
+                (ConverseWrapper) aspectCenter.getAspectPool().get(line.getSecond()),
+                (ConverseWrapper) aspectCenter.getAspectPool().get(line.getSecond())
         );
     }
 

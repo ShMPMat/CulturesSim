@@ -3,6 +3,7 @@ package simulation.culture.aspect.dependency;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.group.AspectCenter;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.group.Group;
 
@@ -14,5 +15,5 @@ public interface Dependency {
     boolean isPhony();
     ResourceTag getType();
     Dependency copy(Group group);
-    void swapDependencies(Group group);
+    void swapDependencies(AspectCenter aspectCenter);
 }

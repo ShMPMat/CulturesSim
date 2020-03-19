@@ -2,6 +2,7 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.aspect.dependency.LineDependency;
+import simulation.culture.group.AspectCenter;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
 import simulation.space.resource.tag.ResourceTag;
@@ -37,6 +38,12 @@ public class ConverseWrapper extends Aspect {
         );
         this.aspect = aspect;
         this.resource = resource.copy();
+    }
+
+    @Override
+    public void swapDependencies(AspectCenter aspectCenter) {
+        super.swapDependencies(aspectCenter);
+        aspect = aspectCenter.getAspectPool().get(aspect);
     }
 
     private static List<ResourceTag> getReducedTags(Resource resource, Aspect aspect) {
@@ -85,7 +92,7 @@ public class ConverseWrapper extends Aspect {
     @Override
     public AspectResult use(AspectController controller) {
         try {
-            group.getCultureCenter().getAspectCenter().getAspectPool().get(aspect).markAsUsed();
+            aspect.markAsUsed();
             return super.use(controller);
         } catch (Exception e) {
             throw new RuntimeException("");
@@ -117,15 +124,18 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public ConverseWrapper copy(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
-        ConverseWrapper copy = new ConverseWrapper(aspect, resource, group);
-        copy.initDependencies(dependencies);
+        ConverseWrapper copy = new ConverseWrapper(
+                aspect,
+                resource,
+                group
+        );
+        copy.initDependencies(dependencies, group);
         try {
             copy.canInsertMeaning = dependencies.get(ResourceTag.phony()).stream().anyMatch(dependency ->
                     dependency instanceof LineDependency &&
                             ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
             return copy;
         } catch (Exception e) {
-            int i = 0;
             return null;
         }
     }

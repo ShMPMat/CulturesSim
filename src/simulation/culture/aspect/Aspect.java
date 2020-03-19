@@ -1,6 +1,7 @@
 package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
+import simulation.culture.group.AspectCenter;
 import simulation.culture.group.Group;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
@@ -30,68 +31,49 @@ public class Aspect {
      * Group which owns this aspect.
      */
     protected Group group;
-    /**
-     * Whether this Aspect can insert meaning.
-     */
     public boolean canInsertMeaning = false;
 
-    /**
-     * Base constructor.
-     *
-     * @param aspectCore   core with common properties.
-     * @param dependencies dependencies for all requirements.
-     */
     Aspect(AspectCore aspectCore, Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         this.aspectCore = aspectCore;
         this.group = group;
-        initDependencies(dependencies);
+        initDependencies(dependencies, group);
     }
 
-    void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies) {
+    void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies, Group group) {
         for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.entrySet()) {
-            this.dependencies.put(entry.getKey(),
-                    entry.getValue().stream().map(dependency -> dependency.copy(group)).collect(Collectors.toSet()));
+            this.dependencies.put(
+                    entry.getKey(),
+                    entry.getValue().stream()
+                            .map(dependency -> dependency.copy(group))
+                            .collect(Collectors.toSet())
+            );
         }
     }
 
-    public void swapDependencies() {
-        dependencies.values().forEach(set -> set.forEach(dependency -> dependency.swapDependencies(group)));
+    public void swapDependencies(AspectCenter aspectCenter) {
+        dependencies.values().forEach(set ->
+                set.forEach(d ->
+                        d.swapDependencies(aspectCenter)
+                )
+        );
     }
 
-    /**
-     * Name getter.
-     *
-     * @return name of this Aspect.
-     */
     public String getName() {
         return aspectCore.getName();
     }
 
-    /**
-     * Tags getter
-     *
-     * @return tags of this Aspect.
-     */
     public Collection<ResourceTag> getTags() {
         return aspectCore.getTags();
     }
 
-    /**
-     * Requirements getter.
-     *
-     * @return requirements for this Aspect.
-     */
     public Collection<ResourceTag> getRequirements() {
         return aspectCore.getRequirements();
     }
 
     public Collection<ResourceTag> getWrapperRequirements() {
-        return aspectCore.getRequirements().stream().filter(aspectTag -> aspectTag.isConverseCondition)
+        return getRequirements().stream()
+                .filter(aspectTag -> aspectTag.isConverseCondition)
                 .collect(Collectors.toList());
-    }
-
-    public Group getGroup() {
-        return group;
     }
 
     public Map<ResourceTag, Set<Dependency>> getDependencies() {

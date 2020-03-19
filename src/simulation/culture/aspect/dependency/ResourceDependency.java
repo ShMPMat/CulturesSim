@@ -3,6 +3,7 @@ package simulation.culture.aspect.dependency;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.group.AspectCenter;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.group.Group;
 import simulation.space.resource.Resource;
@@ -55,8 +56,7 @@ public class ResourceDependency extends AbstractDependency {
     }
 
     @Override
-    public void swapDependencies(Group group) {
-    }
+    public void swapDependencies(AspectCenter aspectCenter) {}
 
     @Override
     public boolean equals(Object o) {
