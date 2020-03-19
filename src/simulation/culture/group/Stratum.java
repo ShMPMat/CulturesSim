@@ -124,6 +124,7 @@ public class Stratum {
                                         1,
                                         evaluator,
                                         group.getPopulationCenter(),
+                                        group.getTerritoryCenter().getTerritory(),
                                         false,
                                         null
                                 ));

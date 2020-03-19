@@ -111,7 +111,7 @@ public class PopulationCenter {
         }
     }
 
-    void executeRequests(Collection<Request> requests) {
+    void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {
         for (Request request : requests) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
             List<Pair<Stratum, ResourceEvaluator>> pairs = getStrata().stream()
                     .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
@@ -128,6 +128,7 @@ public class PopulationCenter {
                         request.floor,
                         pair.getSecond(),
                         this,
+                        accessibleTerritory,
                         false,
                         null
                 )));

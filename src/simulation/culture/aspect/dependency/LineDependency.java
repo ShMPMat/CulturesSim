@@ -71,7 +71,8 @@ public class LineDependency extends AbstractDependency {
                                     rp -> rp.getPackedResource(line.getFirst().resource),
                                     rp -> rp.getAmount(line.getFirst().resource)
                             ),
-                            group.getPopulationCenter(),
+                            controller.getPopulationCenter(),
+                            controller.getTerritory(),
                             controller.isMeaningNeeded(),
                             controller.getMeaning()
                     ));

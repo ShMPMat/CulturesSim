@@ -3,6 +3,7 @@ package simulation.culture.aspect
 import simulation.culture.group.PopulationCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.thinking.meaning.Meme
+import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 
 class AspectController(
@@ -10,6 +11,7 @@ class AspectController(
         var floor: Int,
         val evaluator: ResourceEvaluator,
         val populationCenter: PopulationCenter,
+        val territory: Territory,
         val isMeaningNeeded: Boolean = false,
         val meaning: Meme?
 ) {

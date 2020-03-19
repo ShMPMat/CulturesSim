@@ -157,6 +157,7 @@ public class CultureCenter {
                     1,
                     new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
                     group.getPopulationCenter(),
+                    group.getTerritoryCenter().getTerritory(),
                     true,
                     memePool.getValuableMeme()
             ));

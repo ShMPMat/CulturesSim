@@ -161,6 +161,7 @@ public class Aspect {
                             controller.getFloor() - newDelta,
                             controller.getEvaluator(),
                             controller.getPopulationCenter(),
+                            controller.getTerritory(),
                             shouldPassMeaningNeed(controller.isMeaningNeeded()),
                             controller.getMeaning()
                     ));
@@ -178,6 +179,7 @@ public class Aspect {
                             controller.getFloor() - newDelta,
                             controller.getEvaluator(),
                             controller.getPopulationCenter(),
+                            controller.getTerritory(),
                             false,
                             controller.getMeaning()
                     ));

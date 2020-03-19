@@ -40,8 +40,12 @@ public class ResourceDependency extends AbstractDependency {
     public AspectResult useDependency(AspectController controller) {
         MutableResourcePack resourcePack = new MutableResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
-            return new AspectResult(tag.consumeAndGetResult(group.getTerritoryCenter().getTerritory()//TODO mayhaps i should pass territory; because i may want to use resources from all the GroupConglomerationTiles
-                    .getResourceInstances(resource), controller.getCeiling()), null);
+            return new AspectResult(
+                    tag.consumeAndGetResult(
+                            controller.getTerritory().getResourceInstances(resource), controller.getCeiling()
+                    ),
+                    null
+            );
         }
         return new AspectResult(resourcePack, null);
     }
@@ -56,7 +60,8 @@ public class ResourceDependency extends AbstractDependency {
     }
 
     @Override
-    public void swapDependencies(AspectCenter aspectCenter) {}
+    public void swapDependencies(AspectCenter aspectCenter) {
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -99,7 +99,7 @@ public class Group {
 
     void update() {
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
-        populationCenter.executeRequests(getCultureCenter().getRequests());
+        populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getTerritory());
         getPopulationCenter().strataUpdate();
         if (state != State.Dead) {
             if (shouldMigrate()) {

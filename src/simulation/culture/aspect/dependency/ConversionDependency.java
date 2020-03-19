@@ -39,7 +39,7 @@ public class ConversionDependency extends AbstractDependency {
     @Override
     public AspectResult useDependency(AspectController controller) {
         MutableResourcePack resourcePack = new MutableResourcePack();
-        Collection<Resource> resourceInstances = group.getOverallTerritory().getResourceInstances(conversion.getFirst());
+        Collection<Resource> resourceInstances = controller.getTerritory().getResourceInstances(conversion.getFirst());
         for (Resource res : resourceInstances) {
             if (controller.getCeiling() <= controller.getEvaluator().evaluate(resourcePack)) {
                 break;

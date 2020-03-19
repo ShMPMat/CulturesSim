@@ -58,6 +58,7 @@ public class AspectDependency extends AbstractDependency {
                     controller.getFloor(),
                     new ResourceEvaluator(),
                     controller.getPopulationCenter(),
+                    controller.getTerritory(),
                     false,
                     null
             ));
