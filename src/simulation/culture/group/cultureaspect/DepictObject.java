@@ -4,6 +4,7 @@ import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.request.Request;
@@ -39,7 +40,7 @@ public class DepictObject extends AbstractCultureAspect {
     }
 
     @Override
-    public void use() {
+    public void use(CultureCenter center) {
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
@@ -47,7 +48,7 @@ public class DepictObject extends AbstractCultureAspect {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getTerritory(),
                 true,
-                group.getCultureCenter().getMemePool().getMeme(meme.toString())
+                center.getMemePool().getMeme(meme.toString())
         ));
         if (result.isFinished) {
             MutableResourcePack meaningful = new MutableResourcePack(result.resources.getResources().stream()
@@ -57,7 +58,7 @@ public class DepictObject extends AbstractCultureAspect {
             group.cherishedResources.addAll(meaningful);
             resourceBehaviour.proceedResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
-            group.getCultureCenter().getMemePool().strengthenMeme(meme);
+            center.getMemePool().strengthenMeme(meme);
         }
     }
 

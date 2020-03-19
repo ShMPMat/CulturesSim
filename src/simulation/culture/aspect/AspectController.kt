@@ -6,7 +6,7 @@ import simulation.culture.thinking.meaning.Meme
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 
-class AspectController(
+data class AspectController(
         var ceiling: Int,
         var floor: Int,
         val evaluator: ResourceEvaluator,

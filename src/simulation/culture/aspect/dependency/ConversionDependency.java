@@ -50,7 +50,7 @@ public class ConversionDependency extends AbstractDependency {
 
     @Override
     public ConversionDependency copy() {
-        return new ConversionDependency(tag, conversion);
+        return new ConversionDependency(getType(), conversion);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package simulation.culture.group.cultureaspect;
 
 import simulation.Controller;
+import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.request.Request;
@@ -43,7 +44,7 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
     }
 
     @Override
-    public void use() {
+    public void use(CultureCenter center) {
 
     }
 

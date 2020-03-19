@@ -54,7 +54,7 @@ public class CultureAspectCenter {
     }
 
     void useCultureAspects() {
-        aspectPool.getAll().forEach(CultureAspect::use);
+        aspectPool.getAll().forEach(a -> a.use(group.getCultureCenter()));
     }
 
     void addRandomCultureAspect() {
@@ -72,13 +72,6 @@ public class CultureAspectCenter {
                     if (meme != null) {
                         cultureAspect = new DepictObject(group, meme, randomElement(_l, session.random));
                     }
-                }
-                break;
-            }
-            case 1: {
-                Meme meme = constructTale();
-                if (meme != null) {
-                    cultureAspect = new Tale(group, meme);
                 }
                 break;
             }
@@ -101,7 +94,7 @@ public class CultureAspectCenter {
                 Meme template = session.templateBase.getRandomSentenceTemplate();
                 TextInfo info = generateTextInfo();
                 if (template != null && info != null) {
-                    cultureAspect = new SyntacticTale(group, template, info);
+                    cultureAspect = new Tale(group, template, info);
                 }
                 break;
             }
@@ -262,7 +255,7 @@ public class CultureAspectCenter {
                     if (!options.isEmpty()) {
                         return new AspectRitual(group, randomElement(options, session.random), reason);
                     }
-                    switch (session.random.nextInt(2)) {
+                    switch (session.random.nextInt(1)) {
                         case 0:
                             List<ConverseWrapper> meaningAspects =
                                     new ArrayList<>(
@@ -279,16 +272,7 @@ public class CultureAspectCenter {
                                                 randomElement(meaningAspects, session.random)),
                                         reason);
                             }
-                            break;
-                        case 1:
-                            return new CultureAspectRitual(
-                                    group,
-                                    new Tale(
-                                            group,
-                                            randomElement(aspectMemes, session.random)
-                                    ),
-                                    reason
-                            );//TODO make more complex tale;
+                            break;//TODO make complex tales;
                     }
                 }
             }

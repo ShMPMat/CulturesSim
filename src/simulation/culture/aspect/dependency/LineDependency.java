@@ -85,7 +85,7 @@ public class LineDependency extends AbstractDependency {
     }
 
     private boolean foodForInsertMeaning() {
-        return !tag.equals(ResourceTag.phony()) || getNextWrapper().canInsertMeaning;
+        return !getType().equals(ResourceTag.phony()) || getNextWrapper().canInsertMeaning;
     }
 
     public ConverseWrapper getNextWrapper() {
@@ -94,7 +94,7 @@ public class LineDependency extends AbstractDependency {
 
     @Override
     public LineDependency copy() {
-        return new LineDependency(tag, line);
+        return new LineDependency(getType(), line);
     }
 
     @Override

@@ -4,6 +4,7 @@ import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.reason.Reason;
@@ -43,7 +44,7 @@ public class AspectRitual extends Ritual {
     }
 
     @Override
-    public void use() {
+    public void use(CultureCenter center) {
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
@@ -51,7 +52,7 @@ public class AspectRitual extends Ritual {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getTerritory(),
                 true,
-                group.getCultureCenter().getMeaning()
+                center.getMeaning()
         ));
         if (result.isFinished) {
             group.cherishedResources.addAll(result.resources);

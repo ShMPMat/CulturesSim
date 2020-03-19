@@ -1,5 +1,6 @@
 package simulation.culture.group.cultureaspect;
 
+import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.request.Request;
@@ -20,8 +21,8 @@ public class CultureAspectRitual extends Ritual {
     }
 
     @Override
-    public void use() {
-        aspect.use();
+    public void use(CultureCenter center) {
+        aspect.use(center);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class ResourceDependency extends AbstractDependency {
         MutableResourcePack resourcePack = new MutableResourcePack();
         if (resource != null) {//TODO I dont like this shit, why is it working through gdamn AspectTag??
             return new AspectResult(
-                    tag.consumeAndGetResult(
+                    getType().consumeAndGetResult(
                             controller.getTerritory().getResourceInstances(resource), controller.getCeiling()
                     ),
                     null
@@ -49,12 +49,12 @@ public class ResourceDependency extends AbstractDependency {
     }
 
     public ResourceTag getType() {
-        return tag;
+        return super.getType();
     }
 
     @Override
     public ResourceDependency copy() {
-        return new ResourceDependency(tag, resource);
+        return new ResourceDependency(getType(), resource);
     }
 
     @Override
