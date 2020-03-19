@@ -9,6 +9,7 @@ import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.ResourcePack;
@@ -193,7 +194,11 @@ public class CultureCenter {
     }
 
     void finishUpdate() {
-        aspectCenter.finishUpdate();
+        aspectCenter.finishUpdate().forEach(a -> {
+            getMemePool().addAspectMemes(a);
+            getMemePool().addMemeCombination((new MemeSubject(group.name).addPredicate(
+                    session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(a.getName())))));
+        });
     }
 
     public void pushAspects() {

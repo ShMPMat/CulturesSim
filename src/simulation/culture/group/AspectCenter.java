@@ -7,7 +7,6 @@ import simulation.culture.aspect.*;
 import simulation.culture.aspect.MutableAspectPool;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.*;
-import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.resource.Resource;
 
 import java.util.*;
@@ -21,7 +20,10 @@ import static simulation.Controller.session;
 public class AspectCenter {
     private Group group;
     private MutableAspectPool aspectPool = new MutableAspectPool(new HashSet<>());
-    private MutableAspectPool changedAspectPool = new MutableAspectPool(new HashSet<>());// always equals to aspects except while making a turn
+    /**
+     * Equals to aspects added on the current turn
+     */
+    private MutableAspectPool changedAspectPool = new MutableAspectPool(new HashSet<>());
 
     private List<ConverseWrapper> _converseWrappers = new ArrayList<>();
     private List<Resource> _lastResourcesForCw = new ArrayList<>();
@@ -34,10 +36,6 @@ public class AspectCenter {
 
     public AspectPool getAspectPool() {
         return aspectPool;
-    }
-
-    Set<Aspect> getChangedAspects() {
-        return changedAspectPool.getAll();
     }
 
     public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
@@ -67,9 +65,10 @@ public class AspectCenter {
     }
 
     private void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
-        Aspect _a = null;
-        if (changedAspectPool.contains(aspect)) {
-            changedAspectPool.get(aspect).addOneDependency(dependencies);//TODO why one, add a l l
+        Aspect _a;
+        if (aspectPool.contains(aspect)) {
+            _a = aspectPool.get(aspect);//TODO why one, add a l l
+            _a.addOneDependency(dependencies);
         } else {
             _a = aspect.copy(dependencies);
             changedAspectPool.add(_a);
@@ -83,14 +82,10 @@ public class AspectCenter {
                 }
             }
         }
-        group.getCultureCenter().getMemePool().addAspectMemes(aspect);
-        group.getCultureCenter().getMemePool().addMemeCombination((new MemeSubject(group.name).addPredicate(
-                session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(aspect.getName())))));
         neededAdding(_a);
     }
 
     void hardAspectAdd(Aspect aspect) {
-        changedAspectPool.add(aspect);
         aspectPool.add(aspect);
         neededAdding(aspect);
     }
@@ -227,13 +222,16 @@ public class AspectCenter {
         return options;
     }
 
-    void finishUpdate() {
+    Set<Aspect> finishUpdate() {
         aspectPool.getAll().forEach(Aspect::finishUpdate);
-        pushAspects();
+        return pushAspects();
     }
 
-    void pushAspects() {//TODO stupid, rewrite
-        aspectPool.addAll(getChangedAspects());
+    Set<Aspect> pushAspects() {
+        aspectPool.addAll(changedAspectPool.getAll());
+        Set<Aspect> addedAspects = changedAspectPool.getAll();
+        changedAspectPool.clear();
+        return addedAspects;
     }
 
     List<Pair<Aspect, Group>> findOptions(Aspiration aspiration) {
@@ -286,7 +284,7 @@ public class AspectCenter {
         if (!session.isTime(session.groupTurnsBetweenAdopts)) {
             return;
         }
-        List<Pair<Aspect, Group>> allExistingAspects = getNeighbourAspects(a -> !getChangedAspects().contains(a));
+        List<Pair<Aspect, Group>> allExistingAspects = getNeighbourAspects(a -> !changedAspectPool.contains(a));
 
         if (!allExistingAspects.isEmpty()) {
             try {

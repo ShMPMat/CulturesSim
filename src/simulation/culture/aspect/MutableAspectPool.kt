@@ -4,4 +4,6 @@ class MutableAspectPool(initialAspects: MutableSet<Aspect>) : AspectPool(initial
     fun add(aspect: Aspect) = aspectMap.set(aspect.name, aspect)
 
     fun addAll(aspects: Collection<Aspect>) = aspects.forEach { add(it) }
+
+    fun clear() = aspectMap.clear()
 }
