@@ -3,6 +3,7 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
@@ -14,9 +15,6 @@ import java.util.*;
 
 import static simulation.Controller.session;
 
-/**
- * Represents certain people who do particular work in Group
- */
 public class Stratum {
     private int amount;
     /**
@@ -25,15 +23,14 @@ public class Stratum {
     private int workedAmount = 0;
     private List<Aspect> aspects = new ArrayList<>();
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
-    private Group group;
+    private List<Meme> popularMemes = new ArrayList<>();
 
-    public Stratum(int amount, Group group) {
+    public Stratum(int amount) {
         this.amount = amount;
-        this.group = group;
     }
 
-    public Stratum(int amount, Aspect aspect, Group group) {
-        this(amount, group);
+    public Stratum(int amount, Aspect aspect) {
+        this(amount);
         aspects.add(aspect);
         aspect.getDependencies().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
@@ -84,9 +81,8 @@ public class Stratum {
         for (Aspect aspect: aspects) {
             AspectResult result = aspect.use(controller);
             if (!result.resources.isEmpty()) {
-                group.getCultureCenter().getMemePool().strengthenMeme(Meme.getMeme(aspect));
-                result.resources.getResources().forEach(resource ->
-                        group.getCultureCenter().getMemePool().strengthenMeme(Meme.getMeme(resource)));
+                popularMemes.add(Meme.getMeme(aspect));
+                result.resources.getResources().forEach(r -> popularMemes.add(Meme.getMeme(r)));
             }
             if (result.isFinished) {
                 resourcePack.addAll(result.resources);
@@ -95,7 +91,7 @@ public class Stratum {
         return resourcePack;
     }
 
-    void update() {
+    void update(Group group) {
         if (session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
@@ -141,6 +137,11 @@ public class Stratum {
         }
         amount -= amount > workedAmount ? 1 : 0;
         workedAmount = 0;
+    }
+
+    void finishUpdate(MemePool pool) {
+        popularMemes.forEach(pool::strengthenMeme);
+        popularMemes.clear();
     }
 
     @Override

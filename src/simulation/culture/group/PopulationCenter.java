@@ -5,6 +5,7 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
 
@@ -78,8 +79,8 @@ public class PopulationCenter {
         }
     }
 
-    void strataUpdate() {
-        strata.forEach(Stratum::update);
+    void strataUpdate(Group group) {
+        strata.forEach(s -> s.update(group));
     }
 
     void die() {
@@ -134,12 +135,16 @@ public class PopulationCenter {
         }
     }
 
-    void manageNewAspects(Set<Aspect> aspects, Group group) {
+    void manageNewAspects(Set<Aspect> aspects) {
         aspects.forEach(a -> {
             if (strata.stream().noneMatch(s -> s.containsAspect(a))) {
-                strata.add(new Stratum(0, a, group));
+                strata.add(new Stratum(0, a));
             }
         });
+    }
+
+    void finishUpdate(MemePool pool) {
+        strata.forEach(s -> s.finishUpdate(pool));
     }
 
     PopulationCenter getPart(double fraction) {

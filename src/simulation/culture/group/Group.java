@@ -99,7 +99,7 @@ public class Group {
     void update() {
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getTerritory());
-        getPopulationCenter().strataUpdate();
+        getPopulationCenter().strataUpdate(this);
         if (state != State.Dead) {
             if (shouldMigrate()) {
                 territoryCenter.migrate();
@@ -174,7 +174,8 @@ public class Group {
     }
 
     public void finishUpdate() {
-        populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate(), this);
+        populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
+        populationCenter.finishUpdate(cultureCenter.getMemePool());
     }
 
     boolean diverge() {
