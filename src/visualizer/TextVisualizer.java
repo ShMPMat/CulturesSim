@@ -1,13 +1,10 @@
 package visualizer;
 //TODO check smart territory acquisition it seems not to work
 
-import kotlin.Pair;
 import simulation.Controller;
 import simulation.World;
 import simulation.Event;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.aspect.MeaningInserter;
 import simulation.culture.group.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
@@ -16,7 +13,6 @@ import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.SpaceData;
-import simulation.space.TectonicPlate;
 import simulation.space.tile.Tile;
 import simulation.space.WorldMap;
 import simulation.space.resource.Genome;
@@ -368,16 +364,6 @@ public class TextVisualizer implements Visualizer {
     }
 
     /**
-     * Prints events.
-     *
-     * @param events   list of events.
-     * @param printAll whether prints all events or only the most important.
-     */
-    private void printEvents(Collection<Event> events, boolean printAll) {
-        System.out.print(printedEvents(events, printAll));
-    }
-
-    /**
      * @param events   list of events.
      * @param printAll whether StringBuilder will contain all events or only the most important.
      * @return StringBuilder with events.
@@ -390,107 +376,6 @@ public class TextVisualizer implements Visualizer {
             }
         }
         return main;
-    }
-
-    private void addAspectToGroup(GroupConglomerate group, String aspectName) {
-        group.subgroups.forEach(g -> addAspectToGroup(g, aspectName));
-    }
-
-    /**
-     * Adds aspect to the group. Null-safe.
-     *
-     * @param group      group to which Aspect will be added. Can be null.
-     * @param aspectName name of the aspect which will be added to the Group. Can
-     *                   represent Aspect which doesn't exists.
-     */
-    private void addAspectToGroup(Group group, String aspectName) {
-        if (group == null) {
-            System.err.println("Cannot addAll aspect to the group");
-            return;
-        }
-        Aspect aspect;
-        if (aspectName.contains("On")) {
-            String resourceName = aspectName.split("On")[1];
-            Resource resource = group.getOverallTerritory().getDifferentResources().stream()
-                    .filter(res -> res.getSimpleName().equals(resourceName)).findFirst()
-                    .orElse(group.getCultureCenter().getAspectCenter().getAllProducedResources().stream()
-                            .map(Pair::getFirst)
-                            .filter(res -> res.getSimpleName().equals(resourceName))
-                            .findFirst()
-                            .orElse(null));
-            if (resource == null) {
-                System.err.println("Cannot addAll aspect to the group");
-                return;
-            }
-            try {
-                Aspect a = world.getAspectPool().get(aspectName.split("On")[0]);
-                if (a.canApplyMeaning()) {
-                    aspect = new MeaningInserter(a, resource);
-                } else {
-                    aspect = new ConverseWrapper(a, resource);
-                }
-            } catch (NoSuchElementException e) {
-                System.err.println("Cannot addAll aspect to the group");
-                return;
-            }
-        } else {
-            try {
-                aspect = world.getAspectPool().get(aspectName);
-            } catch (NoSuchElementException e) {
-                System.err.println("Cannot addAll aspect to the group");
-                return;
-            }
-        }
-        if (aspect instanceof ConverseWrapper) {
-            group.getCultureCenter().getAspectCenter().addAspect(((ConverseWrapper) aspect).aspect);
-            group.getCultureCenter().pushAspects();
-            Aspect inner = ((ConverseWrapper) aspect).aspect;
-            if (!group.getCultureCenter().getAspectCenter().getAspectPool().contains(inner)) {
-                System.err.println(
-                        "Cannot addAll aspect to the group: cant addAll sentenceBase aspect for the Converse Wrapper."
-                );
-                return;
-            }
-        }
-        group.getCultureCenter().getAspectCenter().addAspect(aspect);
-        group.getCultureCenter().pushAspects();
-    }
-
-    private void addWantToGroup(GroupConglomerate group, String wantName) {
-        group.subgroups.forEach(g -> addWantToGroup(g, wantName));
-    }
-
-    /**
-     * Adds want to the group. Null-safe.
-     *
-     * @param group    group to which want will be added. Can be null.
-     * @param wantName name of the Resource which will be added to the wants of the Group. Can
-     *represent Resource which doesn't exists.
-     */
-    private void addWantToGroup(Group group, String wantName) {
-        if (group == null) {
-            System.err.println("Cannot addAll aspect to the group");
-            return;
-        }
-        try {
-            Resource resource = world.getResourcePool().get(wantName);
-            group.getCultureCenter().addResourceWant(resource);
-        } catch (NoSuchElementException e) {
-            System.err.println("Cannot addAll want to the group");
-        }
-    }
-
-    private void addResourceOnTile(Tile tile, String resourceName) {
-        if (tile == null) {
-            System.err.println("No such Tile");
-            return;
-        }
-        try {
-            Resource resource = world.getResourcePool().get(resourceName);
-            tile.addDelayedResource(resource.copy());
-        } catch (NoSuchElementException e){
-            System.err.println("No such Resource");
-        }
     }
 
     /**
@@ -637,17 +522,37 @@ public class TextVisualizer implements Visualizer {
                             break;
                         case Exit:
                             return;
-                        case AddAspect:
+                        case AddAspect: {
                             _s = line.split(" ");
-                            addAspectToGroup(world.groups.get(Integer.parseInt(_s[0].substring(1))), _s[1]);
+                            int index = Integer.parseInt(_s[1].substring(1));
+                            GroupConglomerate group = index < world.groups.size()
+                                    ? world.groups.get(index)
+                                    : null;
+                            AddFunctionsKt.addGroupConglomerateAspect(
+                                    group,
+                                    _s[1],
+                                    world.getAspectPool()
+                            );
                             break;
-                        case AddWant:
+                        } case AddWant: {
                             _s = line.split(" ");
-                            addWantToGroup(world.groups.get(Integer.parseInt(_s[1].substring(1))), _s[2]);
+                            int index = Integer.parseInt(_s[1].substring(1));
+                            GroupConglomerate group = index < world.groups.size()
+                                    ? world.groups.get(index)
+                                    : null;
+                            AddFunctionsKt.addGroupConglomerateWant(
+                                    group,
+                                    _s[2],
+                                    world.getResourcePool()
+                            );
                             break;
-                        case AddResource:
+                        } case AddResource:
                             _s = line.split(" ");
-                            addResourceOnTile(map.get(Integer.parseInt(_s[0]), Integer.parseInt(_s[1])), _s[2]);
+                            AddFunctionsKt.addResourceOnTile(
+                                    map.get(Integer.parseInt(_s[0]), Integer.parseInt(_s[1])),
+                                    _s[2],
+                                    world.getResourcePool()
+                            );
                             break;
                         case GeologicalTurn:
                             controller.geologicTurn();
