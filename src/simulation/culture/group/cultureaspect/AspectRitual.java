@@ -8,7 +8,7 @@ import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.reason.Reason;
-import simulation.culture.group.reason.Reasons;
+import simulation.culture.group.reason.ConstructReasonsKt;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
@@ -34,7 +34,8 @@ public class AspectRitual extends Ritual {
         this(
                 group,
                 converseWrapper,
-                ResourceBehaviourKt.getRandom(group, Controller.session.random), Reasons.randomReason(group)
+                ResourceBehaviourKt.getRandom(group, Controller.session.random),
+                ConstructReasonsKt.randomReason(group, Controller.session.random)
         );
     }
 

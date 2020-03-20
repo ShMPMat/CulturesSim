@@ -113,7 +113,7 @@ public class CultureCenter {
         aspectCenter.mutateAspects();
         createArtifact();
         cultureAspectCenter.useCultureAspects();
-        cultureAspectCenter.addRandomCultureAspect();
+        cultureAspectCenter.addRandomCultureAspect(group);
         cultureAspectCenter.mutateCultureAspects();
     }
 

@@ -9,7 +9,7 @@ import simulation.culture.group.cultureaspect.MutableCultureAspectPool;
 import simulation.culture.group.cultureaspect.*;
 import simulation.culture.group.reason.BetterAspectUseReason;
 import simulation.culture.group.reason.Reason;
-import simulation.culture.group.reason.Reasons;
+import simulation.culture.group.reason.ConstructReasonsKt;
 import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemePredicate;
@@ -30,8 +30,6 @@ public class CultureAspectCenter {
     private Set<Resource> aestheticallyPleasingResources = new HashSet<>();
 
     private Set<Reason> reasonsWithSystems = new HashSet<>();
-
-    private static int constructProbes = 5;
 
     CultureAspectCenter(Group group, Set<CultureAspect> cultureAspects) {
         this.group = group;
@@ -57,38 +55,40 @@ public class CultureAspectCenter {
         aspectPool.getAll().forEach(a -> a.use(group.getCultureCenter()));
     }
 
-    void addRandomCultureAspect() {
+    void addRandomCultureAspect(Group group) {
         if (!testProbability(session.cultureAspectBaseProbability, session.random)) {
             return;
         }
         CultureAspect cultureAspect = null;
         switch (session.random.nextInt(5)) {
             case 0: {
-                List<ConverseWrapper> _l = new ArrayList<>(
-                        group.getCultureCenter().getAspectCenter().getAspectPool().getMeaningAspects()
+                cultureAspect = ConstructCultureAspectKt.createDepictObject(
+                        group.getCultureCenter().getAspectCenter().getAspectPool().getMeaningAspects(),
+                        constructMeme(),
+                        group
                 );
-                if (!_l.isEmpty()) {
-                    Meme meme = constructMeme();
-                    if (meme != null) {
-                        cultureAspect = new DepictObject(group, meme, randomElement(_l, session.random));
-                    }
-                }
                 break;
             }
             case 2: {
-                Resource resource = group.getCultureCenter().getAspectCenter().getAspectPool()
-                        .getProducedResources().stream()
-                        .map(Pair::getFirst)
-                        .filter(r -> !aestheticallyPleasingResources.contains(r))
-                        .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
-                        .orElse(null);
-                if (resource != null) {
-                    cultureAspect = new AestheticallyPleasingObject(group, resource);
-                }
+                cultureAspect = ConstructCultureAspectKt.createAestheticallyPleasingObject(
+                        group.getCultureCenter().getAspectCenter().getAspectPool()
+                                .getProducedResources().stream()
+                                .map(Pair::getFirst)
+                                .filter(r -> !aestheticallyPleasingResources.contains(r))
+                                .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
+                                .orElse(null),
+                        group
+                );
                 break;
             }
             case 3: {//TODO recursively go in dependencies;
-                addCultureAspect(constructRitualForReason(constructReason()));
+                cultureAspect = constructRitualForReason(ConstructReasonsKt.constructBetterAspectUseReason(
+                        group,
+                        group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers(),
+                        reasonsWithSystems,
+                        session.random,
+                        5//TODO meh, java
+                ));
                 break;
             }
             case 4: {
@@ -104,7 +104,7 @@ public class CultureAspectCenter {
                         group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers();
                 if (!wrappers.isEmpty()) {
                     ConverseWrapper converseWrapper = randomElement(wrappers, session.random);
-                    Reason reason = Reasons.randomReason(group);
+                    Reason reason = ConstructReasonsKt.randomReason(group, session.random);
                     if (reason != null) {
                         cultureAspect = new AspectRitual(group, converseWrapper, reason);
                     }
@@ -155,28 +155,6 @@ public class CultureAspectCenter {
         return info;
     }
 
-    private Reason constructReason() {
-        ConverseWrapper converseWrapper;
-        Reason reason;
-        int i = 0;
-        do {
-            List<ConverseWrapper> wrappers = new ArrayList<>(
-                    group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers()
-            );
-            if (wrappers.isEmpty()) {
-                return null;
-            }
-            converseWrapper = randomElementWithProbability(
-                    wrappers,
-                    cw -> Math.max(cw.getUsefulness(), (double) 1),
-                    session.random
-            );
-            reason = new BetterAspectUseReason(group, converseWrapper);
-            i++;
-        } while (i <= constructProbes && !reasonsWithSystems.contains(reason));
-        return reasonsWithSystems.contains(reason) ? null : reason;
-    }
-
     void mutateCultureAspects() {
         if (!testProbability(session.groupCultureAspectCollapse, session.random)) {
             return;
@@ -206,10 +184,6 @@ public class CultureAspectCenter {
         }
     }
 
-    private Meme constructTale() {
-        return constructMeme();
-    }
-
     private Meme constructMeme() {
         Meme meme = group.getCultureCenter().getMemePool().getMemeWithComplexityBias();
         if (testProbability(0.5, session.random)) {
@@ -231,7 +205,6 @@ public class CultureAspectCenter {
         }
         if (reason instanceof BetterAspectUseReason) {
             ConverseWrapper converseWrapper = ((BetterAspectUseReason) reason).getConverseWrapper();
-
             ShnyPair<List<Meme>, List<Meme>> temp =
                     group.getCultureCenter().getMemePool().getAspectMemes(converseWrapper);
             List<Meme> aspectMemes = temp.first;
@@ -258,22 +231,22 @@ public class CultureAspectCenter {
                     }
                     switch (session.random.nextInt(1)) {
                         case 0:
-                            List<ConverseWrapper> meaningAspects =
-                                    new ArrayList<>(
-                                            group.getCultureCenter()
-                                                    .getAspectCenter()
-                                                    .getAspectPool()
-                                                    .getMeaningAspects()
-                                    );
-                            if (!meaningAspects.isEmpty()) {
-                                return new CultureAspectRitual(group,
-                                        new DepictObject(
-                                                group,
-                                                randomElement(aspectMemes, session.random),
-                                                randomElement(meaningAspects, session.random)),
-                                        reason);
-                            }
-                            break;//TODO make complex tales;
+                            Set<ConverseWrapper> meaningAspects = group.getCultureCenter()
+                                    .getAspectCenter()
+                                    .getAspectPool()
+                                    .getMeaningAspects();
+                            CultureAspect aspect = ConstructCultureAspectKt.createDepictObject(
+                                    meaningAspects,
+                                    randomElement(aspectMemes, session.random),
+                                    group
+                            );
+                            if (aspect != null) {
+                                return new CultureAspectRitual(
+                                        group,
+                                        aspect,
+                                        reason
+                                );
+                            }//TODO make complex tales;
                     }
                 }
             }
