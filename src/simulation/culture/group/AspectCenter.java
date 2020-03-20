@@ -38,16 +38,6 @@ public class AspectCenter {
         return aspectPool;
     }
 
-    public List<Pair<Resource, ConverseWrapper>> getAllProducedResources() {
-        List<Pair<Resource, ConverseWrapper>> _m = new ArrayList<>();
-        for (ConverseWrapper converseWrapper : aspectPool.getConverseWrappers()) {
-            for (Resource resource : converseWrapper.getResult()) {
-                _m.add(new Pair<>(resource, converseWrapper));
-            }
-        }
-        return _m;
-    }
-
     public boolean addAspect(Aspect aspect) {
         if (!aspect.isValid()) {
             return false;
@@ -74,7 +64,7 @@ public class AspectCenter {
             changedAspectPool.add(_a);
             if (!(_a instanceof ConverseWrapper)) {//TODO maybe should do the same in straight
                 Set<Resource> allResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
-                allResources.addAll(getAllProducedResources().stream()
+                allResources.addAll(aspectPool.getProducedResources().stream()
                         .map(Pair::getFirst)
                         .collect(Collectors.toSet()));
                 for (Resource resource : allResources) {
@@ -82,21 +72,12 @@ public class AspectCenter {
                 }
             }
         }
-        neededAdding(_a);
     }
 
     void hardAspectAdd(Aspect aspect) {
+        changedAspectPool.add(aspect);
         aspectPool.add(aspect);
-        neededAdding(aspect);
     }
-
-    private void neededAdding(Aspect aspect) {
-        if (group.getPopulationCenter().getStrata().stream()
-                .noneMatch(s -> s.containsAspect(aspect))) {
-            group.getPopulationCenter().getStrata().add(new Stratum(0, aspect, group));
-        }
-    }
-
 
     Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
         Map<ResourceTag, Set<Dependency>> dep = new HashMap<>();
@@ -125,7 +106,7 @@ public class AspectCenter {
                         converseWrapper.getRequirement()
                 );
             }
-            addDependenciesInMap(dep, getAllProducedResources().stream()
+            addDependenciesInMap(dep, aspectPool.getProducedResources().stream()
                             .filter(pair -> pair.getFirst().equals(converseWrapper.resource))
                             .map(pair -> new LineDependency(
                                     converseWrapper.getRequirement(),
@@ -208,7 +189,7 @@ public class AspectCenter {
     private List<ConverseWrapper> getAllPossibleConverseWrappers() {
         List<ConverseWrapper> options = new ArrayList<>(_converseWrappers); //TODO maybe do it after the middle part?
         Set<Resource> newResources = new HashSet<>(group.getOverallTerritory().getDifferentResources());
-        newResources.addAll(getAllProducedResources().stream()
+        newResources.addAll(aspectPool.getProducedResources().stream()
                 .map(Pair::getFirst)
                 .collect(Collectors.toSet()));
         newResources.removeAll(_lastResourcesForCw);

@@ -15,7 +15,6 @@ import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.tile.Tile;
 import simulation.space.resource.MutableResourcePack;
-import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -175,7 +174,7 @@ public class Group {
     }
 
     public void finishUpdate() {
-        getCultureCenter().finishUpdate();
+        populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate(), this);
     }
 
     boolean diverge() {

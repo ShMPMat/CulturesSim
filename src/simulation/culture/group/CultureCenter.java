@@ -195,12 +195,14 @@ public class CultureCenter {
         }
     }
 
-    void finishUpdate() {
-        aspectCenter.finishUpdate().forEach(a -> {
+    Set<Aspect> finishAspectUpdate() {
+        Set<Aspect> aspects = aspectCenter.finishUpdate();
+        aspects.forEach(a -> {
             memePool.addAspectMemes(a);
             memePool.addMemeCombination((new MemeSubject(group.name).addPredicate(
                     session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(a.getName())))));
         });
+        return aspects;
     }
 
     public void pushAspects() {

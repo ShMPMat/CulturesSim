@@ -8,10 +8,7 @@ import simulation.culture.group.request.ResourceEvaluator;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PopulationCenter {
@@ -135,6 +132,14 @@ public class PopulationCenter {
             }
             request.end(turnResources);
         }
+    }
+
+    void manageNewAspects(Set<Aspect> aspects, Group group) {
+        aspects.forEach(a -> {
+            if (strata.stream().noneMatch(s -> s.containsAspect(a))) {
+                strata.add(new Stratum(0, a, group));
+            }
+        });
     }
 
     PopulationCenter getPart(double fraction) {

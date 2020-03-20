@@ -76,7 +76,8 @@ public class CultureAspectCenter {
                 break;
             }
             case 2: {
-                Resource resource = group.getCultureCenter().getAspectCenter().getAllProducedResources().stream()
+                Resource resource = group.getCultureCenter().getAspectCenter().getAspectPool()
+                        .getProducedResources().stream()
                         .map(Pair::getFirst)
                         .filter(r -> !aestheticallyPleasingResources.contains(r))
                         .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
@@ -248,7 +249,7 @@ public class CultureAspectCenter {
                     }
                 } catch (NoSuchElementException e) {
                     List<ConverseWrapper> options =
-                            group.getCultureCenter().getAspectCenter().getAllProducedResources().stream()
+                            group.getCultureCenter().getAspectCenter().getAspectPool().getProducedResources().stream()
                                     .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
                                     .map(Pair::getSecond)
                                     .collect(Collectors.toList());

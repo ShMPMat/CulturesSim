@@ -1,10 +1,20 @@
 package simulation.culture.aspect
 
+import simulation.space.resource.Resource
+import kotlin.Boolean
+import kotlin.NoSuchElementException
+import kotlin.Pair
+import kotlin.String
+
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected val aspectMap = initialAspects.map {it.name}.zip(initialAspects).toMap().toMutableMap()
 
     protected val aspects: Set<Aspect>
         get() = aspectMap.values.toSet()
+
+    val producedResources: List<Pair<Resource, ConverseWrapper>>
+        get() = getConverseWrappers()
+                .flatMap { w -> w.result.zip(List(w.result.size) { w }) }
 
     fun getConverseWrappers() = aspects.filterIsInstance<ConverseWrapper>()
 

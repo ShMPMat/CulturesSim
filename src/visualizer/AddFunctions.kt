@@ -75,7 +75,7 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
         val resourceName = aspectName.split("On".toRegex()).toTypedArray()[1]
         val accessibleResource = group.overallTerritory.differentResources
                 .first { it.simpleName == resourceName }
-                ?: group.cultureCenter.aspectCenter.allProducedResources
+                ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
                         .map { it.first }
                         .firstOrNull { it.simpleName == resourceName }
         if (accessibleResource == null) {
