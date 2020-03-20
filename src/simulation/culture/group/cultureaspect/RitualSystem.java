@@ -20,6 +20,18 @@ public class RitualSystem extends AbstractCultureAspect {
         this.reason = reason;
     }
 
+    public Reason getReason() {
+        return reason;
+    }
+
+    public Set<Ritual> getRituals() {
+        return rituals;
+    }
+
+    public void addRitual(Ritual ritual) {
+        rituals.add(ritual);
+    }
+
     @Override
     public Request getRequest() {
         return null;
