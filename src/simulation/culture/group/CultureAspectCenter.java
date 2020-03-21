@@ -128,7 +128,15 @@ public class CultureAspectCenter {
         if (!testProbability(session.groupCultureAspectCollapse, session.random)) {
             return;
         }
-        joinSimilarRituals();
+        switch (session.random.nextInt(2)) {
+            case 0: {
+                joinSimilarRituals();
+                break;
+            } case 1: {
+                joinSimilarTalesBy("!actor");
+                joinSimilarTalesBy("@verb");
+            }
+        }
     }
 
     void joinSimilarRituals() {
@@ -136,6 +144,13 @@ public class CultureAspectCenter {
         if (system != null) {
             addCultureAspect(system);
             reasonsWithSystems.add(system.getReason());
+        }
+    }
+
+    void joinSimilarTalesBy(String infoTag) {
+        TaleSystem system = ChangeCultureAspectsKt.takeOutSimilarTalesByTag(infoTag, aspectPool, group);
+        if (system != null) {
+            addCultureAspect(system);
         }
     }
 

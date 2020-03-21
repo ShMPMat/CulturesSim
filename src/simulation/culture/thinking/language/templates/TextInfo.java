@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextInfo {
-    Map<String, Meme> map = new HashMap<>();
+    private Map<String, Meme> map = new HashMap<>();
 
     public TextInfo(Meme actor, Meme verb, Meme receiver) {
         map.put("!actor", actor);

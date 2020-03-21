@@ -21,6 +21,10 @@ public class Tale extends AbstractCultureAspect {
         this.meme = info.substitute(template);
     }
 
+    public TextInfo getInfo() {
+        return info;
+    }
+
     @Override
     public Request getRequest() {
         return null;
