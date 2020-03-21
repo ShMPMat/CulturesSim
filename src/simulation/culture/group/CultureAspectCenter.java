@@ -10,9 +10,10 @@ import simulation.culture.group.cultureaspect.*;
 import simulation.culture.group.reason.BetterAspectUseReason;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.reason.ConstructReasonsKt;
+import simulation.culture.thinking.language.templates.ConstructTextInfoKt;
 import simulation.culture.thinking.language.templates.TextInfo;
+import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.culture.thinking.meaning.MemePredicate;
 import simulation.space.resource.Resource;
 
 import java.util.*;
@@ -64,7 +65,11 @@ public class CultureAspectCenter {
             case 0: {
                 cultureAspect = ConstructCultureAspectKt.createDepictObject(
                         group.getCultureCenter().getAspectCenter().getAspectPool().getMeaningAspects(),
-                        constructMeme(),
+                        ConstructMemeKt.constructAndAddMeme(
+                                group.getCultureCenter().getMemePool(),
+                                session.random,
+                                0.5 //TODO meh, java
+                        ),
                         group
                 );
                 break;
@@ -82,7 +87,7 @@ public class CultureAspectCenter {
                 break;
             }
             case 3: {//TODO recursively go in dependencies;
-                cultureAspect = constructRitualForReason(ConstructReasonsKt.constructBetterAspectUseReason(
+                cultureAspect = constructRitual(ConstructReasonsKt.constructBetterAspectUseReason(
                         group,
                         group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers(),
                         reasonsWithSystems,
@@ -93,7 +98,11 @@ public class CultureAspectCenter {
             }
             case 4: {
                 Meme template = session.templateBase.getRandomSentenceTemplate();
-                TextInfo info = generateTextInfo();
+                TextInfo info = ConstructTextInfoKt.constructTextInfo(
+                        group.getCultureCenter(),
+                        session.templateBase,
+                        session.random
+                );
                 if (template != null && info != null) {
                     cultureAspect = new Tale(group, template, info);
                 }
@@ -113,46 +122,6 @@ public class CultureAspectCenter {
             }
         }
         addCultureAspect(cultureAspect);
-    }
-
-    private TextInfo generateTextInfo() {//TODO too slow
-        List<TextInfo> textInfos = group.getCultureCenter().getAspectCenter().getAspectPool().getConverseWrappers()
-                .stream()
-                .flatMap(cw -> group.getCultureCenter().getMemePool().getAspectTextInfo(cw).stream())
-                .collect(Collectors.toList());
-        return textInfos.isEmpty() ? null : complicateInfo(randomElement(textInfos, session.random));
-    }
-
-    private TextInfo complicateInfo(TextInfo info) {
-        if (info == null) {
-            return null;
-        }
-        Map<String, Meme> substitutions = new HashMap<>();
-        for (Map.Entry<String, Meme> entry : info.getMap().entrySet()) {
-            if (entry.getKey().charAt(0) == '!') {
-                substitutions.put(entry.getKey(), randomElement(session.templateBase.nounClauseBase, session.random)
-                        .refactor(m -> {
-                            if (m.getObserverWord().equals("!n!")) {
-                                return entry.getValue().topCopy();
-                            } else if (session.templateBase.templateChars.contains(m.getObserverWord().charAt(0))) {
-                                substitutions.put(entry.getKey() + m.getObserverWord(),
-                                        randomElementWithProbability(
-                                                session.templateBase.wordBase.get(m.getObserverWord()),
-                                                n -> (double) group.getCultureCenter()
-                                                        .getMemePool()
-                                                        .getMeme(n.getObserverWord())
-                                                        .getImportance(),
-                                                session.random)
-                                );
-                                return new MemePredicate(entry.getKey() + m.getObserverWord());
-                            } else {
-                                return m.topCopy();
-                            }
-                        }));
-            }
-        }
-        substitutions.forEach((key, value) -> info.getMap().put(key, value));
-        return info;
     }
 
     void mutateCultureAspects() {
@@ -184,22 +153,7 @@ public class CultureAspectCenter {
         }
     }
 
-    private Meme constructMeme() {
-        Meme meme = group.getCultureCenter().getMemePool().getMemeWithComplexityBias();
-        if (testProbability(0.5, session.random)) {
-            Meme second;
-            do {
-                second = group.getCultureCenter().getMemePool().getMemeWithComplexityBias().copy();
-            } while (second.hasPart(meme, Collections.singleton("and")));
-            meme = meme.copy().addPredicate(
-                    group.getCultureCenter().getMemePool().getMemeCopy("and").addPredicate(second)
-            );
-            group.getCultureCenter().getMemePool().addMemeCombination(meme);
-        }
-        return meme;
-    }
-
-    public Ritual constructRitualForReason(Reason reason) {
+    public Ritual constructRitual(Reason reason) {
         if (reason == null) {
             return null;
         }
@@ -255,11 +209,9 @@ public class CultureAspectCenter {
     }
 
     public List<CultureAspect> getNeighbourCultureAspects() {
-        List<CultureAspect> allExistingAspects = new ArrayList<>();
-        for (Group neighbour : group.getRelationCenter().getRelatedGroups()) {
-            allExistingAspects.addAll(neighbour.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll());
-        }
-        return allExistingAspects;
+        return group.getRelationCenter().getRelatedGroups().stream()
+                .flatMap(g -> g.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll().stream())
+                .collect(Collectors.toList());
     }
 
     public List<CultureAspect> getNeighbourCultureAspects(Predicate<CultureAspect> predicate) {
@@ -269,21 +221,17 @@ public class CultureAspectCenter {
     }
 
     void adoptCultureAspects() {
-        try {
-            if (!session.isTime(session.groupTurnsBetweenAdopts)) {
-                return;
-            }
-            List<CultureAspect> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
-            if (!cultureAspects.isEmpty()) {
-                CultureAspect aspect = randomElementWithProbability(
-                        cultureAspects,
-                        a -> group.getRelationCenter().getNormalizedRelation(a.getGroup()),
-                        session.random
-                );
-                addCultureAspect(aspect);
-            }
-        } catch (NullPointerException e) {
-            throw new RuntimeException();
+        if (!session.isTime(session.groupTurnsBetweenAdopts)) {
+            return;
+        }
+        List<CultureAspect> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
+        if (!cultureAspects.isEmpty()) {
+            CultureAspect aspect = randomElementWithProbability(
+                    cultureAspects,
+                    a -> group.getRelationCenter().getNormalizedRelation(a.getGroup()),
+                    session.random
+            );
+            addCultureAspect(aspect);
         }
     }
 }

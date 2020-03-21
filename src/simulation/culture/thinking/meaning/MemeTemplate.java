@@ -3,7 +3,6 @@ package simulation.culture.thinking.meaning;
 import simulation.Controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,9 @@ public class MemeTemplate extends Meme {
 
     @Override
     public Meme copy() {
-        return new MemeTemplate(observerWord, predicates.stream().map(Meme::copy).collect(Collectors.toList()));
+        return new MemeTemplate(observerWord, predicates.stream()
+                .map(Meme::copy)
+                .collect(Collectors.toList()));
     }
 
     @Override

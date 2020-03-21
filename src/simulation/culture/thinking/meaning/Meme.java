@@ -141,5 +141,5 @@ abstract public class Meme {
 
     public abstract Meme copy();
 
-    public abstract Meme topCopy();
+    public abstract Meme topCopy();//TODO da hell is this?
 }
