@@ -41,7 +41,7 @@ public class Controller {
     public final double defaultGroupDiverge = 0.002;
     public final double rAspectAcquisition = 0.1;
     public final double cultureAspectBaseProbability = 0.02;
-    public final double groupCultureAspectCollapse = 0.01;
+    public final double groupCultureAspectCollapse = 0.05;
     public final double groupCollapsedAspectUpdate = 0.01;
     public final boolean groupDiverge = true;
     public final boolean groupMultiplication = true;

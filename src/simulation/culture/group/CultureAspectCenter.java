@@ -128,28 +128,14 @@ public class CultureAspectCenter {
         if (!testProbability(session.groupCultureAspectCollapse, session.random)) {
             return;
         }
-        List<Ritual> rituals = aspectPool
-                .filter(ca -> ca instanceof Ritual)
-                .stream()
-                .map(ca -> (Ritual) ca)
-                .collect(Collectors.toList());
-        Map<Reason, List<Ritual>> dividedRituals = new HashMap<>();
-        rituals.forEach(r -> {
-            if (dividedRituals.containsKey(r.getReason())) {
-                dividedRituals.get(r.getReason()).add(r);
-            } else {
-                List<Ritual> temp = new ArrayList<>();
-                temp.add(r);
-                dividedRituals.put(r.getReason(), temp);
-            }
-        });
-        List<Ritual> popularReasonRituals = dividedRituals.values().stream()
-                .max(Comparator.comparingInt(List::size))
-                .orElse(new ArrayList<>());
-        if (popularReasonRituals.size() >= 3) {
-            addCultureAspect(new RitualSystem(group, popularReasonRituals, popularReasonRituals.get(0).getReason()));
-            aspectPool.removeAll(popularReasonRituals);
-            reasonsWithSystems.add(popularReasonRituals.get(0).getReason());
+        joinSimilarRituals();
+    }
+
+    void joinSimilarRituals() {
+        RitualSystem system = ChangeCultureAspectsKt.takeOutSimilarRituals(aspectPool, group);
+        if (system != null) {
+            addCultureAspect(system);
+            reasonsWithSystems.add(system.getReason());
         }
     }
 
