@@ -28,7 +28,9 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
 
     fun get(aspect: Aspect) = get(aspect.name)
 
-    fun contains(aspect: Aspect) = aspectMap[aspect.name] != null
+    fun contains(aspectName: String) = aspectMap[aspectName] != null
+
+    fun contains(aspect: Aspect) = contains(aspect.name)
 
     fun filter(predicate: (Aspect) -> Boolean) = aspects
             .filter(predicate)

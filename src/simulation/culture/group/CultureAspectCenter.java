@@ -156,52 +156,55 @@ public class CultureAspectCenter {
     public Ritual constructRitual(Reason reason) {
         if (reason == null) {
             return null;
+        } else if (reason instanceof BetterAspectUseReason) {
+            return constructBetterAspectUseReasonRitual((BetterAspectUseReason) reason);
         }
-        if (reason instanceof BetterAspectUseReason) {
-            ConverseWrapper converseWrapper = ((BetterAspectUseReason) reason).getConverseWrapper();
-            ShnyPair<List<Meme>, List<Meme>> temp =
-                    group.getCultureCenter().getMemePool().getAspectMemes(converseWrapper);
-            List<Meme> aspectMemes = temp.first;
-            aspectMemes.addAll(temp.second);
-            Collections.shuffle(aspectMemes);
-            for (Meme meme : aspectMemes) {//TODO maybe depth check
-                if (meme.getObserverWord().equals(converseWrapper.getName())) {
-                    continue;
+        return null;
+    }
+
+    private Ritual constructBetterAspectUseReasonRitual(BetterAspectUseReason reason) {
+        ConverseWrapper converseWrapper = reason.getConverseWrapper();
+        Pair<List<Meme>, List<Meme>> temp = group.getCultureCenter().getMemePool().getAspectMemes(converseWrapper);
+        List<Meme> aspectMemes = temp.getFirst();
+        aspectMemes.addAll(temp.getSecond());
+        Collections.shuffle(aspectMemes);
+        for (Meme meme : aspectMemes) {//TODO maybe depth check
+            if (meme.getObserverWord().equals(converseWrapper.getName())) {
+                continue;
+            }
+            if (group.getCultureCenter().getAspectCenter().getAspectPool().contains(meme.getObserverWord())) {
+                Aspect myAspect = group.getCultureCenter().getAspectCenter()
+                        .getAspectPool().get(meme.getObserverWord());
+                if (myAspect instanceof ConverseWrapper) {
+                    return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
                 }
-                try {
-                    Aspect myAspect = group.getCultureCenter().getAspectCenter()
-                            .getAspectPool().get(meme.getObserverWord());
-                    if (myAspect instanceof ConverseWrapper) {
-                        return new AspectRitual(group, (ConverseWrapper) myAspect, reason);
-                    }
-                } catch (NoSuchElementException e) {
-                    List<ConverseWrapper> options =
-                            group.getCultureCenter().getAspectCenter().getAspectPool().getProducedResources().stream()
-                                    .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
-                                    .map(Pair::getSecond)
-                                    .collect(Collectors.toList());
-                    if (!options.isEmpty()) {
-                        return new AspectRitual(group, randomElement(options, session.random), reason);
-                    }
-                    switch (session.random.nextInt(1)) {
-                        case 0:
-                            Set<ConverseWrapper> meaningAspects = group.getCultureCenter()
-                                    .getAspectCenter()
-                                    .getAspectPool()
-                                    .getMeaningAspects();
-                            CultureAspect aspect = ConstructCultureAspectKt.createDepictObject(
-                                    meaningAspects,
-                                    randomElement(aspectMemes, session.random),
-                                    group
+            } else {
+                List<ConverseWrapper> options =
+                        group.getCultureCenter().getAspectCenter().getAspectPool().getProducedResources().stream()
+                                .filter(pair -> pair.getFirst().getBaseName().equals(meme.getObserverWord()))
+                                .map(Pair::getSecond)
+                                .collect(Collectors.toList());
+                if (!options.isEmpty()) {
+                    return new AspectRitual(group, randomElement(options, session.random), reason);
+                }
+                switch (session.random.nextInt(1)) {
+                    case 0:
+                        Set<ConverseWrapper> meaningAspects = group.getCultureCenter()
+                                .getAspectCenter()
+                                .getAspectPool()
+                                .getMeaningAspects();
+                        CultureAspect aspect = ConstructCultureAspectKt.createDepictObject(
+                                meaningAspects,
+                                randomElement(aspectMemes, session.random),
+                                group
+                        );
+                        if (aspect != null) {
+                            return new CultureAspectRitual(
+                                    group,
+                                    aspect,
+                                    reason
                             );
-                            if (aspect != null) {
-                                return new CultureAspectRitual(
-                                        group,
-                                        aspect,
-                                        reason
-                                );
-                            }//TODO make complex tales;
-                    }
+                        }//TODO make complex tales;
                 }
             }
         }
