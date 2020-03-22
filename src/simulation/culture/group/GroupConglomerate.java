@@ -24,7 +24,7 @@ public class GroupConglomerate {
      * Equal to the sum of subgroup populations.
      */
     public int population;
-    private CulturalCenterConglomerate culturalCenterOvergroup;
+    private List<Event> events = new ArrayList<>();
     /**
      * Overall Territory which is under the child Groups
      */
@@ -33,7 +33,6 @@ public class GroupConglomerate {
     private GroupConglomerate(String name, int population, int numberOfSubGroups, Tile root) {
         this.name = name;
         this.population = population;
-        culturalCenterOvergroup = new CulturalCenterConglomerate(this);
         claimTile(root);
 
         for (int i = 0; i < numberOfSubGroups; i++) {
@@ -100,7 +99,7 @@ public class GroupConglomerate {
     }
 
     public List<Event> getEvents() {
-        return culturalCenterOvergroup.getEvents();
+        return events;
     }
 
     private void overgroupDie() {
@@ -109,7 +108,7 @@ public class GroupConglomerate {
     }
 
     public void addEvent(Event event) {
-        culturalCenterOvergroup.getEvents().add(event);
+        events.add(event);
     }
 
     public Tile getCenter() {
