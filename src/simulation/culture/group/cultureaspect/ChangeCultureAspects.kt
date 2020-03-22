@@ -20,7 +20,7 @@ fun takeOutSimilarTalesByTag(infoTag: String, aspectPool: MutableCultureAspectPo
     val (popularMeme, popularTales) = aspectPool
             .filter { it is Tale }
             .map { it as Tale }
-            .groupBy { it.info.map[infoTag] }//TODO its hardcoded... and strange
+            .groupBy { it.info.getMainPart(infoTag) }
             .maxBy { it.value.size }
             ?: return null
     popularMeme ?: return null

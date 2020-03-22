@@ -19,6 +19,14 @@ public class TextInfo {
         return map;
     }
 
+    public Meme getMainPart(String key) {
+        return getSubstituted(key).topMemeCopy();
+    }
+
+    public Meme getSubstituted(String key) {
+        return substitute(map.get(key));
+    }
+
     public Meme substitute(Meme meme) {
         return meme.refactor(m -> {
             if (Controller.session.templateBase.templateChars.contains(m.getObserverWord().charAt(0))) {
@@ -28,7 +36,7 @@ public class TextInfo {
                 }
                 return substitution.copy();
             } else {
-                return m.topCopy();
+                return m.topMemeCopy();
             }
         });
     }

@@ -31,7 +31,7 @@ public class MemeSubject extends Meme {
     }
 
     @Override
-    public MemeSubject topCopy() {
+    public MemeSubject topMemeCopy() {
         return new MemeSubject(observerWord);
     }
 }

@@ -9,7 +9,6 @@ import simulation.culture.thinking.meaning.*
 import simulation.space.resource.Resource
 import simulation.space.resource.dependency.ConsumeDependency
 import java.util.*
-import java.util.function.Consumer
 import kotlin.random.Random
 
 fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase, random: Random): TextInfo? { //TODO too slow
@@ -34,7 +33,7 @@ fun complicateInfo(
         if (key[0] == '!') {
             substitutions[key] = randomElement(templateBase.nounClauseBase, random).refactor { m: Meme ->
                 when {
-                    m.observerWord == "!n!" -> value.topCopy()
+                    m.observerWord == "!n!" -> value.topMemeCopy()
                     templateBase.templateChars.contains(m.observerWord[0]) -> {
                         substitutions[key.toString() + m.observerWord] = randomElementWithProbability(
                                 templateBase.wordBase[m.observerWord]!!,
@@ -43,7 +42,7 @@ fun complicateInfo(
                         )
                         MemePredicate(key + m.observerWord)
                     }
-                    else -> m.topCopy()
+                    else -> m.topMemeCopy()
                 }
             }
         }

@@ -27,7 +27,7 @@ public class MemePredicate extends Meme {
     }
 
     @Override
-    public MemePredicate topCopy() {
+    public MemePredicate topMemeCopy() {
         return new MemePredicate(observerWord);
     }
 }

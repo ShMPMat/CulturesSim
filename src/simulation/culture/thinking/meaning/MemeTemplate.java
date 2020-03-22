@@ -32,7 +32,7 @@ public class MemeTemplate extends Meme {
     }
 
     @Override
-    public MemeTemplate topCopy() {
+    public MemeTemplate topMemeCopy() {
         return new MemeTemplate(observerWord, new ArrayList<>());
     }
 }

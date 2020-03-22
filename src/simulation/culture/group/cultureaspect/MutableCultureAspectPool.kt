@@ -41,7 +41,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
     private fun taleAdd(tale: Tale): Boolean {
         val system = getAll()
                 .filterIsInstance<TaleSystem>()
-                .firstOrNull { tale.info.map[it.infoTag] == it.groupingMeme }
+                .firstOrNull { tale.info.getMainPart(it.infoTag) == it.groupingMeme }
                 ?: return false
         system.addTale(tale)
         return true
