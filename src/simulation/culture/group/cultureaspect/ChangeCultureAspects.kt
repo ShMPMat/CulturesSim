@@ -43,22 +43,28 @@ fun takeOutDeity(aspectPool: MutableCultureAspectPool, group: Group, random: Ran
     if (systems.isEmpty()) return null
     val system = randomElement(systems, random)
     aspectPool.remove(system)
+    val depictSystem = takeOutDepictionSystem(
+            aspectPool,
+            system.groupingMeme,
+            group
+    ) ?: DepictSystem(group, setOf(), system.groupingMeme)
     return Deity(
             group,
-            system
+            system,
+            depictSystem
     )
 }
 
 fun takeOutDepictionSystem(
         aspectPool: MutableCultureAspectPool,
         groupingMeme: Meme,
-        group: Group,
-        random: Random
+        group: Group
 ): DepictSystem? {
     val depictions = aspectPool
             .filter { it is DepictObject }
             .map { it as DepictObject }
-            .filter { d -> d.meme.anyMatch { it == groupingMeme } }
+            .filter { d -> d.meme.anyMatch { it.topMemeCopy() == groupingMeme } }
     if (depictions.isEmpty()) return null
+    aspectPool.removeAll(depictions)
     return DepictSystem(group, depictions, groupingMeme)
 }//TODO rewrite with minimums

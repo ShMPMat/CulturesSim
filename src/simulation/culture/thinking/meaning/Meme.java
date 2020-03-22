@@ -104,7 +104,7 @@ abstract public class Meme {
         queue.add(this);
         while (!queue.isEmpty()) {
             Meme current = queue.poll();
-            if (current.getPredicates().stream().anyMatch(predicate)) {
+            if (predicate.test(current)) {
                 return true;
             }
             queue.addAll(current.predicates);

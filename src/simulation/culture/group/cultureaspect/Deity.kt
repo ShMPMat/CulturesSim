@@ -6,7 +6,8 @@ import simulation.culture.group.request.Request
 
 class Deity(
         group: Group,
-        val taleSystem: TaleSystem
+        val taleSystem: TaleSystem,
+        val depictSystem: DepictSystem
 ) : AbstractCultureAspect(group) {
     override fun getRequest(): Request? {
         return null
@@ -14,10 +15,11 @@ class Deity(
 
     override fun use(center: CultureCenter) {
         taleSystem.use(center)
+        depictSystem.use(center)
     }
 
     override fun copy(group: Group): Deity {
-        return Deity(group, taleSystem.copy(group))
+        return Deity(group, taleSystem.copy(group), depictSystem.copy(group))
     }
 
     override fun toString(): String {
