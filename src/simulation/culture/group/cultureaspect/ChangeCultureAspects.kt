@@ -2,6 +2,7 @@ package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
 import simulation.culture.group.Group
+import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random
 
@@ -47,3 +48,17 @@ fun takeOutDeity(aspectPool: MutableCultureAspectPool, group: Group, random: Ran
             system
     )
 }
+
+fun takeOutDepictionSystem(
+        aspectPool: MutableCultureAspectPool,
+        groupingMeme: Meme,
+        group: Group,
+        random: Random
+): DepictSystem? {
+    val depictions = aspectPool
+            .filter { it is DepictObject }
+            .map { it as DepictObject }
+            .filter { d -> d.meme.anyMatch { it == groupingMeme } }
+    if (depictions.isEmpty()) return null
+    return DepictSystem(group, depictions, groupingMeme)
+}//TODO rewrite with minimums

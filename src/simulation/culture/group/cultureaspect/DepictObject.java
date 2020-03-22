@@ -34,6 +34,10 @@ public class DepictObject extends AbstractCultureAspect {
         this(group, meme, converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random));
     }
 
+    public Meme getMeme() {
+        return meme;
+    }
+
     @Override
     public Request getRequest() {
         return null;
