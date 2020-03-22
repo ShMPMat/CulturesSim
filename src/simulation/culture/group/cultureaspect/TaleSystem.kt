@@ -27,7 +27,7 @@ class TaleSystem(
     }
 
     override fun copy(group: Group): TaleSystem {
-        return TaleSystem(group, tales, groupingMeme.copy(), infoTag)
+        return TaleSystem(group, tales.map { it.copy(group) }, groupingMeme.copy(), infoTag)
     }
 
     override fun toString(): String {

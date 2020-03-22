@@ -1,6 +1,9 @@
 package simulation.culture.group.cultureaspect
 
+import shmp.random.randomElement
 import simulation.culture.group.Group
+import simulation.culture.thinking.meaning.MemeSubject
+import kotlin.random.Random
 
 fun takeOutSimilarRituals(aspectPool: MutableCultureAspectPool, group: Group): RitualSystem? {
     val (popularReason, popularRituals) = aspectPool
@@ -29,4 +32,18 @@ fun takeOutSimilarTalesByTag(infoTag: String, aspectPool: MutableCultureAspectPo
         return TaleSystem(group, popularTales, popularMeme, infoTag);
     }
     return null
+}
+
+fun takeOutDeity(aspectPool: MutableCultureAspectPool, group: Group, random: Random): Deity? {
+    val systems = aspectPool
+            .filter { it is TaleSystem }
+            .map { it as TaleSystem }
+            .filter { it.groupingMeme is MemeSubject }
+    if (systems.isEmpty()) return null
+    val system = randomElement(systems, random)
+    aspectPool.remove(system)
+    return Deity(
+            group,
+            system
+    )
 }

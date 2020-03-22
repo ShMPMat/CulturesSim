@@ -113,14 +113,19 @@ public class CultureAspectCenter {
         if (!testProbability(session.groupCultureAspectCollapse, session.random)) {
             return;
         }
-        switch (session.random.nextInt(2)) {
+        switch (session.random.nextInt(3)) {
             case 0: {
                 joinSimilarRituals();
                 break;
-            }
-            case 1: {
+            } case 1: {
                 joinSimilarTalesBy("!actor");
 //                joinSimilarTalesBy("@verb");//TODO debug off
+                break;
+            } case 2: {
+                addCultureAspect(
+                        ChangeCultureAspectsKt.takeOutDeity(aspectPool, group, session.random)
+                );
+                break;
             }
         }
     }

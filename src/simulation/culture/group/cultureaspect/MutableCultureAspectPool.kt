@@ -3,24 +3,25 @@ package simulation.culture.group.cultureaspect
 class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : CultureAspectPool(initialAspects) {
     fun add(aspect: CultureAspect) {
         if (when (aspect) {
-            is Ritual -> ritualAdd(aspect)
-            is RitualSystem -> ritualSystemAdd(aspect)
-            is Tale -> taleAdd(aspect)
-            is TaleSystem -> taleSystemAdd(aspect)
+                    is Ritual -> ritualAdd(aspect)
+                    is RitualSystem -> ritualSystemAdd(aspect)
+                    is Tale -> taleAdd(aspect)
+                    is TaleSystem -> taleSystemAdd(aspect)
                     else -> false
-        }) return
+                }) return
         aspectMap[aspect] = aspect
     }
 
     fun addAll(aspects: Collection<CultureAspect>) = aspects.forEach { add(it) }
 
+    fun remove(cultureAspect: CultureAspect) = aspectMap.remove(cultureAspect)
+
     fun removeAll(cultureAspects: List<CultureAspect>) = cultureAspects.forEach {
-        aspectMap.remove(it)
+        remove(it)
     }
 
     private fun ritualAdd(ritual: Ritual): Boolean {
-        val system = getAll()
-                .filterIsInstance<RitualSystem>()
+        val system = ritualSystems
                 .firstOrNull { it.reason == ritual.reason }
                 ?: return false
         system.addRitual(ritual)
@@ -28,8 +29,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
     }
 
     private fun ritualSystemAdd(system: RitualSystem): Boolean {
-        val existingSystem = getAll()
-                .filterIsInstance<RitualSystem>()
+        val existingSystem = ritualSystems
                 .firstOrNull { it.reason == system.reason }
                 ?: return false
         system.rituals.forEach {
@@ -39,8 +39,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
     }
 
     private fun taleAdd(tale: Tale): Boolean {
-        val system = getAll()
-                .filterIsInstance<TaleSystem>()
+        val system = taleSystems
                 .firstOrNull { tale.info.getMainPart(it.infoTag) == it.groupingMeme }
                 ?: return false
         system.addTale(tale)
@@ -48,8 +47,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
     }
 
     private fun taleSystemAdd(system: TaleSystem): Boolean {
-        val existingSystem = getAll()
-                .filterIsInstance<TaleSystem>()
+        var existingSystem = taleSystems
                 .firstOrNull { it.groupingMeme == system.groupingMeme && it.infoTag == system.infoTag }
                 ?: return false
         system.tales.forEach {
@@ -57,4 +55,16 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
         }
         return true
     }
+
+    private val ritualSystems
+        get() = getAll()
+                .filterIsInstance<RitualSystem>()
+
+    private val taleSystems
+        get() = getAll()
+                .filterIsInstance<TaleSystem>()
+                .union(getAll()
+                        .filterIsInstance<Deity>()
+                        .map { it.taleSystem }
+                )
 }
