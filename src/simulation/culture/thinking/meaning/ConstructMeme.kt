@@ -29,7 +29,7 @@ fun constructMeme(resource: Resource) = MemeSubject(resource.fullName)
 
 fun constructMeme(aspect: Aspect) = MemePredicate(aspect.name)
 
-fun constructAspectMemes(aspect: Aspect): Pair<List<Meme>, List<Meme>> {
+fun constructAspectMemes(aspect: Aspect): Pair<MutableList<Meme>, List<Meme>> {
     val aspectMemes = Pair<MutableList<Meme>, MutableList<Meme>>(ArrayList(), ArrayList())
     aspectMemes.first.add(constructMeme(aspect))
     if (aspect is ConverseWrapper) {

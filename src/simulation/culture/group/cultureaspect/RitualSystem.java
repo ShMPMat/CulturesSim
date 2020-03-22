@@ -46,7 +46,11 @@ public class RitualSystem extends AbstractCultureAspect {
         ) {
             return;
         }
-        Ritual ritual = group.getCultureCenter().getCultureAspectCenter().constructRitual(reason);
+        Ritual ritual = ConstructCultureAspectKt.constructRitual(
+                reason,
+                group,
+                Controller.session.random
+        );
         if (ritual != null) {
             rituals.add(ritual);
         }

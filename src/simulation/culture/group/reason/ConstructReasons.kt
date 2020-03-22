@@ -1,30 +1,9 @@
 package simulation.culture.group.reason
 
-import shmp.random.randomElement
 import shmp.random.randomElementWithProbability
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.Group
 import kotlin.random.Random
-
-fun randomReason(group: Group, random: Random): Reason? {
-    var reason: Reason? = null
-    when (random.nextInt(1)) {
-        0 -> {
-            val wrappers = group.cultureCenter.aspectCenter.aspectPool.getConverseWrappers()
-            if (wrappers.isNotEmpty()) {
-                val converseWrapper = randomElement(
-                        wrappers,
-                        random
-                )
-                reason = BetterAspectUseReason(
-                        group,
-                        converseWrapper
-                )
-            }
-        }
-    }
-    return reason
-}
 
 fun constructBetterAspectUseReason(
         group: Group,

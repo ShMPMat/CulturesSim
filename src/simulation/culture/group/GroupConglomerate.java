@@ -16,30 +16,14 @@ import java.util.stream.Collectors;
 import static java.lang.Math.min;
 import static simulation.Controller.session;
 
-/**
- * Entity with Aspects, which develops through time.
- */
 public class GroupConglomerate {
-    /**
-     * Subgroups on which this group is divided.
-     */
     public List<Group> subgroups = new ArrayList<>();
-    /**
-     * Whether group live or dead
-     */
     public State state = State.Live;
-    /**
-     * Abstract name of the group;
-     */
     public String name;
     /**
-     * Population of the group. For group with groups must be equal
-     * to sum of subgroup populations.
+     * Equal to the sum of subgroup populations.
      */
     public int population;
-    /**
-     * CulturalCenter of this GroupConglomerate
-     */
     private CulturalCenterConglomerate culturalCenterOvergroup;
     /**
      * Overall Territory which is under the child Groups
@@ -87,10 +71,10 @@ public class GroupConglomerate {
     /**
      * @return all CultureAspects of child Groups.
      */
-    public List<CultureAspect> getCultureAspects() {
+    public Set<CultureAspect> getCultureAspects() {
         return subgroups.stream()
                 .flatMap(group -> group.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll().stream())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**
