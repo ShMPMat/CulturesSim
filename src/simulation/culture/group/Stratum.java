@@ -3,6 +3,7 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
@@ -81,8 +82,8 @@ public class Stratum {
         for (Aspect aspect: aspects) {
             AspectResult result = aspect.use(controller);
             if (!result.resources.isEmpty()) {
-                popularMemes.add(Meme.getMeme(aspect));
-                result.resources.getResources().forEach(r -> popularMemes.add(Meme.getMeme(r)));
+                popularMemes.add(ConstructMemeKt.constructMeme(aspect));
+                result.resources.getResources().forEach(r -> popularMemes.add(ConstructMemeKt.constructMeme(r)));
             }
             if (result.isFinished) {
                 resourcePack.addAll(result.resources);

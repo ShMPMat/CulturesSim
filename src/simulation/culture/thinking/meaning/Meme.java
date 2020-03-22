@@ -28,14 +28,6 @@ abstract public class Meme {
         this(observerWord, new ArrayList<>());
     }
 
-    public static Meme getMeme(Aspect aspect) {
-        return new MemePredicate(aspect.getName());
-    }
-
-    public static Meme getMeme(Resource resource) {
-        return new MemeSubject(resource.getFullName());
-    }
-
     public int getImportance() {
         return importance;
     }
@@ -84,7 +76,9 @@ abstract public class Meme {
                 newMemes.addAll(child.predicates);
             }
         }
-        return memes.stream().distinct().collect(Collectors.toList());
+        return memes.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public Meme refactor(Function<Meme, Meme> mapper) {

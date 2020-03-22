@@ -1,7 +1,6 @@
 package simulation.culture.group;
 
 
-import extra.ShnyPair;
 import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
@@ -65,7 +64,7 @@ public class CultureAspectCenter {
             case 0: {
                 cultureAspect = ConstructCultureAspectKt.createDepictObject(
                         group.getCultureCenter().getAspectCenter().getAspectPool().getMeaningAspects(),
-                        ConstructMemeKt.constructAndAddMeme(
+                        ConstructMemeKt.constructAndAddSimpleMeme(
                                 group.getCultureCenter().getMemePool(),
                                 session.random,
                                 0.5 //TODO meh, java
@@ -165,7 +164,7 @@ public class CultureAspectCenter {
 
     private Ritual constructBetterAspectUseReasonRitual(BetterAspectUseReason reason) {
         ConverseWrapper converseWrapper = reason.getConverseWrapper();
-        Pair<List<Meme>, List<Meme>> temp = group.getCultureCenter().getMemePool().getAspectMemes(converseWrapper);
+        Pair<List<Meme>, List<Meme>> temp = ConstructMemeKt.constructAspectMemes(converseWrapper);
         List<Meme> aspectMemes = temp.getFirst();
         aspectMemes.addAll(temp.getSecond());
         Collections.shuffle(aspectMemes);

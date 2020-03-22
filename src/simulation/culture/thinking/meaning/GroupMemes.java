@@ -4,11 +4,7 @@ import kotlin.Pair;
 import shmp.random.RandomProbabilitiesKt;
 import simulation.Controller;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.thinking.language.templates.TextInfo;
 import simulation.space.resource.Resource;
-import simulation.space.resource.dependency.ConsumeDependency;
-import simulation.space.resource.dependency.ResourceDependency;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -92,87 +88,16 @@ public class GroupMemes extends MemePool {
     }
 
     public void addAspectMemes(Aspect aspect) {
-        addPairMemes(getAspectMemes(aspect));
+        addPairMemes(ConstructMemeKt.constructAspectMemes(aspect));
     }
 
     public void addResourceMemes(Resource resource) {
-        addPairMemes(getResourceMemes(resource));
+        addPairMemes(ConstructMemeKt.constructResourceMemes(resource));
     }
 
     public void addPairMemes(Pair<List<Meme>, List<Meme>> memes) {
         memes.getFirst().forEach(this::add);
         memes.getSecond().forEach(this::addMemeCombination);
-    }
-
-    public Pair<List<Meme>, List<Meme>> getAspectMemes(Aspect aspect) {
-        Pair<List<Meme>, List<Meme>> aspectMemes = new Pair<>(new ArrayList<>(), new ArrayList<>());
-        aspectMemes.getFirst().add(Meme.getMeme(aspect));
-        if (aspect instanceof ConverseWrapper) {
-            Pair<List<Meme>, List<Meme>> resourceMemes = getResourceMemes(((ConverseWrapper) aspect).resource);
-            aspectMemes.getFirst().addAll(resourceMemes.getFirst());
-            aspectMemes.getSecond().addAll(resourceMemes.getSecond());
-            ((ConverseWrapper) aspect).getResult().forEach(resource -> {
-                Pair<List<Meme>, List<Meme>> resMemes = getResourceMemes(resource);
-                aspectMemes.getFirst().addAll(resMemes.getFirst());
-                aspectMemes.getSecond().addAll(resMemes.getSecond());
-            });
-        }
-        return aspectMemes;
-    }
-
-    public Pair<List<Meme>, List<Meme>> getResourceMemes(Resource resource) {
-        Pair<List<Meme>, List<Meme>> resourceMemes = getResourceInformationMemes(resource);
-        resourceMemes.getFirst().add(Meme.getMeme(resource));
-        return resourceMemes;
-    }
-
-    public Pair<List<Meme>, List<Meme>> getResourceInformationMemes(Resource resource) {
-        Pair<List<Meme>, List<Meme>> infoMemes = new Pair<>(new ArrayList<>(), new ArrayList<>());
-        for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
-            if (resourceDependency instanceof ConsumeDependency) {
-                for (String res : ((ConsumeDependency) resourceDependency).lastConsumed) {
-                    Meme subject = new MemeSubject(res.toLowerCase());
-                    infoMemes.getFirst().add(subject);
-                    Meme object = Meme.getMeme(resource).addPredicate(getMemeCopy("consume"));
-                    object.predicates.get(0).addPredicate(subject);
-                    infoMemes.getSecond().add(object);
-                }
-            }
-        }
-        return infoMemes;
-    }
-
-    public List<TextInfo> getAspectTextInfo(Aspect aspect) {
-        List<TextInfo> infos = new ArrayList<>();
-        if (aspect instanceof ConverseWrapper) {
-            infos.addAll(getResourceTextInfo(((ConverseWrapper) aspect).resource));
-            ((ConverseWrapper) aspect).getResult().forEach(resource -> {
-                infos.addAll(getResourceTextInfo(resource));
-            });
-        }
-        return infos;
-    }
-
-    public List<TextInfo> getResourceTextInfo(Resource resource) {
-        return getResourceInformationTextInfo(resource);
-    }
-
-    public List<TextInfo> getResourceInformationTextInfo(Resource resource) {
-        List<TextInfo> infos = new ArrayList<>();
-        for (ResourceDependency resourceDependency : resource.getGenome().getDependencies()) {
-            if (resourceDependency instanceof ConsumeDependency) {
-                for (String res : ((ConsumeDependency) resourceDependency).lastConsumed) {
-                    infos.add(generateInfo(Meme.getMeme(resource),
-                            getMemeCopy("consume"),
-                            new MemeSubject(res.toLowerCase())));
-                }
-            }
-        }
-        return infos;
-    }
-
-    private TextInfo generateInfo(Meme actor, Meme verb, Meme receiver) {
-        return new TextInfo(actor, verb, receiver);
     }
 
     public void addMemeCombination(Meme meme) {
