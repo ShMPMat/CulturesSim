@@ -1,6 +1,5 @@
 package simulation.culture.group.cultureaspect
 
-import simulation.culture.group.CultureCenter
 import simulation.culture.group.Group
 import simulation.culture.group.request.Request
 
@@ -8,13 +7,11 @@ class Worship(
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem
 ) : CultureAspect {
-    override fun getRequest(): Request? {
-        return null
-    }
+    override val request: Request? = null
 
-    override fun use(center: CultureCenter) {
-        taleSystem.use(center)
-        depictSystem.use(center)
+    override fun use(group: Group) {
+        taleSystem.use(group)
+        depictSystem.use(group)
     }
 
     override fun copy(group: Group): Worship {

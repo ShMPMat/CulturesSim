@@ -46,7 +46,7 @@ public class CultureAspectCenter {
     }
 
     void useCultureAspects() {
-        aspectPool.getAll().forEach(a -> a.use(group.getCultureCenter()));
+        aspectPool.getAll().forEach(a -> a.use(group));
     }
 
     void addRandomCultureAspect(Group group) {
@@ -122,7 +122,7 @@ public class CultureAspectCenter {
             }
             case 2: {
                 addCultureAspect(
-                        ChangeCultureAspectsKt.takeOutDeity(aspectPool, group, session.random)
+                        ChangeCultureAspectsKt.takeOutDeity(aspectPool, session.random)
                 );
                 break;
             }

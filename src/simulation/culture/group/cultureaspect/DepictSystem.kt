@@ -1,32 +1,28 @@
 package simulation.culture.group.cultureaspect
 
-import simulation.culture.group.CultureCenter
 import simulation.culture.group.Group
 import simulation.culture.group.request.Request
 import simulation.culture.thinking.meaning.Meme
 import java.util.*
 
 class DepictSystem(
-        group: Group,
         depictions: Collection<DepictObject>,
         val groupingMeme: Meme
-) : AbstractCultureAspect(group) {
+) : CultureAspect {
     val depictions: MutableSet<DepictObject> = depictions.toMutableSet()
 
     fun addDepiction(depiction: DepictObject) {
         depictions.add(depiction)
     }
 
-    override fun getRequest(): Request? {
-        return null
-    }
+    override val request: Request? = null
 
-    override fun use(center: CultureCenter) {
-        depictions.forEach { it.use(center) }
+    override fun use(group: Group) {
+        depictions.forEach { it.use(group) }
     }
 
     override fun copy(group: Group): DepictSystem {
-        return DepictSystem(group, depictions.map { it.copy(group) }, groupingMeme.copy())
+        return DepictSystem(depictions.map { it.copy(group) }, groupingMeme.copy())
     }
 
     override fun toString(): String {

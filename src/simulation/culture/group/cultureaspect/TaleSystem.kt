@@ -1,6 +1,5 @@
 package simulation.culture.group.cultureaspect
 
-import simulation.culture.group.CultureCenter
 import simulation.culture.group.Group
 import simulation.culture.group.request.Request
 import simulation.culture.thinking.meaning.Meme
@@ -12,17 +11,14 @@ class TaleSystem(
         val infoTag: String
 ) : CultureAspect {
     val tales: MutableSet<Tale> = tales.toMutableSet()
+    override val request: Request? = null
 
     fun addTale(tale: Tale) {
         tales.add(tale)
     }
 
-    override fun getRequest(): Request? {
-        return null
-    }
-
-    override fun use(center: CultureCenter) {
-        tales.forEach { it.use(center) }
+    override fun use(group: Group) {
+        tales.forEach { it.use(group) }
     }
 
     override fun copy(group: Group): TaleSystem {

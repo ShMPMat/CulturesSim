@@ -1,6 +1,5 @@
 package simulation.culture.group.cultureaspect;
 
-import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.request.Request;
 import simulation.culture.thinking.language.templates.TextInfo;
@@ -30,10 +29,10 @@ public class Tale implements CultureAspect {
     }
 
     @Override
-    public void use(CultureCenter center) {
-        center.getMemePool().strengthenMeme(meme);
+    public void use(Group group) {
+        group.getCultureCenter().getMemePool().strengthenMeme(meme);
         info.getMap().values().forEach(m -> {
-            center.getMemePool().strengthenMeme(info.substitute(m));
+            group.getCultureCenter().getMemePool().strengthenMeme(info.substitute(m));
         });
     }
 

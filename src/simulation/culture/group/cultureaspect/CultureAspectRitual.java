@@ -1,6 +1,5 @@
 package simulation.culture.group.cultureaspect;
 
-import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.request.Request;
@@ -10,8 +9,8 @@ import java.util.Objects;
 public class CultureAspectRitual extends Ritual {
     private CultureAspect aspect;
 
-    public CultureAspectRitual(Group group, CultureAspect aspect, Reason reason) {
-        super(group, reason);
+    public CultureAspectRitual(CultureAspect aspect, Reason reason) {
+        super(reason);
         this.aspect = aspect;
     }
 
@@ -21,18 +20,18 @@ public class CultureAspectRitual extends Ritual {
     }
 
     @Override
-    public void use(CultureCenter center) {
-        aspect.use(center);
+    public void use(Group group) {
+        aspect.use(group);
     }
 
     @Override
     public CultureAspectRitual copy(Group group) {
-        return new CultureAspectRitual(group, aspect.copy(group), reason);
+        return new CultureAspectRitual(aspect.copy(group), getReason());
     }
 
     @Override
     public String toString() {
-        return String.format("Ritual with %s because %s", aspect, reason);
+        return String.format("Ritual with %s because %s", aspect, getReason());
     }
 
     @Override

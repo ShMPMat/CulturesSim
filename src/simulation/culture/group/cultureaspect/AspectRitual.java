@@ -4,7 +4,6 @@ import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.request.Request;
@@ -19,14 +18,14 @@ public class AspectRitual extends Ritual {
     private ResourceBehaviour resourceBehaviour;
     private ConverseWrapper converseWrapper;
 
-    public AspectRitual(Group group, ConverseWrapper converseWrapper, ResourceBehaviour resourceBehaviour, Reason reason) {
-        super(group, reason);
+    public AspectRitual(ConverseWrapper converseWrapper, ResourceBehaviour resourceBehaviour, Reason reason) {
+        super(reason);
         this.converseWrapper = converseWrapper;
         this.resourceBehaviour = resourceBehaviour;
     }
 
     public AspectRitual(Group group, ConverseWrapper converseWrapper, Reason reason) {
-        this(group, converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random), reason);
+        this(converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random), reason);
     }
 
     @Override
@@ -35,7 +34,7 @@ public class AspectRitual extends Ritual {
     }
 
     @Override
-    public void use(CultureCenter center) {
+    public void use(Group group) {
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
@@ -43,7 +42,7 @@ public class AspectRitual extends Ritual {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getTerritory(),
                 true,
-                center.getMeaning()
+                group.getCultureCenter().getMeaning()
         ));
         if (result.isFinished) {
             group.cherishedResources.addAll(result.resources);
@@ -53,16 +52,16 @@ public class AspectRitual extends Ritual {
 
     @Override
     public AspectRitual copy(Group group) {
-        return new AspectRitual(
+        return new AspectRitual(//TODO isn't it copied wrong
                 group,
                 (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(converseWrapper),
-                reason
+                getReason()
         );
     }
 
     @Override
     public String toString() {
-        return "Ritual with " + converseWrapper.getName() + " " + resourceBehaviour + " because " + reason;
+        return "Ritual with " + converseWrapper.getName() + " " + resourceBehaviour + " because " + getReason();
     }
 
     @Override

@@ -45,7 +45,6 @@ fun takeOutSimilarTalesByTag(
 
 fun takeOutDeity(
         aspectPool: MutableCultureAspectPool,
-        group: Group,
         random: Random
 ): Worship? {
     val systems = aspectPool
@@ -58,9 +57,8 @@ fun takeOutDeity(
     val depictSystem = takeOutDepictionSystem(
             aspectPool,
             system.groupingMeme,
-            group,
             bound = 0
-    ) ?: DepictSystem(group, setOf(), system.groupingMeme)
+    ) ?: DepictSystem(setOf(), system.groupingMeme)
     return Worship(
             system,
             depictSystem
@@ -70,7 +68,6 @@ fun takeOutDeity(
 fun takeOutDepictionSystem(
         aspectPool: MutableCultureAspectPool,
         groupingMeme: Meme,
-        group: Group,
         bound: Int = 3
 ): DepictSystem? {
     val depictions = aspectPool
@@ -79,7 +76,7 @@ fun takeOutDepictionSystem(
             .filter { d -> d.meme.anyMatch { it.topMemeCopy() == groupingMeme } }
     if (depictions.size >= bound) {
         aspectPool.removeAll(depictions)
-        return DepictSystem(group, depictions, groupingMeme)
+        return DepictSystem(depictions, groupingMeme)
     }
     return null
 }

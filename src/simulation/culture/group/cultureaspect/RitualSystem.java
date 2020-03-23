@@ -2,20 +2,21 @@ package simulation.culture.group.cultureaspect;
 
 import shmp.random.RandomProbabilitiesKt;
 import simulation.Controller;
-import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.request.Request;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RitualSystem extends AbstractCultureAspect {
+public class RitualSystem implements CultureAspect {
     private Set<Ritual> rituals;
     private Reason reason;
 
     public RitualSystem(Group group, Collection<Ritual> rituals, Reason reason) {
-        super(group);
         this.rituals = new HashSet<>(rituals);
         this.reason = reason;
     }
@@ -38,8 +39,8 @@ public class RitualSystem extends AbstractCultureAspect {
     }
 
     @Override
-    public void use(CultureCenter center) {
-        rituals.forEach(r -> r.use(center));
+    public void use(Group group) {
+        rituals.forEach(r -> r.use(group));
         if (!RandomProbabilitiesKt.testProbability(
                 Controller.session.groupCollapsedAspectUpdate,
                 Controller.session.random)

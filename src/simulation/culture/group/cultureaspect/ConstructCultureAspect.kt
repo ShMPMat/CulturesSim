@@ -92,7 +92,7 @@ fun constructBetterAspectUseReasonRitual(
                         group,
                         random
                 ) ?: continue
-                CultureAspectRitual(group, aspect, reason) //TODO make complex tales;
+                CultureAspectRitual(aspect, reason) //TODO make complex tales;
             }
         }
     }

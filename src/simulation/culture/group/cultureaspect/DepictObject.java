@@ -4,34 +4,32 @@ import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
-import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
+import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
+import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class DepictObject extends AbstractCultureAspect {
+public class DepictObject implements CultureAspect {
     private Meme meme;
     private ResourceBehaviour resourceBehaviour;
     private ConverseWrapper converseWrapper;
 
-    public DepictObject(Group group, Meme meme, ConverseWrapper converseWrapper, ResourceBehaviour resourceBehaviour) {
-        super(group);
+    public DepictObject(Meme meme, ConverseWrapper converseWrapper, ResourceBehaviour resourceBehaviour) {
         this.meme = meme;
         this.converseWrapper = converseWrapper;
         this.resourceBehaviour = resourceBehaviour;
     }
 
     public DepictObject(Group group, Meme meme, ConverseWrapper converseWrapper) {
-        this(group, meme, converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random));
+        this(meme, converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random));
     }
 
     public Meme getMeme() {
@@ -44,7 +42,7 @@ public class DepictObject extends AbstractCultureAspect {
     }
 
     @Override
-    public void use(CultureCenter center) {
+    public void use(Group group) {
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
@@ -52,7 +50,7 @@ public class DepictObject extends AbstractCultureAspect {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getTerritory(),
                 true,
-                center.getMemePool().getMeme(meme.toString())
+                group.getCultureCenter().getMemePool().getMeme(meme.toString())
         ));
         if (result.isFinished) {
             MutableResourcePack meaningful = new MutableResourcePack(result.resources.getResources().stream()
@@ -62,14 +60,13 @@ public class DepictObject extends AbstractCultureAspect {
             group.cherishedResources.addAll(meaningful);
             resourceBehaviour.proceedResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
-            center.getMemePool().strengthenMeme(meme);
+            group.getCultureCenter().getMemePool().strengthenMeme(meme);
         }
     }
 
     @Override
     public DepictObject copy(Group group) {
         return new DepictObject(
-                group,
                 meme,
                 (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(converseWrapper),
                 resourceBehaviour

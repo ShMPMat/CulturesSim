@@ -44,7 +44,7 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
     }
 
     @Override
-    public void use(CultureCenter center) {
+    public void use(Group group) {
 
     }
 
