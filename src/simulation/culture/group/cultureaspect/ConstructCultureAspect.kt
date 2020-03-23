@@ -1,11 +1,13 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
+import simulation.Controller
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.Group
 import simulation.culture.group.reason.BetterAspectUseReason
 import simulation.culture.group.reason.Reason
+import simulation.culture.group.resource_behaviour.getRandom
 import simulation.culture.thinking.language.templates.TemplateBase
 import simulation.culture.thinking.language.templates.constructTextInfo
 import simulation.culture.thinking.meaning.Meme
@@ -28,9 +30,9 @@ fun createDepictObject(
     return null
 }
 
-fun createAestheticallyPleasingObject(resource: Resource?, group: Group): AestheticallyPleasingObject? {
+fun createAestheticallyPleasingObject(resource: Resource?, group: Group, random: Random): AestheticallyPleasingObject? {
     if (resource != null) {
-        return AestheticallyPleasingObject(group, resource)
+        return AestheticallyPleasingObject(resource, getRandom(group, random))
     }
     return null
 }
@@ -77,13 +79,13 @@ fun constructBetterAspectUseReasonRitual(
         if (aspectPool.contains(meme.observerWord)) {
             val myAspect = aspectPool.get(meme.observerWord)
             if (myAspect is ConverseWrapper)
-                return AspectRitual(group, myAspect, reason)
+                return AspectRitual(myAspect, getRandom(group, random), reason)
         } else {
             val options: List<ConverseWrapper> = aspectPool.producedResources
                     .filter { (r) -> r.baseName == meme.observerWord }
                     .map { it.second }
             return if (options.isNotEmpty())
-                AspectRitual(group, randomElement(options, random), reason)
+                AspectRitual(randomElement(options, random), getRandom(group, random), reason)
             else {
                 val meaningAspects = aspectPool.getMeaningAspects()
                 val aspect = createDepictObject(

@@ -24,12 +24,8 @@ public class AspectRitual extends Ritual {
         this.resourceBehaviour = resourceBehaviour;
     }
 
-    public AspectRitual(Group group, ConverseWrapper converseWrapper, Reason reason) {
-        this(converseWrapper, ResourceBehaviourKt.getRandom(group, Controller.session.random), reason);
-    }
-
     @Override
-    public Request getRequest() {
+    public Request getRequest(Group group) {
         return null;
     }
 
@@ -53,8 +49,8 @@ public class AspectRitual extends Ritual {
     @Override
     public AspectRitual copy(Group group) {
         return new AspectRitual(//TODO isn't it copied wrong
-                group,
                 (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(converseWrapper),
+                ResourceBehaviourKt.getRandom(group, Controller.session.random),
                 getReason()
         );
     }

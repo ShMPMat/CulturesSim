@@ -7,7 +7,7 @@ class Worship(
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem
 ) : CultureAspect {
-    override val request: Request? = null
+    override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
         taleSystem.use(group)

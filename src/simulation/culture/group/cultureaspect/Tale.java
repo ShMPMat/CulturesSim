@@ -24,7 +24,7 @@ public class Tale implements CultureAspect {
     }
 
     @Override
-    public Request getRequest() {
+    public Request getRequest(Group group) {
         return null;
     }
 

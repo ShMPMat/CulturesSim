@@ -1,32 +1,24 @@
 package simulation.culture.group.cultureaspect;
 
-import simulation.Controller;
-import simulation.culture.group.CultureCenter;
 import simulation.culture.group.Group;
-import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceRequest;
-import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
+import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.space.resource.Resource;
 
 import java.util.Objects;
 
-public class AestheticallyPleasingObject extends AbstractCultureAspect {
+public class AestheticallyPleasingObject implements CultureAspect {
     private Resource resource;
     private ResourceBehaviour resourceBehaviour;
 
-    public AestheticallyPleasingObject(Group group, Resource resource, ResourceBehaviour resourceBehaviour) {
-        super(group);
+    public AestheticallyPleasingObject(Resource resource, ResourceBehaviour resourceBehaviour) {
         this.resource = resource;
         this.resourceBehaviour = resourceBehaviour;
     }
 
-    public AestheticallyPleasingObject(Group group, Resource resource) {
-        this(group, resource, ResourceBehaviourKt.getRandom(group, Controller.session.random));
-    }
-
     @Override
-    public Request getRequest() {
+    public Request getRequest(Group group) {
         return new ResourceRequest(group, resource, 1, 10, (pair, percent) -> {
             pair.getFirst().cherishedResources.addAll(pair.getSecond());
             resourceBehaviour.proceedResources(pair.getSecond());
@@ -50,7 +42,7 @@ public class AestheticallyPleasingObject extends AbstractCultureAspect {
 
     @Override
     public AestheticallyPleasingObject copy(Group group) {
-        return new AestheticallyPleasingObject(group, resource, resourceBehaviour);
+        return new AestheticallyPleasingObject(resource, resourceBehaviour);
     }
 
     @Override

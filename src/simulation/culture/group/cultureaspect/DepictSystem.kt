@@ -15,7 +15,7 @@ class DepictSystem(
         depictions.add(depiction)
     }
 
-    override val request: Request? = null
+    override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
         depictions.forEach { it.use(group) }

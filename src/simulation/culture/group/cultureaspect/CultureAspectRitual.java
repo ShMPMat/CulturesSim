@@ -15,7 +15,7 @@ public class CultureAspectRitual extends Ritual {
     }
 
     @Override
-    public Request getRequest() {
+    public Request getRequest(Group group) {
         return null;
     }
 

@@ -11,7 +11,7 @@ class TaleSystem(
         val infoTag: String
 ) : CultureAspect {
     val tales: MutableSet<Tale> = tales.toMutableSet()
-    override val request: Request? = null
+    override fun getRequest(group: Group): Request? = null
 
     fun addTale(tale: Tale) {
         tales.add(tale)

@@ -1,12 +1,14 @@
 package simulation.culture.group;
 
 import kotlin.Pair;
+import simulation.Controller;
 import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.*;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
+import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;
@@ -71,7 +73,10 @@ public class CultureCenter {
     }
 
     public void addResourceWant(Resource resource) {
-        cultureAspectCenter.addCultureAspect(new AestheticallyPleasingObject(group, resource));
+        cultureAspectCenter.addCultureAspect(new AestheticallyPleasingObject(
+                resource,
+                ResourceBehaviourKt.getRandom(group, Controller.session.random)
+        ));
     }
 
     void updateRequests(int foodFloor) {
@@ -105,7 +110,7 @@ public class CultureCenter {
             ));
         }
 
-        cultureAspectCenter.getAspectPool().getAspectRequests().forEach(this::addRequest);
+        cultureAspectCenter.getAspectPool().getAspectRequests(group).forEach(this::addRequest);
     }
 
     void update() {

@@ -1,5 +1,7 @@
 package simulation.culture.group.cultureaspect
 
+import simulation.culture.group.Group
+
 open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
     protected val aspectMap = initialAspects.zip(initialAspects).toMap().toMutableMap()
 
@@ -38,5 +40,5 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
 
     fun getAll(): Set<CultureAspect> = aspects
 
-    open fun getAspectRequests() = aspects.map { it.request }
+    open fun getAspectRequests(group: Group) = aspects.mapNotNull { it.getRequest(group) }
 }

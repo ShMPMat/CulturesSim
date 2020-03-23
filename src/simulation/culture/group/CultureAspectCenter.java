@@ -76,7 +76,8 @@ public class CultureAspectCenter {
                                 .filter(r -> !aestheticallyPleasingResources.contains(r))
                                 .max(Comparator.comparingInt(r -> r.getGenome().getBaseDesirability()))
                                 .orElse(null),
-                        group
+                        group,
+                        session.random
                 );
                 break;
             }
@@ -164,12 +165,14 @@ public class CultureAspectCenter {
         }
         List<Pair<CultureAspect, Group>> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
         if (!cultureAspects.isEmpty()) {
-            CultureAspect aspect = randomElementWithProbability(
-                    cultureAspects,
-                    a -> group.getRelationCenter().getNormalizedRelation(a.getSecond()),
-                    session.random
-            ).getFirst();
-            addCultureAspect(aspect);
+            try {
+                CultureAspect aspect = randomElementWithProbability(
+                        cultureAspects,
+                        a -> group.getRelationCenter().getNormalizedRelation(a.getSecond()),
+                        session.random
+                ).getFirst().copy(group);
+                addCultureAspect(aspect);
+            } catch (NoSuchElementException e) {}//TODO mb some more smart check?
         }
     }
 }
