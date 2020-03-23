@@ -124,7 +124,7 @@ public class CultureCenter {
 
     void intergroupUpdate() {
         aspectCenter.adoptAspects();
-        cultureAspectCenter.adoptCultureAspects();
+        cultureAspectCenter.adoptCultureAspects(group);
     }
 
     private void addRequest(Request request) {

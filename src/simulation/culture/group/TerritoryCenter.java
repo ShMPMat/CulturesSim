@@ -61,11 +61,45 @@ public class TerritoryCenter {
     }
 
     private Tile getMigrationTile() {
-        return getTerritory().getCenter()
-                .getNeighbours(tile -> canSettle(tile, t -> t.getTagPool().getByType(tileTag.getType()).isEmpty()))
+        return getMigrationTiles()
                 .stream()
                 .max(Comparator.comparingInt(tile -> tilePotentialMapper.apply(tile)))
                 .orElse(null);
+    }
+
+    private Collection<Tile> getMigrationTiles() {
+        Set<Tile> tiles = new HashSet<>();
+        Set<Tile> queue = new HashSet<>();
+        queue.add(territory.getCenter());
+        while (true) {
+            tiles.addAll(queue);
+            List<Tile> currentTiles = queue.stream()
+                    .flatMap(t -> t.getNeighbours().stream())
+                    .distinct()
+                    .filter(t -> !tiles.contains(t))
+                    .filter(this::isTileReachable)
+                    .filter(this::canTraverse)
+                    .collect(Collectors.toList());
+            if (currentTiles.isEmpty()) {
+                break;
+            }
+            queue.clear();
+            queue.addAll(currentTiles);
+        }
+        return tiles.stream()
+                .filter(this::canSettleAndNoGroup)
+                .collect(Collectors.toList());
+    }
+
+    private boolean canTraverse(Tile tile) {
+        if (tile.getType() == Tile.Type.Water) {
+            return false;
+        } else if (tile.getType() == Tile.Type.Mountain) {
+            if (!tileTag.getGroup().getCultureCenter().getAspectCenter().getAspectPool().contains("MountainLiving")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Tile getDisbandTile() {
@@ -77,7 +111,7 @@ public class TerritoryCenter {
             return false;
         }
         claimTile(territory.getMostUsefulTileOnOuterBrink(
-                t -> canSettle(t, t2 -> t2.getTagPool().getByType(tileTag.getType()).isEmpty() && isTileReachable(t2)),
+                t -> canSettleAndNoGroup(t) && isTileReachable(t),
                 tilePotentialMapper
         ));
         return true;
@@ -137,6 +171,10 @@ public class TerritoryCenter {
                 a.getTags().stream()
                         .anyMatch(aspectTag -> aspectTag.name.equals("mountainLiving")))//TODO set of accessible tiles
                 .isEmpty());
+    }
+
+    boolean canSettleAndNoGroup(Tile tile) {
+        return canSettle(tile, t -> t.getTagPool().getByType(tileTag.getType()).isEmpty());
     }
 
     public boolean canSettle(Tile tile, Predicate<Tile> additionalCondition) {

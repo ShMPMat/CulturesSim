@@ -2,9 +2,7 @@ package simulation.culture.group;
 
 
 import kotlin.Pair;
-import kotlin.random.Random;
 import simulation.culture.group.cultureaspect.*;
-import simulation.culture.group.reason.BetterAspectUseReason;
 import simulation.culture.group.reason.ConstructReasonsKt;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
@@ -159,7 +157,7 @@ public class CultureAspectCenter {
                 .collect(Collectors.toList());
     }
 
-    void adoptCultureAspects() {
+    void adoptCultureAspects(Group group) {
         if (!session.isTime(session.groupTurnsBetweenAdopts)) {
             return;
         }

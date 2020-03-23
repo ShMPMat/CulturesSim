@@ -125,11 +125,10 @@ public class Group {
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
                 || testProbability(session.defaultGroupDiverge, session.random))
                 && parentGroup.subgroups.size() < 10) {
-            List<Tile> tiles = getOverallTerritory().getOuterBrink(t -> territoryCenter.canSettle(
-                    t,
+            List<Tile> tiles = getOverallTerritory().getOuterBrink(t ->
+                            territoryCenter.canSettleAndNoGroup(t) && parentGroup.getClosestInnerGroupDistance(t) > 2
                     //TODO dont like territory checks in Group
-                    t2 -> t2.getTagPool().getByType("Group").isEmpty() && parentGroup.getClosestInnerGroupDistance(t2) > 2
-            ));
+            );
             if (tiles.isEmpty()) {
                 return null;
             }
