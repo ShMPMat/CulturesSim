@@ -40,6 +40,10 @@ public class TerritoryCenter {
         return spreadAbility;
     }
 
+    public Function<Tile, Integer> getTilePotentialMapper() {
+        return tilePotentialMapper;
+    }
+
     public Set<Group> getAllNearGroups(Group exception) {
         Set<Group> groups = territory.getOuterBrink().stream()
                 .flatMap(t -> t.getTagPool().getByType(tileTag.getType()).stream())

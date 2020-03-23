@@ -418,53 +418,17 @@ public class TextVisualizer implements Visualizer {
                         case Temperature:
                             printMap(TileMapperFunctionsKt::temperatureMapper);
                             break;
+                        case GroupPotentials:
+                            _s = line.split(" ");
+                            printMap(t -> TileMapperFunctionsKt.hotnessMapper(
+                                    a -> world.groups.get(Integer.parseInt(_s[0].substring(1))).subgroups.get(0)
+                                            .getTerritoryCenter().getTilePotentialMapper().apply(a),
+                                    Integer.parseInt(_s[2]),
+                                    t
+                            ));
+                            break;
                         case Wind:
-                            printMap(tile -> {
-                                String direction;
-                                int level = tile.getWind().getAffectedTiles().stream()
-                                        .map(p -> (int) Math.ceil(p.getSecond()))
-                                        .reduce(Integer::compareTo)
-                                        .orElse(0);
-                                if (level > 4) {
-                                    direction = "\033[41m";
-                                } else if (level > 3) {
-                                    direction = "\033[43m";
-                                } else if (level > 2) {
-                                    direction = "\033[47m";
-                                } else if (level > 1) {
-                                    direction = "\033[46m";
-                                } else {
-                                    direction = "\033[44m";
-                                }
-                                if (tile.getWind().getAffectedTiles().size() >= 1) {
-                                    Tile affected = tile.getWind().getAffectedTiles().stream()
-                                            .sorted(Comparator.comparingDouble(p -> -p.getSecond()))
-                                            .collect(Collectors.toList()).get(0).getFirst();
-                                    if (affected.getX() - tile.getX() == 1 && affected.getY() - tile.getY() == 1) {
-                                        direction += "J";
-                                    } else if (affected.getX() - tile.getX() == 1
-                                            && affected.getY() - tile.getY() == -1) {
-                                        direction += "L";
-                                    } else if (affected.getX() - tile.getX() == -1
-                                            && affected.getY() - tile.getY() == 1) {
-                                        direction += "⏋";
-                                    } else if (affected.getX() - tile.getX() == -1
-                                            && affected.getY() - tile.getY() == -1) {
-                                        direction += "Г";
-                                    } else if (affected.getX() - tile.getX() == 1) {
-                                        direction += "V";
-                                    } else if (affected.getX() - tile.getX() == -1) {
-                                        direction += "^";
-                                    } else if (affected.getY() - tile.getY() == 1) {
-                                        direction += ">";
-                                    } else if (affected.getY() - tile.getY() == -1) {
-                                        direction += "<";
-                                    }
-                                } else {
-                                    direction = " ";
-                                }
-                                return direction;
-                            });
+                            printMap(TileMapperFunctionsKt::windMap);
                             break;
                         case TerrainLevel:
                             printMap(tile -> {
@@ -604,6 +568,7 @@ public class TextVisualizer implements Visualizer {
         Temperature("temperature"),
         Wind("wind"),
         TerrainLevel("level"),
+        GroupPotentials("^G\\d+ p \\d+"),
         Vapour("vapour"),
         /**
          * Command for printing resource information.
