@@ -10,10 +10,7 @@ import simulation.culture.group.reason.Reason;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.space.resource.Resource;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -117,11 +114,13 @@ public class CultureAspectCenter {
             case 0: {
                 joinSimilarRituals();
                 break;
-            } case 1: {
+            }
+            case 1: {
                 joinSimilarTalesBy("!actor");
 //                joinSimilarTalesBy("@verb");//TODO debug off
                 break;
-            } case 2: {
+            }
+            case 2: {
                 addCultureAspect(
                         ChangeCultureAspectsKt.takeOutDeity(aspectPool, group, session.random)
                 );
@@ -139,21 +138,23 @@ public class CultureAspectCenter {
     }
 
     void joinSimilarTalesBy(String infoTag) {
-        TaleSystem system = ChangeCultureAspectsKt.takeOutSimilarTalesByTag(infoTag, aspectPool, group, 3);
+        TaleSystem system = ChangeCultureAspectsKt.takeOutSimilarTalesByTag(infoTag, aspectPool, 3);
         if (system != null) {
             addCultureAspect(system);
         }
     }
 
-    public List<CultureAspect> getNeighbourCultureAspects() {
+    public List<Pair<CultureAspect, Group>> getNeighbourCultureAspects() {
         return group.getRelationCenter().getRelatedGroups().stream()
-                .flatMap(g -> g.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll().stream())
-                .collect(Collectors.toList());
+                .flatMap(g ->
+                        g.getCultureCenter().getCultureAspectCenter().getAspectPool().getAll().stream()
+                                .map(a -> new Pair<>(a, g))
+                ).collect(Collectors.toList());
     }
 
-    public List<CultureAspect> getNeighbourCultureAspects(Predicate<CultureAspect> predicate) {
+    public List<Pair<CultureAspect, Group>> getNeighbourCultureAspects(Predicate<CultureAspect> predicate) {
         return getNeighbourCultureAspects().stream()
-                .filter(predicate)
+                .filter(p -> predicate.test(p.getFirst()))
                 .collect(Collectors.toList());
     }
 
@@ -161,13 +162,13 @@ public class CultureAspectCenter {
         if (!session.isTime(session.groupTurnsBetweenAdopts)) {
             return;
         }
-        List<CultureAspect> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
+        List<Pair<CultureAspect, Group>> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
         if (!cultureAspects.isEmpty()) {
             CultureAspect aspect = randomElementWithProbability(
                     cultureAspects,
-                    a -> group.getRelationCenter().getNormalizedRelation(a.getGroup()),
+                    a -> group.getRelationCenter().getNormalizedRelation(a.getSecond()),
                     session.random
-            );
+            ).getFirst();
             addCultureAspect(aspect);
         }
     }

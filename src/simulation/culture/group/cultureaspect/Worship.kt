@@ -5,10 +5,9 @@ import simulation.culture.group.Group
 import simulation.culture.group.request.Request
 
 class Worship(
-        group: Group,
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem
-) : AbstractCultureAspect(group) {
+) : CultureAspect {
     override fun getRequest(): Request? {
         return null
     }
@@ -19,7 +18,7 @@ class Worship(
     }
 
     override fun copy(group: Group): Worship {
-        return Worship(group, taleSystem.copy(group), depictSystem.copy(group))
+        return Worship(taleSystem.copy(group), depictSystem.copy(group))
     }
 
     override fun toString(): String {

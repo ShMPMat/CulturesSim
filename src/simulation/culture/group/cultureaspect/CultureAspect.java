@@ -7,6 +7,5 @@ import simulation.culture.group.request.Request;
 public interface CultureAspect {
     Request getRequest();
     void use(CultureCenter center);
-    Group getGroup();
     CultureAspect copy(Group group);
 }

@@ -7,11 +7,10 @@ import simulation.culture.thinking.meaning.Meme
 import java.util.*
 
 class TaleSystem(
-        group: Group,
         tales: Collection<Tale>,
         val groupingMeme: Meme,
         val infoTag: String
-) : AbstractCultureAspect(group) {
+) : CultureAspect {
     val tales: MutableSet<Tale> = tales.toMutableSet()
 
     fun addTale(tale: Tale) {
@@ -27,7 +26,7 @@ class TaleSystem(
     }
 
     override fun copy(group: Group): TaleSystem {
-        return TaleSystem(group, tales.map { it.copy(group) }, groupingMeme.copy(), infoTag)
+        return TaleSystem(tales.map { it.copy(group) }, groupingMeme.copy(), infoTag)
     }
 
     override fun toString(): String {

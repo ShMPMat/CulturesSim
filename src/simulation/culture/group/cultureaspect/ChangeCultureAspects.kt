@@ -27,7 +27,6 @@ fun takeOutSimilarRituals(
 fun takeOutSimilarTalesByTag(
         infoTag: String,
         aspectPool: MutableCultureAspectPool,
-        group: Group,
         bound: Int = 3
 ): TaleSystem? {
     val (popularMeme, popularTales) = aspectPool
@@ -39,7 +38,7 @@ fun takeOutSimilarTalesByTag(
     popularMeme ?: return null
     if (popularTales.size >= bound) {
         aspectPool.removeAll(popularTales)
-        return TaleSystem(group, popularTales, popularMeme, infoTag);
+        return TaleSystem(popularTales, popularMeme, infoTag);
     }
     return null
 }
@@ -63,7 +62,6 @@ fun takeOutDeity(
             bound = 0
     ) ?: DepictSystem(group, setOf(), system.groupingMeme)
     return Worship(
-            group,
             system,
             depictSystem
     )

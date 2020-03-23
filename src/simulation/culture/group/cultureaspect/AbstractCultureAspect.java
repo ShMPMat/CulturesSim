@@ -8,8 +8,4 @@ public abstract class AbstractCultureAspect implements CultureAspect {
     public AbstractCultureAspect(Group group) {
         this.group = group;
     }
-
-    public Group getGroup() {
-        return group;
-    }
 }

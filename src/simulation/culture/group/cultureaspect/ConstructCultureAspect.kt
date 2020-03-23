@@ -43,7 +43,7 @@ fun createTale(group: Group, templateBase: TemplateBase, random: Random): Tale? 
             random
     )
     if (template != null && info != null) {
-        return Tale(group, template, info)
+        return Tale(template, info)
     }
     return null
 }
