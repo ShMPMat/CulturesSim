@@ -6,6 +6,26 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
     protected val aspects: Set<CultureAspect>
         get() = aspectMap.keys
 
+    val ritualSystems
+        get() = aspects
+                .filterIsInstance<RitualSystem>()
+
+    val depictSystems
+        get() = aspects
+                .filterIsInstance<DepictSystem>()
+                .union(aspects
+                        .filterIsInstance<Worship>()
+                        .map { it.depictSystem }
+                )
+
+    val taleSystems
+        get() = aspects
+                .filterIsInstance<TaleSystem>()
+                .union(aspects
+                        .filterIsInstance<Worship>()
+                        .map { it.taleSystem }
+                )
+
     fun isEmpty() = aspectMap.isEmpty()
 
     fun get(aspect: CultureAspect) = aspectMap[aspect]

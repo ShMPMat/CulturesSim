@@ -6,21 +6,30 @@ import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random
 
-fun takeOutSimilarRituals(aspectPool: MutableCultureAspectPool, group: Group): RitualSystem? {
+fun takeOutSimilarRituals(
+        aspectPool: MutableCultureAspectPool,
+        group: Group,
+        bound: Int = 3
+): RitualSystem? {
     val (popularReason, popularRituals) = aspectPool
             .filter { it is Ritual }
             .map { it as Ritual }
             .groupBy { it.reason }
             .maxBy { it.value.size }
             ?: return null
-    if (popularRituals.size >= 3) {
+    if (popularRituals.size >= bound) {
         aspectPool.removeAll(popularRituals)
         return RitualSystem(group, popularRituals, popularReason)
     }
     return null
 }
 
-fun takeOutSimilarTalesByTag(infoTag: String, aspectPool: MutableCultureAspectPool, group: Group): TaleSystem? {
+fun takeOutSimilarTalesByTag(
+        infoTag: String,
+        aspectPool: MutableCultureAspectPool,
+        group: Group,
+        bound: Int = 3
+): TaleSystem? {
     val (popularMeme, popularTales) = aspectPool
             .filter { it is Tale }
             .map { it as Tale }
@@ -28,14 +37,18 @@ fun takeOutSimilarTalesByTag(infoTag: String, aspectPool: MutableCultureAspectPo
             .maxBy { it.value.size }
             ?: return null
     popularMeme ?: return null
-    if (popularTales.size >= 3) {
+    if (popularTales.size >= bound) {
         aspectPool.removeAll(popularTales)
         return TaleSystem(group, popularTales, popularMeme, infoTag);
     }
     return null
 }
 
-fun takeOutDeity(aspectPool: MutableCultureAspectPool, group: Group, random: Random): Deity? {
+fun takeOutDeity(
+        aspectPool: MutableCultureAspectPool,
+        group: Group,
+        random: Random
+): Worship? {
     val systems = aspectPool
             .filter { it is TaleSystem }
             .map { it as TaleSystem }
@@ -46,9 +59,10 @@ fun takeOutDeity(aspectPool: MutableCultureAspectPool, group: Group, random: Ran
     val depictSystem = takeOutDepictionSystem(
             aspectPool,
             system.groupingMeme,
-            group
+            group,
+            bound = 0
     ) ?: DepictSystem(group, setOf(), system.groupingMeme)
-    return Deity(
+    return Worship(
             group,
             system,
             depictSystem
@@ -58,13 +72,16 @@ fun takeOutDeity(aspectPool: MutableCultureAspectPool, group: Group, random: Ran
 fun takeOutDepictionSystem(
         aspectPool: MutableCultureAspectPool,
         groupingMeme: Meme,
-        group: Group
+        group: Group,
+        bound: Int = 3
 ): DepictSystem? {
     val depictions = aspectPool
             .filter { it is DepictObject }
             .map { it as DepictObject }
             .filter { d -> d.meme.anyMatch { it.topMemeCopy() == groupingMeme } }
-    if (depictions.isEmpty()) return null
-    aspectPool.removeAll(depictions)
-    return DepictSystem(group, depictions, groupingMeme)
-}//TODO rewrite with minimums
+    if (depictions.size >= bound) {
+        aspectPool.removeAll(depictions)
+        return DepictSystem(group, depictions, groupingMeme)
+    }
+    return null
+}

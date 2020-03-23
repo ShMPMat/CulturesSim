@@ -4,7 +4,7 @@ import simulation.culture.group.CultureCenter
 import simulation.culture.group.Group
 import simulation.culture.group.request.Request
 
-class Deity(
+class Worship(
         group: Group,
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem
@@ -18,8 +18,8 @@ class Deity(
         depictSystem.use(center)
     }
 
-    override fun copy(group: Group): Deity {
-        return Deity(group, taleSystem.copy(group), depictSystem.copy(group))
+    override fun copy(group: Group): Worship {
+        return Worship(group, taleSystem.copy(group), depictSystem.copy(group))
     }
 
     override fun toString(): String {
@@ -30,7 +30,7 @@ class Deity(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Deity
+        other as Worship
 
         if (taleSystem != other.taleSystem) return false
 

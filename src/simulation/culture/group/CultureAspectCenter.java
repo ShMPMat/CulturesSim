@@ -64,7 +64,7 @@ public class CultureAspectCenter {
                         ConstructMemeKt.constructAndAddSimpleMeme(
                                 group.getCultureCenter().getMemePool(),
                                 session.random,
-                                0.5 //TODO meh, java
+                                0.5
                         ),
                         group,
                         session.random
@@ -131,7 +131,7 @@ public class CultureAspectCenter {
     }
 
     void joinSimilarRituals() {
-        RitualSystem system = ChangeCultureAspectsKt.takeOutSimilarRituals(aspectPool, group);
+        RitualSystem system = ChangeCultureAspectsKt.takeOutSimilarRituals(aspectPool, group, 3);
         if (system != null) {
             addCultureAspect(system);
             reasonsWithSystems.add(system.getReason());
@@ -139,7 +139,7 @@ public class CultureAspectCenter {
     }
 
     void joinSimilarTalesBy(String infoTag) {
-        TaleSystem system = ChangeCultureAspectsKt.takeOutSimilarTalesByTag(infoTag, aspectPool, group);
+        TaleSystem system = ChangeCultureAspectsKt.takeOutSimilarTalesByTag(infoTag, aspectPool, group, 3);
         if (system != null) {
             addCultureAspect(system);
         }

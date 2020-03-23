@@ -7,6 +7,8 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
                     is RitualSystem -> ritualSystemAdd(aspect)
                     is Tale -> taleAdd(aspect)
                     is TaleSystem -> taleSystemAdd(aspect)
+                    is DepictObject -> depictObjectAdd(aspect)
+                    is DepictSystem -> depictSystemAdd(aspect)
                     else -> false
                 }) return
         aspectMap[aspect] = aspect
@@ -47,7 +49,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
     }
 
     private fun taleSystemAdd(system: TaleSystem): Boolean {
-        var existingSystem = taleSystems
+        val existingSystem = taleSystems
                 .firstOrNull { it.groupingMeme == system.groupingMeme && it.infoTag == system.infoTag }
                 ?: return false
         system.tales.forEach {
@@ -56,15 +58,21 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
         return true
     }
 
-    private val ritualSystems
-        get() = getAll()
-                .filterIsInstance<RitualSystem>()
+    private fun depictObjectAdd(depiction: DepictObject): Boolean {
+        val existingSystem = depictSystems
+                .firstOrNull() { s-> depiction.meme.anyMatch { s.groupingMeme == it.topMemeCopy() } }
+                ?: return false
+        existingSystem.addDepiction(depiction)
+        return true
+    }
 
-    private val taleSystems
-        get() = getAll()
-                .filterIsInstance<TaleSystem>()
-                .union(getAll()
-                        .filterIsInstance<Deity>()
-                        .map { it.taleSystem }
-                )
+    private fun depictSystemAdd(system: DepictSystem): Boolean {
+        val existingSystem = depictSystems
+                .firstOrNull() { system.groupingMeme == it.groupingMeme }
+                ?: return false
+        system.depictions.forEach {
+            existingSystem.addDepiction(it)
+        }
+        return true
+    }
 }
