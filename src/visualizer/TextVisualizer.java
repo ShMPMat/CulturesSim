@@ -405,10 +405,10 @@ public class TextVisualizer implements Visualizer {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    group.subgroups.get(0).getTerritoryCenter().getTilePotentialMapper(),
+                                    group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
                                     Integer.parseInt(_s[2]),
                                     t,
-                                    0
+                                    Integer.parseInt(_s[2])
                             ));
                             break;
                         case Wind:

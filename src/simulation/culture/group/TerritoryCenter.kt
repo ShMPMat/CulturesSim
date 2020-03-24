@@ -7,21 +7,21 @@ import simulation.Event
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
-import java.util.*
 import java.util.function.Consumer
 import java.util.function.Predicate
 
-class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile?) {
+class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     val territory = Territory()
 
     private val tileTag: GroupTileTag = GroupTileTag(group)
 
-    val tilePotentialMapper = { t: Tile ->
-        t.getNeighbours { it.tagPool.contains(tileTag) }.size
-                + 3 * t.resourcePack.getAmount {
+    fun tilePotentialMapper(tile: Tile): Int {
+        val convexPart = tile.getNeighbours { it.tagPool.contains(tileTag) }.size
+        val neededResourcePart = 3 * tile.resourcePack.getAmount {
             tileTag.group.cultureCenter.aspectCenter.aspectPool.getResourceRequirements().contains(it)
         }
-        + tileTag.group.relationCenter.evaluateTile(t)
+        val relationPart = tileTag.group.relationCenter.evaluateTile(tile)
+        return convexPart + neededResourcePart + relationPart
     }
 
     init {
@@ -50,25 +50,35 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile?) {
 
     private val migrationTiles: Collection<Tile>
         get() {
-            val tiles: MutableSet<Tile> = HashSet()
-            val queue: MutableSet<Tile> = HashSet()
-            queue.add(territory.center)
+            val tiles = mutableSetOf<Tile>()
+            val queue = mutableSetOf<Pair<Tile, Int>>()
+            queue.add(territory.center to 0)
+            var currentLayer = 1
             while (true) {
-                tiles.addAll(queue)
+                tiles.addAll(queue.map { it.first })
                 val currentTiles = queue
-                        .flatMap { it.neighbours }
+                        .flatMap { it.first.neighbours }
+                        .asSequence()
                         .distinct()
                         .filter { !tiles.contains(it) }
-                        .filter { isTileReachable(it) }
                         .filter { canTraverse(it) }
+                        .map { it to currentLayer }
+                        .filter { isTileReachableInTraverse(it) }
+                        .toList()
                 if (currentTiles.isEmpty()) {
                     break
                 }
                 queue.clear()
                 queue.addAll(currentTiles)
+                currentLayer++
             }
             return tiles.filter { canSettleAndNoGroup(it) }
         }
+
+    private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
+        Tile.Type.Water -> false
+        else -> pair.second <= 4
+    }
 
     private fun canTraverse(tile: Tile): Boolean {
         if (tile.type == Tile.Type.Water) {
@@ -87,7 +97,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile?) {
         }
         claimTile(territory.getMostUsefulTileOnOuterBrink(
                 { canSettleAndNoGroup(it) && isTileReachable(it) },
-                tilePotentialMapper
+                this::tilePotentialMapper
         ))
         return true
     }
@@ -96,7 +106,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile?) {
         if (territory.size() <= 1) {
             return
         }
-        leaveTile(territory.getMostUselessTile(tilePotentialMapper))
+        leaveTile(territory.getMostUselessTile(this::tilePotentialMapper))
     }
 
     private fun isTileReachable(tile: Tile) = getDistance(tile, territory.center) < 4

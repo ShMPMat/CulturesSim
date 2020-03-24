@@ -6,8 +6,8 @@
 -Fungus        100       -springy:1                                         -solid:1   -food:2
 -Meat          300       -springy:2  -flexible:1                            -solid:1   -food:1              +Bake:RoastedMeat
 -Fat           300       -soft:1     -flexible:1                            -solid:1
--Bone          700       -hard:1     -sturdy:1                              -solid:1
--Chitin        500       -hard:1     -sturdy:1                              -solid:1
+-Bone          1000      -hard:1     -sturdy:1                              -solid:1
+-Chitin        1000      -hard:1     -sturdy:1                              -solid:1
 -Fur           200       -soft:1                                            -solid:1
 -Feather       200       -soft:1     -flexible:1                            -solid:1
 -Blood         200                                                          -liquid:1  -_colour:1
@@ -17,9 +17,9 @@
 
 -RoastedMeat   400       -springy:1  -stiff:1                               -solid:1   -food:4
 
--Clay          1000      -soft:1     -malleable:1                           -solid:1                         +Bake:Ceramics
--Ceramics      1000      -hard:1     -fragile:1                             -solid:1
--Iron          1000      -hard:1     -malleable:1                           -solid:1
+-Clay          2000      -soft:1     -malleable:1                           -solid:1                         +Bake:Ceramics
+-Ceramics      2000      -hard:1     -fragile:1                             -solid:1
+-Iron          10000     -hard:1     -malleable:1                           -solid:1
 
 -Stone         2500      -hard:1     -sturdy:1                              -solid:1
 -Ruby          2500      -hard:1     -sturdy:1                              -solid:1

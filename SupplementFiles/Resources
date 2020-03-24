@@ -162,9 +162,11 @@
 
 -House           0       5      10000      -500    500  100000000 10            0 1 0  None         @TEMPLATE
 
--Dish            0       5      10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
+-Dish            0       0.1    10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
 
--Dye             0       5      10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
+-Boat            0       2      10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
+
+-Dye             0       0.05   10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
         $colour:3
 
 -Fire            0       0.5    2          -500    500  100000000 0             1 0 0  None         @Flame
