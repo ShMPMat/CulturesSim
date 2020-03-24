@@ -12,7 +12,7 @@ fun vapourMapper(tile: Tile): String {
     val level = tile.resourcesWithMoved
             .filter { it.simpleName == "Vapour" }
             .map { it.amount }.fold(0, Int::plus)
-    var colour = when {
+    val colour = when {
         level == 0 -> "\u001b[44m"
         level < 50 -> "\u001b[104m"
         level < 100 -> "\u001b[46m"

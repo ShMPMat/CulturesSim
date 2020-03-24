@@ -405,7 +405,7 @@ public class TextVisualizer implements Visualizer {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    a -> group.subgroups.get(0).getTerritoryCenter().getTilePotentialMapper().apply(a),
+                                    group.subgroups.get(0).getTerritoryCenter().getTilePotentialMapper(),
                                     Integer.parseInt(_s[2]),
                                     t,
                                     0
