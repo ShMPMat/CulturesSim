@@ -316,9 +316,6 @@ public class TextVisualizer implements Visualizer {
         return main.append(map);
     }
 
-    /**
-     * @return StringBuilder with all basic Resources names and its Symbols on the map.
-     */
     private StringBuilder printedResources() {
         StringBuilder resources = new StringBuilder();
         for (Resource resource : world.getResourcePool().getAll()) {
@@ -329,11 +326,6 @@ public class TextVisualizer implements Visualizer {
 
     }
 
-    /**
-     * Prints group information.
-     *
-     * @param group Group which will be printed.
-     */
     private void printGroup(GroupConglomerate group) {
         printMap(tile -> (group.getTerritory().contains(tile) ?
                 (group.subgroups.stream().anyMatch(sg -> sg.getTerritoryCenter().getTerritory().contains(tile)) ? "\033[31mO" :
@@ -342,32 +334,17 @@ public class TextVisualizer implements Visualizer {
         System.out.println(group);
     }
 
-    /**
-     * Prints resource information.
-     *
-     * @param resource Resource which will be printed.
-     */
     private void printResource(Resource resource) {
         printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
                 && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
         System.out.println(resource);
     }
 
-    /**
-     * Prints tile information.
-     *
-     * @param tile Tile which will be printed.
-     */
     private void printTile(Tile tile) {
         printMap(t -> (t.equals(tile) ? "\033[31m\033[41mX" : ""));
         System.out.println(tile);
     }
 
-    /**
-     * @param events   list of events.
-     * @param printAll whether StringBuilder will contain all events or only the most important.
-     * @return StringBuilder with events.
-     */
     private StringBuilder printedEvents(Collection<Event> events, boolean printAll) {
         StringBuilder main = new StringBuilder();
         for (Event event : events) {
@@ -376,6 +353,13 @@ public class TextVisualizer implements Visualizer {
             }
         }
         return main;
+    }
+
+    private GroupConglomerate getConglomerate(String string) {
+        int index = Integer.parseInt(string.substring(1));
+        return index < world.groups.size()
+                ? world.groups.get(index)
+                : null;
     }
 
     /**
@@ -402,15 +386,11 @@ public class TextVisualizer implements Visualizer {
                         case Group:
                             printGroup(world.groups.get(Integer.parseInt(line.substring(1))));
                             break;
-                        case Turns:
-                            for (int i = 0; i < Integer.parseInt(line.substring(0, line.length() - 1)); i++) {
-                                controller.turn();
-                            }
-                            print();
-                            break;
                         case Tile:
-                            printTile(map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
-                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut));
+                            printTile(
+                                    map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
+                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut)
+                            );
                             break;
                         case Plates:
                             printMap(t -> TileMapperFunctionsKt.platesMapper(map.getTectonicPlates(), t));
@@ -420,37 +400,31 @@ public class TextVisualizer implements Visualizer {
                             break;
                         case GroupPotentials:
                             _s = line.split(" ");
+                            GroupConglomerate group = getConglomerate(_s[0]);
+                            if (group == null) {
+                                break;
+                            }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    a -> world.groups.get(Integer.parseInt(_s[0].substring(1))).subgroups.get(0)
-                                            .getTerritoryCenter().getTilePotentialMapper().apply(a),
+                                    a -> group.subgroups.get(0).getTerritoryCenter().getTilePotentialMapper().apply(a),
                                     Integer.parseInt(_s[2]),
-                                    t
+                                    t,
+                                    0
                             ));
                             break;
                         case Wind:
-                            printMap(TileMapperFunctionsKt::windMap);
+                            printMap(TileMapperFunctionsKt::windMapper);
                             break;
                         case TerrainLevel:
-                            printMap(tile -> {
-                                String colour = "";
-                                if (tile.getSecondLevel() < 90) {
-                                    colour = "\033[44m";
-                                } else if (tile.getSecondLevel() < SpaceData.INSTANCE.getData().getDefaultWaterLevel()) {
-                                    colour = "\033[104m";
-                                } else if (tile.getSecondLevel() < 105) {
-                                    colour = "\033[46m";
-                                } else if (tile.getSecondLevel() < 110) {
-                                    colour = "\033[47m";
-                                } else if (tile.getSecondLevel() < 130) {
-                                    colour = "\033[43m";
-                                } else {
-                                    colour = "\033[41m";
-                                }
-                                return "\033[90m" + colour + Math.abs(tile.getSecondLevel() % 10);
-                            });
+                            printMap(TileMapperFunctionsKt::levelMapper);
                             break;
                         case Vapour:
                             printMap(TileMapperFunctionsKt::vapourMapper);
+                            break;
+                        case MeaningfulResources:
+                            printMap(TileMapperFunctionsKt::meaningfulResourcesMapper);
+                            break;
+                        case ArtificialResources:
+                            printMap(TileMapperFunctionsKt::artificialResourcesMapper);
                             break;
                         case Resource:
                             try {
@@ -462,14 +436,6 @@ public class TextVisualizer implements Visualizer {
                                         .map(Map.Entry::getKey).findFirst();
                                 _oo.ifPresent(this::printResource);
                             }
-                            break;
-                        case MeaningfulResources:
-                            printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(Resource::hasMeaning) ? "\033[31mX"
-                                    : ""));
-                            break;
-                        case ArtificialResources:
-                            printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(res -> res.hasMeaning() ||
-                                    res.getBaseName().equals("House") || res.getBaseName().equals("Clothes")) ? "\033[31mX" : ""));
                             break;
                         case IdleGo:
                             for (int i = 0; i < 500; i++) {
@@ -488,24 +454,16 @@ public class TextVisualizer implements Visualizer {
                             return;
                         case AddAspect: {
                             _s = line.split(" ");
-                            int index = Integer.parseInt(_s[1].substring(1));
-                            GroupConglomerate group = index < world.groups.size()
-                                    ? world.groups.get(index)
-                                    : null;
                             AddFunctionsKt.addGroupConglomerateAspect(
-                                    group,
+                                    getConglomerate(_s[1]),
                                     _s[1],
                                     world.getAspectPool()
                             );
                             break;
                         } case AddWant: {
                             _s = line.split(" ");
-                            int index = Integer.parseInt(_s[1].substring(1));
-                            GroupConglomerate group = index < world.groups.size()
-                                    ? world.groups.get(index)
-                                    : null;
                             AddFunctionsKt.addGroupConglomerateWant(
-                                    group,
+                                    getConglomerate(_s[1]),
                                     _s[2],
                                     world.getResourcePool()
                             );
@@ -523,8 +481,7 @@ public class TextVisualizer implements Visualizer {
                             print();
                             break;
                         case Turner:
-                            currentTurner = new Turner(Integer.parseInt(line),
-                                    controller);
+                            currentTurner = new Turner(Integer.parseInt(line), controller);
                             turnerThread = new Thread(currentTurner);
                             turnerThread.start();
                             break;
@@ -548,10 +505,6 @@ public class TextVisualizer implements Visualizer {
      * Represents commands which can be given to visualizer.
      */
     private enum Command {
-        /**
-         * Command for making sequence of turns.
-         */
-        Turns("\\d+t"),
         /**
          * Command for making turns until something important happens.
          */

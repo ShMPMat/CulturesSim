@@ -1,9 +1,9 @@
 package visualizer
 
+import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
 import simulation.space.tile.Tile
 import java.util.*
-import java.util.stream.Collectors
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
@@ -43,35 +43,28 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
 }
 
 fun temperatureMapper(tile: Tile): String {
-    val colour = when {
-        tile.temperature < -20 -> "\u001b[44m"
-        tile.temperature < -10 -> "\u001b[104m"
-        tile.temperature < 0 -> "\u001b[46m"
-        tile.temperature < 10 -> "\u001b[47m"
-        tile.temperature < 20 -> "\u001b[43m"
-        else -> "\u001b[41m"
-    }
-    return "\u001b[90m" + colour + abs(tile.temperature % 10)
+    return hotnessMapper(Tile::getTemperature, 10, tile, start = -30)
 }
 
-fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile): String {
+fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile, start: Int = step): String {
     val result = mapper(tile)
     val colour = when {
-        result < step -> "\u001b[44m"
-        result < 2 * step -> "\u001b[104m"
-        result < 3 * step -> "\u001b[46m"
-        result < 4 * step -> "\u001b[47m"
-        result < 5 * step -> "\u001b[43m"
+        result < start -> ""
+        result < start + step -> "\u001b[44m"
+        result < start + 2 * step -> "\u001b[104m"
+        result < start + 3 * step -> "\u001b[46m"
+        result < start + 4 * step -> "\u001b[47m"
+        result < start + 5 * step -> "\u001b[43m"
         else -> "\u001b[41m"
     }
-    return "\u001b[90m" + colour + result % 10
+    return if (result < start) "" else "\u001b[90m" + colour + abs(result % 10)
 }
 
-fun windMap(tile: Tile): String {
+fun windMapper(tile: Tile): String {
     var direction: String
     val level = tile.wind.affectedTiles
             .map { ceil(it.second).toInt() }
-            .fold(Int.MIN_VALUE) {x, y -> max(x, y)}
+            .fold(Int.MIN_VALUE) { x, y -> max(x, y) }
     direction = when {
         level > 4 -> "\u001b[41m"
         level > 3 -> "\u001b[43m"
@@ -95,4 +88,28 @@ fun windMap(tile: Tile): String {
     } else
         direction = " "
     return direction
+}
+
+fun levelMapper(tile: Tile): String {
+    val colour = when {
+        tile.secondLevel < 90 -> "\u001b[44m"
+        tile.secondLevel < data.defaultWaterLevel -> "\u001b[104m"
+        tile.secondLevel < 105 -> "\u001b[46m"
+        tile.secondLevel < 110 -> "\u001b[47m"
+        tile.secondLevel < 130 -> "\u001b[43m"
+        else -> "\u001b[41m"
+    }
+    return "\u001b[90m" + colour + abs(tile.secondLevel % 10)
+}
+
+fun meaningfulResourcesMapper(tile: Tile) = if (tile.resourcePack.resources.any { it.hasMeaning() }) "\u001b[31mX"
+else ""
+
+fun artificialResourcesMapper(tile: Tile): String {
+    val meaningful = meaningfulResourcesMapper(tile)
+    return when {
+        meaningful != "" -> meaningful
+        tile.resourcePack.resources.any { it.baseName == "House" || it.baseName == "Clothes" } -> "\u001b[31mX"
+        else -> ""
+    }
 }
