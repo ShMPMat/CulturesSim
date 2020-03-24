@@ -21,6 +21,8 @@
     &t:hard-->=0.5--#House:1
 -MakeDish
     &t:hard-->=0.05--#Dish:1
+-MakeBoat
+    &t:hard-->=2--<D900--#Boat:1
 -MakeDye
     &t:_colour--#Dye:1
 

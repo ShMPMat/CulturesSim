@@ -75,7 +75,7 @@ public class PopulationCenter {
             stratum.useAmount(amount);
             return amount;
         } catch (NullPointerException e) {
-            throw new RuntimeException("No stratum for Aspect");//TODO it happens
+            throw new RuntimeException("No stratum for Aspect");
         }
     }
 

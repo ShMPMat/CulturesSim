@@ -14,6 +14,7 @@ private fun getLabel(key: String, value: String): ResourceTagLabeler = when (key
     "t:" -> TagLabeler(ResourceTag(value))
     "<=" -> SmallerSizeLabeler(value.toDouble())
     ">=" -> BiggerSizeLabeler(value.toDouble())
+    "<D" -> SmallerDensityLabeler(value.toDouble())
     "mv" -> IsMovableLabeler()
     "rs" -> IsResistingLabeler()
     "!!" -> NegateLabeler(getLabel(value.take(2), value.drop(2)))

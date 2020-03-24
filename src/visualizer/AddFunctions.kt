@@ -54,7 +54,6 @@ fun addGroupAspect(group: Group?, aspect: Aspect) {
     }
     if (aspect is ConverseWrapper) {
         group.cultureCenter.aspectCenter.addAspect(aspect.aspect)
-        group.cultureCenter.pushAspects()
         val inner = aspect.aspect
         if (!group.cultureCenter.aspectCenter.aspectPool.contains(inner)) {
             System.err.println("Can't add base aspect for the Converse Wrapper.")
@@ -62,7 +61,6 @@ fun addGroupAspect(group: Group?, aspect: Aspect) {
         }
     }
     group.cultureCenter.aspectCenter.addAspect(aspect)
-    group.cultureCenter.pushAspects()
 }
 
 fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
@@ -74,7 +72,7 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
     aspect = if (aspectName.contains("On")) {
         val resourceName = aspectName.split("On".toRegex()).toTypedArray()[1]
         val accessibleResource = group.overallTerritory.differentResources
-                .first { it.simpleName == resourceName }
+                .firstOrNull { it.simpleName == resourceName }
                 ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
                         .map { it.first }
                         .firstOrNull { it.simpleName == resourceName }

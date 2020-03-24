@@ -455,7 +455,7 @@ public class TextVisualizer implements Visualizer {
                         case AddAspect: {
                             _s = line.split(" ");
                             AddFunctionsKt.addGroupConglomerateAspect(
-                                    getConglomerate(_s[1]),
+                                    getConglomerate(_s[0]),
                                     _s[1],
                                     world.getAspectPool()
                             );

@@ -107,9 +107,10 @@ else ""
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
+    val artificialResources = setOf("House", "Clothes", "Dish", "Boat")
     return when {
         meaningful != "" -> meaningful
-        tile.resourcePack.resources.any { it.baseName == "House" || it.baseName == "Clothes" } -> "\u001b[31mX"
+        tile.resourcePack.resources.any { artificialResources.contains(it.baseName) } -> "\u001b[31mX"
         else -> ""
     }
 }
