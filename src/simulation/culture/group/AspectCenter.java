@@ -82,24 +82,18 @@ public class AspectCenter {
     Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
         Map<ResourceTag, Set<Dependency>> dep = new HashMap<>();
         if (aspect instanceof ConverseWrapper) {
-            addForConverseWrapper((ConverseWrapper) aspect, dep);
+            addPhony((ConverseWrapper) aspect, dep);
         }
-        for (ResourceTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals(ResourceTag.phony().name) || requirement.isWrapperCondition()) {
-                continue;
-            }
-            addAspectDependencies(requirement, dep, aspect);
-        }
+        addNonPhony(aspect, dep);
         return dep;
     }
 
-    private void addForConverseWrapper(ConverseWrapper converseWrapper, Map<ResourceTag, Set<Dependency>> dep) {
+    private void addPhony(ConverseWrapper converseWrapper, Map<ResourceTag, Set<Dependency>> dep) {
         if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
             if (converseWrapper.canTakeResources() && group.getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
                 addDependenciesInMap(
                         dep,
-                        Collections.singleton(
-                                new ConversionDependency(
+                        Collections.singleton(new ConversionDependency(
                                         converseWrapper.getRequirement(),
                                         new Pair<>(converseWrapper.resource, converseWrapper.aspect)
                                 )),
@@ -114,6 +108,15 @@ public class AspectCenter {
                             )).filter(dependency -> !dependency.isCycleDependency(converseWrapper))
                             .collect(Collectors.toList()),
                     converseWrapper.getRequirement());
+        }
+    }
+
+    private void addNonPhony(Aspect aspect, Map<ResourceTag, Set<Dependency>> dep) {
+        for (ResourceTag requirement : aspect.getRequirements()) {
+            if (requirement.name.equals(ResourceTag.phony().name)) {
+                continue;
+            }
+            addAspectDependencies(requirement, dep, aspect);
         }
     }
 

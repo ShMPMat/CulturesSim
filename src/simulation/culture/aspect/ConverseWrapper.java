@@ -62,21 +62,13 @@ public class ConverseWrapper extends Aspect {
     }
 
     private static List<ResourceTag> getDependencies(Aspect aspect) {
-        List<ResourceTag> result = new ArrayList<>();
+        List<ResourceTag> result = new ArrayList<>(aspect.getRequirements());
         result.add(ResourceTag.phony());
-        result.addAll(aspect.getRequirements().stream()
-                .filter(tag -> !tag.isConverseCondition)
-                .collect(Collectors.toList()));
         return result;
     }
 
     public ResourceTag getRequirement() {
         return ResourceTag.phony();
-    }
-
-    @Override
-    public Collection<ResourceTag> getWrapperRequirements() {
-        return aspect.getWrapperRequirements();
     }
 
     public List<Resource> getResult() {

@@ -197,9 +197,6 @@ public class ResourceCore {
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {
-        if (getTags().containsAll(aspect.getWrapperRequirements()) && !aspect.getWrapperRequirements().isEmpty()) {
-            return true;
-        }
         return aspectConversion.containsKey(aspect) ||
                 materials.stream().anyMatch(material -> material.hasApplicationForAspect(aspect));
     }

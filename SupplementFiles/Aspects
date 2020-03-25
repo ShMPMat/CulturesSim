@@ -1,8 +1,7 @@
 / Grammar for matches:     main grammar is the grammar for ResourceTagLabelers
 /                          # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
 /
-/ Grammar for other tags:  # - needed instrument, / - needed ingredient,
-/                          * - what Resource should possess to satisfy CW on this Aspect
+/ Grammar for other tags:  # - needed instrument, / - needed ingredient
 /
 
 -MountainLiving             +mountainLiving
@@ -32,8 +31,13 @@
 -Take
     &!!t:gas--mv--!!rs--#MATCHED:1
 
--ShapeMalleable                                                              *malleable          #MEANING
--Engrave                                                                     *goodForEngraving   #MEANING
--Carve                                                                       *goodForEngraving   #MEANING
--Paint                                                     *solid        #colour                 #MEANING
--Incrust                                                   *hard         /hard                   #MEANING
+-ShapeMalleable                                                                                  #MEANING
+    &t:malleable--#MATCHED:1
+-Engrave                                                                                         #MEANING
+    &t:goodForEngraving--#MATCHED:1
+-Carve                                                                                           #MEANING
+    &t:goodForEngraving--#MATCHED:1
+-Paint                                                                   #colour                 #MEANING
+    &t:solid--#MATCHED:1
+-Incrust                                                                 /hard                   #MEANING
+    &t:hard--#MATCHED:1

@@ -2,16 +2,12 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.AspectCenter;
-import simulation.culture.group.Group;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Cultural token, which is owned by group and represents some cultural value.
- */
 public class Aspect {
     AspectCore aspectCore;
     /**
@@ -65,12 +61,6 @@ public class Aspect {
         return aspectCore.getRequirements();
     }
 
-    public Collection<ResourceTag> getWrapperRequirements() {
-        return getRequirements().stream()
-                .filter(aspectTag -> aspectTag.isConverseCondition)
-                .collect(Collectors.toList());
-    }
-
     public Map<ResourceTag, Set<Dependency>> getDependencies() {
         return dependencies;
     }
@@ -96,7 +86,7 @@ public class Aspect {
     }
 
     public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {
-        return getRequirements().size() - getWrapperRequirements().size() == dependencies.size();
+        return getRequirements().size() == dependencies.size();
     }
 
     public boolean canTakeResources() {

@@ -16,28 +16,26 @@ public class ResourceTag {
      * Whether Resource doesn't waste on use.
      */
     public boolean isInstrumental;
-    public boolean isConverseCondition;
     public int level;
 
-    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition, int level) {
+    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental, int level) {
         this.name = name;
         this.isAbstract = isAbstract;
         this.isInstrumental = isInstrumental;
-        this.isConverseCondition = isConverseCondition;
         this.level = level;
     }
 
-    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental, boolean isConverseCondition) {
-        this(name, isAbstract, isInstrumental, isConverseCondition, 1);
+    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental) {
+        this(name, isAbstract, isInstrumental, 1);
     }
 
     public ResourceTag(String name) {
-        this(name, false, false, false);
+        this(name, false, false);
     }
 
 
     public ResourceTag(String name, int level) {
-        this(name, false, false, false, level);
+        this(name, false, false, level);
     }
 
     public boolean isAbstract() {
@@ -61,7 +59,7 @@ public class ResourceTag {
     }
 
     public ResourceTag copy() {
-        return new ResourceTag(name, isAbstract, isInstrumental, isConverseCondition, level);
+        return new ResourceTag(name, isAbstract, isInstrumental, level);
     }
 
 
@@ -85,9 +83,5 @@ public class ResourceTag {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public boolean isWrapperCondition() {
-        return isConverseCondition;
     }
 }
