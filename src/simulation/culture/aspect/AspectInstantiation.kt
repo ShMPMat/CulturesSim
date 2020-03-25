@@ -38,12 +38,11 @@ internal fun createCore(tags: Array<String>): AspectCore {
         val key = tags[i][0]
         val tag = tags[i].substring(1)
         when (key) {
-            '+' -> aspectTags.add(ResourceTag(tag, true, false))
-            '/' -> requirements.add(ResourceTag(tag, false, false))
+            '/' -> requirements.add(ResourceTag(tag,false))
             '#' -> if (tag == "MEANING") {
                 applyMeaning = true
             } else {
-                requirements.add(ResourceTag(tag, false, true))
+                requirements.add(ResourceTag(tag, true))
             }
             '&' -> {
                 val matcherTags = tag.split("-+".toRegex()).toTypedArray()

@@ -4,7 +4,7 @@
 / Grammar for other tags:  # - needed instrument, / - needed ingredient
 /
 
--MountainLiving             +mountainLiving
+-MountainLiving
 
 -Incinerate
     &t:_can_be_ignited--#Fire:1--#Ash:1

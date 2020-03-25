@@ -9,37 +9,28 @@ import java.util.Objects;
 public class ResourceTag {
     public String name;
     /**
-     * Whether it don't need any resource.
-     */
-    boolean isAbstract;
-    /**
      * Whether Resource doesn't waste on use.
      */
     public boolean isInstrumental;
     public int level;
 
-    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental, int level) {
+    public ResourceTag(String name, boolean isInstrumental, int level) {
         this.name = name;
-        this.isAbstract = isAbstract;
         this.isInstrumental = isInstrumental;
         this.level = level;
     }
 
-    public ResourceTag(String name, boolean isAbstract, boolean isInstrumental) {
-        this(name, isAbstract, isInstrumental, 1);
+    public ResourceTag(String name, boolean isInstrumental) {
+        this(name, isInstrumental, 1);
     }
 
     public ResourceTag(String name) {
-        this(name, false, false);
+        this(name, false);
     }
 
 
     public ResourceTag(String name, int level) {
-        this(name, false, false, level);
-    }
-
-    public boolean isAbstract() {
-        return isAbstract;
+        this(name, false, level);
     }
 
     public boolean isInstrumental() {
@@ -59,7 +50,7 @@ public class ResourceTag {
     }
 
     public ResourceTag copy() {
-        return new ResourceTag(name, isAbstract, isInstrumental, level);
+        return new ResourceTag(name, isInstrumental, level);
     }
 
 
