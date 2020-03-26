@@ -45,7 +45,7 @@ public class AspectCenter {
         if (aspectPool.contains(aspect)) {
             aspect = aspectPool.get(aspect.getName());
         }
-        Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
+        Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
         if (!aspect.isDependenciesOk(_m)) {
             return false;
         }
@@ -79,7 +79,7 @@ public class AspectCenter {
         aspectPool.add(aspect);
     }
 
-    Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
+    Map<ResourceTag, Set<Dependency>> calculateDependencies(Aspect aspect) {
         AspectDependencyCalculator calculator = new AspectDependencyCalculator(
                 aspectPool,
                 group.getTerritoryCenter().getTerritory()
@@ -101,7 +101,7 @@ public class AspectCenter {
         _converseWrappers.add(_w);
     }
 
-    void mutateAspects() { //TODO separate adding of new aspects and updating old
+    Collection<Event> mutateAspects() { //TODO separate adding of new aspects and updating old
         if (testProbability(session.rAspectAcquisition, session.random)) {
             List<Aspect> options = new ArrayList<>();
             if (session.independentCvSimpleAspectAdding) {
@@ -118,11 +118,14 @@ public class AspectCenter {
             if (!options.isEmpty()) {
                 Aspect _a = randomElement(options, session.random);
                 if (addAspect(_a)) {
-                    group.addEvent(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                            " got aspect " + _a.getName() + " by itself", "group", group));
+                    return Collections.singleton(new Event(
+                                    Event.Type.AspectGaining,
+                                    String.format("Got aspect %s by itself", _a.getName())
+                            ));
                 }
             }
         }
+        return new ArrayList<>();
     }
 
     private List<ConverseWrapper> getAllPossibleConverseWrappers() {
@@ -160,7 +163,7 @@ public class AspectCenter {
         for (Aspect aspect : session.world.getAspectPool().getAll().stream()
                 .filter(aspiration::isAcceptable)
                 .collect(Collectors.toList())) {
-            Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
+            Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new Pair<>(aspect.copy(_m), null));
             }
@@ -173,7 +176,7 @@ public class AspectCenter {
         for (Pair<Aspect, Group> pair : aspects) {
             Aspect aspect = pair.getFirst();
             Group aspectGroup = pair.getSecond();
-            Map<ResourceTag, Set<Dependency>> _m = canAddAspect(aspect);
+            Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
             if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
                 aspect = aspect.copy(_m);
                 options.add(new Pair<>(aspect, aspectGroup));
@@ -200,9 +203,9 @@ public class AspectCenter {
                 .collect(Collectors.toList());
     }
 
-    void adoptAspects() {
+    Collection<Event> adoptAspects(Group group) {
         if (!session.isTime(session.groupTurnsBetweenAdopts)) {
-            return;
+            return new ArrayList<>();
         }
         List<Pair<Aspect, Group>> allExistingAspects = getNeighbourAspects(a -> !changedAspectPool.contains(a));
 
@@ -214,10 +217,12 @@ public class AspectCenter {
                         session.random
                 );
                 if (addAspect(pair.getFirst())) {
-                    group.addEvent(new Event(Event.Type.AspectGaining,
-                            String.format("Got aspect %s from group %s",
-                                    pair.getFirst().getName(), pair.getSecond().name),
-                            "group", group));
+                    return Collections.singleton(new Event(
+                                    Event.Type.AspectGaining,
+                                    String.format(
+                                            "Got aspect %s from group %s",
+                                            pair.getFirst().getName(), pair.getSecond().name)
+                            ));
                 }
             } catch (Exception e) {
                 if (e instanceof RandomException) {
@@ -225,5 +230,6 @@ public class AspectCenter {
                 }
             }
         }
+        return  new ArrayList<>();
     }
 }

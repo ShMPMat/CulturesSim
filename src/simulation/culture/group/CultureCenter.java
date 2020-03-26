@@ -115,7 +115,7 @@ public class CultureCenter {
 
     void update() {
         tryToFulfillAspirations();
-        aspectCenter.mutateAspects();
+        events.addAll(aspectCenter.mutateAspects());
         createArtifact();
         cultureAspectCenter.useCultureAspects();
         cultureAspectCenter.addRandomCultureAspect(group);
@@ -123,7 +123,7 @@ public class CultureCenter {
     }
 
     void intergroupUpdate() {
-        aspectCenter.adoptAspects();
+        events.addAll(aspectCenter.adoptAspects(group));
         cultureAspectCenter.adoptCultureAspects(group);
     }
 
