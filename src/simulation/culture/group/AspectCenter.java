@@ -80,76 +80,12 @@ public class AspectCenter {
     }
 
     Map<ResourceTag, Set<Dependency>> canAddAspect(Aspect aspect) {
-        Map<ResourceTag, Set<Dependency>> dep = new HashMap<>();
-        if (aspect instanceof ConverseWrapper) {
-            addPhony((ConverseWrapper) aspect, dep);
-        }
-        addNonPhony(aspect, dep);
-        return dep;
-    }
-
-    private void addPhony(ConverseWrapper converseWrapper, Map<ResourceTag, Set<Dependency>> dep) {
-        if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
-            if (converseWrapper.canTakeResources() && group.getOverallTerritory().getDifferentResources().contains(converseWrapper.resource)) {
-                addDependenciesInMap(
-                        dep,
-                        Collections.singleton(new ConversionDependency(
-                                        converseWrapper.getRequirement(),
-                                        new Pair<>(converseWrapper.resource, converseWrapper.aspect)
-                                )),
-                        converseWrapper.getRequirement()
-                );
-            }
-            addDependenciesInMap(dep, aspectPool.getProducedResources().stream()
-                            .filter(pair -> pair.getFirst().equals(converseWrapper.resource))
-                            .map(pair -> new LineDependency(
-                                    converseWrapper.getRequirement(),
-                                    new Pair<>(converseWrapper, pair.getSecond())
-                            )).filter(dependency -> !dependency.isCycleDependency(converseWrapper))
-                            .collect(Collectors.toList()),
-                    converseWrapper.getRequirement());
-        }
-    }
-
-    private void addNonPhony(Aspect aspect, Map<ResourceTag, Set<Dependency>> dep) {
-        for (ResourceTag requirement : aspect.getRequirements()) {
-            if (requirement.name.equals(ResourceTag.phony().name)) {
-                continue;
-            }
-            addAspectDependencies(requirement, dep, aspect);
-        }
-    }
-
-    private void addAspectDependencies(ResourceTag requirement, Map<ResourceTag, Set<Dependency>> dep, Aspect aspect) {
-        for (Aspect selfAspect : aspectPool.getAll()) {
-            if (selfAspect.getTags().contains(requirement)) {
-                Dependency dependency = new AspectDependency(requirement, selfAspect);
-                if (dependency.isCycleDependency(selfAspect) || dependency.isCycleDependencyInner(aspect)) {
-                    continue;
-                }
-                addDependenciesInMap(dep, Collections.singleton(dependency), requirement);
-            }
-            addDependenciesInMap(dep, group.getTerritoryCenter().getTerritory().getResourcesWhichConverseToTag(
-                    selfAspect,
-                    requirement
-                    ).stream() //Make converse Dependency_
-                            .map(resource ->
-                                    new ConversionDependency(requirement, new Pair<>(resource, selfAspect)))
-                            .filter(dependency -> !dependency.isCycleDependency(aspect))
-                            .collect(Collectors.toList()),
-                    requirement);
-        }
-    }
-
-    private void addDependenciesInMap(Map<ResourceTag, Set<Dependency>> dep, Collection<Dependency> dependencies,
-                                      ResourceTag requirement) {
-        if (dependencies.isEmpty()) {
-            return;
-        }
-        if (!dep.containsKey(requirement)) {
-            dep.put(requirement, new HashSet<>());
-        }
-        dep.get(requirement).addAll(dependencies);
+        AspectDependencyCalculator calculator = new AspectDependencyCalculator(
+                aspectPool,
+                group.getTerritoryCenter().getTerritory()
+        );
+        calculator.calculateDependencies(aspect);
+        return calculator.getDependencies();
     }
 
     private void addConverseWrapper(Aspect aspect, Resource resource) { //TODO I'm adding a lot of garbage

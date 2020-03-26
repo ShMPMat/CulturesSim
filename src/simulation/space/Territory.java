@@ -99,8 +99,8 @@ public class Territory {
         List<Resource> resources = new ArrayList<>();
         for (Resource resource : getDifferentResources()) {
             List<Resource> _l = resource.applyAspect(aspect);
-            if (_l.stream().anyMatch(res -> res.getTags().contains(tag)) &&
-                    !(_l.size() == 1 && _l.get(0).equals(resource))) {
+            if (_l.stream().anyMatch(res -> res.getTags().contains(tag))
+                    && !(_l.size() == 1 && _l.get(0).equals(resource))) {
                 resources.add(resource);
             }
         }
