@@ -123,9 +123,6 @@ public class Controller {
         return world.getLesserTurnNumber() % denominator == 0;
     }
 
-    /**
-     * Makes a turn in a simulation.
-     */
     public void turn() {
         interactionModel.turn(world);
         world.incrementTurn();

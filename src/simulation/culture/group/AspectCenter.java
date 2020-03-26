@@ -215,8 +215,8 @@ public class AspectCenter {
                 );
                 if (addAspect(pair.getFirst())) {
                     group.addEvent(new Event(Event.Type.AspectGaining,
-                            String.format("Group %s got aspect %s from group %s",
-                                    group.name, pair.getFirst().getName(), pair.getSecond().name),
+                            String.format("Got aspect %s from group %s",
+                                    pair.getFirst().getName(), pair.getSecond().name),
                             "group", group));
                 }
             } catch (Exception e) {
