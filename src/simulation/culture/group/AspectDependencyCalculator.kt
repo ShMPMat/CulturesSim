@@ -51,7 +51,6 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
 
     private fun addNonPhony(aspect: Aspect) {
         for (requirement in aspect.requirements) {
-            if (requirement.name == ResourceTag.phony().name) continue
             addTagDependencies(requirement, aspect)
         }
     }

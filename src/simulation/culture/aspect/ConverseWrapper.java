@@ -28,7 +28,7 @@ public class ConverseWrapper extends Aspect {
                 new AspectCore(
                         aspect.getName() + "On" + resource.getBaseName(),
                         getReducedTags(resource, aspect),
-                        getDependencies(aspect),
+                        new ArrayList<>(aspect.getRequirements()),
                         new ArrayList<>(),
                         false
                         ),
@@ -60,12 +60,6 @@ public class ConverseWrapper extends Aspect {
         return result;
     }
 
-    private static List<ResourceTag> getDependencies(Aspect aspect) {
-        List<ResourceTag> result = new ArrayList<>(aspect.getRequirements());
-        result.add(ResourceTag.phony());
-        return result;
-    }
-
     public ResourceTag getRequirement() {
         return ResourceTag.phony();
     }
@@ -91,7 +85,7 @@ public class ConverseWrapper extends Aspect {
 
     @Override
     public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {
-        return getRequirements().size() == dependencies.size();
+        return getRequirements().size() + 1 == dependencies.size();
     }
 
     @Override
