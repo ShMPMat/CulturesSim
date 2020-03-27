@@ -56,7 +56,7 @@ class LineDependency(
         }
     }
 
-    private fun goodForInsertMeaning() = type != ResourceTag.phony() || converseWrapper.canInsertMeaning
+    private fun goodForInsertMeaning() = !isPhony || converseWrapper.canInsertMeaning
 
     override fun copy() = LineDependency(type, parentConverseWrapper, converseWrapper)
 

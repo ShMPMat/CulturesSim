@@ -1,7 +1,6 @@
 package simulation.culture.aspect
 
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourceCore
 import simulation.space.resource.ResourcePool
 import simulation.space.resource.tag.labeler.ResourceTagLabeler
 
@@ -11,17 +10,15 @@ class AspectMatcher(
         private val coreName: String
 ) {
     init {
-        if (results.isEmpty()) {
-            throw ExceptionInInitializerError("Aspect matcher does nothing")
-        }
+        if (results.isEmpty()) throw ExceptionInInitializerError("Aspect matcher does nothing")
     }
 
-    fun match(core: ResourceCore): Boolean {
-        return if (core.aspectConversion.keys
+    fun match(resource: Resource): Boolean {
+        return if (resource.aspectConversion.keys
                         .map { obj: Aspect -> obj.name }
                         .any { name: String -> name == coreName }
         ) false
-        else labeler.isSuitable(core)
+        else labeler.isSuitable(resource)
     }
 
     fun getResults(resource: Resource, resourcePool: ResourcePool): List<Pair<Resource, Int>> {

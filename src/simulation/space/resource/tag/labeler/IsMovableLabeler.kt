@@ -1,7 +1,7 @@
 package simulation.space.resource.tag.labeler
 
-import simulation.space.resource.ResourceCore
+import simulation.space.resource.Resource
 
 class IsMovableLabeler : ResourceTagLabeler {
-    override fun isSuitable(resourceCore: ResourceCore) = resourceCore.genome.isMovable
+    override fun isSuitable(resource: Resource) = resource.genome.isMovable
 }

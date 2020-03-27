@@ -1,7 +1,7 @@
 package simulation.space.resource.tag.labeler
 
-import simulation.space.resource.ResourceCore
+import simulation.space.resource.Resource
 
 interface ResourceTagLabeler {
-    fun isSuitable(resourceCore: ResourceCore): Boolean
+    fun isSuitable(resource: Resource): Boolean
 }

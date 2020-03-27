@@ -149,7 +149,7 @@ class ResourceInstantiation(
         }
         for (aspect in aspectPool.getAll()) {//TODO why is it here?
             for (matcher in aspect.matchers) {
-                if (matcher.match(resource.resourceCore)) {
+                if (matcher.match(resource)) {
                     resource.resourceCore.addAspectConversion(
                             aspectPool.getValue(aspect.name),
                             matcher.getResults(resource.resourceCore.copy(), resourcePool)

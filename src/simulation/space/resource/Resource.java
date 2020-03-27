@@ -1,6 +1,7 @@
 package simulation.space.resource;
 
 import extra.SpaceProbabilityFuncs;
+import kotlin.Pair;
 import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
@@ -48,6 +49,10 @@ public class Resource {
 
     public Resource(ResourceCore resourceCore) {
         this(resourceCore, resourceCore.getGenome().getDefaultAmount());
+    }
+
+    public Map<Aspect, List<Pair<Resource, Integer>>> getAspectConversion() {
+        return resourceCore.getAspectConversion();
     }
 
     void computeHash() {

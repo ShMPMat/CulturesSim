@@ -1,8 +1,7 @@
 package simulation.space.resource.tag.labeler
 
-import simulation.space.resource.ResourceCore
-import simulation.space.resource.tag.labeler.ResourceTagLabeler
+import simulation.space.resource.Resource
 
 class SmallerSizeLabeler(private val size: Double): ResourceTagLabeler {
-    override fun isSuitable(resourceCore: ResourceCore) = resourceCore.genome.size <= size
+    override fun isSuitable(resource: Resource) = resource.genome.size <= size
 }
