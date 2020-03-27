@@ -35,7 +35,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
                             converseWrapper.aspect,
                             converseWrapper.resource
                     )),
-                    converseWrapper.requirement
+                    ResourceTag.phony()
             )
     }
 
@@ -44,7 +44,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
                     .filter { (f) -> f == converseWrapper.resource }
                     .map { (_, s) -> LineDependency(true, converseWrapper, s) }
                     .filter { !it.isCycleDependency(converseWrapper) },
-                    converseWrapper.requirement)
+                    ResourceTag.phony())
 
     private fun addNonPhony(aspect: Aspect) {
         for (requirement in aspect.requirements) {

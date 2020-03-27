@@ -57,10 +57,6 @@ public class ConverseWrapper extends Aspect {
         return result;
     }
 
-    public ResourceTag getRequirement() {
-        return ResourceTag.phony();
-    }
-
     public List<Resource> getResult() {
         return resource.applyAspect(aspect);
     }
