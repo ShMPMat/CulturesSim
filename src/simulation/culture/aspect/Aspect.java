@@ -3,6 +3,7 @@ package simulation.culture.aspect;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.AspectCenter;
 import simulation.space.resource.MutableResourcePack;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
@@ -125,7 +126,7 @@ public class Aspect {
     }
 
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
-        boolean isFinished;//TODO put dependency resources only in node; otherwise they may merge with phony
+        //TODO put dependency resources only in node; otherwise they may merge with phony
         MutableResourcePack meaningfulPack = new MutableResourcePack();
         controller.setCeiling(controller.getPopulationCenter().changeStratumAmountByAspect(
                 this,
@@ -133,68 +134,8 @@ public class Aspect {
         ));
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         for (Map.Entry<ResourceTag, Set<Dependency>> entry : getDependencies().entrySet()) {
-            Set<Dependency> dependency = entry.getValue();
-            MutableResourcePack usedForDependency = new MutableResourcePack();
-            isFinished = false;
-            MutableResourcePack _rp = new MutableResourcePack();
-            MutableResourcePack provided = controller.getPopulationCenter().getStratumByAspect(this)
-                    .getInstrumentByTag(entry.getKey());
-            if (provided != null) {
-                _rp.addAll(provided);
-            }
-            for (Dependency dependency1 : dependency) {
-                if (dependency1.isPhony()) {
-                    isFinished = true;
-                    int newDelta = meaningfulPack.getAmount(((ConverseWrapper) this).resource);
-                    AspectResult _p = dependency1.useDependency(new AspectController(
-                            controller.getCeiling() - newDelta,
-                            controller.getFloor() - newDelta,
-                            controller.getEvaluator(),
-                            controller.getPopulationCenter(),
-                            controller.getTerritory(),
-                            shouldPassMeaningNeed(controller.isMeaningNeeded()),
-                            controller.getMeaning()
-                    ));
-                    if (!_p.isFinished) {
-                        continue;
-                    }
-                    meaningfulPack.addAll(_p.resources);
-                    if (controller.isCeilingExceeded(meaningfulPack)) {
-                        break;
-                    }
-                } else {
-                    int newDelta = _rp.getAmount(dependency1.getType());
-                    AspectResult result = dependency1.useDependency(new AspectController(
-                            controller.getCeiling() - newDelta,
-                            controller.getFloor() - newDelta,
-                            controller.getEvaluator(),
-                            controller.getPopulationCenter(),
-                            controller.getTerritory(),
-                            false,
-                            controller.getMeaning()
-                    ));
-                    _rp.addAll(result.resources);
-                    if (!result.isFinished) {
-                        continue;
-                    }
-                    if (_rp.getAmount(dependency1.getType()) >= controller.getCeiling()) {
-                        if (!dependency1.getType().isInstrumental) {//TODO sometimes can spend resources without getting resources because other dependencies are lacking
-                            usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
-                                    dependency1.getType(),
-                                    controller.getCeiling()).getSecond()
-                            );
-                        } else {
-                            usedForDependency.addAll(_rp.getResources(dependency1.getType()));
-                        }
-                        meaningfulPack.addAll(_rp);
-                        isFinished = true;
-                        break;
-                    }
-                }
-            }
-            node.resourceUsed.put(entry.getKey(), usedForDependency);
-            if (!isFinished) {
-                return new AspectResult(false, node);
+            if (!satisfyRequirement(controller, entry.getValue(), entry.getKey(), meaningfulPack, node)) {
+                new AspectResult(false, node);
             }
         }
         if (controller.isFloorExceeded(meaningfulPack)) {
@@ -203,7 +144,81 @@ public class Aspect {
         return new AspectResult(meaningfulPack, node);
     }
 
-    boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
+    private boolean satisfyRequirement(
+            AspectController controller,
+            Set<Dependency> dependencies,
+            ResourceTag requirementTag,
+            MutableResourcePack meaningfulPack,
+            AspectResult.ResultNode node
+            ) {
+        MutableResourcePack usedForDependency = new MutableResourcePack();
+        boolean isFinished = false;
+        MutableResourcePack _rp = new MutableResourcePack();
+        ResourcePack provided = controller.getPopulationCenter().getStratumByAspect(this)
+                .getInstrumentByTag(requirementTag);
+        if (provided != null) {
+            _rp.addAll(provided);
+        }
+        for (Dependency dependency : dependencies) {
+            if (dependency.isPhony()) {
+                isFinished = true;
+                int newDelta = meaningfulPack.getAmount(((ConverseWrapper) this).resource);
+                AspectResult _p = dependency.useDependency(new AspectController(
+                        controller.getCeiling() - newDelta,
+                        controller.getFloor() - newDelta,
+                        controller.getEvaluator(),
+                        controller.getPopulationCenter(),
+                        controller.getTerritory(),
+                        shouldPassMeaningNeed(controller.isMeaningNeeded()),
+                        controller.getMeaning()
+                ));
+                if (!_p.isFinished) {
+                    continue;
+                }
+                meaningfulPack.addAll(_p.resources);
+                if (controller.isCeilingExceeded(meaningfulPack)) {
+                    break;
+                }
+            } else {
+                int newDelta = _rp.getAmount(requirementTag);
+                AspectResult result = dependency.useDependency(new AspectController(
+                        controller.getCeiling() - newDelta,
+                        controller.getFloor() - newDelta,
+                        controller.getEvaluator(),
+                        controller.getPopulationCenter(),
+                        controller.getTerritory(),
+                        false,
+                        controller.getMeaning()
+                ));
+                _rp.addAll(result.resources);
+                if (!result.isFinished) {
+                    continue;
+                }
+                if (_rp.getAmount(requirementTag) >= controller.getCeiling()) {
+                    if (!requirementTag.isInstrumental) {
+                        //TODO sometimes can spend resources without getting resources because other dependencies are lacking
+                        usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
+                                requirementTag,
+                                controller.getCeiling()).getSecond()
+                        );
+                    } else {
+                        usedForDependency.addAll(_rp.getResources(requirementTag));
+                    }
+                    meaningfulPack.addAll(_rp);
+                    isFinished = true;
+                    break;
+                }
+            }
+        }
+        node.resourceUsed.put(requirementTag, usedForDependency);
+        return isFinished;
+    }
+
+    private void satisfyPhonyDependency() {
+
+    }
+
+    private boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
         return isMeaningNeeded;
     }
 

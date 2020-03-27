@@ -5,6 +5,7 @@ import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.ResourcePack
 
 data class AspectController(
         var ceiling: Int,
@@ -19,7 +20,7 @@ data class AspectController(
         return evaluator.evaluate(resourcePack) >= floor
     }
 
-    fun isCeilingExceeded(resourcePack: MutableResourcePack): Boolean {
+    fun isCeilingExceeded(resourcePack: ResourcePack): Boolean {
         return evaluator.evaluate(resourcePack) >= ceiling
     }
 

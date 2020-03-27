@@ -22,7 +22,7 @@ class ConversionDependency(
             otherAspect is ConverseWrapper && aspect == otherAspect.aspect
 
     override fun isCycleDependencyInner(otherAspect: Aspect) =
-            isCycleDependency(otherAspect) || otherAspect == otherAspect
+            isCycleDependency(otherAspect) || otherAspect == aspect
 
     override fun useDependency(controller: AspectController): AspectResult {
         val resourcePack = MutableResourcePack()

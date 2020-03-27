@@ -25,7 +25,7 @@ public class ResourceEvaluator {
         return picker.apply(resourcePack);
     }
 
-    public int evaluate(MutableResourcePack resourcePack) {
+    public int evaluate(ResourcePack resourcePack) {
         return evaluator.apply(resourcePack);
     }
 }
