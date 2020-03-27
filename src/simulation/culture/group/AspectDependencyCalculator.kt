@@ -31,7 +31,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
         if (converseWrapper.canTakeResources() && territory.differentResources.contains(converseWrapper.resource))
             addDependenciesInMap(
                     setOf(ConversionDependency(
-                            converseWrapper.requirement,
+                            true,
                             converseWrapper.aspect,
                             converseWrapper.resource
                     )),
@@ -42,7 +42,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
     private fun addLinePhony(converseWrapper: ConverseWrapper) =
             addDependenciesInMap(aspectPool.producedResources
                     .filter { (f) -> f == converseWrapper.resource }
-                    .map { (_, s) -> LineDependency(converseWrapper.requirement, converseWrapper, s) }
+                    .map { (_, s) -> LineDependency(true, converseWrapper, s) }
                     .filter { !it.isCycleDependency(converseWrapper) },
                     converseWrapper.requirement)
 
@@ -55,7 +55,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
     private fun addTagDependencies(requirement: ResourceTag, aspect: Aspect) {
         for (poolAspect in aspectPool.converseWrappers) {
             if (poolAspect.result.any { it.tags.contains(requirement) }) {
-                val dependency = AspectDependency(requirement, poolAspect)
+                val dependency = AspectDependency(false, poolAspect)
                 if (dependency.isCycleDependency(poolAspect) || dependency.isCycleDependencyInner(aspect)) continue
                 addDependenciesInMap(setOf(dependency), requirement)
             }

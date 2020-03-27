@@ -11,10 +11,10 @@ import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class LineDependency(
-        tag: ResourceTag,
+        isPhony: Boolean,
         private var parentConverseWrapper: ConverseWrapper,
         var converseWrapper: ConverseWrapper
-) : AbstractDependency(tag) {
+) : AbstractDependency(isPhony) {
     private var isAlreadyUsed = false
     override val name: String
         get() = "${parentConverseWrapper.name} from ${converseWrapper.name}"
@@ -58,7 +58,7 @@ class LineDependency(
 
     private fun goodForInsertMeaning() = !isPhony || converseWrapper.canInsertMeaning
 
-    override fun copy() = LineDependency(type, parentConverseWrapper, converseWrapper)
+    override fun copy() = LineDependency(isPhony, parentConverseWrapper, converseWrapper)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         parentConverseWrapper = aspectCenter.aspectPool.getValue(parentConverseWrapper) as ConverseWrapper

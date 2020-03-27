@@ -6,10 +6,9 @@ import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
-import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
-class AspectDependency(tag: ResourceTag, private var aspect: Aspect) : AbstractDependency(tag) {
+class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractDependency(isPhony) {
     override val name: String
         get() = aspect.name
 
@@ -30,7 +29,7 @@ class AspectDependency(tag: ResourceTag, private var aspect: Aspect) : AbstractD
             isMeaningNeeded = false
     ))
 
-    override fun copy() = AspectDependency(type, aspect)
+    override fun copy() = AspectDependency(isPhony, aspect)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         aspect = aspectCenter.aspectPool.getValue(aspect)

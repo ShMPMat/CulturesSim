@@ -1,20 +1,17 @@
 package simulation.culture.aspect.dependency
 
-import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
-abstract class AbstractDependency(override var type: ResourceTag) : Dependency {
-    override val isPhony: Boolean
-        get() = type.name == "phony"
+abstract class AbstractDependency(override val isPhony: Boolean) : Dependency {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as AbstractDependency
-        return type == that.type
+        return isPhony == that.isPhony
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(type)
+        return Objects.hash(isPhony)
     }
 }

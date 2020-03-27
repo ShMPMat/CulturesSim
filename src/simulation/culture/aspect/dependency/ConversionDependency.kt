@@ -7,14 +7,13 @@ import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
-import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class ConversionDependency(
-        tag: ResourceTag,
+        isPhony: Boolean,
         private var aspect: Aspect,
         private val resource: Resource
-) : AbstractDependency(tag) {
+) : AbstractDependency(isPhony) {
     override val name: String
         get() = "${aspect.name} on ${resource.baseName}"
 
@@ -37,7 +36,7 @@ class ConversionDependency(
         return AspectResult(resourcePack, null)
     }
 
-    override fun copy() = ConversionDependency(type, aspect, resource)
+    override fun copy() = ConversionDependency(isPhony, aspect, resource)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         aspect =  aspectCenter.aspectPool.getValue(aspect)
