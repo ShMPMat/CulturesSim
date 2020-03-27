@@ -81,7 +81,7 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
             return
         }
         try {
-            val a: Aspect = aspectPool.get(aspectName.split("On".toRegex()).toTypedArray()[0])
+            val a: Aspect = aspectPool.getValue(aspectName.split("On".toRegex()).toTypedArray()[0])
             if (a.canApplyMeaning()) {
                 MeaningInserter(a, accessibleResource)
             } else {
@@ -93,7 +93,7 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
         }
     } else {
         try {
-            aspectPool.get(aspectName)
+            aspectPool.getValue(aspectName)
         } catch (e: NoSuchElementException) {
             System.err.println("Cannot addAll aspect to the group")
             return

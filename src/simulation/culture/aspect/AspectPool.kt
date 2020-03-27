@@ -24,9 +24,13 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
             .toSet()
 
     fun get(name: String) = aspects.firstOrNull { it.name == name }
-            ?: throw NoSuchElementException("No aspect with name $name")
 
     fun get(aspect: Aspect) = get(aspect.name)
+
+    fun getValue(name: String) = get(name)
+            ?: throw NoSuchElementException("No aspect with name $name")
+
+    fun getValue(aspect: Aspect) = getValue(aspect.name)
 
     fun contains(aspectName: String) = aspectMap[aspectName] != null
 

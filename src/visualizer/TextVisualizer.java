@@ -437,6 +437,10 @@ public class TextVisualizer implements Visualizer {
                                 _oo.ifPresent(this::printResource);
                             }
                             break;
+                        case Aspects:
+                            _s = line.split(" ");
+                            printMap(t -> TileMapperFunctionsKt.aspectMapper(_s[1], t));
+                            break;
                         case IdleGo:
                             for (int i = 0; i < 500; i++) {
                                 controller.turn();
@@ -529,6 +533,7 @@ public class TextVisualizer implements Visualizer {
         Resource("r \\w+"),
         MeaningfulResources("meaning"),
         ArtificialResources("artificial"),
+        Aspects("a \\w+"),
         /**
          * Command for printing map.
          */

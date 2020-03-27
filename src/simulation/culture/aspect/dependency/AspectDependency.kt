@@ -33,7 +33,7 @@ class AspectDependency(tag: ResourceTag, private var aspect: Aspect) : AbstractD
     override fun copy() = AspectDependency(type, aspect)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
-        aspect = aspectCenter.aspectPool.get(aspect)
+        aspect = aspectCenter.aspectPool.getValue(aspect)
     }
 
     override fun equals(other: Any?): Boolean {

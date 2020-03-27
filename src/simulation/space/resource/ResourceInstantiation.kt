@@ -55,7 +55,7 @@ class ResourceInstantiation(
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '+' -> aspectConversion[aspectPool.get(tag.substring(0, tag.indexOf(':')))] =
+                '+' -> aspectConversion[aspectPool.getValue(tag.substring(0, tag.indexOf(':')))] =
                         tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
                 '@' -> {
                     if (tag == "TEMPLATE") {
@@ -151,7 +151,7 @@ class ResourceInstantiation(
             for (matcher in aspect.matchers) {
                 if (matcher.match(resource.resourceCore)) {
                     resource.resourceCore.addAspectConversion(
-                            aspectPool.get(aspect.name),
+                            aspectPool.getValue(aspect.name),
                             matcher.getResults(resource.resourceCore.copy(), resourcePool)
                     )
                 }
@@ -257,11 +257,11 @@ class ResourceInstantiation(
     private fun addTakeApartAspect(template: ResourceTemplate) {//TODO remove it
         val (resource, aspectConversion, _) = template
         if (resource.resourceCore.genome.parts.isNotEmpty()
-                && !aspectConversion.containsKey(aspectPool.get("TakeApart"))) {//TODO aspects shouldn't be here I recon
+                && !aspectConversion.containsKey(aspectPool.getValue("TakeApart"))) {//TODO aspects shouldn't be here I recon
             val resourceList: MutableList<Pair<Resource, Int>> = ArrayList()
             for (partResource in resource.resourceCore.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.resourceCore.aspectConversion[aspectPool.get("TakeApart")] = resourceList
+                resource.resourceCore.aspectConversion[aspectPool.getValue("TakeApart")] = resourceList
             }
         }
     }

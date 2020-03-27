@@ -38,7 +38,7 @@ public class ConverseWrapper extends Aspect {
     @Override
     public void swapDependencies(AspectCenter aspectCenter) {
         super.swapDependencies(aspectCenter);
-        aspect = aspectCenter.getAspectPool().get(aspect);
+        aspect = aspectCenter.getAspectPool().getValue(aspect);
     }
 
     private static List<ResourceTag> getReducedTags(Resource resource, Aspect aspect) {

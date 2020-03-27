@@ -43,7 +43,7 @@ public class AspectCenter {
             return false;
         }
         if (aspectPool.contains(aspect)) {
-            aspect = aspectPool.get(aspect.getName());
+            aspect = aspectPool.getValue(aspect.getName());
         }
         Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
         if (!aspect.isDependenciesOk(_m)) {
@@ -57,7 +57,7 @@ public class AspectCenter {
     private void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
         Aspect _a;
         if (aspectPool.contains(aspect)) {
-            _a = aspectPool.get(aspect);//TODO why one, add a l l
+            _a = aspectPool.getValue(aspect);//TODO why one, add a l l
             _a.addOneDependency(dependencies);
         } else {
             _a = aspect.copy(dependencies);

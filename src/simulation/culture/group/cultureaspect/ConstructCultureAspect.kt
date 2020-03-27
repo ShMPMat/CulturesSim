@@ -1,7 +1,6 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
-import simulation.Controller
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.Group
@@ -77,7 +76,7 @@ fun constructBetterAspectUseReasonRitual(
     for (meme in aspectMemes) { //TODO maybe depth check
         if (meme.observerWord == converseWrapper.name) continue
         if (aspectPool.contains(meme.observerWord)) {
-            val myAspect = aspectPool.get(meme.observerWord)
+            val myAspect = aspectPool.getValue(meme.observerWord)
             if (myAspect is ConverseWrapper)
                 return AspectRitual(myAspect, getRandom(group, random), reason)
         } else {

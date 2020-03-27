@@ -36,8 +36,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         }
 
     fun getAllNearGroups(exception: Group) = territory.outerBrink
-            .flatMap { it.tagPool.getByType(tileTag.type) }
-            .map { (it as GroupTileTag).group }
+            .mapNotNull { getResidingGroup(it) }
             .filter { it != exception }
             .toSet()
 
@@ -122,7 +121,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         if (tile == null) {
             return
         }
-        if (!tile.tagPool.contains(tileTag) && tile.tagPool.getByType(tileTag.type).isNotEmpty()) {
+        if (!tile.tagPool.contains(tileTag) && hasResidingGroup(tile)) {
             throw RuntimeException()
         }
         tileTag.group.parentGroup.claimTile(tile)
@@ -155,11 +154,11 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     fun canSettle(tile: Tile) = (tile.type != Tile.Type.Water && tile.type != Tile.Type.Mountain
-            || (tile.type == Tile.Type.Mountain
-            && tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("mountainLiving")))//TODO set of accessible tiles
+            || (tile.type == Tile.Type.Mountain//TODO set of accessible tile types
+            && tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("mountainLiving")))
 
     fun canSettleAndNoGroup(tile: Tile) =
-            canSettle(tile, Predicate { t: Tile -> t.tagPool.getByType(tileTag.type).isEmpty() })
+            canSettle(tile, Predicate { hasNoResidingGroup(it) })
 
     fun canSettle(tile: Tile, additionalCondition: Predicate<Tile>) =
             canSettle(tile) && additionalCondition.test(tile)

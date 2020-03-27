@@ -40,7 +40,7 @@ class ConversionDependency(
     override fun copy() = ConversionDependency(type, aspect, resource)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
-        aspect =  aspectCenter.aspectPool.get(aspect)
+        aspect =  aspectCenter.aspectPool.getValue(aspect)
     }
 
     override fun equals(other: Any?): Boolean {

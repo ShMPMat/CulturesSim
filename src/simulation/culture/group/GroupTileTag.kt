@@ -1,5 +1,16 @@
 package simulation.culture.group
 
+import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 
-class GroupTileTag(val group: Group) : TileTag(group.name, "Group")
+const val GROUP_TAG_TYPE = "Group"
+
+class GroupTileTag(val group: Group) : TileTag(group.name, GROUP_TAG_TYPE)
+
+
+fun getResidingGroup(tile: Tile): Group? = (tile.tagPool.getByType(GROUP_TAG_TYPE)
+        .firstOrNull() as GroupTileTag?)?.group
+
+fun hasResidingGroup(tile: Tile) = getResidingGroup(tile) != null
+
+fun hasNoResidingGroup(tile: Tile) = !hasResidingGroup(tile)

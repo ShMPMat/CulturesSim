@@ -1,5 +1,8 @@
 package visualizer
 
+import simulation.culture.aspect.AspectPool
+import simulation.culture.group.Group
+import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
 import simulation.space.tile.Tile
@@ -7,6 +10,9 @@ import java.util.*
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
+
+const val MARK = "\u001b[31mX"
+const val NOTHING = ""
 
 fun vapourMapper(tile: Tile): String {
     val level = tile.resourcesWithMoved
@@ -46,10 +52,10 @@ fun temperatureMapper(tile: Tile): String {
     return hotnessMapper(Tile::getTemperature, 10, tile, start = -30)
 }
 
-fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile, start: Int = step): String {
+fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile, start: Int = 1): String {
     val result = mapper(tile)
     val colour = when {
-        result < start -> ""
+        result < start -> NOTHING
         result < start + step -> "\u001b[44m"
         result < start + 2 * step -> "\u001b[104m"
         result < start + 3 * step -> "\u001b[46m"
@@ -102,15 +108,26 @@ fun levelMapper(tile: Tile): String {
     return "\u001b[90m" + colour + abs(tile.secondLevel % 10)
 }
 
-fun meaningfulResourcesMapper(tile: Tile) = if (tile.resourcePack.resources.any { it.hasMeaning() }) "\u001b[31mX"
-else ""
+fun meaningfulResourcesMapper(tile: Tile) =
+        if (tile.resourcePack.resources.any { it.hasMeaning() }) MARK
+        else ""
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
     val artificialResources = setOf("House", "Clothes", "Dish", "Boat")
     return when {
-        meaningful != "" -> meaningful
+        meaningful != NOTHING -> meaningful
         tile.resourcePack.resources.any { artificialResources.contains(it.baseName) } -> "\u001b[31mX"
-        else -> ""
+        else -> NOTHING
     }
+}
+
+fun aspectMapper(aspectName: String, tile: Tile): String {
+    return hotnessMapper(
+            {
+                val group: Group = getResidingGroup(it) ?: return@hotnessMapper 0
+                group.cultureCenter.aspectCenter.aspectPool.get(aspectName)?.usefulness ?: 0
+            },
+            100,
+            tile)
 }

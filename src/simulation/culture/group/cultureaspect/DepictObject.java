@@ -68,7 +68,7 @@ public class DepictObject implements CultureAspect {
     public DepictObject copy(Group group) {
         return new DepictObject(
                 meme,
-                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().get(converseWrapper),
+                (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().getValue(converseWrapper),
                 resourceBehaviour
         );
     }

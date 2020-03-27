@@ -30,7 +30,7 @@ class MaterialInstantiation(private val aspectPool: AspectPool) {
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '+' -> aspectConversion[aspectPool.get(tag.takeWhile { it != ':' })] =
+                '+' -> aspectConversion[aspectPool.getValue(tag.takeWhile { it != ':' })] =
                         tag.substring(tag.indexOf(':') + 1)
                 '-' -> materialTags.add(ResourceTag(
                         tag.takeWhile { it != ':' },

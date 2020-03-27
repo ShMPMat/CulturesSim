@@ -1,5 +1,7 @@
 package simulation.culture.group
 
+import simulation.space.tile.Tile
+
 /**
  * This operation is not commutative.
  * @return double from 0 to 1.
@@ -21,3 +23,4 @@ fun getGroupsDifference(g1: Group, g2: Group): Double {
     }
     return matched / overall
 }
+
