@@ -8,8 +8,8 @@ import simulation.space.resource.tag.ResourceTag
 
 interface Dependency {
     val name: String
-    fun isCycleDependency(aspect: Aspect): Boolean
-    fun isCycleDependencyInner(aspect: Aspect): Boolean
+    fun isCycleDependency(otherAspect: Aspect): Boolean
+    fun isCycleDependencyInner(otherAspect: Aspect): Boolean
     fun useDependency(controller: AspectController): AspectResult
     val isPhony: Boolean
     val type: ResourceTag

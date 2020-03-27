@@ -12,25 +12,24 @@ import java.util.*
 
 class LineDependency(
         tag: ResourceTag,
-        private var line: Pair<ConverseWrapper, ConverseWrapper>
+        private var parentConverseWrapper: ConverseWrapper,
+        var converseWrapper: ConverseWrapper
 ) : AbstractDependency(tag) {
     private var isAlreadyUsed = false
     override val name: String
-        get() = "${line.first.name} from ${line.second.name}"
-    val nextWrapper: ConverseWrapper
-        get() = line.second
+        get() = "${parentConverseWrapper.name} from ${converseWrapper.name}"
 
-    override fun isCycleDependency(aspect: Aspect): Boolean {
+    override fun isCycleDependency(otherAspect: Aspect): Boolean {
         if (isAlreadyUsed) return false
         isAlreadyUsed = true
-        val b = line.second.dependencies.values.any {
-            it.any { d -> d.isCycleDependencyInner(aspect) }
-        } || line.second == aspect
+        val b = converseWrapper.dependencies.values.any {
+            it.any { d -> d.isCycleDependencyInner(otherAspect) }
+        } || converseWrapper == otherAspect
         isAlreadyUsed = false
         return b
     }
 
-    override fun isCycleDependencyInner(aspect: Aspect) = isCycleDependency(aspect)
+    override fun isCycleDependencyInner(otherAspect: Aspect) = isCycleDependency(otherAspect)
 
     override fun useDependency(controller: AspectController): AspectResult {
         return try {
@@ -39,15 +38,15 @@ class LineDependency(
                 return AspectResult(resourcePack, null)
             }
             isAlreadyUsed = true
-            val _p = line.second.use(controller.copy(
+            val _p = converseWrapper.use(controller.copy(
                     evaluator = ResourceEvaluator(
-                            { it.getPackedResource(line.first.resource) },
-                            { it.getAmount(line.first.resource) }
+                            { it.getPackedResource(parentConverseWrapper.resource) },
+                            { it.getAmount(parentConverseWrapper.resource) }
                     )
             ))
             resourcePack.addAll(
-                    _p.resources.getPackedResource(line.first.resource).resources
-                            .flatMap { it.applyAndConsumeAspect(line.first.aspect, controller.ceiling) }
+                    _p.resources.getPackedResource(parentConverseWrapper.resource).resources
+                            .flatMap { it.applyAndConsumeAspect(parentConverseWrapper.aspect, controller.ceiling) }
             )
             resourcePack.addAll(_p.resources)
             isAlreadyUsed = false
@@ -57,15 +56,13 @@ class LineDependency(
         }
     }
 
-    private fun goodForInsertMeaning() = type != ResourceTag.phony() || nextWrapper.canInsertMeaning
+    private fun goodForInsertMeaning() = type != ResourceTag.phony() || converseWrapper.canInsertMeaning
 
-    override fun copy() = LineDependency(type, line)
+    override fun copy() = LineDependency(type, parentConverseWrapper, converseWrapper)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
-        line = Pair(
-                aspectCenter.aspectPool.get(line.second) as ConverseWrapper,
-                aspectCenter.aspectPool.get(line.second) as ConverseWrapper
-        )
+        parentConverseWrapper = aspectCenter.aspectPool.get(parentConverseWrapper) as ConverseWrapper
+        converseWrapper = aspectCenter.aspectPool.get(converseWrapper) as ConverseWrapper
     }
 
     override fun equals(other: Any?): Boolean {
@@ -73,11 +70,12 @@ class LineDependency(
         if (other == null || javaClass != other.javaClass) return false
         if (!super.equals(other)) return false
         val that = other as LineDependency
-        return line == that.line
+        return parentConverseWrapper == that.parentConverseWrapper
+                && converseWrapper == that.converseWrapper
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(super.hashCode(), line)
+        return Objects.hash(super.hashCode(), parentConverseWrapper, converseWrapper)
     }
 
 }

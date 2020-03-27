@@ -13,18 +13,16 @@ class AspectDependency(tag: ResourceTag, private var aspect: Aspect) : AbstractD
     override val name: String
         get() = aspect.name
 
-    override fun isCycleDependency(aspect: Aspect) =
-            if (aspect is ConverseWrapper && this.aspect == aspect.aspect) {
-                true
-            } else this.aspect.dependencies.values.any {
-                it.any { d -> d.isCycleDependencyInner(aspect) }
+    override fun isCycleDependency(otherAspect: Aspect) =
+            if (otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect) true
+            else this.aspect.dependencies.values.any {
+                it.any { d -> d.isCycleDependencyInner(otherAspect) }
             }
 
-    override fun isCycleDependencyInner(aspect: Aspect) =
-            if (this.aspect == aspect || aspect is ConverseWrapper && this.aspect == aspect.aspect) {
-                true
-            } else this.aspect.dependencies.values.any {
-                it.any { d -> d.isCycleDependencyInner(aspect) }
+    override fun isCycleDependencyInner(otherAspect: Aspect) =
+            if (this.aspect == otherAspect || otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect) true
+            else this.aspect.dependencies.values.any {
+                it.any { d -> d.isCycleDependencyInner(otherAspect) }
             }
 
     override fun useDependency(controller: AspectController): AspectResult = aspect.use(controller.copy(

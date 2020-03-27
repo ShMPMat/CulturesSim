@@ -18,9 +18,6 @@ public class ConverseWrapper extends Aspect {
      * Aspect which is applied to the resource.
      */
     public Aspect aspect;
-    /**
-     * Resource on which aspect is applied.
-     */
     public Resource resource;
 
     public ConverseWrapper(Aspect aspect, Resource resource) {
@@ -116,7 +113,7 @@ public class ConverseWrapper extends Aspect {
         try {
             copy.canInsertMeaning = dependencies.get(ResourceTag.phony()).stream().anyMatch(dependency ->
                     dependency instanceof LineDependency &&
-                            ((LineDependency) dependency).getNextWrapper().canInsertMeaning);
+                            ((LineDependency) dependency).getConverseWrapper().canInsertMeaning);
             return copy;
         } catch (Exception e) {
             return null;
