@@ -1,22 +1,21 @@
 package visualizer;
-//TODO check smart territory acquisition it seems not to work
 
 import simulation.Controller;
-import simulation.World;
 import simulation.Event;
+import simulation.World;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
 import simulation.culture.group.cultureaspect.CultureAspect;
+import simulation.culture.thinking.meaning.Meme;
 import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
-import simulation.culture.thinking.meaning.Meme;
 import simulation.space.SpaceData;
-import simulation.space.tile.Tile;
 import simulation.space.WorldMap;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
+import simulation.space.tile.Tile;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -24,10 +23,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static extra.OutputFunc.*;
+import static visualizer.TextCommandsKt.getCommand;
 
 /**
  * Main class, running and visualizing simulation.
@@ -119,21 +118,6 @@ public class TextVisualizer implements Visualizer {
             }
         }
         mapCut = (gapStart + gapFinish) / 2;
-    }
-
-    /**
-     * Function returning a command represented in the line.
-     *
-     * @param line String line with a command.
-     * @return Command token represented by the line.
-     */
-    private Command getCommand(String line) {
-        for (Command command : Command.values()) {
-            if (command.pattern.matcher(line).matches()) {
-                return command;
-            }
-        }
-        return Command.Turn;
     }
 
     /**
@@ -370,9 +354,9 @@ public class TextVisualizer implements Visualizer {
             readSymbols();
             print();
             while (true) {
-                String[] _s;
                 String line = br.readLine();
                 if (line != null) {
+                    final String[] splitCommand = line.split(" ");
                     if (currentTurner != null) {
                         currentTurner.isAskedToStop.set(true);
                         System.out.println("Turner is asked to stop");
@@ -399,16 +383,15 @@ public class TextVisualizer implements Visualizer {
                             printMap(TileMapperFunctionsKt::temperatureMapper);
                             break;
                         case GroupPotentials:
-                            _s = line.split(" ");
-                            GroupConglomerate group = getConglomerate(_s[0]);
+                            GroupConglomerate group = getConglomerate(splitCommand[0]);
                             if (group == null) {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
                                     group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
-                                    Integer.parseInt(_s[2]),
+                                    Integer.parseInt(splitCommand[2]),
                                     t,
-                                    Integer.parseInt(_s[2])
+                                    Integer.parseInt(splitCommand[2])
                             ));
                             break;
                         case Wind:
@@ -438,8 +421,7 @@ public class TextVisualizer implements Visualizer {
                             }
                             break;
                         case Aspects:
-                            _s = line.split(" ");
-                            printMap(t -> TileMapperFunctionsKt.aspectMapper(_s[1], t));
+                            printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
                             break;
                         case IdleGo:
                             for (int i = 0; i < 500; i++) {
@@ -457,26 +439,23 @@ public class TextVisualizer implements Visualizer {
                         case Exit:
                             return;
                         case AddAspect: {
-                            _s = line.split(" ");
                             AddFunctionsKt.addGroupConglomerateAspect(
-                                    getConglomerate(_s[0]),
-                                    _s[1],
+                                    getConglomerate(splitCommand[0]),
+                                    splitCommand[1],
                                     world.getAspectPool()
                             );
                             break;
                         } case AddWant: {
-                            _s = line.split(" ");
                             AddFunctionsKt.addGroupConglomerateWant(
-                                    getConglomerate(_s[1]),
-                                    _s[2],
+                                    getConglomerate(splitCommand[1]),
+                                    splitCommand[2],
                                     world.getResourcePool()
                             );
                             break;
                         } case AddResource:
-                            _s = line.split(" ");
                             AddFunctionsKt.addResourceOnTile(
-                                    map.get(Integer.parseInt(_s[0]), Integer.parseInt(_s[1])),
-                                    _s[2],
+                                    map.get(Integer.parseInt(splitCommand[0]), Integer.parseInt(splitCommand[1])),
+                                    splitCommand[2],
                                     world.getResourcePool()
                             );
                             break;
@@ -502,60 +481,6 @@ public class TextVisualizer implements Visualizer {
             for (StackTraceElement stackTraceElement : t.getStackTrace()) {
                 System.err.println(stackTraceElement);
             }
-        }
-    }
-
-    /**
-     * Represents commands which can be given to visualizer.
-     */
-    private enum Command {
-        /**
-         * Command for making turns until something important happens.
-         */
-        IdleGo("go"),//TODO does it work still even?
-        /**
-         * Command for printing group information.
-         */
-        Group("^G\\d+"),
-        /**
-         * Command for printing tile information.
-         */
-        Tile("\\d+ \\d+"),
-        Plates("plates"),
-        Temperature("temperature"),
-        Wind("wind"),
-        TerrainLevel("level"),
-        GroupPotentials("^G\\d+ p \\d+"),
-        Vapour("vapour"),
-        /**
-         * Command for printing resource information.
-         */
-        Resource("r \\w+"),
-        MeaningfulResources("meaning"),
-        ArtificialResources("artificial"),
-        Aspects("a \\w+"),
-        /**
-         * Command for printing map.
-         */
-        Map("[mM]"),
-        /**
-         * Command for exiting simulation.
-         */
-        Exit("EXIT"),
-        /**
-         * Command for adding Aspect for a group.
-         */
-        AddAspect("^G\\d+ \\w+"),
-        AddWant("^want G\\d+ \\w+"),
-        AddResource("\\d+ \\d+ \\w+"),
-        GeologicalTurn("Geo"),
-        Turn(""),
-        Turner("\\d+");
-
-        Pattern pattern;
-
-        Command(String command) {
-            pattern = Pattern.compile(command);
         }
     }
 }
