@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.random.Random
 
 fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase, random: Random): TextInfo? { //TODO too slow
-    val textInfos: List<TextInfo> = cultureCenter.aspectCenter.aspectPool.getConverseWrappers()
+    val textInfos: List<TextInfo> = cultureCenter.aspectCenter.aspectPool.converseWrappers
             .flatMap { getAspectTextInfo(it) }
     return if (textInfos.isEmpty()) null else complicateInfo(
             randomElement(textInfos, random),

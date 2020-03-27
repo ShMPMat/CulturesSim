@@ -13,10 +13,10 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
         get() = aspectMap.values.toSet()
 
     val producedResources: List<Pair<Resource, ConverseWrapper>>
-        get() = getConverseWrappers()
+        get() = converseWrappers
                 .flatMap { w -> w.result.zip(List(w.result.size) { w }) }
 
-    fun getConverseWrappers() = aspects.filterIsInstance<ConverseWrapper>()
+    val converseWrappers get() = aspects.filterIsInstance<ConverseWrapper>()
 
     fun getMeaningAspects() = aspects
             .filterIsInstance<ConverseWrapper>()
@@ -41,6 +41,6 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
 
     fun getAll(): Set<Aspect> = aspects
 
-    fun getResourceRequirements() = getConverseWrappers()
+    fun getResourceRequirements() = converseWrappers
             .map { it.resource } .distinct()
 }
