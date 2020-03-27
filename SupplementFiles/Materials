@@ -1,7 +1,7 @@
 /Name         Density   Tags with levels
 -PlantFibre    100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
 -Wood          800       -hard:1     -sturdy:1                              -solid:1   -_can_be_ignited:1
--Pulp          80        -soft:1                                            -solid:1   -food:2  -_colour:1
+-Pulp          80        -soft:1                                            -solid:1   -food:4  -_colour:1
 -Seed          700       -hard:1     -sturdy:1                              -solid:1
 -Fungus        100       -springy:1                                         -solid:1   -food:2
 -Meat          300       -springy:2  -flexible:1                            -solid:1   -food:1              +Bake:RoastedMeat
@@ -15,7 +15,7 @@
 -Fibre         100       -soft:1     -flexible:1      -thin:1               -solid:1   -_can_be_ignited:1
 -Cloth         100       -soft:1                      -wide:1     -warm:1   -solid:1   -_can_be_ignited:1
 
--RoastedMeat   400       -springy:1  -stiff:1                               -solid:1   -food:4
+-RoastedMeat   400       -springy:1  -stiff:1                               -solid:1   -food:6
 
 -Clay          2000      -soft:1     -malleable:1                           -solid:1                         +Bake:Ceramics
 -Ceramics      2000      -hard:1     -fragile:1                             -solid:1

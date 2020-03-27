@@ -28,6 +28,13 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         claimTile(tile)
     }
 
+    val accessibleTerritory: Territory
+        get() {
+            val accessibleTerritory = Territory(territory.tiles)
+            accessibleTerritory.addAll(territory.outerBrink)
+            return accessibleTerritory
+        }
+
     fun getAllNearGroups(exception: Group) = territory.outerBrink
             .flatMap { it.tagPool.getByType(tileTag.type) }
             .map { (it as GroupTileTag).group }

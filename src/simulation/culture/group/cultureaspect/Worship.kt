@@ -19,7 +19,7 @@ class Worship(
     }
 
     override fun toString(): String {
-        return "Deity ${taleSystem.groupingMeme}"
+        return "Worship of ${taleSystem.groupingMeme}"
     }
 
     override fun equals(other: Any?): Boolean {

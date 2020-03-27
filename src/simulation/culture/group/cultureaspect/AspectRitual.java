@@ -36,7 +36,7 @@ public class AspectRitual extends Ritual {
                 1,
                 new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
                 group.getPopulationCenter(),
-                group.getTerritoryCenter().getTerritory(),
+                group.getTerritoryCenter().getAccessibleTerritory(),
                 true,
                 group.getCultureCenter().getMeaning()
         ));

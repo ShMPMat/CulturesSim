@@ -48,7 +48,7 @@ public class DepictObject implements CultureAspect {
                 1,
                 new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
                 group.getPopulationCenter(),
-                group.getTerritoryCenter().getTerritory(),
+                group.getTerritoryCenter().getAccessibleTerritory(),
                 true,
                 group.getCultureCenter().getMemePool().getMeme(meme.toString())
         ));

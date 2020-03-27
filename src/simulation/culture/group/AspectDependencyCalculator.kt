@@ -59,23 +59,16 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
                 if (dependency.isCycleDependency(poolAspect) || dependency.isCycleDependencyInner(aspect)) continue
                 addDependenciesInMap(setOf(dependency), requirement)
             }
-            addDependenciesInMapDebug(
-                    territory.getResourcesWhichConverseToTag(poolAspect, requirement)
-                            .map { ConversionDependency(requirement, poolAspect, it) }//Make converse Dependency_
-                            .filter { !it.isCycleDependency(aspect) },
-                    requirement
-            )
+//            addDependenciesInMap(//TODO remove it sometime
+//                    territory.getResourcesWhichConverseToTag(poolAspect, requirement)
+//                            .map { ConversionDependency(requirement, poolAspect, it) }//Make converse Dependency_
+//                            .filter { !it.isCycleDependency(aspect) },
+//                    requirement
+//            )
         }
     }
 
     private fun addDependenciesInMap(dependencies: Collection<Dependency>, requirement: ResourceTag) {
-        if (dependencies.isEmpty()) return
-        if (!this.dependencies.containsKey(requirement))
-            this.dependencies[requirement] = HashSet()
-        this.dependencies.getValue(requirement).addAll(dependencies)
-    }
-
-    private fun addDependenciesInMapDebug(dependencies: Collection<Dependency>, requirement: ResourceTag) { //TODO debug
         if (dependencies.isEmpty()) return
         if (!this.dependencies.containsKey(requirement))
             this.dependencies[requirement] = HashSet()
