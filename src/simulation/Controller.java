@@ -2,10 +2,11 @@ package simulation;
 
 import kotlin.random.Random;
 import kotlin.random.RandomKt;
-import simulation.interactionmodel.InteractionModel;
 import simulation.culture.thinking.language.templates.TemplateBase;
+import simulation.interactionmodel.InteractionModel;
 import simulation.space.LandscapeChangesKt;
 import simulation.space.resource.Resource;
+import simulation.space.resource.tag.TagMatcherInstantiationKt;
 import simulation.space.tile.Tile;
 import visualizer.Visualizer;
 
@@ -62,7 +63,10 @@ public class Controller {
 
     public Controller(InteractionModel interactionModel) {
         session = this;
-        SpaceDataInstanciatorKt.instantiateSpaceData(proportionCoefficient);
+        SpaceDataInstanciatorKt.instantiateSpaceData(
+                proportionCoefficient,
+                TagMatcherInstantiationKt.createTagMatchers("SupplementFiles/ResourceTagLabelers")
+        );
         templateBase = new TemplateBase();
         world = new World();
         this.interactionModel = interactionModel;
