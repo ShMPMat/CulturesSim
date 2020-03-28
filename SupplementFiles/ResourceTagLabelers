@@ -13,3 +13,6 @@
     mv
 
 -goodForEngraving        t:hard       t:sturdy
+
+-goodForIncrusting       t:hard       t:sturdy
+    <=0.1

@@ -39,5 +39,5 @@
     &t:goodForEngraving--#MATCHED:1
 -Paint                                                                   #colour                 #MEANING
     &t:solid--#MATCHED:1
--Incrust                                                                 /hard                   #MEANING
+-Incrust                                                                 /goodForIncrusting      #MEANING
     &t:hard--#MATCHED:1
