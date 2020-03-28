@@ -33,7 +33,7 @@ public class Stratum {
     public Stratum(int amount, Aspect aspect) {
         this(amount);
         aspects.add(aspect);
-        aspect.getDependencies().keySet().forEach(tag -> {
+        aspect.getDependencies().getMap().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
                 dependencies.put(tag.copy(), new MutableResourcePack());
             }
@@ -112,7 +112,7 @@ public class Stratum {
                 if (currentAmount >= amount) {
                     break;
                 }
-                Set<Dependency> deps = aspect.getDependencies().get(entry.getKey());
+                Set<Dependency> deps = aspect.getDependencies().getMap().get(entry.getKey());
                 if (deps != null) {
                     for (Dependency dependency: deps) {
                         AspectResult result = dependency.useDependency(

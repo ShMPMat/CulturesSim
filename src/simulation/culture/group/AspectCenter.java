@@ -45,7 +45,7 @@ public class AspectCenter {
         if (aspectPool.contains(aspect)) {
             aspect = aspectPool.getValue(aspect.getName());
         }
-        Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
+        AspectDependencies _m = calculateDependencies(aspect);
         if (!aspect.isDependenciesOk(_m)) {
             return false;
         }
@@ -54,7 +54,7 @@ public class AspectCenter {
         return true;
     }
 
-    private void addAspectNow(Aspect aspect, Map<ResourceTag, Set<Dependency>> dependencies) {
+    private void addAspectNow(Aspect aspect, AspectDependencies dependencies) {
         Aspect _a;
         if (aspectPool.contains(aspect)) {
             _a = aspectPool.getValue(aspect);//TODO why one, add a l l
@@ -79,7 +79,7 @@ public class AspectCenter {
         aspectPool.add(aspect);
     }
 
-    Map<ResourceTag, Set<Dependency>> calculateDependencies(Aspect aspect) {
+    AspectDependencies calculateDependencies(Aspect aspect) {
         AspectDependencyCalculator calculator = new AspectDependencyCalculator(
                 aspectPool,
                 group.getTerritoryCenter().getTerritory()
@@ -163,7 +163,7 @@ public class AspectCenter {
         for (Aspect aspect : session.world.getAspectPool().getAll().stream()
                 .filter(aspiration::isAcceptable)
                 .collect(Collectors.toList())) {
-            Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
+            AspectDependencies _m = calculateDependencies(aspect);
             if (aspect.isDependenciesOk(_m)) {
                 options.add(new Pair<>(aspect.copy(_m), null));
             }
@@ -176,7 +176,7 @@ public class AspectCenter {
         for (Pair<Aspect, Group> pair : aspects) {
             Aspect aspect = pair.getFirst();
             Group aspectGroup = pair.getSecond();
-            Map<ResourceTag, Set<Dependency>> _m = calculateDependencies(aspect);
+            AspectDependencies _m = calculateDependencies(aspect);
             if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
                 aspect = aspect.copy(_m);
                 options.add(new Pair<>(aspect, aspectGroup));

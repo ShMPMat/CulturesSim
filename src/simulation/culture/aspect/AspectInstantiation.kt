@@ -1,6 +1,7 @@
 package simulation.culture.aspect
 
 import extra.InputDatabase
+import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeLabeler
 import java.util.*
@@ -20,7 +21,7 @@ class AspectInstantiation {
     }
 
     private fun createAspect(tags: Array<String>): Aspect {
-        return Aspect(createCore(tags), HashMap())
+        return Aspect(createCore(tags), AspectDependencies(mutableMapOf()))
     }
 
     fun postResourceInstantiation() { //TODO all the creation must be moved after the resources

@@ -22,7 +22,7 @@ class LineDependency(
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
         if (isAlreadyUsed) return false
         isAlreadyUsed = true
-        val b = converseWrapper.dependencies.values.any {
+        val b = converseWrapper.dependencies.map.values.any {
             it.any { d -> d.isCycleDependencyInner(otherAspect) }
         } || converseWrapper == otherAspect
         isAlreadyUsed = false

@@ -3,18 +3,15 @@ package simulation.culture.group
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.aspect.dependency.AspectDependency
-import simulation.culture.aspect.dependency.ConversionDependency
-import simulation.culture.aspect.dependency.Dependency
-import simulation.culture.aspect.dependency.LineDependency
+import simulation.culture.aspect.dependency.*
 import simulation.space.Territory
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Territory) {
-    val dependencies: MutableMap<ResourceTag, MutableSet<Dependency>> = mutableMapOf()
+    val dependencies: AspectDependencies = AspectDependencies(mutableMapOf())
 
-    fun calculateDependencies(aspect: Aspect): Map<ResourceTag, Set<Dependency>> {
+    fun calculateDependencies(aspect: Aspect): AspectDependencies {
         if (aspect is ConverseWrapper) addPhony(aspect)
         addNonPhony(aspect)
         return dependencies
@@ -70,8 +67,8 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
 
     private fun addDependenciesInMap(dependencies: Collection<Dependency>, requirement: ResourceTag) {
         if (dependencies.isEmpty()) return
-        if (!this.dependencies.containsKey(requirement))
-            this.dependencies[requirement] = HashSet()
-        this.dependencies.getValue(requirement).addAll(dependencies)
+        if (!this.dependencies.map.containsKey(requirement))
+            this.dependencies.map[requirement] = HashSet()
+        this.dependencies.map.getValue(requirement).addAll(dependencies)
     }
 }

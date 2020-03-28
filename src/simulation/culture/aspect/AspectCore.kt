@@ -1,5 +1,6 @@
 package simulation.culture.aspect
 
+import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
 import simulation.space.resource.tag.ResourceTag
 
@@ -14,7 +15,7 @@ internal class AspectCore(
         return requirements
     }
 
-    fun copy(dependencies: Map<ResourceTag, Set<Dependency>>): Aspect {
+    fun copy(dependencies: AspectDependencies): Aspect {
         return Aspect(this, dependencies)
     }
 }

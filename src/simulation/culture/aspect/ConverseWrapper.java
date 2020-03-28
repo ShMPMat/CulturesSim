@@ -1,5 +1,6 @@
 package simulation.culture.aspect;
 
+import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.AspectCenter;
@@ -29,7 +30,7 @@ public class ConverseWrapper extends Aspect {
                         new ArrayList<>(),
                         false
                         ),
-                new HashMap<>()
+                new AspectDependencies(new HashMap<>())
         );
         this.aspect = aspect;
         this.resource = resource.copy();
@@ -62,11 +63,6 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public Map<ResourceTag, Set<Dependency>> getDependencies() {
-        return dependencies;
-    }
-
-    @Override
     public AspectResult use(AspectController controller) {
         try {
             aspect.markAsUsed();
@@ -77,8 +73,8 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {
-        return getRequirements().size() + 1 == dependencies.size();
+    public boolean isDependenciesOk(AspectDependencies dependencies) {
+        return getRequirements().size() + 1 == dependencies.getSize();
     }
 
     @Override
@@ -100,14 +96,14 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    public ConverseWrapper copy(Map<ResourceTag, Set<Dependency>> dependencies) {
+    public ConverseWrapper copy(AspectDependencies dependencies) {
         ConverseWrapper copy = new ConverseWrapper(
                 aspect,
                 resource
         );
         copy.initDependencies(dependencies);
         try {
-            copy.canInsertMeaning = dependencies.get(ResourceTag.phony()).stream().anyMatch(dependency ->
+            copy.canInsertMeaning = dependencies.getMap().get(ResourceTag.phony()).stream().anyMatch(dependency ->
                     dependency instanceof LineDependency &&
                             ((LineDependency) dependency).getConverseWrapper().canInsertMeaning);
             return copy;

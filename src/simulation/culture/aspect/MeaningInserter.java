@@ -1,5 +1,6 @@
 package simulation.culture.aspect;
 
+import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.space.resource.Resource;
 import simulation.space.resource.tag.ResourceTag;
@@ -33,21 +34,21 @@ public class MeaningInserter extends ConverseWrapper {
     }
 
     @Override
-    boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
+    protected boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
         return false;
     }
 
     @Override
-    public MeaningInserter copy(Map<ResourceTag, Set<Dependency>> dependencies) {
+    public MeaningInserter copy(AspectDependencies dependencies) {
         MeaningInserter copy = new MeaningInserter(aspect, resource);
         copy.initDependencies(dependencies);
         Collection<ResourceTag> unwantedTags = new ArrayList<>();
-        for (ResourceTag resourceTag : dependencies.keySet()) {
+        for (ResourceTag resourceTag : dependencies.getMap().keySet()) {
             if (!(resourceTag.isInstrumental || resourceTag.name.equals("phony"))) {
                 unwantedTags.add(resourceTag);
             }
         }
-        unwantedTags.forEach(dependencies::remove);
+        unwantedTags.forEach(dependencies.getMap()::remove);
         return copy;
     }
 }

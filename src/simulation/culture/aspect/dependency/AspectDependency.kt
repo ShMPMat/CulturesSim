@@ -14,13 +14,13 @@ class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractD
 
     override fun isCycleDependency(otherAspect: Aspect) =
             if (otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect) true
-            else this.aspect.dependencies.values.any {
+            else this.aspect.dependencies.map.values.any {
                 it.any { d -> d.isCycleDependencyInner(otherAspect) }
             }
 
     override fun isCycleDependencyInner(otherAspect: Aspect) =
             if (this.aspect == otherAspect || otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect) true
-            else this.aspect.dependencies.values.any {
+            else this.aspect.dependencies.map.values.any {
                 it.any { d -> d.isCycleDependencyInner(otherAspect) }
             }
 

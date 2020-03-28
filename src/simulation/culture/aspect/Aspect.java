@@ -1,9 +1,9 @@
 package simulation.culture.aspect;
 
+import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.AspectCenter;
 import simulation.space.resource.MutableResourcePack;
-import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
@@ -15,7 +15,7 @@ public class Aspect {
      * Map which stores for every requirement some Dependencies, from which
      * we can get get resource for using this aspect.
      */
-    Map<ResourceTag, Set<Dependency>> dependencies = new HashMap<>();
+    AspectDependencies dependencies = new AspectDependencies(new HashMap<>());
     /**
      * Coefficient which represents how much this aspect is used by its owner.
      */
@@ -26,14 +26,14 @@ public class Aspect {
     private boolean used = false;
     public boolean canInsertMeaning = false;
 
-    Aspect(AspectCore aspectCore, Map<ResourceTag, Set<Dependency>> dependencies) {
+    Aspect(AspectCore aspectCore, AspectDependencies dependencies) {
         this.aspectCore = aspectCore;
         initDependencies(dependencies);
     }
 
-    void initDependencies(Map<ResourceTag, Set<Dependency>> dependencies) {
-        for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.entrySet()) {
-            this.dependencies.put(
+    void initDependencies(AspectDependencies dependencies) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.getMap().entrySet()) {
+            this.dependencies.getMap().put(
                     entry.getKey(),
                     entry.getValue().stream()
                             .map(Dependency::copy)
@@ -43,7 +43,7 @@ public class Aspect {
     }
 
     public void swapDependencies(AspectCenter aspectCenter) {
-        dependencies.values().forEach(set ->
+        dependencies.getMap().values().forEach(set ->
                 set.forEach(d ->
                         d.swapDependencies(aspectCenter)
                 )
@@ -62,7 +62,7 @@ public class Aspect {
         return aspectCore.getRequirements();
     }
 
-    public Map<ResourceTag, Set<Dependency>> getDependencies() {
+    public AspectDependencies getDependencies() {
         return dependencies;
     }
 
@@ -86,8 +86,8 @@ public class Aspect {
         return this instanceof ConverseWrapper && ((ConverseWrapper) this).canInsertMeaning;
     }
 
-    public boolean isDependenciesOk(Map<ResourceTag, Set<Dependency>> dependencies) {
-        return getRequirements().size() == dependencies.size();
+    public boolean isDependenciesOk(AspectDependencies dependencies) {
+        return getRequirements().size() == dependencies.getSize();
     }
 
     public boolean canTakeResources() {
@@ -95,22 +95,22 @@ public class Aspect {
     }
 
     @Deprecated
-    public void mergeDependencies(Aspect aspect) {
-        if (!aspect.getName().equals(getName())) {
+    public void mergeDependencies(Aspect aspect) {//TODO what's going on here?
+        if (!aspect.equals(this)) {
             return;
         }
 
-        for (ResourceTag tag : dependencies.keySet()) {
-            dependencies.get(tag).addAll(aspect.dependencies.get(tag));
+        for (ResourceTag tag : dependencies.getMap().keySet()) {
+            dependencies.getMap().get(tag).addAll(aspect.dependencies.getMap().get(tag));
         }
     }
 
-    public void addOneDependency(Map<ResourceTag, Set<Dependency>> newDependencies) {
-        for (ResourceTag tag : dependencies.keySet()) {
+    public void addOneDependency(AspectDependencies newDependencies) {
+        for (ResourceTag tag : dependencies.getMap().keySet()) {
             try {
-                for (Dependency dependency1 : newDependencies.get(tag)) {
-                    if (!dependencies.get(tag).contains(dependency1)) {
-                        dependencies.get(tag).add(dependency1);
+                for (Dependency dependency1 : newDependencies.getMap().get(tag)) {
+                    if (!dependencies.getMap().get(tag).contains(dependency1)) {
+                        dependencies.getMap().get(tag).add(dependency1);
                         break;
                     }
                 }
@@ -121,7 +121,7 @@ public class Aspect {
         }
     }
 
-    public Aspect copy(Map<ResourceTag, Set<Dependency>> dependencies) {
+    public Aspect copy(AspectDependencies dependencies) {
         return aspectCore.copy(dependencies);
     }
 
@@ -133,7 +133,7 @@ public class Aspect {
                 controller.getCeiling()
         ));
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
-        for (Map.Entry<ResourceTag, Set<Dependency>> entry : getDependencies().entrySet()) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
             if (!satisfyRequirement(controller, entry.getValue(), entry.getKey(), meaningfulPack, node)) {
                 new AspectResult(false, node);
             }
@@ -234,7 +234,7 @@ public class Aspect {
         return isFinished;
     }
 
-    private boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
+    protected boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
         return isMeaningNeeded;
     }
 
@@ -271,7 +271,7 @@ public class Aspect {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Aspect " + aspectCore.getName() + ", usefulness - " + usefulness +
                 ", dependencies:");
-        for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.entrySet()) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
             stringBuilder.append("\n**").append(entry.getKey().name).append(":");
             for (Dependency dependency : entry.getValue()) {
                 stringBuilder.append("\n**").append(dependency.getName());
