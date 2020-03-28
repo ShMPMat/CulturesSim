@@ -72,6 +72,7 @@ public class Genome {
         }
         setPrimaryMaterial(primaryMaterial);
         computePrimaryMaterial();
+        computeTagsFromMaterials();
         this.secondaryMaterials = new ArrayList<>(secondaryMaterials);
     }
 
@@ -101,6 +102,41 @@ public class Genome {
             materials.addAll(secondaryMaterials);
         }
         return materials;
+    }
+
+    void computeTagsFromMaterials() {
+        if (primaryMaterial == null && !(this instanceof GenomeTemplate)) {
+            //TODO hell
+//            throw new ExceptionInInitializerError("Resource " + getName() + " has no materials.");
+        } else if (primaryMaterial != null) {
+            tags.addAll(computeTags());
+        }
+    }
+
+    private List<ResourceTag> computeTags() {
+        List<ResourceTag> _t = new ArrayList<>(primaryMaterial.getTags());
+        if (!containsTag(new ResourceTag("goodForClothes")) &&
+                _t.contains(new ResourceTag("flexible")) &&
+                _t.contains(new ResourceTag("solid")) &&
+                _t.contains(new ResourceTag("soft"))) {
+            _t.add(new ResourceTag("goodForClothes"));
+        }
+        if (!containsTag(new ResourceTag("weapon")) &&
+                _t.contains(new ResourceTag("hard")) &&
+                _t.contains(new ResourceTag("sturdy")) &&
+                getSize() >= 0.05 && isMovable()) {
+            _t.add(new ResourceTag("weapon"));
+        }
+        if (!containsTag(new ResourceTag("goodForEngraving")) &&
+                _t.contains(new ResourceTag("hard")) &&
+                _t.contains(new ResourceTag("sturdy"))) {
+            _t.add(new ResourceTag("goodForEngraving"));
+        }
+        return _t;
+    }
+
+    public boolean containsTag(ResourceTag tag) {
+        return tags.contains(tag);
     }
 
     public Material getPrimaryMaterial() {

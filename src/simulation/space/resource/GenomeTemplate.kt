@@ -6,6 +6,7 @@ class GenomeTemplate(genome: Genome) : Genome(genome) {
         genome.deathTime = templateLegacy.genome.deathTime
         genome.templateLegacy = templateLegacy
         primaryMaterial = templateLegacy.genome.primaryMaterial
+        genome.computeTagsFromMaterials()
         return genome
     }
 }

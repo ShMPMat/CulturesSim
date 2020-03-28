@@ -1,7 +1,7 @@
 package simulation.space.resource.tag.labeler
 
-import simulation.space.resource.Resource
+import simulation.space.resource.Genome
 
 data class SmallerDensityLabeler(private val density: Double): ResourceTagLabeler {
-    override fun isSuitable(resource: Resource) = resource.genome.primaryMaterial.density <= density
+    override fun isSuitable(genome: Genome) = genome.primaryMaterial.density <= density
 }

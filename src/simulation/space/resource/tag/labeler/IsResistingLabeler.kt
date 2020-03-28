@@ -1,9 +1,9 @@
 package simulation.space.resource.tag.labeler
 
-import simulation.space.resource.Resource
+import simulation.space.resource.Genome
 
 class IsResistingLabeler : ResourceTagLabeler {
-    override fun isSuitable(resource: Resource) = resource.genome.isResisting
+    override fun isSuitable(genome: Genome) = genome.isResisting
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

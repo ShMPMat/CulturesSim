@@ -18,7 +18,7 @@ class AspectMatcher(
                         .map { obj: Aspect -> obj.name }
                         .any { name: String -> name == coreName }
         ) false
-        else labeler.isSuitable(resource)
+        else labeler.isSuitable(resource.genome)
     }
 
     fun getResults(resource: Resource, resourcePool: ResourcePool): List<Pair<Resource, Int>> {

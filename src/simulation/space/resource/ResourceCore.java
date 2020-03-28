@@ -33,11 +33,10 @@ public class ResourceCore {
     ) {
         this.meaning = meaning;
         this.aspectConversion = new HashMap<>(aspectConversion);
-        this.tags = new ArrayList<>();
         this.materials = materials;
         this.genome = genome;
+        this.tags = new ArrayList<>(genome.getTags());
         setName(name + meaningPostfix);
-        computeTagsFromMaterials();
     }
 
     public void addAspectConversion(Aspect aspect, List<Pair<Resource, Integer>> resourceList) { //TODO must be package-private
@@ -55,37 +54,6 @@ public class ResourceCore {
         } else {
             genome.setName(fullName);
         }
-    }
-
-    private void computeTagsFromMaterials() {
-        if (materials.isEmpty() && !(genome instanceof GenomeTemplate)) {
-            throw new ExceptionInInitializerError("Resource " + genome.getName() + " has no materials.");
-        } else if (!materials.isEmpty()) {
-            tags.addAll(genome.getTags());
-            tags.addAll(computeTags());
-        }
-    }
-
-    private List<ResourceTag> computeTags() {
-        List<ResourceTag> _t = new ArrayList<>(materials.get(0).getTags());
-        if (!containsTag(new ResourceTag("goodForClothes")) &&
-                _t.contains(new ResourceTag("flexible")) &&
-                _t.contains(new ResourceTag("solid")) &&
-                _t.contains(new ResourceTag("soft"))) {
-            _t.add(new ResourceTag("goodForClothes"));
-        }
-        if (!containsTag(new ResourceTag("weapon")) &&
-                _t.contains(new ResourceTag("hard")) &&
-                _t.contains(new ResourceTag("sturdy")) &&
-                genome.getSize() >= 0.05 && getGenome().isMovable()) {
-            _t.add(new ResourceTag("weapon"));
-        }
-        if (!containsTag(new ResourceTag("goodForEngraving")) &&
-                _t.contains(new ResourceTag("hard")) &&
-                _t.contains(new ResourceTag("sturdy"))) {
-            _t.add(new ResourceTag("goodForEngraving"));
-        }
-        return _t;
     }
 
     public List<ResourceTag> getTags() {
@@ -110,10 +78,6 @@ public class ResourceCore {
 
     boolean isHasMeaning() {
         return hasMeaning;
-    }
-
-    public boolean containsTag(ResourceTag tag) {
-        return tags.contains(tag);
     }
 
     void setHasMeaning(boolean b) {
@@ -146,7 +110,7 @@ public class ResourceCore {
         if (!(genome instanceof GenomeTemplate)) {
             throw new SpaceError("Cant make a instantiated copy not from a template");
         }
-        ResourceCore resourceCore = new ResourceCore(
+        return new ResourceCore(
                 genome.getName(),
                 meaningPostfix,
                 new ArrayList<>(legacy.materials),
@@ -154,9 +118,6 @@ public class ResourceCore {
                 aspectConversion,
                 meaning
         );
-        resourceCore.materials.addAll(legacy.materials);
-        resourceCore.computeTagsFromMaterials();
-        return resourceCore;
     }
 
     public ResourceCore insertMeaning(Meme meaning, AspectResult result) {
