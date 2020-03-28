@@ -76,7 +76,7 @@ public class Resource {
     }
 
     public List<ResourceTag> getTags() {
-        return resourceCore.getTags();
+        return getGenome().getTags();
     }
 
     public int getTagLevel(ResourceTag tag) {
@@ -287,7 +287,7 @@ public class Resource {
                 + ", natural density - " +
                 getGenome().getNaturalDensity() + ", spread probability - " + getGenome().getSpreadProbability() + ", mass - " +
                 getGenome().getMass() + ", amount - " + amount + ", tags: ");
-        for (ResourceTag resourceTag : resourceCore.getTags()) {
+        for (ResourceTag resourceTag : getTags()) {
             stringBuilder.append(resourceTag.name).append(" ");
         }
         return stringBuilder.toString();

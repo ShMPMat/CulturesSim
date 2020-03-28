@@ -20,7 +20,6 @@ public class ResourceCore {
     private Genome genome;
     private List<Material> materials;
     private Map<Aspect, List<Pair<Resource, Integer>>> aspectConversion;
-    private List<ResourceTag> tags;
     private Meme meaning;
 
     ResourceCore(
@@ -35,7 +34,6 @@ public class ResourceCore {
         this.aspectConversion = new HashMap<>(aspectConversion);
         this.materials = materials;
         this.genome = genome;
-        this.tags = new ArrayList<>(genome.getTags());
         setName(name + meaningPostfix);
     }
 
@@ -54,10 +52,6 @@ public class ResourceCore {
         } else {
             genome.setName(fullName);
         }
-    }
-
-    public List<ResourceTag> getTags() {
-        return tags;
     }
 
     public Genome getGenome() {

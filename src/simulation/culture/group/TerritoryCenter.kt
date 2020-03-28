@@ -15,6 +15,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private val tileTag: GroupTileTag = GroupTileTag(group)
 
+    private var _oldCenter: Tile? = null
+    private var _oldReach: Collection<Tile> = listOf()
+
     fun tilePotentialMapper(tile: Tile): Int {
         val convexPart = tile.getNeighbours { it.tagPool.contains(tileTag) }.size
         val neededResourcePart = 3 * tile.resourcePack.getAmount {
@@ -29,11 +32,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     val accessibleTerritory: Territory
-        get() {
-            val accessibleTerritory = Territory(territory.tiles)
-            accessibleTerritory.addAll(territory.outerBrink)
-            return accessibleTerritory
-        }
+        get() = Territory(reachableTiles)
 
     fun getAllNearGroups(exception: Group) = territory.outerBrink
             .mapNotNull { getResidingGroup(it) }
@@ -52,38 +51,47 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private val migrationTile: Tile?
-        get() = migrationTiles.maxBy { tilePotentialMapper(it) }
+        get() = reachableTiles.maxBy { tilePotentialMapper(it) }
 
-    private val migrationTiles: Collection<Tile>
+    private val reachableTiles: Collection<Tile>
         get() {
-            val tiles = mutableSetOf<Tile>()
-            val queue = mutableSetOf<Pair<Tile, Int>>()
-            queue.add(territory.center to 0)
-            var currentLayer = 1
-            while (true) {
-                tiles.addAll(queue.map { it.first })
-                val currentTiles = queue
-                        .flatMap { it.first.neighbours }
-                        .asSequence()
-                        .distinct()
-                        .filter { !tiles.contains(it) }
-                        .filter { canTraverse(it) }
-                        .map { it to currentLayer }
-                        .filter { isTileReachableInTraverse(it) }
-                        .toList()
-                if (currentTiles.isEmpty()) {
-                    break
-                }
-                queue.clear()
-                queue.addAll(currentTiles)
-                currentLayer++
+            if (_oldCenter != territory.center) {
+                _oldCenter = territory.center
+                _oldReach = getReachableTiles(territory.center)
+                _oldReach
             }
-            return tiles.filter { canSettleAndNoGroup(it) }
+            return _oldReach.filter { canSettleAndNoGroup(it) }
         }
+
+    private fun getReachableTiles(tile: Tile): Collection<Tile> {
+        val tiles = mutableSetOf<Tile>()
+        val queue = mutableSetOf<Pair<Tile, Int>>()
+        queue.add(tile to 0)
+        var currentLayer = 1
+        while (true) {
+            tiles.addAll(queue.map { it.first })
+            val currentTiles = queue
+                    .flatMap { it.first.neighbours }
+                    .asSequence()
+                    .distinct()
+                    .filter { !tiles.contains(it) }
+                    .filter { canTraverse(it) }
+                    .map { it to currentLayer }
+                    .filter { isTileReachableInTraverse(it) }
+                    .toList()
+            if (currentTiles.isEmpty()) {
+                break
+            }
+            queue.clear()
+            queue.addAll(currentTiles)
+            currentLayer++
+        }
+        return tiles
+    }
 
     private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
         Tile.Type.Water -> false
-        else -> pair.second <= 4
+        else -> pair.second <= 5
     }
 
     private fun canTraverse(tile: Tile): Boolean {
