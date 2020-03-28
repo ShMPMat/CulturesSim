@@ -132,16 +132,28 @@ public class ResourceCore {
         if (genome instanceof GenomeTemplate) {
             throw new SpaceError("Cant make a full copy of a template");
         }
-        return new Resource(new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(materials),
-                new Genome(genome), aspectConversion, meaning));
+        return new Resource(new ResourceCore(
+                genome.getName(),
+                meaningPostfix,
+                new ArrayList<>(materials),
+                new Genome(genome),
+                aspectConversion,
+                meaning
+        ));
     }
 
     private ResourceCore instantiateTemplateCopy(ResourceCore legacy) {
         if (!(genome instanceof GenomeTemplate)) {
             throw new SpaceError("Cant make a instantiated copy not from a template");
         }
-        ResourceCore resourceCore = new ResourceCore(genome.getName(), meaningPostfix, new ArrayList<>(legacy.materials),
-                ((GenomeTemplate) genome).getInstantiatedGenome(legacy), aspectConversion, meaning);
+        ResourceCore resourceCore = new ResourceCore(
+                genome.getName(),
+                meaningPostfix,
+                new ArrayList<>(legacy.materials),
+                ((GenomeTemplate) genome).getInstantiatedGenome(legacy),
+                aspectConversion,
+                meaning
+        );
         resourceCore.materials.addAll(legacy.materials);
         resourceCore.computeTagsFromMaterials();
         return resourceCore;
@@ -163,8 +175,14 @@ public class ResourceCore {
             }
             meaningPostfix = new StringBuilder(meaningPostfix.substring(0, meaningPostfix.length() - 2) + ")");
         }
-        ResourceCore _r = new ResourceCore(genome.getName(), meaningPostfix.toString(), new ArrayList<>(materials), genome,
-                aspectConversion, meaning);
+        ResourceCore _r = new ResourceCore(
+                genome.getName(),
+                meaningPostfix.toString(),
+                new ArrayList<>(materials),
+                genome,
+                aspectConversion,
+                meaning
+        );
         _r.hasMeaning = true;
         return _r;
     }

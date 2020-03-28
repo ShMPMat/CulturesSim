@@ -1,5 +1,8 @@
 package simulation.space
 
+import simulation.space.resource.tag.TagMatcher
+import simulation.space.resource.tag.labeler.ResourceTagLabeler
+
 object SpaceData {
     private var wasCalled = false
     var data = Data()
@@ -25,6 +28,7 @@ class Data(
     val mapSizeX: Int = 45,
     val mapSizeY: Int = 135,
     val platesAmount: Int = 10,
-    val defaultWaterLevel: Int = 98
+    val defaultWaterLevel: Int = 98,
+    val additionalTags: List<TagMatcher> = listOf()
 )
 
