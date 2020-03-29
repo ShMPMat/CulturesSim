@@ -31,7 +31,6 @@ public class Group {
     private TerritoryCenter territoryCenter;
     private PopulationCenter populationCenter;
     private RelationCenter relationCenter;
-    MutableResourcePack resourcePack = new MutableResourcePack();
     public MutableResourcePack cherishedResources = new MutableResourcePack();
     MutableResourcePack uniqueArtifacts = new MutableResourcePack();
 
@@ -83,12 +82,17 @@ public class Group {
 
     private void die() {
         state = State.Dead;
+        cherishedResources.disbandOnTile(territoryCenter.getDisbandTile());
+        uniqueArtifacts.disbandOnTile(territoryCenter.getDisbandTile());
         populationCenter.die();
         territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
-        for (Group group : territoryCenter.getAllNearGroups(this)) {
-            group.cultureCenter.getMemePool().addMemeCombination(session.world.getPoolMeme("group")
-                    .addPredicate(new MemeSubject(name)).addPredicate(session.world.getPoolMeme("die")));
+        for (Group group : relationCenter.getRelatedGroups()) {
+            group.cultureCenter.getMemePool().addMemeCombination(
+                    cultureCenter.getMemePool().getMeme("group")
+                            .addPredicate(new MemeSubject(name))
+                            .addPredicate(cultureCenter.getMemePool().getMeme("die"))
+            );
         }
     }
 

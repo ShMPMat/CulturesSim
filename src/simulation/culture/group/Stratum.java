@@ -92,6 +92,9 @@ public class Stratum {
                 false,
                 null
         ));
+        if (!pack.isEmpty()) {
+            int i = 0;
+        }
         turnResources.addAll(pack);
     }
 

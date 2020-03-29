@@ -160,9 +160,7 @@ public class CultureCenter {
             for (Resource resource : result.resources.getResources()) {
                 if (resource.hasMeaning()) {
                     group.uniqueArtifacts.add(resource);
-                } else {
-                    group.resourcePack.add(resource);
-                }
+                }//TODO do something otherwise
             }
         }
     }
