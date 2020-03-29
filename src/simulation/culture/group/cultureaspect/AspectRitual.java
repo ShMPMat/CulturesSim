@@ -6,6 +6,7 @@ import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.reason.Reason;
+import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;
@@ -34,7 +35,7 @@ public class AspectRitual extends Ritual {
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
-                new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
+                EvaluatorsKt.getPassingEvaluator(),
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getAccessibleTerritory(),
                 true,

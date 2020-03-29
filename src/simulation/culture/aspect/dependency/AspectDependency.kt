@@ -6,6 +6,7 @@ import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
+import simulation.culture.group.request.zeroingEvaluator
 import java.util.*
 
 class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractDependency(isPhony) {
@@ -25,7 +26,7 @@ class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractD
             }
 
     override fun useDependency(controller: AspectController): AspectResult = aspect.use(controller.copy(
-            evaluator = ResourceEvaluator(),
+            evaluator = zeroingEvaluator,
             isMeaningNeeded = false
     ))
 

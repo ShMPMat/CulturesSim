@@ -5,6 +5,7 @@ import simulation.Controller;
 import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.cultureaspect.*;
+import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
@@ -150,7 +151,7 @@ public class CultureCenter {
             AspectResult result = _a.use(new AspectController(
                     1,
                     1,
-                    new ResourceEvaluator(rp -> rp, ResourcePack::getAmount),
+                    EvaluatorsKt.getPassingEvaluator(),
                     group.getPopulationCenter(),
                     group.getTerritoryCenter().getAccessibleTerritory(),
                     true,

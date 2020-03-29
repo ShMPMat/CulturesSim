@@ -1,8 +1,8 @@
 package simulation.culture.group;
 
-import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
+import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
@@ -107,6 +107,10 @@ public class PopulationCenter {
         if (getFreePopulation() < 0) {
             int i = 0; //TODO still happens
         }
+    }
+
+    void update(Territory accessibleTerritory) {
+        strata.forEach(s -> s.update(turnResources, accessibleTerritory, this));
     }
 
     void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {

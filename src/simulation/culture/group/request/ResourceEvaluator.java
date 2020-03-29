@@ -1,6 +1,5 @@
 package simulation.culture.group.request;
 
-import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.ResourcePack;
 
 import java.util.function.Function;
@@ -15,10 +14,6 @@ public class ResourceEvaluator {
     public ResourceEvaluator(Function<ResourcePack, ResourcePack> picker, Function<ResourcePack, Integer> evaluator) {
         this.picker = picker;
         this.evaluator = evaluator;
-    }
-
-    public ResourceEvaluator () {
-        this(resourcePack -> new MutableResourcePack(), resourcePack -> 0);
     }
 
     public ResourcePack pick(ResourcePack resourcePack) {

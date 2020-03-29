@@ -3,8 +3,10 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.culture.thinking.meaning.MemePool;
+import simulation.space.Territory;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
@@ -62,7 +64,7 @@ public class Stratum {
     }
 
     public void useAmount(int amount) {
-        this.workedAmount = amount;
+        this.workedAmount += amount;
         this.amount = Math.max(amount, this.amount);
         if (amount < 0) {
             int i = 0; //TODO still happens
@@ -75,6 +77,22 @@ public class Stratum {
 
     public void addAspect(Aspect aspect) {
         aspects.add(aspect);
+    }
+
+    void update(MutableResourcePack turnResources, Territory accessibleTerritory, PopulationCenter populationCenter) {
+        if (getAmount() == 0) {
+            return;
+        }
+        MutableResourcePack pack = use(new AspectController(
+                getAmount(),
+                getAmount(),
+                EvaluatorsKt.getPassingEvaluator(),
+                populationCenter,
+                accessibleTerritory,
+                false,
+                null
+        ));
+        turnResources.addAll(pack);
     }
 
     public MutableResourcePack use(AspectController controller) {
