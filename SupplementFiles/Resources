@@ -31,6 +31,11 @@
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
 
+-NutTree         0.05    5      40         0       30   10        0             0 0 0  Plant        @Wood
+        ~Vapour:0.001:2:0:CONSUME
+        ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
+        #Water
+
 -JungleTree      0.05    5      40         20       40   150       0             0 0 0  Plant        @Wood
         ~Vapour:0.1:2:0:CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
@@ -112,6 +117,8 @@
 -SoftRoot        0       0.5    5          -500    500  100000000 0             1 1 0  None         @PlantFibre
 
 -Fruit           0       0.1    5          -500    500  100000000 0             1 1 0  None         @Pulp
+
+-Nut             0       0.02   5          -500    500  100000000 0             1 1 0  None         @Nut
 
 -Seed            0       0.01   100        -500    500  100000000 0             1 1 0  None         @Seed
         +PlantSeed:LEGACY:1

@@ -66,7 +66,8 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         }
 
     private fun getAccessibleTileTypes(): List<Tile.Type> {
-        return if (tileTag.group.resourcePack.resources.any { it.simpleName == "Boat"}) listOf(Tile.Type.Water)
+        return if (tileTag.group.cherishedResources.resources.any { it.simpleName == "Boat"})
+            listOf(Tile.Type.Water)
         else listOf()
     }
 
@@ -105,7 +106,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private fun canTraverse(tile: Tile): Boolean {
         if (tile.type == Tile.Type.Water) {
-            return false
+            return _oldTileTypes.contains(Tile.Type.Water)
         } else if (tile.type == Tile.Type.Mountain) {
             if (!tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving")) {
                 return false
