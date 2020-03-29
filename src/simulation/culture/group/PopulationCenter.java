@@ -111,20 +111,17 @@ public class PopulationCenter {
 
     void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {
         for (Request request : requests) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
-            List<Pair<Stratum, ResourceEvaluator>> pairs = getStrata().stream()
-                    .map(stratum -> new Pair<>(stratum, request.isAcceptable(stratum)))
-                    .filter(pair -> pair.getSecond() != null)
-                    .sorted(Comparator.comparingInt(pair -> request.satisfactionLevel(pair.getFirst())))
-                    .collect(Collectors.toList());
-            for (Pair<Stratum, ResourceEvaluator> pair : pairs) {
-                int amount = pair.getSecond().evaluate(turnResources);
+            ResourceEvaluator evaluator = request.getEvaluator();
+            List<Stratum> strataForRequest = getStrataForRequest(request);
+            for (Stratum stratum : strataForRequest) {
+                int amount = evaluator.evaluate(turnResources);
                 if (amount >= request.ceiling) {
                     break;
                 }
-                turnResources.addAll(pair.getFirst().use(new AspectController(
+                turnResources.addAll(stratum.use(new AspectController(
                         request.ceiling - amount,
                         request.floor,
-                        pair.getSecond(),
+                        evaluator,
                         this,
                         accessibleTerritory,
                         false,
@@ -133,6 +130,13 @@ public class PopulationCenter {
             }
             request.end(turnResources);
         }
+    }
+
+    private List<Stratum> getStrataForRequest(Request request) {
+        return getStrata().stream()
+                .filter(s -> request.isAcceptable(s) != null)
+                .sorted(Comparator.comparingInt(request::satisfactionLevel))
+                .collect(Collectors.toList());
     }
 
     void manageNewAspects(Set<Aspect> aspects) {

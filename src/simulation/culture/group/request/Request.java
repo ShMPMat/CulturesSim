@@ -17,7 +17,7 @@ public abstract class Request {
     protected Group group;
     public int floor;
     public int ceiling;
-    BiFunction<Pair<Group, MutableResourcePack>, Double,Void> penalty, reward;
+    BiFunction<Pair<Group, MutableResourcePack>, Double, Void> penalty, reward;
 
     Request(Group group, int floor, int ceiling, BiFunction<Pair<Group, MutableResourcePack>, Double, Void> penalty,
             BiFunction<Pair<Group, MutableResourcePack>, Double, Void> reward) {
@@ -28,7 +28,9 @@ public abstract class Request {
         this.reward = reward;
     }
 
-     public abstract ResourceEvaluator isAcceptable(Stratum stratum);
+    public abstract ResourceEvaluator isAcceptable(Stratum stratum);
+
+    public abstract ResourceEvaluator getEvaluator();
 
     public abstract int satisfactionLevel(Resource sample);
 
@@ -36,9 +38,13 @@ public abstract class Request {
 
     public int satisfactionLevel(Stratum stratum) {
         int result = 0;
-        for (ConverseWrapper converseWrapper: stratum.getAspects().stream().filter(aspect ->
-                aspect instanceof ConverseWrapper).map(aspect -> (ConverseWrapper) aspect).collect(Collectors.toList())) {
-            result += converseWrapper.getResult().stream().reduce(0, (x, y) -> x += satisfactionLevel(y), Integer::sum);
+        for (ConverseWrapper converseWrapper : stratum.getAspects().stream()
+                .filter(aspect -> aspect instanceof ConverseWrapper)
+                .map(aspect -> (ConverseWrapper) aspect)
+                .collect(Collectors.toList())) {
+            result += converseWrapper.getResult().stream()
+                    .map(this::satisfactionLevel)
+                    .reduce(0, Integer::sum);
         }
         return result;
     }

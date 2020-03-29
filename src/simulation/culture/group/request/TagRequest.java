@@ -26,11 +26,19 @@ public class TagRequest extends Request {
     @Override
     public ResourceEvaluator isAcceptable(Stratum stratum) {
         if (stratum.getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
-            return new ResourceEvaluator(resourcePack -> resourcePack.getResources(tag),
-                    resourcePack -> resourcePack.getResources(tag).getResources().stream()
-                            .reduce(0, (x, y) -> x += y.getTagLevel(tag)*y.getAmount(), Integer::sum));
+            return getEvaluator();
         }
         return null;
+    }
+
+    @Override
+    public ResourceEvaluator getEvaluator() {
+        return new ResourceEvaluator(
+                rp -> rp.getResources(tag),
+                rp -> rp.getResources(tag).getResources().stream()
+                        .map(r -> r.getTagLevel(tag) * r.getAmount())
+                        .reduce(0, Integer::sum)
+        );
     }
 
     @Override

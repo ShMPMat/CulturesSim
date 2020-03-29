@@ -7,7 +7,6 @@ import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class LineDependency(
@@ -17,7 +16,7 @@ class LineDependency(
 ) : AbstractDependency(isPhony) {
     private var isAlreadyUsed = false
     override val name: String
-        get() = "${parentConverseWrapper.name} from ${converseWrapper.name}"
+        get() = "from ${converseWrapper.name}"
 
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
         if (isAlreadyUsed) return false
