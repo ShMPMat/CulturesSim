@@ -273,7 +273,7 @@ public class Resource {
         if (_hash != resource._hash) {
             return false;
         }
-        return getFullName().equals(resource.getFullName()) && resourceCore.equals(resource.resourceCore);
+        return getFullName().equals(resource.getFullName());
     }
 
     @Override

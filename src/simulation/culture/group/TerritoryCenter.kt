@@ -17,6 +17,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private var _oldCenter: Tile? = null
     private var _oldReach: Collection<Tile> = listOf()
+    private var _oldTileTypes: Collection<Tile.Type> = listOf()
 
     fun tilePotentialMapper(tile: Tile): Int {
         val convexPart = tile.getNeighbours { it.tagPool.contains(tileTag) }.size
@@ -55,13 +56,19 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private val reachableTiles: Collection<Tile>
         get() {
-            if (_oldCenter != territory.center) {
+            val tileTypes = getAccessibleTileTypes()
+            if (_oldCenter != territory.center || tileTypes != _oldTileTypes) {
                 _oldCenter = territory.center
                 _oldReach = getReachableTiles(territory.center)
-                _oldReach
+                _oldTileTypes = tileTypes
             }
             return _oldReach.filter { canSettleAndNoGroup(it) }
         }
+
+    private fun getAccessibleTileTypes(): List<Tile.Type> {
+        return if (tileTag.group.resourcePack.resources.any { it.simpleName == "Boat"}) listOf(Tile.Type.Water)
+        else listOf()
+    }
 
     private fun getReachableTiles(tile: Tile): Collection<Tile> {
         val tiles = mutableSetOf<Tile>()
@@ -71,13 +78,13 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         while (true) {
             tiles.addAll(queue.map { it.first })
             val currentTiles = queue
+                    .filter { isTileReachableInTraverse(it) }//TODO another sequence
                     .flatMap { it.first.neighbours }
                     .asSequence()
                     .distinct()
                     .filter { !tiles.contains(it) }
                     .filter { canTraverse(it) }
                     .map { it to currentLayer }
-                    .filter { isTileReachableInTraverse(it) }
                     .toList()
             if (currentTiles.isEmpty()) {
                 break
@@ -90,7 +97,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
-        Tile.Type.Water -> false
+        Tile.Type.Water -> if (_oldTileTypes.contains(Tile.Type.Water))
+            pair.second <= 30
+        else false
         else -> pair.second <= 5
     }
 
