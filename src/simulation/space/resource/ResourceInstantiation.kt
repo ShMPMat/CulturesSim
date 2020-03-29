@@ -183,7 +183,7 @@ class ResourceInstantiation(
             return Pair(null, amount) //TODO this is so wrong
         }
 //        val legacyResource = resource.genome.legacy.copy()
-        val legacyTemplate = getTemplateWithName(resource.genome.legacy.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
+        val legacyTemplate = getTemplateWithName(resource.genome.legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
         return Pair(
                 if (legacyTemplate.resource.genome.hasLegacy())
                     copyWithLegacyInsertion(legacyTemplate, resource.resourceCore).resource

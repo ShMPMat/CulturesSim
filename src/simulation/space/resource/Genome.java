@@ -123,16 +123,16 @@ public class Genome {
         }
     }
 
-    public boolean containsTag(ResourceTag tag) {
-        return tags.contains(tag);
-    }
-
     public Material getPrimaryMaterial() {
         return primaryMaterial;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getBaseName() {
+        return getName() + (hasLegacy() ? getLegacyPostfix() : "");
     }
 
     public Type getType() {

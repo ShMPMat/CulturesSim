@@ -166,6 +166,8 @@
 
 -Boat            0       2      10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
 
+-Spear           0       1      10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
+
 -Dye             0       0.05   10000      -500    500  100000000 5             1 1 0  None         @TEMPLATE
         $colour:3
 

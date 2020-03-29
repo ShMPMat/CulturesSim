@@ -60,15 +60,15 @@ public class Resource {
     }
 
     public String getSimpleName() {
-        return resourceCore.getGenome().getName();
+        return getGenome().getName();
     }
 
     public String getBaseName() {
-        return resourceCore.getBaseName();
+        return getGenome().getBaseName();
     }
 
     public String getFullName() {
-        return resourceCore.getBaseName() + resourceCore.getMeaningPostfix();
+        return getGenome().getBaseName() + resourceCore.getMeaningPostfix();
     }
 
     public int getAmount() {

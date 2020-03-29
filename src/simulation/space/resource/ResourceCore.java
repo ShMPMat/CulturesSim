@@ -66,10 +66,6 @@ public class ResourceCore {
         return meaningPostfix;
     }
 
-    public String getBaseName() {
-        return genome.hasLegacy() ? genome.getName() + getGenome().getLegacyPostfix() : genome.getName();
-    }
-
     boolean isHasMeaning() {
         return hasMeaning;
     }
@@ -179,16 +175,16 @@ public class ResourceCore {
         if (this == o) return true;
         if (o == null) return false;
         ResourceCore resourceCore = (ResourceCore) o;
-        return getBaseName().equals(resourceCore.getBaseName());
+        return genome.getBaseName().equals(resourceCore.genome.getBaseName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBaseName());
+        return Objects.hash(genome.getBaseName());
     }
 
     @Override
     public String toString() {
-        return getBaseName();
+        return genome.getBaseName();
     }
 }

@@ -22,6 +22,8 @@
     &t:hard-->=0.05--#Dish:1
 -MakeBoat
     &t:hard-->=2--<D900--#Boat:1
+-MakeSpear
+    &t:hard--t:sturdy-->=1--#Spear:1
 -MakeDye
     &t:_colour--#Dye:1
 
