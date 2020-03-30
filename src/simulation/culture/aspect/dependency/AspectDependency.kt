@@ -26,7 +26,7 @@ class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractD
             }
 
     override fun useDependency(controller: AspectController): AspectResult = aspect.use(controller.copy(
-            evaluator = zeroingEvaluator,
+            evaluator = zeroingEvaluator,//TODO make owner tell what it want
             isMeaningNeeded = false
     ))
 

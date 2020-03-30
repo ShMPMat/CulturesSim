@@ -24,16 +24,13 @@ public class Stratum {
      * How many people already worked on this turn;
      */
     private int workedAmount = 0;
+    private boolean raisedAmount = false;
     private List<Aspect> aspects = new ArrayList<>();
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
-    public Stratum(int amount) {
-        this.amount = amount;
-    }
-
     public Stratum(int amount, Aspect aspect) {
-        this(amount);
+        this.amount = amount;
         aspects.add(aspect);
         aspect.getDependencies().getMap().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
@@ -65,7 +62,10 @@ public class Stratum {
 
     public void useAmount(int amount) {
         this.workedAmount += amount;
-        this.amount = Math.max(amount, this.amount);
+        if (workedAmount > this.amount) {
+            this.amount = workedAmount;
+            raisedAmount = true;
+        }
         if (amount < 0) {
             int i = 0; //TODO still happens
         }
@@ -96,6 +96,7 @@ public class Stratum {
             int i = 0;
         }
         turnResources.addAll(pack);
+        raisedAmount = false;
     }
 
     public MutableResourcePack use(AspectController controller) {

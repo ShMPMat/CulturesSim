@@ -1,13 +1,16 @@
 package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.AspectDependencies;
-import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.aspect.dependency.LineDependency;
 import simulation.culture.group.AspectCenter;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -56,6 +59,11 @@ public class ConverseWrapper extends Aspect {
             }
         }
         return result;
+    }
+
+    @Override
+    protected ResourcePack getAllProducedResources() {
+        return new ResourcePack(resource.applyAspect(aspect));
     }
 
     public List<Resource> getResult() {

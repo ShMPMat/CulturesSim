@@ -114,7 +114,7 @@ public class PopulationCenter {
     }
 
     void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {
-        for (Request request : requests) { //TODO do smth about getting A LOT MORE resources than planned due to one to many resource conversion
+        for (Request request : requests) {
             ResourceEvaluator evaluator = request.getEvaluator();
             List<Stratum> strataForRequest = getStrataForRequest(request);
             for (Stratum stratum : strataForRequest) {
