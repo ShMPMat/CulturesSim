@@ -5,10 +5,14 @@ import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
-import simulation.culture.group.request.zeroingEvaluator
+import simulation.culture.group.request.ResourceEvaluator
 import java.util.*
 
-class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractDependency(isPhony) {
+class AspectDependency(
+        isPhony: Boolean,
+        private var aspect: Aspect,
+        private val evaluator: ResourceEvaluator
+) : AbstractDependency(isPhony) {
     override val name: String
         get() = aspect.name
 
@@ -25,11 +29,11 @@ class AspectDependency(isPhony: Boolean, private var aspect: Aspect) : AbstractD
             }
 
     override fun useDependency(controller: AspectController): AspectResult = aspect.use(controller.copy(
-            evaluator = zeroingEvaluator,//TODO make owner tell what it want
+            evaluator = evaluator,
             isMeaningNeeded = false
     ))
 
-    override fun copy() = AspectDependency(isPhony, aspect)
+    override fun copy() = AspectDependency(isPhony, aspect, evaluator)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         aspect = aspectCenter.aspectPool.getValue(aspect)

@@ -135,7 +135,10 @@ public class Aspect {
         MutableResourcePack meaningfulPack = new MutableResourcePack();
         int oneWorkerSatisfaction = controller.getEvaluator().evaluate(new MutableResourcePack(getProducedResources()));
         if (oneWorkerSatisfaction == 0) {
-            oneWorkerSatisfaction = 1;
+            oneWorkerSatisfaction = controller.getEvaluator().evaluate(new MutableResourcePack(getProducedResources()));
+            if (oneWorkerSatisfaction == 0) {//TODO Da hell is happening?
+                oneWorkerSatisfaction = 1;
+            }
         }
         int neededWorkers = controller.getCeiling() / oneWorkerSatisfaction + 1;
         controller.setCeiling(controller.getPopulationCenter().changeStratumAmountByAspect(

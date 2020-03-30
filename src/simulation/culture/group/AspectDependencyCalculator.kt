@@ -4,6 +4,8 @@ import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.dependency.*
+import simulation.culture.group.request.resourceEvaluator
+import simulation.culture.group.request.tagEvaluator
 import simulation.space.Territory
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
@@ -52,16 +54,10 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
     private fun addTagDependencies(requirement: ResourceTag, aspect: Aspect) {
         for (poolAspect in aspectPool.converseWrappers) {
             if (poolAspect.producedResources.any { it.tags.contains(requirement) }) {
-                val dependency = AspectDependency(false, poolAspect)
+                val dependency = AspectDependency(false, poolAspect, tagEvaluator(requirement))
                 if (dependency.isCycleDependency(poolAspect) || dependency.isCycleDependencyInner(aspect)) continue
                 addDependenciesInMap(setOf(dependency), requirement)
             }
-//            addDependenciesInMap(//TODO remove it sometime
-//                    territory.getResourcesWhichConverseToTag(poolAspect, requirement)
-//                            .map { ConversionDependency(requirement, poolAspect, it) }//Make converse Dependency_
-//                            .filter { !it.isCycleDependency(aspect) },
-//                    requirement
-//            )
         }
     }
 
