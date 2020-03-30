@@ -96,6 +96,7 @@ public class Stratum {
             int i = 0;
         }
         turnResources.addAll(pack);
+        updateTools(accessibleTerritory, populationCenter);
         raisedAmount = false;
     }
 
@@ -114,7 +115,7 @@ public class Stratum {
         return resourcePack;
     }
 
-    void update(Group group) {
+    void updateTools(Territory accessibleTerritory, PopulationCenter populationCenter) {
         if (session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
@@ -142,8 +143,8 @@ public class Stratum {
                                         amount - currentAmount,
                                         1,
                                         evaluator,
-                                        group.getPopulationCenter(),
-                                        group.getTerritoryCenter().getAccessibleTerritory(),
+                                        populationCenter,
+                                        accessibleTerritory,
                                         false,
                                         null
                                 ));

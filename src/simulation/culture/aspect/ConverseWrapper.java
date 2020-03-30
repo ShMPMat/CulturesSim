@@ -62,11 +62,7 @@ public class ConverseWrapper extends Aspect {
     }
 
     @Override
-    protected ResourcePack getAllProducedResources() {
-        return new ResourcePack(resource.applyAspect(aspect));
-    }
-
-    public List<Resource> getResult() {
+    public List<Resource> getProducedResources() {
         return resource.applyAspect(aspect);
     }
 

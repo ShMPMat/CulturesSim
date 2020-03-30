@@ -19,7 +19,7 @@ public class MeaningInserter extends ConverseWrapper {
     }
 
     @Override
-    public List<Resource> getResult() {
+    public List<Resource> getProducedResources() {
         return Collections.singletonList(resource);
     }
 

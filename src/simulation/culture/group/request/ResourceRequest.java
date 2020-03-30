@@ -22,7 +22,7 @@ public class ResourceRequest extends Request {
     public ResourceEvaluator isAcceptable(Stratum stratum) {
         for (Aspect aspect : stratum.getAspects()) {
             if (aspect instanceof ConverseWrapper) {
-                if (((ConverseWrapper) aspect).getResult().stream()
+                if (((ConverseWrapper) aspect).getProducedResources().stream()
                         .anyMatch(res -> res.getSimpleName().equals(resource.getSimpleName()))) {
                     return getEvaluator();
                 }

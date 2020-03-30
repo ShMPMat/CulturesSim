@@ -56,7 +56,7 @@ fun getAspectTextInfo(aspect: Aspect): List<TextInfo> {
     val infos: MutableList<TextInfo> = ArrayList()
     if (aspect is ConverseWrapper) {
         infos.addAll(getResourceTextInfo(aspect.resource))
-        aspect.result.forEach {
+        aspect.producedResources.forEach {
             infos.addAll(getResourceTextInfo(it))
         }
     }

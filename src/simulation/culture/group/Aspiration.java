@@ -33,7 +33,7 @@ public class Aspiration {
         }
         if (resource != null) {
             if (aspect instanceof ConverseWrapper) {
-                return ((ConverseWrapper) aspect).getResult().contains(resource);
+                return ((ConverseWrapper) aspect).getProducedResources().contains(resource);
             }
         }
         return false;

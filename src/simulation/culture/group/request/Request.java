@@ -42,7 +42,7 @@ public abstract class Request {
                 .filter(aspect -> aspect instanceof ConverseWrapper)
                 .map(aspect -> (ConverseWrapper) aspect)
                 .collect(Collectors.toList())) {
-            result += converseWrapper.getResult().stream()
+            result += converseWrapper.getProducedResources().stream()
                     .map(this::satisfactionLevel)
                     .reduce(0, Integer::sum);
         }

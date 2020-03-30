@@ -5,7 +5,6 @@ import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.AspectCenter;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
@@ -127,14 +126,14 @@ public class Aspect {
         return aspectCore.copy(dependencies);
     }
 
-    protected ResourcePack getAllProducedResources() {
-        return new ResourcePack();
+    public List<Resource> getProducedResources() {
+        return Collections.emptyList();
     }
 
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
         MutableResourcePack meaningfulPack = new MutableResourcePack();
-        int oneWorkerSatisfaction = controller.getEvaluator().evaluate(getAllProducedResources());
+        int oneWorkerSatisfaction = controller.getEvaluator().evaluate(new MutableResourcePack(getProducedResources()));
         if (oneWorkerSatisfaction == 0) {
             int i = 0;
             oneWorkerSatisfaction = 1;

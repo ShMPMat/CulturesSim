@@ -2,7 +2,6 @@ package simulation.culture.group;
 
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
-import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
@@ -77,10 +76,6 @@ public class PopulationCenter {
         } catch (NullPointerException e) {
             throw new RuntimeException("No stratum for Aspect");
         }
-    }
-
-    void strataUpdate(Group group) {
-        strata.forEach(s -> s.update(group));
     }
 
     void die() {

@@ -7,14 +7,17 @@ import kotlin.Pair
 import kotlin.String
 
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
-    protected val aspectMap = initialAspects.map {it.name}.zip(initialAspects).toMap().toMutableMap()
+    protected val aspectMap = initialAspects.map { it.name }.zip(initialAspects).toMap().toMutableMap()
 
     protected val aspects: Set<Aspect>
         get() = aspectMap.values.toSet()
 
     val producedResources: List<Pair<Resource, ConverseWrapper>>
         get() = converseWrappers
-                .flatMap { w -> w.result.zip(List(w.result.size) { w }) }
+                .flatMap { w ->
+                    val result = w.producedResources
+                    result.zip(List(result.size) { w })
+                }
 
     val converseWrappers get() = aspects.filterIsInstance<ConverseWrapper>()
 
@@ -42,5 +45,5 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     fun getAll(): Set<Aspect> = aspects
 
     fun getResourceRequirements() = converseWrappers
-            .map { it.resource } .distinct()
+            .map { it.resource }.distinct()
 }

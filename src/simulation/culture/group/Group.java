@@ -104,7 +104,6 @@ public class Group {
         populationCenter.update(territoryCenter.getAccessibleTerritory());
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
-        getPopulationCenter().strataUpdate(this);
         if (state != State.Dead) {
             if (shouldMigrate()) {
                 territoryCenter.migrate();

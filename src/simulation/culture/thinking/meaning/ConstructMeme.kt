@@ -36,7 +36,7 @@ fun constructAspectMemes(aspect: Aspect): Pair<MutableList<Meme>, List<Meme>> {
         val (first, second) = constructResourceMemes(aspect.resource)
         aspectMemes.first.addAll(first)
         aspectMemes.second.addAll(second)
-        aspect.result
+        aspect.producedResources
                 .map { constructResourceMemes(it) }
                 .forEach { (first1, second1) ->
                     aspectMemes.first.addAll(first1)

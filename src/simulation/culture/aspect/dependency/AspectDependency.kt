@@ -5,7 +5,6 @@ import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
-import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.zeroingEvaluator
 import java.util.*
 
