@@ -3,17 +3,14 @@ package simulation.space
 import shmp.random.randomElement
 import simulation.space.resource.Resource
 import simulation.space.tile.Tile
-import simulation.space.tile.TileTag
+import simulation.space.tile.getLakeTag
+import simulation.space.tile.getRiverTag
 import java.lang.Integer.min
 import java.util.*
 import kotlin.random.Random
 
 private var riversCreated = 0
 private var lakesCreated = 0
-
-private fun getRiverTag(name: String) = TileTag("River_$name", "River")
-
-private fun getLakeTag(name: String) = TileTag("Lake_$name", "Lake")
 
 fun createRiver(
         tile: Tile,

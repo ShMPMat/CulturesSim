@@ -12,6 +12,7 @@ enum class Command(command: String) {
      * Command for printing group information.
      */
     Group("^G\\d+"),
+    TileReach("^G\\d+ r"),
     /**
      * Command for printing tile information.
      */

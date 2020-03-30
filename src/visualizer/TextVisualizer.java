@@ -370,6 +370,13 @@ public class TextVisualizer implements Visualizer {
                         case Group:
                             printGroup(world.groups.get(Integer.parseInt(line.substring(1))));
                             break;
+                        case TileReach:
+                            GroupConglomerate group = getConglomerate(splitCommand[0]);
+                            if (group == null) {
+                                break;
+                            }
+                            printMap(t -> TileMapperFunctionsKt.groupReachMapper(group.subgroups.get(0), t));
+                            break;
                         case Tile:
                             printTile(
                                     map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
@@ -383,12 +390,12 @@ public class TextVisualizer implements Visualizer {
                             printMap(TileMapperFunctionsKt::temperatureMapper);
                             break;
                         case GroupPotentials:
-                            GroupConglomerate group = getConglomerate(splitCommand[0]);
-                            if (group == null) {
+                            GroupConglomerate groupConglomerate = getConglomerate(splitCommand[0]);
+                            if (groupConglomerate == null) {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
+                                    groupConglomerate.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
                                     Integer.parseInt(splitCommand[2]),
                                     t,
                                     Integer.parseInt(splitCommand[2])

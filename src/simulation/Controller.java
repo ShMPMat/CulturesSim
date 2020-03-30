@@ -111,6 +111,7 @@ public class Controller {
                     random
             );
         }
+        world.map.setTags();
     }
 
     public void initializeThird() {

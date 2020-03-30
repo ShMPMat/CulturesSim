@@ -1,7 +1,8 @@
 package simulation.space.tile
 
 class MutableTileTagPool(private val tags: MutableSet<TileTag> = mutableSetOf()) {
-    val size = tags.size
+    val size: Int
+        get() = tags.size
 
     fun contains(tag: TileTag) = tags.contains(tag)
 

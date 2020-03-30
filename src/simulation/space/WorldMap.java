@@ -2,6 +2,7 @@ package simulation.space;
 
 import simulation.space.resource.Resource;
 import simulation.space.tile.Tile;
+import simulation.space.tile.TileTagSetterKt;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -55,18 +56,16 @@ public class WorldMap {
         return getTiles().get(x).get(y);
     }
 
-    public List<Resource> getAllResourceInstancesWithName(String name) {
-        return tiles.stream()
-                .flatMap(Collection::stream)
-                .flatMap(t -> t.getResourcePack().getResources().stream())
-                .filter(r -> r.getBaseName().equals(name))
-                .collect(Collectors.toList());
+    public void setTags() {
+        int name = 0;
+        List<Tile> allTiles = getTiles(t -> true);
+        for(Tile tile : allTiles) {
+            if (TileTagSetterKt.setTags(tile, "" + name)) {
+                name++;
+            }
+        }
     }
 
-    /**
-     * @param predicate the Predicate on which Tiles will be tested.
-     * @return All Tiles from the map which satisfy the Predicate.
-     */
     public List<Tile> getTiles(Predicate<Tile> predicate) {
         return tiles.stream()
                 .flatMap(Collection::stream)
