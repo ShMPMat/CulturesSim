@@ -33,12 +33,7 @@ public class TagRequest extends Request {
 
     @Override
     public ResourceEvaluator getEvaluator() {
-        return new ResourceEvaluator(
-                rp -> rp.getResources(tag),
-                rp -> rp.getResources(tag).getResources().stream()
-                        .map(r -> r.getTagLevel(tag) * r.getAmount())
-                        .reduce(0, Integer::sum)
-        );
+        return EvaluatorsKt.tagEvaluator(tag);
     }
 
     @Override

@@ -6,6 +6,7 @@ import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
+import simulation.culture.group.request.resourceEvaluator
 import simulation.space.resource.MutableResourcePack
 import java.util.*
 
@@ -38,13 +39,10 @@ class LineDependency(
             }
             isAlreadyUsed = true
             val _p = converseWrapper.use(controller.copy(
-                    evaluator = ResourceEvaluator(
-                            { it.getPackedResource(parentConverseWrapper.resource) },
-                            { it.getAmount(parentConverseWrapper.resource) }
-                    )
+                    evaluator = resourceEvaluator(parentConverseWrapper.resource)
             ))
             resourcePack.addAll(
-                    _p.resources.getPackedResource(parentConverseWrapper.resource).resources
+                    _p.resources.getResource(parentConverseWrapper.resource).resources
                             .flatMap { it.applyAndConsumeAspect(parentConverseWrapper.aspect, controller.ceiling) }
             )
             resourcePack.addAll(_p.resources)

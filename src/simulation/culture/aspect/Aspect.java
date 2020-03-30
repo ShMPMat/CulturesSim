@@ -135,7 +135,6 @@ public class Aspect {
         MutableResourcePack meaningfulPack = new MutableResourcePack();
         int oneWorkerSatisfaction = controller.getEvaluator().evaluate(new MutableResourcePack(getProducedResources()));
         if (oneWorkerSatisfaction == 0) {
-            int i = 0;
             oneWorkerSatisfaction = 1;
         }
         int neededWorkers = controller.getCeiling() / oneWorkerSatisfaction + 1;

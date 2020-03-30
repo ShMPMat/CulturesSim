@@ -7,7 +7,7 @@ import java.util.*
 class MutableResourcePack(resources: Collection<Resource> = emptyList()) : ResourcePack(resources) {
     //TODO subclass which stores all instances of the same Resource on different Tiles
     fun getResourceAndRemove(resource: Resource): ResourcePack {
-        val innerResource = getPackedResource(resource)
+        val innerResource = getResource(resource)
         innerResource.resources.forEach { this.remove(it) }
         return innerResource
     }
@@ -16,7 +16,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
             getPart(getResources(tag), ceiling)
 
     fun getResourcePart(resource: Resource, ceiling: Int): MutableResourcePack =
-            getPart(getPackedResource(resource), ceiling)
+            getPart(getResource(resource), ceiling)
 
     private fun getPart(pack: ResourcePack, amount: Int): MutableResourcePack {
         val result = MutableResourcePack()

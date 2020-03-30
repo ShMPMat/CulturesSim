@@ -37,16 +37,16 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     fun getResources(tag: ResourceTag): ResourcePack =
             ResourcePack(resources.filter { it.tags.contains(tag) })
 
-    fun getPackedResource(resource: Resource): ResourcePack {
+    fun getResource(resource: Resource): ResourcePack {
         val resourceInMap = resourceMap[resource] ?: return ResourcePack()
         return ResourcePack(setOf(resourceInMap))
     }
 
-    fun getResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
+    fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
 
     fun getAmount(tag: ResourceTag) = getResources(tag).amount
 
-    fun getAmount(resource: Resource) = getResource(resource).amount
+    fun getAmount(resource: Resource) = getUnpackedResource(resource).amount
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResources(predicate).amount
 

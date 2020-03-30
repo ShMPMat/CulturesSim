@@ -33,9 +33,7 @@ public class ResourceRequest extends Request {
 
     @Override
     public ResourceEvaluator getEvaluator() {
-        return new ResourceEvaluator(rp -> rp.getPackedResource(resource),
-                rp -> rp.getAmount(resource)
-        );
+        return EvaluatorsKt.resourceEvaluator(resource);
     }
 
     @Override
