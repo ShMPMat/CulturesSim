@@ -14,3 +14,6 @@ fun getResidingGroup(tile: Tile): Group? = (tile.tagPool.getByType(GROUP_TAG_TYP
 fun hasResidingGroup(tile: Tile) = getResidingGroup(tile) != null
 
 fun hasNoResidingGroup(tile: Tile) = !hasResidingGroup(tile)
+
+fun hasNoResidingGroupExcept(tile: Tile, exceptionGroup: Group) =
+        !hasResidingGroup(tile) || getResidingGroup(tile) == exceptionGroup

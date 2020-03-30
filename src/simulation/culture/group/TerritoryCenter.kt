@@ -62,7 +62,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                 _oldReach = getReachableTiles(territory.center)
                 _oldTileTypes = tileTypes
             }
-            return _oldReach.filter { canSettleAndNoGroup(it) }
+            return _oldReach.filter { canSettleAndNoGroupExcept(it) }
         }
 
     private fun getAccessibleTileTypes(): List<Tile.Type> {
@@ -177,6 +177,10 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     fun canSettleAndNoGroup(tile: Tile) =
             canSettle(tile, Predicate { hasNoResidingGroup(it) })
+
+
+    fun canSettleAndNoGroupExcept(tile: Tile) =
+            canSettle(tile, Predicate { hasNoResidingGroupExcept(it, tileTag.group) })
 
     fun canSettle(tile: Tile, additionalCondition: Predicate<Tile>) =
             canSettle(tile) && additionalCondition.test(tile)
