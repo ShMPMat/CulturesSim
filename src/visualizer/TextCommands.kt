@@ -17,6 +17,7 @@ enum class Command(command: String) {
      */
     Tile("\\d+ \\d+"),
     Plates("plates"),
+    TileTag("tt \\w+"),
     Temperature("temperature"),
     Wind("wind"),
     TerrainLevel("level"),

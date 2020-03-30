@@ -3,9 +3,17 @@ package simulation.space
 import shmp.random.randomElement
 import simulation.space.resource.Resource
 import simulation.space.tile.Tile
+import simulation.space.tile.TileTag
 import java.lang.Integer.min
 import java.util.*
 import kotlin.random.Random
+
+private var riversCreated = 0
+private var lakesCreated = 0
+
+private fun getRiverTag(name: String) = TileTag("River_$name", "River")
+
+private fun getLakeTag(name: String) = TileTag("Lake_$name", "Lake")
 
 fun createRiver(
         tile: Tile,
@@ -13,12 +21,15 @@ fun createRiver(
         goodTilePredicate: (Tile) -> Boolean,
         random: Random
 ) {
+    val nameTag = getRiverTag(riversCreated.toString())
+    riversCreated++
     var currentTile = tile
     loop@ for (i in 0..200) {
         if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
             break
         }
         currentTile.addDelayedResource(water.copy(2))
+        currentTile.tagPool.add(nameTag)
         val minLevel = min(
                 currentTile.level,
                 currentTile.getNeighbours(goodTilePredicate).minBy { it.level }?.level ?: -1
@@ -41,6 +52,8 @@ fun createLake(
         goodTilePredicate: (Tile) -> Boolean,
         random: Random
 ) {
+    val nameTag = getLakeTag(lakesCreated.toString())
+    lakesCreated++
     val lakeTiles = mutableSetOf<Tile>()
     val outflowTiles = mutableSetOf<Tile>()
     val queue: Queue<Tile> = ArrayDeque()
@@ -48,7 +61,7 @@ fun createLake(
     while (true) {
         val goodTiles = (queue.poll() ?: break).getNeighbours(goodTilePredicate)
         val tiles = goodTiles.filter { it.level == tile.level }
-        outflowTiles.addAll(goodTiles.filter {it.level < tile.level})
+        outflowTiles.addAll(goodTiles.filter {it.level < tile.level && tile.type != Tile.Type.Water})
         tiles.forEach {
             if (lakeTiles.add(it)) {
                 queue.add(it)
@@ -56,6 +69,7 @@ fun createLake(
         }
     }
     lakeTiles.forEach { it.addDelayedResource(water.copy(2)) }
+    lakeTiles.forEach { it.tagPool.add(nameTag) }
     outflowTiles.forEach {
         createRiver(it, water, goodTilePredicate, random)
     }

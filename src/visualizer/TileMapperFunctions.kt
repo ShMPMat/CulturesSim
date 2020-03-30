@@ -1,6 +1,5 @@
 package visualizer
 
-import simulation.culture.aspect.AspectPool
 import simulation.culture.group.Group
 import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
@@ -13,6 +12,23 @@ import kotlin.math.max
 
 const val MARK = "\u001b[31mX"
 const val NOTHING = ""
+
+
+fun levelMapper(tile: Tile): String {
+    val colour = when {
+        tile.secondLevel < 90 -> "\u001b[44m"
+        tile.secondLevel < data.defaultWaterLevel -> "\u001b[104m"
+        tile.secondLevel < 105 -> "\u001b[46m"
+        tile.secondLevel < 110 -> "\u001b[47m"
+        tile.secondLevel < 130 -> "\u001b[43m"
+        else -> "\u001b[41m"
+    }
+    return "\u001b[90m" + colour + abs(tile.secondLevel % 10)
+}
+
+fun predicateMapper(tile: Tile, predicate: (Tile) -> Boolean) =
+        if (predicate(tile)) MARK
+        else NOTHING
 
 fun vapourMapper(tile: Tile): String {
     val level = tile.resourcesWithMoved
@@ -96,29 +112,16 @@ fun windMapper(tile: Tile): String {
     return direction
 }
 
-fun levelMapper(tile: Tile): String {
-    val colour = when {
-        tile.secondLevel < 90 -> "\u001b[44m"
-        tile.secondLevel < data.defaultWaterLevel -> "\u001b[104m"
-        tile.secondLevel < 105 -> "\u001b[46m"
-        tile.secondLevel < 110 -> "\u001b[47m"
-        tile.secondLevel < 130 -> "\u001b[43m"
-        else -> "\u001b[41m"
-    }
-    return "\u001b[90m" + colour + abs(tile.secondLevel % 10)
-}
-
-fun meaningfulResourcesMapper(tile: Tile) =
-        if (tile.resourcePack.resources.any { it.hasMeaning() }) MARK
-        else ""
+fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile)
+{ t -> t.resourcePack.resources.any { it.hasMeaning() } }
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
     val artificialResources = setOf("House", "Clothes", "Dish", "Boat")
     return when {
         meaningful != NOTHING -> meaningful
-        tile.resourcePack.resources.any { artificialResources.contains(it.baseName) } -> "\u001b[31mX"
-        else -> NOTHING
+        else -> predicateMapper(tile)
+        { t -> t.resourcePack.resources.any { artificialResources.contains(it.baseName) } }
     }
 }
 
@@ -131,3 +134,10 @@ fun aspectMapper(aspectName: String, tile: Tile): String {
             100,
             tile)
 }
+
+fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile)
+{ group.territoryCenter.accessibleTerritory.contains(it) }
+
+fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile)
+{ it.tagPool.getByType(tagName).isNotEmpty() }
+

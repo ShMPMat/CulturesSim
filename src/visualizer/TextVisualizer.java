@@ -409,6 +409,9 @@ public class TextVisualizer implements Visualizer {
                         case ArtificialResources:
                             printMap(TileMapperFunctionsKt::artificialResourcesMapper);
                             break;
+                        case TileTag:
+                            printMap(t -> TileMapperFunctionsKt.tileTagMapper(splitCommand[1], t));
+                            break;
                         case Resource:
                             try {
                                 Resource resource = world.getResourcePool().get(line.substring(2));
