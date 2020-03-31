@@ -92,9 +92,6 @@ public class Stratum {
                 false,
                 null
         ));
-        if (!pack.isEmpty()) {
-            int i = 0;
-        }
         turnResources.addAll(pack);
         updateTools(accessibleTerritory, populationCenter);
         raisedAmount = false;
@@ -104,7 +101,7 @@ public class Stratum {
         MutableResourcePack resourcePack = new MutableResourcePack();
         for (Aspect aspect: aspects) {
             AspectResult result = aspect.use(controller);
-            if (!result.resources.isEmpty()) {
+            if (result.resources.isNotEmpty()) {
                 popularMemes.add(ConstructMemeKt.constructMeme(aspect));
                 result.resources.getResources().forEach(r -> popularMemes.add(ConstructMemeKt.constructMeme(r)));
             }

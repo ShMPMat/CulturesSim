@@ -20,12 +20,12 @@ public class AestheticallyPleasingObject implements CultureAspect {
     @Override
     public Request getRequest(Group group) {
         return new ResourceRequest(group, resource, 1, 10, (pair, percent) -> {
-            pair.getFirst().cherishedResources.addAll(pair.getSecond());
+            pair.getFirst().getResourceCenter().addAll(pair.getSecond());
             resourceBehaviour.proceedResources(pair.getSecond());
             return null;
         },
                 (pair, percent) -> {
-                    pair.getFirst().cherishedResources.addAll(pair.getSecond());
+                    pair.getFirst().getResourceCenter().addAll(pair.getSecond());
                     resourceBehaviour.proceedResources(pair.getSecond());
                     return null;
                 });

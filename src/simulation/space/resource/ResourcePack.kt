@@ -21,15 +21,21 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     val isEmpty: Boolean
         get() = amount == 0
 
-    protected fun internalAdd(resource: Resource) {
+    val isNotEmpty: Boolean
+        get() = !isEmpty
+
+    protected fun internalAdd(resource: Resource): Boolean {
         if (resource.amount == 0) {
-            return
+            return false
         }
         val internal = resourceMap[resource]
-        if (internal == null)
+        return if (internal == null) {
             resourceMap[resource] = resource
-        else
+            false
+        } else {
             internal.merge(resource)
+            true
+        }
     }
 
     fun getResources(predicate: (Resource) -> Boolean) = ResourcePack(resources.filter(predicate))
@@ -49,6 +55,11 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     fun getAmount(resource: Resource) = getUnpackedResource(resource).amount
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResources(predicate).amount
+
+    fun clearEmpty() {
+        resourceMap.filter { it.value.amount == 0 }
+                .forEach { resourceMap.remove(it.key) }
+    }
 
     override fun toString(): String {
         val stringBuilder = StringBuilder()

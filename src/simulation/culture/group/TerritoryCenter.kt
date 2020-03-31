@@ -68,7 +68,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         }
 
     private fun getAccessibleTileTypes(): List<Tile.Type> {
-        return if (tileTag.group.cherishedResources.resources.any { it.simpleName == "Boat" })
+        return if (tileTag.group.resourceCenter.resources.any { it.simpleName == "Boat" })
             listOf(Tile.Type.Water)
         else listOf()
     }

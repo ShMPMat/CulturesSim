@@ -7,6 +7,7 @@ import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.Territory;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.tile.Tile;
 import simulation.space.tile.TileDistanceKt;
 
@@ -37,6 +38,7 @@ public class GroupConglomerate {
 
         for (int i = 0; i < numberOfSubGroups; i++) {
             addGroup(new Group(
+                    new ResourceCenter(new MutableResourcePack(), getCenter()),
                     this,
                     name + "_" + i,
                     new PopulationCenter(

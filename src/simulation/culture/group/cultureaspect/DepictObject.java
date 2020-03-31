@@ -58,7 +58,7 @@ public class DepictObject implements CultureAspect {
                     .filter(Resource::hasMeaning)
                     .collect(Collectors.toList()));
             result.resources.removeAll(meaningful.getResources());
-            group.cherishedResources.addAll(meaningful);
+            group.getResourceCenter().addAll(meaningful);
             resourceBehaviour.proceedResources(meaningful);
             result.resources.disbandOnTile(group.getTerritoryCenter().getDisbandTile());
             group.getCultureCenter().getMemePool().strengthenMeme(meme);

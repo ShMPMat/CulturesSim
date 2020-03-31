@@ -52,7 +52,10 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         resourceMap.clear()
     }
 
-    fun add(resource: Resource) = internalAdd(resource)
+    /**
+     * Returns true only if the Resource was merged
+     */
+    fun add(resource: Resource): Boolean = internalAdd(resource)
 
     fun addAll(resources: Collection<Resource>) = resources.forEach { add(it) }
 

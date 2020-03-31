@@ -31,10 +31,10 @@ public class Group {
     private TerritoryCenter territoryCenter;
     private PopulationCenter populationCenter;
     private RelationCenter relationCenter;
-    public MutableResourcePack cherishedResources = new MutableResourcePack();
-    MutableResourcePack uniqueArtifacts = new MutableResourcePack();
+    private ResourceCenter resourceCenter;
 
     Group(
+            ResourceCenter resourceCenter,
             GroupConglomerate parentGroup,
             String name,
             PopulationCenter populationCenter,
@@ -46,10 +46,15 @@ public class Group {
     ) {
         this.name = name;
         this.parentGroup = parentGroup;
+        this.resourceCenter = resourceCenter;
         this.populationCenter = populationCenter;
         cultureCenter = new CultureCenter(this, memePool, aspects);
         territoryCenter = new TerritoryCenter(this, spreadAbility, tile);
         this.relationCenter = relationCenter;
+    }
+
+    public ResourceCenter getResourceCenter() {
+        return resourceCenter;
     }
 
     public CultureCenter getCultureCenter() {
@@ -82,8 +87,7 @@ public class Group {
 
     private void die() {
         state = State.Dead;
-        cherishedResources.disbandOnTile(territoryCenter.getDisbandTile());
-        uniqueArtifacts.disbandOnTile(territoryCenter.getDisbandTile());
+        resourceCenter.die(territoryCenter.getDisbandTile());
         populationCenter.die();
         territoryCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
@@ -106,7 +110,9 @@ public class Group {
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
         if (state != State.Dead) {
             if (shouldMigrate()) {
-                territoryCenter.migrate();
+                if (territoryCenter.migrate()) {
+                    resourceCenter.moveToNewStorage(territoryCenter.getTerritory().getCenter());
+                }
             }
             if (populationCenter.isMinPassed(territoryCenter.getTerritory())) {
                 territoryCenter.expand();
@@ -146,6 +152,7 @@ public class Group {
             GroupMemes memes = new GroupMemes();
             memes.addAll(cultureCenter.getMemePool());
             return new Group(
+                    new ResourceCenter(new MutableResourcePack(), tile),
                     parentGroup,
                     parentGroup.name + "_" + parentGroup.subgroups.size(),
                     populationCenter.getPart(0.5),
@@ -179,6 +186,7 @@ public class Group {
     public void finishUpdate() {
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
         populationCenter.finishUpdate(cultureCenter.getMemePool());
+        resourceCenter.finishUpdate();
     }
 
     boolean diverge() {
@@ -269,9 +277,7 @@ public class Group {
         }
         s.append((cultureCenter.getCultureAspectCenter().getAspectPool().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
-        stringBuilder.append("Current resources:\n").append(cherishedResources).append("\n\n");
-        stringBuilder.append("Artifacts:\n").append(uniqueArtifacts.toString())
-                .append("\n\n");
+        stringBuilder.append(resourceCenter.toString());
         for (Stratum stratum : populationCenter.getStrata()) {
             if (stratum.getAmount() != 0) {
                 stringBuilder.append(stratum).append("\n");

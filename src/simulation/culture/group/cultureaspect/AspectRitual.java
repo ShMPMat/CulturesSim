@@ -42,7 +42,7 @@ public class AspectRitual extends Ritual {
                 group.getCultureCenter().getMeaning()
         ));
         if (result.isFinished) {
-            group.cherishedResources.addAll(result.resources);
+            group.getResourceCenter().addAll(result.resources);
             resourceBehaviour.proceedResources(result.resources);
         }
     }
