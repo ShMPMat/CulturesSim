@@ -52,7 +52,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private val migrationTile: Tile?
-        get() = reachableTiles.maxBy { tilePotentialMapper(it) }
+        get() = reachableTiles
+                .filter { canSettleAndNoGroupExcept(it) }
+                .maxBy { tilePotentialMapper(it) }
 
     private val reachableTiles: Collection<Tile>
         get() {
@@ -62,11 +64,11 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                 _oldReach = getReachableTiles(territory.center)
                 _oldTileTypes = tileTypes
             }
-            return _oldReach.filter { canSettleAndNoGroupExcept(it) }
+            return _oldReach
         }
 
     private fun getAccessibleTileTypes(): List<Tile.Type> {
-        return if (tileTag.group.cherishedResources.resources.any { it.simpleName == "Boat"})
+        return if (tileTag.group.cherishedResources.resources.any { it.simpleName == "Boat" })
             listOf(Tile.Type.Water)
         else listOf()
     }
@@ -79,12 +81,11 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         while (true) {
             tiles.addAll(queue.map { it.first })
             val currentTiles = queue
-                    .filter { isTileReachableInTraverse(it) }//TODO another sequence
+                    .filter { isTileReachableInTraverse(it) }
                     .flatMap { it.first.neighbours }
                     .asSequence()
                     .distinct()
                     .filter { !tiles.contains(it) }
-                    .filter { canTraverse(it) }
                     .map { it to currentLayer }
                     .toList()
             if (currentTiles.isEmpty()) {
@@ -98,21 +99,13 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
-        Tile.Type.Water -> if (_oldTileTypes.contains(Tile.Type.Water))
-            pair.second <= 30
-        else false
+        Tile.Type.Water ->
+            if (_oldTileTypes.contains(Tile.Type.Water)) pair.second <= 30
+            else false
+        Tile.Type.Mountain ->
+            if (tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving")) pair.second <= 5
+            else false
         else -> pair.second <= 5
-    }
-
-    private fun canTraverse(tile: Tile): Boolean {
-        if (tile.type == Tile.Type.Water) {
-            return _oldTileTypes.contains(Tile.Type.Water)
-        } else if (tile.type == Tile.Type.Mountain) {
-            if (!tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving")) {
-                return false
-            }
-        }
-        return true
     }
 
     fun expand(): Boolean {

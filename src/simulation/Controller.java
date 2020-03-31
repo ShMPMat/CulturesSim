@@ -110,6 +110,7 @@ public class Controller {
                     t -> t.getType() != Tile.Type.Ice && t.getTemperature() >= -10,
                     random
             );
+            turn();
         }
         world.map.setTags();
     }

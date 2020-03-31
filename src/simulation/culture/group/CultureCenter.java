@@ -3,27 +3,31 @@ package simulation.culture.group;
 import kotlin.Pair;
 import simulation.Controller;
 import simulation.Event;
-import simulation.culture.aspect.*;
-import simulation.culture.group.cultureaspect.*;
+import simulation.culture.aspect.Aspect;
+import simulation.culture.aspect.AspectController;
+import simulation.culture.aspect.AspectResult;
+import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.request.TagRequest;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.culture.thinking.meaning.MemeSubject;
-import simulation.space.resource.Resource;
+import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.Resource;
 import simulation.space.resource.tag.ResourceTag;
+import simulation.space.tile.TileTag;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
+import static shmp.random.RandomCollectionsKt.randomElement;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
-import static shmp.random.RandomCollectionsKt.*;
-import static simulation.Controller.*;
+import static simulation.Controller.session;
 import static simulation.culture.group.GroupEffectFunctionsKt.freeze;
 import static simulation.culture.group.GroupEffectFunctionsKt.starve;
 
@@ -121,6 +125,20 @@ public class CultureCenter {
         cultureAspectCenter.useCultureAspects();
         cultureAspectCenter.addRandomCultureAspect(group);
         cultureAspectCenter.mutateCultureAspects();
+        lookOnTerritory(group.getTerritoryCenter().getAccessibleTerritory());
+    }
+
+    void lookOnTerritory(Territory accessibleTerritory) {
+        List<TileTag> tags = accessibleTerritory.getTiles().stream()
+                .flatMap(t -> t.getTagPool().getGetAll().stream())
+                .collect(Collectors.toList());
+        for (TileTag tag : tags) {
+            if (tag.getType().equals(GroupTileTagKt.GROUP_TAG_TYPE)) {
+                continue;
+            }
+            memePool.add(new MemeSubject(tag.getName()));
+            memePool.strengthenMeme(new MemeSubject(tag.getName()));
+        }
     }
 
     void intergroupUpdate() {
