@@ -219,6 +219,9 @@ public class Group {
                 getTerritoryCenter().getTerritory().getCenter()
         );
         for (Group group : groups) {
+            if (!group.parentGroup.subgroups.contains(group)) {
+                int i = 0;
+            }
             group.parentGroup.removeGroup(group);
             conglomerate.addGroup(group);
         }
