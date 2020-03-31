@@ -1,9 +1,11 @@
 package visualizer
 
 import simulation.culture.group.Group
+import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
+import simulation.space.resource.Resource
 import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.abs
@@ -141,3 +143,11 @@ fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile)
 fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile)
 { it.tagPool.getByType(tagName).isNotEmpty() }
 
+fun groupConglomerateMapper(groupConglomerate: GroupConglomerate, tile: Tile) =
+        if (groupConglomerate.territory.contains(tile))
+            when {
+                groupConglomerate.subgroups.any { it.territoryCenter.territory.contains(tile) } -> "\u001b[31mO"
+                tile.resourcePack.resources.any { it.baseName.contains("House") } -> "\u001b[31m+"
+                else -> MARK
+            }
+        else NOTHING

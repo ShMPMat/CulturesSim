@@ -310,12 +310,9 @@ public class TextVisualizer implements Visualizer {
 
     }
 
-    private void printGroup(GroupConglomerate group) {
-        printMap(tile -> (group.getTerritory().contains(tile) ?
-                (group.subgroups.stream().anyMatch(sg -> sg.getTerritoryCenter().getTerritory().contains(tile)) ? "\033[31mO" :
-                        (tile.getResourcePack().getResources().stream().anyMatch(resource -> resource.getBaseName().contains("House")) ?
-                                "\033[31m+" : "\033[31mX")) : ""));
-        System.out.println(group);
+    private void printGroupConglomerate(GroupConglomerate groupConglomerate) {
+        printMap(t -> TileMapperFunctionsKt.groupConglomerateMapper(groupConglomerate, t));
+        System.out.println(groupConglomerate);
     }
 
     private void printResource(Resource resource) {
@@ -368,7 +365,7 @@ public class TextVisualizer implements Visualizer {
                     }
                     switch (getCommand(line)) {
                         case Group:
-                            printGroup(world.groups.get(Integer.parseInt(line.substring(1))));
+                            printGroupConglomerate(world.groups.get(Integer.parseInt(line.substring(1))));
                             break;
                         case TileReach:
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
@@ -380,7 +377,7 @@ public class TextVisualizer implements Visualizer {
                         case Tile:
                             printTile(
                                     map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
-                                    Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut)
+                                            Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut)
                             );
                             break;
                         case Plates:
@@ -455,14 +452,16 @@ public class TextVisualizer implements Visualizer {
                                     world.getAspectPool()
                             );
                             break;
-                        } case AddWant: {
+                        }
+                        case AddWant: {
                             AddFunctionsKt.addGroupConglomerateWant(
                                     getConglomerate(splitCommand[1]),
                                     splitCommand[2],
                                     world.getResourcePool()
                             );
                             break;
-                        } case AddResource:
+                        }
+                        case AddResource:
                             AddFunctionsKt.addResourceOnTile(
                                     map.get(Integer.parseInt(splitCommand[0]), Integer.parseInt(splitCommand[1])),
                                     splitCommand[2],
