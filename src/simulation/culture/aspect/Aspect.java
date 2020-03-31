@@ -24,7 +24,7 @@ public class Aspect {
     /**
      * Whether it was used on this turn.
      */
-    private boolean used = false;
+    public boolean used = false;
     public boolean canInsertMeaning = false;
 
     Aspect(AspectCore aspectCore, AspectDependencies dependencies) {

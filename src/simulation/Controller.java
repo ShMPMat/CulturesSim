@@ -29,7 +29,7 @@ public class Controller {
     public final int initialTurns = 100;
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
-    public final int cultureTurns = 300;
+    public final int cultureTurns = 0;
     public final int startResourceAmountMin = 40 * proportionCoefficient * proportionCoefficient;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;
     public final int startGroupAmount = 10;

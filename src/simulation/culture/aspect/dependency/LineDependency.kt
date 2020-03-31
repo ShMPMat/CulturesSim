@@ -20,12 +20,13 @@ class LineDependency(
         get() = "from ${converseWrapper.name}"
 
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
-        if (isAlreadyUsed) return false
+        if (parentConverseWrapper.used) return false
         isAlreadyUsed = true
+        parentConverseWrapper.used = true
         val b = converseWrapper.dependencies.map.values.any {
             it.any { d -> d.isCycleDependencyInner(otherAspect) }
         } || converseWrapper == otherAspect
-        isAlreadyUsed = false
+        parentConverseWrapper.used = false
         return b
     }
 

@@ -151,10 +151,27 @@ public class AspectCenter {
     }
 
     Set<Aspect> pushAspects() {
+        changedAspectPool.getAll().forEach(this::addNewDependencies);
         aspectPool.addAll(changedAspectPool.getAll());
         Set<Aspect> addedAspects = changedAspectPool.getAll();
         changedAspectPool.clear();
         return addedAspects;
+    }
+
+    private void addNewDependencies(Aspect newAspect) {
+        if (newAspect instanceof ConverseWrapper) {
+            for (ConverseWrapper converseWrapper : aspectPool.getConverseWrappers()) {
+                for (ResourceTag tag : newAspect.getTags()) {
+                    if (converseWrapper.getDependencies().containsDependency(tag)) {
+                        converseWrapper.getDependencies().getMap().get(tag).add(new LineDependency(
+                                tag.equals(ResourceTag.phony()),
+                                converseWrapper,
+                                (ConverseWrapper) newAspect
+                                ));
+                    }
+                }
+            }
+        }
     }
 
     List<Pair<Aspect, Group>> findOptions(Aspiration aspiration) {

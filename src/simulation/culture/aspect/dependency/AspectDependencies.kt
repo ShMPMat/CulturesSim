@@ -5,4 +5,6 @@ import simulation.space.resource.tag.ResourceTag
 data class AspectDependencies(val map: MutableMap<ResourceTag, MutableSet<Dependency>>) {
     val size: Int
         get() = map.size
+
+    fun containsDependency(tag: ResourceTag) = map.containsKey(tag)
 }
