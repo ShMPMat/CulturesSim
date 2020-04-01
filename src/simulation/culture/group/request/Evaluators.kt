@@ -17,5 +17,5 @@ fun resourceEvaluator(resource: Resource) = ResourceEvaluator(
 
 fun tagEvaluator(tag: ResourceTag) = ResourceEvaluator(
         { it.getResources(tag) },
-        { it.getAmount(tag) }
+        { it.getTagPresenceSum(tag) }
 )

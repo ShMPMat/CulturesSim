@@ -164,11 +164,18 @@ public class AspectCenter {
                 for (ResourceTag tag : newAspect.getTags()) {
                     if (converseWrapper.getDependencies().containsDependency(tag)) {
                         converseWrapper.getDependencies().getMap().get(tag).add(new LineDependency(
-                                tag.equals(ResourceTag.phony()),
+                                false,
                                 converseWrapper,
                                 (ConverseWrapper) newAspect
                                 ));
                     }
+                }
+                if (newAspect.getProducedResources().stream().anyMatch(r -> converseWrapper.resource.equals(r))) {
+                    converseWrapper.getDependencies().getMap().get(ResourceTag.phony()).add(new LineDependency(
+                            true,
+                            converseWrapper,
+                            (ConverseWrapper) newAspect
+                    ));
                 }
             }
         }

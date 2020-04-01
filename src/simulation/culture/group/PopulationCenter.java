@@ -30,6 +30,10 @@ public class PopulationCenter {
         return population;
     }
 
+    public MutableResourcePack getTurnResources() {
+        return turnResources;
+    }
+
     List<Stratum> getStrata() {
         return strata;
     }
@@ -162,5 +166,16 @@ public class PopulationCenter {
             stratum.decreaseAmount((int) (stratum.getAmount() * fraction));
         }
         return populationCenter;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Stratum stratum : strata) {
+            if (stratum.getAmount() != 0) {
+                stringBuilder.append(stratum).append("\n");
+            }
+        }
+        return stringBuilder.toString();
     }
 }

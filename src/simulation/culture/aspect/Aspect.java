@@ -3,8 +3,10 @@ package simulation.culture.aspect;
 import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.AspectCenter;
+import simulation.culture.group.request.EvaluatorsKt;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
@@ -133,14 +135,7 @@ public class Aspect {
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
         MutableResourcePack meaningfulPack = new MutableResourcePack();
-        int oneWorkerSatisfaction = controller.getEvaluator().evaluate(new MutableResourcePack(getProducedResources()));
-        if (oneWorkerSatisfaction == 0) {
-            oneWorkerSatisfaction = controller.getEvaluator().evaluate(new MutableResourcePack(getProducedResources()));
-            if (oneWorkerSatisfaction == 0) {//TODO Da hell is happening?
-                oneWorkerSatisfaction = 1;
-            }
-        }
-        int neededWorkers = controller.getCeiling() / oneWorkerSatisfaction + 1;
+        int neededWorkers = controller.getCeilingSatisfiableAmount(getProducedResources());
         controller.setCeiling(controller.getPopulationCenter().changeStratumAmountByAspect(
                 this,
                 neededWorkers
@@ -178,6 +173,10 @@ public class Aspect {
             Set<Dependency> dependencies,
             MutableResourcePack meaningfulPack
     ) {
+        meaningfulPack.addAll(getPhonyFromResources(controller));
+        if (controller.isCeilingExceeded(meaningfulPack)) {
+            return true;
+        }
         for (Dependency dependency : dependencies) {
             int newDelta = meaningfulPack.getAmount(((ConverseWrapper) this).resource);
             AspectResult _p = dependency.useDependency(new AspectController(
@@ -198,6 +197,20 @@ public class Aspect {
             }
         }
         return true;
+    }
+
+    ResourcePack getPhonyFromResources(AspectController controller) {
+        if (getName().equals("PlantSeedOnSeed_of_NutTree")) {
+            int i = 0;
+        }
+        ResourcePack pack = EvaluatorsKt.resourceEvaluator(((ConverseWrapper) this).resource).pick(
+                controller.getPopulationCenter().getTurnResources()
+        );
+        return controller.pick(
+                pack,
+                r -> r.applyAspect(((ConverseWrapper) this).aspect),
+                (r, n) -> r.applyAndConsumeAspect(((ConverseWrapper) this).aspect, n)
+        );
     }
 
     private boolean satisfyRegularDependency(
@@ -246,6 +259,17 @@ public class Aspect {
         node.resourceUsed.put(requirementTag, usedForDependency);
         return isFinished;
     }
+
+//    ResourcePack getRegularFromResources(AspectController controller, ResourceTag tag) {
+//        ResourcePack pack = EvaluatorsKt.resourceEvaluator(((ConverseWrapper) this).pick(
+//                controller.getPopulationCenter().getTurnResources()
+//        );
+//        return controller.pick(
+//                pack,
+//                r -> r.applyAspect(((ConverseWrapper) this).aspect),
+//                (r, n) -> r.applyAndConsumeAspect(((ConverseWrapper) this).aspect, n)
+//        );
+//    }
 
     protected boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
         return isMeaningNeeded;

@@ -278,11 +278,7 @@ public class Group {
         s.append((cultureCenter.getCultureAspectCenter().getAspectPool().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
         stringBuilder.append(resourceCenter.toString());
-        for (Stratum stratum : populationCenter.getStrata()) {
-            if (stratum.getAmount() != 0) {
-                stringBuilder.append(stratum).append("\n");
-            }
-        }
+        stringBuilder.append(populationCenter.toString());
         stringBuilder.append("\n");
         for (Relation relation : relationCenter.getRelations()) {
             stringBuilder.append(relation).append("\n");
