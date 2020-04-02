@@ -5,7 +5,6 @@ import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
-import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.resourceEvaluator
 import simulation.space.resource.MutableResourcePack
 import java.util.*
@@ -20,8 +19,8 @@ class LineDependency(
         get() = "from ${converseWrapper.name}"
 
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
+        if (parentConverseWrapper == converseWrapper) return true
         if (parentConverseWrapper.used) return false
-        isAlreadyUsed = true
         parentConverseWrapper.used = true
         val b = converseWrapper.dependencies.map.values.any {
             it.any { d -> d.isCycleDependencyInner(otherAspect) }
@@ -50,6 +49,7 @@ class LineDependency(
             isAlreadyUsed = false
             AspectResult(_p.isFinished, resourcePack, null)
         } catch (e: NullPointerException) {
+            isAlreadyUsed = false
             throw RuntimeException("No such aspect in Group")
         }
     }

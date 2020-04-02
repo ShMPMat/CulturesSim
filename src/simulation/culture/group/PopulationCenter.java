@@ -65,10 +65,6 @@ public class PopulationCenter {
         return getMinPopulation(controlledTerritory) <= population;
     }
 
-    public void setPopulation(int population) {
-        this.population = population;
-    }
-
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
         Stratum stratum = getStratumByAspect(aspect);
         try {
@@ -86,8 +82,11 @@ public class PopulationCenter {
         population = 0;
     }
 
-    void goodConditionsGrow(double fraction) {//TODO check boundaries
+    void goodConditionsGrow(double fraction, Territory territory) {
         population += ((int) (fraction * population)) / 10 + 1;
+        if (isMaxReached(territory)) {
+            population = getMaxPopulation(territory);
+        }
     }
 
     void decreasePopulation(int amount) {
@@ -118,12 +117,12 @@ public class PopulationCenter {
             List<Stratum> strataForRequest = getStrataForRequest(request);
             for (Stratum stratum : strataForRequest) {
                 int amount = evaluator.evaluate(turnResources);
-                if (amount >= request.ceiling) {
+                if (amount >= request.getCeiling()) {
                     break;
                 }
                 turnResources.addAll(stratum.use(new AspectController(
-                        request.ceiling - amount,
-                        request.floor,
+                        request.getCeiling() - amount,
+                        request.getFloor() - amount,
                         evaluator,
                         this,
                         accessibleTerritory,

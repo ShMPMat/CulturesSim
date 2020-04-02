@@ -105,6 +105,9 @@ public class Group {
     }
 
     void update() {
+        if (!parentGroup.subgroups.contains(this)) {
+            int i = 0;
+        }
         populationCenter.update(territoryCenter.getAccessibleTerritory());
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
@@ -154,7 +157,7 @@ public class Group {
             return new Group(
                     new ResourceCenter(new MutableResourcePack(), tile),
                     parentGroup,
-                    parentGroup.name + "_" + parentGroup.subgroups.size(),
+                    parentGroup.getNewName(),
                     populationCenter.getPart(0.5),
                     new RelationCenter(relationCenter.getHostilityCalculator$CulturesSimulation()),
                     tile,

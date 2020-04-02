@@ -27,6 +27,7 @@ public class Aspect {
      * Whether it was used on this turn.
      */
     public boolean used = false;
+    private boolean usedThisTurn = false;
     public boolean canInsertMeaning = false;
 
     Aspect(AspectCore aspectCore, AspectDependencies dependencies) {
@@ -131,7 +132,7 @@ public class Aspect {
     public List<Resource> getProducedResources() {
         return Collections.emptyList();
     }
-
+//TODO I THOUGHT THERE WAS A CHECK!!!
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
         MutableResourcePack meaningfulPack = new MutableResourcePack();
@@ -141,13 +142,15 @@ public class Aspect {
                 neededWorkers
         ));
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
-        for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
-            if (!satisfyRequirement(controller, entry.getValue(), entry.getKey(), meaningfulPack, node)) {
-                new AspectResult(false, node);
+        if (controller.getCeiling() > 0) {
+            for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
+                if (!satisfyRequirement(controller, entry.getValue(), entry.getKey(), meaningfulPack, node)) {
+                    new AspectResult(false, node);
+                }
             }
-        }
-        if (controller.isFloorExceeded(meaningfulPack)) {
-            markAsUsed();
+            if (controller.isFloorExceeded(meaningfulPack)) {
+                markAsUsed();
+            }
         }
         return new AspectResult(meaningfulPack, node);
     }
@@ -207,7 +210,7 @@ public class Aspect {
                 controller.getPopulationCenter().getTurnResources()
         );
         return controller.pick(
-                pack,
+                pack.getResources(),
                 r -> r.applyAspect(((ConverseWrapper) this).aspect),
                 (r, n) -> r.applyAndConsumeAspect(((ConverseWrapper) this).aspect, n)
         );
@@ -223,9 +226,14 @@ public class Aspect {
         boolean isFinished = false;
         MutableResourcePack _rp = new MutableResourcePack();
         _rp.addAll(
-                controller.getPopulationCenter().getStratumByAspect(this).getInstrumentByTag(requirementTag)
+                controller.pick(
+                        controller.getPopulationCenter().getStratumByAspect(this).getInstrumentByTag(requirementTag).getResources(),
+                        r -> Collections.singletonList(r.copy(1)),
+                        (r, n) -> Collections.singletonList(r.getCleanPart(n))
+                )
         );
         MutableResourcePack usedForDependency = new MutableResourcePack();
+
         for (Dependency dependency : dependencies) {
             int newDelta = _rp.getAmount(requirementTag);
             AspectResult result = dependency.useDependency(new AspectController(
@@ -243,7 +251,7 @@ public class Aspect {
             }
             if (_rp.getAmount(requirementTag) >= controller.getCeiling()) {
                 if (!requirementTag.isInstrumental) {
-                    //TODO sometimes can spend resources without getting resources because other dependencies are lacking
+                    //TODO sometimes can spend resources without getting result because other dependencies are lacking
                     usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
                             requirementTag,
                             controller.getCeiling()).getSecond()
@@ -260,16 +268,16 @@ public class Aspect {
         return isFinished;
     }
 
-//    ResourcePack getRegularFromResources(AspectController controller, ResourceTag tag) {
-//        ResourcePack pack = EvaluatorsKt.resourceEvaluator(((ConverseWrapper) this).pick(
-//                controller.getPopulationCenter().getTurnResources()
-//        );
-//        return controller.pick(
-//                pack,
-//                r -> r.applyAspect(((ConverseWrapper) this).aspect),
-//                (r, n) -> r.applyAndConsumeAspect(((ConverseWrapper) this).aspect, n)
-//        );
-//    }
+    ResourcePack getRegularFromResources(AspectController controller, ResourceTag tag) {
+        ResourcePack pack = EvaluatorsKt.tagEvaluator(tag).pick(
+                controller.getPopulationCenter().getTurnResources()
+        );
+        return controller.pick(
+                pack.getResources(),
+                r -> Collections.singletonList(r.copy(1)),
+                (r, n) -> Collections.singletonList(r.getCleanPart(n))
+        );
+    }
 
     protected boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
         return isMeaningNeeded;
@@ -277,14 +285,14 @@ public class Aspect {
 
     protected void markAsUsed() {
         usefulness += 1;
-        used = true;
+        usedThisTurn = true;
     }
 
     public void finishUpdate() {
-        if (!used) {
+        if (!usedThisTurn) {
             usefulness--;
         }
-        used = false;
+        usedThisTurn = false;
     }
 
     @Override

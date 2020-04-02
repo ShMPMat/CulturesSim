@@ -46,15 +46,15 @@ public class ResourceRequest extends Request {
         int amount = 0;
         MutableResourcePack _rp = new MutableResourcePack();
 
-        MutableResourcePack _r = resourcePack.getResourcePart(resource, ceiling);
+        MutableResourcePack _r = resourcePack.getResourcePart(resource, getCeiling());
         amount = _r.getAmount();
         _rp.addAll(_r);
 
-        if (amount < floor) {
-            penalty.apply(new Pair<>(group, _rp), amount / ((double) floor));
+        if (amount < getFloor()) {
+            getPenalty().apply(new Pair<>(getGroup(), _rp), amount / ((double) getFloor()));
             return;
         }
-        reward.apply(new Pair<>(group, _rp), amount / ((double) floor) - 1);
+        getReward().apply(new Pair<>(getGroup(), _rp), amount / ((double) getFloor()) - 1);
     }
 
     @Override

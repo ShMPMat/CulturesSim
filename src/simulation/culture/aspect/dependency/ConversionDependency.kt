@@ -5,7 +5,6 @@ import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.AspectCenter
-import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import java.util.*
 
@@ -24,15 +23,12 @@ class ConversionDependency(
             isCycleDependency(otherAspect) || otherAspect == aspect
 
     override fun useDependency(controller: AspectController): AspectResult {
-        val resourcePack = MutableResourcePack()
         val resourceInstances = controller.territory.getResourceInstances(resource)
-        for (res in resourceInstances) {
-            if (controller.ceiling <= controller.evaluator.evaluate(resourcePack)) break
-            resourcePack.addAll(res.applyAndConsumeAspect(
-                    aspect,
-                    controller.ceiling - controller.evaluator.evaluate(resourcePack)
-            ))
-        }
+        val resourcePack = controller.pick(
+                resourceInstances,
+                { it.applyAspect(aspect) },
+                { r, n -> r.getPart(n).applyAndConsumeAspect(aspect, n) }
+        )
         return AspectResult(resourcePack, null)
     }
 

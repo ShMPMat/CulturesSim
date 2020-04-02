@@ -30,6 +30,7 @@ public class GroupConglomerate {
      * Overall Territory which is under the child Groups
      */
     private Territory territory = new Territory();
+    private int namesScore = 0;
 
     private GroupConglomerate(String name, int population, int numberOfSubGroups, Tile root) {
         this.name = name;
@@ -223,6 +224,11 @@ public class GroupConglomerate {
             stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false);
         }
         return stringBuilder.toString();
+    }
+
+    public String getNewName() {
+        namesScore++;
+        return name + "_" + namesScore;
     }
 
     public enum State {

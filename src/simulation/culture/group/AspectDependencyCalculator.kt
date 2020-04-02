@@ -54,7 +54,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
     private fun addTagDependencies(requirement: ResourceTag, aspect: Aspect) {
         for (poolAspect in aspectPool.converseWrappers) {
             if (poolAspect.producedResources.any { it.tags.contains(requirement) }) {
-                val dependency = AspectDependency(false, poolAspect, tagEvaluator(requirement))
+                val dependency = AspectDependency(false, poolAspect, tagEvaluator(requirement), aspect)
                 if (dependency.isCycleDependency(poolAspect) || dependency.isCycleDependencyInner(aspect)) continue
                 addDependenciesInMap(setOf(dependency), requirement)
             }

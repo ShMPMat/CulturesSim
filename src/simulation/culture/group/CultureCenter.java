@@ -92,7 +92,7 @@ public class CultureCenter {
             return null;
         };
         BiFunction<Pair<Group, MutableResourcePack>, Double, Void> foodReward = (pair, percent) -> {
-            pair.getFirst().getPopulationCenter().goodConditionsGrow(percent);
+            pair.getFirst().getPopulationCenter().goodConditionsGrow(percent, group.getTerritoryCenter().getTerritory());
             pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
             return null;
         };

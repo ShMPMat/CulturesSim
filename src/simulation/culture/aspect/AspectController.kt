@@ -25,6 +25,11 @@ data class AspectController(
         return evaluator.evaluate(resourcePack) >= ceiling
     }
 
+    fun decrease(delta: Int) {
+        ceiling -= delta
+        floor -= delta
+    }
+
     fun getCeilingSatisfiableAmount(resources: Collection<Resource>): Int {
         var oneResourceWorth = evaluator.evaluate(ResourcePack(resources))
         if (oneResourceWorth == 0)
@@ -33,13 +38,13 @@ data class AspectController(
     }
 
     fun pick(
-            pack: ResourcePack,
+            resources: Collection<Resource>,
             onePortionGetter: (Resource) -> Collection<Resource>,
             partGetter: (Resource, Int) -> Collection<Resource>
     ): MutableResourcePack {
         val resultPack = MutableResourcePack()
         var amount = 0
-        for (resource in pack.resources) {
+        for (resource in resources) {
             val neededAmount = getCeilingSatisfiableAmount(onePortionGetter(resource)) - amount
             resultPack.addAll(partGetter(resource, neededAmount))
             amount = evaluator.evaluate(resultPack)

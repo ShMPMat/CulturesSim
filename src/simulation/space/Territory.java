@@ -11,9 +11,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * Set of tiles.
- */
 public class Territory {
     private Set<Tile> tiles;
     private Set<Tile> outerBrink = new HashSet<>();
@@ -90,18 +87,6 @@ public class Territory {
                 if (!resources.contains(resource)) {
                     resources.add(resource);
                 }
-            }
-        }
-        return resources;
-    }
-
-    public List<Resource> getResourcesWhichConverseToTag(Aspect aspect, ResourceTag tag) {
-        List<Resource> resources = new ArrayList<>();
-        for (Resource resource : getDifferentResources()) {
-            List<Resource> _l = resource.applyAspect(aspect);
-            if (_l.stream().anyMatch(res -> res.getTags().contains(tag))
-                    && !(_l.size() == 1 && _l.get(0).equals(resource))) {
-                resources.add(resource);
             }
         }
         return resources;
