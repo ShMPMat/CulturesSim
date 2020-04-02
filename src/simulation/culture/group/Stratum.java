@@ -11,7 +11,6 @@ import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
 
 import java.util.*;
@@ -24,7 +23,7 @@ public class Stratum {
      * How many people already worked on this turn;
      */
     private int workedAmount = 0;
-    private boolean raisedAmount = false;
+    private boolean isRaisedAmount = false;
     private List<Aspect> aspects = new ArrayList<>();
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private List<Meme> popularMemes = new ArrayList<>();
@@ -64,7 +63,7 @@ public class Stratum {
         this.workedAmount += amount;
         if (workedAmount > this.amount) {
             this.amount = workedAmount;
-            raisedAmount = true;
+            isRaisedAmount = true;
         }
         if (amount < 0) {
             int i = 0; //TODO still happens
@@ -83,6 +82,8 @@ public class Stratum {
         if (getAmount() == 0) {
             return;
         }
+        if (!isRaisedAmount && amount > 1)
+            amount--;
         MutableResourcePack pack = use(new AspectController(
                 getAmount(),
                 getAmount(),
@@ -94,7 +95,7 @@ public class Stratum {
         ));
         turnResources.addAll(pack);
         updateTools(accessibleTerritory, populationCenter);
-        raisedAmount = false;
+        isRaisedAmount = false;
     }
 
     public MutableResourcePack use(AspectController controller) {

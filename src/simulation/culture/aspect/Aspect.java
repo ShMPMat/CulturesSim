@@ -209,7 +209,7 @@ public class Aspect {
         ResourcePack pack = EvaluatorsKt.resourceEvaluator(((ConverseWrapper) this).resource).pick(
                 controller.getPopulationCenter().getTurnResources()
         );
-        return controller.pick(
+        return controller.pickCeilingPart(
                 pack.getResources(),
                 r -> r.applyAspect(((ConverseWrapper) this).aspect),
                 (r, n) -> r.applyAndConsumeAspect(((ConverseWrapper) this).aspect, n)
@@ -226,7 +226,7 @@ public class Aspect {
         boolean isFinished = false;
         MutableResourcePack _rp = new MutableResourcePack();
         _rp.addAll(
-                controller.pick(
+                controller.pickCeilingPart(
                         controller.getPopulationCenter().getStratumByAspect(this).getInstrumentByTag(requirementTag).getResources(),
                         r -> Collections.singletonList(r.copy(1)),
                         (r, n) -> Collections.singletonList(r.getCleanPart(n))
@@ -272,7 +272,7 @@ public class Aspect {
         ResourcePack pack = EvaluatorsKt.tagEvaluator(tag).pick(
                 controller.getPopulationCenter().getTurnResources()
         );
-        return controller.pick(
+        return controller.pickCeilingPart(
                 pack.getResources(),
                 r -> Collections.singletonList(r.copy(1)),
                 (r, n) -> Collections.singletonList(r.getCleanPart(n))

@@ -24,7 +24,7 @@ class ConversionDependency(
 
     override fun useDependency(controller: AspectController): AspectResult {
         val resourceInstances = controller.territory.getResourceInstances(resource)
-        val resourcePack = controller.pick(
+        val resourcePack = controller.pickCeilingPart(
                 resourceInstances,
                 { it.applyAspect(aspect) },
                 { r, n -> r.getPart(n).applyAndConsumeAspect(aspect, n) }

@@ -23,7 +23,20 @@ abstract class Request(
 
     abstract fun satisfactionLevel(sample: Resource): Int
 
-    abstract fun end(resourcePack: MutableResourcePack)
+    fun end(resourcePack: MutableResourcePack) {
+        val partPack = evaluator.pick(
+                ceiling,
+                resourcePack.resources,
+                { listOf(it.copy(1)) },
+                { r, n -> listOf(r.getCleanPart(n)) }
+        )
+        val amount = evaluator.evaluate(partPack)
+
+        if (amount < floor)
+            penalty.apply(Pair(group, partPack), amount / floor.toDouble())
+        else
+            reward.apply(Pair(group, partPack), amount / floor.toDouble() - 1)
+    }
 
     fun satisfactionLevel(stratum: Stratum): Int {
         var result = 0
