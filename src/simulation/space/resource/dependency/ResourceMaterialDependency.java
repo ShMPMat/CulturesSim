@@ -14,12 +14,16 @@ public abstract class ResourceMaterialDependency extends CoefficientDependency {
     double amount;
     int currentAmount = 0;
 
-    public ResourceMaterialDependency(double deprivationCoefficient, boolean isNecessary, double amount,
-                                      Collection<String> names) {
+    public ResourceMaterialDependency(
+            double deprivationCoefficient,
+            boolean isNecessary,
+            double amount,
+            Collection<String> names
+    ) {
         super(deprivationCoefficient);
         this.isNecessary = isNecessary;
         this.amount = amount;
-        for (String name: names) {
+        for (String name : names) {
             if (name.charAt(0) == '@') {
                 this.materialNames.add(name.substring(1));
             } else {

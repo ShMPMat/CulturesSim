@@ -105,9 +105,6 @@ public class Group {
     }
 
     void update() {
-        if (!parentGroup.subgroups.contains(this)) {
-            int i = 0;
-        }
         populationCenter.update(territoryCenter.getAccessibleTerritory());
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
@@ -230,9 +227,6 @@ public class Group {
                 getTerritoryCenter().getTerritory().getCenter()
         );
         for (Group group : groups) {
-            if (!group.parentGroup.subgroups.contains(group)) {
-                int i = 0;
-            }
             group.parentGroup.removeGroup(group);
             conglomerate.addGroup(group);
         }
