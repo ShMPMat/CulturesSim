@@ -1,5 +1,6 @@
 package simulation.space.resource.dependency;
 
+import simulation.space.resource.tag.labeler.ResourceTagLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.Resource;
 
@@ -10,8 +11,12 @@ import java.util.Set;
 public class ConsumeDependency extends ResourceMaterialDependency {
     public Set<String> lastConsumed = new HashSet<>();
 
-    public ConsumeDependency(double deprivationCoefficient, boolean isNecessary, double amount, Collection<String> names) {
-        super(deprivationCoefficient, isNecessary, amount, names);
+    public ConsumeDependency(
+            double deprivationCoefficient,
+            boolean isNecessary,
+            double amount,
+            ResourceTagLabeler goodResource) {
+        super(deprivationCoefficient, isNecessary, amount, goodResource);
     }
 
     @Override

@@ -12,6 +12,7 @@ import simulation.space.resource.dependency.ResourceNeedDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
+import simulation.space.resource.tag.labeler.makeLabeler
 
 class ResourceInstantiation(
         private val path: String,
@@ -71,13 +72,13 @@ class ResourceInstantiation(
                 }
                 '^' -> parts.add(tag)
                 '~' -> {
-                    elements = tag.split(":".toRegex()).toTypedArray()
+                    elements = tag.split(";".toRegex()).toTypedArray()
                     if (elements[4] == "CONSUME") {
                         resourceDependencies.add(ConsumeDependency(
                                 elements[2].toDouble(),
                                 elements[3] == "1",
                                 elements[1].toDouble(),
-                                listOf(*elements[0].split(",".toRegex()).toTypedArray())
+                                makeLabeler(elements[0].split(",".toRegex()))
                         ))
                     } else {
                         resourceDependencies.add(ResourceNeedDependency(

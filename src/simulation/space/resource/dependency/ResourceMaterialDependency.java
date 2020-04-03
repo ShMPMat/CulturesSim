@@ -1,15 +1,13 @@
 package simulation.space.resource.dependency;
 
+import simulation.space.resource.tag.labeler.ResourceTagLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.Resource;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public abstract class ResourceMaterialDependency extends CoefficientDependency {
-    private List<String> resourceNames = new ArrayList<>();
-    private List<String> materialNames = new ArrayList<>();
+    private ResourceTagLabeler goodResource;
     private boolean isNecessary;
     double amount;
     int currentAmount = 0;
@@ -18,18 +16,12 @@ public abstract class ResourceMaterialDependency extends CoefficientDependency {
             double deprivationCoefficient,
             boolean isNecessary,
             double amount,
-            Collection<String> names
+            ResourceTagLabeler goodResource
     ) {
         super(deprivationCoefficient);
         this.isNecessary = isNecessary;
         this.amount = amount;
-        for (String name : names) {
-            if (name.charAt(0) == '@') {
-                this.materialNames.add(name.substring(1));
-            } else {
-                this.resourceNames.add(name);
-            }
-        }
+        this.goodResource = goodResource;
     }
 
     @Override
@@ -52,7 +44,6 @@ public abstract class ResourceMaterialDependency extends CoefficientDependency {
     }
 
     boolean isResourceDependency(Resource resource) {
-        return (resourceNames.contains(resource.getSimpleName()) || resource.getGenome().getPrimaryMaterial() != null &&
-                materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.getAmount() > 0;
+        return goodResource.isSuitable(resource.getGenome()) && resource.getAmount() > 0;
     }
 }

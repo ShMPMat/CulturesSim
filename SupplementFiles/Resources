@@ -1,58 +1,60 @@
 /         M - isMoving (whether can be moved), L - hasLegacy, N - canMove
 /
-/         ~Names divided with comma with @ - Materials,
-/          without - Resources:Required amount per Resource:
-/          Deprivation coefficient (the bigger it is the harder the time without this resource):Whether necessary:TypeName
+/         ~tag labeler template with comma as a divisor
+/          :Required amount per Resource
+/          :Deprivation coefficient (the bigger it is the harder the time without this resource)
+/          :Whether necessary
+/          :TypeName
 /          R - whether Resource will resist
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -Plant           0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.00025:2:0:CONSUME
+        ~r:Vapour;0.00025;2;0;CONSUME
         ^SoftBranch:15 ^Leaf:100 ^Fruit:2    ^Seed:2 ^SoftRoot:5
         #Water
 
 -ColdPlant       0.1     1      15         -30     0   50         0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.0001:2:0:CONSUME
+        ~r:Vapour;0.0001;2;0;CONSUME
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
         #Water
 
 -DwarfBirch      0.1     1      15         -30     20  40         0             0 0 0  Plant        @PlantFibre
-        ~Vapour:0.0001:2:0:CONSUME
+        ~r:Vapour;0.0001;2;0;CONSUME
         ^SoftBranch:15 ^Leaf:30              ^Seed:2 ^SoftRoot:5
         #Water
 
 -Cactus          0.2     1      15         10     50   50         0             0 0 0  Plant        @PlantFibre
-        ~@PlantFibre:1:2:0:AVOID
+        ~m:PlantFibre;1;2;0;AVOID
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
         #Water
 
 -Tree            0.05    5      40         0       30   100       0             0 0 0  Plant        @Wood
-        ~Vapour:0.001:2:0:CONSUME
+        ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
 
 -NutTree         0.05    5      40         0       30   10        0             0 0 0  Plant        @Wood
-        ~Vapour:0.001:2:0:CONSUME
+        ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
         #Water
 
 -JungleTree      0.05    5      40         20       40   150       0             0 0 0  Plant        @Wood
-        ~Vapour:0.1:2:0:CONSUME
+        ~r:Vapour;0.1;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
 
 -Reed            0.25    1      5          5       30   50        0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.01:2:0:CONSUME
+        ~r:Vapour;0.01;2;0;CONSUME
         ^SoftBranch:1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
         #Water
 
 -Grass           0.25    0.1    5          5       30   1000      0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.0000001:2:0:CONSUME
+        ~r:Vapour;0.0000001;2;0;CONSUME
         ^Leaf:3
         #Water
 
 -Moss            0.06    0.05   20         -10     30   100       0             1 0 0  Plant        @PlantFibre
-        ~Vapour:0.001:2:0:CONSUME
+        ~r:Vapour;0.0001;2;0;CONSUME
         ^PlantFibre:1
         #Water
 
@@ -61,45 +63,45 @@
         #Normal:Mountain:Ice:Woods:Growth
 
 -Herbivore       0.08    1      20         0       30   25        0             1 0 1  Animal       @Meat
-        ~@PlantFibre:0.2:2:0:CONSUME
+        ~m:PlantFibre;0.2;2;0;CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
         #Water
 
 -Mouse           0.25    0.05   5          -5      35   100       0             1 0 1  Animal       @Meat
-        ~@PlantFibre:0.02:2:0:CONSUME
+        ~m:PlantFibre;0.02;2;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
         #Water
         R
 
 -Predator        0.08    1      20         0       30   5         0             1 0 1  Animal       @Meat
-        ~@Meat:0.1:1.25:0:CONSUME
+        ~m:Meat;0.1;1.25;0;CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
         #Water
         R
 
 -Bird            0.15    0.1    10         0       30   40        0             1 0 1  Animal       @Meat
-        ~Insect:1:2:0:CONSUME
+        ~r:Insect;1;2;0;CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10,Blood:3
         #Water
         R
 
 -Insect          0.25    0.02   5          0       30   500       0             1 0 1  Animal       @Chitin
-        ~@PlantFibre:0.01:100:0:CONSUME
+        ~m:PlantFibre;0.01;100;0;CONSUME
         +Killing:Chitin:1,Meat:1
         #Water
 
 -Mushroom        0.1     0.05   11         0       30   200       0             1 0 0  Plant        @Fungus
-        ~Vapour:0.1:100:0:CONSUME
+        ~r:Vapour;0.1;100;0;CONSUME
         #Water
 
 -Fish            0.15    0.1    10         -20     30   100       0             1 0 1  Animal       @Meat
-        ~@PlantFibre:0.0001:10:0:CONSUME
+        ~m:PlantFibre;0.0001;10;0;CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
 -PredatorFish    0.15    0.1    10         -20     30   10        0             1 0 1  Animal       @Meat
-        ~@Meat:0.025:1.25:0:CONSUME
+        ~m:Meat;0.025;1.25;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
