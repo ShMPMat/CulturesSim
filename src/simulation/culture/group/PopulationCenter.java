@@ -43,9 +43,10 @@ public class PopulationCenter {
     }
 
     public int getFreePopulation() {
-        return population - strata.stream()
+        int freePopulation = population - strata.stream()
                 .map(Stratum::getPopulation)
                 .reduce(0, Integer::sum);
+        return freePopulation;
     }
 
     int getMaxPopulation(Territory controlledTerritory) {
@@ -69,6 +70,9 @@ public class PopulationCenter {
         try {
             if (stratum.getPopulation() < amount) {
                 amount = Math.min(amount, getFreePopulation());
+            }
+            if (amount == 0) {
+                return 0;
             }
             stratum.useAmount(amount);
             int delta = -getFreePopulation();
@@ -95,7 +99,7 @@ public class PopulationCenter {
 
     void decreasePopulation(int amount) {
         if (getFreePopulation() < 0) {
-            int i = 0; //TODO still happens
+            throw new GroupError("Negative population in a PopulationCenter");
         }
         amount = Math.min(population, amount);
         int delta = amount - getFreePopulation();

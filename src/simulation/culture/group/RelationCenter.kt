@@ -30,7 +30,7 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
     }
 
     private fun updateNewConnections(groups: Collection<Group>, owner: Group) {
-        if (relations.map { it.owner }.any { it != owner }) throw GroupException("Incoherent owner for relations")
+        if (relations.map { it.owner }.any { it != owner }) throw GroupError("Incoherent owner for relations")
         for (group in groups) {
             if (!relationsMap.containsKey(group)) {
                 val relation = Relation(owner, group)

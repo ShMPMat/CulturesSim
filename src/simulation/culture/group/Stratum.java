@@ -60,13 +60,13 @@ public class Stratum {
     }
 
     public void useAmount(int amount) {
+        if (amount <= 0) {
+            return;
+        }
         this.workedAmount += amount;
         if (workedAmount > population) {
             this.population = workedAmount;
             isRaisedAmount = true;
-        }
-        if (amount < 0) {
-            int i = 0; //TODO still happens
         }
     }
 
