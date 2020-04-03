@@ -46,7 +46,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     fun migrate(): Boolean {
         val newCenter = migrationTile ?: return false
         territory.center = newCenter
-        claimTile(newCenter) //TODO move claim and leave here
+        claimTile(newCenter)
         leaveTiles(territory.getTiles { !isTileReachable(it) })
         return true
     }

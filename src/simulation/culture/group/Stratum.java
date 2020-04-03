@@ -18,9 +18,9 @@ import java.util.*;
 import static simulation.Controller.session;
 
 public class Stratum {
-    private int amount;
+    private int population;
     /**
-     * How many people already worked on this turn;
+     * How many people have already worked on this turn;
      */
     private int workedAmount = 0;
     private boolean isRaisedAmount = false;
@@ -28,8 +28,8 @@ public class Stratum {
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
-    public Stratum(int amount, Aspect aspect) {
-        this.amount = amount;
+    public Stratum(int population, Aspect aspect) {
+        this.population = population;
         aspects.add(aspect);
         aspect.getDependencies().getMap().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
@@ -43,8 +43,8 @@ public class Stratum {
         return resourcePack == null ? new MutableResourcePack() : resourcePack;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getPopulation() {
+        return population;
     }
 
     public List<Aspect> getAspects() {
@@ -56,13 +56,13 @@ public class Stratum {
     }
 
     public void decreaseAmount(int delta) {
-        this.amount -= delta;
+        population -= delta;
     }
 
     public void useAmount(int amount) {
         this.workedAmount += amount;
-        if (workedAmount > this.amount) {
-            this.amount = workedAmount;
+        if (workedAmount > population) {
+            this.population = workedAmount;
             isRaisedAmount = true;
         }
         if (amount < 0) {
@@ -70,23 +70,19 @@ public class Stratum {
         }
     }
 
-    public void freeAmount(int delta) {
-        amount -= delta;
-    }
-
     public void addAspect(Aspect aspect) {
         aspects.add(aspect);
     }
 
     void update(MutableResourcePack turnResources, Territory accessibleTerritory, PopulationCenter populationCenter) {
-        if (getAmount() == 0) {
+        if (getPopulation() == 0) {
             return;
         }
-        if (!isRaisedAmount && amount > 1)
-            amount--;
+        if (!isRaisedAmount && population > 1)
+            population--;
         MutableResourcePack pack = use(new AspectController(
-                getAmount(),
-                getAmount(),
+                getPopulation(),
+                getPopulation(),
                 EvaluatorsKt.getPassingEvaluator(),
                 populationCenter,
                 accessibleTerritory,
@@ -119,7 +115,7 @@ public class Stratum {
         }
         for (Map.Entry<ResourceTag, MutableResourcePack> entry: dependencies.entrySet()) {
             int currentAmount = entry.getValue().getAmount();
-            if (currentAmount >= amount) {
+            if (currentAmount >= population) {
                 continue;
             }
             if (!entry.getKey().isInstrumental()) {
@@ -127,7 +123,7 @@ public class Stratum {
             }
             ResourceEvaluator evaluator = EvaluatorsKt.tagEvaluator(entry.getKey());
             for (Aspect aspect: aspects) {//TODO choose the best
-                if (currentAmount >= amount) {
+                if (currentAmount >= population) {
                     break;
                 }
                 Set<Dependency> deps = aspect.getDependencies().getMap().get(entry.getKey());
@@ -135,7 +131,7 @@ public class Stratum {
                     for (Dependency dependency: deps) {
                         AspectResult result = dependency.useDependency(
                                 new AspectController(
-                                        amount - currentAmount,
+                                        population - currentAmount,
                                         1,
                                         evaluator,
                                         populationCenter,
@@ -146,7 +142,7 @@ public class Stratum {
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);
                             entry.getValue().addAll(evaluator.pick(result.resources));//TODO disband
-                            if (currentAmount >= amount) {
+                            if (currentAmount >= population) {
                                 break;
                             }
                         }
@@ -154,7 +150,6 @@ public class Stratum {
                 }
             }
         }
-        amount -= amount > workedAmount ? 1 : 0;
         workedAmount = 0;
     }
 
@@ -179,7 +174,7 @@ public class Stratum {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
-        stringBuilder.append(amount).append(", aspects: ");
+        stringBuilder.append(population).append(", aspects: ");
         for (Aspect aspect: aspects) {
             stringBuilder.append(aspect.getName()).append(" ");
         }

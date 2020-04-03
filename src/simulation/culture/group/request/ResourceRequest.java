@@ -5,11 +5,9 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.Group;
 import simulation.culture.group.Stratum;
-import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
-import simulation.space.resource.ResourcePack;
+import simulation.space.resource.Resource;
 
-import java.util.Collections;
 import java.util.function.BiFunction;
 
 public class ResourceRequest extends Request {

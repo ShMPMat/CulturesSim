@@ -44,9 +44,8 @@ public class PopulationCenter {
 
     public int getFreePopulation() {
         return population - strata.stream()
-                .map(Stratum::getAmount)
-                .reduce(Integer::sum)
-                .orElse(0);
+                .map(Stratum::getPopulation)
+                .reduce(0, Integer::sum);
     }
 
     int getMaxPopulation(Territory controlledTerritory) {
@@ -68,10 +67,15 @@ public class PopulationCenter {
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
         Stratum stratum = getStratumByAspect(aspect);
         try {
-            if (stratum.getAmount() < amount) {
+            if (stratum.getPopulation() < amount) {
                 amount = Math.min(amount, getFreePopulation());
             }
             stratum.useAmount(amount);
+            int delta = -getFreePopulation();
+            if (delta > 0) {
+                stratum.decreaseAmount(delta);
+                amount -= delta;
+            }
             return amount;
         } catch (NullPointerException e) {
             throw new RuntimeException("No stratum for Aspect");
@@ -85,7 +89,7 @@ public class PopulationCenter {
     void goodConditionsGrow(double fraction, Territory territory) {
         population += ((int) (fraction * population)) / 10 + 1;
         if (isMaxReached(territory)) {
-            population = getMaxPopulation(territory);
+            decreasePopulation(population - getMaxPopulation(territory));
         }
     }
 
@@ -97,14 +101,11 @@ public class PopulationCenter {
         int delta = amount - getFreePopulation();
         if (delta > 0) {
             for (Stratum stratum : strata) {
-                int part = (int) Math.min(amount * (((double) stratum.getAmount()) / population) + 1, stratum.getAmount());
-                stratum.freeAmount(part);
+                int part = (int) Math.min(amount * (((double) stratum.getPopulation()) / population) + 1, stratum.getPopulation());
+                stratum.decreaseAmount(part);
             }
         }
         population -= amount;
-        if (getFreePopulation() < 0) {
-            int i = 0; //TODO still happens
-        }
     }
 
     void update(Territory accessibleTerritory) {
@@ -155,23 +156,19 @@ public class PopulationCenter {
 
     PopulationCenter getPart(double fraction) {
         int populationPart = (int) (fraction * population);
-        population -= populationPart;
-        PopulationCenter populationCenter = new PopulationCenter(
+        decreasePopulation(populationPart);
+        return new PopulationCenter(
                 populationPart,
                 maxPopulation,
                 minPopulation
         );
-        for (Stratum stratum : getStrata()) {
-            stratum.decreaseAmount((int) (stratum.getAmount() * fraction));
-        }
-        return populationCenter;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Stratum stratum : strata) {
-            if (stratum.getAmount() != 0) {
+            if (stratum.getPopulation() != 0) {
                 stringBuilder.append(stratum).append("\n");
             }
         }
