@@ -1,7 +1,6 @@
 package simulation.culture.thinking.language.templates
 
 import shmp.random.randomElement
-import shmp.random.randomElementWithProbability
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.CultureCenter
@@ -35,7 +34,7 @@ fun complicateInfo(
                 when {
                     m.observerWord == "!n!" -> value.topMemeCopy()
                     templateBase.templateChars.contains(m.observerWord[0]) -> {
-                        substitutions[key.toString() + m.observerWord] = randomElementWithProbability(
+                        substitutions[key.toString() + m.observerWord] = randomElement(
                                 templateBase.wordBase[m.observerWord]!!,
                                 { groupMemes.getMeme(it.observerWord).importance.toDouble() },
                                 random

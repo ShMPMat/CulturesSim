@@ -1,6 +1,6 @@
 package simulation.culture.group.reason
 
-import shmp.random.randomElementWithProbability
+import shmp.random.randomElement
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.Group
 import kotlin.random.Random
@@ -17,7 +17,7 @@ fun constructBetterAspectUseReason(
     var i = 0
     do {
         if (converseWrappers.isEmpty()) return null
-        converseWrapper = randomElementWithProbability(
+        converseWrapper = randomElement(
                 converseWrappers,
                 { it.usefulness.toDouble().coerceAtLeast(1.0) },
                 random

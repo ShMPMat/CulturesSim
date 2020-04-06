@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static shmp.random.RandomCollectionsKt.randomElementWithProbability;
+import static shmp.random.RandomCollectionsKt.randomElement;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static simulation.Controller.session;
 
@@ -164,7 +164,7 @@ public class CultureAspectCenter {
         List<Pair<CultureAspect, Group>> cultureAspects = getNeighbourCultureAspects(a -> !aspectPool.contains(a));
         if (!cultureAspects.isEmpty()) {
             try {
-                CultureAspect aspect = randomElementWithProbability(
+                CultureAspect aspect = randomElement(
                         cultureAspects,
                         a -> group.getRelationCenter().getNormalizedRelation(a.getSecond()),
                         session.random

@@ -235,7 +235,7 @@ public class AspectCenter {
 
         if (!allExistingAspects.isEmpty()) {
             try {
-                Pair<Aspect, Group> pair = randomElementWithProbability(
+                Pair<Aspect, Group> pair = randomElement(
                         allExistingAspects,
                         p -> p.getFirst().getUsefulness() * group.getRelationCenter().getNormalizedRelation(p.getSecond()),
                         session.random
