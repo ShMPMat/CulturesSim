@@ -124,6 +124,11 @@ public class Group {
     }
 
     private boolean shouldMigrate() {
+        if ((!cultureCenter.getAspirations().isEmpty()) != resourceCenter.hasDireNeed() && resourceCenter.hasDireNeed() == false) {
+            boolean culture = !cultureCenter.getAspirations().isEmpty();
+            boolean resource = resourceCenter.hasDireNeed();
+            int i = 0;
+        }
         return !cultureCenter.getAspirations().isEmpty();
     }
 

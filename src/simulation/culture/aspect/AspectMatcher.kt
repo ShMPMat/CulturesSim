@@ -2,10 +2,10 @@ package simulation.culture.aspect
 
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePool
-import simulation.space.resource.tag.labeler.ResourceTagLabeler
+import simulation.space.resource.tag.labeler.ResourceLabeler
 
 class AspectMatcher(
-        private val labeler: ResourceTagLabeler,
+        private val labeler: ResourceLabeler,
         private val results: List<Pair<String, Int>>,
         private val coreName: String
 ) {

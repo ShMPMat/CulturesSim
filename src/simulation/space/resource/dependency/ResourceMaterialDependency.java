@@ -1,13 +1,11 @@
 package simulation.space.resource.dependency;
 
-import simulation.space.resource.tag.labeler.ResourceTagLabeler;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.Resource;
 
-import java.util.Collection;
-
 public abstract class ResourceMaterialDependency extends CoefficientDependency {
-    private ResourceTagLabeler goodResource;
+    private ResourceLabeler goodResource;
     private boolean isNecessary;
     double amount;
     int currentAmount = 0;
@@ -16,7 +14,7 @@ public abstract class ResourceMaterialDependency extends CoefficientDependency {
             double deprivationCoefficient,
             boolean isNecessary,
             double amount,
-            ResourceTagLabeler goodResource
+            ResourceLabeler goodResource
     ) {
         super(deprivationCoefficient);
         this.isNecessary = isNecessary;

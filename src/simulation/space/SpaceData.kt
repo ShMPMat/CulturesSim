@@ -1,7 +1,6 @@
 package simulation.space
 
 import simulation.space.resource.tag.TagMatcher
-import simulation.space.resource.tag.labeler.ResourceTagLabeler
 
 object SpaceData {
     private var wasCalled = false

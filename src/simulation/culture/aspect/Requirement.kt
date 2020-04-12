@@ -1,5 +1,5 @@
 package simulation.culture.aspect
 
-import simulation.space.resource.tag.labeler.ResourceTagLabeler
+import simulation.space.resource.tag.labeler.ResourceLabeler
 
-data class Requirement(val labeler: ResourceTagLabeler, val isInstrumental: Boolean)
+data class Requirement(val labeler: ResourceLabeler, val isInstrumental: Boolean)

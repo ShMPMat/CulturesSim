@@ -75,6 +75,11 @@ public class CultureCenter {
         if (aspirations.stream().noneMatch(aspir -> aspir.equals(aspiration))) {
             aspirations.add(aspiration);
         }
+        group.getResourceCenter().addNeeded(aspiration.getLabeler(), 100);
+    }
+
+    private void removeAspiration(Aspiration aspiration) {
+        aspirations.remove(aspiration);
     }
 
     public void addResourceWant(Resource resource) {
@@ -152,10 +157,6 @@ public class CultureCenter {
         }
     }
 
-    private void removeAspiration(Aspiration aspiration) {
-        aspirations.remove(aspiration);
-    }
-
     private void createArtifact() {
         if (testProbability(0.1, session.random)) {
             if (memePool.isEmpty()) {
@@ -188,11 +189,13 @@ public class CultureCenter {
     }
 
     private void tryToFulfillAspirations() {
-        Optional<Aspiration> _o = getAspirations().stream().max((Comparator.comparingInt(o -> o.level)));
+        Optional<Aspiration> _o = aspirations.stream().max((Comparator.comparingInt(o -> o.level)));
         if (_o.isPresent()) {
             Aspiration aspiration = _o.get();
+            aspiration.usedOn = session.world.getTurn();
             List<Pair<Aspect, Group>> options = aspectCenter.findOptions(aspiration);
             if (options.isEmpty()) {
+                aspirations.forEach(a -> group.getResourceCenter().addNeeded(a.getLabeler(), 100));
                 return;
             }
             Pair<Aspect, Group> pair = randomElement(options, session.random);
@@ -215,6 +218,7 @@ public class CultureCenter {
                         ));
             }
         }
+        aspirations.forEach(a -> group.getResourceCenter().addNeeded(a.getLabeler(), 100));
     }
 
     Set<Aspect> finishAspectUpdate() {

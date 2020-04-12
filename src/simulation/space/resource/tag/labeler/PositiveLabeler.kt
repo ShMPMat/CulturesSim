@@ -2,6 +2,6 @@ package simulation.space.resource.tag.labeler
 
 import simulation.space.resource.Genome
 
-class PositiveLabeler : ResourceTagLabeler {
+class PositiveLabeler : ResourceLabeler {
     override fun isSuitable(genome: Genome) = true
 }

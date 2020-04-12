@@ -3,15 +3,15 @@ package simulation.space.resource.tag.labeler
 import simulation.space.resource.material.Material
 import simulation.space.resource.tag.*
 
-fun makeLabeler(tags: Collection<String>): ResourceTagLabeler {
-    val labelers = ArrayList<ResourceTagLabeler>()
+fun makeLabeler(tags: Collection<String>): ResourceLabeler {
+    val labelers = ArrayList<ResourceLabeler>()
     for (tag in tags) {
         labelers.add(getLabel(tag.take(2), tag.drop(2)))
     }
     return ConcatLabeler(labelers)
 }
 
-private fun getLabel(key: String, value: String): ResourceTagLabeler = when (key) {
+private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {
     "t:" -> TagLabeler(ResourceTag(value))
     "m:" -> PrimaryMaterialLabeler(Material(value, 0.0, listOf()))
     "r:" -> SimpleNameLabeler(value)

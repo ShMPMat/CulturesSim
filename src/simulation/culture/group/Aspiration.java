@@ -4,6 +4,8 @@ import simulation.culture.aspect.Aspect;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.space.resource.Resource;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
+import simulation.space.resource.tag.labeler.TagLabeler;
 
 import java.util.Objects;
 
@@ -12,31 +14,25 @@ import java.util.Objects;
  */
 public class Aspiration {
     int level;
+    String usedOn;
     private ResourceTag need;
-    private Resource resource;
+    private String turn;
 
-    public Aspiration(int level, ResourceTag need) {
+    public Aspiration(int level, ResourceTag need, String turn) {
         this.level = level;
         this.need = need;
-        resource = null;
-    }
-
-    public Aspiration(int level, Resource resource) {
-        this.level = level;
-        this.resource = resource;
-        need = null;
+        this.turn = turn;
     }
 
     boolean isAcceptable(Aspect aspect) {
         if (need != null) {
             return aspect.getTags().contains(need);
         }
-        if (resource != null) {
-            if (aspect instanceof ConverseWrapper) {
-                return ((ConverseWrapper) aspect).getProducedResources().contains(resource);
-            }
-        }
         return false;
+    }
+
+    ResourceLabeler getLabeler() {
+        return new TagLabeler(need);
     }
 
     @Override
@@ -44,7 +40,7 @@ public class Aspiration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Aspiration that = (Aspiration) o;
-        return Objects.equals(need, that.need) && Objects.equals(resource, that.resource);
+        return Objects.equals(need, that.need);
     }
 
     @Override
@@ -56,9 +52,6 @@ public class Aspiration {
     public String toString() {
         if (need != null) {
             return need.name;
-        }
-        if (resource != null) {
-            return resource.getBaseName();
         }
         return "WRONG ASPIRATION";
     }

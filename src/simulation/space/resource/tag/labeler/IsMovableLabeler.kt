@@ -2,7 +2,7 @@ package simulation.space.resource.tag.labeler
 
 import simulation.space.resource.Genome
 
-class IsMovableLabeler : ResourceTagLabeler {
+class IsMovableLabeler : ResourceLabeler {
     override fun isSuitable(genome: Genome) = genome.isMovable
 
     override fun equals(other: Any?): Boolean {
