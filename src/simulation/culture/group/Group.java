@@ -124,12 +124,7 @@ public class Group {
     }
 
     private boolean shouldMigrate() {
-        if ((!cultureCenter.getAspirations().isEmpty()) != resourceCenter.hasDireNeed() && resourceCenter.hasDireNeed() == false) {
-            boolean culture = !cultureCenter.getAspirations().isEmpty();
-            boolean resource = resourceCenter.hasDireNeed();
-            int i = 0;
-        }
-        return !cultureCenter.getAspirations().isEmpty();
+        return resourceCenter.hasDireNeed();
     }
 
     Group populationUpdate() {
@@ -262,11 +257,11 @@ public class Group {
         for (Aspect aspect : cultureCenter.getAspectCenter().getAspectPool().getAll()) {
             stringBuilder.append(aspect).append("\n\n");
         }
-        stringBuilder.append("Aspirations: ");
-        for (Aspiration aspiration : getCultureCenter().getAspirations()) {
-            stringBuilder.append(aspiration).append(", ");
-        }
-        stringBuilder.append((cultureCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
+        stringBuilder.append("Needed resources: ");
+//        for (Aspiration aspiration : getCultureCenter().getAspirations()) {//TODO to needed Respirces
+//            stringBuilder.append(aspiration).append(", ");
+//        }
+//        stringBuilder.append((cultureCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append("Requests: ");
         for (Request request : cultureCenter.getRequests()) {
             stringBuilder.append(request).append(", ");

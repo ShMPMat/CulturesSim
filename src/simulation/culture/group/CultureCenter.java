@@ -19,6 +19,7 @@ import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
 import simulation.space.resource.tag.ResourceTag;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.TileTag;
 
 import java.util.*;
@@ -34,7 +35,6 @@ import static simulation.culture.group.GroupEffectFunctionsKt.starve;
 public class CultureCenter {
     private AspectCenter aspectCenter;
     private CultureAspectCenter cultureAspectCenter;
-    private List<Aspiration> aspirations = new ArrayList<>();
     private Group group;
     private List<Event> events = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
@@ -45,10 +45,6 @@ public class CultureCenter {
         this.memePool = memePool;
         this.aspectCenter = new AspectCenter(group, aspects);
         this.cultureAspectCenter = new CultureAspectCenter(group, new HashSet<>());
-    }
-
-    List<Aspiration> getAspirations() {
-        return aspirations;
     }
 
     public AspectCenter getAspectCenter() {
@@ -71,15 +67,8 @@ public class CultureCenter {
         return memePool;
     }
 
-    void addAspiration(Aspiration aspiration) {
-        if (aspirations.stream().noneMatch(aspir -> aspir.equals(aspiration))) {
-            aspirations.add(aspiration);
-        }
-        group.getResourceCenter().addNeeded(aspiration.getLabeler(), 100);
-    }
-
-    private void removeAspiration(Aspiration aspiration) {
-        aspirations.remove(aspiration);
+    void addAspiration(ResourceLabeler labeler) {
+        group.getResourceCenter().addNeeded(labeler, 100);
     }
 
     public void addResourceWant(Resource resource) {
@@ -189,36 +178,32 @@ public class CultureCenter {
     }
 
     private void tryToFulfillAspirations() {
-        Optional<Aspiration> _o = aspirations.stream().max((Comparator.comparingInt(o -> o.level)));
-        if (_o.isPresent()) {
-            Aspiration aspiration = _o.get();
-            aspiration.usedOn = session.world.getTurn();
-            List<Pair<Aspect, Group>> options = aspectCenter.findOptions(aspiration);
-            if (options.isEmpty()) {
-                aspirations.forEach(a -> group.getResourceCenter().addNeeded(a.getLabeler(), 100));
-                return;
-            }
-            Pair<Aspect, Group> pair = randomElement(options, session.random);
-            aspectCenter.addAspect(pair.getFirst());
-            removeAspiration(aspiration);
-            if (pair.getSecond() == null) {
-                events.add(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                        " developed aspect " + pair.getFirst().getName(), "group", this));
-            } else {
-                events.add(
-                        new Event(Event.Type.AspectGaining,
-                                String.format(
-                                        "Group %s took aspect %s from group %s",
-                                        group.name,
-                                        pair.getFirst().getName(),
-                                        pair.getSecond().name
-                                ),
-                                "group",
-                                this
-                        ));
-            }
+        Pair<ResourceLabeler, ResourceNeed> need = group.getResourceCenter().getDireNeed();
+        if (need == null) {
+            return;
         }
-        aspirations.forEach(a -> group.getResourceCenter().addNeeded(a.getLabeler(), 100));
+        List<Pair<Aspect, Group>> options = aspectCenter.findOptions(need.getFirst());
+        if (options.isEmpty()) {
+            return;
+        }
+        Pair<Aspect, Group> pair = randomElement(options, session.random);
+        aspectCenter.addAspect(pair.getFirst());
+        if (pair.getSecond() == null) {
+            events.add(new Event(Event.Type.AspectGaining, "Group " + group.name +
+                    " developed aspect " + pair.getFirst().getName(), "group", this));
+        } else {
+            events.add(
+                    new Event(Event.Type.AspectGaining,
+                            String.format(
+                                    "Group %s took aspect %s from group %s",
+                                    group.name,
+                                    pair.getFirst().getName(),
+                                    pair.getSecond().name
+                            ),
+                            "group",
+                            this
+                    ));
+        }
     }
 
     Set<Aspect> finishAspectUpdate() {

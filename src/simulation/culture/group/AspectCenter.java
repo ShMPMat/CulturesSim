@@ -8,6 +8,7 @@ import simulation.culture.aspect.MutableAspectPool;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.*;
 import simulation.space.resource.Resource;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -181,11 +182,11 @@ public class AspectCenter {
         }
     }
 
-    List<Pair<Aspect, Group>> findOptions(Aspiration aspiration) {
+    List<Pair<Aspect, Group>> findOptions(ResourceLabeler labeler) {
         List<Pair<Aspect, Group>> options = new ArrayList<>();
-
+        AspectLabeler aspectLabeler = new AspectLabeler(labeler);
         for (Aspect aspect : session.world.getAspectPool().getAll().stream()
-                .filter(aspiration::isAcceptable)
+                .filter(aspectLabeler::isSuitable)
                 .collect(Collectors.toList())) {
             AspectDependencies _m = calculateDependencies(aspect);
             if (aspect.isDependenciesOk(_m)) {
@@ -193,7 +194,7 @@ public class AspectCenter {
             }
         }
 
-        getAllPossibleConverseWrappers().stream().filter(aspiration::isAcceptable)
+        getAllPossibleConverseWrappers().stream().filter(aspectLabeler::isSuitable)
                 .forEach(wrapper -> options.add(new Pair<>(wrapper, null)));
 
         List<Pair<Aspect, Group>> aspects = getNeighbourAspects();
@@ -201,7 +202,7 @@ public class AspectCenter {
             Aspect aspect = pair.getFirst();
             Group aspectGroup = pair.getSecond();
             AspectDependencies _m = calculateDependencies(aspect);
-            if (aspiration.isAcceptable(aspect) && aspect.isDependenciesOk(_m)) {
+            if (aspectLabeler.isSuitable(aspect) && aspect.isDependenciesOk(_m)) {
                 aspect = aspect.copy(_m);
                 options.add(new Pair<>(aspect, aspectGroup));
             }
