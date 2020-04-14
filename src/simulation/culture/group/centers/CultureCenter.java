@@ -1,4 +1,4 @@
-package simulation.culture.group;
+package simulation.culture.group.centers;
 
 import kotlin.Pair;
 import simulation.Controller;
@@ -7,6 +7,7 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
@@ -29,8 +30,8 @@ import java.util.stream.Collectors;
 import static shmp.random.RandomCollectionsKt.randomElement;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static simulation.Controller.session;
-import static simulation.culture.group.GroupEffectFunctionsKt.freeze;
-import static simulation.culture.group.GroupEffectFunctionsKt.starve;
+import static simulation.culture.group.centers.GroupEffectFunctionsKt.freeze;
+import static simulation.culture.group.centers.GroupEffectFunctionsKt.starve;
 
 public class CultureCenter {
     private AspectCenter aspectCenter;

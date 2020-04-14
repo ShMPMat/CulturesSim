@@ -1,5 +1,6 @@
 package simulation.culture.group
 
+import simulation.culture.group.centers.Group
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 

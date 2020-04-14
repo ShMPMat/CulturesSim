@@ -1,6 +1,6 @@
 package simulation.culture.aspect
 
-import simulation.culture.group.PopulationCenter
+import simulation.culture.group.centers.PopulationCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.Territory

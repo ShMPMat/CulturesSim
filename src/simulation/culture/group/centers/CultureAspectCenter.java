@@ -1,4 +1,4 @@
-package simulation.culture.group;
+package simulation.culture.group.centers;
 
 
 import kotlin.Pair;

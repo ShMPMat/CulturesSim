@@ -1,5 +1,6 @@
-package simulation.culture.group
+package simulation.culture.group.centers
 
+import simulation.culture.group.GroupError
 import simulation.culture.group.intergroup.Relation
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance

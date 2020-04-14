@@ -1,7 +1,7 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
-import simulation.culture.group.Group
+import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random

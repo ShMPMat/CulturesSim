@@ -3,7 +3,7 @@ package simulation.culture.thinking.language.templates
 import shmp.random.randomElement
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.group.CultureCenter
+import simulation.culture.group.centers.CultureCenter
 import simulation.culture.thinking.meaning.*
 import simulation.space.resource.Resource
 import simulation.space.resource.dependency.ConsumeDependency

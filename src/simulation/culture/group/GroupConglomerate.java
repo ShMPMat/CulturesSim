@@ -3,6 +3,10 @@ package simulation.culture.group;
 import extra.OutputFunc;
 import simulation.Event;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.group.centers.Group;
+import simulation.culture.group.centers.PopulationCenter;
+import simulation.culture.group.centers.RelationCenter;
+import simulation.culture.group.centers.ResourceCenter;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.thinking.meaning.Meme;
@@ -156,18 +160,18 @@ public class GroupConglomerate {
         }
     }
 
-    void claimTile(Tile tile) {
+    public void claimTile(Tile tile) {
         territory.add(tile);
     }
 
-    void addGroup(Group group) {
+    public void addGroup(Group group) {
         subgroups.add(group);
         computePopulation();
         group.getTerritoryCenter().getTerritory().getTiles().forEach(this::claimTile);
         group.setParentGroup(this);
     }
 
-    int getClosestInnerGroupDistance(Tile tile) {
+    public int getClosestInnerGroupDistance(Tile tile) {
         int d = Integer.MAX_VALUE;
         for (Group subgroup : subgroups) {
             d = min(
@@ -181,7 +185,7 @@ public class GroupConglomerate {
         return d;
     }
 
-    void removeGroup(Group group) {
+    public void removeGroup(Group group) {
         population -= group.getPopulationCenter().getPopulation();
         if (!subgroups.remove(group)) {
             throw new RuntimeException("Trying to remove non-child subgroup " + group.name + " from Group " + name);
@@ -193,7 +197,7 @@ public class GroupConglomerate {
         subgroups.forEach(Group::finishUpdate);
     }
 
-    void removeTile(Tile tile) {
+    public void removeTile(Tile tile) {
         if (tile == null) {
             return;
         }

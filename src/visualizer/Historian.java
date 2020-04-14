@@ -1,7 +1,7 @@
 package visualizer;
 
 import simulation.World;
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 
 /**
  * Compiles world history;

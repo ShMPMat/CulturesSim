@@ -1,11 +1,10 @@
 package visualizer
 
-import simulation.culture.group.Group
+import simulation.culture.group.centers.Group
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
-import simulation.space.resource.Resource
 import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.abs

@@ -4,7 +4,7 @@ import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.MeaningInserter
-import simulation.culture.group.Group
+import simulation.culture.group.centers.Group
 import simulation.culture.group.GroupConglomerate
 import simulation.space.resource.ResourcePool
 import simulation.space.tile.Tile

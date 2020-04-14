@@ -4,14 +4,12 @@ import simulation.Controller;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 import simulation.culture.group.reason.Reason;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
-import simulation.space.resource.ResourcePack;
 
 import java.util.Objects;
 

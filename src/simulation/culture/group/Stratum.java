@@ -3,6 +3,7 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.group.centers.PopulationCenter;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.culture.thinking.meaning.MemePool;
@@ -74,7 +75,7 @@ public class Stratum {
         aspects.add(aspect);
     }
 
-    void update(MutableResourcePack turnResources, Territory accessibleTerritory, PopulationCenter populationCenter) {
+    public void update(MutableResourcePack turnResources, Territory accessibleTerritory, PopulationCenter populationCenter) {
         if (getPopulation() == 0) {
             return;
         }
@@ -153,7 +154,7 @@ public class Stratum {
         workedAmount = 0;
     }
 
-    void finishUpdate(MemePool pool) {
+    public void finishUpdate(MemePool pool) {
         popularMemes.forEach(pool::strengthenMeme);
         popularMemes.clear();
     }

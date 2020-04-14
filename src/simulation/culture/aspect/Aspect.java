@@ -2,7 +2,7 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
-import simulation.culture.group.AspectCenter;
+import simulation.culture.group.centers.AspectCenter;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;

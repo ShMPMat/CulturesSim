@@ -1,9 +1,10 @@
-package simulation.culture.group
+package simulation.culture.group.centers
 
 import extra.SpaceProbabilityFuncs
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Event
+import simulation.culture.group.*
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance

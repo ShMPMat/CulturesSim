@@ -3,8 +3,7 @@ package simulation.culture.aspect.dependency
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.AspectResult
-import simulation.culture.group.AspectCenter
-import simulation.space.resource.tag.ResourceTag
+import simulation.culture.group.centers.AspectCenter
 
 interface Dependency {
     val name: String

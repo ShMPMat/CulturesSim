@@ -1,9 +1,8 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.Controller.*
-import simulation.culture.group.Group
+import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 
 class Worship(

@@ -1,7 +1,9 @@
-package simulation.culture.group;
+package simulation.culture.group.centers;
 
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
+import simulation.culture.group.GroupError;
+import simulation.culture.group.Stratum;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
@@ -20,7 +22,7 @@ public class PopulationCenter {
 
     private MutableResourcePack turnResources = new MutableResourcePack();
 
-    PopulationCenter(int population, int maxPopulation, int minPopulation) {
+    public PopulationCenter(int population, int maxPopulation, int minPopulation) {
         this.population = population;
         this.maxPopulation = maxPopulation;
         this.minPopulation = minPopulation;

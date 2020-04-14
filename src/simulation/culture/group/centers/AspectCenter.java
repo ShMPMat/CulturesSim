@@ -1,10 +1,11 @@
-package simulation.culture.group;
+package simulation.culture.group.centers;
 
 import kotlin.Pair;
 import shmp.random.RandomException;
 import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.MutableAspectPool;
+import simulation.culture.group.AspectDependencyCalculator;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.*;
 import simulation.space.resource.Resource;

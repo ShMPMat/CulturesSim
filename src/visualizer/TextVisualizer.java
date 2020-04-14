@@ -4,7 +4,7 @@ import simulation.Controller;
 import simulation.Event;
 import simulation.World;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
 import simulation.culture.group.cultureaspect.CultureAspect;

@@ -1,6 +1,6 @@
 package simulation.culture.group.intergroup;
 
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 
 public class Relation {
     public Group owner;

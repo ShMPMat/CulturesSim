@@ -3,7 +3,7 @@ package simulation.culture.group.request;
 import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;

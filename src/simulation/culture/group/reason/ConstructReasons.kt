@@ -2,7 +2,7 @@ package simulation.culture.group.reason
 
 import shmp.random.randomElement
 import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.group.Group
+import simulation.culture.group.centers.Group
 import kotlin.random.Random
 
 fun constructBetterAspectUseReason(

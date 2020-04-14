@@ -4,7 +4,7 @@ import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.group.AspectCenter
+import simulation.culture.group.centers.AspectCenter
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import java.util.*

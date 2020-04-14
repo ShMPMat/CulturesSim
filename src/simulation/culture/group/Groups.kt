@@ -1,6 +1,6 @@
 package simulation.culture.group
 
-import simulation.space.tile.Tile
+import simulation.culture.group.centers.Group
 
 /**
  * This operation is not commutative.

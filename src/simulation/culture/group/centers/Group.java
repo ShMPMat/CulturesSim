@@ -1,4 +1,4 @@
-package simulation.culture.group;
+package simulation.culture.group.centers;
 
 import extra.OutputFunc;
 
@@ -7,6 +7,8 @@ import static shmp.random.RandomCollectionsKt.*;
 
 import simulation.Event;
 import simulation.culture.aspect.*;
+import simulation.culture.group.GroupConglomerate;
+import simulation.culture.group.GroupTileTag;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
@@ -33,7 +35,7 @@ public class Group {
     private RelationCenter relationCenter;
     private ResourceCenter resourceCenter;
 
-    Group(
+    public Group(
             ResourceCenter resourceCenter,
             GroupConglomerate parentGroup,
             String name,
@@ -81,7 +83,7 @@ public class Group {
         return parentGroup;
     }
 
-    void setParentGroup(GroupConglomerate parentGroup) {
+    public void setParentGroup(GroupConglomerate parentGroup) {
         this.parentGroup = parentGroup;
     }
 
@@ -104,7 +106,7 @@ public class Group {
         getCultureCenter().getEvents().add(event);
     }
 
-    void update() {
+    public void update() {
         populationCenter.update(territoryCenter.getAccessibleTerritory());
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
@@ -127,7 +129,7 @@ public class Group {
         return resourceCenter.hasDireNeed();
     }
 
-    Group populationUpdate() {
+    public Group populationUpdate() {
         if (populationCenter.getPopulation() == 0) {
             die();
             return null;
@@ -166,7 +168,7 @@ public class Group {
         return null;
     }
 
-    void intergroupUpdate() {
+    public void intergroupUpdate() {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             relationCenter.update(
                     getOverallTerritory()
@@ -189,7 +191,7 @@ public class Group {
         resourceCenter.finishUpdate();
     }
 
-    boolean diverge() {
+    public boolean diverge() {
         if (!session.groupDiverge) {
             return false;
         }

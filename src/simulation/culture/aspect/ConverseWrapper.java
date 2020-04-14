@@ -2,9 +2,8 @@ package simulation.culture.aspect;
 
 import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.LineDependency;
-import simulation.culture.group.AspectCenter;
+import simulation.culture.group.centers.AspectCenter;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package simulation.culture.group.reason;
 
 import simulation.culture.aspect.ConverseWrapper;
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 
 import java.util.Objects;
 

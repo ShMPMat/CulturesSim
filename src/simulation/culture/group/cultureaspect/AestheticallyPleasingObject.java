@@ -1,6 +1,6 @@
 package simulation.culture.group.cultureaspect;
 
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceRequest;
 import simulation.culture.group.resource_behaviour.ResourceBehaviour;

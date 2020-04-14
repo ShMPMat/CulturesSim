@@ -1,5 +1,6 @@
-package simulation.culture.group
+package simulation.culture.group.centers
 
+import simulation.culture.group.centers.Group
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.TagLabeler
 

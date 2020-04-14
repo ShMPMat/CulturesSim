@@ -1,14 +1,13 @@
 package simulation.culture.group.request;
 
 import kotlin.Pair;
-import simulation.culture.group.Group;
+import simulation.culture.group.centers.Group;
 import simulation.culture.group.Stratum;
 import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.function.BiFunction;
 
 public class TagRequest extends Request {

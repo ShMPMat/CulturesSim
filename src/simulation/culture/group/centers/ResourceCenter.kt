@@ -1,17 +1,16 @@
-package simulation.culture.group
+package simulation.culture.group.centers
 
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
-import java.util.Comparator
 
 class ResourceCenter(private val cherishedResources: MutableResourcePack, private var storageTile: Tile) {
     val resources
         get() = cherishedResources.resources
 
-    private val DIRE_BOUND = 50
+    private val _direBound = 50
 
     private val neededResourcesMap = mutableMapOf<ResourceLabeler, ResourceNeed>()
 
@@ -28,7 +27,7 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
             val result = neededResources.entries
                     .maxBy { it.value.importance }
                     ?.toPair()
-            return if (result != null && result.second.importance >= DIRE_BOUND) result
+            return if (result != null && result.second.importance >= _direBound) result
             else null
         }
 
@@ -66,7 +65,7 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
             neededResourcesMap[resourceLabeler] = ResourceNeed(importance, true)
     }
 
-    fun hasDireNeed() = neededResourcesMap.any { it.value.importance >= DIRE_BOUND }
+    fun hasDireNeed() = neededResourcesMap.any { it.value.importance >= _direBound }
 
     fun finishUpdate() {
         _resourcesToAdd.clear()

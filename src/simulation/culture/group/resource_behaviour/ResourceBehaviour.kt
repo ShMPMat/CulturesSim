@@ -1,7 +1,7 @@
 package simulation.culture.group.resource_behaviour
 
 import shmp.random.randomElement
-import simulation.culture.group.Group
+import simulation.culture.group.centers.Group
 import simulation.space.resource.MutableResourcePack
 import kotlin.random.Random
 
