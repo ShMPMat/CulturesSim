@@ -192,9 +192,15 @@ public class Tile {
         int start = SpaceData.INSTANCE.getData().getTemperatureBaseStart();
         int finish = SpaceData.INSTANCE.getData().getTemperatureBaseFinish();
         int size = SpaceData.INSTANCE.getData().getMapSizeX();
+        int waterShift = 0;
+        if (type == Type.Water) {
+            waterShift -= 2;
+            int deepness = Math.max(SpaceData.INSTANCE.getData().getDefaultWaterLevel() - level, 0);
+            waterShift -= deepness;
+        }
+        int oldwaterShift = (type == Type.Water || type == Type.Ice ? -10 : 0);
         temperature = start + x * (finish - start) / size -
-                Math.max(0, (level - 110) / 2) -
-                (type == Type.Water || type == Type.Ice ? 10 : 0);
+                Math.max(0, (level - 110) / 2) + waterShift;
     }
 
     private void updateResources() {

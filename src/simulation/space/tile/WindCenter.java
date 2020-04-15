@@ -72,7 +72,7 @@ public class WindCenter {
     }
 
     private void setWindByTemperature(Tile tile, Tile master) {
-        int temperatureChange = 3;
+        int temperatureChange = SpaceData.INSTANCE.getData().getTemperatureToWindCoefficient();
         if (tile != null) {
             double level = ((double) tile.getTemperature() - 1 - master.getTemperature()) / temperatureChange;
             if (level > 0) {

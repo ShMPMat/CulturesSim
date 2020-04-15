@@ -19,6 +19,7 @@ object SpaceData {
 
 class Data(
     val maximalWind: Double = 10.0,
+    val temperatureToWindCoefficient: Int = 1,
     val tileScale: Double = 10.0,
     val resourceDenseCoefficient: Double = tileScale,
     val windPropagation: Double = 0.025,
