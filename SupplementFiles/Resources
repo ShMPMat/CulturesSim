@@ -58,8 +58,11 @@
         ^PlantFibre:1
         #Water
 
--Seaweed         0.25    0.1    5          -10     30   2000      0             1 0 0  Plant        @PlantFibre
+-Seaweed         0.25    0.1    5          0      30   2000      0             1 0 0  Plant        @PlantFibre
         ^Leaf:7
+        #Normal:Mountain:Ice:Woods:Growth
+
+-Coral           0.25    0.1    5          20     30   2000      0             1 0 0  Plant        @Coral
         #Normal:Mountain:Ice:Woods:Growth
 
 -Herbivore       0.08    1      20         0       30   25        0             1 0 1  Animal       @Meat
