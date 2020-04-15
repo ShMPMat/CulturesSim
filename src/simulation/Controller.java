@@ -20,7 +20,7 @@ public class Controller {
     public TemplateBase templateBase;
 
     public final int seed = (int) (Math.random() * 10000000);
-    public final Random random = RandomKt.Random(8565728 + 1);
+    public final Random random = RandomKt.Random(8565728 + 0);
 
     public final int proportionCoefficient = 1;
     public final boolean doTurns = true;
@@ -28,7 +28,7 @@ public class Controller {
     public final int geologyTurns = 50;
     public final int initialTurns = 100;
     public final int stabilizationTurns = 100;
-    public final int fillCycles = 2;
+    public final int fillCycles = 4;
     public final int cultureTurns = 0;
     public final int startResourceAmountMin = 40 * proportionCoefficient * proportionCoefficient;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;

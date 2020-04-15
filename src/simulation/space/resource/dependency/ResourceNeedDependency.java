@@ -76,7 +76,7 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
     }
 
     public boolean hasNeeded(Tile tile) {
-        return tile.getResourcePack().getResources().stream().anyMatch(this::isResourceGood);
+        return tile.getAccessibleResources().stream().anyMatch(this::isResourceGood);
     }
 
     private boolean isResourceGood(Resource resource) {

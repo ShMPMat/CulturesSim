@@ -4,11 +4,8 @@ import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
+import simulation.space.resource.dependency.*
 import simulation.space.tile.Tile
-import simulation.space.resource.dependency.AvoidTiles
-import simulation.space.resource.dependency.ConsumeDependency
-import simulation.space.resource.dependency.ResourceDependency
-import simulation.space.resource.dependency.ResourceNeedDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
@@ -71,23 +68,41 @@ class ResourceInstantiation(
                     }
                 }
                 '^' -> parts.add(tag)
+                'l' -> resourceDependencies.add(LevelRestrictions(
+                        tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
+                ))
                 '~' -> {
                     elements = tag.split(";".toRegex()).toTypedArray()
-                    if (elements[4] == "CONSUME") {
-                        resourceDependencies.add(ConsumeDependency(
-                                elements[2].toDouble(),
-                                elements[3] == "1",
-                                elements[1].toDouble(),
-                                makeLabeler(elements[0].split(",".toRegex()))
-                        ))
-                    } else {
-                        resourceDependencies.add(ResourceNeedDependency(
-                                ResourceNeedDependency.Type.valueOf(elements[4]),
-                                elements[1].toDouble(),
-                                elements[2].toDouble(),
-                                elements[3] == "1",
-                                listOf(*elements[0].split(",".toRegex()).toTypedArray())
-                        ))
+                    when(elements[4]) {
+                        "CONSUME" -> {
+                            resourceDependencies.add(ConsumeDependency(
+                                    elements[2].toDouble(),
+                                    elements[3] == "1",
+                                    elements[1].toDouble(),
+                                    makeLabeler(elements[0].split(",".toRegex()))
+                            ))
+                        }
+                        "AVOID" -> {
+                            resourceDependencies.add(ResourceNeedDependency(
+                                    ResourceNeedDependency.Type.AVOID,
+                                    elements[1].toDouble(),
+                                    elements[2].toDouble(),
+                                    elements[3] == "1",
+                                    listOf(*elements[0].split(",".toRegex()).toTypedArray())
+                            ));
+                        }
+                        "EXIST" -> {
+                            resourceDependencies.add(ResourceNeedDependency(
+                                    ResourceNeedDependency.Type.EXIST,
+                                    elements[1].toDouble(),
+                                    elements[2].toDouble(),
+                                    elements[3] == "1",
+                                    listOf(*elements[0].split(",".toRegex()).toTypedArray())
+                            ))
+                        }
+                        else -> {
+                            throw ExceptionInInitializerError("Unknown dependency type - ${elements[4]}")
+                        }
                     }
                 }
                 '#' -> resourceDependencies.add(AvoidTiles(

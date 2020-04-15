@@ -116,7 +116,7 @@ public class Genome {
 
     private void computeTags() {
         tags.addAll(primaryMaterial.getTags());
-        for (TagMatcher matcher: SpaceData.INSTANCE.getData().getAdditionalTags()) {
+        for (TagMatcher matcher : SpaceData.INSTANCE.getData().getAdditionalTags()) {
             if (!tags.contains(matcher.getTag()) && matcher.getLabeler().isSuitable(this)) {
                 tags.add(matcher.getTag().copy());
             }

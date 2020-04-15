@@ -70,6 +70,12 @@
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
         #Water
 
+-MountainGoat    0.08    1      20         -10     30   25        0             1 0 1  Animal       @Meat
+        ~m:PlantFibre;0.2;2;0;CONSUME
+        +Killing:Meat:8,Fat:4,Bone:5,Fur:2,Blood:8
+        #Water
+        l110;1000
+
 -Mouse           0.25    0.05   5          -5      35   100       0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.02;2;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
