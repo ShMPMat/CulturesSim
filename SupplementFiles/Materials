@@ -6,6 +6,7 @@
 -Seed          700       -hard:1     -sturdy:1                              -solid:1
 -Fungus        100       -springy:1                                         -solid:1   -food:2
 -Coral         600       -hard:1     -sturdy:1                              -solid:1
+-SeaShell      1100      -hard:1     -sturdy:1                              -solid:1
 -Meat          300       -springy:2  -flexible:1                            -solid:1   -food:1              +Bake:RoastedMeat
 -Fat           300       -soft:1     -flexible:1                            -solid:1
 -Bone          1000      -hard:1     -sturdy:1                              -solid:1

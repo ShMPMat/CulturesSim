@@ -127,13 +127,16 @@ private fun fill(map: WorldMap) {
 }
 
 private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
-    val goodTiles = map.getTiles { resource.genome.isOptimal(it) }
+    val ATTEMPTS = 1000
+    val goodTiles = map.getTiles { resource.genome.isOptimal(it) }//TODO something wrong, it optimal and acceptable works inside-out
     for (i in 0 until n) {
         var tile: Tile
         if (goodTiles.isEmpty()) {
             tile = randomTile(map, random)
-            while (!resource.genome.isAcceptable(tile)) {
+            var j = 0
+            while (j < ATTEMPTS && !resource.genome.isAcceptable(tile)) {
                 tile = randomTile(map, random)
+                j++
             }
         } else {
             tile = randomElement(goodTiles, random)
