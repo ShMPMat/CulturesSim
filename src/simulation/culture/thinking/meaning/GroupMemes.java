@@ -68,9 +68,8 @@ public class GroupMemes extends MemePool {
     }
 
     private Meme chooseMeme(List<Meme> memeList) {
-        int prob = Controller.session.random.nextInt(
-                memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum)
-        );
+        int reduced = memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum);
+        int prob = Controller.session.random.nextInt(reduced);
         memeList.sort(Comparator.comparingInt(meme -> meme.importance));
         for (Meme meme: memeList) {
             prob -= meme.importance;

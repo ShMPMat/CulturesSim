@@ -132,7 +132,7 @@ public class TextVisualizer implements Visualizer {
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
         for (GroupConglomerate group : world.groups) {
-            groupSymbols.put(group.name, s.nextLine());
+            groupSymbols.put(group.getName(), s.nextLine());
         }
     }
 
@@ -145,7 +145,7 @@ public class TextVisualizer implements Visualizer {
         lastClaimedTiles = new HashMap<>();
         main.append(printedGroups());
         for (GroupConglomerate group : controller.world.groups) {
-            lastClaimedTiles.put(group.name, new HashSet<>());
+            lastClaimedTiles.put(group.getName(), new HashSet<>());
         }
         for (Event event : interactionModel.getEvents().stream().
                 filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
@@ -176,16 +176,16 @@ public class TextVisualizer implements Visualizer {
         StringBuilder main = new StringBuilder();
         int i = -1;
         while (groupPopulations.size() < world.groups.size()) {
-            groupSymbols.put(world.groups.get(groupPopulations.size()).name, s.nextLine());
+            groupSymbols.put(world.groups.get(groupPopulations.size()).getName(), s.nextLine());
             groupPopulations.add(0);
         }
         for (GroupConglomerate group : world.groups) {
             StringBuilder stringBuilder = new StringBuilder();
             i++;
-            if (group.state == GroupConglomerate.State.Dead) {
+            if (group.getState() == GroupConglomerate.State.Dead) {
                 continue;
             }
-            stringBuilder.append(groupSymbols.get(group.name)).append(" ").append(group.name).append(" \033[31m");
+            stringBuilder.append(groupSymbols.get(group.getName())).append(" ").append(group.getName()).append(" \033[31m");
             List<Aspect> aspects = new ArrayList<>(group.getAspects());
             aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
             for (Aspect aspect : aspects) {
@@ -207,9 +207,9 @@ public class TextVisualizer implements Visualizer {
                 stringBuilder.append("(").append(meme).append(" ").append(meme.getImportance()).append(") ");
             }
             stringBuilder.append(" \033[39m\n");
-            stringBuilder.append("population=").append(group.population)
-                    .append(group.population <= groupPopulations.get(i) ? "↓" : "↑").append("\n\n");
-            groupPopulations.set(i, group.population);
+            stringBuilder.append("population=").append(group.getPopulation())
+                    .append(group.getPopulation() <= groupPopulations.get(i) ? "↓" : "↑").append("\n\n");
+            groupPopulations.set(i, group.getPopulation());
             main.append(chompToSize(stringBuilder.toString(), 220));
         }
         return main;
@@ -285,12 +285,9 @@ public class TextVisualizer implements Visualizer {
                         }
                     } else {
                         Group group = ((GroupTileTag) tile.getTagPool().getByType("Group").get(0)).getGroup();
-                        if (group.state == Group.State.Dead) {
-                            token += "\033[33m☠";
-                        } else {
-                            token += (lastClaimedTiles.get(group.getParentGroup().name).contains(tile) ? "\033[31m" :
-                                    "\033[96m\033[1m") + groupSymbols.get(group.getParentGroup().name);
-                        }
+                        token += (lastClaimedTiles.get(group.getParentGroup().getName()).contains(tile)
+                                ? "\033[31m" :
+                                "\033[96m\033[1m") + groupSymbols.get(group.getParentGroup().getName());
                     }
                 }
                 map.append(token).append("\033[0m");
