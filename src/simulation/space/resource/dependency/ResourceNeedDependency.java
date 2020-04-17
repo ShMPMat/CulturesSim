@@ -1,5 +1,6 @@
 package simulation.space.resource.dependency;
 
+import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.Resource;
 
@@ -19,7 +20,7 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
     public Set<String> lastConsumed = new HashSet<>();
 
     public ResourceNeedDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
-                                  List<String> names) {
+                                  List<String> names, ResourceLabeler goodResources) {
         for (String name: names) {
             if (name.charAt(0) == '@') {
                 this.materialNames.add(name.substring(1));

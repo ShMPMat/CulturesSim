@@ -7,7 +7,7 @@ import simulation.space.resource.Resource;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConsumeDependency extends ResourceMaterialDependency {
+public class ConsumeDependency extends LabelerDependency {
     public Set<String> lastConsumed = new HashSet<>();
 
     public ConsumeDependency(
@@ -27,9 +27,6 @@ public class ConsumeDependency extends ResourceMaterialDependency {
                 continue;
             }
             if (isResourceDependency(res)) {
-                if (!res.getSimpleName().equals("Vapour")) {
-                    int i = 0; //TODO something wrong but i don't remember what
-                }
                 if (_amount + currentAmount < 0) {
                     currentAmount += _amount;
                     break;

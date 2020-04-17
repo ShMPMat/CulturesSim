@@ -8,6 +8,7 @@ import simulation.space.tile.Tile
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
+import simulation.space.resource.dependency.ConsumeDependency
 import simulation.space.resource.dependency.ResourceNeedDependency
 import java.util.*
 import kotlin.random.Random
@@ -159,15 +160,12 @@ private fun addDependencies(resource: Resource, tile: Tile, resourcePool: Resour
                 val dep = resourcePool.get(name)
                 if (dep.genome.isAcceptable(tile)) {
                     tile.addDelayedResource(dep)
+                    addDependencies(dep, tile, resourcePool)
                 }
-                addDependencies(dep, tile, resourcePool)
             }
             for (name in dependency.materialNames) {
                 for (dep in resourcePool.getWithPredicate {
-                    it.genome.spreadProbability > 0
-                            && it.simpleName != resource.simpleName
-                            && it.genome.primaryMaterial != null
-                            && it.genome.primaryMaterial.name == name
+                    filterDependencyResources(it, resource) && it.genome.primaryMaterial.name == name
                 }) {
                     if (dep.genome.isAcceptable(tile)) {
                         tile.addDelayedResource(dep.copy())
@@ -175,6 +173,20 @@ private fun addDependencies(resource: Resource, tile: Tile, resourcePool: Resour
                     }
                 }
             }
+        } else if (dependency is ConsumeDependency) {
+            val suitableResources = resourcePool
+                    .getWithPredicate { dependency.isResourceDependency(it) }
+                    .filter { filterDependencyResources(it, resource) }
+            for (dependencyResource in suitableResources) {
+                if (dependencyResource.genome.isAcceptable(tile)) {
+                    tile.addDelayedResource(dependencyResource)
+                    addDependencies(dependencyResource, tile, resourcePool)
+                }
+            }
         }
     }
 }
+
+private fun filterDependencyResources(resource: Resource, previous: Resource) = resource.genome.spreadProbability > 0
+        && resource.simpleName != previous.simpleName
+        && resource.genome.primaryMaterial != null

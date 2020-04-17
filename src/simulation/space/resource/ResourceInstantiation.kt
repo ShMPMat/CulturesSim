@@ -88,7 +88,8 @@ class ResourceInstantiation(
                                     elements[1].toDouble(),
                                     elements[2].toDouble(),
                                     elements[3] == "1",
-                                    listOf(*elements[0].split(",".toRegex()).toTypedArray())
+                                    listOf(*elements[0].split(",".toRegex()).toTypedArray()),
+                                    makeLabeler(elements[0].split(",".toRegex()))
                             ));
                         }
                         "EXIST" -> {
@@ -97,7 +98,8 @@ class ResourceInstantiation(
                                     elements[1].toDouble(),
                                     elements[2].toDouble(),
                                     elements[3] == "1",
-                                    listOf(*elements[0].split(",".toRegex()).toTypedArray())
+                                    listOf(*elements[0].split(",".toRegex()).toTypedArray()),
+                                    makeLabeler(elements[0].split(",".toRegex()))
                             ))
                         }
                         else -> {
