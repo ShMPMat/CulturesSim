@@ -107,7 +107,7 @@ public class Controller {
                     t -> t.getType() == Tile.Type.Mountain
                             && t.getResourcePack().contains(world.getResourcePool().get("Snow"))
                             && t.getNeighbours(n -> n.getResourcePack().contains(water)).isEmpty(),
-                    t -> t.getType() != Tile.Type.Ice && t.getTemperature() >= -10,
+                    t -> t.getType() != Tile.Type.Ice,
                     random
             );
             turn();

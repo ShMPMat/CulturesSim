@@ -2,6 +2,7 @@ package simulation.culture.thinking.meaning;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MemeSubject extends Meme {
     private MemeSubject(String observerWord, List<Meme> predicates, int importance) {
@@ -27,7 +28,13 @@ public class MemeSubject extends Meme {
 
     @Override
     public Meme copy() {
-        return new MemeSubject(observerWord, new ArrayList<>(predicates), importance);
+        return new MemeSubject(
+                observerWord,
+                predicates.stream()
+                        .map(Meme::copy)
+                        .collect(Collectors.toList()),
+                importance
+        );
     }
 
     @Override

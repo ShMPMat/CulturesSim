@@ -50,7 +50,7 @@ abstract public class Meme {
         }
         importance += delta;
         if (importance < 0) {
-            int i = 0;
+            importance = Integer.MAX_VALUE;
         }
     }
 

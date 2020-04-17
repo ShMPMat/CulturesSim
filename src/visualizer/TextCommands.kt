@@ -8,14 +8,8 @@ enum class Command(command: String) {
      * Command for making turns until something important happens.
      */
     IdleGo("go"),  //TODO does it work still even?
-    /**
-     * Command for printing group information.
-     */
     Group("^G\\d+"),
     TileReach("^G\\d+ r"),
-    /**
-     * Command for printing tile information.
-     */
     Tile("\\d+ \\d+"),
     Plates("plates"),
     TileTag("tt \\w+"),
@@ -23,23 +17,13 @@ enum class Command(command: String) {
     Wind("wind"),
     TerrainLevel("level"),
     GroupPotentials("^G\\d+ p \\d+"),
-    Vapour("vapour"), /**
-     * Command for printing resource information.
-     */
+    Vapour("vapour"),
     Resource("r \\w+"),
     MeaningfulResources("meaning"),
     ArtificialResources("artificial"),
-    Aspects("a \\w+"), /**
-     * Command for printing map.
-     */
+    Aspects("a \\w+"),
     Map("[mM]"),
-    /**
-     * Command for exiting simulation.
-     */
     Exit("EXIT"),
-    /**
-     * Command for adding Aspect for a group.
-     */
     AddAspect("^G\\d+ \\w+"),
     AddWant("^want G\\d+ \\w+"),
     AddResource("\\d+ \\d+ \\w+"),
