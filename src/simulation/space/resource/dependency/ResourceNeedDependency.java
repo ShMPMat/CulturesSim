@@ -4,14 +4,11 @@ import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.Resource;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class ResourceNeedDependency implements ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
-    private List<String> resourceNames = new ArrayList<>();
-    private List<String> materialNames = new ArrayList<>();
     private ResourceLabeler goodResources;
     private double amount;
     private boolean isNecessary;
@@ -19,28 +16,12 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
     private Type type;
     public Set<String> lastConsumed = new HashSet<>();
 
-    public ResourceNeedDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary,
-                                  List<String> names, ResourceLabeler goodResources) {
-        for (String name: names) {
-            if (name.charAt(0) == '@') {
-                this.materialNames.add(name.substring(1));
-            } else {
-                this.resourceNames.add(name.substring(2));
-            }
-        }
+    public ResourceNeedDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary, ResourceLabeler goodResources) {
         this.goodResources = goodResources;
         this.amount = amount;
         this.deprivationCoefficient = deprivationCoefficient;
         this.type = type;
         this.isNecessary = isNecessary;
-    }
-
-    public List<String> getResourceNames() {
-        return resourceNames;
-    }
-
-    public List<String> getMaterialNames() {
-        return materialNames;
     }
 
     public double satisfactionPercent(Tile tile, Resource resource) {
@@ -51,7 +32,7 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
             if (res.equals(resource)) {
                 continue;
             }
-            if (isResourceDependency(res)) {
+            if (isInDependency(res)) {
                 switch (type) {
                     case EXIST:
                     case AVOID:
@@ -76,16 +57,15 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
     }
 
     public boolean hasNeeded(Tile tile) {
-        return tile.getAccessibleResources().stream().anyMatch(this::isResourceGood);
+        return tile.getAccessibleResources().stream().anyMatch(this::isResourceDependency);
     }
 
-    private boolean isResourceGood(Resource resource) {
-        return type == Type.AVOID ? !isResourceDependency(resource) : isResourceDependency(resource);
+    public boolean isResourceDependency(Resource resource) {
+        return type != Type.AVOID && isInDependency(resource);
     }
 
-    private boolean isResourceDependency(Resource resource) {
-        return (resourceNames.contains(resource.getSimpleName()) || resource.getGenome().getPrimaryMaterial() != null &&
-                materialNames.contains(resource.getGenome().getPrimaryMaterial().getName())) && resource.getAmount() > 0;
+    private boolean isInDependency(Resource resource) {
+        return goodResources.isSuitable(resource.getGenome()) && resource.getAmount() > 0;
     }
 
     public boolean isPositive() {

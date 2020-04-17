@@ -153,25 +153,17 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
         if (!dependency.isPositive || !dependency.isResourceNeeded) {
             continue
         }
-        if (dependency is ResourceNeedDependency && dependency.resourceNames.any { it == "Vapour" }) {
+        if (dependency is ResourceNeedDependency && dependency.isResourceDependency(resourcePool.get("Vapour"))) {
             return
         }
         if (dependency is ResourceNeedDependency) {
-            for (name in dependency.resourceNames) {
-                val dep = resourcePool.get(name)
-                if (filterDependencyResources(dep, newStack) && dep.genome.isAcceptable(tile)) {
-                    tile.addDelayedResource(dep)
-                    addDependencies(newStack, dep, tile, resourcePool)
-                }
-            }
-            for (name in dependency.materialNames) {
-                for (dep in resourcePool.getWithPredicate {
-                    filterDependencyResources(it, newStack) && it.genome.primaryMaterial.name == name
-                }) {
-                    if (dep.genome.isAcceptable(tile)) {
-                        tile.addDelayedResource(dep.copy())
-                        addDependencies(newStack, dep, tile, resourcePool)
-                    }
+            val suitableResources = resourcePool
+                    .getWithPredicate { dependency.isResourceDependency(it) }
+                    .filter { filterDependencyResources(it, newStack) }
+            for (dependencyResource in suitableResources) {
+                if (dependencyResource.genome.isAcceptable(tile)) {
+                    tile.addDelayedResource(dependencyResource)
+                    addDependencies(newStack, dependencyResource, tile, resourcePool)
                 }
             }
         } else if (dependency is ConsumeDependency) {
