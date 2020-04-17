@@ -12,10 +12,10 @@ import java.util.Set;
 public class ResourceNeedDependency implements ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
     private List<String> resourceNames = new ArrayList<>();
     private List<String> materialNames = new ArrayList<>();
+    private ResourceLabeler goodResources;
     private double amount;
     private boolean isNecessary;
     private double deprivationCoefficient;
-    private int currentAmount = 0;
     private Type type;
     public Set<String> lastConsumed = new HashSet<>();
 
@@ -25,9 +25,10 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
             if (name.charAt(0) == '@') {
                 this.materialNames.add(name.substring(1));
             } else {
-                this.resourceNames.add(name);
+                this.resourceNames.add(name.substring(2));
             }
         }
+        this.goodResources = goodResources;
         this.amount = amount;
         this.deprivationCoefficient = deprivationCoefficient;
         this.type = type;
@@ -45,6 +46,7 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
     public double satisfactionPercent(Tile tile, Resource resource) {
         double result;
         double _amount = amount * (resource == null ? 1 : resource.getAmount());
+        int currentAmount = 0;
         for (Resource res : tile.getAccessibleResources()) {
             if (res.equals(resource)) {
                 continue;
@@ -61,9 +63,6 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
             }
         }
         result = Math.min(((double) currentAmount) / _amount, 1);
-        if (currentAmount >= _amount) {
-            currentAmount -= _amount;
-        }
         result = (type == Type.AVOID ? 1 - result : result);
         return result + (1 - result) / deprivationCoefficient;
     }

@@ -143,11 +143,12 @@ private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resourc
             tile = randomElement(goodTiles, random)
         }
         tile.addDelayedResource(resource.copy())
-        addDependencies(resource, tile, resourcePool)
+        addDependencies(listOf(), resource, tile, resourcePool)
     }
 }
 
-private fun addDependencies(resource: Resource, tile: Tile, resourcePool: ResourcePool) {
+private fun addDependencies(resourceStack: List<Resource>, resource: Resource, tile: Tile, resourcePool: ResourcePool) {
+    val newStack = resourceStack + listOf(resource)
     for (dependency in resource.genome.dependencies) {
         if (!dependency.isPositive || !dependency.isResourceNeeded) {
             continue
@@ -158,35 +159,36 @@ private fun addDependencies(resource: Resource, tile: Tile, resourcePool: Resour
         if (dependency is ResourceNeedDependency) {
             for (name in dependency.resourceNames) {
                 val dep = resourcePool.get(name)
-                if (dep.genome.isAcceptable(tile)) {
+                if (filterDependencyResources(dep, newStack) && dep.genome.isAcceptable(tile)) {
                     tile.addDelayedResource(dep)
-                    addDependencies(dep, tile, resourcePool)
+                    addDependencies(newStack, dep, tile, resourcePool)
                 }
             }
             for (name in dependency.materialNames) {
                 for (dep in resourcePool.getWithPredicate {
-                    filterDependencyResources(it, resource) && it.genome.primaryMaterial.name == name
+                    filterDependencyResources(it, newStack) && it.genome.primaryMaterial.name == name
                 }) {
                     if (dep.genome.isAcceptable(tile)) {
                         tile.addDelayedResource(dep.copy())
-                        addDependencies(dep, tile, resourcePool)
+                        addDependencies(newStack, dep, tile, resourcePool)
                     }
                 }
             }
         } else if (dependency is ConsumeDependency) {
             val suitableResources = resourcePool
                     .getWithPredicate { dependency.isResourceDependency(it) }
-                    .filter { filterDependencyResources(it, resource) }
+                    .filter { filterDependencyResources(it, newStack) }
             for (dependencyResource in suitableResources) {
                 if (dependencyResource.genome.isAcceptable(tile)) {
                     tile.addDelayedResource(dependencyResource)
-                    addDependencies(dependencyResource, tile, resourcePool)
+                    addDependencies(newStack, dependencyResource, tile, resourcePool)
                 }
             }
         }
     }
 }
 
-private fun filterDependencyResources(resource: Resource, previous: Resource) = resource.genome.spreadProbability > 0
-        && resource.simpleName != previous.simpleName
-        && resource.genome.primaryMaterial != null
+private fun filterDependencyResources(resource: Resource, previous: List<Resource>) =
+        resource.genome.spreadProbability > 0
+                && previous.none { resource.simpleName == it.simpleName }
+                && resource.genome.primaryMaterial != null
