@@ -8,23 +8,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ResourceNeedDependency implements ResourceDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
-    private ResourceLabeler goodResources;
-    private double amount;
-    private boolean isNecessary;
-    private double deprivationCoefficient;
+public class NeedDependency extends LabelerDependency {//TODO please, write an interface and BUNCH OF IMPLEMENTATIONS
     private Type type;
     public Set<String> lastConsumed = new HashSet<>();
 
-    public ResourceNeedDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary, ResourceLabeler goodResources) {
-        this.goodResources = goodResources;
-        this.amount = amount;
-        this.deprivationCoefficient = deprivationCoefficient;
+    public NeedDependency(Type type, double amount, double deprivationCoefficient, boolean isNecessary, ResourceLabeler goodResources) {
+        super(deprivationCoefficient, isNecessary, amount, goodResources);
         this.type = type;
-        this.isNecessary = isNecessary;
     }
 
-    public double satisfactionPercent(Tile tile, Resource resource) {
+    @Override
+    double satisfaction(Tile tile, Resource resource) {
         double result;
         double _amount = amount * (resource == null ? 1 : resource.getAmount());
         int currentAmount = 0;
@@ -32,7 +26,7 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
             if (res.equals(resource)) {
                 continue;
             }
-            if (isInDependency(res)) {
+            if (super.isResourceDependency(res)) {
                 switch (type) {
                     case EXIST:
                     case AVOID:
@@ -44,40 +38,26 @@ public class ResourceNeedDependency implements ResourceDependency {//TODO please
             }
         }
         result = Math.min(((double) currentAmount) / _amount, 1);
-        result = (type == Type.AVOID ? 1 - result : result);
-        return result + (1 - result) / deprivationCoefficient;
+        return (type == Type.AVOID ? 1 - result : result);
     }
 
     public Type getType() {
         return type;
     }
 
-    public double getAmount() {
-        return amount;
-    }
-
+    @Override
     public boolean hasNeeded(Tile tile) {
         return tile.getAccessibleResources().stream().anyMatch(this::isResourceDependency);
     }
 
+    @Override
     public boolean isResourceDependency(Resource resource) {
-        return type != Type.AVOID && isInDependency(resource);
+        return type != Type.AVOID && super.isResourceDependency(resource);
     }
 
-    private boolean isInDependency(Resource resource) {
-        return goodResources.isSuitable(resource.getGenome()) && resource.getAmount() > 0;
-    }
-
+    @Override
     public boolean isPositive() {
         return type != Type.AVOID;
-    }
-
-    public boolean isResourceNeeded() {
-        return type.isResourceDependent;
-    }
-
-    public boolean isNecessary() {
-        return isNecessary;
     }
 
     public enum Type{

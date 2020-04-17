@@ -83,8 +83,8 @@ class ResourceInstantiation(
                             ))
                         }
                         "AVOID" -> {
-                            resourceDependencies.add(ResourceNeedDependency(
-                                    ResourceNeedDependency.Type.AVOID,
+                            resourceDependencies.add(NeedDependency(
+                                    NeedDependency.Type.AVOID,
                                     elements[1].toDouble(),
                                     elements[2].toDouble(),
                                     elements[3] == "1",
@@ -92,8 +92,8 @@ class ResourceInstantiation(
                             ));
                         }
                         "EXIST" -> {
-                            resourceDependencies.add(ResourceNeedDependency(
-                                    ResourceNeedDependency.Type.EXIST,
+                            resourceDependencies.add(NeedDependency(
+                                    NeedDependency.Type.EXIST,
                                     elements[1].toDouble(),
                                     elements[2].toDouble(),
                                     elements[3] == "1",

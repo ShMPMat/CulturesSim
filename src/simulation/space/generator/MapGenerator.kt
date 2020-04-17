@@ -9,7 +9,8 @@ import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.dependency.ConsumeDependency
-import simulation.space.resource.dependency.ResourceNeedDependency
+import simulation.space.resource.dependency.LabelerDependency
+import simulation.space.resource.dependency.NeedDependency
 import java.util.*
 import kotlin.random.Random
 
@@ -153,20 +154,7 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
         if (!dependency.isPositive || !dependency.isResourceNeeded) {
             continue
         }
-        if (dependency is ResourceNeedDependency && dependency.isResourceDependency(resourcePool.get("Vapour"))) {
-            return
-        }
-        if (dependency is ResourceNeedDependency) {
-            val suitableResources = resourcePool
-                    .getWithPredicate { dependency.isResourceDependency(it) }
-                    .filter { filterDependencyResources(it, newStack) }
-            for (dependencyResource in suitableResources) {
-                if (dependencyResource.genome.isAcceptable(tile)) {
-                    tile.addDelayedResource(dependencyResource)
-                    addDependencies(newStack, dependencyResource, tile, resourcePool)
-                }
-            }
-        } else if (dependency is ConsumeDependency) {
+        if (dependency is LabelerDependency) {
             val suitableResources = resourcePool
                     .getWithPredicate { dependency.isResourceDependency(it) }
                     .filter { filterDependencyResources(it, newStack) }
