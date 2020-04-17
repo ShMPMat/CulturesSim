@@ -19,7 +19,7 @@ public class MemePool {
         if (memes.containsKey(meme.toString())) {
             return false;
         }
-        memes.put(meme.toString(), meme);
+        memes.put(meme.toString(), meme.copy());
         return true;
     }
 

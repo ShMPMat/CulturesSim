@@ -68,8 +68,14 @@ public class GroupMemes extends MemePool {
     }
 
     private Meme chooseMeme(List<Meme> memeList) {
-        int reduced = memeList.stream().reduce(0, (x, y) -> x + y.importance, Integer::sum);
-        int prob = Controller.session.random.nextInt(reduced);
+        Long reduced = memeList.stream()
+                .map(m -> (long) m.importance)
+                .reduce(0L, Long::sum);
+        if (reduced < 0) {
+            List<Meme> bad = memeList.stream().filter(m -> m.importance < 0).collect(Collectors.toList());
+            int i = 0;
+        }
+        long prob = Controller.session.random.nextLong(reduced);
         memeList.sort(Comparator.comparingInt(meme -> meme.importance));
         for (Meme meme: memeList) {
             prob -= meme.importance;
@@ -100,7 +106,9 @@ public class GroupMemes extends MemePool {
     }
 
     public void addMemeCombination(Meme meme) {
-        memesCombinations.put(meme.toString(), meme);
+        if (!memesCombinations.containsKey(meme.toString())) {
+            memesCombinations.put(meme.toString(), meme.copy());
+        }
     }
 
     @Override

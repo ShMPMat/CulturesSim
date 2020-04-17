@@ -45,7 +45,13 @@ abstract public class Meme {
     }
 
     public void increaseImportance(int delta) {
+        if (delta > 1000) {
+            int i = 0;
+        }
         importance += delta;
+        if (importance < 0) {
+            int i = 0;
+        }
     }
 
     public Meme addPredicate(Meme predicate) {
