@@ -1,17 +1,16 @@
 package simulation.space.resource.dependency;
 
+import simulation.space.resource.Resource;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
-import simulation.space.resource.Resource;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class NeedDependency extends LabelerDependency {
+public class AvoidDependency extends LabelerDependency {
     public Set<String> lastConsumed = new HashSet<>();
 
-    public NeedDependency(
+    public AvoidDependency(
             double amount,
             double deprivationCoefficient,
             boolean isNecessary,
@@ -22,6 +21,7 @@ public class NeedDependency extends LabelerDependency {
 
     @Override
     double satisfaction(Tile tile, Resource resource) {
+        double result;
         double _amount = amount * (resource == null ? 1 : resource.getAmount());
         int currentAmount = 0;
         for (Resource res : tile.getAccessibleResources()) {
@@ -35,7 +35,8 @@ public class NeedDependency extends LabelerDependency {
                 }
             }
         }
-        return Math.min(((double) currentAmount) / _amount, 1);
+        result = Math.min(((double) currentAmount) / _amount, 1);
+        return 1 - result;
     }
 
     @Override
@@ -44,7 +45,12 @@ public class NeedDependency extends LabelerDependency {
     }
 
     @Override
+    public boolean isResourceDependency(Resource resource) {
+        return false;
+    }
+
+    @Override
     public boolean isPositive() {
-        return true;
+        return false;
     }
 }
