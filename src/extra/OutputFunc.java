@@ -54,7 +54,11 @@ public class OutputFunc {
                     String part = line.substring(0, size);
                     if (part.lastIndexOf(" ") != -1) {
                         line = line.substring(part.lastIndexOf(" "));
-                        part = part.substring(0, part.lastIndexOf(" "));
+                        if (part.lastIndexOf(" ") == 0) {
+                            part = part.substring(1);
+                        } else {
+                            part = part.substring(0, part.lastIndexOf(" "));
+                        }
                     } else {
                         line = line.substring(size);
                     }
