@@ -139,7 +139,7 @@ public class Genome {
         return type;
     }
 
-    List<Resource> getParts() {
+    public List<Resource> getParts() {
         return parts;
     }
 

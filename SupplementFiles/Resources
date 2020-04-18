@@ -18,6 +18,12 @@
         ^SoftBranch:10 ^Leaf:30  ^Fruit:1    ^Seed:2 ^SoftRoot:5
         #Water
 
+-FlowerBush      0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
+        ~r:Vapour;0.00025;2;0;CONSUME
+        ~r:Bee;0.01;100;0;EXIST
+        ^SoftBranch:15 ^Leaf:100 ^Flower:10   ^Seed:2 ^SoftRoot:5
+        #Water
+
 -DwarfBirch      0.1     1      15         -30     20  40         0             0 0 0  Plant        @PlantFibre
         ~r:Vapour;0.0001;2;0;CONSUME
         ^SoftBranch:15 ^Leaf:30              ^Seed:2 ^SoftRoot:5
@@ -106,7 +112,7 @@
         #Water
 
 -Bee             0.25    0.02   5          0      30   200       0             1 0 1  Animal       @Chitin
-        ~r:FlowerPlant;0.01;100;0;EXIST
+        ~P(r:Flower);0.5;100;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water
 

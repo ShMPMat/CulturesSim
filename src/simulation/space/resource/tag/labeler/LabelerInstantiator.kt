@@ -21,5 +21,7 @@ private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {
     "mv" -> IsMovableLabeler()
     "rs" -> IsResistingLabeler()
     "!!" -> NegateLabeler(getLabel(value.take(2), value.drop(2)))
+    "P(" -> AnyPartLabeler(getLabel(value.take(2), value.drop(2).dropLast(1)))
+    "A(" -> AnyPartOrSelfLabeler(getLabel(value.take(2), value.drop(2).dropLast(1)))
     else -> throw RuntimeException("Wrong tag for a labeler")
 }
