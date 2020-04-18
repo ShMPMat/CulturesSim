@@ -170,6 +170,14 @@ public class Tile {
         _delayedResources.add(resource);
     }
 
+    public void addDelayedResources(Collection<Resource> resources) {
+        resources.forEach(this::addDelayedResource);
+    }
+
+    public void addDelayedResources(ResourcePack pack) {
+        addDelayedResources(pack.getResources());
+    }
+
     public void startUpdate() { //TODO wind blows on 2 neighbour tiles
         updateResources();
         windCenter.startUpdate();
@@ -210,6 +218,7 @@ public class Tile {
             if (!result.isAlive()) {
                 deletedResources.add(resource);
             }
+            addDelayedResources(result.getProduced());
         }
         resourcePack.removeAll(deletedResources);
     }

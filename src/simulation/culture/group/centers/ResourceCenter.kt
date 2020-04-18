@@ -54,7 +54,7 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
         if (newStorageTile == storageTile) return
         val staticResources = cherishedResources.getResources { !it.genome.isMovable }
         cherishedResources.removeAll(staticResources)
-        staticResources.resources.forEach { storageTile.addDelayedResource(it) }
+        storageTile.addDelayedResources(staticResources.resources)
         storageTile = newStorageTile
     }
 

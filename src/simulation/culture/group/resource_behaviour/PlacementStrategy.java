@@ -92,7 +92,7 @@ public class PlacementStrategy {
     public void place(MutableResourcePack resourcePack) {
         Tile tile = getTileForPlacement(resourcePack);
         if (tile != null) {
-            resourcePack.getResources().forEach(tile::addDelayedResource);
+            tile.addDelayedResources(resourcePack);
         }
     }
 

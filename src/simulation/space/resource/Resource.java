@@ -153,26 +153,24 @@ public class Resource {
     }
 
     public ResourceUpdateResult update(Tile tile) {
+        List<Resource> result = new ArrayList<>();
         if (amount <= 0) {
-            return new ResourceUpdateResult(false, new ArrayList<>());
+            return new ResourceUpdateResult(false, result);
         }
         for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {
             double part = dependency.satisfactionPercent(tile, this);
             deathOverhead += (1 - part) * resourceCore.getGenome().getDeathTime();
         }
         if (deathTurn + deathOverhead >= resourceCore.getGenome().getDeathTime()) {
-            int deadAmount = (int) deathPart*amount;
+            int deadAmount = (int) (deathPart*amount);
             amount -= deadAmount;
             deathTurn = 0;
             deathOverhead = 0;
             deathPart = 1;
-            List<Resource> r = applyAspect(ResourcesKt.getDEATH_ASPECT(), deadAmount);
-            if (!r.isEmpty()) {
-                int i = 0;
-            }
+            result = applyAspect(ResourcesKt.getDEATH_ASPECT(), deadAmount);
         }
         if (amount <= 0) {
-            new ResourceUpdateResult(false, new ArrayList<>());
+            new ResourceUpdateResult(false, result);
         }
         deathTurn++;
         if (testProbability(resourceCore.getGenome().getSpreadProbability(), session.random)) {
@@ -192,7 +190,7 @@ public class Resource {
             }
         }
         distribute(tile);
-        return new ResourceUpdateResult(true, new ArrayList<>());
+        return new ResourceUpdateResult(true, result);
     }
 
     private void distribute(Tile tile) {

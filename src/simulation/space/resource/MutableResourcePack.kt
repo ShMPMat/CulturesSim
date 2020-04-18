@@ -47,8 +47,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     }
 
     fun disbandOnTile(tile: Tile) {
-        resources.filter {  it.genome.isMovable }
-                .forEach { tile.addDelayedResource(it) }
+        tile.addDelayedResources(resources.filter {  it.genome.isMovable })
         resourceMap.clear()
     }
 
