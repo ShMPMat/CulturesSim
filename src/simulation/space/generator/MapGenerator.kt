@@ -151,9 +151,8 @@ private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resourc
 private fun addDependencies(resourceStack: List<Resource>, resource: Resource, tile: Tile, resourcePool: ResourcePool) {
     val newStack = resourceStack + listOf(resource)
     for (dependency in resource.genome.dependencies) {
-        if (!dependency.isPositive || !dependency.isResourceNeeded) {
+        if (!dependency.isPositive || !dependency.isResourceNeeded)
             continue
-        }
         if (dependency is LabelerDependency) {
             val suitableResources = resourcePool
                     .getWithPredicate { dependency.isResourceDependency(it) }
@@ -169,6 +168,6 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
 }
 
 private fun filterDependencyResources(resource: Resource, previous: List<Resource>) =
-        resource.genome.spreadProbability > 0
+        resource.genome.type in listOf(Genome.Type.Plant, Genome.Type.Animal)
                 && previous.none { resource.simpleName == it.simpleName }
                 && resource.genome.primaryMaterial != null

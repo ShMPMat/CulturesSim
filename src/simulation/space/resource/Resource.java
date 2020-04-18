@@ -11,9 +11,7 @@ import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.tag.ResourceTag;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static shmp.random.RandomCollectionsKt.*;
 import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 
@@ -154,22 +152,27 @@ public class Resource {
         return resource;
     }
 
-    public boolean update(Tile tile) {
+    public ResourceUpdateResult update(Tile tile) {
         if (amount <= 0) {
-            return false;
+            return new ResourceUpdateResult(false, new ArrayList<>());
         }
         for (ResourceDependency dependency: resourceCore.getGenome().getDependencies()) {
             double part = dependency.satisfactionPercent(tile, this);
             deathOverhead += (1 - part) * resourceCore.getGenome().getDeathTime();
         }
         if (deathTurn + deathOverhead >= resourceCore.getGenome().getDeathTime()) {
-            amount -= deathPart*amount;
+            int deadAmount = (int) deathPart*amount;
+            amount -= deadAmount;
             deathTurn = 0;
             deathOverhead = 0;
             deathPart = 1;
+            List<Resource> r = applyAspect(ResourcesKt.getDEATH_ASPECT(), deadAmount);
+            if (!r.isEmpty()) {
+                int i = 0;
+            }
         }
         if (amount <= 0) {
-            return false;
+            new ResourceUpdateResult(false, new ArrayList<>());
         }
         deathTurn++;
         if (testProbability(resourceCore.getGenome().getSpreadProbability(), session.random)) {
@@ -189,7 +192,7 @@ public class Resource {
             }
         }
         distribute(tile);
-        return true;
+        return new ResourceUpdateResult(true, new ArrayList<>());
     }
 
     private void distribute(Tile tile) {
@@ -215,8 +218,14 @@ public class Resource {
         this.amount += amount;
     }
 
+    public List<Resource> applyAspect(Aspect aspect, int part) {
+        List<Resource> result = resourceCore.applyAspect(aspect);
+        result.forEach(r -> r.amount *= part);
+        return result;
+    }
+
     public List<Resource> applyAspect(Aspect aspect) {
-        return resourceCore.applyAspect(aspect);
+        return applyAspect(aspect, 1);
     }
 
     public boolean hasApplicationForAspect(Aspect aspect) {

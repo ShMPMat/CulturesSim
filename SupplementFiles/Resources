@@ -134,6 +134,7 @@
         R
 
 -ShelledMollusk  0.15    0.03   10          10    30   600       0             1 0 1  Animal       @Meat
+        +_OnDeath_:SeaShell:1
         +Killing:Meat:1,SeaShell:1
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000

@@ -2,7 +2,9 @@ package simulation.space.resource
 
 import extra.InputDatabase
 import simulation.culture.aspect.Aspect
+import simulation.culture.aspect.AspectCore
 import simulation.culture.aspect.AspectPool
+import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.SpaceError
 import simulation.space.resource.dependency.*
 import simulation.space.tile.Tile
@@ -53,8 +55,13 @@ class ResourceInstantiation(
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '+' -> aspectConversion[aspectPool.getValue(tag.substring(0, tag.indexOf(':')))] =
-                        tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
+                '+' -> {
+                    val aspectName = tag.substring(0, tag.indexOf(':'))
+                    val aspect = if (aspectName == DEATH_ASPECT.name) DEATH_ASPECT
+                    else aspectPool.getValue(aspectName)
+                    aspectConversion[aspect] =
+                            tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
+                }
                 '@' -> {
                     if (tag == "TEMPLATE") {
                         isTemplate = true
@@ -147,6 +154,8 @@ class ResourceInstantiation(
                 mutableMapOf<Aspect?, MutableList<Pair<Resource?, Int?>?>?>(),
                 null
         )
+        if (!aspectConversion.containsKey(DEATH_ASPECT))
+            aspectConversion[DEATH_ASPECT] = arrayOf()
         return ResourceTemplate(ResourceIdeal(resourceCore), aspectConversion, parts)
     }
 

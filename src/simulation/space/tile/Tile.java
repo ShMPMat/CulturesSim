@@ -206,7 +206,8 @@ public class Tile {
     private void updateResources() {
         List<Resource> deletedResources = new ArrayList<>();
         for (Resource resource: resourcePack.getResources()) {
-            if (!resource.update(this)) {
+            ResourceUpdateResult result = resource.update(this);
+            if (!result.isAlive()) {
                 deletedResources.add(resource);
             }
         }

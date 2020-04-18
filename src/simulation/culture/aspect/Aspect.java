@@ -30,7 +30,7 @@ public class Aspect {
     private boolean usedThisTurn = false;
     public boolean canInsertMeaning = false;
 
-    Aspect(AspectCore aspectCore, AspectDependencies dependencies) {
+    public Aspect(AspectCore aspectCore, AspectDependencies dependencies) {
         this.aspectCore = aspectCore;
         initDependencies(dependencies);
     }

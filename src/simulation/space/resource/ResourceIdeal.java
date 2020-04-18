@@ -28,7 +28,7 @@ public class ResourceIdeal extends Resource {
     }
 
     @Override
-    public boolean update(Tile tile) {
+    public ResourceUpdateResult update(Tile tile) {
         System.err.println("Ideal is changing");
         return super.update(tile);
     }

@@ -28,7 +28,7 @@ public class NeedDependency extends LabelerDependency {
             if (res.equals(resource)) {
                 continue;
             }
-            if (super.isResourceDependency(res)) {
+            if (isResourceDependency(res)) {
                 currentAmount += res.getAmount();
                 if (currentAmount >= _amount) {
                     break;
