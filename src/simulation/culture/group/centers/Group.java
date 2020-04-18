@@ -170,17 +170,16 @@ public class Group {
 
     public void intergroupUpdate() {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
-            relationCenter.update(
-                    getOverallTerritory()
-                            .getOuterBrink()//TODO dont like territory checks in Group
-                            .stream()
-                            .flatMap(t -> t.getTagPool().getByType("Group").stream())
-                            .map(t -> ((GroupTileTag) t).getGroup())
-                            .distinct()
-                            .filter(g -> g.parentGroup != parentGroup)
-                            .collect(Collectors.toList()),
-                    this
-            );
+            List<Group> toUpdate = getOverallTerritory()
+                    .getOuterBrink()//TODO dont like territory checks in Group
+                    .stream()
+                    .flatMap(t -> t.getTagPool().getByType("Group").stream())
+                    .map(t -> ((GroupTileTag) t).getGroup())
+                    .collect(Collectors.toList());
+            toUpdate.addAll(parentGroup.subgroups);
+            toUpdate = toUpdate.stream().distinct().collect(Collectors.toList());
+            toUpdate.remove(this);
+            relationCenter.update(toUpdate,this);
         }
         cultureCenter.intergroupUpdate();
     }
