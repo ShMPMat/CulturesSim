@@ -29,7 +29,7 @@ public class NeedDependency extends LabelerDependency {
                 continue;
             }
             if (isResourceDependency(res)) {
-                currentAmount += res.getAmount();
+                currentAmount += res.getAmount() * oneResourceWorth(res);
                 if (currentAmount >= _amount) {
                     break;
                 }

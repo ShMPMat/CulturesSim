@@ -47,7 +47,7 @@ class LineDependency(
             )
             resourcePack.addAll(_p.resources)
             isAlreadyUsed = false
-            AspectResult(_p.isFinished, resourcePack, null)
+            AspectResult(_p.isFinished, emptyList(), resourcePack, null)
         } catch (e: NullPointerException) {
             isAlreadyUsed = false
             throw RuntimeException("No such aspect in Group")

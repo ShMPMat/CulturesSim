@@ -1,9 +1,13 @@
 package simulation.space.resource.tag.labeler
 
 import simulation.space.resource.Genome
+import simulation.space.resource.Resource
 
 open class DisjointLabeler(private val labelers: Collection<ResourceLabeler>) : ResourceLabeler {
     override fun isSuitable(genome: Genome) = labelers.any { it.isSuitable(genome) }
+
+    override fun actualMatches(resource: Resource) = labelers
+            .flatMap { it.actualMatches(resource) }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

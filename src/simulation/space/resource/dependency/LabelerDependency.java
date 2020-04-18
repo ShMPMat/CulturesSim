@@ -8,7 +8,6 @@ public abstract class LabelerDependency extends CoefficientDependency {
     private ResourceLabeler goodResource;
     private boolean isNecessary;
     double amount;
-    int currentAmount = 0;
 
     public LabelerDependency(
             double deprivationCoefficient,
@@ -43,5 +42,17 @@ public abstract class LabelerDependency extends CoefficientDependency {
 
     public boolean isResourceDependency(Resource resource) {
         return goodResource.isSuitable(resource.getGenome()) && resource.getAmount() > 0;
+    }
+
+    public int oneResourceWorth(Resource resource) {
+        return goodResource.actualMatches(resource.copy(1)).stream()
+                .map(Resource::getAmount)
+                .reduce(0, Integer::sum);
+    }
+
+    public int partByResource(Resource resource, double amount) {
+        return (int) Math.ceil(amount / goodResource.actualMatches(resource.copy(1)).stream()
+                .map(Resource::getAmount)
+                .reduce(0, Integer::sum));
     }
 }

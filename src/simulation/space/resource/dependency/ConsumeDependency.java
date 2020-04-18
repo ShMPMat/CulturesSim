@@ -9,6 +9,7 @@ import java.util.Set;
 
 public class ConsumeDependency extends LabelerDependency {
     public Set<String> lastConsumed = new HashSet<>();
+    int currentAmount = 0;
 
     public ConsumeDependency(
             double deprivationCoefficient,
@@ -20,31 +21,30 @@ public class ConsumeDependency extends LabelerDependency {
 
     @Override
     double satisfaction(Tile tile, Resource resource) {
+        if (currentAmount < 0) currentAmount = 0;
         double result;
-        double _amount = amount * (resource == null ? 1 : resource.getAmount());
-        for (Resource res : tile.getAccessibleResources()) {
-            if (res.equals(resource)) {
-                continue;
-            }
-            if (isResourceDependency(res)) {
-                if (_amount + currentAmount < 0) {
-                    currentAmount += _amount;
-                    break;
+        double neededAmount = amount * (resource == null ? 1 : resource.getAmount());
+        if (currentAmount < neededAmount) {
+            for (Resource res : tile.getAccessibleResources()) {
+                if (res.equals(resource)) {
+                    continue;
                 }
-                Resource part = res.getPart((int) Math.ceil(_amount));
-                currentAmount += part.getAmount();
-                if (part.getAmount() > 0) {
-                    lastConsumed.add(part.getFullName());
-                }
-                part.destroy();
-                if (currentAmount >= _amount) {
-                    break;
+                if (isResourceDependency(res)) {
+                    Resource part = res.getPart(partByResource(res, neededAmount - currentAmount));
+                    if (part.getAmount() > 0) {
+                        lastConsumed.add(part.getFullName());
+                        currentAmount += part.getAmount() * oneResourceWorth(res);
+                    }
+                    part.destroy();
+                    if (currentAmount >= neededAmount) {
+                        break;
+                    }
                 }
             }
         }
-        result = Math.min(((double) currentAmount) / _amount, 1);
-        if (currentAmount >= _amount) {
-            currentAmount -= _amount;
+        result = Math.min(((double) currentAmount) / neededAmount, 1);
+        if (currentAmount >= neededAmount) {
+            currentAmount -= neededAmount;
         }
         return result;
     }

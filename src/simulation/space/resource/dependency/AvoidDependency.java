@@ -29,7 +29,7 @@ public class AvoidDependency extends LabelerDependency {
                 continue;
             }
             if (super.isResourceDependency(res)) {
-                currentAmount += res.getAmount();
+                currentAmount += res.getAmount() * oneResourceWorth(res);
                 if (currentAmount >= _amount) {
                     break;
                 }
