@@ -58,7 +58,7 @@ public class Controller {
     public static final boolean doPrint = false;
 
     public String getVacantGroupName() {
-        return "G" + world.groups.size();
+        return "G" + world.getGroups().size();
     }
 
     public Controller(InteractionModel interactionModel) {
@@ -101,7 +101,7 @@ public class Controller {
                 }
             }
             LandscapeChangesKt.createRivers(
-                    world.map,
+                    world.getMap(),
                     5 * proportionCoefficient,
                     water,
                     t -> t.getType() == Tile.Type.Mountain
@@ -112,7 +112,7 @@ public class Controller {
             );
             turn();
         }
-        world.map.setTags();
+        world.getMap().setTags();
     }
 
     public void initializeThird() {

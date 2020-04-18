@@ -45,7 +45,7 @@ public class WindCenter {
     }
 
     void middleUpdate(int x, int y) {
-        WorldMap map = session.world.map;
+        WorldMap map = session.world.getMap();
         Tile host = map.get(x, y);
         host.getNeighbours().forEach(n -> setWindByTemperature(n, host));
 

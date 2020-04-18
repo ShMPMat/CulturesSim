@@ -70,7 +70,7 @@ public class TextVisualizer implements Visualizer {
         this.controller = controller;
         Controller.visualizer = this;
         world = controller.world;
-        map = world.map;
+        map = world.getMap();
         interactionModel = controller.interactionModel;
     }
 
@@ -131,7 +131,7 @@ public class TextVisualizer implements Visualizer {
             resourceSymbols.put(resource, s.nextLine());
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
-        for (GroupConglomerate group : world.groups) {
+        for (GroupConglomerate group : world.getGroups()) {
             groupSymbols.put(group.getName(), s.nextLine());
         }
     }
@@ -144,7 +144,7 @@ public class TextVisualizer implements Visualizer {
         main.append(world.getTurn()).append("\n");
         lastClaimedTiles = new HashMap<>();
         main.append(printedGroups());
-        for (GroupConglomerate group : controller.world.groups) {
+        for (GroupConglomerate group : world.getGroups()) {
             lastClaimedTiles.put(group.getName(), new HashSet<>());
         }
         for (Event event : interactionModel.getEvents().stream().
@@ -175,11 +175,11 @@ public class TextVisualizer implements Visualizer {
     private StringBuilder printedGroups() {
         StringBuilder main = new StringBuilder();
         int i = -1;
-        while (groupPopulations.size() < world.groups.size()) {
-            groupSymbols.put(world.groups.get(groupPopulations.size()).getName(), s.nextLine());
+        while (groupPopulations.size() < world.getGroups().size()) {
+            groupSymbols.put(world.getGroups().get(groupPopulations.size()).getName(), s.nextLine());
             groupPopulations.add(0);
         }
-        for (GroupConglomerate group : world.groups) {
+        for (GroupConglomerate group : world.getGroups()) {
             StringBuilder stringBuilder = new StringBuilder();
             i++;
             if (group.getState() == GroupConglomerate.State.Dead) {
@@ -223,7 +223,7 @@ public class TextVisualizer implements Visualizer {
      */
     private StringBuilder printedMap(Function<Tile, String> condition) {
         StringBuilder main = new StringBuilder();
-        WorldMap worldMap = controller.world.map;
+        WorldMap worldMap = controller.world.getMap();
         main.append("  ");
         for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
             main.append((i < 100 ? " " : i / 100 % 100));
@@ -335,8 +335,8 @@ public class TextVisualizer implements Visualizer {
 
     private GroupConglomerate getConglomerate(String string) {
         int index = Integer.parseInt(string.substring(1));
-        return index < world.groups.size()
-                ? world.groups.get(index)
+        return index < world.getGroups().size()
+                ? world.getGroups().get(index)
                 : null;
     }
 
@@ -362,7 +362,7 @@ public class TextVisualizer implements Visualizer {
                     }
                     switch (getCommand(line)) {
                         case Group:
-                            printGroupConglomerate(world.groups.get(Integer.parseInt(line.substring(1))));
+                            printGroupConglomerate(world.getGroups().get(Integer.parseInt(line.substring(1))));
                             break;
                         case TileReach:
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
