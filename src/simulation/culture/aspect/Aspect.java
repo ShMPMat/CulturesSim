@@ -1,5 +1,6 @@
 package simulation.culture.aspect;
 
+import kotlin.Pair;
 import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.centers.AspectCenter;
@@ -8,6 +9,8 @@ import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
+import simulation.space.resource.tag.labeler.TagLabeler;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -135,6 +138,8 @@ public class Aspect {
 //TODO I THOUGHT THERE WAS A CHECK!!!
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
+        boolean isFinished = true;
+        List<Pair<ResourceLabeler, Integer>> neededResources = new ArrayList<>();
         MutableResourcePack meaningfulPack = new MutableResourcePack();
         int neededWorkers = controller.getCeilingSatisfiableAmount(getProducedResources());
         controller.setCeiling(controller.getPopulationCenter().changeStratumAmountByAspect(
@@ -145,14 +150,15 @@ public class Aspect {
         if (controller.getCeiling() > 0) {
             for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
                 if (!satisfyRequirement(controller, entry.getValue(), entry.getKey(), meaningfulPack, node)) {
-                    new AspectResult(false, node);
+                    isFinished = false;
+                    neededResources.add(new Pair<>(new TagLabeler(entry.getKey()), controller.getCeiling()));
                 }
             }
             if (controller.isFloorExceeded(meaningfulPack)) {
                 markAsUsed();
             }
         }
-        return new AspectResult(meaningfulPack, node);
+        return new AspectResult(isFinished, neededResources, meaningfulPack, node);
     }
 
     private boolean satisfyRequirement(
