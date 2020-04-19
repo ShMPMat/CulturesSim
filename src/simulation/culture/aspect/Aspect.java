@@ -40,7 +40,7 @@ public class Aspect {
     }
 
     void initDependencies(AspectDependencies dependencies) {
-        for (Map.Entry<ResourceTag, Set<Dependency>> entry: dependencies.getMap().entrySet()) {
+        for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
             this.dependencies.getMap().put(
                     entry.getKey(),
                     entry.getValue().stream()
@@ -136,7 +136,8 @@ public class Aspect {
     public List<Resource> getProducedResources() {
         return Collections.emptyList();
     }
-//TODO I THOUGHT THERE WAS A CHECK!!!
+
+    //TODO I THOUGHT THERE WAS A CHECK!!!
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
         if (controller.getDepth() > Controller.session.maxGroupDependencyDepth) {
@@ -157,33 +158,22 @@ public class Aspect {
         ));
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         if (controller.getCeiling() > 0) {
-            for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getMap().entrySet()) {
-                if (!satisfyRequirement(controller, entry.getValue(), entry.getKey(), meaningfulPack, node)) {
+            for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getNonPhony().entrySet()) {
+                if (!satisfyRegularDependency(controller, entry.getKey(), entry.getValue(), meaningfulPack, node)) {
                     isFinished = false;
                     neededResources.add(new Pair<>(new TagLabeler(entry.getKey()), controller.getCeiling()));
                 }
             }
-            if (controller.isFloorExceeded(meaningfulPack)) {
-                markAsUsed();
-            }
+        }
+        if (isFinished) {
+            isFinished = satisfyPhonyDependency(controller, dependencies.getPhony(), meaningfulPack);
+        } else {
+            int y = 0;
+        }
+        if (controller.isFloorExceeded(meaningfulPack)) {
+            markAsUsed();
         }
         return new AspectResult(isFinished, neededResources, meaningfulPack, node);
-    }
-
-    private boolean satisfyRequirement(
-            AspectController controller,
-            Set<Dependency> dependencies,
-            ResourceTag requirementTag,
-            MutableResourcePack meaningfulPack,
-            AspectResult.ResultNode node
-            ) {
-        boolean isFinished;
-        if (requirementTag.equals(ResourceTag.phony())) {
-            isFinished = satisfyPhonyDependency(controller, dependencies, meaningfulPack);
-        } else {
-            isFinished = satisfyRegularDependency(controller, requirementTag, dependencies, meaningfulPack, node);
-        }
-        return isFinished;
     }
 
     private boolean satisfyPhonyDependency(
@@ -219,9 +209,6 @@ public class Aspect {
     }
 
     ResourcePack getPhonyFromResources(AspectController controller) {
-        if (getName().equals("PlantSeedOnSeed_of_NutTree")) {
-            int i = 0;
-        }
         ResourcePack pack = EvaluatorsKt.resourceEvaluator(((ConverseWrapper) this).resource).pick(
                 controller.getPopulationCenter().getTurnResources()
         );
