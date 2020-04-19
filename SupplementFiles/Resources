@@ -95,7 +95,7 @@
         R
 
 -Squirrel        0.25    0.05   5          -5     35   10        0             1 0 1  Animal       @Meat
-        ~A(r:Nut);1;2;0;CONSUME
+        ~A(r:Nut);1;1.25;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
         #Water
         R
@@ -123,7 +123,7 @@
         +Killing:Chitin:1,Meat:1
         #Water
 
--Bee             0.25    0.01   5          10     30   200       0             1 0 1  Animal       @Chitin
+-Bee             0.4     0.01   5          10     30   200       0             1 0 1  Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water

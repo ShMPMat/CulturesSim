@@ -20,7 +20,7 @@ public class Controller {
     public TemplateBase templateBase;
 
     public final int seed = (int) (Math.random() * 10000000);
-    public final Random random = RandomKt.Random(8565728 + 1);
+    public final Random random = RandomKt.Random(8565728 + 0);
 
     public final int proportionCoefficient = 1;
     public final boolean doTurns = true;
@@ -51,6 +51,7 @@ public class Controller {
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
     public final int groupTurnsBetweenAdopts = 10;
+    public final int maxGroupDependencyDepth = 10;
 
     public final double windFillIn = 0.1;
 

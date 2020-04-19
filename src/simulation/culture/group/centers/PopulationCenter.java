@@ -128,6 +128,7 @@ public class PopulationCenter {
                     break;
                 }
                 turnResources.addAll(stratum.use(new AspectController(
+                        1,
                         request.getCeiling() - amount,
                         request.getFloor() - amount,
                         evaluator,

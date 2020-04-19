@@ -1,6 +1,7 @@
 package simulation.culture.aspect;
 
 import kotlin.Pair;
+import simulation.Controller;
 import simulation.culture.aspect.dependency.AspectDependencies;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.group.centers.AspectCenter;
@@ -138,6 +139,14 @@ public class Aspect {
 //TODO I THOUGHT THERE WAS A CHECK!!!
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
+        if (controller.getDepth() > Controller.session.maxGroupDependencyDepth) {
+            return new AspectResult(
+                    false,
+                    new ArrayList<>(),
+                    new MutableResourcePack(),
+                    new AspectResult.ResultNode(this)
+            );
+        }
         boolean isFinished = true;
         List<Pair<ResourceLabeler, Integer>> neededResources = new ArrayList<>();
         MutableResourcePack meaningfulPack = new MutableResourcePack();
@@ -189,6 +198,7 @@ public class Aspect {
         for (Dependency dependency : dependencies) {
             int newDelta = meaningfulPack.getAmount(((ConverseWrapper) this).resource);
             AspectResult _p = dependency.useDependency(new AspectController(
+                    controller.getDepth() + 1,
                     controller.getCeiling() - newDelta,
                     controller.getFloor() - newDelta,
                     controller.getEvaluator(),
@@ -243,6 +253,7 @@ public class Aspect {
         for (Dependency dependency : dependencies) {
             int newDelta = _rp.getAmount(requirementTag);
             AspectResult result = dependency.useDependency(new AspectController(
+                    controller.getDepth() + 1,
                     controller.getCeiling() - newDelta,
                     controller.getFloor() - newDelta,
                     controller.getEvaluator(),

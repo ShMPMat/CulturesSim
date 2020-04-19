@@ -82,6 +82,7 @@ public class Stratum {
         if (!isRaisedAmount && population > 1)
             population--;
         MutableResourcePack pack = use(new AspectController(
+                1,
                 getPopulation(),
                 getPopulation(),
                 EvaluatorsKt.getPassingEvaluator(),
@@ -132,6 +133,7 @@ public class Stratum {
                     for (Dependency dependency: deps) {
                         AspectResult result = dependency.useDependency(
                                 new AspectController(
+                                        1,
                                         population - currentAmount,
                                         1,
                                         evaluator,

@@ -33,6 +33,7 @@ public class AspectRitual extends Ritual {
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
+                1,
                 EvaluatorsKt.getPassingEvaluator(),
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getAccessibleTerritory(),

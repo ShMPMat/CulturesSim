@@ -9,6 +9,7 @@ import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
 
 data class AspectController(
+        val depth: Int,
         var ceiling: Int,
         var floor: Int,
         val evaluator: ResourceEvaluator,
