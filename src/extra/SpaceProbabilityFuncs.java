@@ -35,6 +35,6 @@ public class SpaceProbabilityFuncs {
     }
 
     public static Tile randomTile(WorldMap map) {
-        return randomElement(randomElement(map.getTiles(), session.random), session.random);
+        return randomElement(randomElement(map.getLinedTiles(), session.random), session.random);
     }
 }

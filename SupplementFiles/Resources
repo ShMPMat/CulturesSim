@@ -19,7 +19,7 @@
         #Water
 
 -FlowerBush      0.15    1      10         0       30  150        0             0 0 0  Plant        @PlantFibre
-        ~r:Vapour;0.00025;2;0;CONSUME
+        ~r:Vapour;0.00025;1.25;0;CONSUME
         ~r:Bee;0.01;100;0;EXIST
         ^SoftBranch:15 ^Leaf:100 ^Flower:10   ^Seed:2 ^SoftRoot:5
         #Water
@@ -60,7 +60,7 @@
         #Water
 
 -FlowerPlant     0.25    0.1    5          5      30   100       0             1 0 0  Plant        @PlantFibre
-        ~r:Vapour;0.0000001;2;0;CONSUME
+        ~r:Vapour;0.0000001;1.25;0;CONSUME
         ~r:Bee;0.01;100;0;EXIST
         ^Leaf:3   ^Flower:1
         #Water
@@ -95,7 +95,7 @@
         R
 
 -Squirrel        0.25    0.05   5          -5     35   10        0             1 0 1  Animal       @Meat
-        ~A(r:Nut);3;2;0;CONSUME
+        ~A(r:Nut);1;2;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
         #Water
         R
@@ -124,12 +124,12 @@
         #Water
 
 -Bee             0.25    0.01   5          10     30   200       0             1 0 1  Animal       @Chitin
-        ~P(r:Flower);3;100;0;EXIST
+        ~P(r:Flower);1.25;2;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water
 
 -BumbleBee       0.25    0.02   5          10     30   50        0             1 0 1  Animal       @Chitin
-        ~P(r:Flower);3;100;0;EXIST
+        ~P(r:Flower);1.25;2;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water
 

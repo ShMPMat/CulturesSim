@@ -152,7 +152,7 @@ public class TextVisualizer implements Visualizer {
             lastClaimedTiles.get(((Group) event.getAttribute("group")).name).add((Tile) event.getAttribute("tile"));
         }
         System.out.print(main.append(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
-                map.getTiles().size() + 2), printedEvents(interactionModel.getEvents(), false),
+                map.getLinedTiles().size() + 2), printedEvents(interactionModel.getEvents(), false),
                 false), true)));
         interactionModel.clearEvents();
     }
@@ -167,7 +167,7 @@ public class TextVisualizer implements Visualizer {
     private void printMap(Function<Tile, String> condition) {
         System.out.print(addToRight(
                 printedMap(condition),
-                chompToLines(printedResources(), map.getTiles().size() + 2),
+                chompToLines(printedResources(), map.getLinedTiles().size() + 2),
                 true
         ));
     }
@@ -225,15 +225,15 @@ public class TextVisualizer implements Visualizer {
         StringBuilder main = new StringBuilder();
         WorldMap worldMap = controller.world.getMap();
         main.append("  ");
-        for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
+        for (int i = 0; i < worldMap.getLinedTiles().get(0).size(); i++) {
             main.append((i < 100 ? " " : i / 100 % 100));
         }
         main.append("\n").append("  ");
-        for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
+        for (int i = 0; i < worldMap.getLinedTiles().get(0).size(); i++) {
             main.append((i < 10 ? " " : i / 10 % 10));
         }
         main.append("\n").append("  ");
-        for (int i = 0; i < worldMap.getTiles().get(0).size(); i++) {
+        for (int i = 0; i < worldMap.getLinedTiles().get(0).size(); i++) {
             main.append(i % 10);
         }
         main.append("\n");
@@ -423,6 +423,9 @@ public class TextVisualizer implements Visualizer {
                                         .map(Map.Entry::getKey).findFirst();
                                 _oo.ifPresent(this::printResource);
                             }
+                            break;
+                        case AllResources:
+                            System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;
                         case Aspects:
                             printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));

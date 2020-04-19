@@ -14,5 +14,5 @@ fun randomTile(territory: Territory, random: Random): Tile {
 }
 
 fun randomTile(map: WorldMap, random: Random): Tile {
-    return randomElement(randomElement(map.tiles, random), random)
+    return randomElement(randomElement(map.linedTiles, random), random)
 }

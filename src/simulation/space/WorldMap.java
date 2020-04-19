@@ -1,6 +1,5 @@
 package simulation.space;
 
-import simulation.space.resource.Resource;
 import simulation.space.tile.Tile;
 import simulation.space.tile.TileTagSetterKt;
 
@@ -31,7 +30,7 @@ public class WorldMap {
         return y;
     }
 
-    public List<List<Tile>> getTiles() {
+    public List<List<Tile>> getLinedTiles() {
         return tiles;
     }
 
@@ -53,17 +52,23 @@ public class WorldMap {
             y += getY();
         }
         y %= getY();
-        return getTiles().get(x).get(y);
+        return getLinedTiles().get(x).get(y);
     }
 
     public void setTags() {
         int name = 0;
-        List<Tile> allTiles = getTiles(t -> true);
+        List<Tile> allTiles = getTiles();
         for(Tile tile : allTiles) {
             if (TileTagSetterKt.setTags(tile, "" + name)) {
                 name++;
             }
         }
+    }
+
+    public List<Tile> getTiles() {
+        return tiles.stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<Tile> getTiles(Predicate<Tile> predicate) {
@@ -74,13 +79,13 @@ public class WorldMap {
     }
 
     public synchronized void update() {//TODO parallel
-        for (List<Tile> line : getTiles()) {
+        for (List<Tile> line : getLinedTiles()) {
             for (Tile tile : line) {
                 tile.startUpdate();
             }
         }
 
-        for (List<Tile> line : getTiles()) {
+        for (List<Tile> line : getLinedTiles()) {
             for (Tile tile : line) {
                 tile.middleUpdate();
             }
@@ -88,7 +93,7 @@ public class WorldMap {
     }
 
     public synchronized void finishUpdate() {
-        for (List<Tile> line : getTiles()) {
+        for (List<Tile> line : getLinedTiles()) {
             for (Tile tile : line) {
                 tile.finishUpdate();
             }
@@ -96,7 +101,7 @@ public class WorldMap {
     }
 
     public void geologicUpdate() {
-        for (List<Tile> line : getTiles()) {
+        for (List<Tile> line : getLinedTiles()) {
             for (Tile tile : line) {
                 tile.levelUpdate();
             }
