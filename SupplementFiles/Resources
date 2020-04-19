@@ -123,12 +123,23 @@
         +Killing:Chitin:1,Meat:1
         #Water
 
--Bee             0.25    0.02   5          0      30   200       0             1 0 1  Animal       @Chitin
-        ~P(r:Flower);10;100;0;EXIST
+-Bee             0.25    0.01   5          10     30   200       0             1 0 1  Animal       @Chitin
+        ~P(r:Flower);3;100;0;EXIST
+        +Killing:Chitin:1,Meat:1
+        #Water
+
+-BumbleBee       0.25    0.02   5          10     30   50        0             1 0 1  Animal       @Chitin
+        ~P(r:Flower);3;100;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water
 
 -Mushroom        0.1     0.05   11         0      30   200       0             1 0 0  Plant        @Fungus
+        ~r:Vapour;0.1;100;0;CONSUME
+        ~m:Wood;1;100;0;EXIST
+        #Water
+        R
+
+-TreeMushroom    0.1     0.1    11         0      40   50        0             1 0 0  Plant        @Fungus
         ~r:Vapour;0.1;100;0;CONSUME
         #Water
         R

@@ -275,9 +275,9 @@ public class Group {
         }
         s.append((cultureCenter.getCultureAspectCenter().getAspectPool().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append(s.toString());
-        stringBuilder.append(resourceCenter.toString());
-        stringBuilder.append(populationCenter.toString());
-        stringBuilder.append("\n");
+        stringBuilder.append(resourceCenter.toString())
+                .append(populationCenter.toString())
+                .append("\n");
         for (Relation relation : relationCenter.getRelations()) {
             stringBuilder.append(relation).append("\n");
         }
