@@ -111,6 +111,7 @@ public class Group {
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
         if (state != State.Dead) {
+            territoryCenter.update();
             if (shouldMigrate()) {
                 if (territoryCenter.migrate()) {
                     resourceCenter.moveToNewStorage(territoryCenter.getTerritory().getCenter());
@@ -259,7 +260,7 @@ public class Group {
             stringBuilder.append(aspect).append("\n\n");
         }
         stringBuilder.append("Needed resources: ");
-//        for (Aspiration aspiration : getCultureCenter().getAspirations()) {//TODO to needed Respirces
+//        for (Aspiration aspiration : getCultureCenter().getAspirations()) {//TODO to needed Resources
 //            stringBuilder.append(aspiration).append(", ");
 //        }
 //        stringBuilder.append((cultureCenter.getAspirations().isEmpty() ? "none\n" : "\n"));

@@ -7,14 +7,18 @@ import simulation.Event
 import simulation.culture.group.*
 import simulation.space.Territory
 import simulation.space.tile.Tile
+import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
 import java.util.function.Consumer
 import java.util.function.Predicate
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     val territory = Territory()
+    var notMoved = 0
+        private set
 
     private val tileTag: GroupTileTag = GroupTileTag(group)
+    private val places = mutableListOf<Place>()
 
     private var _oldCenter: Tile? = null
     private var _oldReach: Collection<Tile> = listOf()
@@ -43,6 +47,16 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     val disbandTile: Tile
         get() = SpaceProbabilityFuncs.randomTile(territory)
+
+    fun update() {
+        notMoved++
+        if (notMoved > 50 && territory.center.tagPool.getByType(SETTLEMENT_TYPE).isEmpty()) {
+            places.add(Place(
+                    territory.center,
+                    TileTag(SETTLEMENT_TYPE + places.count { it.tileTag.type == SETTLEMENT_TYPE }, SETTLEMENT_TYPE)
+            ))
+        }
+    }
 
     fun migrate(): Boolean {
         val newCenter = migrationTile ?: return false
@@ -179,3 +193,5 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     fun canSettle(tile: Tile, additionalCondition: Predicate<Tile>) =
             canSettle(tile) && additionalCondition.test(tile)
 }
+
+val SETTLEMENT_TYPE = "Settlement"
