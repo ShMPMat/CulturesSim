@@ -4,6 +4,7 @@ import simulation.Controller;
 import simulation.Event;
 import simulation.World;
 import simulation.culture.aspect.Aspect;
+import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
@@ -50,7 +51,7 @@ public class TextVisualizer implements Visualizer {
      * Used for displaying new tiles for groups.
      */
     private Map<String, Set<Tile>> lastClaimedTiles;
-    private int mapCut;
+    private MapPrintInfo mapPrintInfo = new MapPrintInfo(0);
     /**
      * Main controller of the simulation
      */
@@ -117,7 +118,7 @@ public class TextVisualizer implements Visualizer {
                 start = -1;
             }
         }
-        mapCut = (gapStart + gapFinish) / 2;
+        mapPrintInfo.setCut((gapStart + gapFinish) / 2);
     }
 
     /**
@@ -226,7 +227,6 @@ public class TextVisualizer implements Visualizer {
      * @param condition function which adds an extra layer of information
      *                  above default map. If function returns non-empty string
      *                  for a tile, output of the function will be drawn above the tile.
-     * @return StringBuilder with a printed map.
      */
     private StringBuilder printedMap(Function<Tile, String> condition) {
         StringBuilder main = new StringBuilder();
@@ -249,7 +249,7 @@ public class TextVisualizer implements Visualizer {
             String token;
             map.append((i < 10 ? " " + i : i));
             for (int j = 0; j < SpaceData.INSTANCE.getData().getMapSizeY(); j++) {
-                Tile tile = worldMap.get(i, j + mapCut);
+                Tile tile = worldMap.get(i, j + mapPrintInfo.getCut());
                 token = condition.apply(tile);
                 if (token.equals("")) {
                     switch (tile.getType()) {
@@ -266,7 +266,7 @@ public class TextVisualizer implements Visualizer {
                             token = "\033[103m";
                             break;
                     }
-                    if (tile.getTagPool().getByType("Group").isEmpty()) {//TODO remove hardcoded "Group"
+                    if (tile.getTagPool().getByType(GroupTileTagKt.GROUP_TAG_TYPE).isEmpty()) {
                         switch (tile.getType()) {
                             case Water:
                             case Ice:
@@ -381,7 +381,7 @@ public class TextVisualizer implements Visualizer {
                         case Tile:
                             printTile(
                                     map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
-                                            Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapCut)
+                                            Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapPrintInfo.getCut())
                             );
                             break;
                         case Plates:

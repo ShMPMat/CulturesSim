@@ -15,9 +15,11 @@ fun resourcesCounter(world: World): String {
                 resourceAmounts.getValue(it).add(it)
         }
     }
-    return resourceAmounts.entries.joinToString(separator = "\n", postfix = "\u001b[30m")
-    { (if (it.value.amount == 0) "\u001b[31m" else "\u001b[30m") +
-            "${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}" }
+    return resourceAmounts.entries.joinToString("\n", postfix = "\u001b[30m")
+    {
+        (if (it.value.amount == 0) "\u001b[31m" else "\u001b[30m") +
+                "${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}"
+    }
 }
 
 data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
