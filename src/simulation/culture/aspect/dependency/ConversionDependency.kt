@@ -20,8 +20,7 @@ class ConversionDependency(
     override fun isCycleDependency(otherAspect: Aspect) =
             otherAspect is ConverseWrapper && aspect == otherAspect.aspect
 
-    override fun isCycleDependencyInner(otherAspect: Aspect) =
-            isCycleDependency(otherAspect) || otherAspect == aspect
+    override fun isCycleDependencyInner(otherAspect: Aspect) = isCycleDependency(otherAspect)
 
     override fun useDependency(controller: AspectController): AspectResult {
         if (controller.ceiling <= 0)

@@ -22,9 +22,7 @@ class LineDependency(
         if (parentConverseWrapper == converseWrapper) return true
         if (parentConverseWrapper.used) return false
         parentConverseWrapper.used = true
-        val b = converseWrapper.dependencies.map.values.any {
-            it.any { d -> d.isCycleDependencyInner(otherAspect) }
-        } || converseWrapper == otherAspect
+        val b = converseWrapper == otherAspect
         parentConverseWrapper.used = false
         return b
     }

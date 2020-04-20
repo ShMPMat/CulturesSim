@@ -23,10 +23,7 @@ class AspectDependency(
         if (parentAspect.used)
             return false
         parentAspect.used = true
-        val result = if (otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect) true
-        else this.aspect.dependencies.map.values.any {
-            it.any { d -> d.isCycleDependencyInner(otherAspect) }
-        }
+        val result = otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect
         parentAspect.used = false
         return result
     }
