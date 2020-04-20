@@ -25,12 +25,14 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     private var _oldTileTypes: Collection<Tile.Type> = listOf()
 
     fun tilePotentialMapper(tile: Tile): Int {
-        val convexPart = tile.getNeighbours { it.tagPool.contains(tileTag) }.size
-        val neededResourcePart = 3 * tile.resourcePack.getAmount {
-            tileTag.group.cultureCenter.aspectCenter.aspectPool.getResourceRequirements().contains(it)
-        }
+//        val convexPart = tile.getNeighbours { it.tagPool.contains(tileTag) }.size
+        val neededResourcePart = getReachableTilesFrom(tile).sumBy { evaluateOneTile(it) }
         val relationPart = tileTag.group.relationCenter.evaluateTile(tile)
-        return convexPart + neededResourcePart + relationPart
+        return /*convexPart +*/ neededResourcePart + relationPart
+    }
+
+    private fun evaluateOneTile(tile: Tile) = 3 * tile.resourcePack.getAmount {
+        tileTag.group.cultureCenter.aspectCenter.aspectPool.getResourceRequirements().contains(it)
     }
 
     init {
@@ -76,7 +78,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             val tileTypes = getAccessibleTileTypes()
             if (_oldCenter != territory.center || tileTypes != _oldTileTypes) {
                 _oldCenter = territory.center
-                _oldReach = getReachableTiles(territory.center)
+                _oldReach = getReachableTilesFrom(territory.center)
                 _oldTileTypes = tileTypes
             }
             return _oldReach
@@ -88,7 +90,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         else listOf()
     }
 
-    private fun getReachableTiles(tile: Tile): Collection<Tile> {
+    private fun getReachableTilesFrom(tile: Tile): Collection<Tile> {
         val tiles = mutableSetOf<Tile>()
         val queue = mutableSetOf<Pair<Tile, Int>>()
         queue.add(tile to 0)
