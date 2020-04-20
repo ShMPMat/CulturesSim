@@ -7,13 +7,15 @@ import simulation.culture.group.request.Request
 
 class Worship(
         val taleSystem: TaleSystem,
-        val depictSystem: DepictSystem
+        val depictSystem: DepictSystem,
+        val placeSystem: PlaceSystem
 ) : CultureAspect {
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
         taleSystem.use(group)
         depictSystem.use(group)
+        placeSystem.use(group)
         if (testProbability(0.05 / (depictSystem.depictions.size + 1), session.random)) {
             val depiction = createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
@@ -31,10 +33,15 @@ class Worship(
             ) ?: return
             taleSystem.addTale(tale)
         }
+        update()
+    }
+
+    private fun update() {
+
     }
 
     override fun copy(group: Group): Worship {
-        return Worship(taleSystem.copy(group), depictSystem.copy(group))
+        return Worship(taleSystem.copy(group), depictSystem.copy(group), placeSystem.copy(group))
     }
 
     override fun toString(): String {

@@ -7,4 +7,8 @@ class Place(val tile: Tile, val tileTag: TileTag) {
     init {
         tile.tagPool.add(tileTag)
     }
+
+    fun delete() {
+        tile.tagPool.remove(tileTag)
+    }
 }

@@ -122,7 +122,7 @@ public class Group {
             } else {
                 territoryCenter.shrink();
             }
-            getCultureCenter().update();
+            cultureCenter.update();
         }
     }
 

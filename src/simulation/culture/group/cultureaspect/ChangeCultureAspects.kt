@@ -61,7 +61,8 @@ fun takeOutDeity(
     ) ?: DepictSystem(setOf(), system.groupingMeme)
     return Worship(
             system,
-            depictSystem
+            depictSystem,
+            PlaceSystem(mutableSetOf())
     )
 }
 
