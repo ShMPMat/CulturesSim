@@ -10,4 +10,6 @@ data class ConcatLabeler(private val labelers: Collection<ResourceLabeler>) : Re
         labelers.first().actualMatches(resource)
     else
         super.actualMatches(resource)
+
+    override fun toString() = labelers.joinToString(" and ", "(", ")")
 }

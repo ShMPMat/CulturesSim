@@ -74,8 +74,12 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
     }
 
     override fun toString(): String {
-        return "Current resources:\n$cherishedResources\n\n"
+        return "Current resources:\n$cherishedResources\n" +
+                "Needed resources: \n${printedNeeds()}\n\n"
     }
+
+    private fun printedNeeds() = neededResources.entries.joinToString("\n")
+    { "${it.key} - importance ${it.value.importance}" }
 }
 
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {

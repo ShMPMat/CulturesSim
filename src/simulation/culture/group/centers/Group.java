@@ -259,11 +259,6 @@ public class Group {
         for (Aspect aspect : cultureCenter.getAspectCenter().getAspectPool().getAll()) {
             stringBuilder.append(aspect).append("\n\n");
         }
-        stringBuilder.append("Needed resources: ");
-//        for (Aspiration aspiration : getCultureCenter().getAspirations()) {//TODO to needed Resources
-//            stringBuilder.append(aspiration).append(", ");
-//        }
-//        stringBuilder.append((cultureCenter.getAspirations().isEmpty() ? "none\n" : "\n"));
         stringBuilder.append("Requests: ");
         for (Request request : cultureCenter.getRequests()) {
             stringBuilder.append(request).append(", ");

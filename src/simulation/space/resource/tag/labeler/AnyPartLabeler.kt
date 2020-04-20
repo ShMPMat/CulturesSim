@@ -7,4 +7,6 @@ data class AnyPartLabeler(private val labeler: ResourceLabeler) : ResourceLabele
     override fun isSuitable(genome: Genome) = genome.parts.any { labeler.isSuitable(it.genome) }
 
     override fun actualMatches(resource: Resource) = resource.genome.parts.filter { labeler.isSuitable(it.genome) }
+
+    override fun toString() = "Any Part - ($labeler)"
 }

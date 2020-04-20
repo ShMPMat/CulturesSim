@@ -14,4 +14,6 @@ class IsResistingLabeler : ResourceLabeler {
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
+
+    override fun toString() = "Resource resists"
 }

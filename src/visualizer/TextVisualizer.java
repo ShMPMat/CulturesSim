@@ -151,9 +151,16 @@ public class TextVisualizer implements Visualizer {
                 filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get(((Group) event.getAttribute("group")).name).add((Tile) event.getAttribute("tile"));
         }
-        System.out.print(main.append(addToRight(printedMap(tile -> ""), addToRight(chompToLines(printedResources().toString(),
-                map.getLinedTiles().size() + 2), printedEvents(interactionModel.getEvents(), false),
-                false), true)));
+        System.out.print(main.append(addToRight(
+                printedMap(tile -> ""),
+                addToRight(
+                        chompToLines(printedResources().toString(), map.getLinedTiles().size() + 2),
+                        printedEvents(interactionModel.getEvents(), false),
+                        false
+                ),
+                true
+                ))
+        );
         interactionModel.clearEvents();
     }
 

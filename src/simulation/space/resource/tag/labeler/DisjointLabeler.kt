@@ -23,4 +23,6 @@ open class DisjointLabeler(private val labelers: Collection<ResourceLabeler>) : 
     override fun hashCode(): Int {
         return labelers.hashCode()
     }
+
+    override fun toString() = labelers.joinToString(" or ", "(", ")")
 }
