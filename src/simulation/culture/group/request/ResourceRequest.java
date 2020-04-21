@@ -3,6 +3,7 @@ package simulation.culture.group.request;
 import kotlin.Pair;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.Stratum;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.AspectStratum;
 import simulation.space.resource.MutableResourcePack;
@@ -26,8 +27,11 @@ public class ResourceRequest extends Request {
     }
 
     @Override
-    public ResourceEvaluator isAcceptable(AspectStratum stratum) {
-        for (Aspect aspect : stratum.getAspects()) {
+    public ResourceEvaluator isAcceptable(Stratum stratum) {
+        if (!(stratum instanceof AspectStratum)) {
+            return null;
+        }
+        for (Aspect aspect : ((AspectStratum) stratum).getAspects()) {
             if (aspect instanceof ConverseWrapper) {
                 if (aspect.getProducedResources().stream()
                         .anyMatch(res -> res.getBaseName().equals(resource.getBaseName()))) {

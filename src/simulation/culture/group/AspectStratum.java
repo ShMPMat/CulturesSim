@@ -20,7 +20,7 @@ import java.util.*;
 
 import static simulation.Controller.session;
 
-public class AspectStratum {
+public class AspectStratum implements Stratum {
     private int population;
     /**
      * How many people have already worked on this turn;
@@ -124,7 +124,7 @@ public class AspectStratum {
         return resourcePack;
     }
 
-    void updateTools(Territory accessibleTerritory, PopulationCenter populationCenter) {
+    private void updateTools(Territory accessibleTerritory, PopulationCenter populationCenter) {
         if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }

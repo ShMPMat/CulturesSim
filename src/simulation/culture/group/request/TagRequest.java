@@ -1,6 +1,8 @@
 package simulation.culture.group.request;
 
 import kotlin.Pair;
+import simulation.culture.aspect.Aspect;
+import simulation.culture.group.Stratum;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.AspectStratum;
 import simulation.space.resource.Resource;
@@ -30,8 +32,11 @@ public class TagRequest extends Request {
     }
 
     @Override
-    public ResourceEvaluator isAcceptable(AspectStratum stratum) {
-        if (stratum.getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
+    public ResourceEvaluator isAcceptable(Stratum stratum) {
+        if (!(stratum instanceof AspectStratum)) {
+            return null;
+        }
+        if (((AspectStratum) stratum).getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
             return getEvaluator();
         }
         return null;
