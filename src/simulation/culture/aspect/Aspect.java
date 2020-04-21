@@ -137,10 +137,9 @@ public class Aspect {
         return Collections.emptyList();
     }
 
-    //TODO I THOUGHT THERE WAS A CHECK!!!
     public AspectResult use(AspectController controller) {//TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
-        if (controller.getDepth() > Controller.session.maxGroupDependencyDepth) {
+        if (controller.getDepth() > Controller.session.maxGroupDependencyDepth || used) {
             return new AspectResult(
                     false,
                     new ArrayList<>(),
@@ -148,14 +147,13 @@ public class Aspect {
                     new AspectResult.ResultNode(this)
             );
         }
+        used = true;
         boolean isFinished = true;
         List<Pair<ResourceLabeler, Integer>> neededResources = new ArrayList<>();
         MutableResourcePack meaningfulPack = new MutableResourcePack();
         int neededWorkers = controller.getCeilingSatisfiableAmount(getProducedResources());
-        controller.setCeiling(controller.getPopulationCenter().changeStratumAmountByAspect(
-                this,
-                neededWorkers
-        ));
+        int gotWorkers = controller.getPopulationCenter().changeStratumAmountByAspect(this, neededWorkers);
+        controller.setMax(gotWorkers);
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         if (controller.getCeiling() > 0) {
             for (Map.Entry<ResourceTag, Set<Dependency>> entry : dependencies.getNonPhony().entrySet()) {
@@ -167,12 +165,13 @@ public class Aspect {
         }
         if (isFinished) {
             isFinished = satisfyPhonyDependency(controller, dependencies.getPhony(), meaningfulPack);
-        } else {
-            int y = 0;
         }
         if (controller.isFloorExceeded(meaningfulPack)) {
             markAsUsed();
+        } else {
+            controller.getPopulationCenter().freeStratumAmountByAspect(this, gotWorkers);
         }
+        used = false;
         return new AspectResult(isFinished, neededResources, meaningfulPack, node);
     }
 

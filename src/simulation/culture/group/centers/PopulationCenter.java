@@ -1,5 +1,7 @@
 package simulation.culture.group.centers;
 
+import kotlin.Pair;
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.group.GroupError;
@@ -76,13 +78,34 @@ public class PopulationCenter {
             if (amount == 0) {
                 return 0;
             }
+            if (getFreePopulation() < 0) {
+                int j = 0;
+            }
+            if (stratum.getPopulation() < stratum.getWorkedAmount()) {
+                int i = 0;
+            }
             stratum.useAmount(amount);
             int delta = -getFreePopulation();
             if (delta > 0) {
+                if (delta > amount) {
+                    int y = 0;
+                }
                 stratum.decreaseAmount(delta);
                 amount -= delta;
             }
+            if (amount < 0) {
+                int j = 0;
+            }
             return amount;
+        } catch (NullPointerException e) {
+            throw new RuntimeException("No stratum for Aspect");
+        }
+    }
+
+    public void freeStratumAmountByAspect(Aspect aspect, int amount) {
+        Stratum stratum = getStratumByAspect(aspect);
+        try {
+            stratum.decreaseAmount(amount);
         } catch (NullPointerException e) {
             throw new RuntimeException("No stratum for Aspect");
         }
@@ -115,7 +138,20 @@ public class PopulationCenter {
     }
 
     void update(Territory accessibleTerritory) {
+        if (strata.stream().anyMatch(stratum -> stratum.getPopulation() < stratum.getWorkedAmount())) {
+            int i = 0;
+        }
+        Map<Stratum, Pair<Integer, Integer>> old = new HashMap<>();
+        if (Controller.session.world.getTurn().equals("50000763")) {
+            int i = 0;
+        }
+        strata.forEach(s ->
+                old.put(s, new Pair<>(s.getPopulation(), s.getWorkedAmount()))
+                );
         strata.forEach(s -> s.update(turnResources, accessibleTerritory, this));
+        if (strata.stream().anyMatch(stratum -> stratum.getPopulation() < stratum.getWorkedAmount())) {
+            int i = 0;
+        }
     }
 
     void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {

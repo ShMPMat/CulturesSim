@@ -68,8 +68,11 @@ public class ConverseWrapper extends Aspect {
     @Override
     public AspectResult use(AspectController controller) {
         try {
-            aspect.markAsUsed();
-            return super.use(controller);
+            AspectResult result = super.use(controller);
+            if (result.isFinished) {
+                aspect.markAsUsed();
+            }
+            return result;
         } catch (Exception e) {
             throw new RuntimeException("");
         }

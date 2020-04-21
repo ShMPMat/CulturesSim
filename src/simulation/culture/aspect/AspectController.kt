@@ -18,6 +18,16 @@ data class AspectController(
         val isMeaningNeeded: Boolean = false,
         val meaning: Meme?
 ) {
+    fun setMax(amount: Int) {
+        if (amount < 0) {
+            val o = 0
+        }
+        if (ceiling > amount)
+            ceiling = amount
+        if (floor > amount)
+            floor = amount
+    }
+
     fun isFloorExceeded(resourcePack: MutableResourcePack): Boolean {
         return evaluator.evaluate(resourcePack) >= floor
     }

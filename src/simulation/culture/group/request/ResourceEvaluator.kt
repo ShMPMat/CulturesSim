@@ -33,9 +33,14 @@ class ResourceEvaluator(
             partGetter: (Resource, Int) -> Collection<Resource>
     ): MutableResourcePack {
         val resultPack = MutableResourcePack()
+        if (part == 0)
+            return resultPack
         var amount = 0
         for (resource in resources) {
-            val neededAmount = getSatisfiableAmount(part, onePortionGetter(resource)) - amount
+            val neededAmount = getSatisfiableAmount(part - amount, onePortionGetter(resource))
+            if (neededAmount <= 0) {
+                val i = 0
+            }
             resultPack.addAll(partGetter(resource, neededAmount))
             amount = evaluate(resultPack)
             if (amount >= part) break

@@ -1,5 +1,6 @@
 package simulation.culture.group;
 
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
@@ -39,6 +40,10 @@ public class Stratum {
         });
     }
 
+    public int getWorkedAmount() {
+        return workedAmount;
+    }
+
     public MutableResourcePack getInstrumentByTag(ResourceTag tag) {
         MutableResourcePack resourcePack = dependencies.get(tag);
         return resourcePack == null ? new MutableResourcePack() : resourcePack;
@@ -58,6 +63,9 @@ public class Stratum {
 
     public void decreaseAmount(int delta) {
         population -= delta;
+        if (workedAmount > population) {
+            workedAmount = population;
+        }
     }
 
     public void useAmount(int amount) {
@@ -71,26 +79,29 @@ public class Stratum {
         }
     }
 
-    public void addAspect(Aspect aspect) {
-        aspects.add(aspect);
+    public int freePopulation() {
+        return population - workedAmount;
     }
 
     public void update(MutableResourcePack turnResources, Territory accessibleTerritory, PopulationCenter populationCenter) {
-        if (getPopulation() == 0) {
+        if (population == 0) {
             return;
         }
-        if (!isRaisedAmount && population > 1)
-            population--;
+        if (session.world.getTurn().equals("50000528")) {
+            int i = 0;
+        }
+        int oldPopulation = population;
         MutableResourcePack pack = use(new AspectController(
                 1,
-                getPopulation(),
-                getPopulation(),
+                freePopulation(),
+                freePopulation(),
                 EvaluatorsKt.getPassingEvaluator(),
                 populationCenter,
                 accessibleTerritory,
                 false,
                 null
         ));
+        population = oldPopulation;
         turnResources.addAll(pack);
         updateTools(accessibleTerritory, populationCenter);
         isRaisedAmount = false;
@@ -112,7 +123,7 @@ public class Stratum {
     }
 
     void updateTools(Territory accessibleTerritory, PopulationCenter populationCenter) {
-        if (session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
+        if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
         for (Map.Entry<ResourceTag, MutableResourcePack> entry: dependencies.entrySet()) {
@@ -153,12 +164,18 @@ public class Stratum {
                 }
             }
         }
-        workedAmount = 0;
     }
 
     public void finishUpdate(MemePool pool) {
         popularMemes.forEach(pool::strengthenMeme);
         popularMemes.clear();
+        if (workedAmount < population) {
+            population = workedAmount;
+        }
+        if (aspects.get(0).getName().equals("TakeOnHerbivore")) {
+            int i = 0;
+        }
+        workedAmount = 0;
     }
 
     @Override
