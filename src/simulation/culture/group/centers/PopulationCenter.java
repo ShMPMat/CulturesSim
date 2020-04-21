@@ -5,7 +5,7 @@ import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.group.GroupError;
-import simulation.culture.group.Stratum;
+import simulation.culture.group.AspectStratum;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class PopulationCenter {
     private int population;
-    private List<Stratum> strata = new ArrayList<>();
+    private List<AspectStratum> strata = new ArrayList<>();
 
     private int maxPopulation;
     private int minPopulation;
@@ -38,17 +38,17 @@ public class PopulationCenter {
         return turnResources;
     }
 
-    List<Stratum> getStrata() {
+    List<AspectStratum> getStrata() {
         return strata;
     }
 
-    public Stratum getStratumByAspect(Aspect aspect) {
+    public AspectStratum getStratumByAspect(Aspect aspect) {
         return strata.stream().filter(stratum -> stratum.containsAspect(aspect)).findFirst().orElse(null);
     }
 
     public int getFreePopulation() {
         int freePopulation = population - strata.stream()
-                .map(Stratum::getPopulation)
+                .map(AspectStratum::getPopulation)
                 .reduce(0, Integer::sum);
         return freePopulation;
     }
@@ -70,10 +70,10 @@ public class PopulationCenter {
     }
 
     public int changeStratumAmountByAspect(Aspect aspect, int amount) {
-        Stratum stratum = getStratumByAspect(aspect);
+        AspectStratum stratum = getStratumByAspect(aspect);
         try {
-            if (stratum.getPopulation() < amount) {
-                amount = Math.min(amount, getFreePopulation());
+            if (stratum.getFreePopulation() < amount) {
+                amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());
             }
             if (amount == 0) {
                 return 0;
@@ -103,7 +103,7 @@ public class PopulationCenter {
     }
 
     public void freeStratumAmountByAspect(Aspect aspect, int amount) {
-        Stratum stratum = getStratumByAspect(aspect);
+        AspectStratum stratum = getStratumByAspect(aspect);
         try {
             stratum.decreaseAmount(amount);
         } catch (NullPointerException e) {
@@ -129,7 +129,7 @@ public class PopulationCenter {
         amount = Math.min(population, amount);
         int delta = amount - getFreePopulation();
         if (delta > 0) {
-            for (Stratum stratum : strata) {
+            for (AspectStratum stratum : strata) {
                 int part = (int) Math.min(amount * (((double) stratum.getPopulation()) / population) + 1, stratum.getPopulation());
                 stratum.decreaseAmount(part);
             }
@@ -138,27 +138,14 @@ public class PopulationCenter {
     }
 
     void update(Territory accessibleTerritory) {
-        if (strata.stream().anyMatch(stratum -> stratum.getPopulation() < stratum.getWorkedAmount())) {
-            int i = 0;
-        }
-        Map<Stratum, Pair<Integer, Integer>> old = new HashMap<>();
-        if (Controller.session.world.getTurn().equals("50000763")) {
-            int i = 0;
-        }
-        strata.forEach(s ->
-                old.put(s, new Pair<>(s.getPopulation(), s.getWorkedAmount()))
-                );
         strata.forEach(s -> s.update(turnResources, accessibleTerritory, this));
-        if (strata.stream().anyMatch(stratum -> stratum.getPopulation() < stratum.getWorkedAmount())) {
-            int i = 0;
-        }
     }
 
     void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {
         for (Request request : requests) {
             ResourceEvaluator evaluator = request.getEvaluator();
-            List<Stratum> strataForRequest = getStrataForRequest(request);
-            for (Stratum stratum : strataForRequest) {
+            List<AspectStratum> strataForRequest = getStrataForRequest(request);
+            for (AspectStratum stratum : strataForRequest) {
                 int amount = evaluator.evaluate(turnResources);
                 if (amount >= request.getCeiling()) {
                     break;
@@ -178,7 +165,7 @@ public class PopulationCenter {
         }
     }
 
-    private List<Stratum> getStrataForRequest(Request request) {
+    private List<AspectStratum> getStrataForRequest(Request request) {
         return getStrata().stream()
                 .filter(s -> request.isAcceptable(s) != null)
                 .sorted(Comparator.comparingInt(request::satisfactionLevel))
@@ -188,13 +175,13 @@ public class PopulationCenter {
     void manageNewAspects(Set<Aspect> aspects) {
         aspects.forEach(a -> {
             if (strata.stream().noneMatch(s -> s.containsAspect(a))) {
-                strata.add(new Stratum(0, a));
+                strata.add(new AspectStratum(0, a));
             }
         });
     }
 
-    void finishUpdate(MemePool pool) {
-        strata.forEach(s -> s.finishUpdate(pool));
+    void finishUpdate(Group group) {
+        strata.forEach(s -> s.finishUpdate(group));
     }
 
     PopulationCenter getPart(double fraction) {
@@ -210,7 +197,7 @@ public class PopulationCenter {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Stratum stratum : strata) {
+        for (AspectStratum stratum : strata) {
             if (stratum.getPopulation() != 0) {
                 stringBuilder.append(stratum).append("\n");
             }

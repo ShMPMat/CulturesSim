@@ -2,7 +2,7 @@ package simulation.culture.group.request;
 
 import kotlin.Pair;
 import simulation.culture.group.centers.Group;
-import simulation.culture.group.Stratum;
+import simulation.culture.group.AspectStratum;
 import simulation.space.resource.Resource;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
@@ -30,7 +30,7 @@ public class TagRequest extends Request {
     }
 
     @Override
-    public ResourceEvaluator isAcceptable(Stratum stratum) {
+    public ResourceEvaluator isAcceptable(AspectStratum stratum) {
         if (stratum.getAspects().stream().anyMatch(aspect -> hasTagFrom(aspect.getTags()))) {
             return getEvaluator();
         }

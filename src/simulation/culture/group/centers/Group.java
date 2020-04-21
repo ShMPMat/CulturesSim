@@ -187,7 +187,7 @@ public class Group {
 
     public void finishUpdate() {
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
-        populationCenter.finishUpdate(cultureCenter.getMemePool());
+        populationCenter.finishUpdate(this);
         resourceCenter.finishUpdate();
     }
 

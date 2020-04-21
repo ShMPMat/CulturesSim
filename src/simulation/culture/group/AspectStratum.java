@@ -1,9 +1,9 @@
 package simulation.culture.group;
 
-import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.group.centers.Group;
 import simulation.culture.group.centers.PopulationCenter;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
@@ -19,7 +19,7 @@ import java.util.*;
 
 import static simulation.Controller.session;
 
-public class Stratum {
+public class AspectStratum {
     private int population;
     /**
      * How many people have already worked on this turn;
@@ -30,7 +30,7 @@ public class Stratum {
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
-    public Stratum(int population, Aspect aspect) {
+    public AspectStratum(int population, Aspect aspect) {
         this.population = population;
         aspects.add(aspect);
         aspect.getDependencies().getMap().keySet().forEach(tag -> {
@@ -51,6 +51,10 @@ public class Stratum {
 
     public int getPopulation() {
         return population;
+    }
+
+    public int getFreePopulation() {
+        return population - workedAmount;
     }
 
     public List<Aspect> getAspects() {
@@ -79,22 +83,19 @@ public class Stratum {
         }
     }
 
-    public int freePopulation() {
-        return population - workedAmount;
-    }
-
-    public void update(MutableResourcePack turnResources, Territory accessibleTerritory, PopulationCenter populationCenter) {
+    public void update(
+            MutableResourcePack accessibleResources,
+            Territory accessibleTerritory,
+            PopulationCenter populationCenter
+    ) {
         if (population == 0) {
             return;
-        }
-        if (session.world.getTurn().equals("50000528")) {
-            int i = 0;
         }
         int oldPopulation = population;
         MutableResourcePack pack = use(new AspectController(
                 1,
-                freePopulation(),
-                freePopulation(),
+                getFreePopulation(),
+                getFreePopulation(),
                 EvaluatorsKt.getPassingEvaluator(),
                 populationCenter,
                 accessibleTerritory,
@@ -102,7 +103,7 @@ public class Stratum {
                 null
         ));
         population = oldPopulation;
-        turnResources.addAll(pack);
+        accessibleResources.addAll(pack);
         updateTools(accessibleTerritory, populationCenter);
         isRaisedAmount = false;
     }
@@ -166,8 +167,8 @@ public class Stratum {
         }
     }
 
-    public void finishUpdate(MemePool pool) {
-        popularMemes.forEach(pool::strengthenMeme);
+    public void finishUpdate(Group group) {
+        popularMemes.forEach(m -> group.getCultureCenter().getMemePool().strengthenMeme(m));
         popularMemes.clear();
         if (workedAmount < population) {
             population = workedAmount;
@@ -182,7 +183,7 @@ public class Stratum {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Stratum stratum = (Stratum) o;
+        AspectStratum stratum = (AspectStratum) o;
         return Objects.equals(aspects, stratum.aspects);
     }
 
