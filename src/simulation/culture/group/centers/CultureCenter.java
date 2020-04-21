@@ -11,6 +11,7 @@ import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
+import simulation.culture.group.request.RequestPool;
 import simulation.culture.group.request.TagRequest;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.GroupMemes;
@@ -19,6 +20,7 @@ import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.TileTag;
@@ -56,8 +58,12 @@ public class CultureCenter {
         return cultureAspectCenter;
     }
 
-    List<Request> getRequests() {
-        return requests;
+    RequestPool getRequests() {
+        Map<Request, MutableResourcePack> map = new HashMap<>();
+        for (Request request : requests) {
+            map.put(request, new MutableResourcePack());
+        }
+        return new RequestPool(map);
     }
 
     List<Event> getEvents() {

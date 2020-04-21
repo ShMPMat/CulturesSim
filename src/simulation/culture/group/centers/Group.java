@@ -12,6 +12,7 @@ import simulation.culture.group.GroupTileTag;
 import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
+import simulation.culture.group.request.RequestPool;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
@@ -34,6 +35,8 @@ public class Group {
     private PopulationCenter populationCenter;
     private RelationCenter relationCenter;
     private ResourceCenter resourceCenter;
+
+    private RequestPool turnRequests = new RequestPool(new HashMap<>());
 
     public Group(
             ResourceCenter resourceCenter,
@@ -109,7 +112,8 @@ public class Group {
     public void update() {
         populationCenter.update(territoryCenter.getAccessibleTerritory());
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
-        populationCenter.executeRequests(getCultureCenter().getRequests(), territoryCenter.getAccessibleTerritory());
+        turnRequests = getCultureCenter().getRequests();
+        populationCenter.executeRequests(turnRequests, territoryCenter.getAccessibleTerritory());
         if (state != State.Dead) {
             territoryCenter.update();
             if (shouldMigrate()) {
@@ -186,6 +190,7 @@ public class Group {
     }
 
     public void finishUpdate() {
+        turnRequests.finish();
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
         populationCenter.finishUpdate(this);
         resourceCenter.finishUpdate();
@@ -260,10 +265,10 @@ public class Group {
             stringBuilder.append(aspect).append("\n\n");
         }
         stringBuilder.append("Requests: ");
-        for (Request request : cultureCenter.getRequests()) {
+        for (Request request : cultureCenter.getRequests().getRequests().keySet()) {
             stringBuilder.append(request).append(", ");
         }
-        stringBuilder.append((cultureCenter.getRequests().isEmpty() ? "none\n" : "\n"));
+        stringBuilder.append((cultureCenter.getRequests().getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
         s.append("Aspects: ");
         for (CultureAspect aspect : cultureCenter.getCultureAspectCenter().getAspectPool().getAll()) {

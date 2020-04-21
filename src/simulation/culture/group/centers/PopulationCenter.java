@@ -9,6 +9,7 @@ import simulation.culture.group.GroupError;
 import simulation.culture.group.AspectStratum;
 import simulation.culture.group.Stratum;
 import simulation.culture.group.request.Request;
+import simulation.culture.group.request.RequestPool;
 import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.Territory;
@@ -148,8 +149,8 @@ public class PopulationCenter {
         strata.forEach(s -> s.update(turnResources, accessibleTerritory, this));
     }
 
-    void executeRequests(Collection<Request> requests, Territory accessibleTerritory) {
-        for (Request request : requests) {
+    void executeRequests(RequestPool requests, Territory accessibleTerritory) {
+        for (Request request : requests.getRequests().keySet()) {
             ResourceEvaluator evaluator = request.getEvaluator();
             List<AspectStratum> strataForRequest = getStrataForRequest(request);
             for (AspectStratum stratum : strataForRequest) {
@@ -168,7 +169,7 @@ public class PopulationCenter {
                         null
                 )));
             }
-            request.end(turnResources);
+            requests.getRequests().get(request).addAll(turnResources);
         }
     }
 
