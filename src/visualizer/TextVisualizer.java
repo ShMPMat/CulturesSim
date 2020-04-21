@@ -189,8 +189,9 @@ public class TextVisualizer implements Visualizer {
                 stringBuilder.append("(").append(meme).append(" ").append(meme.getImportance()).append(") ");
             }
             stringBuilder.append(" \033[39m\n");
-            stringBuilder.append("population=").append(group.getPopulation())
-                    .append(group.getPopulation() <= groupPopulations.get(i) ? "↓" : "↑").append("\n\n");
+            boolean hasGrown = group.getPopulation() > groupPopulations.get(i);
+            stringBuilder.append(hasGrown ? "\033[32m" : "\033[31m").append("population=").append(group.getPopulation())
+                    .append(hasGrown ? "↑" : "↓").append("\033[39m\n\n");
             groupPopulations.set(i, group.getPopulation());
             main.append(chompToSize(stringBuilder.toString(), 220));
         }
