@@ -51,7 +51,7 @@ public class TextVisualizer implements Visualizer {
      * Used for displaying new tiles for groups.
      */
     private Map<String, Set<Tile>> lastClaimedTiles;
-    private MapPrintInfo mapPrintInfo = new MapPrintInfo(0);
+    private MapPrintInfo mapPrintInfo;
     /**
      * Main controller of the simulation
      */
@@ -73,6 +73,7 @@ public class TextVisualizer implements Visualizer {
         world = controller.world;
         map = world.getMap();
         interactionModel = controller.interactionModel;
+        mapPrintInfo = new MapPrintInfo(map);
     }
 
     public static void main(String[] args) {
@@ -91,34 +92,7 @@ public class TextVisualizer implements Visualizer {
         for (int i = 0; i < controller.startGroupAmount; i++) {
             groupPopulations.add(0);
         }
-        computeCut();
-    }
-
-    private void computeCut() {
-        int gapStart = 0, gapFinish = 0, start = -1, finish = 0;
-        for (int y = 0; y < SpaceData.INSTANCE.getData().getMapSizeY(); y++) {
-            boolean isLineClear = true;
-            for (int x = 0; x < SpaceData.INSTANCE.getData().getMapSizeX(); x++) {
-                Tile tile = map.get(x, y);
-                if (tile.getType() != Tile.Type.Water && tile.getType() != Tile.Type.Ice) {
-                    isLineClear = false;
-                    break;
-                }
-            }
-            if (isLineClear) {
-                if (start == -1) {
-                    start = y;
-                }
-                finish = y;
-            } else if (start != -1) {
-                if (finish - start > gapFinish - gapStart) {
-                    gapStart = start;
-                    gapFinish = finish;
-                }
-                start = -1;
-            }
-        }
-        mapPrintInfo.setCut((gapStart + gapFinish) / 2);
+        mapPrintInfo.computeCut();
     }
 
     /**
