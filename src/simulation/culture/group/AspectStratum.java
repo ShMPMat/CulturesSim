@@ -3,6 +3,7 @@ package simulation.culture.group;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
+import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.centers.PopulationCenter;
 import simulation.culture.group.request.EvaluatorsKt;
@@ -26,11 +27,11 @@ public class AspectStratum {
      */
     private int workedAmount = 0;
     private boolean isRaisedAmount = false;
-    private List<Aspect> aspects = new ArrayList<>();
+    private List<ConverseWrapper> aspects = new ArrayList<>();
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
-    public AspectStratum(int population, Aspect aspect) {
+    public AspectStratum(int population, ConverseWrapper aspect) {
         this.population = population;
         aspects.add(aspect);
         aspect.getDependencies().getMap().keySet().forEach(tag -> {
@@ -57,11 +58,11 @@ public class AspectStratum {
         return population - workedAmount;
     }
 
-    public List<Aspect> getAspects() {
+    public List<ConverseWrapper> getAspects() {
         return aspects;
     }
 
-    public boolean containsAspect(Aspect aspect) {
+    public boolean containsAspect(ConverseWrapper aspect) {
         return aspects.contains(aspect);
     }
 

@@ -4,6 +4,7 @@ import kotlin.Pair;
 import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
+import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
 import simulation.culture.group.AspectStratum;
 import simulation.culture.group.request.Request;
@@ -42,7 +43,7 @@ public class PopulationCenter {
         return strata;
     }
 
-    public AspectStratum getStratumByAspect(Aspect aspect) {
+    public AspectStratum getStratumByAspect(ConverseWrapper aspect) {
         return strata.stream().filter(stratum -> stratum.containsAspect(aspect)).findFirst().orElse(null);
     }
 
@@ -69,7 +70,7 @@ public class PopulationCenter {
         return getMinPopulation(controlledTerritory) <= population;
     }
 
-    public int changeStratumAmountByAspect(Aspect aspect, int amount) {
+    public int changeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
         AspectStratum stratum = getStratumByAspect(aspect);
         try {
             if (stratum.getFreePopulation() < amount) {
@@ -102,7 +103,7 @@ public class PopulationCenter {
         }
     }
 
-    public void freeStratumAmountByAspect(Aspect aspect, int amount) {
+    public void freeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
         AspectStratum stratum = getStratumByAspect(aspect);
         try {
             stratum.decreaseAmount(amount);
@@ -173,7 +174,10 @@ public class PopulationCenter {
     }
 
     void manageNewAspects(Set<Aspect> aspects) {
-        aspects.forEach(a -> {
+        aspects.stream()
+                .filter(a -> a instanceof ConverseWrapper)
+                .map(a -> (ConverseWrapper) a)
+                .forEach(a -> {
             if (strata.stream().noneMatch(s -> s.containsAspect(a))) {
                 strata.add(new AspectStratum(0, a));
             }

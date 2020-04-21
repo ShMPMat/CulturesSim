@@ -152,7 +152,7 @@ public class Aspect {
         List<Pair<ResourceLabeler, Integer>> neededResources = new ArrayList<>();
         MutableResourcePack meaningfulPack = new MutableResourcePack();
         int neededWorkers = controller.getCeilingSatisfiableAmount(getProducedResources());
-        int gotWorkers = controller.getPopulationCenter().changeStratumAmountByAspect(this, neededWorkers);
+        int gotWorkers = controller.getPopulationCenter().changeStratumAmountByAspect((ConverseWrapper) this, neededWorkers);
         controller.setMax(gotWorkers);
         AspectResult.ResultNode node = new AspectResult.ResultNode(this);
         if (controller.getCeiling() > 0) {
@@ -169,7 +169,7 @@ public class Aspect {
         if (controller.isFloorExceeded(meaningfulPack)) {
             markAsUsed();
         } else {
-            controller.getPopulationCenter().freeStratumAmountByAspect(this, gotWorkers);
+            controller.getPopulationCenter().freeStratumAmountByAspect((ConverseWrapper) this, gotWorkers);
         }
         used = false;
         return new AspectResult(isFinished, neededResources, meaningfulPack, node);
@@ -229,7 +229,8 @@ public class Aspect {
         MutableResourcePack _rp = new MutableResourcePack();
         _rp.addAll(
                 controller.pickCeilingPart(
-                        controller.getPopulationCenter().getStratumByAspect(this).getInstrumentByTag(requirementTag).getResources(),
+                        controller.getPopulationCenter().getStratumByAspect((ConverseWrapper) this)
+                                .getInstrumentByTag(requirementTag).getResources(),
                         r -> Collections.singletonList(r.copy(1)),
                         (r, n) -> Collections.singletonList(r.getCleanPart(n))
                 )
