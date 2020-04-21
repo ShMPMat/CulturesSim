@@ -133,9 +133,9 @@ public class TectonicPlate extends Territory {
         if (result.getFirst() == 0 && result.getFirst() == 0) {
             return 0;
         } else if (result.getFirst() <= 1 && result.getFirst() <= 1) {
-            return 1;
+            return SpaceData.INSTANCE.getData().getTectonicRange() / 2;
         }
-        return 2;
+        return SpaceData.INSTANCE.getData().getTectonicRange();
     }
 
     /**

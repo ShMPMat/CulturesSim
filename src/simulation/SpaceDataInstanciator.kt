@@ -3,6 +3,7 @@ package simulation
 import simulation.space.Data
 import simulation.space.SpaceData
 import simulation.space.resource.tag.TagMatcher
+import kotlin.math.roundToInt
 
 fun instantiateSpaceData(proportionFactor: Int, resourceTagMatchers: List<TagMatcher>) {
     val defaultData = Data()
@@ -10,6 +11,7 @@ fun instantiateSpaceData(proportionFactor: Int, resourceTagMatchers: List<TagMat
             mapSizeX = defaultData.mapSizeX * proportionFactor,
             mapSizeY = defaultData.mapSizeY * proportionFactor,
             platesAmount = defaultData.platesAmount * proportionFactor,
-            additionalTags = resourceTagMatchers
+            additionalTags = resourceTagMatchers,
+            tectonicRange = defaultData.tectonicRange * (proportionFactor.toDouble() * 0.75 ).roundToInt()
     )
 }
