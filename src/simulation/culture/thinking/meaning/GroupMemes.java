@@ -1,6 +1,7 @@
 package simulation.culture.thinking.meaning;
 
 import kotlin.Pair;
+import shmp.random.RandomCollectionsKt;
 import shmp.random.RandomProbabilitiesKt;
 import simulation.Controller;
 import simulation.culture.aspect.Aspect;
@@ -68,23 +69,11 @@ public class GroupMemes extends MemePool {
     }
 
     private Meme chooseMeme(List<Meme> memeList) {
-        Long reduced = memeList.stream()
-                .map(m -> (long) m.importance)
-                .reduce(0L, Long::sum);
-        if (reduced < 0) {
-            List<Meme> bad = memeList.stream().filter(m -> m.importance < 0).collect(Collectors.toList());
-            int i = 0;
-        }
-        long prob = Controller.session.random.nextLong(reduced);
-        memeList.sort(Comparator.comparingInt(meme -> meme.importance));
-        for (Meme meme: memeList) {
-            prob -= meme.importance;
-            if (prob <= 0) {
-                meme.increaseImportance(1);
-                return meme;
-            }
-        }
-        return memeList.get(0);
+        return RandomCollectionsKt.randomElement(
+                memeList,
+                m -> ((double) m.importance) * ((double) m.importance),
+                Controller.session.random
+        );
     }
 
     @Override
