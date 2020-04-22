@@ -68,14 +68,9 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
         System.err.println("No such Group")
         return
     }
-    val aspect: Aspect
-    aspect = if (aspectName.contains("On")) {
+    val aspect = if (aspectName.contains("On")) {
         val resourceName = aspectName.split("On".toRegex()).toTypedArray()[1]
-        val accessibleResource = group.overallTerritory.differentResources
-                .firstOrNull { it.simpleName == resourceName }
-                ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
-                        .map { it.first }
-                        .firstOrNull { it.simpleName == resourceName }
+        val accessibleResource = findGroupResource(resourceName, group)
         if (accessibleResource == null) {
             System.err.println("Group has no access to needed resources")
             return
@@ -88,14 +83,14 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
                 ConverseWrapper(a, accessibleResource)
             }
         } catch (e: NoSuchElementException) {
-            System.err.println("Cannot addAll aspect to the group")
+            System.err.println("No such Aspect")
             return
         }
     } else {
         try {
             aspectPool.getValue(aspectName)
         } catch (e: NoSuchElementException) {
-            System.err.println("Cannot addAll aspect to the group")
+            System.err.println("No such Aspect")
             return
         }
     }
@@ -111,3 +106,14 @@ fun addGroupConglomerateAspect(group: GroupConglomerate?, aspectName: String, as
         addGroupAspect(it, aspectName, aspectPool)
     }
 }
+
+private fun findGroupResource(resourceName: String, group: Group) = group.overallTerritory.differentResources
+        .firstOrNull { it.baseName == resourceName }
+        ?: group.overallTerritory.differentResources
+                .firstOrNull { it.simpleName == resourceName }
+        ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
+                .map { it.first }
+                .firstOrNull { it.baseName == resourceName }
+        ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
+                .map { it.first }
+                .firstOrNull { it.simpleName == resourceName }

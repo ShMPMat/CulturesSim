@@ -1,5 +1,6 @@
 package visualizer
 
+import extra.OutputFunc
 import simulation.World
 import simulation.culture.group.GroupConglomerate
 import simulation.space.resource.Genome
@@ -30,8 +31,9 @@ data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
     }
 }
 
-fun printProduced(group: GroupConglomerate) = group.subgroups
+fun printProduced(group: GroupConglomerate) = OutputFunc.chompToSize(group.subgroups
         .flatMap { it.cultureCenter.aspectCenter.aspectPool.converseWrappers }
         .flatMap { it.producedResources }
         .distinctBy { it.fullName }
-        .joinToString { it.fullName }
+        .sortedBy { it.fullName }
+        .joinToString { it.fullName }, 150)

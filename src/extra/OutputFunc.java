@@ -53,7 +53,7 @@ public class OutputFunc {
                 } else {
                     String part = line.substring(0, size);
                     if (part.lastIndexOf(" ") != -1) {
-                        line = line.substring(part.lastIndexOf(" "));
+                        line = line.substring(part.lastIndexOf(" ") + 1);
                         if (part.lastIndexOf(" ") == 0) {
                             part = part.substring(1);
                         } else {
