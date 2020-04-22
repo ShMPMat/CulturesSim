@@ -7,9 +7,9 @@ enum class Command(command: String) {
     /**
      * Command for making turns until something important happens.
      */
-    IdleGo("go"),  //TODO does it work still even?
     Group("^G\\d+"),
-    TileReach("^G\\d+ r"),
+    GroupTileReach("^G\\d+ r"),
+    GroupProduced("^G\\d+ p"),
     Tile("\\d+ \\d+"),
     Plates("plates"),
     TileTag("tt \\w+"),

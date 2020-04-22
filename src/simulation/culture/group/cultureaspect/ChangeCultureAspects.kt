@@ -43,7 +43,7 @@ fun takeOutSimilarTalesByTag(
     return null
 }
 
-fun takeOutDeity(
+fun takeOutWorship(
         aspectPool: MutableCultureAspectPool,
         random: Random
 ): Worship? {

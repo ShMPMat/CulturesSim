@@ -121,7 +121,7 @@ public class CultureAspectCenter {
             }
             case 2: {
                 addCultureAspect(
-                        ChangeCultureAspectsKt.takeOutDeity(aspectPool, session.random)
+                        ChangeCultureAspectsKt.takeOutWorship(aspectPool, session.random)
                 );
                 break;
             }

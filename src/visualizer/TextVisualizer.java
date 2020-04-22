@@ -346,14 +346,22 @@ public class TextVisualizer implements Visualizer {
                         case Group:
                             printGroupConglomerate(world.getGroups().get(Integer.parseInt(line.substring(1))));
                             break;
-                        case TileReach:
+                        case GroupTileReach: {
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
                             if (group == null) {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.groupReachMapper(group.subgroups.get(0), t));
                             break;
-                        case Tile:
+                        } case GroupProduced: {
+                            GroupConglomerate group = getConglomerate(splitCommand[0]);
+
+                            if (group == null) {
+                                break;
+                            }
+                            System.out.println(PrintFunctionsKt.printProduced(group));
+                            break;
+                        } case Tile:
                             printTile(
                                     map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
                                             Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapPrintInfo.getCut())
@@ -365,19 +373,19 @@ public class TextVisualizer implements Visualizer {
                         case Temperature:
                             printMap(TileMapperFunctionsKt::temperatureMapper);
                             break;
-                        case GroupPotentials:
-                            GroupConglomerate groupConglomerate = getConglomerate(splitCommand[0]);
-                            if (groupConglomerate == null) {
+                        case GroupPotentials: {
+                            GroupConglomerate group = getConglomerate(splitCommand[0]);
+                            if (group == null) {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    groupConglomerate.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
+                                    group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
                                     Integer.parseInt(splitCommand[2]),
                                     t,
                                     Integer.parseInt(splitCommand[2])
                             ));
                             break;
-                        case Wind:
+                        } case Wind:
                             printMap(TileMapperFunctionsKt::windMapper);
                             break;
                         case TerrainLevel:
@@ -411,16 +419,6 @@ public class TextVisualizer implements Visualizer {
                             break;
                         case Aspects:
                             printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
-                            break;
-                        case IdleGo:
-                            for (int i = 0; i < 500; i++) {
-                                controller.turn();
-                                if (interactionModel.getEvents().stream()
-                                        .anyMatch(event -> event.type == Event.Type.Death)) {
-                                    break;
-                                }
-                            }
-                            print();
                             break;
                         case Map:
                             printMap(tile -> "");
