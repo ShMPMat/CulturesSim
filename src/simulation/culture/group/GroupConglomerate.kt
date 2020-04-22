@@ -105,8 +105,11 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
 
     fun update() { //TODO simplify
         if (state == State.Dead) return
+        var mainTime = System.nanoTime()
         subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
+        Controller.session.groupMainTime += System.nanoTime() - mainTime
+        var othersTime = System.nanoTime()
         shuffledSubgroups
                 .mapNotNull { it.populationUpdate() }
                 .forEach{ addGroup(it) }
@@ -114,6 +117,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         if (state == State.Dead) return
         shuffledSubgroups.forEach { it.diverge() }
         shuffledSubgroups.forEach { it.intergroupUpdate() }
+        Controller.session.groupOthersTime += System.nanoTime() - othersTime
     }
 
     private fun updatePopulation() {

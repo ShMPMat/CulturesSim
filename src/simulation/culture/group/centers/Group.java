@@ -110,10 +110,12 @@ public class Group {
     }
 
     public void update() {
+        long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory());
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         turnRequests = getCultureCenter().getRequests();
         populationCenter.executeRequests(turnRequests, territoryCenter.getAccessibleTerritory());
+        session.groupInnerOtherTime += System.nanoTime() - others;
         if (state != State.Dead) {
             territoryCenter.update();
             if (shouldMigrate()) {

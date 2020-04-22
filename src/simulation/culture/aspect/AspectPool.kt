@@ -8,6 +8,8 @@ import kotlin.String
 
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected val aspectMap = initialAspects.map { it.name }.zip(initialAspects).toMap().toMutableMap()
+    private val _converseWrappers = aspects.filterIsInstance<ConverseWrapper>().toMutableList()
+    private val _converseWrappersRequirements = _converseWrappers.map { it.resource }.toMutableSet()
 
     protected val aspects: Set<Aspect>
         get() = aspectMap.values.toSet()
@@ -19,7 +21,15 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
                     result.zip(List(result.size) { w })
                 }
 
-    val converseWrappers get() = aspects.filterIsInstance<ConverseWrapper>()
+    val converseWrappers : List<ConverseWrapper> get() = _converseWrappers
+
+    protected fun innerAdd(aspect: Aspect) {
+        if (!aspectMap.containsKey(aspect.name) && aspect is ConverseWrapper) {
+            _converseWrappers.add(aspect)
+            _converseWrappersRequirements.add(aspect.resource)
+        }
+        aspectMap.set(aspect.name, aspect)
+    }
 
     fun getMeaningAspects() = aspects
             .filterIsInstance<ConverseWrapper>()
@@ -44,6 +54,5 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
 
     fun getAll(): Set<Aspect> = aspects
 
-    fun getResourceRequirements() = converseWrappers
-            .map { it.resource }.distinct()
+    fun getResourceRequirements() = _converseWrappersRequirements
 }

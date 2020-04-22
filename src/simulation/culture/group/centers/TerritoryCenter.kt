@@ -25,10 +25,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     private var _oldTileTypes: Collection<Tile.Type> = listOf()
 
     fun tilePotentialMapper(tile: Tile): Int {
-//        val convexPart = tile.getNeighbours { it.tagPool.contains(tileTag) }.size
         val neededResourcePart = getReachableTilesFrom(tile).sumBy { evaluateOneTile(it) }
         val relationPart = tileTag.group.relationCenter.evaluateTile(tile)
-        return /*convexPart +*/ neededResourcePart + relationPart
+        return neededResourcePart + relationPart
     }
 
     private fun evaluateOneTile(tile: Tile) = 3 * tile.resourcePack.getAmount {
@@ -69,9 +68,14 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private val migrationTile: Tile?
-        get() = reachableTiles
-                .filter { canSettleAndNoGroupExcept(it) }
-                .maxBy { tilePotentialMapper(it) }
+        get() {
+            val a = reachableTiles
+                    .filter { canSettleAndNoGroupExcept(it) }
+            val main = System.nanoTime()
+            val b = a.maxBy { tilePotentialMapper(it) }
+            Controller.session.groupMigrationTime += System.nanoTime() - main
+            return b
+        }
 
     private val reachableTiles: Collection<Tile>
         get() {

@@ -1,5 +1,6 @@
 package simulation.culture.group.centers
 
+import shmp.random.SampleSpaceObject
 import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.*
@@ -110,4 +111,8 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
         } catch (e: NoSuchElementException) {
         }
     }
+}
+
+enum class AspectRandom : SampleSpaceObject {
+    
 }

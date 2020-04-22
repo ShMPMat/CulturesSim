@@ -58,6 +58,14 @@ public class Controller {
     public static Visualizer visualizer;
     public static final boolean doPrint = false;
 
+    public long overallTime = 0;
+    public long groupTime = 0;
+    public long othersTime = 0;
+    public long groupMainTime = 0;
+    public long groupOthersTime = 0;
+    public long groupMigrationTime = 0;
+    public long groupInnerOtherTime = 0;
+
     public String getVacantGroupName() {
         return "G" + world.getGroups().size();
     }
@@ -133,6 +141,10 @@ public class Controller {
     public void turn() {
         interactionModel.turn(world);
         world.incrementTurn();
+        System.out.println("Overall - " + overallTime + " Groups - " + groupTime + " Others - " + othersTime
+                + " Groups to others - " + ((double) groupTime) / ((double) othersTime)
+                + " main update to others - " + ((double) groupMainTime) / ((double) groupOthersTime)
+                + " migration to others - " + ((double) groupMigrationTime) / ((double) groupInnerOtherTime));
     }
 
     public void geologicTurn() {
