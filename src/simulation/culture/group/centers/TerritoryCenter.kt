@@ -71,9 +71,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         get() {
             val a = reachableTiles
                     .filter { canSettleAndNoGroupExcept(it) }
-            val main = System.nanoTime()
+//            val main = System.nanoTime()
             val b = a.maxBy { tilePotentialMapper(it) }
-            Controller.session.groupMigrationTime += System.nanoTime() - main
+//            Controller.session.groupMigrationTime += System.nanoTime() - main
             return b
         }
 

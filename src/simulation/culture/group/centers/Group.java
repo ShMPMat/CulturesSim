@@ -116,6 +116,7 @@ public class Group {
         turnRequests = getCultureCenter().getRequests();
         populationCenter.executeRequests(turnRequests, territoryCenter.getAccessibleTerritory());
         session.groupInnerOtherTime += System.nanoTime() - others;
+        long main = System.nanoTime();
         if (state != State.Dead) {
             territoryCenter.update();
             if (shouldMigrate()) {
@@ -130,6 +131,7 @@ public class Group {
             }
             cultureCenter.update();
         }
+        session.groupMigrationTime += System.nanoTime() - main;
     }
 
     private boolean shouldMigrate() {

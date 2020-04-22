@@ -51,7 +51,7 @@ public class Controller {
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
     public final int groupTurnsBetweenAdopts = 10;
-    public final int maxGroupDependencyDepth = 10;
+    public final int maxGroupDependencyDepth = 5;
 
     public final double windFillIn = 0.1;
 
