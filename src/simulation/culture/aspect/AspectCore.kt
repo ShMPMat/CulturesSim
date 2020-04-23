@@ -4,7 +4,7 @@ import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
 import simulation.space.resource.tag.ResourceTag
 
-internal class AspectCore(
+class AspectCore(
         val name: String,
         val tags: List<ResourceTag>,
         private val requirements: List<ResourceTag>,

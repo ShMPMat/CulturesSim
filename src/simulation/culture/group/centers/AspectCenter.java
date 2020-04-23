@@ -172,7 +172,7 @@ public class AspectCenter {
                                 ));
                     }
                 }
-                if (newAspect.getProducedResources().stream().anyMatch(r -> converseWrapper.resource.equals(r))) {
+                if (newAspect.getProducedResources().stream().anyMatch(r -> converseWrapper.getResource().equals(r))) {
                     converseWrapper.getDependencies().getMap().get(ResourceTag.phony()).add(new LineDependency(
                             true,
                             converseWrapper,
@@ -216,7 +216,7 @@ public class AspectCenter {
         for (Group neighbour : group.getRelationCenter().getRelatedGroups()) {
             allExistingAspects.addAll(neighbour.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream()
                     .filter(aspect -> !(aspect instanceof ConverseWrapper)
-                            || aspectPool.contains(((ConverseWrapper) aspect).aspect))
+                            || aspectPool.contains(((ConverseWrapper) aspect).getAspect()))
                     .map(a -> new Pair<>(a, neighbour))
                     .collect(Collectors.toList()));
         }
