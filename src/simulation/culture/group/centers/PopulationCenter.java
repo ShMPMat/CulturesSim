@@ -4,6 +4,7 @@ import kotlin.Pair;
 import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
+import simulation.culture.aspect.AspectLabeler;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
 import simulation.culture.group.AspectStratum;
@@ -14,6 +15,7 @@ import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -207,6 +209,24 @@ public class PopulationCenter {
                 populationPart,
                 maxPopulation,
                 minPopulation
+        );
+    }
+
+    void wakeNeedStrata(Pair<ResourceLabeler, ResourceNeed> need) {
+        AspectLabeler labeler = new AspectLabeler(need.getFirst());
+        List<AspectStratum> options = getStrata().stream()
+                .filter(s -> s.getPopulation() == 0)
+                .filter(s -> s instanceof AspectStratum)
+                .map(s -> (AspectStratum) s)
+                .filter(s -> s.getAspects().stream().anyMatch(labeler::isSuitable))
+                .collect(Collectors.toList());
+        //TODO shuffle
+        int population = getFreePopulation();
+        if (population < options.size()) {
+            options = options.subList(0, population);
+        }
+        options.forEach(s ->
+                s.useAmount(1)
         );
     }
 

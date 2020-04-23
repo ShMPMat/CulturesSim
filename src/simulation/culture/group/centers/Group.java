@@ -5,6 +5,7 @@ import extra.OutputFunc;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static shmp.random.RandomCollectionsKt.*;
 
+import kotlin.Pair;
 import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.GroupConglomerate;
@@ -16,6 +17,7 @@ import simulation.culture.group.request.RequestPool;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
+import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.MutableResourcePack;
 
@@ -37,6 +39,8 @@ public class Group {
     private ResourceCenter resourceCenter;
 
     private RequestPool turnRequests = new RequestPool(new HashMap<>());
+
+    private int _direNeedTurns = 0;
 
     public Group(
             ResourceCenter resourceCenter,
@@ -129,13 +133,29 @@ public class Group {
             } else {
                 territoryCenter.shrink();
             }
+            checkNeeds();
             cultureCenter.update();
         }
         session.groupMigrationTime += System.nanoTime() - main;
     }
 
+    private void checkNeeds() {
+        Pair<ResourceLabeler, ResourceNeed> need = resourceCenter.getDireNeed();
+        if (need == null) {
+            return;
+        }
+        cultureCenter.addNeedAspect(need);
+        populationCenter.wakeNeedStrata(need);
+
+    }
+
     private boolean shouldMigrate() {
-        return resourceCenter.hasDireNeed();
+        if (resourceCenter.hasDireNeed()) {
+            _direNeedTurns++;
+        } else {
+            _direNeedTurns = 0;
+        }
+        return _direNeedTurns > 5 + territoryCenter.getNotMoved() / 10;
     }
 
     public Group populationUpdate() {

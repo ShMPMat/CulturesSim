@@ -3,11 +3,10 @@ package simulation.culture.group.centers;
 import kotlin.Pair;
 import simulation.Controller;
 import simulation.Event;
-import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectController;
-import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.aspect.*;
+import simulation.culture.group.AspectStratum;
 import simulation.culture.group.GroupTileTagKt;
+import simulation.culture.group.Stratum;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
@@ -120,7 +119,6 @@ public class CultureCenter {
     }
 
     void update() {
-        tryToFulfillAspirations();
         events.addAll(aspectCenter.mutateAspects());
         createArtifact();
         cultureAspectCenter.useCultureAspects();
@@ -185,11 +183,7 @@ public class CultureCenter {
         return memePool.getValuableMeme();
     }
 
-    private void tryToFulfillAspirations() {
-        Pair<ResourceLabeler, ResourceNeed> need = group.getResourceCenter().getDireNeed();
-        if (need == null) {
-            return;
-        }
+    void addNeedAspect(Pair<ResourceLabeler, ResourceNeed> need) {
         List<Pair<Aspect, Group>> options = aspectCenter.findOptions(need.getFirst());
         if (options.isEmpty()) {
             return;
@@ -197,20 +191,22 @@ public class CultureCenter {
         Pair<Aspect, Group> pair = randomElement(options, session.random);
         aspectCenter.addAspect(pair.getFirst());
         if (pair.getSecond() == null) {
-            events.add(new Event(Event.Type.AspectGaining, "Group " + group.name +
-                    " developed aspect " + pair.getFirst().getName(), "group", this));
+            events.add(new Event(
+                    Event.Type.AspectGaining,
+                    "Group " + group.name + " developed aspect " + pair.getFirst().getName(),
+                    "group", this
+            ));
         } else {
-            events.add(
-                    new Event(Event.Type.AspectGaining,
-                            String.format(
-                                    "Group %s took aspect %s from group %s",
-                                    group.name,
-                                    pair.getFirst().getName(),
-                                    pair.getSecond().name
-                            ),
-                            "group",
-                            this
-                    ));
+            events.add(new Event(
+                    Event.Type.AspectGaining,
+                    String.format(
+                            "Group %s took aspect %s from group %s",
+                            group.name,
+                            pair.getFirst().getName(),
+                            pair.getSecond().name
+                    ),
+                    "group", this
+            ));
         }
     }
 
