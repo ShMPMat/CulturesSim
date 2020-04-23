@@ -54,5 +54,5 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
 
     fun getAll(): Set<Aspect> = aspects
 
-    fun getResourceRequirements() = _converseWrappersRequirements
+    fun getResourceRequirements(): Set<Resource> = _converseWrappersRequirements
 }

@@ -96,7 +96,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private fun getReachableTilesFrom(tile: Tile): Collection<Tile> {
         val tiles = mutableSetOf<Tile>()
-        val queue = mutableSetOf<Pair<Tile, Int>>()
+        val queue = mutableListOf<Pair<Tile, Int>>()
         queue.add(tile to 0)
         var currentLayer = 1
         while (true) {
@@ -109,9 +109,8 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                     .filter { !tiles.contains(it) }
                     .map { it to currentLayer }
                     .toList()
-            if (currentTiles.isEmpty()) {
+            if (currentTiles.isEmpty())
                 break
-            }
             queue.clear()
             queue.addAll(currentTiles)
             currentLayer++

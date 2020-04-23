@@ -33,7 +33,7 @@ class AspectDependency(
             else isCycleDependency(otherAspect)
 
     override fun useDependency(controller: AspectController): AspectResult {
-        if (isAlreadyUsed || controller.ceiling <= 0)
+        if (isAlreadyUsed || controller.ceiling <= 0)//TODO mb unnecessary
             return AspectResult(MutableResourcePack(), null)
         isAlreadyUsed = true
         val result = aspect.use(controller.copy(

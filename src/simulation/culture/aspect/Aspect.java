@@ -272,17 +272,6 @@ public class Aspect {
         return isFinished;
     }
 
-    ResourcePack getRegularFromResources(AspectController controller, ResourceTag tag) {
-        ResourcePack pack = EvaluatorsKt.tagEvaluator(tag).pick(
-                controller.getPopulationCenter().getTurnResources()
-        );
-        return controller.pickCeilingPart(
-                pack.getResources(),
-                r -> Collections.singletonList(r.copy(1)),
-                (r, n) -> Collections.singletonList(r.getCleanPart(n))
-        );
-    }
-
     protected boolean shouldPassMeaningNeed(boolean isMeaningNeeded) {
         return isMeaningNeeded;
     }
