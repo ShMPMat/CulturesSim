@@ -15,6 +15,7 @@ import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 
 import java.util.*;
@@ -152,27 +153,32 @@ public class PopulationCenter {
 
     void executeRequests(RequestPool requests, Territory accessibleTerritory, Group group) {
         for (Request request : requests.getRequests().keySet()) {
-            ResourceEvaluator evaluator = request.getEvaluator();
-            List<AspectStratum> strataForRequest = getStrataForRequest(request);
-            for (AspectStratum stratum : strataForRequest) {
-                int amount = evaluator.evaluate(turnResources);
-                if (amount >= request.getCeiling()) {
-                    break;
-                }
-                turnResources.addAll(stratum.use(new AspectController(
-                        1,
-                        request.getCeiling() - amount,
-                        request.getFloor() - amount,
-                        evaluator,
-                        this,
-                        accessibleTerritory,
-                        false,
-                        null,
-                        group
-                )));
-            }
-            requests.getRequests().get(request).addAll(turnResources);
+            requests.getRequests().get(request).addAll(executeRequest(request, accessibleTerritory, group));
         }
+    }
+
+    ResourcePack executeRequest(Request request, Territory accessibleTerritory, Group group) {
+        ResourceEvaluator evaluator = request.getEvaluator();
+        List<AspectStratum> strataForRequest = getStrataForRequest(request);
+        MutableResourcePack pack = new MutableResourcePack(evaluator.pick(turnResources).getResources());
+        for (AspectStratum stratum : strataForRequest) {
+            int amount = evaluator.evaluate(pack);
+            if (amount >= request.getCeiling()) {
+                break;
+            }
+            pack.addAll(stratum.use(new AspectController(
+                    1,
+                    request.getCeiling() - amount,
+                    request.getFloor() - amount,
+                    evaluator,
+                    this,
+                    accessibleTerritory,
+                    false,
+                    null,
+                    group
+            )));
+        }
+        return pack;
     }
 
     private List<AspectStratum> getStrataForRequest(Request request) {
