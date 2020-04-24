@@ -53,6 +53,7 @@ public class DepictObject implements CultureAspect {
                 group.getCultureCenter().getMemePool().getMeme(meme.toString()),
                 group
         ));
+        result.pushNeeds(group);
         if (result.isFinished) {
             MutableResourcePack meaningful = new MutableResourcePack(result.resources.getResources().stream()
                     .filter(Resource::hasMeaning)

@@ -41,6 +41,7 @@ public class AspectRitual extends Ritual {
                 group.getCultureCenter().getMeaning(),
                 group
         ));
+        result.pushNeeds(group);
         if (result.isFinished) {
             group.getResourceCenter().addAll(result.resources);
             resourceBehaviour.proceedResources(result.resources);
