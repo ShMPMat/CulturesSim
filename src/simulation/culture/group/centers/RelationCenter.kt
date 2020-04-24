@@ -66,17 +66,18 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
 
     fun requestTrade(pool: RequestPool) {
         for ((request, pack) in pool.requests)
-            pack.addAll(trade(request, request.left(pack)))
+            pack.addAll(trade(request, request.amountLeft(pack)))
     }
 
     fun trade(request: Request, amount: Int): ResourcePack {
         if (amount <= 0) return ResourcePack()
         val pack = MutableResourcePack()
-//        var amountLeft = amount//TODO
-//        relations.sortedByDescending { it.positive }.map { it.other }.forEach {
-//            pack.addAll(it.askFor(request, amountLeft))
-//            amountLeft = amount - request.satisfactionLevel()
-//        }
+        var amountLeft = amount
+        for (relation in relations.sortedByDescending { it.positive }) {
+            pack.addAll(relation.other.askFor(request.reducedAmountCopy(amountLeft), relation.owner))
+            amountLeft = amount - request.evaluator.evaluate(pack)
+            if (amountLeft <= 0) break
+        }
         return pack
     }
 }

@@ -1,0 +1,49 @@
+package simulation.culture.group.request
+
+import simulation.culture.aspect.ConverseWrapper
+import simulation.culture.group.AspectStratum
+import simulation.culture.group.Stratum
+import simulation.culture.group.centers.Group
+import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.Resource
+import java.util.function.BiFunction
+import kotlin.math.max
+
+class ResourceRequest(
+        group: Group,
+        private val resource: Resource,
+        floor: Int,
+        ceiling: Int,
+        penalty: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>,
+        reward: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>
+) : Request(group, floor, ceiling, penalty, reward) {
+    override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
+        if (stratum !is AspectStratum)
+            return null
+        for (aspect in stratum.aspects)
+            if (aspect is ConverseWrapper)
+                if (aspect.producedResources.any { it.baseName == resource.baseName })
+                    return evaluator
+        return null
+    }
+
+    override fun reducedAmountCopy(amount: Int) = ResourceRequest(
+            group,
+            resource,
+            0,
+            amount,
+            penalty,
+            reward
+    )
+
+    override val evaluator = resourceEvaluator(resource)
+
+    override fun satisfactionLevel(sample: Resource): Int {
+        return if (resource === sample) 1 else 0
+    }
+
+    override fun toString(): String {
+        return "Resource ${resource.baseName}"
+    }
+
+}

@@ -22,11 +22,13 @@ abstract class Request(
 ) {
     abstract fun isAcceptable(stratum: Stratum): ResourceEvaluator?
 
+    abstract fun reducedAmountCopy(amount: Int): Request
+
     abstract val evaluator: ResourceEvaluator
 
     abstract fun satisfactionLevel(sample: Resource): Int
 
-    fun left(resourcePack: ResourcePack) = max(0, ceiling - evaluator.evaluate(resourcePack))
+    fun amountLeft(resourcePack: ResourcePack) = max(0, ceiling - evaluator.evaluate(resourcePack))
 
     fun end(resourcePack: MutableResourcePack) {
         val partPack = evaluator.pick(
@@ -53,5 +55,4 @@ abstract class Request(
         }
         return result
     }
-
 }

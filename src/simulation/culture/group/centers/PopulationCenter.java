@@ -160,7 +160,12 @@ public class PopulationCenter {
     ResourcePack executeRequest(Request request, Territory accessibleTerritory, Group group) {
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
-        MutableResourcePack pack = new MutableResourcePack(evaluator.pick(turnResources).getResources());
+        MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
+                request.getCeiling(),
+                turnResources.getResources(),
+                r -> Collections.singletonList(r.copy(1)),
+                (r, p) -> Collections.singletonList(r.getCleanPart(p))
+        ).getResources());
         for (AspectStratum stratum : strataForRequest) {
             int amount = evaluator.evaluate(pack);
             if (amount >= request.getCeiling()) {

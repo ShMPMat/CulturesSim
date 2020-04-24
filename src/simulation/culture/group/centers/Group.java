@@ -17,6 +17,7 @@ import simulation.culture.group.request.RequestPool;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
 import simulation.space.resource.MutableResourcePack;
@@ -209,7 +210,7 @@ public class Group {
             toUpdate.addAll(parentGroup.subgroups);
             toUpdate = toUpdate.stream().distinct().collect(Collectors.toList());
             toUpdate.remove(this);
-            relationCenter.updateRelations(toUpdate,this);
+            relationCenter.updateRelations(toUpdate, this);
         }
         cultureCenter.intergroupUpdate();
     }
@@ -310,6 +311,11 @@ public class Group {
         stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
 
         return stringBuilder.toString();
+    }
+
+    public ResourcePack askFor(Request request, Group owner) {
+        if (!owner.parentGroup.equals(parentGroup)) return new ResourcePack();
+        return populationCenter.executeRequest(request, territoryCenter.getAccessibleTerritory(), this);
     }
 
     public enum State {
