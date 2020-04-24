@@ -29,8 +29,8 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
         if (!testProbability(session.cultureAspectBaseProbability, session.random))
             return
         var cultureAspect: CultureAspect? = null
-        when (session.random.nextInt(5)) {
-            0 -> cultureAspect = createDepictObject(
+        when (randomElement(AspectRandom.values(), session.random)) {
+            AspectRandom.Depict -> cultureAspect = createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
                     constructAndAddSimpleMeme(
                             group.cultureCenter.memePool,
@@ -39,7 +39,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
                     group,
                     session.random
             )
-            2 -> cultureAspect = createAestheticallyPleasingObject(
+            AspectRandom.AestheticallyPleasing -> cultureAspect = createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .map { it.first }
                             .filter { !aestheticallyPleasingResources.contains(it) }
@@ -47,7 +47,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
                     group,
                     session.random
             )
-            3 -> cultureAspect = constructRitual(//TODO recursively go in dependencies;
+            AspectRandom.Ritual -> cultureAspect = constructRitual(//TODO recursively go in dependencies;
                     constructBetterAspectUseReason(
                             group,
                             group.cultureCenter.aspectCenter.aspectPool.converseWrappers,
@@ -57,7 +57,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
                     group,
                     session.random
             )
-            4 -> cultureAspect = createTale(
+            AspectRandom.Tale -> cultureAspect = createTale(
                     group,
                     session.templateBase,
                     session.random
@@ -72,9 +72,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
         when (session.random.nextInt(3)) {
             0 -> joinSimilarRituals()
             1 -> joinSimilarTalesBy("!actor")
-            2 -> addCultureAspect(
-                    takeOutWorship(aspectPool, session.random)
-            )
+            2 -> addCultureAspect(takeOutWorship(aspectPool, session.random))
         }
     }
 
@@ -113,6 +111,9 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
     }
 }
 
-enum class AspectRandom : SampleSpaceObject {
-    
+enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
+    Depict(1.0),
+    AestheticallyPleasing(1.0),
+    Ritual(1.0),
+    Tale(3.0)
 }
