@@ -13,7 +13,7 @@ interface Stratum {
     fun update(
             accessibleResources: MutableResourcePack,
             accessibleTerritory: Territory,
-            populationCenter: PopulationCenter
+            group: Group
     )
 
     fun finishUpdate(group: Group)

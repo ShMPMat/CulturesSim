@@ -50,7 +50,8 @@ public class DepictObject implements CultureAspect {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getAccessibleTerritory(),
                 true,
-                group.getCultureCenter().getMemePool().getMeme(meme.toString())
+                group.getCultureCenter().getMemePool().getMeme(meme.toString()),
+                group
         ));
         if (result.isFinished) {
             MutableResourcePack meaningful = new MutableResourcePack(result.resources.getResources().stream()

@@ -73,6 +73,10 @@ public class AspectStratum implements Stratum {
         }
     }
 
+    public void decreaseWorkedAmount(int delta) {
+        workedAmount -= delta;
+    }
+
     public void useAmount(int amount) {
         if (amount <= 0) {
             return;
@@ -87,7 +91,7 @@ public class AspectStratum implements Stratum {
     public void update(
             MutableResourcePack accessibleResources,
             Territory accessibleTerritory,
-            PopulationCenter populationCenter
+            Group group
     ) {
         if (population == 0) {
             return;
@@ -98,20 +102,21 @@ public class AspectStratum implements Stratum {
                 getFreePopulation(),
                 getFreePopulation(),
                 EvaluatorsKt.getPassingEvaluator(),
-                populationCenter,
+                group.getPopulationCenter(),
                 accessibleTerritory,
                 false,
-                null
+                null,
+                group
         ));
         population = oldPopulation;
         accessibleResources.addAll(pack);
-        updateTools(accessibleTerritory, populationCenter);
+        updateTools(accessibleTerritory, group);
         isRaisedAmount = false;
     }
 
     public MutableResourcePack use(AspectController controller) {
         MutableResourcePack resourcePack = new MutableResourcePack();
-        for (Aspect aspect: aspects) {
+        for (Aspect aspect : aspects) {
             AspectResult result = aspect.use(controller);
             if (result.resources.isNotEmpty()) {
                 popularMemes.add(ConstructMemeKt.constructMeme(aspect));
@@ -120,15 +125,16 @@ public class AspectStratum implements Stratum {
             if (result.isFinished) {
                 resourcePack.addAll(result.resources);
             }
+            result.pushNeeds(controller.getGroup());
         }
         return resourcePack;
     }
 
-    private void updateTools(Territory accessibleTerritory, PopulationCenter populationCenter) {
+    private void updateTools(Territory accessibleTerritory, Group group) {
         if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
-        for (Map.Entry<ResourceTag, MutableResourcePack> entry: dependencies.entrySet()) {
+        for (Map.Entry<ResourceTag, MutableResourcePack> entry : dependencies.entrySet()) {
             int currentAmount = entry.getValue().getAmount();
             if (currentAmount >= population) {
                 continue;
@@ -137,23 +143,24 @@ public class AspectStratum implements Stratum {
                 continue;
             }
             ResourceEvaluator evaluator = EvaluatorsKt.tagEvaluator(entry.getKey());
-            for (Aspect aspect: aspects) {//TODO choose the best
+            for (Aspect aspect : aspects) {//TODO choose the best
                 if (currentAmount >= population) {
                     break;
                 }
                 Set<Dependency> deps = aspect.getDependencies().getMap().get(entry.getKey());
                 if (deps != null) {
-                    for (Dependency dependency: deps) {
+                    for (Dependency dependency : deps) {
                         AspectResult result = dependency.useDependency(
                                 new AspectController(
                                         1,
                                         population - currentAmount,
                                         1,
                                         evaluator,
-                                        populationCenter,
+                                        group.getPopulationCenter(),
                                         accessibleTerritory,
                                         false,
-                                        null
+                                        null,
+                                        group
                                 ));
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);
@@ -197,7 +204,7 @@ public class AspectStratum implements Stratum {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
         stringBuilder.append(population).append(", aspects: ");
-        for (Aspect aspect: aspects) {
+        for (Aspect aspect : aspects) {
             stringBuilder.append(aspect.getName()).append(" ");
         }
         return stringBuilder.toString();

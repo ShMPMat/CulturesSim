@@ -115,10 +115,10 @@ public class Group {
 
     public void update() {
         long others = System.nanoTime();
-        populationCenter.update(territoryCenter.getAccessibleTerritory());
+        populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         turnRequests = getCultureCenter().getRequests();
-        populationCenter.executeRequests(turnRequests, territoryCenter.getAccessibleTerritory());
+        populationCenter.executeRequests(turnRequests, territoryCenter.getAccessibleTerritory(), this);
         session.groupInnerOtherTime += System.nanoTime() - others;
         long main = System.nanoTime();
         if (state != State.Dead) {

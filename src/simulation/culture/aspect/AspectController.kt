@@ -1,5 +1,6 @@
 package simulation.culture.aspect
 
+import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.PopulationCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.thinking.meaning.Meme
@@ -16,7 +17,8 @@ data class AspectController(
         val populationCenter: PopulationCenter,
         val territory: Territory,
         val isMeaningNeeded: Boolean = false,
-        val meaning: Meme?
+        val meaning: Meme?,
+        val group: Group
 ) {
     fun setMax(amount: Int) {
         if (amount < 0) {
@@ -27,6 +29,8 @@ data class AspectController(
         if (floor > amount)
             floor = amount
     }
+
+    fun evaluate(pack: ResourcePack) = evaluator.evaluate(pack)
 
     fun isFloorExceeded(resourcePack: MutableResourcePack): Boolean {
         return evaluator.evaluate(resourcePack) >= floor

@@ -11,6 +11,7 @@ import simulation.space.tile.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Genome {
@@ -242,6 +243,19 @@ public class Genome {
 
     void addResourceTag(ResourceTag tag) {
         tags.add(tag);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genome genome = (Genome) o;
+        return getBaseName().equals(genome.getBaseName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBaseName());
     }
 
     public enum Type {

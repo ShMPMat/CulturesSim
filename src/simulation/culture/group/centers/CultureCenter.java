@@ -169,7 +169,8 @@ public class CultureCenter {
                     group.getPopulationCenter(),
                     group.getTerritoryCenter().getAccessibleTerritory(),
                     true,
-                    memePool.getValuableMeme()
+                    memePool.getValuableMeme(),
+                    group
             ));
             for (Resource resource : result.resources.getResources()) {
                 if (resource.hasMeaning()) {

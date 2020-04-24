@@ -10,6 +10,7 @@ import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
 import simulation.space.resource.tag.ResourceTag
+import simulation.space.resource.tag.labeler.BaseNameLabeler
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*
@@ -108,17 +109,24 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
         controller.setMax(gotWorkers)
         val node = ResultNode(this)
         if (controller.ceiling > 0)
-            for ((key, value) in dependencies.nonPhony.entries)
-                if (!satisfyRegularDependency(controller, key, value, meaningfulPack, node)) {
+            for ((key, value) in dependencies.nonPhony.entries) {
+                val (isOk, needs) = satisfyRegularDependency(controller, key, value, meaningfulPack, node)
+                neededResources.addAll(needs)
+                if (!isOk) {
                     isFinished = false
-                    neededResources.add(Pair<ResourceLabeler, Int>(TagLabeler(key), controller.ceiling))
+                    neededResources.add(TagLabeler(key) to controller.ceiling)
                 }
+            }
         if (isFinished)
             isFinished = satisfyPhonyDependency(controller, dependencies.phony, meaningfulPack)
         if (controller.isFloorExceeded(meaningfulPack))
             markAsUsed()
-        else
+        else {
             controller.populationCenter.freeStratumAmountByAspect(this, gotWorkers)
+            neededResources.add(
+                    BaseNameLabeler(resource.baseName) to controller.floor - controller.evaluate(meaningfulPack)
+            )
+        }
         used = false
         return AspectResult(isFinished, neededResources, meaningfulPack, node)
     }
@@ -164,7 +172,8 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
             dependencies: Set<Dependency>,
             meaningfulPack: MutableResourcePack,
             node: ResultNode
-    ): Boolean {
+    ): Result {
+        val needs = mutableListOf<Need>()
         var isFinished = false
         val _rp = MutableResourcePack()
         _rp.addAll(controller.pickCeilingPart(
@@ -181,6 +190,7 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
                     floor = controller.floor - newDelta,
                     isMeaningNeeded = false
             ))
+            needs.addAll(result.neededResources)
             _rp.addAll(result.resources)
             if (!result.isFinished)
                 continue
@@ -200,7 +210,7 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
             }
         }
         node.resourceUsed[requirementTag] = usedForDependency
-        return isFinished
+        return Result(isFinished, needs)
     }
 
     protected open fun shouldPassMeaningNeed(isMeaningNeeded: Boolean) = isMeaningNeeded
@@ -241,3 +251,7 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
         return stringBuilder.toString()
     }
 }
+
+private data class Result(val isFinished: Boolean = true, val need: List<Need> = emptyList())
+
+typealias Need = Pair<ResourceLabeler, Int>

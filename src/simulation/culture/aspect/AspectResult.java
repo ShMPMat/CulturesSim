@@ -1,6 +1,7 @@
 package simulation.culture.aspect;
 
 import kotlin.Pair;
+import simulation.culture.group.centers.Group;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
@@ -34,6 +35,12 @@ public class AspectResult {
 
     public AspectResult(MutableResourcePack resources, ResultNode node) {
         this(true, new ArrayList<>(), resources, node);
+    }
+
+    public void pushNeeds(Group group) {
+        neededResources.forEach(p ->
+                group.getResourceCenter().addNeeded(p.getFirst(), p.getSecond())
+        );
     }
 
     public static class ResultNode {

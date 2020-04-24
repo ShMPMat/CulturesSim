@@ -113,9 +113,8 @@ public class PopulationCenter {
     }
 
     public void freeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
-        AspectStratum stratum = getStratumByAspect(aspect);
         try {
-            stratum.decreaseAmount(amount);
+            getStratumByAspect(aspect).decreaseWorkedAmount(amount);
         } catch (NullPointerException e) {
             throw new RuntimeException("No stratum for Aspect");
         }
@@ -147,11 +146,11 @@ public class PopulationCenter {
         population -= amount;
     }
 
-    void update(Territory accessibleTerritory) {
-        strata.forEach(s -> s.update(turnResources, accessibleTerritory, this));
+    void update(Territory accessibleTerritory, Group group) {
+        strata.forEach(s -> s.update(turnResources, accessibleTerritory, group));
     }
 
-    void executeRequests(RequestPool requests, Territory accessibleTerritory) {
+    void executeRequests(RequestPool requests, Territory accessibleTerritory, Group group) {
         for (Request request : requests.getRequests().keySet()) {
             ResourceEvaluator evaluator = request.getEvaluator();
             List<AspectStratum> strataForRequest = getStrataForRequest(request);
@@ -168,7 +167,8 @@ public class PopulationCenter {
                         this,
                         accessibleTerritory,
                         false,
-                        null
+                        null,
+                        group
                 )));
             }
             requests.getRequests().get(request).addAll(turnResources);
