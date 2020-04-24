@@ -216,7 +216,7 @@ public class Group {
     }
 
     public void finishUpdate() {
-        turnRequests.finish();
+        resourceCenter.addAll(turnRequests.finish());
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
         populationCenter.finishUpdate(this);
         resourceCenter.finishUpdate();
