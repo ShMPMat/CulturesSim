@@ -198,6 +198,7 @@ public class Group {
     }
 
     public void intergroupUpdate() {
+        relationCenter.requestTrade(turnRequests);
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> toUpdate = getOverallTerritory()
                     .getOuterBrink()//TODO dont like territory checks in Group
@@ -208,7 +209,7 @@ public class Group {
             toUpdate.addAll(parentGroup.subgroups);
             toUpdate = toUpdate.stream().distinct().collect(Collectors.toList());
             toUpdate.remove(this);
-            relationCenter.update(toUpdate,this);
+            relationCenter.updateRelations(toUpdate,this);
         }
         cultureCenter.intergroupUpdate();
     }

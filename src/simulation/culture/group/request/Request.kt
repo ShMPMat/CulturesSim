@@ -6,7 +6,9 @@ import simulation.culture.group.AspectStratum
 import simulation.culture.group.Stratum
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourcePack
 import java.util.function.BiFunction
+import kotlin.math.max
 
 /**
  * Class which represents a request which may by executed by a Group.
@@ -23,6 +25,8 @@ abstract class Request(
     abstract val evaluator: ResourceEvaluator
 
     abstract fun satisfactionLevel(sample: Resource): Int
+
+    fun left(resourcePack: ResourcePack) = max(0, ceiling - evaluator.evaluate(resourcePack))
 
     fun end(resourcePack: MutableResourcePack) {
         val partPack = evaluator.pick(

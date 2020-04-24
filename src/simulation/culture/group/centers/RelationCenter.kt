@@ -2,6 +2,10 @@ package simulation.culture.group.centers
 
 import simulation.culture.group.GroupError
 import simulation.culture.group.intergroup.Relation
+import simulation.culture.group.request.Request
+import simulation.culture.group.request.RequestPool
+import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
 import java.util.*
@@ -25,7 +29,7 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
         (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.territory.center)).toInt()
     }.fold(0, Int::plus)
 
-    fun update(groups: Collection<Group>, owner: Group) {
+    fun updateRelations(groups: Collection<Group>, owner: Group) {
         updateNewConnections(groups, owner)
         updateRelations(owner)
     }
@@ -58,5 +62,21 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
         newRelation.setPair(relation)
         relationsMap[relation.owner] = newRelation
         return newRelation
+    }
+
+    fun requestTrade(pool: RequestPool) {
+        for ((request, pack) in pool.requests)
+            pack.addAll(trade(request, request.left(pack)))
+    }
+
+    fun trade(request: Request, amount: Int): ResourcePack {
+        if (amount <= 0) return ResourcePack()
+        val pack = MutableResourcePack()
+//        var amountLeft = amount//TODO
+//        relations.sortedByDescending { it.positive }.map { it.other }.forEach {
+//            pack.addAll(it.askFor(request, amountLeft))
+//            amountLeft = amount - request.satisfactionLevel()
+//        }
+        return pack
     }
 }

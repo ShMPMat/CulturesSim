@@ -10,13 +10,17 @@ import kotlin.random.Random
 fun constructAndAddSimpleMeme(
         groupMemes: GroupMemes,
         random: Random,
-        complicateProbability: Double = 0.5
+        complicateProbability: Double = 0.5,
+        maxTests: Int = 10
 ): Meme? {
     var meme: Meme = groupMemes.memeWithComplexityBias.copy()
     if (testProbability(complicateProbability, random)) {
         var second: Meme
-        do second = groupMemes.memeWithComplexityBias.copy()
-        while (second.hasPart(meme, setOf("and")))
+        var tests = 0
+        do {
+            second = groupMemes.memeWithComplexityBias.copy()
+            tests++
+        } while (second.hasPart(meme, setOf("and")) && tests <= maxTests)
         meme = meme.copy().addPredicate(
                 groupMemes.getMemeCopy("and").addPredicate(second)
         )
