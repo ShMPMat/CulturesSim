@@ -1,6 +1,11 @@
 package simulation.culture.group
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.freeze
+import simulation.culture.group.centers.starve
+import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.tag.ResourceTag
+import java.util.function.BiFunction
 
 /**
  * This operation is not commutative.
@@ -24,3 +29,18 @@ fun getGroupsDifference(g1: Group, g2: Group): Double {
     return matched / overall
 }
 
+val foodPenalty = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
+    starve(pair.first, percent)
+    pair.second.destroyAllResourcesWithTag(ResourceTag("food"))
+}
+
+val foodReward = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
+    pair.first.populationCenter.goodConditionsGrow(percent, pair.first.territoryCenter.territory)
+    pair.second.destroyAllResourcesWithTag(ResourceTag("food"))
+}
+
+val warmthPenalty = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
+    freeze(pair.first, percent)
+}
+
+var warmthReward =  { _: Pair<Group, MutableResourcePack>, _: Double -> }

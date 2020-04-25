@@ -1,6 +1,7 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
+import kotlin.jvm.functions.Function2;
 import simulation.Controller;
 import simulation.Event;
 import simulation.culture.aspect.*;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import static shmp.random.RandomCollectionsKt.randomElement;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static simulation.Controller.session;
+import static simulation.culture.group.GroupsKt.*;
 import static simulation.culture.group.centers.GroupEffectFunctionsKt.freeze;
 import static simulation.culture.group.centers.GroupEffectFunctionsKt.starve;
 
@@ -86,32 +88,17 @@ public class CultureCenter {
 
     void updateRequests(int foodFloor) {
         requests = new ArrayList<>();
-        BiFunction<Pair<Group, MutableResourcePack>, Double, Void> foodPenalty = (pair, percent) -> {
-            starve(pair.getFirst(), percent);
-            pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
-            return null;
-        };
-        BiFunction<Pair<Group, MutableResourcePack>, Double, Void> foodReward = (pair, percent) -> {
-            pair.getFirst().getPopulationCenter().goodConditionsGrow(percent, group.getTerritoryCenter().getTerritory());
-            pair.getSecond().destroyAllResourcesWithTag(new ResourceTag("food"));
-            return null;
-        };
         requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
-                foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, foodPenalty, foodReward));
+                foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, getFoodPenalty(), getFoodReward()));
 
         if (group.getTerritoryCenter().getTerritory().getMinTemperature() < 0) {
-            BiFunction<Pair<Group, MutableResourcePack>, Double, Void> warmthPenalty = (pair, percent) -> {
-                freeze(pair.getFirst(), percent);
-                return null;
-            };
-            BiFunction<Pair<Group, MutableResourcePack>, Double, Void> warmthReward = (pair, percent) -> null;
             requests.add(new TagRequest(
                     group,
                     new ResourceTag("warmth"),
                     group.getPopulationCenter().getPopulation(),
                     group.getPopulationCenter().getPopulation(),
-                    warmthPenalty,
-                    warmthReward
+                    getWarmthPenalty(),
+                    getWarmthReward()
             ));
         }
 

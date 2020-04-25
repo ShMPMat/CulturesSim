@@ -17,8 +17,8 @@ abstract class Request(
         protected var group: Group,
         var floor: Int,
         var ceiling: Int,
-        var penalty: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>,
-        var reward: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>
+        var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
+        var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) {
     abstract fun isAcceptable(stratum: Stratum): ResourceEvaluator?
 
@@ -41,10 +41,10 @@ abstract class Request(
         val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.copy(it.amount) })
 
         if (amount < floor) {
-            penalty.apply(Pair(group, partPack), amount / floor.toDouble())
+            penalty(Pair(group, partPack), amount / floor.toDouble())
             return Result(ResultStatus.NotSatisfied, neededCopy)
         } else
-            reward.apply(Pair(group, partPack), amount / floor.toDouble() - 1)
+            reward(Pair(group, partPack), amount / floor.toDouble() - 1)
         return if (amount < ceiling) Result(ResultStatus.Satisfied, neededCopy)
         else Result(ResultStatus.Excellent, neededCopy)
     }

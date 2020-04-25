@@ -2,10 +2,13 @@ package simulation.culture.group.cultureaspect
 
 import shmp.random.testProbability
 import simulation.Controller
+import simulation.Controller.*
 import simulation.culture.group.CultStratum
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
+import simulation.culture.group.request.ResourceRequest
+import java.util.function.BiFunction
 
 data class CultWorship(
         val worship: Worship
@@ -25,8 +28,20 @@ data class CultWorship(
                             .firstOrNull { it.cultName == toString() }
                             ?: throw GroupError("Cannot create Stratum for $this")
                 }
-        if (testProbability(0.01, Controller.session.random)) {
+        if (testProbability(0.01, session.random)) {
             stratum.population++
+        }
+        if (testProbability(0.1, session.random)) {//TODO lesser probability
+//            val request = ResourceRequest(
+//                    group,
+//                    session.world.resourcePool.get("Temple"),
+//                    1,
+//                    1,
+//                    BiFunction<> { foo, bar ->
+//                        print()
+//                    },
+//                    {}
+//            )
         }
     }
 

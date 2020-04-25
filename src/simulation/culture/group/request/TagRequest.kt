@@ -7,15 +7,14 @@ import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import java.util.function.BiFunction
-import kotlin.math.max
 
 class TagRequest(
         group: Group,
         private val tag: ResourceTag,
         floor: Int,
         ceiling: Int,
-        penalty: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>,
-        reward: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>
+        penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
+        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
     private fun hasTagFrom(tags: Collection<ResourceTag>) = tags.contains(tag)
 

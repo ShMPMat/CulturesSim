@@ -115,7 +115,7 @@ public class PopulationCenter {
         population = 0;
     }
 
-    void goodConditionsGrow(double fraction, Territory territory) {
+    public void goodConditionsGrow(double fraction, Territory territory) {
         population += ((int) (fraction * population)) / 10 + 1;
         if (isMaxReached(territory)) {
             decreasePopulation(population - getMaxPopulation(territory));

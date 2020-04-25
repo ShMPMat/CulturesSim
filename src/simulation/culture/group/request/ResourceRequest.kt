@@ -14,8 +14,8 @@ class ResourceRequest(
         private val resource: Resource,
         floor: Int,
         ceiling: Int,
-        penalty: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>,
-        reward: BiFunction<Pair<Group, MutableResourcePack>, Double, Void>
+        penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
+        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
     override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
         if (stratum !is AspectStratum)
