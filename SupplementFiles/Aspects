@@ -18,6 +18,8 @@
 
 -BuildHouse
     &t:hard-->=0.5--#House:1
+-BuildTemple
+    &t:hard-->=0.5--#Temple:1
 -MakeDish
     &t:hard-->=0.05--#Dish:1
 -MakeBoat

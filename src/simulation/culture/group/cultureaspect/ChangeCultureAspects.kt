@@ -81,3 +81,14 @@ fun takeOutDepictionSystem(
     }
     return null
 }
+
+fun takeOutCultWorship(
+        aspectPool: MutableCultureAspectPool,
+        random: Random
+) : CultWorship? {
+    val worships = aspectPool.getAll().filterIsInstance<Worship>()
+    if (worships.isEmpty()) return null
+    val worship = randomElement(worships, random)
+    aspectPool.remove(worship)
+    return CultWorship(worship)
+}

@@ -69,10 +69,11 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
     fun mutateCultureAspects() {
         if (!testProbability(session.groupCultureAspectCollapse, session.random))
             return
-        when (session.random.nextInt(3)) {
+        when (session.random.nextInt(4)) {
             0 -> joinSimilarRituals()
             1 -> joinSimilarTalesBy("!actor")
             2 -> addCultureAspect(takeOutWorship(aspectPool, session.random))
+            3 -> makeCultWorship()
         }
     }
 
@@ -80,6 +81,11 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
         val system = takeOutSimilarRituals(aspectPool, group) ?: return
         addCultureAspect(system)
         reasonsWithSystems.add(system.reason)
+    }
+
+    private fun makeCultWorship() {
+        val cult = takeOutCultWorship(aspectPool, session.random) ?: return
+        addCultureAspect(cult)
     }
 
     private fun joinSimilarTalesBy(infoTag: String) {

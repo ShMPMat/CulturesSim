@@ -60,7 +60,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
 
     private fun depictObjectAdd(depiction: DepictObject): Boolean {
         val existingSystem = depictSystems
-                .firstOrNull() { s-> depiction.meme.anyMatch { s.groupingMeme == it.topMemeCopy() } }
+                .firstOrNull { s-> depiction.meme.anyMatch { s.groupingMeme == it.topMemeCopy() } }
                 ?: return false
         existingSystem.addDepiction(depiction)
         return true
@@ -68,7 +68,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
 
     private fun depictSystemAdd(system: DepictSystem): Boolean {
         val existingSystem = depictSystems
-                .firstOrNull() { system.groupingMeme == it.groupingMeme }
+                .firstOrNull { system.groupingMeme == it.groupingMeme }
                 ?: return false
         system.depictions.forEach {
             existingSystem.addDepiction(it)

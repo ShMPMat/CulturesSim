@@ -5,7 +5,7 @@ import simulation.Controller.*
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 
-class Worship(
+open class Worship(
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem,
         val placeSystem: PlaceSystem
