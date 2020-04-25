@@ -80,7 +80,6 @@ public class PopulationCenter {
 
     public WorkerBunch changeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
         AspectStratum stratum = getStratumByAspect(aspect);
-        int startAmount = amount;
         try {
             if (stratum.getFreePopulation() < amount) {
                 amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());

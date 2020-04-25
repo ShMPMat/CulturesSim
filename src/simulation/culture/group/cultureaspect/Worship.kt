@@ -33,11 +33,13 @@ class Worship(
             ) ?: return
             taleSystem.addTale(tale)
         }
-        update()
+        update(group)
     }
 
-    private fun update() {
-
+    private fun update(group: Group) {
+        if (!testProbability(session.worshipPlaceProb / (1 + placeSystem.places.size), session.random))
+            return
+        placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random) ?: return)
     }
 
     override fun copy(group: Group): Worship {

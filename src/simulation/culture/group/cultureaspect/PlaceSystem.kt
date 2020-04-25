@@ -6,11 +6,11 @@ import simulation.culture.thinking.meaning.Meme
 import java.util.*
 
 class PlaceSystem(
-        val places: MutableSet<PlaceSystem>
+        val places: MutableSet<SpecialPlace>
 ) : CultureAspect {
     override fun getRequest(group: Group): Request? = null
 
-    fun addPlace(placeSystem: PlaceSystem) {
+    fun addPlace(placeSystem: SpecialPlace) {
         places.add(placeSystem)
     }
 

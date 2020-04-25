@@ -1,8 +1,10 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
+import shmp.random.testProbability
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
+import simulation.culture.group.Place
 import simulation.culture.group.centers.Group
 import simulation.culture.group.reason.BetterAspectUseReason
 import simulation.culture.group.reason.Reason
@@ -12,6 +14,7 @@ import simulation.culture.thinking.language.templates.constructTextInfo
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.constructAspectMemes
 import simulation.space.resource.Resource
+import simulation.space.tile.TileTag
 import kotlin.random.Random
 
 fun createDepictObject(
@@ -98,4 +101,17 @@ fun constructBetterAspectUseReasonRitual(
         }
     }
     return null
+}
+
+fun createSpecialPlaceForWorship(worship: Worship, group: Group, random: Random) : SpecialPlace? {
+    val tag = worship.toString().replace(' ', '_')
+    val tilesWithoutPlaces = group.territoryCenter.territory.tiles.filter {
+        it.tagPool.getByType(tag).isEmpty()
+    }
+    if (tilesWithoutPlaces.isEmpty()) return null
+    val number = group.territoryCenter.territory.size() - tilesWithoutPlaces.size
+    val existsInCenter = !tilesWithoutPlaces.contains(group.territoryCenter.territory.center)
+    val tile = if (!existsInCenter && testProbability(0.5, random)) group.territoryCenter.territory.center
+    else randomElement(tilesWithoutPlaces, random)
+    return SpecialPlace(Place(tile, TileTag(tag + number, tag)))
 }

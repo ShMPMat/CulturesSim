@@ -47,6 +47,7 @@ public class Controller {
     public final boolean groupDiverge = true;
     public final boolean groupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
+    public final double worshipPlaceProb = 0.1;
 
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
