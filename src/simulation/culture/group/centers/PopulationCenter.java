@@ -43,7 +43,7 @@ public class PopulationCenter {
         return turnResources;
     }
 
-    List<Stratum> getStrata() {
+    public List<Stratum> getStrata() {
         return strata;
     }
 
@@ -240,5 +240,9 @@ public class PopulationCenter {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public void addStratum(Stratum stratum) {
+        strata.add(stratum);
     }
 }

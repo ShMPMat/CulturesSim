@@ -12,7 +12,7 @@ import simulation.space.resource.Resource
 import java.util.*
 
 class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<CultureAspect>) {
-    val aspectPool: MutableCultureAspectPool = MutableCultureAspectPool(cultureAspects)
+    val aspectPool = MutableCultureAspectPool(cultureAspects)
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
 
