@@ -141,13 +141,13 @@ public class PopulationCenter {
         strata.forEach(s -> s.update(turnResources, accessibleTerritory, group));
     }
 
-    void executeRequests(RequestPool requests, Territory accessibleTerritory, Group group) {
+    void executeRequests(RequestPool requests, Group group) {
         for (Request request : requests.getRequests().keySet()) {
-            requests.getRequests().get(request).addAll(executeRequest(request, accessibleTerritory, group));
+            requests.getRequests().get(request).addAll(executeRequest(request, group));
         }
     }
 
-    ResourcePack executeRequest(Request request, Territory accessibleTerritory, Group group) {
+    public ResourcePack executeRequest(Request request, Group group) {
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
         MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
@@ -167,7 +167,7 @@ public class PopulationCenter {
                     request.getFloor() - amount,
                     evaluator,
                     this,
-                    accessibleTerritory,
+                    group.getTerritoryCenter().getAccessibleTerritory(),
                     false,
                     null,
                     group

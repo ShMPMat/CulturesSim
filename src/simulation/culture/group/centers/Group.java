@@ -119,7 +119,7 @@ public class Group {
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
         cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
         turnRequests = getCultureCenter().getRequests();
-        populationCenter.executeRequests(turnRequests, territoryCenter.getAccessibleTerritory(), this);
+        populationCenter.executeRequests(turnRequests, this);
         session.groupInnerOtherTime += System.nanoTime() - others;
         long main = System.nanoTime();
         if (state != State.Dead) {
@@ -268,7 +268,7 @@ public class Group {
 
     public ResourcePack askFor(Request request, Group owner) {
         if (!owner.parentGroup.equals(parentGroup)) return new ResourcePack();
-        return populationCenter.executeRequest(request, territoryCenter.getAccessibleTerritory(), this);
+        return populationCenter.executeRequest(request, this);
     }
 
     @Override

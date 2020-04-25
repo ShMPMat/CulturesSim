@@ -8,6 +8,7 @@ import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.ResourceRequest
+import simulation.space.resource.tag.labeler.SimpleNameLabeler
 import java.util.function.BiFunction
 
 data class CultWorship(
@@ -32,16 +33,19 @@ data class CultWorship(
             stratum.population++
         }
         if (testProbability(0.1, session.random)) {//TODO lesser probability
-//            val request = ResourceRequest(
-//                    group,
-//                    session.world.resourcePool.get("Temple"),
-//                    1,
-//                    1,
-//                    BiFunction<> { foo, bar ->
-//                        print()
-//                    },
-//                    {}
-//            )
+            val templeResource = session.world.resourcePool.get("Temple")
+            val request = ResourceRequest(
+                    group,
+                    templeResource,
+                    1,
+                    1,
+                    { _, _ -> },
+                    { _, _ -> }
+            )
+            val pack = group.populationCenter.executeRequest(request, group)
+            if (request.evaluator.evaluate(pack) == 0) {
+                group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
+            }
         }
     }
 
