@@ -266,6 +266,11 @@ public class Group {
         session.world.addGroupConglomerate(conglomerate);
     }
 
+    public ResourcePack askFor(Request request, Group owner) {
+        if (!owner.parentGroup.equals(parentGroup)) return new ResourcePack();
+        return populationCenter.executeRequest(request, territoryCenter.getAccessibleTerritory(), this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -285,37 +290,33 @@ public class Group {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Group " + name + " is " + state +
-                ", population=" + populationCenter.getPopulation() + ", aspects:\n");
+        StringBuilder builder = new StringBuilder("Group " + name + " is " + state + ", population="
+                + populationCenter.getPopulation() + ", aspects:\n");
         for (Aspect aspect : cultureCenter.getAspectCenter().getAspectPool().getAll()) {
-            stringBuilder.append(aspect).append("\n\n");
+            builder.append(aspect).append("\n\n");
         }
-        stringBuilder.append("Requests: ");
+        builder.append("Requests: ");
         for (Request request : cultureCenter.getRequests().getRequests().keySet()) {
-            stringBuilder.append(request).append(", ");
+            builder.append(request).append(", ");
         }
-        stringBuilder.append((cultureCenter.getRequests().getRequests().isEmpty() ? "none\n" : "\n"));
+        builder.append((cultureCenter.getRequests().getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
         s.append("Aspects: ");
         for (CultureAspect aspect : cultureCenter.getCultureAspectCenter().getAspectPool().getAll()) {
             s.append(aspect).append(", ");
         }
         s.append((cultureCenter.getCultureAspectCenter().getAspectPool().isEmpty() ? "none\n" : "\n"));
-        stringBuilder.append(s.toString());
-        stringBuilder.append(resourceCenter.toString())
+        builder.append(s.toString());
+        builder.append(resourceCenter.toString())
                 .append(populationCenter.toString())
                 .append("\n");
         for (Relation relation : relationCenter.getRelations()) {
-            stringBuilder.append(relation).append("\n");
+            builder.append(relation).append("\n");
         }
-        stringBuilder = OutputFunc.chompToSize(stringBuilder, 70);
+        builder.append(turnRequests);
+        builder = OutputFunc.chompToSize(builder, 70);
 
-        return stringBuilder.toString();
-    }
-
-    public ResourcePack askFor(Request request, Group owner) {
-        if (!owner.parentGroup.equals(parentGroup)) return new ResourcePack();
-        return populationCenter.executeRequest(request, territoryCenter.getAccessibleTerritory(), this);
+        return builder.toString();
     }
 
     public enum State {

@@ -30,7 +30,7 @@ abstract class Request(
 
     fun amountLeft(resourcePack: ResourcePack) = max(0, ceiling - evaluator.evaluate(resourcePack))
 
-    fun end(resourcePack: MutableResourcePack) {
+    fun end(resourcePack: MutableResourcePack) : Result {
         val partPack = evaluator.pick(
                 ceiling,
                 resourcePack.resources,
@@ -38,11 +38,15 @@ abstract class Request(
                 { r, n -> listOf(r.getCleanPart(n)) }
         )
         val amount = evaluator.evaluate(partPack)
+        val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.copy(it.amount) })
 
-        if (amount < floor)
+        if (amount < floor) {
             penalty.apply(Pair(group, partPack), amount / floor.toDouble())
-        else
+            return Result(ResultStatus.NotSatisfied, neededCopy)
+        } else
             reward.apply(Pair(group, partPack), amount / floor.toDouble() - 1)
+        return if (amount < ceiling) Result(ResultStatus.Satisfied, neededCopy)
+        else Result(ResultStatus.Excellent, neededCopy)
     }
 
     fun satisfactionLevel(stratum: Stratum): Int {
@@ -55,4 +59,15 @@ abstract class Request(
         }
         return result
     }
+}
+
+data class Result(val status: ResultStatus, val pack: ResourcePack) {
+    override fun toString() = "$status, \n" +
+            pack.toString().lines().map { "  $it" }.joinToString("\n")
+}
+
+enum class ResultStatus {
+    NotSatisfied,
+    Satisfied,
+    Excellent
 }
