@@ -1,7 +1,6 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
-import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectLabeler;
@@ -9,10 +8,10 @@ import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
 import simulation.culture.group.AspectStratum;
 import simulation.culture.group.Stratum;
+import simulation.culture.group.WorkerBunch;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.RequestPool;
 import simulation.culture.group.request.ResourceEvaluator;
-import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.ResourcePack;
@@ -58,10 +57,9 @@ public class PopulationCenter {
     }
 
     public int getFreePopulation() {
-        int freePopulation = population - strata.stream()
+        return population - strata.stream()
                 .map(Stratum::getPopulation)
                 .reduce(0, Integer::sum);
-        return freePopulation;
     }
 
     int getMaxPopulation(Territory controlledTerritory) {
@@ -80,42 +78,38 @@ public class PopulationCenter {
         return getMinPopulation(controlledTerritory) <= population;
     }
 
-    public int changeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
+    public WorkerBunch changeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
         AspectStratum stratum = getStratumByAspect(aspect);
+        int startAmount = amount;
         try {
             if (stratum.getFreePopulation() < amount) {
                 amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());
             }
             if (amount == 0) {
-                return 0;
+                return new WorkerBunch(0, 0);
             }
             if (getFreePopulation() < 0) {
                 int j = 0;
             }
-            if (stratum.getPopulation() < stratum.getWorkedAmount()) {
-                int i = 0;
-            }
-            stratum.useAmount(amount);
+            WorkerBunch bunch = stratum.useCumulativeAmount(amount);
             int delta = -getFreePopulation();
             if (delta > 0) {
-                if (delta > amount) {
-                    int y = 0;
-                }
-                stratum.decreaseAmount(delta);
+                stratum.decreaseAmount(bunch.getActualWorkers());
                 amount -= delta;
+                bunch = stratum.useActualAmount(amount);
             }
-            if (amount < 0) {
+            if (getFreePopulation() < 0) {
                 int j = 0;
             }
-            return amount;
+            return bunch;
         } catch (NullPointerException e) {
             throw new RuntimeException("No stratum for Aspect");
         }
     }
 
-    public void freeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
+    public void freeStratumAmountByAspect(ConverseWrapper aspect, WorkerBunch bunch) {
         try {
-            getStratumByAspect(aspect).decreaseWorkedAmount(amount);
+            getStratumByAspect(aspect).decreaseWorkedAmount(bunch.getActualWorkers());
         } catch (NullPointerException e) {
             throw new RuntimeException("No stratum for Aspect");
         }
@@ -237,7 +231,7 @@ public class PopulationCenter {
             options = options.subList(0, population);
         }
         options.forEach(s ->
-                s.useAmount(1)
+                s.useCumulativeAmount(1)
         );
     }
 

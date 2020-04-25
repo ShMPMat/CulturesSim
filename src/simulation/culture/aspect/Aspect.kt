@@ -106,7 +106,7 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
         val meaningfulPack = MutableResourcePack()
         val neededWorkers = controller.getCeilingSatisfiableAmount(producedResources)
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this as ConverseWrapper, neededWorkers)
-        controller.setMax(gotWorkers)
+        controller.setMax(gotWorkers.cumulativeWorkers)
         val node = ResultNode(this)
         if (controller.ceiling > 0)
             for ((key, value) in dependencies.nonPhony.entries) {

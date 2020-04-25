@@ -66,26 +66,31 @@ public class AspectStratum implements Stratum {
         return aspects.contains(aspect);
     }
 
-    public void decreaseAmount(int delta) {
-        population -= delta;
+    public void decreaseAmount(int amount) {
+        population -= amount;
         if (workedAmount > population) {
             workedAmount = population;
         }
     }
 
-    public void decreaseWorkedAmount(int delta) {
-        workedAmount -= delta;
+    public void decreaseWorkedAmount(int amount) {
+        workedAmount -= amount;
     }
 
-    public void useAmount(int amount) {
+    public WorkerBunch useCumulativeAmount(int amount) {
         if (amount <= 0) {
-            return;
+            return new WorkerBunch(0, 0);
         }
         this.workedAmount += amount;
         if (workedAmount > population) {
             this.population = workedAmount;
             isRaisedAmount = true;
         }
+        return new WorkerBunch(amount, amount);
+    }
+
+    public WorkerBunch useActualAmount(int amount) {
+        return useCumulativeAmount(amount);
     }
 
     public void update(

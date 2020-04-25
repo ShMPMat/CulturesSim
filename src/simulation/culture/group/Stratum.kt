@@ -8,7 +8,7 @@ import simulation.space.resource.MutableResourcePack
 interface Stratum {
     val population: Int
 
-    fun decreaseAmount(delta: Int)
+    fun decreaseAmount(amount: Int)
 
     fun update(
             accessibleResources: MutableResourcePack,
@@ -18,3 +18,5 @@ interface Stratum {
 
     fun finishUpdate(group: Group)
 }
+
+data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)
