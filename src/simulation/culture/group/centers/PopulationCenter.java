@@ -88,9 +88,6 @@ public class PopulationCenter {
             if (amount == 0) {
                 return new WorkerBunch(0, 0);
             }
-            if (getFreePopulation() < 0) {
-                int j = 0;
-            }
             WorkerBunch bunch = stratum.useCumulativeAmount(amount);
             int delta = -getFreePopulation();
             if (delta > 0) {

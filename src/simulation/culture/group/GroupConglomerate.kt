@@ -16,6 +16,7 @@ import simulation.space.resource.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*
+import kotlin.math.max
 
 class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
     @JvmField
@@ -44,7 +45,11 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                             Controller.session.defaultGroupMaxPopulation,
                             Controller.session.defaultGroupMinPopulationPerTile
                     ),
-                    RelationCenter { t: Group?, g: Group? -> (getGroupsDifference(t!!, g!!) - 1) / 2 },
+                    RelationCenter {
+                        val difference = getGroupsDifference(it.owner, it.other)
+                        val weakRelationsMultiplier = difference * difference * difference / 10
+                        (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
+                    },
                     center,
                     ArrayList(),
                     GroupMemes(),

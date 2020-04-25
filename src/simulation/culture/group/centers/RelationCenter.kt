@@ -10,7 +10,7 @@ import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
 import java.util.*
 
-class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double) {
+class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     private val relationsMap: MutableMap<Group, Relation> = HashMap()
     private val evaluationFactor = 10_000
 
@@ -39,7 +39,7 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
         for (group in groups) {
             if (!relationsMap.containsKey(group)) {
                 val relation = Relation(owner, group)
-                relation.setPair(group.relationCenter.addMirrorRelation(relation))
+                relation.pair = group.relationCenter.addMirrorRelation(relation)
                 relationsMap[relation.other] = relation
             }
         }
@@ -51,7 +51,7 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
             if (relation.other.state == Group.State.Dead) {
                 dead.add(relation.other)
             } else {
-                relation.positive = hostilityCalculator(owner, relation.other)
+                relation.positive = hostilityCalculator(relation)
             }
         }
         dead.forEach { relationsMap.remove(it) }
@@ -59,7 +59,7 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
 
     private fun addMirrorRelation(relation: Relation): Relation {
         val newRelation = Relation(relation.other, relation.owner)
-        newRelation.setPair(relation)
+        newRelation.pair = relation
         relationsMap[relation.owner] = newRelation
         return newRelation
     }
@@ -74,7 +74,9 @@ class RelationCenter(internal val hostilityCalculator: (Group, Group) -> Double)
         val pack = MutableResourcePack()
         var amountLeft = amount
         for (relation in relations.sortedByDescending { it.positive }) {
-            pack.addAll(relation.other.askFor(request.reducedAmountCopy(amountLeft), relation.owner))
+            val given = relation.other.askFor(request.reducedAmountCopy(amountLeft), relation.owner)
+            relation.positiveInteractions += (request.evaluator.evaluate(given) / amount)
+            pack.addAll(given)
             amountLeft = amount - request.evaluator.evaluate(pack)
             if (amountLeft <= 0) break
         }
