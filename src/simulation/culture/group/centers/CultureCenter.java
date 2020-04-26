@@ -105,7 +105,7 @@ public class CultureCenter {
         createArtifact();
         cultureAspectCenter.useCultureAspects();
         cultureAspectCenter.addRandomCultureAspect(group);
-        cultureAspectCenter.mutateCultureAspects();
+        cultureAspectCenter.mutateCultureAspects(group);
         lookOnTerritory(group.getTerritoryCenter().getAccessibleTerritory());
     }
 

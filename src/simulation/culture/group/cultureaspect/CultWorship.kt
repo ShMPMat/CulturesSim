@@ -56,6 +56,9 @@ data class CultWorship(
                 if (place == null) {
                     val k = 0;
                 } else {
+                    if (temple.resources.none { it.fullName.contains("Root|Tree".toRegex()) }) {
+                        val f = 0
+                    }
                     place.place.addResources(temple)
                 }
             }

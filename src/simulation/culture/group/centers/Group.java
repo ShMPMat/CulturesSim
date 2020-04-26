@@ -120,7 +120,6 @@ public class Group {
         turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(turnRequests, this);
         session.groupInnerOtherTime += System.nanoTime() - others;
-        long main = System.nanoTime();
         if (state != State.Dead) {
             territoryCenter.update();
             if (shouldMigrate()) {
@@ -133,10 +132,11 @@ public class Group {
             } else {
                 territoryCenter.shrink();
             }
+            long main = System.nanoTime();
             checkNeeds();
             cultureCenter.update();
+            session.groupMigrationTime += System.nanoTime() - main;
         }
-        session.groupMigrationTime += System.nanoTime() - main;
     }
 
     private void checkNeeds() {
@@ -150,6 +150,9 @@ public class Group {
     }
 
     private boolean shouldMigrate() {
+        if (testProbability(0.9, session.random)) {//TODO worth it?
+            return false;
+        }
         if (resourceCenter.hasDireNeed()) {
             _direNeedTurns++;
         } else {

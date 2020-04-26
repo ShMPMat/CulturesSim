@@ -165,7 +165,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000
 
--Trunk           0       4      30         -500   500  100000000 0             1 1 0  None         @Wood
+-Trunk           0       4      70         -500   500  100000000 0             1 1 0  None         @Wood
 
 -Branch          0       0.2    10         -500   500  100000000 0             1 1 0  None         @Wood
 
