@@ -22,13 +22,14 @@ data class CultWorship(
                 ?: kotlin.run {
                     val newStratum = CultStratum(toString())
                     group.populationCenter.addStratum(newStratum)
+                    group.populationCenter.changeStratumAmount(newStratum, 1)
                     group.populationCenter.strata
                             .filterIsInstance<CultStratum>()
                             .firstOrNull { it.cultName == toString() }
                             ?: throw GroupError("Cannot create Stratum for $this")
                 }
         if (testProbability(0.01, session.random)) {
-            group.populationCenter.changeStratumAmount(stratum, 1)
+            group.populationCenter.changeStratumAmount(stratum, stratum.population + 1)
         }
         if (testProbability(0.1, session.random)) {//TODO lesser probability
             val templeResource = session.world.resourcePool.get("Temple")

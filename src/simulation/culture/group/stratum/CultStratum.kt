@@ -5,7 +5,7 @@ import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 
 class CultStratum(val cultName: String) : Stratum {
-    override var population: Int = 1
+    override var population: Int = 0
         private set
 
     override val freePopulation: Int
