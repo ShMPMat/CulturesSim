@@ -119,24 +119,20 @@ public class Group {
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
         turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(turnRequests, this);
-        session.groupInnerOtherTime += System.nanoTime() - others;
-        if (state != State.Dead) {
-            territoryCenter.update();
-            if (shouldMigrate()) {
-                if (territoryCenter.migrate()) {
-                    resourceCenter.moveToNewStorage(territoryCenter.getTerritory().getCenter());
-                }
+        territoryCenter.update();
+        if (shouldMigrate()) {
+            if (territoryCenter.migrate()) {
+                resourceCenter.moveToNewStorage(territoryCenter.getTerritory().getCenter());
             }
-            if (populationCenter.isMinPassed(territoryCenter.getTerritory())) {
-                territoryCenter.expand();
-            } else {
-                territoryCenter.shrink();
-            }
-            long main = System.nanoTime();
-            checkNeeds();
-            cultureCenter.update();
-            session.groupMigrationTime += System.nanoTime() - main;
         }
+        if (populationCenter.isMinPassed(territoryCenter.getTerritory())) {
+            territoryCenter.expand();
+        } else {
+            territoryCenter.shrink();
+        }
+        checkNeeds();
+        cultureCenter.update();
+        session.groupInnerOtherTime += System.nanoTime() - others;
     }
 
     private void checkNeeds() {

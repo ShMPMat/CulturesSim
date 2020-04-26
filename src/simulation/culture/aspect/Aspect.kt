@@ -1,6 +1,8 @@
 package simulation.culture.aspect
 
+import shmp.random.testProbability
 import simulation.Controller
+import simulation.Controller.*
 import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
@@ -13,7 +15,9 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.BaseNameLabeler
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.resource.tag.labeler.TagLabeler
+import java.lang.Math.pow
 import java.util.*
+import kotlin.math.pow
 
 open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) {
     /**
@@ -37,6 +41,10 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
      */
     var used = false
     private var usedThisTurn = false
+    private var tooManyFailsThisTurn = false
+
+    private var timesUsedInTurn = 0
+    private var timesUsedInTurnUnsuccessfully = 0
 
     var canInsertMeaning = false
 
@@ -94,12 +102,14 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
 
     open fun use(controller: AspectController): AspectResult { //TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
-        if (controller.depth > Controller.session.maxGroupDependencyDepth || used) return AspectResult(
-                false,
-                ArrayList(),
-                MutableResourcePack(),
-                ResultNode(this)
-        )
+        if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used)
+            return AspectResult(
+                    false,
+                    ArrayList(),
+                    MutableResourcePack(),
+                    ResultNode(this)
+            )
+        timesUsedInTurn++
         used = true
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
@@ -126,6 +136,11 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
             neededResources.add(
                     BaseNameLabeler(resource.baseName) to controller.floor - controller.evaluate(meaningfulPack)
             )
+        }
+        if (!isFinished) {
+            timesUsedInTurnUnsuccessfully++
+            if (!testProbability(1.0 / timesUsedInTurnUnsuccessfully.toDouble().pow(0.05), session.random))
+                tooManyFailsThisTurn = true
         }
         used = false
         return AspectResult(isFinished, neededResources, meaningfulPack, node)
@@ -198,9 +213,9 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
                 //TODO sometimes can spend resources without getting result because other dependencies are lacking
                 if (!requirementTag.isInstrumental)
                     usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
-                        requirementTag,
-                        controller.ceiling).second
-                ) else
+                            requirementTag,
+                            controller.ceiling).second
+                    ) else
                     usedForDependency.addAll(_rp.getResources(requirementTag))
                 meaningfulPack.addAll(_rp)
                 isFinished = true
@@ -221,6 +236,12 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
     }
 
     fun finishUpdate() {
+        if (timesUsedInTurnUnsuccessfully > 10000) {
+            val i = 0;
+        }
+        timesUsedInTurn = 0
+        timesUsedInTurnUnsuccessfully = 0
+        tooManyFailsThisTurn = false
         if (!usedThisTurn)
             usefulness--
         usedThisTurn = false
