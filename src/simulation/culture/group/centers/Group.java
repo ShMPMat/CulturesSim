@@ -225,7 +225,12 @@ public class Group {
         if (!session.groupDiverge) {
             return false;
         }
-        if (parentGroup.subgroups.size() > 1 && testProbability(session.defaultGroupExiting, session.random)) {
+        if (parentGroup.subgroups.size() <= 1) {
+            return false;
+        }
+        double relations = relationCenter.getAvgConglomerateRelation();
+        double exitProbability = session.defaultGroupExiting / (relations * relations * relations);
+        if (testProbability(exitProbability, session.random)) {
             if (checkCoherencyAndDiverge()) {
                 createNewConglomerate(Collections.singleton(this));
             }

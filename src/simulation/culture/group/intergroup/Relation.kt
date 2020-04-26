@@ -16,7 +16,6 @@ class Relation(var owner: Group, var other: Group) {
 
     override fun toString() = "${other.name} is $positive"
 
-    val positiveNormalized: Double
-        get() = positive + 1
-
+    val normalized: Double
+        get() = (positive + 1) / 2
 }

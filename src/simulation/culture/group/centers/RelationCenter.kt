@@ -9,6 +9,7 @@ import simulation.space.resource.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
 import java.util.*
+import kotlin.math.max
 
 class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     private val relationsMap: MutableMap<Group, Relation> = HashMap()
@@ -20,9 +21,15 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     val relations: Collection<Relation>
         get() = relationsMap.values
 
+    val avgConglomerateRelation: Double
+        get() {
+            val result = max(relations.map { it.normalized }.average(), 0.0000001)
+            return if (result.isNaN()) 1.0 else result
+        }
+
     fun getNormalizedRelation(group: Group): Double {
-        return if (relationsMap.containsKey(group)) relationsMap[group]?.positiveNormalized ?: 0.0
-        else 2.0
+        return if (relationsMap.containsKey(group)) relationsMap[group]?.normalized ?: 0.0
+        else 1.0
     }
 
     fun evaluateTile(tile: Tile) = relations.map {
@@ -31,7 +38,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
 
     fun updateRelations(groups: Collection<Group>, owner: Group) {
         updateNewConnections(groups, owner)
-        updateRelations(owner)
+        updateRelations()
     }
 
     private fun updateNewConnections(groups: Collection<Group>, owner: Group) {
@@ -45,7 +52,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
         }
     }
 
-    private fun updateRelations(owner: Group) {
+    private fun updateRelations() {
         val dead: MutableList<Group> = ArrayList()
         for (relation in relationsMap.values) {
             if (relation.other.state == Group.State.Dead) {
