@@ -29,9 +29,13 @@ data class CultWorship(
                             .firstOrNull { it.cultName == toString() }
                             ?: throw GroupError("Cannot create Stratum for $this")
                 }
-        if (testProbability(0.01, session.random)) {
+        if (testProbability(0.01, session.random))
             group.populationCenter.changeStratumAmount(stratum, stratum.population + 1)
-        }
+        manageSpecialPlaces(group)
+    }
+
+    private fun manageSpecialPlaces(group: Group) {
+        if (worship.placeSystem.places.isEmpty()) return
         if (testProbability(0.1, session.random)) {//TODO lesser probability
             val templeResource = session.world.resourcePool.get("Temple")
             val request = SimpleResourceRequest(
@@ -48,7 +52,7 @@ data class CultWorship(
             } else {
                 val temple = request.evaluator.pick(pack)
                 val place = worship.placeSystem.places
-                        .minBy { t -> t.place.tile.resourcePack.getResources { it in temple.resources }.amount }
+                        .minBy { t -> t.place.owned.getResources { it in temple.resources }.amount }
                 if (place == null) {
                     val k = 0;
                 } else {
