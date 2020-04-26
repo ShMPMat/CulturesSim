@@ -1,13 +1,11 @@
 package simulation.culture.group.request
 
 import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.group.AspectStratum
-import simulation.culture.group.Stratum
+import simulation.culture.group.stratum.AspectStratum
+import simulation.culture.group.stratum.Stratum
 import simulation.culture.group.centers.Group
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
-import java.util.function.BiFunction
-import kotlin.math.max
 
 class ResourceRequest(
         group: Group,

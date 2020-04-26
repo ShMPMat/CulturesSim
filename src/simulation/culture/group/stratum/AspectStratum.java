@@ -1,14 +1,12 @@
-package simulation.culture.group;
+package simulation.culture.group.stratum;
 
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.centers.Group;
-import simulation.culture.group.centers.PopulationCenter;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
-import simulation.culture.thinking.meaning.MemePool;
 import simulation.space.Territory;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;

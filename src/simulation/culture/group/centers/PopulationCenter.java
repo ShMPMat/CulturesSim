@@ -6,9 +6,9 @@ import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectLabeler;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
-import simulation.culture.group.AspectStratum;
-import simulation.culture.group.Stratum;
-import simulation.culture.group.WorkerBunch;
+import simulation.culture.group.stratum.AspectStratum;
+import simulation.culture.group.stratum.Stratum;
+import simulation.culture.group.stratum.WorkerBunch;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.RequestPool;
 import simulation.culture.group.request.ResourceEvaluator;
@@ -79,28 +79,30 @@ public class PopulationCenter {
     }
 
     public WorkerBunch changeStratumAmountByAspect(ConverseWrapper aspect, int amount) {
-        AspectStratum stratum = getStratumByAspect(aspect);
-        try {
-            if (stratum.getFreePopulation() < amount) {
-                amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());
-            }
-            if (amount == 0) {
-                return new WorkerBunch(0, 0);
-            }
-            WorkerBunch bunch = stratum.useCumulativeAmount(amount);
-            int delta = -getFreePopulation();
-            if (delta > 0) {
-                stratum.decreaseAmount(bunch.getActualWorkers());
-                amount -= delta;
-                bunch = stratum.useActualAmount(amount);
-            }
-            if (getFreePopulation() < 0) {
-                int j = 0;
-            }
-            return bunch;
-        } catch (NullPointerException e) {
-            throw new RuntimeException("No stratum for Aspect");
+        return changeStratumAmount(getStratumByAspect(aspect), amount);
+    }
+
+    public WorkerBunch changeStratumAmount(Stratum stratum, int amount) {
+        if (!strata.contains(stratum)) {
+            throw new GroupError("Stratum does not belong to this Population");
         }
+        if (stratum.getFreePopulation() < amount) {
+            amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());
+        }
+        if (amount == 0) {
+            return new WorkerBunch(0, 0);
+        }
+        WorkerBunch bunch = stratum.useCumulativeAmount(amount);
+        int delta = -getFreePopulation();
+        if (delta > 0) {
+            stratum.decreaseAmount(bunch.getActualWorkers());
+            amount -= delta;
+            bunch = stratum.useActualAmount(amount);
+        }
+        if (getFreePopulation() < 0) {
+            throw new GroupError("Negative free population");
+        }
+        return bunch;
     }
 
     public void freeStratumAmountByAspect(ConverseWrapper aspect, WorkerBunch bunch) {

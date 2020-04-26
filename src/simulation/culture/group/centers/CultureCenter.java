@@ -1,13 +1,10 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
-import kotlin.jvm.functions.Function2;
 import simulation.Controller;
 import simulation.Event;
 import simulation.culture.aspect.*;
-import simulation.culture.group.AspectStratum;
 import simulation.culture.group.GroupTileTagKt;
-import simulation.culture.group.Stratum;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
@@ -20,21 +17,17 @@ import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
 import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.TileTag;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static shmp.random.RandomCollectionsKt.randomElement;
 import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static simulation.Controller.session;
 import static simulation.culture.group.GroupsKt.*;
-import static simulation.culture.group.centers.GroupEffectFunctionsKt.freeze;
-import static simulation.culture.group.centers.GroupEffectFunctionsKt.starve;
 
 public class CultureCenter {
     private AspectCenter aspectCenter;
