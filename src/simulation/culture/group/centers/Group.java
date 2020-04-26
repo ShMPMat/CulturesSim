@@ -117,8 +117,7 @@ public class Group {
     public void update() {
         long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
-        cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
-        turnRequests = getCultureCenter().getRequests();
+        turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(turnRequests, this);
         session.groupInnerOtherTime += System.nanoTime() - others;
         long main = System.nanoTime();
@@ -295,11 +294,6 @@ public class Group {
         for (Aspect aspect : cultureCenter.getAspectCenter().getAspectPool().getAll()) {
             builder.append(aspect).append("\n\n");
         }
-        builder.append("Requests: ");
-        for (Request request : cultureCenter.getRequests().getRequests().keySet()) {
-            builder.append(request).append(", ");
-        }
-        builder.append((cultureCenter.getRequests().getRequests().isEmpty() ? "none\n" : "\n"));
         StringBuilder s = new StringBuilder();
         s.append("Aspects: ");
         for (CultureAspect aspect : cultureCenter.getCultureAspectCenter().getAspectPool().getAll()) {

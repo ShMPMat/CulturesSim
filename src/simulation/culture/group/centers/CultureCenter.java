@@ -41,7 +41,6 @@ public class CultureCenter {
     private CultureAspectCenter cultureAspectCenter;
     private Group group;
     private List<Event> events = new ArrayList<>();
-    private List<Request> requests = new ArrayList<>();
     private GroupMemes memePool;
 
     CultureCenter(Group group, GroupMemes memePool, List<Aspect> aspects) {
@@ -59,9 +58,9 @@ public class CultureCenter {
         return cultureAspectCenter;
     }
 
-    RequestPool getRequests() {
+    RequestPool getRequests(int foodFloor) {
         Map<Request, MutableResourcePack> map = new HashMap<>();
-        for (Request request : requests) {
+        for (Request request : updateRequests(foodFloor)) {
             map.put(request, new MutableResourcePack());
         }
         return new RequestPool(map);
@@ -86,8 +85,8 @@ public class CultureCenter {
         ));
     }
 
-    void updateRequests(int foodFloor) {
-        requests = new ArrayList<>();
+    private List<Request> updateRequests(int foodFloor) {
+        List<Request> requests = new ArrayList<>();
         requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
                 foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, getFoodPenalty(), getFoodReward()));
 
@@ -101,8 +100,11 @@ public class CultureCenter {
                     getWarmthReward()
             ));
         }
+        cultureAspectCenter.getAspectPool().getAspectRequests(group).stream()
+                .filter(Objects::nonNull)
+                .forEach(requests::add);
 
-        cultureAspectCenter.getAspectPool().getAspectRequests(group).forEach(this::addRequest);
+        return requests;
     }
 
     void update() {
@@ -130,12 +132,6 @@ public class CultureCenter {
     void intergroupUpdate() {
         events.addAll(aspectCenter.adoptAspects(group));
         cultureAspectCenter.adoptCultureAspects(group);
-    }
-
-    private void addRequest(Request request) {
-        if (request != null) {
-            requests.add(request);
-        }
     }
 
     private void createArtifact() {
