@@ -20,6 +20,7 @@ public class Genome {
     private boolean isMutable;
     private boolean canMove;
     private boolean isResisting;
+    private boolean isDesirable;
     private double size;
     private int naturalDensity;
     private List<Resource> parts = new ArrayList<>();
@@ -42,6 +43,7 @@ public class Genome {
 
     Genome(String name, Type type, double size, double spreadProbability, int temperatureMin, int temperatureMax,
            int baseDesirability, boolean canMove, boolean isMutable, boolean isMovable, boolean isResisting,
+           boolean isDesirable,
            boolean hasLegacy, int deathTime, int defaultAmount, ResourceCore legacy, ResourceCore templateLegacy,
            List<ResourceDependency> dependencies,
            List<ResourceTag> tags,
@@ -81,6 +83,7 @@ public class Genome {
     Genome(Genome genome) {
         this(genome.name, genome.type, genome.size, genome.spreadProbability, genome.temperatureMin, genome.temperatureMax,
                 genome.baseDesirability, genome.canMove, genome.isMutable, genome.isMovable, genome.isResisting,
+                genome.isDesirable,
                 genome.hasLegacy, genome.deathTime, genome.defaultAmount, genome.legacy, genome.templateLegacy,
                 genome.dependencies,
                 genome.tags,
@@ -138,6 +141,10 @@ public class Genome {
 
     public Type getType() {
         return type;
+    }
+
+    public boolean isDesirable() {
+        return isDesirable;
     }
 
     public List<Resource> getParts() {

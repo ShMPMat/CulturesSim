@@ -7,6 +7,7 @@ import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.ResourceRequest
+import simulation.culture.group.request.SimpleResourceRequest
 import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
 data class CultWorship(
@@ -33,7 +34,7 @@ data class CultWorship(
         }
         if (testProbability(0.1, session.random)) {//TODO lesser probability
             val templeResource = session.world.resourcePool.get("Temple")
-            val request = ResourceRequest(
+            val request = SimpleResourceRequest(
                     group,
                     templeResource,
                     1,
@@ -44,6 +45,15 @@ data class CultWorship(
             val pack = group.populationCenter.executeRequest(request, group)
             if (request.evaluator.evaluate(pack) == 0) {
                 group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
+            } else {
+                val temple = request.evaluator.pick(pack)
+                val place = worship.placeSystem.places
+                        .minBy { t -> t.place.tile.resourcePack.getResources { it in temple.resources }.amount }
+                if (place == null) {
+                    val k = 0;
+                } else {
+                    place.place.addResources(temple)
+                }
             }
         }
     }

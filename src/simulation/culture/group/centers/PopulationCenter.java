@@ -1,6 +1,7 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectLabeler;
@@ -155,6 +156,9 @@ public class PopulationCenter {
     public ResourcePack executeRequest(Request request, Group group) {
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
+        if (request.getEvaluator().evaluate(new ResourcePack(Collections.singleton(Controller.session.world.getResourcePool().get("Temple")))) > 0) {
+            int j = 0;
+        }
         MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
                 request.getCeiling(),
                 turnResources.getResources(),

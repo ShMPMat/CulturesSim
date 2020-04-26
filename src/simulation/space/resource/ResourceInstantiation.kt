@@ -43,6 +43,7 @@ class ResourceInstantiation(
         val name = tags.getOrNull(0) ?: throw SpaceError("Tags for Resource are empty")
         var willResist = false
         var isTemplate = false
+        var isDesirable = true
         val resourceTags: MutableList<ResourceTag> = ArrayList()
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
@@ -105,9 +106,7 @@ class ResourceInstantiation(
                                     makeLabeler(elements[0].split(",".toRegex()))
                             ))
                         }
-                        else -> {
-                            throw ExceptionInInitializerError("Unknown dependency type - ${elements[4]}")
-                        }
+                        else -> throw ExceptionInInitializerError("Unknown dependency type - ${elements[4]}")
                     }
                 }
                 '#' -> resourceDependencies.add(AvoidTiles(
@@ -120,6 +119,8 @@ class ResourceInstantiation(
                     resourceTags.add(ResourceTag(elements[0], elements[1].toInt()))
                 }
                 'R' -> willResist = true
+                'U' -> isDesirable = false
+                else -> throw ExceptionInInitializerError("Unknown resource description command - $key")
             }
         }
         var genome = Genome(
@@ -134,6 +135,7 @@ class ResourceInstantiation(
                 false,
                 tags[8] == "1",
                 willResist,
+                isDesirable,
                 tags[9] == "1",
                 tags[3].toInt(),
                 tags[6].toInt(),
@@ -142,7 +144,8 @@ class ResourceInstantiation(
                 resourceDependencies,
                 resourceTags,
                 primaryMaterial,
-                secondaryMaterials)
+                secondaryMaterials
+        )
         if (isTemplate) {
             genome = GenomeTemplate(genome)
         }

@@ -1,5 +1,8 @@
 package simulation.culture.group.centers
 
+import shmp.random.randomElement
+import simulation.Controller
+import simulation.Controller.*
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
@@ -18,15 +21,18 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
         get() = neededResourcesMap.toMap()
 
     val mostImportantNeed: Pair<ResourceLabeler, ResourceNeed>?
-        get() = neededResources.entries//TODO all maxes
-                .maxBy { it.value.importance }
-                ?.toPair()
+        get() {
+            neededResources.forEach { it.value.normalize() }
+            val max = neededResources.entries
+                    .maxBy { it.value.importance }
+                    ?.value?.importance
+                    ?: return null
+            return randomElement(neededResources.filter { it.value.importance == max }.toList(), session.random)
+        }
 
     val direNeed: Pair<ResourceLabeler, ResourceNeed>?
         get() {
-            val result = neededResources.entries
-                    .maxBy { it.value.importance }
-                    ?.toPair()
+            val result = mostImportantNeed
             return if (result != null && result.second.importance >= _direBound) result
             else null
         }
@@ -83,8 +89,12 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
 }
 
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
-    fun finishUpdate() {
+    fun normalize() {
         if (importance > 100) importance = 100
+    }
+
+    fun finishUpdate() {
+        normalize()
         if (!wasUpdated) importance /= 2
         else wasUpdated = false
     }

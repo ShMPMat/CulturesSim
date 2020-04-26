@@ -42,6 +42,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
             AspectRandom.AestheticallyPleasing -> cultureAspect = createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .map { it.first }
+                            .filter { it.genome.isDesirable }
                             .filter { !aestheticallyPleasingResources.contains(it) }
                             .maxBy { it.genome.baseDesirability },
                     group,
