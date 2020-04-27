@@ -6,6 +6,8 @@ import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.aspect.MutableAspectPool;
 import simulation.culture.group.AspectDependencyCalculator;
+import simulation.culture.group.NeighbourAspectBox;
+import simulation.culture.group.NeighbourAspectBoxKt;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.*;
 import simulation.space.resource.Resource;
@@ -198,15 +200,17 @@ public class AspectCenter {
         getAllPossibleConverseWrappers().stream().filter(aspectLabeler::isSuitable)
                 .forEach(wrapper -> options.add(new Pair<>(wrapper, null)));
 
-        List<Pair<Aspect, Group>> aspects = getNewNeighbourAspects();
+        List<NeighbourAspectBox> aspects = NeighbourAspectBoxKt.convert(getNewNeighbourAspects());
         long main = System.nanoTime();
-        for (Pair<Aspect, Group> pair : aspects) {
-            Aspect aspect = pair.getFirst();
-            Group aspectGroup = pair.getSecond();
-            AspectDependencies _m = calculateDependencies(aspect);
-            if (aspectLabeler.isSuitable(aspect) && aspect.isDependenciesOk(_m)) {
-                aspect = aspect.copy(_m);
-                options.add(new Pair<>(aspect, aspectGroup));
+        for (NeighbourAspectBox box : aspects) {
+            Aspect aspect = box.getAspect();
+            Group aspectGroup = box.getGroup();
+            if (aspectLabeler.isSuitable(aspect)) {
+                AspectDependencies _m = calculateDependencies(aspect);
+                if (aspect.isDependenciesOk(_m)) {
+                    aspect = aspect.copy(_m);
+                    options.add(new Pair<>(aspect, aspectGroup));
+                }
             }
         }
         session.groupMigrationTime += System.nanoTime() - main;
@@ -231,7 +235,6 @@ public class AspectCenter {
                 .filter(p -> !aspectPool.contains(p.getFirst()))
                 .collect(Collectors.toList());
     }
-
 
     List<Pair<Aspect, Group>> getNeighbourAspects(Predicate<Aspect> predicate) {
         return getNeighbourAspects().stream()
