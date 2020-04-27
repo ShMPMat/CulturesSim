@@ -186,6 +186,9 @@ public class AspectCenter {
     }
 
     List<Pair<Aspect, Group>> findOptions(ResourceLabeler labeler) {
+        if (labeler.toString().contains("clothes")) {
+            int h = 0;
+        }
         List<Pair<Aspect, Group>> options = new ArrayList<>();
         AspectLabeler aspectLabeler = new AspectLabeler(labeler);
         for (Aspect aspect : session.world.getAspectPool().getAll().stream()

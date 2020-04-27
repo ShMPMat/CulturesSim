@@ -19,6 +19,7 @@ import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.Resource;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
+import simulation.space.resource.tag.labeler.TagLabeler;
 import simulation.space.tile.TileTag;
 
 import java.util.*;
@@ -67,7 +68,7 @@ public class CultureCenter {
         return memePool;
     }
 
-    void addAspiration(ResourceLabeler labeler) {
+    public void addAspiration(ResourceLabeler labeler) {
         group.getResourceCenter().addNeeded(labeler, 100);
     }
 
@@ -82,7 +83,6 @@ public class CultureCenter {
         List<Request> requests = new ArrayList<>();
         requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
                 foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, getFoodPenalty(), getFoodReward()));
-
         if (group.getTerritoryCenter().getTerritory().getMinTemperature() < 0) {
             requests.add(new TagRequest(
                     group,
@@ -90,8 +90,24 @@ public class CultureCenter {
                     group.getPopulationCenter().getPopulation(),
                     group.getPopulationCenter().getPopulation(),
                     getWarmthPenalty(),
-                    getWarmthReward()
+                    getPassingReward()
             ));
+        }
+        int neededClothes = group.getPopulationCenter().getPopulation() -
+                group.getResourceCenter().getPack().getAmount(r ->
+                        r.getTags().contains(new ResourceTag("Clothes"))
+                );
+        if (neededClothes > 0) {
+            requests.add(new TagRequest(
+                    group,
+                    new ResourceTag("Clothes"),
+                    neededClothes,
+                    neededClothes,
+                    addNeed(new TagLabeler(new ResourceTag("clothes"))),
+                    getPassingReward()
+            ));
+        } else if (group.getPopulationCenter().getPopulation() > 0) {
+            int h = 0;
         }
         cultureAspectCenter.getAspectPool().getAspectRequests(group).stream()
                 .filter(Objects::nonNull)

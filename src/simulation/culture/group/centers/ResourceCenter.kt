@@ -10,8 +10,8 @@ import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
 
 class ResourceCenter(private val cherishedResources: MutableResourcePack, private var storageTile: Tile) {
-    val resources
-        get() = cherishedResources.resources
+    val pack : ResourcePack
+        get() = cherishedResources
 
     private val _direBound = 50
 

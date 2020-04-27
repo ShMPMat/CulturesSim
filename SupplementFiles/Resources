@@ -204,6 +204,7 @@
 -Chitin          0       0.02   1000       -500   500  100000000 0             1 1 0  None         @Chitin
 
 -Fur             0       0.1    50         -500   500  100000000 0             1 1 0  None         @Fur
+        +MakeClothes:FurClothes:1
 
 -Feather         0       0.05   50         -500   500  100000000 0             1 1 0  None         @Feather
 
@@ -226,9 +227,13 @@
         +Weaving:Cloth:1
 
 -Cloth           0       0.5    100        -500   500  100000000 2             1 1 0  None         @Cloth
+        $clothes:1
         +MakeClothes:Clothes:1
 
 -Clothes         0       0.5    100        -500   500  100000000 3             1 1 0  None         @Cloth
+
+-FurClothes      0       0.5    100        -500   500  100000000 3             1 1 0  None         @Fur
+        $clothes:1
 
 -StoneAxe        0       0.1    10000      -500   500  100000000 0             1 1 0  None         @Stone
         $weapon:3

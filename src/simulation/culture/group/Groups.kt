@@ -5,6 +5,8 @@ import simulation.culture.group.centers.freeze
 import simulation.culture.group.centers.starve
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.tag.ResourceTag
+import simulation.space.resource.tag.labeler.ResourceLabeler
+import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.function.BiFunction
 
 /**
@@ -43,4 +45,8 @@ val warmthPenalty = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
     freeze(pair.first, percent)
 }
 
-var warmthReward =  { _: Pair<Group, MutableResourcePack>, _: Double -> }
+var passingReward =  { _: Pair<Group, MutableResourcePack>, _: Double -> }
+
+fun addNeed(labeler: ResourceLabeler) = { pair: Pair<Group, MutableResourcePack>, _: Double ->
+    pair.first.cultureCenter.addAspiration(labeler)
+}
