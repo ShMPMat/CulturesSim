@@ -8,6 +8,8 @@ import static shmp.random.RandomCollectionsKt.*;
 import kotlin.Pair;
 import simulation.Event;
 import simulation.culture.aspect.*;
+import simulation.culture.group.Add;
+import simulation.culture.group.ConglomerateCommand;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
 import simulation.culture.group.cultureaspect.CultureAspect;
@@ -140,10 +142,8 @@ public class Group {
         if (need == null) {
             return;
         }
-        long main = System.nanoTime();
         cultureCenter.addNeedAspect(need);
         populationCenter.wakeNeedStrata(need);
-        session.groupMigrationTime += System.nanoTime() - main;
 
     }
 
@@ -159,14 +159,15 @@ public class Group {
         return _direNeedTurns > 5 + territoryCenter.getNotMoved() / 10;
     }
 
-    public Group populationUpdate() {
+    public ConglomerateCommand populationUpdate() {
         if (populationCenter.getPopulation() == 0) {
             die();
             return null;
         }
+        int size = parentGroup.subgroups.size();
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
                 || testProbability(session.defaultGroupDiverge, session.random))
-                && parentGroup.subgroups.size() < 10) {
+                /*&& parentGroup.subgroups.size() < 10*/) {
             List<Tile> tiles = getOverallTerritory().getOuterBrink(t ->
                             territoryCenter.canSettleAndNoGroup(t) && parentGroup.getClosestInnerGroupDistance(t) > 2
                     //TODO dont like territory checks in Group
@@ -183,7 +184,7 @@ public class Group {
                     .collect(Collectors.toList());
             GroupMemes memes = new GroupMemes();
             memes.addAll(cultureCenter.getMemePool());
-            return new Group(
+            return new Add(new Group(
                     new ResourceCenter(new MutableResourcePack(), tile),
                     parentGroup,
                     parentGroup.getNewName(),
@@ -193,7 +194,7 @@ public class Group {
                     aspects,
                     memes,
                     territoryCenter.getSpreadAbility()
-            );
+            ));
         }
         return null;
     }
@@ -230,7 +231,7 @@ public class Group {
             return false;
         }
         double relations = relationCenter.getAvgConglomerateRelation();
-        double exitProbability = session.defaultGroupExiting / (relations * relations * relations);
+        double exitProbability = session.defaultGroupExiting /*/ (relations * relations * relations)*/;
         if (testProbability(exitProbability, session.random)) {
             if (checkCoherencyAndDiverge()) {
                 createNewConglomerate(Collections.singleton(this));

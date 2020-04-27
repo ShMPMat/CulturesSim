@@ -121,9 +121,9 @@ public class AspectCenter {
                 Aspect _a = randomElement(options, session.random);
                 if (addAspect(_a)) {
                     return Collections.singleton(new Event(
-                                    Event.Type.AspectGaining,
-                                    String.format("Got aspect %s by itself", _a.getName())
-                            ));
+                            Event.Type.AspectGaining,
+                            String.format("Got aspect %s by itself", _a.getName())
+                    ));
                 }
             }
         }
@@ -169,7 +169,7 @@ public class AspectCenter {
                                 false,
                                 converseWrapper,
                                 (ConverseWrapper) newAspect
-                                ));
+                        ));
                     }
                 }
                 if (newAspect.getProducedResources().stream().anyMatch(r -> converseWrapper.getResource().equals(r))) {
@@ -198,7 +198,8 @@ public class AspectCenter {
         getAllPossibleConverseWrappers().stream().filter(aspectLabeler::isSuitable)
                 .forEach(wrapper -> options.add(new Pair<>(wrapper, null)));
 
-        List<Pair<Aspect, Group>> aspects = getNeighbourAspects();
+        List<Pair<Aspect, Group>> aspects = getNewNeighbourAspects();
+        long main = System.nanoTime();
         for (Pair<Aspect, Group> pair : aspects) {
             Aspect aspect = pair.getFirst();
             Group aspectGroup = pair.getSecond();
@@ -208,20 +209,29 @@ public class AspectCenter {
                 options.add(new Pair<>(aspect, aspectGroup));
             }
         }
+        session.groupMigrationTime += System.nanoTime() - main;
         return options;
     }
 
     List<Pair<Aspect, Group>> getNeighbourAspects() {
         List<Pair<Aspect, Group>> allExistingAspects = new ArrayList<>();
         for (Group neighbour : group.getRelationCenter().getRelatedGroups()) {
-            allExistingAspects.addAll(neighbour.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream()
-                    .filter(aspect -> !(aspect instanceof ConverseWrapper)
-                            || aspectPool.contains(((ConverseWrapper) aspect).getAspect()))
-                    .map(a -> new Pair<>(a, neighbour))
-                    .collect(Collectors.toList()));
+            allExistingAspects.addAll(
+                    neighbour.getCultureCenter().getAspectCenter().getAspectPool().getAll().stream()
+                            .filter(aspect -> !(aspect instanceof ConverseWrapper)
+                                    || aspectPool.contains(((ConverseWrapper) aspect).getAspect()))
+                            .map(a -> new Pair<>(a, neighbour))
+                            .collect(Collectors.toList()));
         }
         return allExistingAspects;
     }
+
+    List<Pair<Aspect, Group>> getNewNeighbourAspects() {
+        return getNeighbourAspects().stream()
+                .filter(p -> !aspectPool.contains(p.getFirst()))
+                .collect(Collectors.toList());
+    }
+
 
     List<Pair<Aspect, Group>> getNeighbourAspects(Predicate<Aspect> predicate) {
         return getNeighbourAspects().stream()
@@ -244,11 +254,11 @@ public class AspectCenter {
                 );
                 if (addAspect(pair.getFirst())) {
                     return Collections.singleton(new Event(
-                                    Event.Type.AspectGaining,
-                                    String.format(
-                                            "Got aspect %s from group %s",
-                                            pair.getFirst().getName(), pair.getSecond().name)
-                            ));
+                            Event.Type.AspectGaining,
+                            String.format(
+                                    "Got aspect %s from group %s",
+                                    pair.getFirst().getName(), pair.getSecond().name)
+                    ));
                 }
             } catch (Exception e) {
                 if (e instanceof RandomException) {
@@ -256,6 +266,6 @@ public class AspectCenter {
                 }
             }
         }
-        return  new ArrayList<>();
+        return new ArrayList<>();
     }
 }

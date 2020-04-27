@@ -58,9 +58,6 @@ data class CultWorship(
                 if (place == null) {
                     throw GroupError("Couldn't find Special places")
                 } else {
-                    if (temple.resources.any { !it.fullName.contains("Root|Tree".toRegex()) }) {
-                        val f = 0
-                    }
                     place.place.addResources(temple)
                 }
             }
@@ -72,6 +69,4 @@ data class CultWorship(
     override fun toString(): String {
         return "Cult of $worship"
     }
-
-
 }
