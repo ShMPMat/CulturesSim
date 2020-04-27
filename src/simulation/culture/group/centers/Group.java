@@ -140,8 +140,10 @@ public class Group {
         if (need == null) {
             return;
         }
+        long main = System.nanoTime();
         cultureCenter.addNeedAspect(need);
         populationCenter.wakeNeedStrata(need);
+        session.groupMigrationTime += System.nanoTime() - main;
 
     }
 

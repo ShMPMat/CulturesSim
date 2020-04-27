@@ -290,10 +290,9 @@ public class Resource {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName()
-                + ", natural density - " +
-                getGenome().getNaturalDensity() + ", spread probability - " + getGenome().getSpreadProbability() + ", mass - " +
-                getGenome().getMass() + ", amount - " + amount + ", tags: ");
+        StringBuilder stringBuilder = new StringBuilder("Resource " + getFullName() + ", natural density - " +
+                getGenome().getNaturalDensity() + ", spread probability - " + getGenome().getSpreadProbability() +
+                ", mass - " + getGenome().getMass() + ", amount - " + amount + ", tags: ");
         for (ResourceTag resourceTag : getTags()) {
             stringBuilder.append(resourceTag.name).append(" ");
         }

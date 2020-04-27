@@ -161,9 +161,7 @@ public class CultureCenter {
     }
 
     void addNeedAspect(Pair<ResourceLabeler, ResourceNeed> need) {
-        long main = System.nanoTime();
         List<Pair<Aspect, Group>> options = aspectCenter.findOptions(need.getFirst());
-        session.groupMigrationTime += System.nanoTime() - main;
         if (options.isEmpty()) {
             return;
         }

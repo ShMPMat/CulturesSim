@@ -215,6 +215,8 @@
 -Stone           0       0.1    100000     -500   500  100000000 0             1 0 0  Mineral      @Stone
         +Chisel:StoneAxe:1
 
+-Boulder         0       0.5    100000     -500   500  100000000 0             1 0 0  Mineral      @Stone
+
 -Ruby            0       0.1    100000     -500   500  100000000 0             1 0 0  Mineral      @Ruby
 
 -Iron            0       0.1    100000     -500   500  100000000 0             1 0 0  Mineral      @Iron

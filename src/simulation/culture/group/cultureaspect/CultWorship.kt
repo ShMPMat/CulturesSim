@@ -8,6 +8,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.ResourceRequest
 import simulation.culture.group.request.SimpleResourceRequest
+import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
 data class CultWorship(
@@ -46,17 +47,18 @@ data class CultWorship(
                     { _, _ -> },
                     { _, _ -> }
             )
-            val pack = group.populationCenter.executeRequest(request, group)
+            val pack = MutableResourcePack(group.populationCenter.executeRequest(request, group))
             if (request.evaluator.evaluate(pack) == 0) {
                 group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
             } else {
-                val temple = request.evaluator.pick(pack)
+                val temple = request.evaluator.pickAndRemove(pack)
+                group.resourceCenter.addAll(pack)
                 val place = worship.placeSystem.places
                         .minBy { t -> t.place.owned.getResources { it in temple.resources }.amount }
                 if (place == null) {
-                    val k = 0;
+                    throw GroupError("Couldn't find Special places")
                 } else {
-                    if (temple.resources.none { it.fullName.contains("Root|Tree".toRegex()) }) {
+                    if (temple.resources.any { !it.fullName.contains("Root|Tree".toRegex()) }) {
                         val f = 0
                     }
                     place.place.addResources(temple)

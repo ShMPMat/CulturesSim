@@ -15,6 +15,12 @@ class ResourceEvaluator(
         return picker(resourcePack)
     }
 
+    fun pickAndRemove(pack: MutableResourcePack) : ResourcePack {
+        val result = pick(pack)
+        pack.removeAll(result)
+        return result
+    }
+
     fun evaluate(resourcePack: ResourcePack): Int {
         return evaluator(resourcePack)
     }

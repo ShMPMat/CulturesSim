@@ -5,6 +5,8 @@ import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class MutableResourcePack(resources: Collection<Resource> = emptyList()) : ResourcePack(resources) {
+    constructor(pack: ResourcePack) : this(pack.resources)
+
     //TODO subclass which stores all instances of the same Resource on different Tiles
     fun getResourceAndRemove(resource: Resource): ResourcePack {
         val innerResource = getResource(resource)
