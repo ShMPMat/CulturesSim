@@ -156,9 +156,7 @@ public class PopulationCenter {
     public ResourcePack executeRequest(Request request, Group group) {
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
-        if (request.getEvaluator().evaluate(new ResourcePack(Collections.singleton(Controller.session.world.getResourcePool().get("Temple")))) > 0) {
-            int j = 0;
-        }
+        strataForRequest.sort(Comparator.comparingInt(s -> -s.getAspects().get(0).getUsefulness()));
         MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
                 request.getCeiling(),
                 turnResources.getResources(),

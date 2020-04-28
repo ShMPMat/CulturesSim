@@ -39,6 +39,8 @@ class ResourceCenter(private val cherishedResources: MutableResourcePack, privat
 
     private val _resourcesToAdd = mutableListOf<Resource>()
 
+    fun takeResource(resource: Resource, amount: Int) = cherishedResources.getResourcePartAndRemove(resource, amount)
+
     fun die(disbandTile: Tile) {
         cherishedResources.disbandOnTile(disbandTile)
     }

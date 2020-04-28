@@ -167,7 +167,7 @@ public class Group {
         int size = parentGroup.subgroups.size();
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
                 || testProbability(session.defaultGroupDiverge, session.random))
-                /*&& parentGroup.subgroups.size() < 10*/) {
+            /*&& parentGroup.subgroups.size() < 10*/) {
             List<Tile> tiles = getOverallTerritory().getOuterBrink(t ->
                             territoryCenter.canSettleAndNoGroup(t) && parentGroup.getClosestInnerGroupDistance(t) > 2
                     //TODO dont like territory checks in Group
@@ -184,8 +184,12 @@ public class Group {
                     .collect(Collectors.toList());
             GroupMemes memes = new GroupMemes();
             memes.addAll(cultureCenter.getMemePool());
+            MutableResourcePack pack = new MutableResourcePack();
+            resourceCenter.getPack().getResources().forEach(r ->
+                pack.addAll(resourceCenter.takeResource(r, r.getAmount() / 2))
+            );
             return new Add(new Group(
-                    new ResourceCenter(new MutableResourcePack(), tile),
+                    new ResourceCenter(pack, tile),
                     parentGroup,
                     parentGroup.getNewName(),
                     populationCenter.getPart(0.5),
