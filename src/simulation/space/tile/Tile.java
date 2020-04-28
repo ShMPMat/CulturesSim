@@ -79,6 +79,10 @@ public class Tile {
         return neighbours;
     }
 
+//    public List<Tile> getTilesInRadius(int radius) {
+//
+//    }
+
     public TectonicPlate getPlate() {
         return plate;
     }

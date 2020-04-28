@@ -88,17 +88,15 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     val memes: List<Meme>
         get() = subgroups
                 .map { it.cultureCenter.memePool.memes }
-                .foldRight(ArrayList()) { x: MutableList<Meme>, y: List<Meme> ->
-                    for (meme in y) {
-                        val i = x.indexOf(meme)
-                        if (i == -1) {
-                            x.add(meme.copy())
-                        } else {
-                            x[i].increaseImportance(meme.importance)
-                        }
+                .foldRight(mutableMapOf()) { x: MutableList<Meme>, y: MutableMap<Meme, Meme> ->
+                    for (meme in x) {
+                        if (meme !in y)
+                            y[meme] = meme.copy()
+                        else
+                            y[meme]?.increaseImportance(meme.importance)
                     }
-                    x
-                }
+                    y
+                }.values.toList()
 
     private fun overgroupDie() {
         state = State.Dead

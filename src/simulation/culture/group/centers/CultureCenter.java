@@ -117,9 +117,11 @@ public class CultureCenter {
     }
 
     void update() {
+        long main = System.nanoTime();
         events.addAll(aspectCenter.mutateAspects());
         createArtifact();
         cultureAspectCenter.useCultureAspects();
+        session.groupMigrationTime += System.nanoTime() - main;
         cultureAspectCenter.addRandomCultureAspect(group);
         cultureAspectCenter.mutateCultureAspects(group);
         lookOnTerritory(group.getTerritoryCenter().getAccessibleTerritory());

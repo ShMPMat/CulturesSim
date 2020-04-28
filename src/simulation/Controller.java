@@ -121,6 +121,7 @@ public class Controller {
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
+
             turn();
         }
         world.getMap().setTags();

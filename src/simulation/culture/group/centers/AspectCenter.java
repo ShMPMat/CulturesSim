@@ -204,7 +204,6 @@ public class AspectCenter {
                 .forEach(wrapper -> options.add(new Pair<>(wrapper, null)));
 
         List<NeighbourAspectBox> aspects = NeighbourAspectBoxKt.convert(getNewNeighbourAspects());
-        long main = System.nanoTime();
         for (NeighbourAspectBox box : aspects) {
             Aspect aspect = box.getAspect();
             Group aspectGroup = box.getGroup();
@@ -216,7 +215,6 @@ public class AspectCenter {
                 }
             }
         }
-        session.groupMigrationTime += System.nanoTime() - main;
         return options;
     }
 
