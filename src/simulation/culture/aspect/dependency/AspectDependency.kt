@@ -11,10 +11,12 @@ import java.util.*
 
 class AspectDependency(
         isPhony: Boolean,
-        private var aspect: Aspect,
+        aspect: Aspect,
         private val evaluator: ResourceEvaluator,
         private val parentAspect: Aspect
 ) : AbstractDependency(isPhony) {
+    var aspect = aspect
+        private set
     private var isAlreadyUsed = false
     override val name: String
         get() = aspect.name

@@ -272,4 +272,8 @@ public class AspectCenter {
         }
         return new ArrayList<>();
     }
+
+    public void update() {
+
+    }
 }

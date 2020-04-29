@@ -120,10 +120,9 @@ public class Group {
         long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
         turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
-        long main = System.nanoTime();
         populationCenter.executeRequests(turnRequests, this);
-        session.groupMigrationTime += System.nanoTime() - main;
         territoryCenter.update();
+        long main = System.nanoTime();
         if (shouldMigrate()) {
             if (territoryCenter.migrate()) {
                 resourceCenter.moveToNewStorage(territoryCenter.getTerritory().getCenter());
@@ -134,6 +133,7 @@ public class Group {
         } else {
             territoryCenter.shrink();
         }
+        session.groupMigrationTime += System.nanoTime() - main;
         checkNeeds();
         cultureCenter.update();
         session.groupInnerOtherTime += System.nanoTime() - others;
