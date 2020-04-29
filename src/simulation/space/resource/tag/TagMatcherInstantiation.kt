@@ -1,7 +1,7 @@
 package simulation.space.resource.tag
 
 import extra.InputDatabase
-import simulation.space.resource.tag.labeler.makeLabeler
+import simulation.space.resource.tag.labeler.makeResourceLabeler
 
 fun createTagMatchers(path: String): List<TagMatcher> {
     val matchers: MutableList<TagMatcher> = mutableListOf()
@@ -11,7 +11,7 @@ fun createTagMatchers(path: String): List<TagMatcher> {
         val tags = line.split("\\s+".toRegex()).toTypedArray()
         matchers.add(TagMatcher(
                 ResourceTag(tags[0]),
-                makeLabeler(tags.drop(1))
+                makeResourceLabeler(tags.drop(1))
         ))
     }
     return matchers

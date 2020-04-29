@@ -23,7 +23,7 @@ import java.util.function.Consumer
 /**
  * Class which stores all entities in the simulation.
  */
-class World internal constructor() {
+class World {
     var groups: MutableList<GroupConglomerate> = ArrayList()
     val shuffledGroups: List<GroupConglomerate>
         get() = groups.shuffled(session.random)

@@ -3,8 +3,7 @@ package simulation.culture.aspect
 import extra.InputDatabase
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.resource.tag.ResourceTag
-import simulation.space.resource.tag.labeler.makeLabeler
-import java.util.*
+import simulation.space.resource.tag.labeler.makeResourceLabeler
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
@@ -48,7 +47,7 @@ internal fun createCore(tags: Array<String>): AspectCore {
             '&' -> {
                 val matcherTags = tag.split("-+".toRegex()).toTypedArray()
                 val (resultsTags, labelerTags) = matcherTags.partition { it[0] == '#' }
-                val labeler = makeLabeler(labelerTags)
+                val labeler = makeResourceLabeler(labelerTags)
                 val results = resultsTags.map {
                             val temp = it.drop(1).split(":".toRegex()).toTypedArray()
                             Pair(temp[0], temp[1].toInt())

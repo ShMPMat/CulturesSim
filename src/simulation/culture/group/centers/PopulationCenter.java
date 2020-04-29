@@ -1,10 +1,10 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
-import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
-import simulation.culture.aspect.AspectLabeler;
+import simulation.culture.aspect.labeler.AspectLabeler;
+import simulation.culture.aspect.labeler.ProducedLabeler;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
 import simulation.culture.group.stratum.AspectStratum;
@@ -221,7 +221,7 @@ public class PopulationCenter {
     }
 
     void wakeNeedStrata(Pair<ResourceLabeler, ResourceNeed> need) {
-        AspectLabeler labeler = new AspectLabeler(need.getFirst());
+        AspectLabeler labeler = new ProducedLabeler(need.getFirst());
         List<AspectStratum> options = getStrata().stream()
                 .filter(s -> s.getPopulation() == 0)
                 .filter(s -> s instanceof AspectStratum)

@@ -8,6 +8,7 @@ import simulation.Event
 import simulation.culture.aspect.*
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.LineDependency
+import simulation.culture.aspect.labeler.ProducedLabeler
 import simulation.culture.group.AspectDependencyCalculator
 import simulation.culture.group.convert
 import simulation.space.resource.Resource
@@ -164,7 +165,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             val h = 0
         }
         val options: MutableList<Pair<Aspect, Group?>> = ArrayList()
-        val aspectLabeler = AspectLabeler(labeler)
+        val aspectLabeler = ProducedLabeler(labeler)
         for (aspect in session.world.aspectPool.getAll().filter { aspectLabeler.isSuitable(it) }) {
             val dependencies = calculateDependencies(aspect)
             if (aspect.isDependenciesOk(dependencies))

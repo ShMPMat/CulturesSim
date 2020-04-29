@@ -1,9 +1,5 @@
 package simulation.space.resource.tag;
 
-import simulation.space.resource.Resource;
-import simulation.space.resource.MutableResourcePack;
-
-import java.util.Collection;
 import java.util.Objects;
 
 public class ResourceTag {
@@ -28,7 +24,6 @@ public class ResourceTag {
         this(name, false);
     }
 
-
     public ResourceTag(String name, int level) {
         this(name, false, level);
     }
@@ -37,22 +32,9 @@ public class ResourceTag {
         return isInstrumental;
     }
 
-    private Resource consumeAndGetResult(Resource resource, int ceiling) {
-        return resource.getPart(ceiling);
-    }
-
-    public MutableResourcePack consumeAndGetResult(Collection<Resource> resources, int ceiling) {
-        MutableResourcePack resourceResult = new MutableResourcePack();
-        for (Resource resource : resources) {
-            resourceResult.add(consumeAndGetResult(resource, ceiling));
-        }
-        return resourceResult;
-    }
-
     public ResourceTag copy() {
         return new ResourceTag(name, isInstrumental, level);
     }
-
 
     public static ResourceTag phony() {
         return new ResourceTag("phony");

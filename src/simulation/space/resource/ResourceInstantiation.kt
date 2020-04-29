@@ -2,16 +2,14 @@ package simulation.space.resource
 
 import extra.InputDatabase
 import simulation.culture.aspect.Aspect
-import simulation.culture.aspect.AspectCore
 import simulation.culture.aspect.AspectPool
-import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.SpaceError
 import simulation.space.resource.dependency.*
 import simulation.space.tile.Tile
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
-import simulation.space.resource.tag.labeler.makeLabeler
+import simulation.space.resource.tag.labeler.makeResourceLabeler
 
 class ResourceInstantiation(
         private val path: String,
@@ -87,7 +85,7 @@ class ResourceInstantiation(
                                     elements[2].toDouble(),
                                     elements[3] == "1",
                                     elements[1].toDouble(),
-                                    makeLabeler(elements[0].split(",".toRegex()))
+                                    makeResourceLabeler(elements[0].split(",".toRegex()))
                             ))
                         }
                         "AVOID" -> {
@@ -95,7 +93,7 @@ class ResourceInstantiation(
                                     elements[1].toDouble(),
                                     elements[2].toDouble(),
                                     elements[3] == "1",
-                                    makeLabeler(elements[0].split(",".toRegex()))
+                                    makeResourceLabeler(elements[0].split(",".toRegex()))
                             ));
                         }
                         "EXIST" -> {
@@ -103,7 +101,7 @@ class ResourceInstantiation(
                                     elements[1].toDouble(),
                                     elements[2].toDouble(),
                                     elements[3] == "1",
-                                    makeLabeler(elements[0].split(",".toRegex()))
+                                    makeResourceLabeler(elements[0].split(",".toRegex()))
                             ))
                         }
                         else -> throw ExceptionInInitializerError("Unknown dependency type - ${elements[4]}")
