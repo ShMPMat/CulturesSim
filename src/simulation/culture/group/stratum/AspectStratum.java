@@ -19,6 +19,7 @@ import java.util.*;
 import static simulation.Controller.session;
 
 public class AspectStratum implements Stratum {
+    private double effectiveness = 1.0;
     private int population;
     /**
      * How many people have already worked on this turn;
@@ -76,6 +77,10 @@ public class AspectStratum implements Stratum {
     }
 
     public WorkerBunch useCumulativeAmount(int amount) {
+        return useActualAmount((int) Math.ceil(amount / effectiveness));
+    }
+
+    public WorkerBunch useActualAmount(int amount) {
         if (amount <= 0) {
             return new WorkerBunch(0, 0);
         }
@@ -85,10 +90,6 @@ public class AspectStratum implements Stratum {
             isRaisedAmount = true;
         }
         return new WorkerBunch(amount, amount);
-    }
-
-    public WorkerBunch useActualAmount(int amount) {
-        return useCumulativeAmount(amount);
     }
 
     public void update(
@@ -206,7 +207,7 @@ public class AspectStratum implements Stratum {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
-        stringBuilder.append(population).append(", aspects: ");
+        stringBuilder.append(population).append(", effectiveness -").append(effectiveness).append(", aspects: ");
         for (Aspect aspect : aspects) {
             stringBuilder.append(aspect.getName()).append(" ");
         }
