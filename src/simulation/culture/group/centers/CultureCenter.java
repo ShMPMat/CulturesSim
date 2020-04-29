@@ -127,7 +127,7 @@ public class CultureCenter {
 
     void lookOnTerritory(Territory accessibleTerritory) {
         List<TileTag> tags = accessibleTerritory.getTiles().stream()
-                .flatMap(t -> t.getTagPool().getGetAll().stream())
+                .flatMap(t -> t.getTagPool().getAll().stream())
                 .collect(Collectors.toList());
         for (TileTag tag : tags) {
             if (tag.getType().equals(GroupTileTagKt.GROUP_TAG_TYPE)) {

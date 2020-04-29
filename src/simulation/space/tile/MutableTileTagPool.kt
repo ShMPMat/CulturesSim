@@ -4,7 +4,7 @@ class MutableTileTagPool(private val tags: MutableSet<TileTag> = mutableSetOf())
     val size: Int
         get() = tags.size
 
-    val getAll: Set<TileTag>
+    val all: Set<TileTag>
         get() = tags
 
     fun contains(tag: TileTag) = tags.contains(tag)

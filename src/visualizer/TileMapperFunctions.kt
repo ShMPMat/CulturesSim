@@ -140,7 +140,7 @@ fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile)
 { group.territoryCenter.accessibleTerritory.contains(it) }
 
 fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile)
-{ it.tagPool.getByType(tagName).isNotEmpty() }
+{ t -> t.tagPool.all.any { it.name.contains(tagName) } }
 
 fun groupConglomerateMapper(groupConglomerate: GroupConglomerate, tile: Tile) =
         if (groupConglomerate.territory.contains(tile))

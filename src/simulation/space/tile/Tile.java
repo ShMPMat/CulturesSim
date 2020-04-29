@@ -79,9 +79,28 @@ public class Tile {
         return neighbours;
     }
 
-//    public List<Tile> getTilesInRadius(int radius) {
-//
-//    }
+    public Set<Tile> getTilesInRadius(int radius) {
+        Set<Tile> tiles = new HashSet<>();
+        Set<Tile> outer = new HashSet<>();
+        if (radius > 0) {
+            tiles.addAll(neighbours);
+            outer.addAll(neighbours);
+        }
+        for (int i = 0; i < radius - 1; i++) {
+            outer = outer.stream()
+                    .flatMap(t -> t.neighbours.stream())
+                    .filter(t -> !tiles.contains(t))
+                    .collect(Collectors.toSet());
+            tiles.addAll(outer);
+        }
+        return tiles;
+    }
+
+    public Set<Tile> getTilesInRadius(int radius, Predicate<Tile> predicate) {
+        return getTilesInRadius(radius).stream()
+                .filter(predicate)
+                .collect(Collectors.toSet());
+    }
 
     public TectonicPlate getPlate() {
         return plate;
@@ -286,6 +305,11 @@ public class Tile {
         StringBuilder stringBuilder = new StringBuilder(String.format(
                 "Tile %d %d, type=%s, temperature=%d, level=%d, resources:\n", x, y, getType(), temperature, level
                 ));
+        stringBuilder.append("Tags: ");
+        for (TileTag tag : tagPool.getAll()) {
+            stringBuilder.append(tag).append(" ");
+        }
+        stringBuilder.append('\n');
         for (Resource resource : resourcePack.getResources()) {
             stringBuilder.append(resource).append("\n");
         }

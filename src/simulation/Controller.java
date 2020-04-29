@@ -117,13 +117,14 @@ public class Controller {
                     water,
                     t -> t.getType() == Tile.Type.Mountain
                             && t.getResourcePack().contains(world.getResourcePool().get("Snow"))
-                            && t.getNeighbours(n -> n.getResourcePack().contains(water)).isEmpty(),
+                            && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty(),
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
 
             turn();
         }
+        turn();
         world.getMap().setTags();
     }
 
