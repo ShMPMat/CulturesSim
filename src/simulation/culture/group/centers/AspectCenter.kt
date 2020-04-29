@@ -3,7 +3,7 @@ package simulation.culture.group.centers
 import shmp.random.RandomException
 import shmp.random.randomElement
 import shmp.random.testProbability
-import simulation.Controller
+import simulation.Controller.*
 import simulation.Event
 import simulation.culture.aspect.*
 import simulation.culture.aspect.dependency.AspectDependencies
@@ -14,12 +14,11 @@ import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import java.util.*
-import java.util.function.Consumer
 import java.util.function.Predicate
-import java.util.stream.Collectors
 
-class AspectCenter(private val group: Group, aspects: List<Aspect?>) {
-    private val aspectPool = MutableAspectPool(HashSet())
+class AspectCenter(private val group: Group, aspects: List<Aspect>) {
+    private val _mutableAspectPool = MutableAspectPool(HashSet())
+
 
     /**
      * Equals to aspects added on the current turn
@@ -27,150 +26,137 @@ class AspectCenter(private val group: Group, aspects: List<Aspect?>) {
     private val changedAspectPool = MutableAspectPool(HashSet())
     private val _converseWrappers: MutableList<ConverseWrapper> = ArrayList()
     private val _lastResourcesForCw: MutableList<Resource> = ArrayList()
-    fun getAspectPool(): AspectPool {
-        return aspectPool
+
+    init {
+        aspects.forEach { hardAspectAdd(it) }
+        _mutableAspectPool.getAll().forEach { it.swapDependencies(this) } //TODO will it swap though?
     }
 
+    val aspectPool: AspectPool
+        get() = _mutableAspectPool
+
     fun addAspect(aspect: Aspect): Boolean {
-        var aspect = aspect
-        if (!aspect.isValid) {
+        var currentAspect = aspect
+        if (!currentAspect.isValid)
             return false
-        }
-        if (aspectPool.contains(aspect)) {
-            aspect = aspectPool.getValue(aspect.name)
-        }
-        val _m = calculateDependencies(aspect)
-        if (!aspect.isDependenciesOk(_m)) {
+        if (_mutableAspectPool.contains(currentAspect))
+            currentAspect = _mutableAspectPool.getValue(currentAspect.name)
+        val dependencies = calculateDependencies(currentAspect)
+        if (!currentAspect.isDependenciesOk(dependencies))
             return false
-        }
-        addAspectNow(aspect, _m)
+        addAspectNow(currentAspect, dependencies)
         return true
     }
 
     private fun addAspectNow(aspect: Aspect, dependencies: AspectDependencies) {
-        val _a: Aspect
-        if (aspectPool.contains(aspect)) {
-            _a = aspectPool.getValue(aspect) //TODO why one, add a l l
-            _a.addOneDependency(dependencies)
+        val currentAspect: Aspect
+        if (_mutableAspectPool.contains(aspect)) {
+            currentAspect = _mutableAspectPool.getValue(aspect) //TODO why one, add a l l
+            currentAspect.addOneDependency(dependencies)
         } else {
-            _a = aspect.copy(dependencies)
-            changedAspectPool.add(_a)
-            if (_a !is ConverseWrapper) { //TODO maybe should do the same in straight
+            currentAspect = aspect.copy(dependencies)
+            changedAspectPool.add(currentAspect)
+            if (currentAspect !is ConverseWrapper) { //TODO maybe should do the same in straight
                 val allResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
-                allResources.addAll(aspectPool.producedResources.stream()
-                        .map(::kotlin.Pair.first)
-                        .collect(Collectors.toSet()))
-                for (resource in allResources) {
-                    addConverseWrapper(_a, resource)
-                }
+                allResources.addAll(_mutableAspectPool.producedResources.map { it.first })
+                for (resource in allResources)
+                    addConverseWrapper(currentAspect, resource)
             }
         }
     }
 
-    fun hardAspectAdd(aspect: Aspect?) {
-        changedAspectPool.add(aspect!!)
-        aspectPool.add(aspect)
+    private fun hardAspectAdd(aspect: Aspect) {
+        changedAspectPool.add(aspect)
+        _mutableAspectPool.add(aspect)
     }
 
-    fun calculateDependencies(aspect: Aspect?): AspectDependencies {
+    private fun calculateDependencies(aspect: Aspect): AspectDependencies {
         val calculator = AspectDependencyCalculator(
-                aspectPool,
+                _mutableAspectPool,
                 group.territoryCenter.territory
         )
-        calculator.calculateDependencies(aspect!!)
+        calculator.calculateDependencies(aspect)
         return calculator.dependencies
     }
 
     private fun addConverseWrapper(aspect: Aspect, resource: Resource) { //TODO I'm adding a lot of garbage
-        val _w: ConverseWrapper
-        _w = if (aspect.canApplyMeaning()) {
+        val wrapper = (if (aspect.canApplyMeaning())
             MeaningInserter(aspect, resource)
-        } else {
-            ConverseWrapper(aspect, resource)
-        }
-        if (!_w.isValid) {
+        else
+            ConverseWrapper(aspect, resource))
+        if (!wrapper.isValid)
             return
-        }
-        _converseWrappers.add(_w)
+        _converseWrappers.add(wrapper)
     }
 
     fun mutateAspects(): Collection<Event> { //TODO separate adding of new aspects and updating old
-        if (testProbability(Controller.session.rAspectAcquisition, Controller.session.random)) {
+        if (testProbability(session.rAspectAcquisition, session.random)) {
             val options: MutableList<Aspect> = ArrayList()
-            if (Controller.session.independentCvSimpleAspectAdding) {
-                if (testProbability(0.1, Controller.session.random)) {
-                    options.addAll(Controller.session.world.aspectPool.getAll())
-                } else {
+            if (session.independentCvSimpleAspectAdding) {
+                if (testProbability(0.1, session.random))
+                    options.addAll(session.world.aspectPool.getAll())
+                else
                     options.addAll(allPossibleConverseWrappers)
-                }
             } else {
-                options.addAll(Controller.session.world.aspectPool.getAll())
+                options.addAll(session.world.aspectPool.getAll())
                 options.addAll(allPossibleConverseWrappers)
             }
-            if (!options.isEmpty()) {
-                val _a = randomElement(options, Controller.session.random)
-                if (addAspect(_a)) {
+            if (options.isNotEmpty()) {
+                val aspect = randomElement(options, session.random)
+                if (addAspect(aspect)) {
                     return setOf(Event(
-                            Event.Type.AspectGaining, String.format("Got aspect %s by itself", _a.name)))
+                            Event.Type.AspectGaining, String.format("Got aspect %s by itself", aspect.name)
+                    ))
                 }
             }
         }
         return ArrayList()
     }
 
-    //TODO maybe do it after the middle part?
     private val allPossibleConverseWrappers: List<ConverseWrapper>
-        private get() {
+        get() {
             val options: List<ConverseWrapper> = ArrayList(_converseWrappers) //TODO maybe do it after the middle part?
             val newResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
-            newResources.addAll(aspectPool.producedResources.stream()
-                    .map(::kotlin.Pair.first)
-                    .collect(Collectors.toSet()))
+            newResources.addAll(_mutableAspectPool.producedResources.map { it.first })
             newResources.removeAll(_lastResourcesForCw)
-            for (aspect in aspectPool.filter { aspect: Aspect? -> aspect !is ConverseWrapper }) {
-                for (resource in newResources) {
+            for (aspect in _mutableAspectPool.filter { it !is ConverseWrapper })
+                for (resource in newResources)
                     addConverseWrapper(aspect, resource)
-                }
-            }
             _lastResourcesForCw.addAll(newResources)
-            newResources.forEach(Consumer { resource: Resource? -> group.cultureCenter.memePool.addResourceMemes(resource) })
+            newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
             return options
         }
 
     fun finishUpdate(): Set<Aspect> {
-        aspectPool.getAll().forEach(Consumer { obj: Aspect -> obj.finishUpdate() })
+        _mutableAspectPool.getAll().forEach { it.finishUpdate() }
         return pushAspects()
     }
 
     fun pushAspects(): Set<Aspect> {
-        changedAspectPool.getAll().forEach(Consumer { newAspect: Aspect -> addNewDependencies(newAspect) })
-        aspectPool.addAll(changedAspectPool.getAll())
+        changedAspectPool.getAll().forEach { addNewDependencies(it) }
+        _mutableAspectPool.addAll(changedAspectPool.getAll())
         val addedAspects = changedAspectPool.getAll()
         changedAspectPool.clear()
         return addedAspects
     }
 
     private fun addNewDependencies(newAspect: Aspect) {
-        if (newAspect is ConverseWrapper) {
-            for (converseWrapper in aspectPool.converseWrappers) {
-                for (tag in newAspect.tags) {
-                    if (converseWrapper.dependencies.containsDependency(tag)) {
+        if (newAspect is ConverseWrapper)
+            for (converseWrapper in _mutableAspectPool.converseWrappers) {
+                for (tag in newAspect.tags)
+                    if (converseWrapper.dependencies.containsDependency(tag))
                         converseWrapper.dependencies.map[tag]!!.add(LineDependency(
                                 false,
                                 converseWrapper,
                                 newAspect
                         ))
-                    }
-                }
-                if (newAspect.producedResources.stream().anyMatch { r: Resource -> converseWrapper.resource == r }) {
+                if (newAspect.producedResources.any { converseWrapper.resource == it })
                     converseWrapper.dependencies.map[ResourceTag.phony()]!!.add(LineDependency(
                             true,
                             converseWrapper,
                             newAspect
                     ))
-                }
             }
-        }
     }
 
     fun findOptions(labeler: ResourceLabeler): List<Pair<Aspect, Group?>> {
@@ -179,24 +165,22 @@ class AspectCenter(private val group: Group, aspects: List<Aspect?>) {
         }
         val options: MutableList<Pair<Aspect, Group?>> = ArrayList()
         val aspectLabeler = AspectLabeler(labeler)
-        for (aspect in Controller.session.world.aspectPool.getAll().stream()
-                .filter { aspect: Aspect? -> aspectLabeler.isSuitable(aspect!!) }
-                .collect(Collectors.toList())) {
-            val _m = calculateDependencies(aspect)
-            if (aspect.isDependenciesOk(_m)) {
-                options.add(Pair<Aspect, Group?>(aspect.copy(_m), null))
-            }
+        for (aspect in session.world.aspectPool.getAll().filter { aspectLabeler.isSuitable(it) }) {
+            val dependencies = calculateDependencies(aspect)
+            if (aspect.isDependenciesOk(dependencies))
+                options.add(Pair<Aspect, Group?>(aspect.copy(dependencies), null))
         }
-        allPossibleConverseWrappers.stream().filter { aspect: ConverseWrapper? -> aspectLabeler.isSuitable(aspect!!) }
-                .forEach { wrapper: ConverseWrapper -> options.add(Pair<Aspect, Group?>(wrapper, null)) }
+        allPossibleConverseWrappers
+                .filter { aspectLabeler.isSuitable(it) }
+                .forEach { options.add(Pair<Aspect, Group?>(it, null)) }
         val aspects = convert(newNeighbourAspects)
         for (box in aspects) {
             var aspect = box.aspect
             val aspectGroup = box.group
             if (aspectLabeler.isSuitable(aspect)) {
-                val _m = calculateDependencies(aspect)
-                if (aspect.isDependenciesOk(_m)) {
-                    aspect = aspect.copy(_m)
+                val dependencies = calculateDependencies(aspect)
+                if (aspect.isDependenciesOk(dependencies)) {
+                    aspect = aspect.copy(dependencies)
                     options.add(Pair(aspect, aspectGroup))
                 }
             }
@@ -204,64 +188,53 @@ class AspectCenter(private val group: Group, aspects: List<Aspect?>) {
         return options
     }
 
-    val neighbourAspects: List<Pair<Aspect, Group>>
+    private val neighbourAspects: List<Pair<Aspect, Group>>
         get() {
             val allExistingAspects: MutableList<Pair<Aspect, Group>> = ArrayList()
             for (neighbour in group.relationCenter.relatedGroups) {
                 allExistingAspects.addAll(
-                        neighbour.cultureCenter.aspectCenter.aspectPool.getAll().stream()
-                                .filter { aspect: Aspect? ->
-                                    (aspect !is ConverseWrapper
-                                            || aspectPool.contains(aspect.aspect))
-                                }
-                                .map { a: Aspect -> Pair(a, neighbour) }
-                                .collect(Collectors.toList()))
+                        neighbour.cultureCenter.aspectCenter._mutableAspectPool.getAll()
+                                .filter { (it !is ConverseWrapper || _mutableAspectPool.contains(it.aspect)) }
+                                .map { Pair(it, neighbour) }
+                )
             }
             return allExistingAspects
         }
 
-    val newNeighbourAspects: List<Pair<Aspect, Group>>
-        get() = neighbourAspects.stream()
-                .filter { (first) -> !aspectPool.contains(first) }
-                .collect(Collectors.toList())
+    private val newNeighbourAspects: List<Pair<Aspect, Group>>
+        get() = neighbourAspects.filter { (a) -> !_mutableAspectPool.contains(a) }
 
-    fun getNeighbourAspects(predicate: Predicate<Aspect?>): List<Pair<Aspect, Group>> {
-        return neighbourAspects.stream()
-                .filter { (first) -> predicate.test(first) }
-                .collect(Collectors.toList())
-    }
+    private fun getNeighbourAspects(predicate: Predicate<Aspect>) =
+            neighbourAspects.filter { (a) -> predicate.test(a) }
 
     fun adoptAspects(group: Group): Collection<Event> {
-        if (!Controller.session.isTime(Controller.session.groupTurnsBetweenAdopts)) {
+        if (!session.isTime(session.groupTurnsBetweenAdopts))
             return ArrayList()
-        }
-        val allExistingAspects = getNeighbourAspects(Predicate { a: Aspect? -> !changedAspectPool.contains(a!!) })
-        if (!allExistingAspects.isEmpty()) {
-            try {
-                val (first1, second1) = randomElement(
-                        allExistingAspects,
-                        { (first, second) -> first.usefulness * group.relationCenter.getNormalizedRelation(second) },
-                        Controller.session.random
-                )
-                if (addAspect(first1)) {
-                    return setOf(Event(
-                            Event.Type.AspectGaining, String.format(
-                            "Got aspect %s from group %s",
-                            first1.name, second1.name)))
-                }
-            } catch (e: Exception) {
-                if (e is RandomException) {
-                    val i = 0 //TODO
-                }
+        val allExistingAspects = getNeighbourAspects(Predicate { !changedAspectPool.contains(it) })
+        if (allExistingAspects.isNotEmpty()) try {
+            val (aspect, aspectGroup) = randomElement(
+                    allExistingAspects,
+                    { (a, g) -> a.usefulness * group.relationCenter.getNormalizedRelation(g) },
+                    session.random
+            )
+            if (addAspect(aspect)) return setOf(Event(
+                    Event.Type.AspectGaining, String.format(
+                    "Got aspect %s from group %s",
+                    aspect.name, aspectGroup.name)))
+        } catch (e: Exception) {
+            if (e is RandomException) {
+                val i = 0 //TODO
             }
         }
         return ArrayList()
     }
 
-    fun update() {}
-
-    init {
-        aspects.forEach(Consumer { aspect: Aspect? -> hardAspectAdd(aspect) })
-        aspectPool.getAll().forEach(Consumer { a: Aspect -> a.swapDependencies(this) }) //TODO will it swap though?
+    fun update() {
+//        val unimportantAspects = aspectPool.getAll()
+//                .filter { it.usefulness < session.aspectFalloff }
+//        if (unimportantAspects.isEmpty()) return
+//        val aspect = randomElement(unimportantAspects, session.random)
+//        if (aspect !in aspectPool.converseWrappers.map { it.aspect })
+//            _mutableAspectPool.remove(aspect)
     }
 }

@@ -10,7 +10,7 @@ import kotlin.Pair
 import kotlin.String
 
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
-    protected val aspectMap = initialAspects.map { it.name }.zip(initialAspects).toMap().toMutableMap()
+    protected val aspectMap = initialAspects.map { it.name to it }.toMap().toMutableMap()
     private val _cws = aspects.filterIsInstance<ConverseWrapper>().toMutableSet()
     private val _cwRequirements = _cws
             .map { it.resource }
@@ -33,9 +33,7 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected fun innerAdd(aspect: Aspect) {
         if (!aspectMap.containsKey(aspect.name) && aspect is ConverseWrapper) {
             _cws.add(aspect)
-            if (_cwRequirements.containsKey(aspect.resource)) {
-                _cwRequirements[aspect.resource] = _cwRequirements[aspect.resource] ?: 1
-            }
+            _cwRequirements[aspect.resource] = (_cwRequirements[aspect.resource] ?: 0) + 1
         }
         aspectMap[aspect.name] = aspect
     }
@@ -43,9 +41,12 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected fun innerRemove(aspect: Aspect) {
         if (aspects.any { it is ConverseWrapper && it.aspect == aspect })
             throw GroupError("Cannot remove aspect ${aspect.name} while there are ConverseWrappers with it")
-        val innerAspect = aspectMap.remove(aspect.toString()) ?: return
+        val innerAspect = aspectMap.remove(aspect.name) ?: return
         if (innerAspect is ConverseWrapper) {
             _cws.remove(innerAspect)
+            if (_cwRequirements[innerAspect.resource] == null) {
+                val h = 0
+            }
             if (_cwRequirements[innerAspect.resource] == 1)
                 _cwRequirements.remove(innerAspect.resource)
             else
