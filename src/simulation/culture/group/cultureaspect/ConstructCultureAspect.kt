@@ -105,8 +105,8 @@ fun constructBetterAspectUseReasonRitual(
 
 fun createSpecialPlaceForWorship(worship: Worship, group: Group, random: Random) : SpecialPlace? {
     val tag = worship.toString().replace(' ', '_')
-    val tilesWithoutPlaces = group.territoryCenter.territory.tiles.filter {
-        it.tagPool.getByType(tag).isEmpty()
+    val tilesWithoutPlaces = group.territoryCenter.territory.tiles.filter {t ->
+        t.getTilesInRadius(2).all { it.tagPool.getByType(tag).isEmpty() }
     }
     if (tilesWithoutPlaces.isEmpty()) return null
     val number = group.territoryCenter.territory.size() - tilesWithoutPlaces.size
