@@ -120,7 +120,9 @@ public class Group {
         long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
         turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
+        long main = System.nanoTime();
         populationCenter.executeRequests(turnRequests, this);
+        session.groupMigrationTime += System.nanoTime() - main;
         territoryCenter.update();
         if (shouldMigrate()) {
             if (territoryCenter.migrate()) {

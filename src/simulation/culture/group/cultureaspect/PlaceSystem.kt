@@ -19,7 +19,11 @@ class PlaceSystem(
     }
 
     override fun copy(group: Group): PlaceSystem {
-        return PlaceSystem(places.map { it.copy(group) }.toMutableSet())
+        return PlaceSystem(
+                places.filter { group.territoryCenter.territory.contains(it.place.tile) }
+                        .map { it.copy(group) }
+                        .toMutableSet()
+        )
     }
 
     override fun toString(): String {
