@@ -5,18 +5,19 @@ import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.centers.Group;
-import simulation.culture.group.request.EvaluatorsKt;
+import simulation.culture.group.request.*;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.space.Territory;
+import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
-import simulation.culture.group.request.ResourceEvaluator;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.MutableResourcePack;
 
 import java.util.*;
 
 import static simulation.Controller.session;
+import static simulation.culture.group.GroupsKt.getPassingReward;
 
 public class AspectStratum implements Stratum {
     private double effectiveness = 1.0;
@@ -86,7 +87,7 @@ public class AspectStratum implements Stratum {
         }
         this.workedAmount += amount;
         if (workedAmount > population) {
-            this.population = workedAmount;
+            population = workedAmount;
             isRaisedAmount = true;
         }
         return new WorkerBunch(amount, amount);
@@ -112,9 +113,11 @@ public class AspectStratum implements Stratum {
                 null,
                 group
         ));
-        population = oldPopulation;
+        if (population < oldPopulation) {
+            population = oldPopulation;
+        }
         accessibleResources.addAll(pack);
-        updateTools(accessibleTerritory, group);
+        updateInfrastructure(accessibleTerritory, group);
         isRaisedAmount = false;
     }
 
@@ -134,10 +137,15 @@ public class AspectStratum implements Stratum {
         return resourcePack;
     }
 
-    private void updateTools(Territory accessibleTerritory, Group group) {
+    private void updateInfrastructure(Territory accessibleTerritory, Group group) {
         if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal)) {
             return;
         }
+        updateTools(accessibleTerritory, group);
+        updatePlaces(accessibleTerritory, group);
+    }
+
+    private void updateTools(Territory accessibleTerritory, Group group) {
         for (Map.Entry<ResourceTag, MutableResourcePack> entry : dependencies.entrySet()) {
             int currentAmount = entry.getValue().getAmount();
             if (currentAmount >= population) {
@@ -176,6 +184,30 @@ public class AspectStratum implements Stratum {
                     }
                 }
             }
+        }
+    }
+
+    private void updatePlaces(Territory accessibleTerritory, Group group) {
+        if (!group.getTerritoryCenter().getSettled()) {
+            return;
+        }
+        Request request = new AspectImprovementRequest(
+                group,
+                aspects.get(0),
+                1,
+                1,
+                getPassingReward(),
+                getPassingReward()
+        );
+        ResourcePack pack = group.getPopulationCenter().executeRequest(
+                request,
+                group
+        );
+        if (pack.isNotEmpty()) {
+            int l = 0;
+        }
+        if (request.getEvaluator().evaluate(pack) > 0) {
+            int l = 0;
         }
     }
 

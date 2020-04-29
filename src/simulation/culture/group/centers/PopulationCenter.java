@@ -7,6 +7,7 @@ import simulation.culture.aspect.labeler.AspectLabeler;
 import simulation.culture.aspect.labeler.ProducedLabeler;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
+import simulation.culture.group.request.AspectImprovementRequest;
 import simulation.culture.group.stratum.AspectStratum;
 import simulation.culture.group.stratum.Stratum;
 import simulation.culture.group.stratum.WorkerBunch;
@@ -87,7 +88,13 @@ public class PopulationCenter {
         if (!strata.contains(stratum)) {
             throw new GroupError("Stratum does not belong to this Population");
         }
+        if (getFreePopulation() < 0) {
+            int i = 0;
+        }
         if (stratum.getFreePopulation() < amount) {
+            if (getFreePopulation() + stratum.getFreePopulation() < 0) {
+                int i = 0;
+            }
             amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());
         }
         if (amount == 0) {
@@ -156,6 +163,9 @@ public class PopulationCenter {
     public ResourcePack executeRequest(Request request, Group group) {
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
+        if (strataForRequest.size() > 0 && request instanceof AspectImprovementRequest) {
+            int y = 0;
+        }
         strataForRequest.sort(Comparator.comparingInt(s -> -s.getAspects().get(0).getUsefulness()));
         MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
                 request.getCeiling(),

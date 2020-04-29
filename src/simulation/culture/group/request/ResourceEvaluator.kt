@@ -28,7 +28,7 @@ class ResourceEvaluator(
     fun getSatisfiableAmount(part: Int, resources: Collection<Resource>): Int {
         var oneResourceWorth = evaluate(ResourcePack(resources))
         if (oneResourceWorth == 0)
-            oneResourceWorth = 1//TODO meh
+            return 0
         return part / oneResourceWorth + if (part % oneResourceWorth == 0) 0 else 1
     }
 
@@ -44,8 +44,11 @@ class ResourceEvaluator(
         var amount = 0
         for (resource in resources) {
             val neededAmount = getSatisfiableAmount(part - amount, onePortionGetter(resource))
+            if (neededAmount == 0) {
+                continue
+            }
             if (neededAmount <= 0) {
-                val i = 0
+                continue
             }
             resultPack.addAll(partGetter(resource, neededAmount))
             amount = evaluate(resultPack)

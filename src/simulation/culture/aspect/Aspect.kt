@@ -17,6 +17,7 @@ import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.resource.tag.labeler.TagLabeler
 import java.lang.Math.pow
 import java.util.*
+import kotlin.math.max
 import kotlin.math.pow
 
 open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) {
@@ -114,7 +115,7 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
-        val neededWorkers = controller.getCeilingSatisfiableAmount(producedResources)
+        val neededWorkers = max(controller.getCeilingSatisfiableAmount(producedResources), 1)
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this as ConverseWrapper, neededWorkers)
         controller.setMax(gotWorkers.cumulativeWorkers)
         val node = ResultNode(this)

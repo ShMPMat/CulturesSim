@@ -13,6 +13,9 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
+    val settled: Boolean
+     get() = notMoved >= 50
+
     val territory = Territory()
     var notMoved = 0
         private set
@@ -51,7 +54,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     fun update() {
         notMoved++
-        if (notMoved > 50 && territory.center.tagPool.getByType(SETTLEMENT_TYPE).isEmpty()) {
+        if (settled && territory.center.tagPool.getByType(SETTLEMENT_TYPE).isEmpty()) {
             places.add(Place(
                     territory.center,
                     TileTag(SETTLEMENT_TYPE + places.count { it.tileTag.type == SETTLEMENT_TYPE }, SETTLEMENT_TYPE)
