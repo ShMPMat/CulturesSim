@@ -13,6 +13,6 @@ fun makeAspectLabeler(tags: Collection<String>): AspectLabeler {
 private fun getLabel(key: String, value: String): AspectLabeler = when (key) {
     "P(" -> ProducedLabeler(makeResourceLabeler(value.dropLast(1).split(",")))
     "R(" -> RequiredResourceLabeler(makeResourceLabeler(value.dropLast(1).split(",")))
-    "a:" -> ConverseAspectNameLabeler(value)
+    "a(" -> ConverseAspectNameLabeler(value.dropLast(1))
     else -> throw RuntimeException("Wrong tag for a labeler")
 }

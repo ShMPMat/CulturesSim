@@ -244,6 +244,10 @@
 -Temple          0       5      10000      -500   500  100000000 10            0 1 0  None         @TEMPLATE
         U
 
+-Farm            0       5      10000      -500   500  100000000 10            0 1 0  None         @TEMPLATE
+        &a(PlantSeed)-0.5
+        U
+
 -Dish            0       0.1    10000      -500   500  100000000 5             1 1 0  None         @TEMPLATE
 
 -Boat            0       2      10000      -500   500  100000000 5             1 1 0  None         @TEMPLATE

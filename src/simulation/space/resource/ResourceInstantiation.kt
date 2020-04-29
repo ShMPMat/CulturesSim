@@ -3,11 +3,13 @@ package simulation.space.resource
 import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
+import simulation.culture.aspect.labeler.makeAspectLabeler
 import simulation.space.SpaceError
 import simulation.space.resource.dependency.*
 import simulation.space.tile.Tile
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
+import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 
@@ -79,7 +81,7 @@ class ResourceInstantiation(
                 ))
                 '~' -> {
                     elements = tag.split(";".toRegex()).toTypedArray()
-                    when(elements[4]) {
+                    when (elements[4]) {
                         "CONSUME" -> {
                             resourceDependencies.add(ConsumeDependency(
                                     elements[2].toDouble(),
@@ -115,6 +117,13 @@ class ResourceInstantiation(
                 '$' -> {
                     elements = tag.split(":".toRegex()).toTypedArray()
                     resourceTags.add(ResourceTag(elements[0], elements[1].toInt()))
+                }
+                '&' -> {
+                    elements = tag.split("-".toRegex()).toTypedArray()
+                    resourceTags.add(AspectImprovementTag(
+                            makeAspectLabeler(elements[0].split(";")),
+                            elements[1].toDouble()
+                    ))
                 }
                 'R' -> willResist = true
                 'U' -> isDesirable = false
