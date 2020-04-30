@@ -84,6 +84,6 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     fun destroyAllResourcesWithTag(tag: ResourceTag) {
         val result = getResources(tag)
         removeAll(result)
-        result.resources.forEach { resource: Resource -> resource.amount = 0 }
+        result.resources.forEach { it.destroy() }
     }
 }

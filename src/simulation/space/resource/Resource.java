@@ -16,7 +16,7 @@ import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 
 public class Resource {
-    private int amount;
+    protected int amount;
     ResourceCore resourceCore;
 
     /**
@@ -228,10 +228,6 @@ public class Resource {
 
     public boolean hasApplicationForAspect(Aspect aspect) {
         return resourceCore.hasApplicationForAspect(aspect);
-    }
-
-    void setAmount(int amount) {
-        this.amount = amount;
     }
 
     public void destroy() {
