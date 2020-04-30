@@ -1,12 +1,10 @@
 package visualizer
 
-import extra.OutputFunc
 import simulation.World
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePool
 
 fun resourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.getAll()
@@ -43,3 +41,8 @@ fun printProduced(group: GroupConglomerate) = group.subgroups
 fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = resources
         .filter { it.aspectConversion.containsKey(aspect) }
         .joinToString { it.fullName }
+
+fun printResource(resource: Resource) = resource.toString() + "\n" +
+        resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
+            a.name + ": " + v.joinToString { it.first.fullName }
+        }
