@@ -23,7 +23,10 @@ class AspectImprovementRequest(
         if (stratum !is AspectStratum)
             return null
         return if (stratum.aspects.any { cw ->
-                    cw.resource.tags.filterIsInstance<AspectImprovementTag>().any { it.labeler.isSuitable(aspect) }
+                    cw.producedResources
+                            .flatMap { it.tags }
+                            .filterIsInstance<AspectImprovementTag>()
+                            .any { it.labeler.isSuitable(aspect) }
                 })
             evaluator
         else null

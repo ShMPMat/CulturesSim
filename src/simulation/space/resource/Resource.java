@@ -6,9 +6,11 @@ import simulation.Event;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
+import simulation.space.resource.tag.AspectImprovementTag;
 import simulation.space.tile.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
 import simulation.space.resource.tag.ResourceTag;
+import simulation.space.tile.TileTag;
 
 import java.util.*;
 
@@ -75,6 +77,13 @@ public class Resource {
 
     public List<ResourceTag> getTags() {
         return getGenome().getTags();
+    }
+
+    public double getAspectImprovement(Aspect aspect) {
+        return getTags().stream()
+                .filter(t -> t instanceof AspectImprovementTag && ((AspectImprovementTag) t).getLabeler().isSuitable(aspect))
+                .map(t -> ((AspectImprovementTag) t).getImprovement())
+                .reduce(0.0, Double::sum);
     }
 
     public int getTagLevel(ResourceTag tag) {

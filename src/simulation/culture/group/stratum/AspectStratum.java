@@ -4,23 +4,29 @@ import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.AspectResult;
 import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.group.Place;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.request.*;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.space.Territory;
+import simulation.space.resource.Resource;
 import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.thinking.meaning.Meme;
 import simulation.space.resource.MutableResourcePack;
+import simulation.space.tile.Tile;
+import simulation.space.tile.TileTag;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static shmp.random.RandomCollectionsKt.randomElement;
 import static simulation.Controller.session;
 import static simulation.culture.group.GroupsKt.getPassingReward;
 
 public class AspectStratum implements Stratum {
-    private double effectiveness = 1.0;
+    private double _effectiveness = -1.0;
     private int population;
     /**
      * How many people have already worked on this turn;
@@ -29,6 +35,8 @@ public class AspectStratum implements Stratum {
     private boolean isRaisedAmount = false;
     private List<ConverseWrapper> aspects = new ArrayList<>();
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
+    private MutableResourcePack enhancements = new MutableResourcePack();
+    private List<Place> places = new ArrayList<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
     public AspectStratum(int population, ConverseWrapper aspect) {
@@ -77,8 +85,18 @@ public class AspectStratum implements Stratum {
         workedAmount -= amount;
     }
 
+    private double getEffectiveness() {
+        if (_effectiveness == -1) {
+            _effectiveness = 1.0 + places.stream()
+                    .flatMap(p -> p.getOwned().getResources().stream())
+            .map(r -> r.getAspectImprovement(aspects.get(0)))
+                    .reduce(0.0, Double::sum);
+        }
+        return _effectiveness;
+    }
+
     public WorkerBunch useCumulativeAmount(int amount) {
-        return useActualAmount((int) Math.ceil(amount / effectiveness));
+        return useActualAmount((int) Math.ceil(amount / getEffectiveness()));
     }
 
     public WorkerBunch useActualAmount(int amount) {
@@ -203,12 +221,38 @@ public class AspectStratum implements Stratum {
                 request,
                 group
         );
-        if (pack.isNotEmpty()) {
-            int l = 0;
-        }
         if (request.getEvaluator().evaluate(pack) > 0) {
             int l = 0;
         }
+        enhancements.addAll(pack.getResources(r ->
+                r.getGenome().isMovable())
+        );
+        pack.getResources(r -> !r.getGenome().isMovable()).getResources()
+                .forEach(resource -> addUnmovableEnhancement(resource, group));
+    }
+
+    private void addUnmovableEnhancement(Resource resource, Group group) {
+        List<Place> goodPlaces = places.stream()
+                .filter(p -> resource.getGenome().isAcceptable(p.getTile()))
+                .collect(Collectors.toList());
+        Place place = null;
+        if (goodPlaces.isEmpty()) {
+            List<Tile> goodTiles = group.getTerritoryCenter().getTerritory()
+                    .getTiles(t -> resource.getGenome().isAcceptable(t));
+            if (!goodTiles.isEmpty()) {
+                String tagType = "(Stratum " + aspects.get(0).getName() + " of " + group.name + ")";
+                place = new Place(
+                        randomElement(goodTiles, session.random),
+                        new TileTag(tagType + "_" + places.size(), tagType)
+                );
+            }
+        } else {
+            place = randomElement(places, session.random);
+        }
+        if (place == null) {
+            return;
+        }
+        place.addResource(resource);
     }
 
     public void finishUpdate(Group group) {
@@ -221,6 +265,7 @@ public class AspectStratum implements Stratum {
             int i = 0;
         }
         workedAmount = 0;
+        _effectiveness = -1.0;
     }
 
     @Override
@@ -239,10 +284,17 @@ public class AspectStratum implements Stratum {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
-        stringBuilder.append(population).append(", effectiveness -").append(effectiveness).append(", aspects: ");
+        stringBuilder.append(population).append(", effectiveness -").append(getEffectiveness()).append(", aspects: ");
         for (Aspect aspect : aspects) {
             stringBuilder.append(aspect.getName()).append(" ");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void die() {
+        population = 0;
+        workedAmount = 0;
+        places.forEach(Place::delete);
     }
 }

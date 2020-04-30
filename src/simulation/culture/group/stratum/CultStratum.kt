@@ -35,6 +35,10 @@ class CultStratum(val cultName: String) : Stratum {
 
     override fun finishUpdate(group: Group) {}
 
+    override fun die() {
+        population = 0
+    }
+
     override fun toString(): String {
         return "Stratum for $cultName, population - $population"
     }

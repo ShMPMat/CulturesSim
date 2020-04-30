@@ -120,6 +120,7 @@ public class PopulationCenter {
     }
 
     void die() {
+        strata.forEach(Stratum::die);
         population = 0;
     }
 

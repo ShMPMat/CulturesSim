@@ -21,6 +21,8 @@ interface Stratum {
     )
 
     fun finishUpdate(group: Group)
+
+    fun die()
 }
 
 data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)
