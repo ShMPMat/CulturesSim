@@ -150,13 +150,13 @@ public class PopulationCenter {
         strata.forEach(s -> s.update(turnResources, accessibleTerritory, group));
     }
 
-    void executeRequests(RequestPool requests, Group group) {
+    void executeRequests(RequestPool requests) {
         for (Request request : requests.getRequests().keySet()) {
-            requests.getRequests().get(request).addAll(executeRequest(request, group));
+            requests.getRequests().get(request).addAll(executeRequest(request));
         }
     }
 
-    public ResourcePack executeRequest(Request request, Group group) {
+    public ResourcePack executeRequest(Request request) {
         ResourceEvaluator evaluator = request.getEvaluator();
         if (request instanceof AspectImprovementRequest && request.satisfactionLevel(Controller.session.world.getResourcePool().get("Farm")) > 0) {
             int y = 0;
@@ -183,10 +183,10 @@ public class PopulationCenter {
                     request.getFloor() - amount,
                     evaluator,
                     this,
-                    group.getTerritoryCenter().getAccessibleTerritory(),
+                    request.getGroup().getTerritoryCenter().getAccessibleTerritory(),
                     false,
                     null,
-                    group
+                    request.getGroup()
             )));
         }
         ResourcePack actualPack = request.getEvaluator().pickAndRemove(pack);

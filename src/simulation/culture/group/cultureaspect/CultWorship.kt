@@ -47,7 +47,7 @@ data class CultWorship(
                     { _, _ -> },
                     { _, _ -> }
             )
-            val pack = MutableResourcePack(group.populationCenter.executeRequest(request, group))
+            val pack = MutableResourcePack(group.populationCenter.executeRequest(request))
             if (request.evaluator.evaluate(pack) == 0) {
                 group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
             } else {

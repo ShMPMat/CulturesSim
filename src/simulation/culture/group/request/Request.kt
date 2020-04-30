@@ -13,7 +13,7 @@ import kotlin.math.max
  * Class which represents a request which may by executed by a Group.
  */
 abstract class Request(
-        protected var group: Group,
+        val group: Group,
         var floor: Int,
         var ceiling: Int,
         var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,

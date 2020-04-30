@@ -120,7 +120,7 @@ public class Group {
         long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
         turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
-        populationCenter.executeRequests(turnRequests, this);
+        populationCenter.executeRequests(turnRequests);
         territoryCenter.update();
         long main = System.nanoTime();
         if (shouldMigrate()) {
@@ -280,7 +280,7 @@ public class Group {
 
     public ResourcePack askFor(Request request, Group owner) {
         if (!owner.parentGroup.equals(parentGroup)) return new ResourcePack();
-        return populationCenter.executeRequest(request, this);
+        return populationCenter.executeRequest(request);
     }
 
     @Override

@@ -83,7 +83,7 @@ public class Resource {
         return getTags().stream()
                 .filter(t -> t instanceof AspectImprovementTag && ((AspectImprovementTag) t).getLabeler().isSuitable(aspect))
                 .map(t -> ((AspectImprovementTag) t).getImprovement())
-                .reduce(0.0, Double::sum) * amount;
+                .reduce(0.0, Double::sum) * amount  ;
     }
 
     public int getTagLevel(ResourceTag tag) {

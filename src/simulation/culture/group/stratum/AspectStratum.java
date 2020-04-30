@@ -217,10 +217,7 @@ public class AspectStratum implements Stratum {
                 getPassingReward(),
                 getPassingReward()
         );
-        ResourcePack pack = group.getPopulationCenter().executeRequest(
-                request,
-                group
-        );
+        ResourcePack pack = group.getPopulationCenter().executeRequest(request);
         enhancements.addAll(pack.getResources(r ->
                 r.getGenome().isMovable())
         );
