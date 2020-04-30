@@ -189,7 +189,9 @@ public class PopulationCenter {
                     group
             )));
         }
-        return pack;
+        ResourcePack actualPack = request.getEvaluator().pickAndRemove(pack);
+        turnResources.addAll(pack);
+        return actualPack;
     }
 
     private List<AspectStratum> getStrataForRequest(Request request) {

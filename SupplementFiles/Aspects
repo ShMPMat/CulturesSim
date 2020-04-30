@@ -28,6 +28,8 @@
     &t:hard-->=2--<D900--#Boat:1
 -MakeSpear
     &t:hard--t:sturdy-->=1--#Spear:1
+-MakeHandPlough
+    &t:hard--t:sturdy-->=0.5--#HandPlough:1
 -MakeDye
     &t:_colour--#Dye:1
 

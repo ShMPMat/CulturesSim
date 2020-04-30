@@ -103,8 +103,14 @@ public class TextVisualizer implements Visualizer {
      */
     private void readSymbols() throws IOException {
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsResourceLibrary"));
+        List<String> symbols = new ArrayList<>();
+        while (s.hasNextLine()) {
+            symbols.add(s.nextLine());
+        }
+        int i = 0;
         for (Resource resource : world.getResourcePool().getAll()) {
-            resourceSymbols.put(resource, s.nextLine());
+            resourceSymbols.put(resource, symbols.get(i % symbols.size()));
+            i++;
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
         for (GroupConglomerate group : world.getGroups()) {

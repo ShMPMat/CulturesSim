@@ -160,7 +160,7 @@ public class AspectStratum implements Stratum {
             return;
         }
         updateTools(accessibleTerritory, group);
-        updatePlaces(accessibleTerritory, group);
+        updatePlaces(group);
     }
 
     private void updateTools(Territory accessibleTerritory, Group group) {
@@ -205,7 +205,7 @@ public class AspectStratum implements Stratum {
         }
     }
 
-    private void updatePlaces(Territory accessibleTerritory, Group group) {
+    private void updatePlaces(Group group) {
         if (!group.getTerritoryCenter().getSettled()) {
             return;
         }
@@ -221,9 +221,6 @@ public class AspectStratum implements Stratum {
                 request,
                 group
         );
-        if (request.getEvaluator().evaluate(pack) > 0) {
-            int l = 0;
-        }
         enhancements.addAll(pack.getResources(r ->
                 r.getGenome().isMovable())
         );
@@ -245,6 +242,7 @@ public class AspectStratum implements Stratum {
                         randomElement(goodTiles, session.random),
                         new TileTag(tagType + "_" + places.size(), tagType)
                 );
+                places.add(place);
             }
         } else {
             place = randomElement(places, session.random);

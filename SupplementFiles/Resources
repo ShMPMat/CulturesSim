@@ -238,6 +238,9 @@
 -StoneAxe        0       0.1    10000      -500   500  100000000 0             1 1 0  None         @Stone
         $weapon:3
 
+-HandPlough      0       0.5    10000      -500   500  100000000 10            1 1 0  None         @TEMPLATE
+        &a(PlantSeed)-0.02
+        U
 
 -House           0       5      10000      -500   500  100000000 10            0 1 0  None         @TEMPLATE
 
