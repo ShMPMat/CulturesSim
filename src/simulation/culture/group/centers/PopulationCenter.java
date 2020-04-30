@@ -1,6 +1,7 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
+import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.labeler.AspectLabeler;
@@ -88,13 +89,7 @@ public class PopulationCenter {
         if (!strata.contains(stratum)) {
             throw new GroupError("Stratum does not belong to this Population");
         }
-        if (getFreePopulation() < 0) {
-            int i = 0;
-        }
         if (stratum.getFreePopulation() < amount) {
-            if (getFreePopulation() + stratum.getFreePopulation() < 0) {
-                int i = 0;
-            }
             amount = Math.min(amount, getFreePopulation() + stratum.getFreePopulation());
         }
         if (amount == 0) {
@@ -162,6 +157,9 @@ public class PopulationCenter {
 
     public ResourcePack executeRequest(Request request, Group group) {
         ResourceEvaluator evaluator = request.getEvaluator();
+        if (request instanceof AspectImprovementRequest && request.satisfactionLevel(Controller.session.world.getResourcePool().get("Farm")) > 0) {
+            int y = 0;
+        }
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
         if (strataForRequest.size() > 0 && request instanceof AspectImprovementRequest) {
             int y = 0;

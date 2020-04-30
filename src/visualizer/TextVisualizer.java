@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static extra.OutputFunc.*;
+import static visualizer.PrintFunctionsKt.printApplicableResources;
 import static visualizer.TextCommandsKt.getCommand;
 
 /**
@@ -359,7 +360,7 @@ public class TextVisualizer implements Visualizer {
                             if (group == null) {
                                 break;
                             }
-                            System.out.println(PrintFunctionsKt.printProduced(group));
+                            System.out.println(chompToSize(PrintFunctionsKt.printProduced(group), 150));
                             break;
                         } case Tile:
                             printTile(
@@ -417,10 +418,17 @@ public class TextVisualizer implements Visualizer {
                         case AllResources:
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;
-                        case Aspects:
+                        case Aspects: {
                             printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
+                            Aspect aspect = world.getAspectPool().get(splitCommand[1]);
+                            if (aspect != null) {
+                                System.out.println(printApplicableResources(
+                                        aspect,
+                                        world.getResourcePool().getAll()
+                                ));
+                            }
                             break;
-                        case Map:
+                        } case Map:
                             printMap(tile -> "");
                             break;
                         case Exit:

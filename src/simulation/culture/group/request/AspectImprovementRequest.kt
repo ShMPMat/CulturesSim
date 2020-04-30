@@ -6,6 +6,7 @@ import simulation.culture.group.stratum.Stratum
 import simulation.culture.group.centers.Group
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourcePack
 import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 
@@ -40,7 +41,7 @@ class AspectImprovementRequest(
     override val evaluator = aspectEvaluator(aspect)
 
     override fun satisfactionLevel(sample: Resource): Int {
-        return sample.tags.filterIsInstance<AspectImprovementTag>().count { it.labeler.isSuitable(aspect) }
+        return evaluator.evaluate(ResourcePack(listOf(sample)))
     }
 
     override fun toString(): String {

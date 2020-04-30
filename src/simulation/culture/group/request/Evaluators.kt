@@ -13,7 +13,7 @@ val passingEvaluator: ResourceEvaluator
     )
 
 fun resourceEvaluator(resource: Resource) = ResourceEvaluator(
-        { it.getResource(resource) },
+        { p -> p.getResources { it.baseName == resource.baseName } },
         { it.getAmount(resource) }
 )
 

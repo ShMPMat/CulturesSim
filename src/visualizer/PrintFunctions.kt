@@ -2,9 +2,11 @@ package visualizer
 
 import extra.OutputFunc
 import simulation.World
+import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourcePool
 
 fun resourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.getAll()
@@ -31,9 +33,13 @@ data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
     }
 }
 
-fun printProduced(group: GroupConglomerate) = OutputFunc.chompToSize(group.subgroups
+fun printProduced(group: GroupConglomerate) = group.subgroups
         .flatMap { it.cultureCenter.aspectCenter.aspectPool.converseWrappers }
         .flatMap { it.producedResources }
         .distinctBy { it.fullName }
         .sortedBy { it.fullName }
-        .joinToString { it.fullName }, 150)
+        .joinToString { it.fullName }
+
+fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = resources
+        .filter { it.aspectConversion.containsKey(aspect) }
+        .joinToString { it.fullName }
