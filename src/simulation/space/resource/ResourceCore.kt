@@ -54,7 +54,7 @@ class ResourceCore(
                 genome.name,
                 meaningPostfix,
                 ArrayList(materials),
-                Genome(genome),
+                genome.copy(),
                 aspectConversion,
                 meaning
         ))
@@ -74,7 +74,7 @@ class ResourceCore(
     }
 
     fun insertMeaning(meaning: Meme, result: AspectResult): ResourceCore {
-        val genome = Genome(genome)
+        val genome = genome.copy()
         genome.spreadProbability = 0.0
         var meaningPostfix = StringBuilder("_representing_" + meaning + "_with_" + result.node.aspect.name)
         if (result.node.resourceUsed.size > 1) {
@@ -118,7 +118,7 @@ class ResourceCore(
 
     private fun applyAspectToMaterials(aspect: Aspect): ResourceCore {
         val newMaterials = materials.map { it.applyAspect(aspect) }
-        val genome = Genome(genome)
+        val genome = genome.copy()
         genome.spreadProbability = 0.0
         return ResourceCore(genome.name + if (newMaterials == materials) "" else "_" + aspect.name,
                 meaningPostfix, newMaterials, genome, aspectConversion, meaning) //TODO dangerous stuff for genome

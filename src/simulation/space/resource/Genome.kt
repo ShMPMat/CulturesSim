@@ -25,10 +25,10 @@ open class Genome(
         val isResisting: Boolean,
         isDesirable: Boolean,
         val hasLegacy: Boolean,
-        var deathTime: Int,
+        val deathTime: Int,
         val defaultAmount: Int,
         var legacy: ResourceCore?,
-        var templateLegacy: ResourceCore?,
+        val templateLegacy: ResourceCore?,
         dependencies: List<ResourceDependency>,
         tags: List<ResourceTag>,
         var primaryMaterial: Material?,
@@ -52,32 +52,6 @@ open class Genome(
         computePrimaryMaterial()
         computeTagsFromMaterials()
         this.secondaryMaterials = ArrayList(secondaryMaterials)
-    }
-
-    internal constructor(genome: Genome) : this(
-            genome.name,
-            genome.type,
-            genome.size,
-            genome.spreadProbability,
-            genome.temperatureMin,
-            genome.temperatureMax,
-            genome.baseDesirability,
-            genome.canMove,
-            genome.isMutable,
-            genome.isMovable,
-            genome.isResisting,
-            genome.isDesirable,
-            genome.hasLegacy,
-            genome.deathTime,
-            genome.defaultAmount,
-            genome.legacy,
-            genome.templateLegacy,
-            genome.dependencies,
-            genome.tags,
-            genome.primaryMaterial,
-            genome.secondaryMaterials
-    ) {
-        genome.parts.forEach { addPart(it) }
     }
 
     fun copy(
@@ -127,7 +101,7 @@ open class Genome(
                 primaryMaterial,
                 secondaryMaterials
         )
-        parts.forEach { addPart(it) }
+        parts.forEach { genome.addPart(it) }
         return genome
     }
 
