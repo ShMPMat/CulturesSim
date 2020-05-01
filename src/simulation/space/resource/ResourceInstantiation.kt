@@ -201,7 +201,7 @@ class ResourceInstantiation(
             return manageLegacyConversion(template.resource, resourceNames[1].toInt())
         }
         var nextTemplate: ResourceTemplate = getTemplateWithName(resourceNames[0])
-        nextTemplate = if (nextTemplate.resource.genome.hasLegacy())
+        nextTemplate = if (nextTemplate.resource.genome.hasLegacy)
             copyWithLegacyInsertion(nextTemplate, template.resource.resourceCore)
         else nextTemplate
         actualizeLinks(nextTemplate)
@@ -212,13 +212,11 @@ class ResourceInstantiation(
             resource: ResourceIdeal,
             amount: Int
     ): Pair<Resource?, Int> {
-        if (resource.genome.legacy == null) {
-            return Pair(null, amount) //TODO this is so wrong
-        }
-//        val legacyResource = resource.genome.legacy.copy()
-        val legacyTemplate = getTemplateWithName(resource.genome.legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
+        val legacy = resource.genome.legacy ?: return Pair(null, amount) //TODO this is so wrong
+        //        val legacyResource = resource.genome.legacy.copy()
+        val legacyTemplate = getTemplateWithName(legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
         return Pair(
-                if (legacyTemplate.resource.genome.hasLegacy())
+                if (legacyTemplate.resource.genome.hasLegacy)
                     copyWithLegacyInsertion(legacyTemplate, resource.resourceCore).resource
                 else
                     legacyTemplate.resource,
@@ -265,7 +263,7 @@ class ResourceInstantiation(
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
-                    resources[i] = Pair(resource.genome.legacy.copy(), conversionResourceAmount)
+                    resources[i] = Pair(resource.genome.legacy!!.copy(), conversionResourceAmount)//FIXME
                 } else if (conversionResource.simpleName == resource.genome.name) {
                     resources[i] = Pair(resource.resourceCore.copy(), conversionResourceAmount)
                 }
@@ -278,7 +276,7 @@ class ResourceInstantiation(
         for (part in parts) {
             val partResourceName = part.split(":".toRegex()).toTypedArray()[0]
             var partTemplate = getTemplateWithName(partResourceName)
-            if (partTemplate.resource.resourceCore.genome.hasLegacy())//TODO seems strange
+            if (partTemplate.resource.resourceCore.genome.hasLegacy)//TODO seems strange
                 partTemplate = copyWithLegacyInsertion(partTemplate, resource.resourceCore)
 
             partTemplate.resource.amount = part.split(":".toRegex()).toTypedArray()[1].toInt()

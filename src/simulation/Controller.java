@@ -22,7 +22,7 @@ public class Controller {
     public final int seed = (int) (Math.random() * 10000000);
     public final Random random = RandomKt.Random(8565728 + 1);
 
-    public final int proportionCoefficient = 3;
+    public final int proportionCoefficient = 1;
     public final boolean doTurns = true;
 
     public final int geologyTurns = 50;

@@ -85,6 +85,8 @@ fun createRivers(
             .map { it to goodSpotProbability(it) }
             .filter { it.second > 0.0 }
             .map { it.first }
-    randomSublist(allTiles, goodSpotProbability, random, amount, amount + 1)
+    val actualAmount = min(amount, allTiles.size)
+    if (actualAmount == 0) return
+    randomSublist(allTiles, goodSpotProbability, random, actualAmount, actualAmount + 1)
             .forEach { createRiver(it, water, goodTilePredicate, random) }
 }

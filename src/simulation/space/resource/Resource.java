@@ -203,7 +203,7 @@ public class Resource {
     }
 
     private void distribute(Tile tile) {
-        if (getGenome().canMove() && amount > getGenome().getNaturalDensity()) {
+        if (getGenome().getCanMove() && amount > getGenome().getNaturalDensity()) {
             List<Tile> tiles = tile.getNeighbours(t -> getGenome().isAcceptable(t));
             tiles.sort(Comparator.comparingInt(t -> t.getResourcePack().getAmount(this)));
             for (Tile neighbour: tiles) {
