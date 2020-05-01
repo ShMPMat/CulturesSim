@@ -42,6 +42,9 @@ public class DepictObject implements CultureAspect {
 
     @Override
     public void use(Group group) {
+        if (group.getCultureCenter().getMemePool().getMeme(meme.toString()) == null) {
+            return;//TODO fix this
+        }
         AspectResult result = converseWrapper.use(new AspectController(
                 1,
                 1,
@@ -50,8 +53,8 @@ public class DepictObject implements CultureAspect {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getAccessibleTerritory(),
                 true,
-                group.getCultureCenter().getMemePool().getMeme(meme.toString()),
-                group
+                group,
+                group.getCultureCenter().getMemePool().getMeme(meme.toString())
         ));
         result.pushNeeds(group);
         if (result.isFinished) {

@@ -120,7 +120,7 @@ public class Resource {
     }
 
     public boolean hasMeaning() {
-        return resourceCore.isHasMeaning();
+        return resourceCore.getHasMeaning();
     }
 
     public void setHasMeaning(boolean b) {

@@ -5,7 +5,6 @@ import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import java.util.function.Consumer
-import java.util.stream.Collectors
 
 /**
  * Subclass of ConverseWrapper which inserts meaning in certain objects.

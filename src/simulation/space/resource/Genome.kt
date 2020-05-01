@@ -137,11 +137,12 @@ open class Genome(
         }
     }
 
-    val materials: List<Material?>
+    val materials: List<Material>
         get() {
-            val materials: MutableList<Material?> = ArrayList()
-            if (primaryMaterial != null) {
-                materials.add(primaryMaterial)
+            val materials = mutableListOf<Material>()
+            val material = primaryMaterial//TODO remove when primaryMaterial is val
+            if (material != null) {
+                materials.add(material)
                 materials.addAll(secondaryMaterials)
             }
             return materials

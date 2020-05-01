@@ -161,7 +161,7 @@ class ResourceInstantiation(
                 "",
                 genome.materials,
                 genome,
-                mutableMapOf<Aspect?, MutableList<Pair<Resource?, Int?>?>?>(),
+                mapOf(),
                 null
         )
         if (!aspectConversion.containsKey(DEATH_ASPECT))
@@ -173,9 +173,8 @@ class ResourceInstantiation(
         val (resource, aspectConversion, _) = template
         for (entry in aspectConversion.entries) {
             resource.resourceCore.aspectConversion[entry.key] = entry.value
-                    .map {
-                        readConversion(template, it)
-                    }
+                    .map {readConversion(template, it) }
+                    .toMutableList()
         }
         if (resource.resourceCore.materials.isEmpty()) {
             return
@@ -212,7 +211,8 @@ class ResourceInstantiation(
             resource: ResourceIdeal,
             amount: Int
     ): Pair<Resource?, Int> {
-        val legacy = resource.genome.legacy ?: return Pair(null, amount) //TODO this is so wrong
+        val legacy = resource.genome.legacy //TODO this is so wrong
+        if (legacy == null) return Pair(null, amount)
         //        val legacyResource = resource.genome.legacy.copy()
         val legacyTemplate = getTemplateWithName(legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
         return Pair(
@@ -252,7 +252,8 @@ class ResourceInstantiation(
         for (entry in aspectConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
                 resource.resourceCore.aspectConversion[entry.key] = entry.value
-                        .map { readConversion(template, it) }//TODO should I do it if in upper level I call actualizeLinks?
+                        .map { readConversion(template, it) }
+                        .toMutableList()//TODO should I do it if in upper level I call actualizeLinks?
             }
         }
         replaceLinks(resource)
@@ -289,7 +290,7 @@ class ResourceInstantiation(
         val (resource, aspectConversion, _) = template
         if (resource.resourceCore.genome.parts.isNotEmpty()
                 && !aspectConversion.containsKey(aspectPool.getValue("TakeApart"))) {//TODO aspects shouldn't be here I recon
-            val resourceList: MutableList<Pair<Resource, Int>> = ArrayList()
+            val resourceList = mutableListOf<Pair<Resource?, Int>>()
             for (partResource in resource.resourceCore.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
                 resource.resourceCore.aspectConversion[aspectPool.getValue("TakeApart")] = resourceList

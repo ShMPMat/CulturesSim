@@ -17,8 +17,8 @@ data class AspectController(
         val populationCenter: PopulationCenter,
         val territory: Territory,
         val isMeaningNeeded: Boolean = false,
-        val meaning: Meme?,
-        val group: Group
+        val group: Group,
+        val meaning: Meme = group.cultureCenter.meaning
 ) {
     fun setMax(amount: Int) {
         if (amount < 0) {

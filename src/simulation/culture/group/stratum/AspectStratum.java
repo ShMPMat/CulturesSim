@@ -1,9 +1,6 @@
 package simulation.culture.group.stratum;
 
-import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectController;
-import simulation.culture.aspect.AspectResult;
-import simulation.culture.aspect.ConverseWrapper;
+import simulation.culture.aspect.*;
 import simulation.culture.group.Place;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.request.*;
@@ -128,8 +125,8 @@ public class AspectStratum implements Stratum {
                 group.getPopulationCenter(),
                 accessibleTerritory,
                 false,
-                null,
-                group
+                group,
+                group.getCultureCenter().getMeaning()
         ));
         if (population < oldPopulation) {
             population = oldPopulation;
@@ -189,8 +186,8 @@ public class AspectStratum implements Stratum {
                                         group.getPopulationCenter(),
                                         accessibleTerritory,
                                         false,
-                                        null,
-                                        group
+                                        group,
+                                        group.getCultureCenter().getMeaning()
                                 ));
                         if (result.isFinished) {
                             currentAmount += evaluator.evaluate(result.resources);

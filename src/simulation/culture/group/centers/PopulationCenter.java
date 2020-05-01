@@ -185,8 +185,8 @@ public class PopulationCenter {
                     this,
                     request.getGroup().getTerritoryCenter().getAccessibleTerritory(),
                     false,
-                    null,
-                    request.getGroup()
+                    request.getGroup(),
+                    request.getGroup().getCultureCenter().getMeaning()
             )));
         }
         ResourcePack actualPack = request.getEvaluator().pickAndRemove(pack);

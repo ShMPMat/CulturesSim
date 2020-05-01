@@ -38,8 +38,8 @@ public class AspectRitual extends Ritual {
                 group.getPopulationCenter(),
                 group.getTerritoryCenter().getAccessibleTerritory(),
                 true,
-                group.getCultureCenter().getMeaning(),
-                group
+                group,
+                group.getCultureCenter().getMeaning()
         ));
         result.pushNeeds(group);
         if (result.isFinished) {
