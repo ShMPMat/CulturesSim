@@ -18,6 +18,7 @@ import simulation.space.tile.TileTag;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.min;
 import static shmp.random.RandomCollectionsKt.randomElement;
 import static simulation.Controller.session;
 import static simulation.culture.group.GroupsKt.getPassingReward;
@@ -92,20 +93,24 @@ public class AspectStratum implements Stratum {
         return _effectiveness;
     }
 
-    public WorkerBunch useCumulativeAmount(int amount) {
-        return useActualAmount((int) Math.ceil(amount / getEffectiveness()));
-    }
-
-    public WorkerBunch useActualAmount(int amount) {
+    @Override
+    public WorkerBunch useAmount(int amount, int maxOverhead) {
         if (amount <= 0) {
             return new WorkerBunch(0, 0);
         }
-        this.workedAmount += amount;
-        if (workedAmount > population) {
-            population = workedAmount;
-            isRaisedAmount = true;
+        int actualAmount = (int) Math.ceil(amount / getEffectiveness());
+        if (actualAmount <= getFreePopulation()) {
+            workedAmount += actualAmount;
+        } else {
+            int additional = min(maxOverhead, actualAmount - getFreePopulation());
+            actualAmount = additional + getFreePopulation();
+            population += additional;
+            workedAmount = population;
+            if (additional > 0) {
+                isRaisedAmount = true;
+            }
         }
-        return new WorkerBunch(amount, amount);
+        return new WorkerBunch(actualAmount, actualAmount);
     }
 
     public void update(

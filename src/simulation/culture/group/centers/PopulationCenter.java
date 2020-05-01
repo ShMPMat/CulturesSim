@@ -95,16 +95,7 @@ public class PopulationCenter {
         if (amount == 0) {
             return new WorkerBunch(0, 0);
         }
-        WorkerBunch bunch = stratum.useCumulativeAmount(amount);
-        int delta = -getFreePopulation();
-        if (amount < delta) {
-            int i = 0;
-        }
-        if (delta > 0) {
-            stratum.decreaseAmount(bunch.getActualWorkers());
-            amount -= delta;
-            bunch = stratum.useActualAmount(amount);
-        }
+        WorkerBunch bunch = stratum.useAmount(amount, getFreePopulation());
         if (getFreePopulation() < 0) {
             throw new GroupError("Negative free population");
         }
@@ -244,9 +235,7 @@ public class PopulationCenter {
         if (population < options.size()) {
             options = options.subList(0, population);
         }
-        options.forEach(s ->
-                s.useCumulativeAmount(1)
-        );
+        options.forEach(s -> s.useAmount(1, getFreePopulation()));
     }
 
     @Override

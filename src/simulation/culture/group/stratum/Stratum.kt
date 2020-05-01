@@ -10,9 +10,7 @@ interface Stratum {
 
     fun decreaseAmount(amount: Int)
 
-    fun useCumulativeAmount(amount: Int): WorkerBunch
-
-    fun useActualAmount(amount: Int): WorkerBunch
+    fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch
 
     fun update(
             accessibleResources: MutableResourcePack,
