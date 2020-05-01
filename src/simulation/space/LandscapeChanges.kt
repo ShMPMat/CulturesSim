@@ -1,6 +1,7 @@
 package simulation.space
 
 import shmp.random.randomElement
+import shmp.random.randomSublist
 import simulation.space.resource.Resource
 import simulation.space.tile.Tile
 import simulation.space.tile.getLakeTag
@@ -76,10 +77,14 @@ fun createRivers(
         map: WorldMap,
         amount: Int,
         water: Resource,
-        goodSpotPredicate: (Tile) -> Boolean,
+        goodSpotProbability: (Tile) -> Double,
         goodTilePredicate: (Tile) -> Boolean,
         random: Random
 ) {
-    val allTiles = map.getTiles(goodSpotPredicate)
-    allTiles.shuffled(random).take(amount).forEach { createRiver(it, water, goodTilePredicate, random) }
+    val allTiles = map.tiles
+            .map { it to goodSpotProbability(it) }
+            .filter { it.second > 0.0 }
+            .map { it.first }
+    randomSublist(allTiles, goodSpotProbability, random, amount, amount + 1)
+            .forEach { createRiver(it, water, goodTilePredicate, random) }
 }

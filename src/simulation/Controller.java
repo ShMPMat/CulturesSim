@@ -22,7 +22,7 @@ public class Controller {
     public final int seed = (int) (Math.random() * 10000000);
     public final Random random = RandomKt.Random(8565728 + 1);
 
-    public final int proportionCoefficient = 1;
+    public final int proportionCoefficient = 3;
     public final boolean doTurns = true;
 
     public final int geologyTurns = 50;
@@ -114,15 +114,15 @@ public class Controller {
             }
             LandscapeChangesKt.createRivers(
                     world.getMap(),
-                    5 * proportionCoefficient,
+                    5 * proportionCoefficient * proportionCoefficient,
                     water,
                     t -> t.getType() == Tile.Type.Mountain
                             && t.getResourcePack().contains(world.getResourcePool().get("Snow"))
-                            && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty(),
+                            && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty()
+                            ? (t.getTemperature() + 100) * (t.getTemperature() + 100) : 0.0,
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
-
             turn();
         }
         turn();
