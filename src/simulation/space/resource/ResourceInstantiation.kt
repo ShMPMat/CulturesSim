@@ -235,7 +235,7 @@ class ResourceInstantiation(
                 resource.genome.name,
                 "",
                 ArrayList<Material>(resource.resourceCore.materials),
-                Genome(resource.genome),
+                resource.genome.copy(),
                 mutableMapOf(),
                 null
         ))

@@ -16,11 +16,11 @@ open class Genome(
         val type: Type,
         val size: Double,
         var spreadProbability: Double,
-        private val temperatureMin: Int,
-        private val temperatureMax: Int,
+        val temperatureMin: Int,
+        val temperatureMax: Int,
         val baseDesirability: Int,
         val canMove: Boolean,
-        private val isMutable: Boolean,
+        val isMutable: Boolean,
         val isMovable: Boolean,
         val isResisting: Boolean,
         isDesirable: Boolean,
@@ -39,7 +39,7 @@ open class Genome(
     val parts: MutableList<Resource> = ArrayList()
     val dependencies: MutableList<ResourceDependency>
     val tags: MutableList<ResourceTag>
-    private val secondaryMaterials: List<Material>
+    val secondaryMaterials: List<Material>
 
     init {
         this.tags = ArrayList(tags)
@@ -78,6 +78,57 @@ open class Genome(
             genome.secondaryMaterials
     ) {
         genome.parts.forEach { addPart(it) }
+    }
+
+    fun copy(
+            name: String = this.name,
+            type: Type = this.type,
+            size: Double = this.size,
+            spreadProbability: Double = this.spreadProbability,
+            temperatureMin: Int = this.temperatureMin,
+            temperatureMax: Int = this.temperatureMax,
+            baseDesirability: Int = this.baseDesirability,
+            canMove: Boolean = this.canMove,
+            isMutable: Boolean = this.isMutable,
+            isMovable: Boolean = this.isMovable,
+            isResisting: Boolean = this.isResisting,
+            isDesirable: Boolean = this.isDesirable,
+            hasLegacy: Boolean = this.hasLegacy,
+            deathTime: Int = this.deathTime,
+            defaultAmount: Int = this.defaultAmount,
+            legacy: ResourceCore? = this.legacy,
+            templateLegacy: ResourceCore? = this.templateLegacy,
+            dependencies: List<ResourceDependency> = this.dependencies,
+            tags: List<ResourceTag> = this.tags,
+            primaryMaterial: Material? = this.primaryMaterial,
+            secondaryMaterials: List<Material> = this.secondaryMaterials,
+            parts: MutableList<Resource> = this.parts
+    ): Genome {
+        val genome = Genome(
+                name,
+                type,
+                size,
+                spreadProbability,
+                temperatureMin,
+                temperatureMax,
+                baseDesirability,
+                canMove,
+                isMutable,
+                isMovable,
+                isResisting,
+                isDesirable,
+                hasLegacy,
+                deathTime,
+                defaultAmount,
+                legacy,
+                templateLegacy,
+                dependencies,
+                tags,
+                primaryMaterial,
+                secondaryMaterials
+        )
+        parts.forEach { addPart(it) }
+        return genome
     }
 
     private fun computePrimaryMaterial() {
