@@ -5,7 +5,7 @@ class GenomeTemplate(genome: Genome) : Genome(genome) {
         val genome = Genome(this)
         genome.deathTime = templateLegacy.genome.deathTime
         genome.templateLegacy = templateLegacy
-        primaryMaterial = templateLegacy.genome.primaryMaterial
+        genome.primaryMaterial = templateLegacy.genome.primaryMaterial
         genome.computeTagsFromMaterials()
         return genome
     }

@@ -166,10 +166,9 @@ public class Group {
             die();
             return null;
         }
-        int size = parentGroup.subgroups.size();
+        int denominator = parentGroup.subgroups.size() + 1;
         if ((populationCenter.isMaxReached(territoryCenter.getTerritory())
-                || testProbability(session.defaultGroupDiverge, session.random))
-            /*&& parentGroup.subgroups.size() < 10*/) {
+                || testProbability(session.defaultGroupDiverge / denominator, session.random))) {
             List<Tile> tiles = getOverallTerritory().getOuterBrink(t ->
                             territoryCenter.canSettleAndNoGroup(t) && parentGroup.getClosestInnerGroupDistance(t) > 2
                     //TODO dont like territory checks in Group

@@ -25,4 +25,9 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         _owned.add(resource)
         tile.addDelayedResource(resource)
     }
+
+    override fun toString(): String {
+        return "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
+                _owned.resources.joinToString { it.fullName + ":" + it.amount }
+    }
 }

@@ -91,7 +91,6 @@ public class Genome {
                 genome.secondaryMaterials
         );
         genome.parts.forEach(this::addPart);
-        genome.tags.forEach(this::addResourceTag);
     }
 
     private void computePrimaryMaterial() {

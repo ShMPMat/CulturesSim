@@ -279,10 +279,12 @@ public class AspectStratum implements Stratum {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
-        stringBuilder.append(population).append(", effectiveness -").append(getEffectiveness()).append(", aspects: ");
+        stringBuilder.append(population).append(", effectiveness ").append(getEffectiveness()).append(", aspects: ");
         for (Aspect aspect : aspects) {
             stringBuilder.append(aspect.getName()).append(" ");
         }
+        stringBuilder.append(", Places:");
+        places.forEach(p -> stringBuilder.append(p).append(" "));
         return stringBuilder.toString();
     }
 
