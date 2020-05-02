@@ -58,6 +58,8 @@ public class Controller {
 
     public final double windFillIn = 0.1;
 
+    public final double strayPlacesUpdate = 0.01;
+
     public static Visualizer visualizer;
     public static final boolean doPrint = false;
 

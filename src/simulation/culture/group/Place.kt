@@ -30,4 +30,24 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         return "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
                 _owned.resources.joinToString { it.fullName + ":" + it.amount }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Place
+
+        if (tile != other.tile) return false
+        if (tileTag != other.tileTag) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = tile.hashCode()
+        result = 31 * result + tileTag.hashCode()
+        return result
+    }
+
+
 }

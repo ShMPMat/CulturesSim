@@ -33,6 +33,7 @@ class MapModel : InteractionModel {
             group.finishUpdate()
         world.map.finishUpdate()
         events.addAll(world.events.drop(eventsNumber))
+        world.strayPlacesManager.update()
         Controller.session.othersTime = System.nanoTime() - Controller.session.othersTime
         Controller.session.overallTime = System.nanoTime() - Controller.session.overallTime
     }

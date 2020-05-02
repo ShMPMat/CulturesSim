@@ -294,6 +294,6 @@ public class AspectStratum implements Stratum {
     public void die() {
         population = 0;
         workedAmount = 0;
-        places.forEach(Place::delete);
+        places.forEach(session.world.getStrayPlacesManager()::addPlace);
     }
 }

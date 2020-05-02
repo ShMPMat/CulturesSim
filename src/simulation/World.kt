@@ -5,6 +5,7 @@ import simulation.Controller.*
 import simulation.culture.aspect.AspectInstantiation
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.GroupConglomerate
+import simulation.culture.group.StrayPlacesManager
 import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
@@ -32,6 +33,8 @@ class World {
     val materialPool = MaterialInstantiation(aspectPool)
             .createPool("SupplementFiles/Materials")
     val resourcePool: ResourcePool
+
+    val strayPlacesManager = StrayPlacesManager()
 
     private val memePool = GroupMemes()
 
