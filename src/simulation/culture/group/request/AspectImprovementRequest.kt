@@ -22,12 +22,10 @@ class AspectImprovementRequest(
     override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
         if (stratum !is AspectStratum)
             return null
-        return if (stratum.aspects.any { cw ->
-                    cw.producedResources
-                            .flatMap { it.tags }
-                            .filterIsInstance<AspectImprovementTag>()
-                            .any { it.labeler.isSuitable(aspect) }
-                })
+        return if (stratum.aspect.producedResources
+                        .flatMap { it.tags }
+                        .filterIsInstance<AspectImprovementTag>()
+                        .any { it.labeler.isSuitable(aspect) })
             evaluator
         else null
     }

@@ -31,7 +31,7 @@ public class AspectStratum implements Stratum {
      */
     private int workedAmount = 0;
     private boolean isRaisedAmount = false;
-    private List<ConverseWrapper> aspects = new ArrayList<>();
+    private ConverseWrapper aspect;
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private MutableResourcePack enhancements = new MutableResourcePack();
     private List<Place> places = new ArrayList<>();
@@ -39,7 +39,7 @@ public class AspectStratum implements Stratum {
 
     public AspectStratum(int population, ConverseWrapper aspect) {
         this.population = population;
-        aspects.add(aspect);
+        this.aspect = aspect;
         aspect.getDependencies().getMap().keySet().forEach(tag -> {
             if (tag.isInstrumental() && !tag.name.equals("phony")) {
                 dependencies.put(tag.copy(), new MutableResourcePack());
@@ -64,12 +64,8 @@ public class AspectStratum implements Stratum {
         return population - workedAmount;
     }
 
-    public List<ConverseWrapper> getAspects() {
-        return aspects;
-    }
-
-    public boolean containsAspect(ConverseWrapper aspect) {
-        return aspects.contains(aspect);
+    public ConverseWrapper getAspect() {
+        return aspect;
     }
 
     public void decreaseAmount(int amount) {
@@ -87,7 +83,7 @@ public class AspectStratum implements Stratum {
         if (_effectiveness == -1) {
             _effectiveness = 1.0 + places.stream()
                     .flatMap(p -> p.getOwned().getResources().stream())
-            .map(r -> r.getAspectImprovement(aspects.get(0)))
+            .map(r -> r.getAspectImprovement(aspect))
                     .reduce(0.0, Double::sum);
         }
         return _effectiveness;
@@ -143,17 +139,15 @@ public class AspectStratum implements Stratum {
 
     public MutableResourcePack use(AspectController controller) {
         MutableResourcePack resourcePack = new MutableResourcePack();
-        for (Aspect aspect : aspects) {
-            AspectResult result = aspect.use(controller);
-            if (result.resources.isNotEmpty()) {
-                popularMemes.add(ConstructMemeKt.constructMeme(aspect));
-                result.resources.getResources().forEach(r -> popularMemes.add(ConstructMemeKt.constructMeme(r)));
-            }
-            if (result.isFinished) {
-                resourcePack.addAll(result.resources);
-            }
-            result.pushNeeds(controller.getGroup());
+        AspectResult result = aspect.use(controller);
+        if (result.resources.isNotEmpty()) {
+            popularMemes.add(ConstructMemeKt.constructMeme(aspect));
+            result.resources.getResources().forEach(r -> popularMemes.add(ConstructMemeKt.constructMeme(r)));
         }
+        if (result.isFinished) {
+            resourcePack.addAll(result.resources);
+        }
+        result.pushNeeds(controller.getGroup());
         return resourcePack;
     }
 
@@ -175,31 +169,30 @@ public class AspectStratum implements Stratum {
                 continue;
             }
             ResourceEvaluator evaluator = EvaluatorsKt.tagEvaluator(entry.getKey());
-            for (Aspect aspect : aspects) {//TODO choose the best
-                if (currentAmount >= population) {
-                    break;
-                }
-                Set<Dependency> deps = aspect.getDependencies().getMap().get(entry.getKey());
-                if (deps != null) {
-                    for (Dependency dependency : deps) {
-                        AspectResult result = dependency.useDependency(
-                                new AspectController(
-                                        1,
-                                        population - currentAmount,
-                                        1,
-                                        evaluator,
-                                        group.getPopulationCenter(),
-                                        accessibleTerritory,
-                                        false,
-                                        group,
-                                        group.getCultureCenter().getMeaning()
-                                ));
-                        if (result.isFinished) {
-                            currentAmount += evaluator.evaluate(result.resources);
-                            entry.getValue().addAll(evaluator.pick(result.resources));//TODO disband
-                            if (currentAmount >= population) {
-                                break;
-                            }
+            //TODO choose the best
+            if (currentAmount >= population) {
+                break;
+            }
+            Set<Dependency> deps = aspect.getDependencies().getMap().get(entry.getKey());
+            if (deps != null) {
+                for (Dependency dependency : deps) {
+                    AspectResult result = dependency.useDependency(
+                            new AspectController(
+                                    1,
+                                    population - currentAmount,
+                                    1,
+                                    evaluator,
+                                    group.getPopulationCenter(),
+                                    accessibleTerritory,
+                                    false,
+                                    group,
+                                    group.getCultureCenter().getMeaning()
+                            ));
+                    if (result.isFinished) {
+                        currentAmount += evaluator.evaluate(result.resources);
+                        entry.getValue().addAll(evaluator.pick(result.resources));//TODO disband
+                        if (currentAmount >= population) {
+                            break;
                         }
                     }
                 }
@@ -213,7 +206,7 @@ public class AspectStratum implements Stratum {
         }
         Request request = new AspectImprovementRequest(
                 group,
-                aspects.get(0),
+                aspect,
                 1,
                 1,
                 getPassingReward(),
@@ -236,7 +229,7 @@ public class AspectStratum implements Stratum {
             List<Tile> goodTiles = group.getTerritoryCenter().getTerritory()
                     .getTiles(t -> resource.getGenome().isAcceptable(t));
             if (!goodTiles.isEmpty()) {
-                String tagType = "(Stratum " + aspects.get(0).getName() + " of " + group.name + ")";
+                String tagType = "(Stratum " + aspect.getName() + " of " + group.name + ")";
                 place = new Place(
                         randomElement(goodTiles, session.random),
                         new TileTag(tagType + "_" + places.size(), tagType)
@@ -258,9 +251,6 @@ public class AspectStratum implements Stratum {
         if (workedAmount < population) {
             population = workedAmount;
         }
-        if (aspects.get(0).getName().equals("TakeOnHerbivore")) {
-            int i = 0;
-        }
         workedAmount = 0;
         _effectiveness = -1.0;
     }
@@ -270,21 +260,20 @@ public class AspectStratum implements Stratum {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AspectStratum stratum = (AspectStratum) o;
-        return Objects.equals(aspects, stratum.aspects);
+        return Objects.equals(aspect, stratum.aspect);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(aspects);
+        return Objects.hash(aspect);
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
-        stringBuilder.append(population).append(", effectiveness ").append(getEffectiveness()).append(", aspects: ");
-        for (Aspect aspect : aspects) {
-            stringBuilder.append(aspect.getName()).append(" ");
-        }
+        stringBuilder.append(population).append(", effectiveness ").append(getEffectiveness()).append(", ")
+                .append(aspect.getName()).append(" ");
+
         stringBuilder.append(", Places:");
         places.forEach(p -> stringBuilder.append(p).append(" "));
         return stringBuilder.toString();

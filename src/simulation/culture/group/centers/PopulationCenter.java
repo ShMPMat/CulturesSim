@@ -54,7 +54,7 @@ public class PopulationCenter {
         return strata.stream()
                 .filter(s -> s instanceof AspectStratum)
                 .map(s -> ((AspectStratum) s))
-                .filter(s -> s.containsAspect(aspect))
+                .filter(s -> s.getAspect().equals(aspect))
                 .findFirst()
                 .orElse(null);
     }
@@ -156,7 +156,7 @@ public class PopulationCenter {
         if (strataForRequest.size() > 0 && request instanceof AspectImprovementRequest) {
             int y = 0;
         }
-        strataForRequest.sort(Comparator.comparingInt(s -> -s.getAspects().get(0).getUsefulness()));
+        strataForRequest.sort(Comparator.comparingInt(s -> -s.getAspect().getUsefulness()));
         MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
                 request.getCeiling(),
                 turnResources.getResources(),
@@ -202,7 +202,7 @@ public class PopulationCenter {
             if (strata.stream()
                     .filter(s -> s instanceof AspectStratum)
                     .map(s -> (AspectStratum) s)
-                    .noneMatch(s -> s.containsAspect(a))) {
+                    .noneMatch(s -> s.getAspect().equals(a))) {
                 strata.add(new AspectStratum(0, a));
             }
         });
@@ -228,7 +228,7 @@ public class PopulationCenter {
                 .filter(s -> s.getPopulation() == 0)
                 .filter(s -> s instanceof AspectStratum)
                 .map(s -> (AspectStratum) s)
-                .filter(s -> s.getAspects().stream().anyMatch(labeler::isSuitable))
+                .filter(s -> labeler.isSuitable(s.getAspect()))
                 .collect(Collectors.toList());
         //TODO shuffle
         int population = getFreePopulation();

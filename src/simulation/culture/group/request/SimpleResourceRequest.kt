@@ -18,10 +18,9 @@ class SimpleResourceRequest(
     override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
         if (stratum !is AspectStratum)
             return null
-        for (aspect in stratum.aspects)
-            if (aspect is ConverseWrapper)
-                if (aspect.producedResources.any { it.simpleName == resource.simpleName })
-                    return evaluator
+        if (stratum.aspect is ConverseWrapper)
+            if (stratum.aspect.producedResources.any { it.simpleName == resource.simpleName })
+                return evaluator
         return null
     }
 

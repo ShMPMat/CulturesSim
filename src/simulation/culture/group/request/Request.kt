@@ -1,6 +1,5 @@
 package simulation.culture.group.request
 
-import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.Group
 import simulation.culture.group.stratum.AspectStratum
 import simulation.culture.group.stratum.Stratum
@@ -49,14 +48,10 @@ abstract class Request(
     }
 
     fun satisfactionLevel(stratum: Stratum): Int {
-        if (stratum !is AspectStratum) return 0
-        var result = 0
-        for (converseWrapper in stratum.aspects.filterIsInstance<ConverseWrapper>()) {
-            result += converseWrapper.producedResources
-                    .map { this.satisfactionLevel(it) }
-                    .foldRight(0, Int::plus)
-        }
-        return result
+        return if (stratum !is AspectStratum) 0
+        else stratum.aspect.producedResources
+                .map { satisfactionLevel(it) }
+                .foldRight(0, Int::plus)
     }
 }
 

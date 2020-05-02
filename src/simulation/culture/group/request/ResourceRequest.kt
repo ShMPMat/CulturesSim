@@ -18,10 +18,9 @@ class ResourceRequest(
     override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
         if (stratum !is AspectStratum)
             return null
-        for (aspect in stratum.aspects)
-            if (aspect is ConverseWrapper)
-                if (aspect.producedResources.any { it.baseName == resource.baseName })
-                    return evaluator
+        if (stratum.aspect is ConverseWrapper)
+            if (stratum.aspect.producedResources.any { it.baseName == resource.baseName })
+                return evaluator
         return null
     }
 

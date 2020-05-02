@@ -20,7 +20,7 @@ class TagRequest(
     override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
         if (stratum !is AspectStratum)
             return null
-        return if (stratum.aspects.any { hasTagFrom(it.tags) })
+        return if (hasTagFrom(stratum.aspect.tags))
             evaluator
         else null
     }
