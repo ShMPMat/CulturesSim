@@ -1,7 +1,6 @@
 package simulation.culture.aspect
 
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.Controller.*
 import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
@@ -15,12 +14,11 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.BaseNameLabeler
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.resource.tag.labeler.TagLabeler
-import java.lang.Math.pow
 import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
 
-open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) {
+open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     /**
      * Map which stores for every requirement some Dependencies, from which
      * we can get get resource for using this aspect.
@@ -57,17 +55,17 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
     open fun swapDependencies(aspectCenter: AspectCenter) =
             dependencies.map.values.forEach { set -> set.forEach { it.swapDependencies(aspectCenter) } }
 
-    val name = aspectCore.name
+    val name = core.name
 
-    val tags = aspectCore.tags
+    val tags = core.tags
 
-    val requirements = aspectCore.getRequirements()
+    val requirements = core.getRequirements()
 
-    val matchers = aspectCore.matchers
+    val matchers = core.matchers
 
     open val isValid = true
 
-    fun canApplyMeaning() = aspectCore.applyMeaning
+    fun canApplyMeaning() = core.applyMeaning
 
     fun canReturnMeaning() = this is ConverseWrapper && this.canInsertMeaning
 
@@ -97,19 +95,24 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
         }
     }
 
-    open fun copy(dependencies: AspectDependencies) = aspectCore.copy(dependencies)
+    open fun copy(dependencies: AspectDependencies) = core.copy(dependencies)
 
     open val producedResources: List<Resource> = emptyList()
 
     open fun use(controller: AspectController): AspectResult { //TODO instrument efficiency
         //TODO put dependency resources only in node; otherwise they may merge with phony
-        if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used)
+        if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
+                || (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) })) {
+            if (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) }) {
+                val k = 0
+            }
             return AspectResult(
                     false,
                     ArrayList(),
                     MutableResourcePack(),
                     ResultNode(this)
             )
+        }
         timesUsedInTurn++
         used = true
         var isFinished = true
@@ -237,9 +240,6 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
     }
 
     fun finishUpdate() {
-        if (timesUsedInTurnUnsuccessfully > 10000) {
-            val i = 0;
-        }
         timesUsedInTurn = 0
         timesUsedInTurnUnsuccessfully = 0
         tooManyFailsThisTurn = false
@@ -256,15 +256,15 @@ open class Aspect(var aspectCore: AspectCore, dependencies: AspectDependencies) 
             return false
         }
         val aspect = other as Aspect
-        return aspectCore.name == aspect.aspectCore.name
+        return core.name == aspect.core.name
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(aspectCore.name)
+        return Objects.hash(core.name)
     }
 
     override fun toString(): String {
-        val stringBuilder = StringBuilder("Aspect ${aspectCore.name} usefulness - $usefulness dependencies:")
+        val stringBuilder = StringBuilder("Aspect ${core.name} usefulness - $usefulness dependencies:")
         for ((key, value) in dependencies.map) {
             stringBuilder.append("\n**${key.name}:")
             for (dependency in value)

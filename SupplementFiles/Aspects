@@ -38,6 +38,7 @@
 -TakeApart
 -Take
     &!!t:gas--mv--!!rs--#MATCHED:1
+    E
 
 -ShapeMalleable                                                                                  #MEANING
     &t:malleable--#MATCHED:1

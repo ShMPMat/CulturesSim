@@ -26,10 +26,8 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         tile.addDelayedResource(resource)
     }
 
-    override fun toString(): String {
-        return "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
-                _owned.resources.joinToString { it.fullName + ":" + it.amount }
-    }
+    override fun toString() = "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
+            _owned.resources.joinToString { it.fullName + ":" + it.amount }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

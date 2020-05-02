@@ -9,7 +9,8 @@ class AspectCore(
         val tags: List<ResourceTag>,
         private val requirements: List<ResourceTag>,
         val matchers: List<AspectMatcher>,
-        var applyMeaning: Boolean
+        var applyMeaning: Boolean,
+        val resourceExposed: Boolean
 ) {
     fun getRequirements(): Collection<ResourceTag> {
         return requirements

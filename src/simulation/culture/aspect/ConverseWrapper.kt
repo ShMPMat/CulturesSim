@@ -1,14 +1,12 @@
 package simulation.culture.aspect
 
 import simulation.culture.aspect.dependency.AspectDependencies
-import simulation.culture.aspect.dependency.Dependency
 import simulation.culture.aspect.dependency.LineDependency
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.AspectCenter
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
-import java.util.stream.Collectors
 
 /**
  * Special Aspect which wraps around another aspect and resource and returns application
@@ -20,7 +18,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
                 getReducedTags(resource, aspect),
                 ArrayList(aspect.requirements),
                 ArrayList(),
-                false
+                false,
+                aspect.core.resourceExposed
         ),
         AspectDependencies(mutableMapOf())
 ) {
