@@ -1,6 +1,7 @@
 package simulation.culture.group.centers
 
 import extra.SpaceProbabilityFuncs
+import shmp.random.randomTile
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Event
@@ -50,9 +51,16 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             .toSet()
 
     val disbandTile: Tile
-        get() = SpaceProbabilityFuncs.randomTile(territory)
+        get() = territory.center
 
-    fun update() {
+    fun update() {//TODO change Water on GoodTiles
+        leaveTiles(territory.getTiles { !canSettle(it) })
+        if (territory.isEmpty) {
+            tileTag.group.die()
+            return
+        }
+        if (!territory.contains(territory.center))
+            territory.center = randomTile(territory, Controller.session.random)
         notMoved++
         if (settled && territory.center.tagPool.getByType(SETTLEMENT_TYPE).isEmpty()) {
             places.add(Place(
@@ -71,14 +79,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private val migrationTile: Tile?
-        get() {
-            val a = reachableTiles
-                    .filter { canSettleAndNoGroupExcept(it) }
-//            val main = System.nanoTime()
-            val b = a.maxBy { tilePotentialMapper(it) }
-//            Controller.session.groupMigrationTime += System.nanoTime() - main
-            return b
-        }
+        get() = reachableTiles
+                .filter { canSettleAndNoGroupExcept(it) }
+                .maxBy { tilePotentialMapper(it) }
 
     private val reachableTiles: Collection<Tile>
         get() {
@@ -179,12 +182,12 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             return
         }
         tile.tagPool.remove(tileTag)
-        territory.removeTile(tile)
+        territory.remove(tile)
         tileTag.group.parentGroup.removeTile(tile)
     }
 
     private fun leaveTiles(tiles: Collection<Tile>) {
-        tiles.forEach(Consumer { tile: Tile? -> leaveTile(tile) })
+        tiles.forEach { leaveTile(it) }
     }
 
     fun canSettle(tile: Tile) = (tile.type != Tile.Type.Water && tile.type != Tile.Type.Mountain

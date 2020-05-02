@@ -16,7 +16,6 @@ import simulation.space.resource.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*
-import kotlin.math.max
 
 class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
     @JvmField
@@ -162,7 +161,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
 
     fun removeTile(tile: Tile?) {
         if (tile == null) return
-        territory.removeTile(tile)
+        territory.remove(tile)
     }
 
     override fun equals(other: Any?): Boolean {

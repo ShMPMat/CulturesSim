@@ -97,7 +97,7 @@ public class Group {
         this.parentGroup = parentGroup;
     }
 
-    private void die() {
+    void die() {
         state = State.Dead;
         resourceCenter.die(territoryCenter.getDisbandTile());
         populationCenter.die();
@@ -122,6 +122,9 @@ public class Group {
         turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
         populationCenter.executeRequests(turnRequests);
         territoryCenter.update();
+        if (state == State.Dead) {
+            return;
+        }
         long main = System.nanoTime();
         if (shouldMigrate()) {
             if (territoryCenter.migrate()) {

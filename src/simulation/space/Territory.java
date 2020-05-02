@@ -144,7 +144,7 @@ public class Territory {
         }
     }
 
-    public void removeTile(Tile tile) {
+    public void remove(Tile tile) {
         if (tile == null) {
             return;
         }
@@ -159,6 +159,17 @@ public class Territory {
                 outerBrink.remove(t);
             }
         });
+    }
+
+    public void removeAll(Collection<Tile> tiles) {
+        if (!tiles.isEmpty()) {
+            int y = 0;
+        }
+        tiles.forEach(this::remove);
+    }
+
+    public void removeIf(Predicate<Tile> predicate) {
+        removeAll(getTiles(predicate));
     }
 
     public Tile getMostUselessTile(Function<Tile, Integer> mapper) {
