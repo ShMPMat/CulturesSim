@@ -48,13 +48,14 @@ public class Controller {
     public final boolean groupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
     public final double worshipPlaceProb = 0.1;
+    public final double placeSystemLimitsCheck = 0.05;
 
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
     public final int groupTurnsBetweenAdopts = 10;
     public final int maxGroupDependencyDepth = 5;
     public final int minimalStableFreePopulation = 10;
-    public final int aspectFalloff = -200;
+    public final int aspectFalloff = -500;
 
     public final double windFillIn = 0.1;
 
