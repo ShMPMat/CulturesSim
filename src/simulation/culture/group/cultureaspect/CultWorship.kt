@@ -47,10 +47,12 @@ data class CultWorship(
                     { _, _ -> },
                     { _, _ -> }
             )
-            val pack = MutableResourcePack(group.populationCenter.executeRequest(request))
+            val result = group.populationCenter.executeRequest(request)
+            val pack = MutableResourcePack(result.pack)
             if (request.evaluator.evaluate(pack) == 0) {
                 group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
             } else {
+                result.usedAspects.forEach { it.gainUsefulness(20) }
                 val temple = request.evaluator.pickAndRemove(pack)
                 group.resourceCenter.addAll(pack)
                 val place = worship.placeSystem.places

@@ -15,15 +15,9 @@ class SpecialPlace(
     override fun use(group: Group) {
         if (testProbability(0.1, Controller.session.random)) {//TODO lesser amount
             val lacking = place.getLacking()
-            if (lacking.isNotEmpty()) {
-                val k = 0
-            }
             val gotResources = lacking
                     .map { resourceToRequest(it, group, it.amount) }
-                    .flatMap { group.populationCenter.executeRequest(it).resources }
-            if (lacking.size != gotResources.size) {
-                val k = 0
-            }
+                    .flatMap { group.populationCenter.executeRequest(it).pack.resources }
             place.addResources(gotResources)
         }
     }

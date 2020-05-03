@@ -1,14 +1,13 @@
 package simulation.culture.group.centers;
 
 import kotlin.Pair;
-import simulation.Controller;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.aspect.AspectController;
 import simulation.culture.aspect.labeler.AspectLabeler;
 import simulation.culture.aspect.labeler.ProducedLabeler;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
-import simulation.culture.group.request.AspectImprovementRequest;
+import simulation.culture.group.request.RequestResult;
 import simulation.culture.group.stratum.AspectStratum;
 import simulation.culture.group.stratum.Stratum;
 import simulation.culture.group.stratum.WorkerBunch;
@@ -143,11 +142,12 @@ public class PopulationCenter {
 
     void executeRequests(RequestPool requests) {
         for (Request request : requests.getRequests().keySet()) {
-            requests.getRequests().get(request).addAll(executeRequest(request));
+            requests.getRequests().get(request).addAll(executeRequest(request).getPack());
         }
     }
 
-    public ResourcePack executeRequest(Request request) {
+    public RequestResult executeRequest(Request request) {
+        List<Aspect> usedAspects = new ArrayList<>();
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
         strataForRequest.sort(Comparator.comparingInt(s -> -s.getAspect().getUsefulness()));
@@ -162,7 +162,7 @@ public class PopulationCenter {
             if (amount >= request.getCeiling()) {
                 break;
             }
-            pack.addAll(stratum.use(new AspectController(
+            ResourcePack produced = stratum.use(new AspectController(
                     1,
                     request.getCeiling() - amount,
                     request.getFloor() - amount,
@@ -172,11 +172,15 @@ public class PopulationCenter {
                     false,
                     request.getGroup(),
                     request.getGroup().getCultureCenter().getMeaning()
-            )));
+            ));
+            if (evaluator.evaluate(produced) > 0) {
+                usedAspects.add(stratum.getAspect());
+            }
+            pack.addAll(produced);
         }
-        ResourcePack actualPack = request.getEvaluator().pickAndRemove(pack);
+        ResourcePack actualPack = evaluator.pickAndRemove(pack);
         turnResources.addAll(pack);
-        return actualPack;
+        return new RequestResult(actualPack, usedAspects);
     }
 
     private List<AspectStratum> getStrataForRequest(Request request) {

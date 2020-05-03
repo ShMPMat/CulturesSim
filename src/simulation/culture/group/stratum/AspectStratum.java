@@ -212,11 +212,12 @@ public class AspectStratum implements Stratum {
                 getPassingReward(),
                 getPassingReward()
         );
-        ResourcePack pack = group.getPopulationCenter().executeRequest(request);
-        enhancements.addAll(pack.getResources(r ->
+        RequestResult result = group.getPopulationCenter().executeRequest(request);
+        result.getUsedAspects().forEach(a -> a.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2));
+        enhancements.addAll(result.getPack().getResources(r ->
                 r.getGenome().isMovable())
         );
-        pack.getResources(r -> !r.getGenome().isMovable()).getResources()
+        result.getPack().getResources(r -> !r.getGenome().isMovable()).getResources()
                 .forEach(resource -> addUnmovableEnhancement(resource, group));
     }
 

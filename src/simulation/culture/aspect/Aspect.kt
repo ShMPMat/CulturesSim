@@ -234,8 +234,11 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     protected open fun shouldPassMeaningNeed(isMeaningNeeded: Boolean) = isMeaningNeeded
 
-    fun markAsUsed() {
-        usefulness += 1
+    fun markAsUsed() = gainUsefulness(1)
+
+    fun gainUsefulness(amount: Int) {
+        if (amount <= 0) return
+        usefulness += amount
         usedThisTurn = true
     }
 
