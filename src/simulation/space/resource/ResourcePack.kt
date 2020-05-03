@@ -76,6 +76,6 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     fun containsAll(pack: ResourcePack) = containsAll(pack.resources)
 
     fun getTagPresenceSum(tag: ResourceTag) = getResources(tag).resources
-            .map { it.getTagLevel(tag) * it.amount }
+            .map { it.getTagPresence(tag) }
             .foldRight(0, Int::plus)
 }

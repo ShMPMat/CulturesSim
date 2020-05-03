@@ -7,36 +7,17 @@ import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 
 val passingEvaluator: ResourceEvaluator
-    get() = ResourceEvaluator(
-            { it },
-            ResourcePack::amount
-    )
+    get() = ResourceEvaluator { it.amount }
 
-fun resourceEvaluator(resource: Resource) = ResourceEvaluator(
-        { p -> p.getResources { it.baseName == resource.baseName } },
-        { it.getAmount(resource) }
-)
+fun resourceEvaluator(resource: Resource) =
+        ResourceEvaluator { if (it.baseName == resource.baseName) it.amount else 0 }
 
-fun simpleResourceEvaluator(resource: Resource) = ResourceEvaluator(
-        { p -> p.getResources { it.simpleName == resource.simpleName } },
-        { p -> p.getAmount { it.simpleName == resource.simpleName } }
-)
+fun simpleResourceEvaluator(resource: Resource) =
+        ResourceEvaluator { if (it.simpleName == resource.simpleName) it.amount else 0 }
 
-fun tagEvaluator(tag: ResourceTag) = ResourceEvaluator(
-        { it.getResources(tag) },
-        { it.getTagPresenceSum(tag) }
-)
+fun tagEvaluator(tag: ResourceTag) = ResourceEvaluator { it.getTagPresence(tag) }
 
-
-fun aspectEvaluator(aspect: Aspect) = ResourceEvaluator(
-        { p ->
-            p.getResources { r ->
-                r.tags.filterIsInstance<AspectImprovementTag>().any { it.labeler.isSuitable(aspect) }
-            }
-        },
-        { p ->
-            p.resources.sumBy { r ->
-                r.tags.filterIsInstance<AspectImprovementTag>().count { it.labeler.isSuitable(aspect) }
-            }
-        }
-)
+fun aspectEvaluator(aspect: Aspect) = ResourceEvaluator { r ->
+    r.tags.filterIsInstance<AspectImprovementTag>()
+            .count { it.labeler.isSuitable(aspect) }
+}

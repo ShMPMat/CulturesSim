@@ -7,13 +7,8 @@ import simulation.space.resource.ResourcePack
 /**
  * Class which evaluates ResourcePacks for containing needed Resources.
  */
-class ResourceEvaluator(
-        private val picker: (ResourcePack) -> ResourcePack,
-        private val evaluator: (ResourcePack) -> Int
-) {
-    fun pick(resourcePack: ResourcePack): ResourcePack {
-        return picker(resourcePack)
-    }
+class ResourceEvaluator(private val evaluator: (Resource) -> Int) {
+    fun pick(resourcePack: ResourcePack) = resourcePack.getResources { evaluator(it) > 0 }
 
     fun pickAndRemove(pack: MutableResourcePack) : ResourcePack {
         val result = pick(pack)
@@ -21,9 +16,9 @@ class ResourceEvaluator(
         return result
     }
 
-    fun evaluate(resourcePack: ResourcePack): Int {
-        return evaluator(resourcePack)
-    }
+    fun evaluate(resourcePack: ResourcePack) = resourcePack.resources
+            .map { evaluator(it) }
+            .foldRight(0, Int::plus)
 
     fun getSatisfiableAmount(part: Int, resources: Collection<Resource>): Int {
         var oneResourceWorth = evaluate(ResourcePack(resources))

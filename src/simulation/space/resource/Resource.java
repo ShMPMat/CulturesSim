@@ -86,6 +86,10 @@ public class Resource {
                 .reduce(0.0, Double::sum) * amount  ;
     }
 
+    public int getTagPresence(ResourceTag tag) {
+        return amount * getTagLevel(tag);
+    }
+
     public int getTagLevel(ResourceTag tag) {
         int index = getTags().indexOf(tag);
         return index == -1 ? 0 : getTags().get(index).level;
