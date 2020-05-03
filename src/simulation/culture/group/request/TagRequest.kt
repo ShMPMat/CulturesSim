@@ -35,6 +35,7 @@ class TagRequest(
     )
 
     override val evaluator = tagEvaluator(tag)
+    override fun reassign(group: Group) = TagRequest(group, tag, floor, ceiling, penalty, reward)
 
     override fun satisfactionLevel(sample: Resource): Int {
         val index = sample.tags.indexOf(tag)

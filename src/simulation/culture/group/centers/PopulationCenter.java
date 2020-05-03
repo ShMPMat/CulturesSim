@@ -7,7 +7,7 @@ import simulation.culture.aspect.labeler.AspectLabeler;
 import simulation.culture.aspect.labeler.ProducedLabeler;
 import simulation.culture.aspect.ConverseWrapper;
 import simulation.culture.group.GroupError;
-import simulation.culture.group.request.RequestResult;
+import simulation.culture.group.request.ExecutedRequestResult;
 import simulation.culture.group.stratum.AspectStratum;
 import simulation.culture.group.stratum.Stratum;
 import simulation.culture.group.stratum.WorkerBunch;
@@ -146,7 +146,7 @@ public class PopulationCenter {
         }
     }
 
-    public RequestResult executeRequest(Request request) {
+    public ExecutedRequestResult executeRequest(Request request) {
         List<Aspect> usedAspects = new ArrayList<>();
         ResourceEvaluator evaluator = request.getEvaluator();
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
@@ -162,17 +162,7 @@ public class PopulationCenter {
             if (amount >= request.getCeiling()) {
                 break;
             }
-            ResourcePack produced = stratum.use(new AspectController(
-                    1,
-                    request.getCeiling() - amount,
-                    request.getFloor() - amount,
-                    evaluator,
-                    this,
-                    request.getGroup().getTerritoryCenter().getAccessibleTerritory(),
-                    false,
-                    request.getGroup(),
-                    request.getGroup().getCultureCenter().getMeaning()
-            ));
+            ResourcePack produced = stratum.use(request.getController(amount));
             if (evaluator.evaluate(produced) > 0) {
                 usedAspects.add(stratum.getAspect());
             }
@@ -180,7 +170,7 @@ public class PopulationCenter {
         }
         ResourcePack actualPack = evaluator.pickAndRemove(pack);
         turnResources.addAll(pack);
-        return new RequestResult(actualPack, usedAspects);
+        return new ExecutedRequestResult(actualPack, usedAspects);
     }
 
     private List<AspectStratum> getStrataForRequest(Request request) {

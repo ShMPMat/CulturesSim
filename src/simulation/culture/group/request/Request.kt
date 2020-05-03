@@ -1,5 +1,6 @@
 package simulation.culture.group.request
 
+import simulation.culture.aspect.AspectController
 import simulation.culture.group.centers.Group
 import simulation.culture.group.stratum.AspectStratum
 import simulation.culture.group.stratum.Stratum
@@ -23,6 +24,8 @@ abstract class Request(
     abstract fun reducedAmountCopy(amount: Int): Request
 
     abstract val evaluator: ResourceEvaluator
+
+    abstract fun reassign(group: Group) : Request
 
     abstract fun satisfactionLevel(sample: Resource): Int
 
@@ -53,11 +56,23 @@ abstract class Request(
                 .map { satisfactionLevel(it) }
                 .foldRight(0, Int::plus)
     }
+
+    open fun getController(ignoreAmount: Int) = AspectController(
+            1,
+            ceiling - ignoreAmount,
+            floor - ignoreAmount,
+            evaluator,
+            group.populationCenter,
+            group.territoryCenter.accessibleTerritory,
+            false,
+            group,
+            group.cultureCenter.meaning
+    )
 }
 
 data class Result(val status: ResultStatus, val pack: ResourcePack) {
     override fun toString() = "$status, \n" +
-            pack.toString().lines().map { "  $it" }.joinToString("\n")
+            pack.toString().lines().joinToString("\n") { "  $it" }
 }
 
 enum class ResultStatus {

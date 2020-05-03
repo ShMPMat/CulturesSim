@@ -35,6 +35,8 @@ class ResourceRequest(
 
     override val evaluator = resourceEvaluator(resource)
 
+    override fun reassign(group: Group) = ResourceRequest(group, resource, floor, ceiling, penalty, reward)
+
     override fun satisfactionLevel(sample: Resource): Int {
         return if (resource.baseName === sample.baseName) 1 else 0
     }

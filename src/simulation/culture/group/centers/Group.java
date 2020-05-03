@@ -282,7 +282,7 @@ public class Group {
 
     public ResourcePack askFor(Request request, Group owner) {
         if (!owner.parentGroup.equals(parentGroup)) return new ResourcePack();
-        return populationCenter.executeRequest(request).getPack();
+        return populationCenter.executeRequest(request.reassign(this)).getPack();
     }
 
     @Override

@@ -7,7 +7,6 @@ import simulation.culture.group.request.*;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
 import simulation.space.Territory;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.culture.aspect.dependency.Dependency;
 import simulation.culture.thinking.meaning.Meme;
@@ -212,7 +211,7 @@ public class AspectStratum implements Stratum {
                 getPassingReward(),
                 getPassingReward()
         );
-        RequestResult result = group.getPopulationCenter().executeRequest(request);
+        ExecutedRequestResult result = group.getPopulationCenter().executeRequest(request);
         result.getUsedAspects().forEach(a -> a.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2));
         enhancements.addAll(result.getPack().getResources(r ->
                 r.getGenome().isMovable())

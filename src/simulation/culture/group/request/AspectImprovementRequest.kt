@@ -41,6 +41,8 @@ class AspectImprovementRequest(
 
     override val evaluator = aspectEvaluator(aspect)
 
+    override fun reassign(group: Group) = AspectImprovementRequest(group, aspect, floor, ceiling, penalty, reward)
+
     override fun satisfactionLevel(sample: Resource): Int {
         return evaluator.evaluate(ResourcePack(listOf(sample)))
     }
