@@ -149,13 +149,7 @@ public class PopulationCenter {
 
     public ResourcePack executeRequest(Request request) {
         ResourceEvaluator evaluator = request.getEvaluator();
-        if (request instanceof AspectImprovementRequest && request.satisfactionLevel(Controller.session.world.getResourcePool().get("Farm")) > 0) {
-            int y = 0;
-        }
         List<AspectStratum> strataForRequest = getStrataForRequest(request);
-        if (strataForRequest.size() > 0 && request instanceof AspectImprovementRequest) {
-            int y = 0;
-        }
         strataForRequest.sort(Comparator.comparingInt(s -> -s.getAspect().getUsefulness()));
         MutableResourcePack pack = new MutableResourcePack(evaluator.pick(
                 request.getCeiling(),
