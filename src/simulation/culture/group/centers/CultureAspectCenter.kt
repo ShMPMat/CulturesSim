@@ -23,7 +23,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
             aestheticallyPleasingResources.add(cultureAspect.resource)
     }
 
-    fun useCultureAspects() = aspectPool.getAll().forEach { it.use(group) }
+    fun useCultureAspects() = aspectPool.all.forEach { it.use(group) }
 
     fun addRandomCultureAspect(group: Group) {
         if (!testProbability(session.cultureAspectBaseProbability, session.random))
@@ -97,7 +97,7 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
 
     private val neighbourCultureAspects: List<Pair<CultureAspect, Group>>
         get() = group.relationCenter.relatedGroups.flatMap { n ->
-            n.cultureCenter.cultureAspectCenter.aspectPool.getAll().map { a -> Pair(a, n) }
+            n.cultureCenter.cultureAspectCenter.aspectPool.all.map { a -> Pair(a, n) }
         }
 
     private fun getNeighbourCultureAspects(predicate: (CultureAspect) -> Boolean): List<Pair<CultureAspect, Group>> =
@@ -117,6 +117,8 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
         } catch (e: NoSuchElementException) {
         }
     }
+
+    fun die(group: Group) = aspectPool.all.forEach { it.die(group) }
 }
 
 enum class AspectRandom(override val probability: Double) : SampleSpaceObject {

@@ -95,4 +95,7 @@ public class DepictObject implements CultureAspect {
     public int hashCode() {
         return Objects.hash(meme, converseWrapper);
     }
+
+    @Override
+    public void die(Group group) {}
 }

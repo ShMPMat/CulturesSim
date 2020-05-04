@@ -179,7 +179,7 @@ class ResourceInstantiation(
         if (resource.resourceCore.materials.isEmpty()) {
             return
         }
-        for (aspect in aspectPool.getAll()) {//TODO why is it here?
+        for (aspect in aspectPool.all) {//TODO why is it here?
             for (matcher in aspect.matchers) {
                 if (matcher.match(resource)) {
                     resource.resourceCore.addAspectConversion(

@@ -62,4 +62,7 @@ public class AestheticallyPleasingObject implements CultureAspect {
     public int hashCode() {
         return Objects.hash(resource);
     }
+
+    @Override
+    public void die(Group group) {}
 }

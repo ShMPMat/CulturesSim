@@ -7,4 +7,5 @@ interface CultureAspect {
     fun getRequest(group: Group): Request?
     fun use(group: Group)
     fun copy(group: Group): CultureAspect
+    fun die(group: Group)
 }

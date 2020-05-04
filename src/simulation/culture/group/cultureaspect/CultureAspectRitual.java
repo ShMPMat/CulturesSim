@@ -46,4 +46,9 @@ public class CultureAspectRitual extends Ritual {
     public int hashCode() {
         return Objects.hash(aspect);
     }
+
+    @Override
+    public void die(Group group) {
+        aspect.die(group);
+    }
 }

@@ -25,6 +25,8 @@ class TaleSystem(
         return TaleSystem(tales.map { it.copy(group) }, groupingMeme.copy(), infoTag)
     }
 
+    override fun die(group: Group) {}
+
     override fun toString(): String {
         return "Tale system about $groupingMeme"
     }

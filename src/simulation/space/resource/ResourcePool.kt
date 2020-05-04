@@ -14,5 +14,6 @@ class ResourcePool(private val resources: List<ResourceIdeal>) {
             .filter(predicate)
             .map { it.copy() }
 
-    fun getAll(): List<Resource> = resources
+    val all: List<Resource>
+        get() = resources
 }

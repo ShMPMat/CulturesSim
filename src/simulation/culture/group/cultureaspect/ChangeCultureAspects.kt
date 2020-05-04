@@ -86,7 +86,7 @@ fun takeOutCultWorship(
         aspectPool: MutableCultureAspectPool,
         random: Random
 ) : CultWorship? {
-    val worships = aspectPool.getAll().filterIsInstance<Worship>()
+    val worships = aspectPool.all.filterIsInstance<Worship>()
     if (worships.isEmpty()) return null
     val worship = randomElement(worships, random)
     aspectPool.remove(worship)

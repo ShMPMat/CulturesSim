@@ -16,13 +16,13 @@ import java.util.function.BiFunction
 fun getGroupsDifference(g1: Group, g2: Group): Double {
     var matched = 1.0
     var overall = 1.0
-    for (aspect in g1.cultureCenter.aspectCenter.aspectPool.getAll()) {
+    for (aspect in g1.cultureCenter.aspectCenter.aspectPool.all) {
         if (g2.cultureCenter.aspectCenter.aspectPool.contains(aspect)) {
             matched++
         }
         overall++
     }
-    for (aspect in g1.cultureCenter.cultureAspectCenter.aspectPool.getAll()) {
+    for (aspect in g1.cultureCenter.cultureAspectCenter.aspectPool.all) {
         if (g2.cultureCenter.cultureAspectCenter.aspectPool.contains(aspect)) {
             matched++
         }

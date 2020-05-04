@@ -46,6 +46,12 @@ open class Worship(
         return Worship(taleSystem.copy(group), depictSystem.copy(group), placeSystem.copy(group))
     }
 
+    override fun die(group: Group) {
+        taleSystem.die(group)
+        depictSystem.die(group)
+        placeSystem.die(group)
+    }
+
     override fun toString(): String {
         return "Worship of ${taleSystem.groupingMeme}"
     }

@@ -2,6 +2,7 @@ package simulation.culture.group.cultureaspect
 
 import shmp.random.testProbability
 import simulation.Controller
+import simulation.Controller.session
 import simulation.culture.group.Place
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
@@ -24,6 +25,10 @@ class SpecialPlace(
 
     override fun copy(group: Group): SpecialPlace {
         return SpecialPlace(place)
+    }
+
+    override fun die(group: Group) {
+        session.world.strayPlacesManager.addPlace(place)
     }
 
     override fun toString(): String {

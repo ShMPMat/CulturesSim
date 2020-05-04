@@ -80,7 +80,8 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     fun filter(predicate: (Aspect) -> Boolean) = aspects
             .filter(predicate)
 
-    fun getAll(): Set<Aspect> = aspects
+    val all: Set<Aspect>
+        get() = aspects
 
     fun getResourceRequirements(): Set<Resource> = _cwRequirements.keys
 }

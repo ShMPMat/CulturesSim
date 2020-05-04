@@ -70,7 +70,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
      */
     val aspects: Set<Aspect>
         get() = subgroups
-                .flatMap { it.cultureCenter.aspectCenter.aspectPool.getAll() }
+                .flatMap { it.cultureCenter.aspectCenter.aspectPool.all }
                 .toSet()
 
     /**
@@ -78,7 +78,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
      */
     val cultureAspects: Set<CultureAspect>
         get() = subgroups
-                .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.getAll() }
+                .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.all }
                 .toSet()
 
     /**

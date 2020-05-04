@@ -68,6 +68,8 @@ data class CultWorship(
 
     override fun copy(group: Group) = CultWorship(worship.copy(group))
 
+    override fun die(group: Group) = worship.die(group)
+
     override fun toString(): String {
         return "Cult of $worship"
     }

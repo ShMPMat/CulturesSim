@@ -25,6 +25,8 @@ class DepictSystem(
         return DepictSystem(depictions.map { it.copy(group) }, groupingMeme.copy())
     }
 
+    override fun die(group: Group) = depictions.forEach { it.die(group) }
+
     override fun toString(): String {
         return "Depiction system about $groupingMeme"
     }

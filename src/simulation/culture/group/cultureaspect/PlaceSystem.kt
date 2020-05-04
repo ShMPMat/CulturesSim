@@ -26,12 +26,12 @@ class PlaceSystem(
 
     private fun checkLimits(group: Group) {
         places.filter { !group.territoryCenter.territory.contains(it.place.tile) }
-                .forEach { removePlace(it) }
+                .forEach { removePlace(it, group) }
     }
 
-    fun removePlace(place: SpecialPlace) {
+    fun removePlace(place: SpecialPlace, group: Group) {
         if (places.remove(place)) {
-            place.place.delete()
+            place.die(group)
         } else throw GroupError("Trying to delete Place which is not owned")
     }
 
@@ -40,6 +40,8 @@ class PlaceSystem(
                     .map { it.copy(group) }
                     .toMutableSet()
     )
+
+    override fun die(group: Group) = places.forEach { it.die(group) }
 
     override fun toString() = "Places: " + places.joinToString()
 

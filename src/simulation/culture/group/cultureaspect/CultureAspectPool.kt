@@ -38,7 +38,8 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
     fun filter(predicate: (CultureAspect) -> Boolean) = aspects
             .filter(predicate)
 
-    fun getAll(): Set<CultureAspect> = aspects
+    val all: Set<CultureAspect>
+        get() = aspects
 
     open fun getAspectRequests(group: Group) = aspects.mapNotNull { it.getRequest(group) }
 }

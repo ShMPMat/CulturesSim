@@ -81,4 +81,9 @@ public class RitualSystem implements CultureAspect {
     public int hashCode() {
         return Objects.hash(rituals);
     }
+
+    @Override
+    public void die(Group group) {
+        rituals.forEach(r -> r.die(group));
+    }
 }

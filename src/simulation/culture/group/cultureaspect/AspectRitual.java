@@ -74,4 +74,7 @@ public class AspectRitual extends Ritual {
     public int hashCode() {
         return Objects.hash(converseWrapper);
     }
+
+    @Override
+    public void die(Group group) {}
 }

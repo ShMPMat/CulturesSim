@@ -30,7 +30,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
 
     init {
         aspects.forEach { hardAspectAdd(it) }
-        _mutableAspectPool.getAll().forEach { it.swapDependencies(this) } //TODO will it swap though?
+        _mutableAspectPool.all.forEach { it.swapDependencies(this) } //TODO will it swap though?
     }
 
     val aspectPool: AspectPool
@@ -95,11 +95,11 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             val options: MutableList<Aspect> = ArrayList()
             if (session.independentCvSimpleAspectAdding) {
                 if (testProbability(0.1, session.random))
-                    options.addAll(session.world.aspectPool.getAll())
+                    options.addAll(session.world.aspectPool.all)
                 else
                     options.addAll(allPossibleConverseWrappers)
             } else {
-                options.addAll(session.world.aspectPool.getAll())
+                options.addAll(session.world.aspectPool.all)
                 options.addAll(allPossibleConverseWrappers)
             }
             if (options.isNotEmpty()) {
@@ -129,14 +129,14 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         }
 
     fun finishUpdate(): Set<Aspect> {
-        _mutableAspectPool.getAll().forEach { it.finishUpdate() }
+        _mutableAspectPool.all.forEach { it.finishUpdate() }
         return pushAspects()
     }
 
     fun pushAspects(): Set<Aspect> {
-        changedAspectPool.getAll().forEach { addNewDependencies(it) }
-        _mutableAspectPool.addAll(changedAspectPool.getAll())
-        val addedAspects = changedAspectPool.getAll()
+        changedAspectPool.all.forEach { addNewDependencies(it) }
+        _mutableAspectPool.addAll(changedAspectPool.all)
+        val addedAspects = changedAspectPool.all
         changedAspectPool.clear()
         return addedAspects
     }
@@ -166,7 +166,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         }
         val options: MutableList<Pair<Aspect, Group?>> = ArrayList()
         val aspectLabeler = ProducedLabeler(labeler)
-        for (aspect in session.world.aspectPool.getAll().filter { aspectLabeler.isSuitable(it) }) {
+        for (aspect in session.world.aspectPool.all.filter { aspectLabeler.isSuitable(it) }) {
             val dependencies = calculateDependencies(aspect)
             if (aspect.isDependenciesOk(dependencies))
                 options.add(Pair<Aspect, Group?>(aspect.copy(dependencies), null))
@@ -194,7 +194,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             val allExistingAspects: MutableList<Pair<Aspect, Group>> = ArrayList()
             for (neighbour in group.relationCenter.relatedGroups) {
                 allExistingAspects.addAll(
-                        neighbour.cultureCenter.aspectCenter._mutableAspectPool.getAll()
+                        neighbour.cultureCenter.aspectCenter._mutableAspectPool.all
                                 .filter { (it !is ConverseWrapper || _mutableAspectPool.contains(it.aspect)) }
                                 .map { Pair(it, neighbour) }
                 )

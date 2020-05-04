@@ -102,6 +102,7 @@ public class Group {
         resourceCenter.die(territoryCenter.getDisbandTile());
         populationCenter.die();
         territoryCenter.die();
+        cultureCenter.die();
         addEvent(new Event(Event.Type.Death, "Group " + name + " died", "group", this));
         for (Group group : relationCenter.getRelatedGroups()) {
             group.cultureCenter.getMemePool().addMemeCombination(

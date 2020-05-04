@@ -10,9 +10,10 @@ class MaterialPool(private val materials: List<Material>) {
         throw NoSuchElementException("No material with name $name")
     }
 
-    fun getWithPredicate(predicate: (Material) -> Boolean): List<Material> = materials
+    fun getWithPredicate(predicate: (Material) -> Boolean) = materials
             .filter(predicate)
             .map { it }
 
-    fun getAll(): List<Material> = materials
+    val all: List<Material>
+        get() = materials
 }

@@ -217,4 +217,8 @@ public class CultureCenter {
     public void pushAspects() {
         aspectCenter.pushAspects();
     }
+
+    public void die() {
+        cultureAspectCenter.die(group);
+    }
 }

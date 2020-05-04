@@ -7,7 +7,7 @@ import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 
 fun resourcesCounter(world: World): String {
-    val resourceAmounts = world.resourcePool.getAll()
+    val resourceAmounts = world.resourcePool.all
             .filter { it.genome.type in listOf(Genome.Type.Animal, Genome.Type.Plant) }
             .map { it to ResourceCount() }
             .toMap()

@@ -58,4 +58,7 @@ public class Tale implements CultureAspect {
     public int hashCode() {
         return Objects.hash(meme);
     }
+
+    @Override
+    public void die(Group group) {}
 }
