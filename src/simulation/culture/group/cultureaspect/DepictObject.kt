@@ -27,13 +27,10 @@ class DepictObject(
                 1,
                 passingReward,
                 passingReward
-        ))//TODO do needs need pushing?
-        val all = MutableResourcePack(result.pack.resources)
-        val meaningful = MutableResourcePack(all.getResources { it.hasMeaning() })
-        all.removeAll(meaningful.resources)
+        ))//TODO do needs need pushing (they do)?
+        val meaningful = MutableResourcePack(result.pack.resources)
         group.resourceCenter.addAll(meaningful)
         resourceBehaviour.proceedResources(meaningful)//TODO does it work?
-        all.disbandOnTile(group.territoryCenter.disbandTile)
         group.cultureCenter.memePool.strengthenMeme(meme)
     }
 

@@ -7,6 +7,7 @@ import simulation.culture.group.stratum.Stratum
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourcePack
 
 class MeaningResourceRequest(
         group: Group,
@@ -41,6 +42,12 @@ class MeaningResourceRequest(
             group,
             meme
     )
+
+    override fun finalFilter(pack: MutableResourcePack): ResourcePack {
+        val result = pack.getResources { evaluator.evaluate(it) > 0 && it.hasMeaning() }
+        pack.removeAll(result)
+        return result
+    }
 
     override fun toString() = "want resource ${resource.fullName} with meaning $meme"
 }

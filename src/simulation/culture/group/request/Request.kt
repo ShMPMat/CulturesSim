@@ -71,6 +71,8 @@ abstract class Request(
             group,
             group.cultureCenter.meaning
     )
+
+    open fun finalFilter(pack: MutableResourcePack) = evaluator.pickAndRemove(pack)
 }
 
 data class Result(val status: ResultStatus, val pack: ResourcePack) {

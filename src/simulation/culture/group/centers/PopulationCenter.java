@@ -168,7 +168,7 @@ public class PopulationCenter {
             }
             pack.addAll(produced);
         }
-        ResourcePack actualPack = evaluator.pickAndRemove(pack);
+        ResourcePack actualPack = request.finalFilter(pack);
         turnResources.addAll(pack);
         return new ExecutedRequestResult(actualPack, usedAspects);
     }
