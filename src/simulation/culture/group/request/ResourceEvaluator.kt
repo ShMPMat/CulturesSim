@@ -15,13 +15,16 @@ class ResourceEvaluator(private val evaluator: (Resource) -> Int) {
         pack.removeAll(result)
         return result
     }
-
-    fun evaluate(resourcePack: ResourcePack) = resourcePack.resources
+    fun evaluate(resources: Collection<Resource>) = resources
             .map { evaluator(it) }
             .foldRight(0, Int::plus)
 
+    fun evaluate(pack: ResourcePack) = evaluate(pack.resources)
+
+    fun evaluate(resource: Resource) = evaluator(resource)
+
     fun getSatisfiableAmount(part: Int, resources: Collection<Resource>): Int {
-        var oneResourceWorth = evaluate(ResourcePack(resources))
+        var oneResourceWorth = evaluate(resources)
         if (oneResourceWorth == 0)
             return 0
         return part / oneResourceWorth + if (part % oneResourceWorth == 0) 0 else 1

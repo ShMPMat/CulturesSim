@@ -1,8 +1,5 @@
 package simulation.culture.group.request
 
-import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.group.stratum.AspectStratum
-import simulation.culture.group.stratum.Stratum
 import simulation.culture.group.centers.Group
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
@@ -15,15 +12,6 @@ class ResourceRequest(
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
-    override fun isAcceptable(stratum: Stratum): ResourceEvaluator? {
-        if (stratum !is AspectStratum)
-            return null
-        if (stratum.aspect is ConverseWrapper)
-            if (stratum.aspect.producedResources.any { it.baseName == resource.baseName })
-                return evaluator
-        return null
-    }
-
     override fun reducedAmountCopy(amount: Int) = ResourceRequest(
             group,
             resource,
@@ -37,12 +25,5 @@ class ResourceRequest(
 
     override fun reassign(group: Group) = ResourceRequest(group, resource, floor, ceiling, penalty, reward)
 
-    override fun satisfactionLevel(sample: Resource): Int {
-        return if (resource.baseName === sample.baseName) 1 else 0
-    }
-
-    override fun toString(): String {
-        return "Resource ${resource.baseName}"
-    }
-
+    override fun toString() = "Resource ${resource.baseName}"
 }

@@ -19,19 +19,21 @@ abstract class Request(
         var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) {
-    abstract fun isAcceptable(stratum: Stratum): ResourceEvaluator?
-
     abstract fun reducedAmountCopy(amount: Int): Request
 
     abstract val evaluator: ResourceEvaluator
 
-    abstract fun reassign(group: Group) : Request
+    abstract fun reassign(group: Group): Request
 
-    abstract fun satisfactionLevel(sample: Resource): Int
+    fun isAcceptable(stratum: Stratum) = when {
+        stratum !is AspectStratum -> null
+        evaluator.evaluate(stratum.aspect.producedResources) > 0 -> evaluator
+        else -> null
+    }
 
     fun amountLeft(resourcePack: ResourcePack) = max(0, ceiling - evaluator.evaluate(resourcePack))
 
-    fun end(resourcePack: MutableResourcePack) : Result {
+    fun end(resourcePack: MutableResourcePack): Result {
         val partPack = evaluator.pick(
                 ceiling,
                 resourcePack.resources,
@@ -50,12 +52,13 @@ abstract class Request(
         else Result(ResultStatus.Excellent, neededCopy)
     }
 
-    fun satisfactionLevel(stratum: Stratum): Int {
-        return if (stratum !is AspectStratum) 0
-        else stratum.aspect.producedResources
-                .map { satisfactionLevel(it) }
-                .foldRight(0, Int::plus)
-    }
+    fun satisfactionLevel(sample: Resource) = evaluator.evaluate(sample.copy(1))
+
+    fun satisfactionLevel(stratum: Stratum) =
+            if (stratum !is AspectStratum) 0
+            else stratum.aspect.producedResources
+                    .map { satisfactionLevel(it) }
+                    .foldRight(0, Int::plus)
 
     open fun getController(ignoreAmount: Int) = AspectController(
             1,
