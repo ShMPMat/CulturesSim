@@ -49,7 +49,7 @@ public class AspectRitual extends Ritual {
     }
 
     @Override
-    public AspectRitual copy(Group group) {
+    public AspectRitual adopt(Group group) {
         return new AspectRitual(//TODO isn't it copied wrong
                 (ConverseWrapper) group.getCultureCenter().getAspectCenter().getAspectPool().getValue(converseWrapper),
                 ResourceBehaviourKt.getRandom(group, Controller.session.random),

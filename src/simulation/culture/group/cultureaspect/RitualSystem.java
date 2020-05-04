@@ -58,9 +58,9 @@ public class RitualSystem implements CultureAspect {
     }
 
     @Override
-    public RitualSystem copy(Group group) {
+    public RitualSystem adopt(Group group) {
         return new RitualSystem(group, rituals.stream()
-                .map(r -> (Ritual) r.copy(group)).collect(Collectors.toList()),
+                .map(r -> (Ritual) r.adopt(group)).collect(Collectors.toList()),
                 reason);
     }
 

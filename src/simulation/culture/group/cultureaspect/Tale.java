@@ -37,7 +37,7 @@ public class Tale implements CultureAspect {
     }
 
     @Override
-    public Tale copy(Group group) {
+    public Tale adopt(Group group) {
         return new Tale(template, info);
     }
 

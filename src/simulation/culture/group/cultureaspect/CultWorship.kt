@@ -6,7 +6,6 @@ import simulation.culture.group.stratum.CultStratum
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
-import simulation.culture.group.request.ResourceRequest
 import simulation.culture.group.request.SimpleResourceRequest
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.tag.labeler.SimpleNameLabeler
@@ -66,7 +65,9 @@ data class CultWorship(
         }
     }
 
-    override fun copy(group: Group) = CultWorship(worship.copy(group))
+    override fun adopt(group: Group) : CultWorship? {
+        return CultWorship(worship.adopt(group) ?: return null)
+    }
 
     override fun die(group: Group) = worship.die(group)
 

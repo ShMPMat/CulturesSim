@@ -103,9 +103,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         //TODO put dependency resources only in node; otherwise they may merge with phony
         if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
                 || (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) })) {
-            if (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) }) {
-                val k = 0
-            }
             return AspectResult(
                     false,
                     ArrayList(),

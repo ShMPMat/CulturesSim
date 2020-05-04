@@ -21,8 +21,10 @@ class DepictSystem(
         depictions.forEach { it.use(group) }
     }
 
-    override fun copy(group: Group): DepictSystem {
-        return DepictSystem(depictions.map { it.copy(group) }, groupingMeme.copy())
+    override fun adopt(group: Group): DepictSystem? {
+        val newDepictions = depictions.map { it.adopt(group) }
+        if (newDepictions.any { it == null }) return null
+        return DepictSystem( newDepictions.filterNotNull(), groupingMeme.copy())
     }
 
     override fun die(group: Group) = depictions.forEach { it.die(group) }

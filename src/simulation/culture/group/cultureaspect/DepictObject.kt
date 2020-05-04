@@ -1,18 +1,17 @@
 package simulation.culture.group.cultureaspect
 
-import simulation.culture.aspect.AspectController
-import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.Group
+import simulation.culture.group.passingReward
+import simulation.culture.group.request.MeaningResourceRequest
 import simulation.culture.group.request.Request
-import simulation.culture.group.request.passingEvaluator
 import simulation.culture.group.resource_behaviour.ResourceBehaviour
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.resource.MutableResourcePack
-import java.util.*
+import simulation.space.resource.Resource
 
 class DepictObject(
         val meme: Meme,
-        private val converseWrapper: ConverseWrapper,
+        private val resource: Resource,
         private val resourceBehaviour: ResourceBehaviour
 ) : CultureAspect {
 
@@ -20,44 +19,52 @@ class DepictObject(
 
     override fun use(group: Group) {
         if (group.cultureCenter.memePool.getMeme(meme.toString()) == null) return //TODO fix this
-        val result = converseWrapper.use(AspectController(
-                1,
-                1,
-                1,
-                passingEvaluator,
-                group.populationCenter,
-                group.territoryCenter.accessibleTerritory,
-                true,
+        val result = group.populationCenter.executeRequest(MeaningResourceRequest(
                 group,
-                group.cultureCenter.memePool.getMeme(meme.toString())
-        ))
-        result.pushNeeds(group)
-        if (result.isFinished) {
-            val meaningful = MutableResourcePack(result.resources.resources.filter { it.hasMeaning() })
-            result.resources.removeAll(meaningful.resources)
-            group.resourceCenter.addAll(meaningful)
-            resourceBehaviour.proceedResources(meaningful)
-            result.resources.disbandOnTile(group.territoryCenter.disbandTile)
-            group.cultureCenter.memePool.strengthenMeme(meme)
-        }
+                group.cultureCenter.memePool.getMeme(meme.toString()),
+                resource,
+                1,
+                1,
+                passingReward,
+                passingReward
+        ))//TODO do needs need pushing?
+        val all = MutableResourcePack(result.pack.resources)
+        val meaningful = MutableResourcePack(all.getResources { it.hasMeaning() })
+        all.removeAll(meaningful.resources)
+        group.resourceCenter.addAll(meaningful)
+        resourceBehaviour.proceedResources(meaningful)//TODO does it work?
+        all.disbandOnTile(group.territoryCenter.disbandTile)
+        group.cultureCenter.memePool.strengthenMeme(meme)
     }
 
-    override fun copy(group: Group) = DepictObject(
-            meme,
-            group.cultureCenter.aspectCenter.aspectPool.getValue(converseWrapper) as ConverseWrapper,
-            resourceBehaviour
-    )
+    override fun adopt(group: Group) =
+            if (group.cultureCenter.memePool.getMeme(meme.toString()) != null)
+                DepictObject(
+                        group.cultureCenter.memePool.getMeme(meme.toString()),
+                        resource,
+                        resourceBehaviour
+                )
+            else null
 
-    override fun toString() = "Depict $meme with ${converseWrapper.name} $resourceBehaviour"
+    override fun toString() = "Depict $meme on ${resource.fullName}, $resourceBehaviour"
+
+    override fun die(group: Group) {}
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as DepictObject
-        return meme == that.meme && converseWrapper == that.converseWrapper
+        if (javaClass != other?.javaClass) return false
+
+        other as DepictObject
+
+        if (meme != other.meme) return false
+        if (resource != other.resource) return false
+
+        return true
     }
 
-    override fun hashCode() = Objects.hash(meme, converseWrapper)
-
-    override fun die(group: Group) {}
+    override fun hashCode(): Int {
+        var result = meme.hashCode()
+        result = 31 * result + resource.hashCode()
+        return result
+    }
 }

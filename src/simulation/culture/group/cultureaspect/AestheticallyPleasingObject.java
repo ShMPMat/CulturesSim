@@ -41,7 +41,7 @@ public class AestheticallyPleasingObject implements CultureAspect {
     }
 
     @Override
-    public AestheticallyPleasingObject copy(Group group) {
+    public AestheticallyPleasingObject adopt(Group group) {
         return new AestheticallyPleasingObject(resource, resourceBehaviour);
     }
 

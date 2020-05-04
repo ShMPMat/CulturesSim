@@ -27,7 +27,7 @@ fun createDepictObject(
     if (meaningAspects.isNotEmpty() && meme != null)
         return DepictObject(
                 meme,
-                randomElement(meaningAspects, random),
+                randomElement(meaningAspects.flatMap { it.producedResources }, random),
                 getRandom(group, random)
         )
     return null

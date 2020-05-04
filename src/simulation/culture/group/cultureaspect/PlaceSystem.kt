@@ -1,13 +1,10 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.Controller.*
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
-import simulation.culture.thinking.meaning.Meme
-import java.util.*
 
 class PlaceSystem(
         val places: MutableSet<SpecialPlace>
@@ -35,9 +32,9 @@ class PlaceSystem(
         } else throw GroupError("Trying to delete Place which is not owned")
     }
 
-    override fun copy(group: Group) = PlaceSystem(
+    override fun adopt(group: Group) = PlaceSystem(
             places.filter { group.territoryCenter.territory.contains(it.place.tile) }
-                    .map { it.copy(group) }
+                    .map { it.adopt(group) }
                     .toMutableSet()
     )
 

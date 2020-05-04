@@ -25,8 +25,12 @@ public class CultureAspectRitual extends Ritual {
     }
 
     @Override
-    public CultureAspectRitual copy(Group group) {
-        return new CultureAspectRitual(aspect.copy(group), getReason());
+    public CultureAspectRitual adopt(Group group) {
+        CultureAspect newAspect = aspect.adopt(group);
+        if (newAspect == null) {
+            return null;
+        }
+        return new CultureAspectRitual(newAspect, getReason());
     }
 
     @Override

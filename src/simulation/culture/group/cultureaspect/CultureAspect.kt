@@ -3,9 +3,9 @@ package simulation.culture.group.cultureaspect
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 
-interface CultureAspect {
+interface  CultureAspect {
     fun getRequest(group: Group): Request?
     fun use(group: Group)
-    fun copy(group: Group): CultureAspect
+    fun adopt(group: Group): CultureAspect?
     fun die(group: Group)
 }

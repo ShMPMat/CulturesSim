@@ -23,7 +23,7 @@ class SpecialPlace(
         }
     }
 
-    override fun copy(group: Group): SpecialPlace {
+    override fun adopt(group: Group): SpecialPlace {
         return SpecialPlace(place)
     }
 

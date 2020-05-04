@@ -110,9 +110,10 @@ class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<C
         if (cultureAspects.isNotEmpty()) try {
             val aspect = randomElement(
                     cultureAspects,
-                    { (_, second) -> group.relationCenter.getNormalizedRelation(second) },
+                    { (_, g) -> group.relationCenter.getNormalizedRelation(g) },
                     session.random
-            ).first.copy(group)
+            ).first.adopt(group)
+                    ?: return
             addCultureAspect(aspect)
         } catch (e: NoSuchElementException) {
         }

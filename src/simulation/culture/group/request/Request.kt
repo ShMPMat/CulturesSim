@@ -25,7 +25,7 @@ abstract class Request(
 
     abstract fun reassign(group: Group): Request
 
-    fun isAcceptable(stratum: Stratum) = when {
+    open fun isAcceptable(stratum: Stratum) = when {
         stratum !is AspectStratum -> null
         evaluator.evaluate(stratum.aspect.producedResources) > 0 -> evaluator
         else -> null

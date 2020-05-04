@@ -42,8 +42,12 @@ open class Worship(
         placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random) ?: return)
     }
 
-    override fun copy(group: Group): Worship {
-        return Worship(taleSystem.copy(group), depictSystem.copy(group), placeSystem.copy(group))
+    override fun adopt(group: Group): Worship? {
+        return Worship(
+                taleSystem.adopt(group) ?: return null,
+                depictSystem.adopt(group) ?: return null,
+                placeSystem.adopt(group)
+        )
     }
 
     override fun die(group: Group) {
