@@ -33,6 +33,7 @@ internal fun createCore(tags: Array<String>): AspectCore {
     val aspectTags = ArrayList<ResourceTag>()
     val requirements = ArrayList<ResourceTag>()
     val matchers = ArrayList<AspectMatcher>()
+    var standardComplexity = 1.0
     var applyMeaning = false
     var isResourceExposed = true
     for (i in 1 until tags.size) {
@@ -56,7 +57,8 @@ internal fun createCore(tags: Array<String>): AspectCore {
                 matchers.add(AspectMatcher(labeler, results, name))
             }
             'E' -> isResourceExposed = false
+            'C' -> standardComplexity = tag.toDouble()
         }
     }
-    return AspectCore(name, aspectTags, requirements, matchers, applyMeaning, isResourceExposed)
+    return AspectCore(name, aspectTags, requirements, matchers, applyMeaning, isResourceExposed, standardComplexity)
 }

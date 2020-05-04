@@ -7,16 +7,14 @@ import simulation.space.resource.tag.ResourceTag
 class AspectCore(
         val name: String,
         val tags: List<ResourceTag>,
-        private val requirements: List<ResourceTag>,
+        val requirements: List<ResourceTag>,
         val matchers: List<AspectMatcher>,
         var applyMeaning: Boolean,
-        val resourceExposed: Boolean
+        val resourceExposed: Boolean,
+        val standardComplexity: Double
 ) {
-    fun getRequirements(): Collection<ResourceTag> {
-        return requirements
-    }
+    fun copy(dependencies: AspectDependencies) = Aspect(this, dependencies)
 
-    fun copy(dependencies: AspectDependencies): Aspect {
-        return Aspect(this, dependencies)
-    }
+    val complexity: Double
+        get() = standardComplexity
 }

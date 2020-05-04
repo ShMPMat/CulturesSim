@@ -15,6 +15,7 @@ import simulation.space.resource.tag.labeler.BaseNameLabeler
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*
+import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -59,7 +60,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     val tags = core.tags
 
-    val requirements = core.getRequirements()
+    val requirements = core.requirements
 
     val matchers = core.matchers
 
@@ -115,9 +116,13 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
-        val neededWorkers = max(controller.getCeilingSatisfiableAmount(producedResources), 1)
+        val neededWorkers = ceil(max(
+                controller.getCeilingSatisfiableAmount(producedResources),
+                1
+        ) * core.complexity).toInt()
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this as ConverseWrapper, neededWorkers)
-        controller.setMax(gotWorkers.cumulativeWorkers)
+        val allowedAmount = (gotWorkers.cumulativeWorkers / core.complexity).toInt()
+        controller.setMax(allowedAmount)//TODO wut?
         val node = ResultNode(this)
         if (controller.ceiling > 0)
             for ((key, value) in dependencies.nonPhony.entries) {

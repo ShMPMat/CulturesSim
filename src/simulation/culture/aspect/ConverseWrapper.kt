@@ -19,7 +19,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
                 ArrayList(aspect.requirements),
                 ArrayList(),
                 false,
-                aspect.core.resourceExposed
+                aspect.core.resourceExposed,
+                aspect.core.standardComplexity
         ),
         AspectDependencies(mutableMapOf())
 ) {

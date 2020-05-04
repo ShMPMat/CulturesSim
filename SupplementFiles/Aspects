@@ -12,29 +12,43 @@
 -Roast                                                                       /burns
 
 -MakingFibre
+    C3.0
 -Weaving
+    C3.0
 -MakeClothes
+    C3.0
 -Chisel
+    C3.0
 
 -BuildHouse
     &t:hard-->=0.5--#House:1
+    C10.0
 -BuildTemple
     &t:hard-->=0.5--#Temple:1
+    C30.0
 -BuildFarm
     &t:hard-->=0.5--#Farm:1
+    C10.0
 -MakeDish
     &t:hard-->=0.05--#Dish:1
+    C3.0
 -MakeBoat
     &t:hard-->=2--<D900--#Boat:1
+    C3.0
 -MakeSpear
     &t:hard--t:sturdy-->=1--#Spear:1
+    C3.0
 -MakeHandPlough
     &t:hard--t:sturdy-->=0.5--#HandPlough:1
+    C3.0
 -MakeDye
     &t:_colour--#Dye:1
+    C10.0
 
 -Killing                                                                     #weapon
+    C5.0
 -PlantSeed
+    C7.0
 -TakeApart
 -Take
     &!!t:gas--mv--!!rs--#MATCHED:1
@@ -42,13 +56,19 @@
 
 -ShapeMalleable                                                                                  #MEANING
     &t:malleable--#MATCHED:1
+    C3.0
 -Engrave                                                                                         #MEANING
     &t:goodForEngraving--#MATCHED:1
+    C3.0
 -Sculpt                                                                                         #MEANING
     &t:goodForMonuments--#MATCHED:1
+    C5.0
 -Carve                                                                                           #MEANING
     &t:goodForEngraving--#MATCHED:1
+    C3.0
 -Paint                                                                   #colour                 #MEANING
     &t:solid--#MATCHED:1
+    C5.0
 -Incrust                                                                 /goodForIncrusting      #MEANING
     &t:hard--#MATCHED:1
+    C5.0
