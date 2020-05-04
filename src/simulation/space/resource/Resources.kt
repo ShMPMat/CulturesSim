@@ -15,7 +15,8 @@ val DEATH_ASPECT = Aspect(
                 emptyList(),
                 applyMeaning = false,
                 resourceExposed = false,
-                standardComplexity = 1.0
+                standardComplexity = 1.0,
+                sideComplexities = listOf()
         ),
         AspectDependencies(mutableMapOf())
 )

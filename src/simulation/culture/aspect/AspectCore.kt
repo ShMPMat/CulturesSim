@@ -1,7 +1,8 @@
 package simulation.culture.aspect
 
+import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
-import simulation.culture.aspect.dependency.Dependency
+import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 
 class AspectCore(
@@ -11,10 +12,12 @@ class AspectCore(
         val matchers: List<AspectMatcher>,
         var applyMeaning: Boolean,
         val resourceExposed: Boolean,
-        val standardComplexity: Double
+        val standardComplexity: Double,
+        val sideComplexities: List<ResourceComplexity>
 ) {
     fun copy(dependencies: AspectDependencies) = Aspect(this, dependencies)
 
-    val complexity: Double
-        get() = standardComplexity
+    fun getComplexity(resource: Resource): Double = standardComplexity *
+            sideComplexities.map { it.getComplexity(resource) }
+                    .foldRight(1.0, Double::times)
 }

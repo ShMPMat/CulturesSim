@@ -1,6 +1,8 @@
 package simulation.culture.aspect
 
 import extra.InputDatabase
+import simulation.culture.aspect.complexity.ResourceComplexity
+import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
@@ -33,9 +35,10 @@ internal fun createCore(tags: Array<String>): AspectCore {
     val aspectTags = ArrayList<ResourceTag>()
     val requirements = ArrayList<ResourceTag>()
     val matchers = ArrayList<AspectMatcher>()
-    var standardComplexity = 1.0
     var applyMeaning = false
     var isResourceExposed = true
+    var standardComplexity = 1.0
+    val sideComplexities = mutableListOf<ResourceComplexity>()
     for (i in 1 until tags.size) {
         val key = tags[i][0]
         val tag = tags[i].substring(1)
@@ -58,7 +61,17 @@ internal fun createCore(tags: Array<String>): AspectCore {
             }
             'E' -> isResourceExposed = false
             'C' -> standardComplexity = tag.toDouble()
+            'S' -> sideComplexities.addAll( tag.split(",").map { getComplexity(it) })
         }
     }
-    return AspectCore(name, aspectTags, requirements, matchers, applyMeaning, isResourceExposed, standardComplexity)
+    return AspectCore(
+            name,
+            aspectTags,
+            requirements,
+            matchers,
+            applyMeaning,
+            isResourceExposed,
+            standardComplexity,
+            sideComplexities
+    )
 }

@@ -111,17 +111,21 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                     ResultNode(this)
             )
         }
+        this as ConverseWrapper
         timesUsedInTurn++
         used = true
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
+        if (name.contains("Build")) {
+            val j = 0
+        }
         val neededWorkers = ceil(max(
                 controller.getCeilingSatisfiableAmount(producedResources),
                 1
-        ) * core.complexity).toInt()
-        val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this as ConverseWrapper, neededWorkers)
-        val allowedAmount = (gotWorkers.cumulativeWorkers / core.complexity).toInt()
+        ) * core.getComplexity(resource)).toInt()
+        val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
+        val allowedAmount = (gotWorkers.cumulativeWorkers / core.getComplexity(resource)).toInt()
         controller.setMax(allowedAmount)//TODO wut?
         val node = ResultNode(this)
         if (controller.ceiling > 0)
