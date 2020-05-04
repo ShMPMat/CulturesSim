@@ -2,6 +2,7 @@ package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
 import shmp.random.testProbability
+import simulation.Controller
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.Place
@@ -25,17 +26,15 @@ fun createDepictObject(
 ): DepictObject? {
     if (meaningAspects.isNotEmpty() && meme != null)
         return DepictObject(
-                group,
                 meme,
-                randomElement(meaningAspects, random)
+                randomElement(meaningAspects, random),
+                getRandom(group, random)
         )
     return null
 }
 
 fun createAestheticallyPleasingObject(resource: Resource?, group: Group, random: Random): AestheticallyPleasingObject? {
-    if (resource != null) {
-        return AestheticallyPleasingObject(resource, getRandom(group, random))
-    }
+    if (resource != null) return AestheticallyPleasingObject(resource, getRandom(group, random))
     return null
 }
 
