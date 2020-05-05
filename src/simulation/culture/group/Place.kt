@@ -49,9 +49,10 @@ class Place(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun takeResource(resource: Resource, amount: Int): ResourcePack {
-        val result = _owned.getResourcePartAndRemove(resource, amount)
-        if (result.contains(resource))
-            maxAmounts[resource] = max(0, (maxAmounts[resource] ?: 0) - result.amount)
+        val remapedResource = remapOwner(resource.copy(), ownershipMarker)
+        val result = _owned.getResourcePartAndRemove(remapedResource, amount)
+        if (result.contains(remapedResource))
+            maxAmounts[remapedResource] = max(0, (maxAmounts[remapedResource] ?: 0) - result.amount)
         return ResourcePack(result.resources.map { free(it) })
     }
 

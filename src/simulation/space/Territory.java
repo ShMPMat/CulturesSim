@@ -95,9 +95,7 @@ public class Territory {
     public Collection<Resource> getResourceInstances(Resource resource) {
         List<Resource> list = new ArrayList<>();
         for (Tile tile : tiles) {
-            list.addAll(
-                    tile.getResourcePack().getResources(res -> res.equals(resource) && !res.hasMeaning()).getResources()
-            );
+            list.addAll(tile.getResourcePack().getResources(r -> r.equals(resource) && !r.hasMeaning()).getResources());
         }
         return list;
     }

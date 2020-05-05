@@ -129,9 +129,6 @@ public class Resource {
     }
 
     public void setOwnershipMarker(OwnershipMarker ownershipMarker) {
-        if (!this.ownershipMarker.equals(OwnershipMarkerKt.getFreeMarker()) && !ownershipMarker.equals(OwnershipMarkerKt.getFreeMarker())) {
-            int d = 0;
-        }
         this.ownershipMarker = ownershipMarker;
     }
 
