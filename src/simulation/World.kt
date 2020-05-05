@@ -1,12 +1,12 @@
 package simulation
 
+import extra.InputDatabase
 import extra.SpaceProbabilityFuncs
-import simulation.Controller.*
+import simulation.Controller.session
 import simulation.culture.aspect.AspectInstantiation
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.StrayPlacesManager
-import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.SpaceData.data
@@ -17,9 +17,11 @@ import simulation.space.generator.generateMap
 import simulation.space.resource.ResourceInstantiation
 import simulation.space.resource.ResourcePool
 import simulation.space.resource.material.MaterialInstantiation
+import simulation.space.resource.tag.ResourceTag
+import simulation.space.resource.tag.createTagMatchers
 import simulation.space.tile.Tile
+import java.io.FileReader
 import java.util.*
-import java.util.function.Consumer
 
 /**
  * Class which stores all entities in the simulation.
@@ -28,9 +30,10 @@ class World {
     var groups: MutableList<GroupConglomerate> = ArrayList()
     val shuffledGroups: List<GroupConglomerate>
         get() = groups.shuffled(session.random)
-    val aspectPool = AspectInstantiation()
-            .createPool("SupplementFiles/Aspects")
-    val materialPool = MaterialInstantiation(aspectPool)
+    private val tags = FileReader("SupplementFiles/ResourceTags").readLines().map { ResourceTag(it) }
+            .union(createTagMatchers("SupplementFiles/ResourceTagLabelers").map { it.tag })
+    val aspectPool = AspectInstantiation(tags).createPool("SupplementFiles/Aspects")
+    val materialPool = MaterialInstantiation(tags, aspectPool)
             .createPool("SupplementFiles/Materials")
     val resourcePool: ResourcePool
 
@@ -45,7 +48,8 @@ class World {
         resourcePool = ResourceInstantiation(
                 "SupplementFiles/Resources",
                 aspectPool,
-                materialPool
+                materialPool,
+                tags
         ).createPool()
         map = generateMap(
                 data.mapSizeX,

@@ -4,6 +4,7 @@ import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.labeler.makeAspectLabeler
+import simulation.culture.group.GroupError
 import simulation.space.SpaceError
 import simulation.space.resource.dependency.*
 import simulation.space.tile.Tile
@@ -16,7 +17,8 @@ import simulation.space.resource.tag.labeler.makeResourceLabeler
 class ResourceInstantiation(
         private val path: String,
         private val aspectPool: AspectPool,
-        private val materialPool: MaterialPool
+        private val materialPool: MaterialPool,
+        private val allowedTags: Collection<ResourceTag>
 ) {
     private val resourceTemplates = ArrayList<ResourceTemplate>()
     var resourcePool = ResourcePool(listOf())
@@ -116,7 +118,9 @@ class ResourceInstantiation(
                 ))
                 '$' -> {
                     elements = tag.split(":".toRegex()).toTypedArray()
-                    resourceTags.add(ResourceTag(elements[0], elements[1].toInt()))
+                    val resourceTag = ResourceTag(elements[0], elements[1].toInt())
+                    if (!allowedTags.contains(resourceTag)) throw GroupError("Tag $resourceTag doesnt exist")
+                    resourceTags.add(resourceTag)
                 }
                 '&' -> {
                     elements = tag.split("-".toRegex()).toTypedArray()

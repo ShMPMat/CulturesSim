@@ -3,11 +3,12 @@ package simulation.space.resource.material
 import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
+import simulation.culture.group.GroupError
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MaterialInstantiation(private val aspectPool: AspectPool) {
+class MaterialInstantiation(private val allowedTags: Collection<ResourceTag>, private val aspectPool: AspectPool) {
     fun createPool(path: String): MaterialPool {
         val materials: MutableList<MaterialTemplate> = ArrayList()
         val inputDatabase = InputDatabase(path)
@@ -32,10 +33,14 @@ class MaterialInstantiation(private val aspectPool: AspectPool) {
             when (key) {
                 '+' -> aspectConversion[aspectPool.getValue(tag.takeWhile { it != ':' })] =
                         tag.substring(tag.indexOf(':') + 1)
-                '-' -> materialTags.add(ResourceTag(
-                        tag.takeWhile { it != ':' },
-                        tag.substring(tag.indexOf(':') + 1).toInt()
-                ))
+                '-' -> {
+                    val resourceTag = ResourceTag(
+                            tag.takeWhile { it != ':' },
+                            tag.substring(tag.indexOf(':') + 1).toInt()
+                    )
+                    if (!allowedTags.contains(resourceTag)) throw GroupError("Tag $resourceTag doesnt exist")
+                    materialTags.add(resourceTag)
+                }
             }
         }
         return MaterialTemplate(

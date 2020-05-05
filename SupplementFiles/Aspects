@@ -49,7 +49,7 @@
     C3.0
     Shard
 -MakeDye
-    &t:_colour--#Dye:1
+    &t:_has_colour--#Dye:1
     C10.0
 
 -Killing                                                                     #weapon
