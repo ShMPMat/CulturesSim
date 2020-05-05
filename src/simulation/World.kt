@@ -30,7 +30,7 @@ class World {
     var groups: MutableList<GroupConglomerate> = ArrayList()
     val shuffledGroups: List<GroupConglomerate>
         get() = groups.shuffled(session.random)
-    private val tags = FileReader("SupplementFiles/ResourceTags").readLines().map { ResourceTag(it) }
+    private val tags = InputDatabase("SupplementFiles/ResourceTags").readLines().map { ResourceTag(it) }
             .union(createTagMatchers("SupplementFiles/ResourceTagLabelers").map { it.tag })
     val aspectPool = AspectInstantiation(tags).createPool("SupplementFiles/Aspects")
     val materialPool = MaterialInstantiation(tags, aspectPool)

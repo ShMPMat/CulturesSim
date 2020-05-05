@@ -3,6 +3,8 @@ package extra;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InputDatabase {
     private BufferedReader bufferedReader;
@@ -46,5 +48,15 @@ public class InputDatabase {
             }
             line.append(" ").append(newLine);
         }
+    }
+
+    public List<String> readLines() {
+        List<String> lines = new ArrayList<>();
+        String line = readLine();
+        while (line != null) {
+            lines.add(line);
+            line = readLine();
+        }
+        return lines;
     }
 }

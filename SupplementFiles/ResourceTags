@@ -1,27 +1,31 @@
-soft
-hard
-springy
-burns
+/Base properties
+-soft
+-hard
+-springy
+-burns
 
-flexible
-sturdy
-malleable
-fragile
-warmth
-powder
+-flexible
+-sturdy
+-malleable
+-fragile
+-warmth
+-powder
 
-thin
-wide
+-thin
+-wide
 
-solid
-liquid
-gas
+-solid
+-liquid
+-gas
 
-food
-seeds
-warmth
-clothes
-colour
 
-_can_be_ignited
-_has_colour
+/Group-important properties
+-food
+-seeds
+-warmth
+-clothes
+-colour
+
+/Special conversion markers
+-_can_be_ignited
+-_has_colour
