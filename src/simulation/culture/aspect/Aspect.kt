@@ -17,6 +17,7 @@ import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.pow
 
 open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
@@ -117,13 +118,20 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
+        if (controller.evaluator.evaluate(producedResources) > 1) {
+            val k = 9
+        }
         val neededWorkers = ceil(max(
                 controller.getCeilingSatisfiableAmount(producedResources),
                 1
         ) * core.standardComplexity).toInt()
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
-        val allowedAmount = (gotWorkers.cumulativeWorkers / core.standardComplexity).toInt()
-        controller.setMax(allowedAmount)//TODO wut?
+        val allowedAmount = min(
+                (gotWorkers.cumulativeWorkers / core.standardComplexity).toInt() *
+                        controller.evaluator.evaluate(producedResources),
+                        controller.ceiling
+        )
+        controller.setMax(allowedAmount)
         val node = ResultNode(this)
         if (controller.ceiling > 0)
             for ((key, value) in dependencies.nonPhony.entries) {
