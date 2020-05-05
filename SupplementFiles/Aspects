@@ -57,6 +57,7 @@
 -PlantSeed
     C7.0
 -TakeApart
+    Shard
 -Take
     &!!t:gas--mv--!!rs--#MATCHED:1
     E

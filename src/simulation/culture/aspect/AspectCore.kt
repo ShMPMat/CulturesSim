@@ -5,7 +5,7 @@ import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 
-class AspectCore(
+data class AspectCore(
         val name: String,
         val tags: List<ResourceTag>,
         val requirements: List<ResourceTag>,
@@ -15,9 +15,9 @@ class AspectCore(
         val standardComplexity: Double,
         val sideComplexities: List<ResourceComplexity>
 ) {
-    fun copy(dependencies: AspectDependencies) = Aspect(this, dependencies)
+    fun makeAspect(dependencies: AspectDependencies) = Aspect(this, dependencies)
 
-    fun getComplexity(resource: Resource): Double = standardComplexity *
+    internal fun getPrecomputedComplexity(resource: Resource): Double = standardComplexity *
             sideComplexities.map { it.getComplexity(resource) }
                     .foldRight(1.0, Double::times)
 }

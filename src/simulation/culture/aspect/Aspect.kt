@@ -96,7 +96,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         }
     }
 
-    open fun copy(dependencies: AspectDependencies) = core.copy(dependencies)
+    open fun copy(dependencies: AspectDependencies) = core.makeAspect(dependencies)
 
     open val producedResources: List<Resource> = emptyList()
 
@@ -117,15 +117,12 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
-        if (name.contains("Build")) {
-            val j = 0
-        }
         val neededWorkers = ceil(max(
                 controller.getCeilingSatisfiableAmount(producedResources),
                 1
-        ) * core.getComplexity(resource)).toInt()
+        ) * core.standardComplexity).toInt()
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
-        val allowedAmount = (gotWorkers.cumulativeWorkers / core.getComplexity(resource)).toInt()
+        val allowedAmount = (gotWorkers.cumulativeWorkers / core.standardComplexity).toInt()
         controller.setMax(allowedAmount)//TODO wut?
         val node = ResultNode(this)
         if (controller.ceiling > 0)

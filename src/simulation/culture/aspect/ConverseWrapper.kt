@@ -13,15 +13,13 @@ import java.util.*
  * of this aspect to the resource.
  */
 open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
-        AspectCore(
-                aspect.name + "On" + resource.baseName,
-                getReducedTags(resource, aspect),
-                ArrayList(aspect.requirements),
-                ArrayList(),
-                false,
-                aspect.core.resourceExposed,
-                aspect.core.standardComplexity,
-                aspect.core.sideComplexities
+        aspect.core.copy(
+                name = aspect.name + "On" + resource.baseName,
+                tags = getReducedTags(resource, aspect),
+                requirements = ArrayList(aspect.requirements),
+                matchers = ArrayList(),
+                applyMeaning = false,
+                standardComplexity = aspect.core.getPrecomputedComplexity(resource)
         ),
         AspectDependencies(mutableMapOf())
 ) {
