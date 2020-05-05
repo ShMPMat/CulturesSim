@@ -93,11 +93,9 @@ public class Territory {
     }
 
     public Collection<Resource> getResourceInstances(Resource resource) {
-        List<Resource> list = new ArrayList<>();
-        for (Tile tile : tiles) {
-            list.addAll(tile.getResourcePack().getResources(r -> r.equals(resource) && !r.hasMeaning()).getResources());
-        }
-        return list;
+        return tiles.stream()
+                .flatMap(t -> t.getResourcePack().getResources(r -> r.equals(resource)).getResources().stream())
+                .collect(Collectors.toList());
     }
 
     public int getMinTemperature() {

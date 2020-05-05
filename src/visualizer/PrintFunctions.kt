@@ -43,13 +43,8 @@ fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = 
         .joinToString { it.fullName }
 
 fun printResource(resource: Resource): String {
-    try {
-        return resource.toString() + "\n" +
-                resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
-                    a.name + ": " + v.joinToString { it.first.fullName }
-                }
-    } catch (e: Exception) {
-        val k = 0
-        return ""
-    }
+    return resource.toString() + "\n" +
+            resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
+                a.name + ": " + v.joinToString { it.first?.fullName ?: "LEGEND" }
+            }
 }
