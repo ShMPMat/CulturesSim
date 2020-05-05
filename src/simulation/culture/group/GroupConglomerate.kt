@@ -35,10 +35,11 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     init {
         claimTile(root)
         for (i in 0 until numberOfSubGroups) {
+            val name = name + "_" + i
             addGroup(Group(
-                    ResourceCenter(MutableResourcePack(), center),
+                    ResourceCenter(MutableResourcePack(), center, name),
                     this,
-                    name + "_" + i,
+                    name,
                     PopulationCenter(
                             population / numberOfSubGroups,
                             Controller.session.defaultGroupMaxPopulation,

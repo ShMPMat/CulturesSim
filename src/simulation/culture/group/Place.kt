@@ -1,9 +1,6 @@
 package simulation.culture.group
 
-import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.OwnershipMarker
-import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.*
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import kotlin.math.max
@@ -25,13 +22,19 @@ class Place(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun addResource(resource: Resource) {
-        if (tile.resourcePack.contains(resource)) {
-            _owned.add(tile.resourcePack.getUnpackedResource(resource))
+        if (_owned.resources.any { it.ownershipMarker != ownershipMarker }) {
+            val j = 0
+        }
+        if (_owned.resources.groupBy { it.fullName }.any { it.value.size > 1 }) {
+            val k = 0
         }
         resource.ownershipMarker = ownershipMarker
         _owned.add(resource)
         maxAmounts[resource] = max(maxAmounts[resource] ?: 0, _owned.getResource(resource).amount)
         tile.addDelayedResource(resource)
+        if (_owned.resources.groupBy { it.fullName }.any { it.value.size > 1 }) {
+            val k = 0
+        }
     }
 
     fun addResources(resources: Collection<Resource>) = resources.forEach(this::addResource)
@@ -43,6 +46,17 @@ class Place(val tile: Tile, val tileTag: TileTag) {
                 .map { (r, a) ->  r to max(a - _owned.getUnpackedResource(r).amount, 0)}
                 .filter { it.second > 0 }
                 .map { (r, a) -> r.copy(a) }
+    }
+
+    fun takeResource(resource: Resource, amount: Int): ResourcePack {
+        val result = _owned.getResourcePartAndRemove(resource, amount)
+        if (result.contains(resource))
+            maxAmounts[resource] = max(0, (maxAmounts[resource] ?: 0) - result.amount)
+        return ResourcePack(result.resources.map { free(it) })
+    }
+
+    fun getResourcesAndRemove(predicate: (Resource) -> Boolean): ResourcePack {
+        return ResourcePack(_owned.getResourcesAndRemove(predicate).resources.map { free(it) })
     }
 
     override fun toString() = "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +

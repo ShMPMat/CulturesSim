@@ -129,6 +129,9 @@ public class Resource {
     }
 
     public void setOwnershipMarker(OwnershipMarker ownershipMarker) {
+        if (!this.ownershipMarker.equals(OwnershipMarkerKt.getFreeMarker()) && !ownershipMarker.equals(OwnershipMarkerKt.getFreeMarker())) {
+            int d = 0;
+        }
         this.ownershipMarker = ownershipMarker;
     }
 
@@ -157,15 +160,21 @@ public class Resource {
     }
 
     public Resource copy() {
-        return resourceCore.copy();
+        Resource resource = resourceCore.copy();
+        resource.setOwnershipMarker(ownershipMarker);
+        return resource;
     }
 
     public Resource copy(int amount) {
-        return resourceCore.copy(amount);
+        Resource resource = resourceCore.copy(amount);
+        resource.setOwnershipMarker(ownershipMarker);
+        return resource;
     }
 
     public Resource fullCopy() {
-        return resourceCore.fullCopy();
+        Resource resource = resourceCore.fullCopy();
+        resource.setOwnershipMarker(ownershipMarker);
+        return resource;
     }
 
     public Resource insertMeaning(Meme meaning, AspectResult result) {
@@ -289,6 +298,16 @@ public class Resource {
     @Override
     public boolean equals(Object o) {//TODO maybe re
         return fullEquals(o);
+    }
+
+    public boolean ownershiplessEquals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Resource resource = (Resource) o;
+        if (_hash != resource._hash) {
+            return false;
+        }
+        return getFullName().equals(resource.getFullName());
     }
 
     public boolean fullEquals(Object o) {

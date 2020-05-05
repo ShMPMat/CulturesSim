@@ -1,7 +1,7 @@
 package simulation.space.resource
 
-import simulation.space.tile.Tile
 import simulation.space.resource.tag.ResourceTag
+import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.min
 
@@ -22,8 +22,8 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
             val resAmount = min(res.amount, amount - resultAmount)
             resultAmount += resAmount
             if (resAmount == res.amount) {
-                result.add(res)
                 remove(res)
+                result.add(res)
             } else {
                 result.add(resource.getCleanPart(resAmount))
             }
@@ -61,8 +61,14 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         return Pair<Int, List<Resource>>(counter, result)
     }
 
+    fun getResourcesAndRemove(predicate: (Resource) -> Boolean): ResourcePack {
+        val result = getResources(predicate)
+        removeAll(result)
+        return result
+    }
+
     fun disbandOnTile(tile: Tile) {
-        tile.addDelayedResources(resources.filter {  it.genome.isMovable })
+        tile.addDelayedResources(resources.filter { it.genome.isMovable })
         resourceMap.clear()
     }
 

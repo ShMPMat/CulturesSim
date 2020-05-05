@@ -115,7 +115,7 @@ public class Group {
 
     void die() {
         state = State.Dead;
-        resourceCenter.die(territoryCenter.getDisbandTile());
+        resourceCenter.die();
         populationCenter.die();
         territoryCenter.die();
         cultureCenter.die();
@@ -209,10 +209,11 @@ public class Group {
             resourceCenter.getPack().getResources().forEach(r ->
                 pack.addAll(resourceCenter.takeResource(r, r.getAmount() / 2))
             );
+            String name = parentGroup.getNewName();
             return new Add(new Group(
-                    new ResourceCenter(pack, tile),
+                    new ResourceCenter(pack, tile, name),
                     parentGroup,
-                    parentGroup.getNewName(),
+                    name,
                     populationCenter.getPart(0.5),
                     new RelationCenter(relationCenter.getHostilityCalculator$CulturesSimulation()),
                     tile,
@@ -334,7 +335,7 @@ public class Group {
         }
         s.append((cultureCenter.getCultureAspectCenter().getAspectPool().isEmpty() ? "none\n" : "\n"));
         builder.append(s.toString());
-        builder.append(resourceCenter.toString())
+        builder.append("\n").append(resourceCenter.toString())
                 .append(populationCenter.toString())
                 .append("\n");
         for (Relation relation : relationCenter.getRelations()) {
