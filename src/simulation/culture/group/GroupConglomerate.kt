@@ -52,6 +52,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                     center,
                     ArrayList(),
                     GroupMemes(),
+                    emptyList(),
                     Controller.session.defaultGroupSpreadability
             ))
         }

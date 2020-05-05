@@ -11,8 +11,8 @@ import simulation.culture.thinking.meaning.constructAndAddSimpleMeme
 import simulation.space.resource.Resource
 import java.util.*
 
-class CultureAspectCenter(private val group: Group, cultureAspects: MutableSet<CultureAspect>) {
-    val aspectPool = MutableCultureAspectPool(cultureAspects)
+class CultureAspectCenter(private val group: Group) {
+    val aspectPool = MutableCultureAspectPool(mutableSetOf())
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
 

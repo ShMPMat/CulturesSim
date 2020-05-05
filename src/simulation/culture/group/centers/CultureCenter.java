@@ -6,6 +6,7 @@ import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
+import simulation.culture.group.cultureaspect.CultureAspect;
 import simulation.culture.group.request.EvaluatorsKt;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.RequestPool;
@@ -41,7 +42,7 @@ public class CultureCenter {
         this.group = group;
         this.memePool = memePool;
         this.aspectCenter = new AspectCenter(group, aspects);
-        this.cultureAspectCenter = new CultureAspectCenter(group, new HashSet<>());
+        this.cultureAspectCenter = new CultureAspectCenter(group);
     }
 
     public AspectCenter getAspectCenter() {

@@ -51,6 +51,7 @@ public class Group {
             Tile tile,
             List<Aspect> aspects,
             GroupMemes memePool,
+            Collection<CultureAspect> cultureAspects,
             double spreadAbility
     ) {
         this.name = name;
@@ -60,6 +61,24 @@ public class Group {
         cultureCenter = new CultureCenter(this, memePool, aspects);
         territoryCenter = new TerritoryCenter(this, spreadAbility, tile);
         this.relationCenter = relationCenter;
+        copyCA(cultureAspects);
+    }
+
+    private void copyCA(Collection<CultureAspect> aspects) {
+        List<CultureAspect> retry = new ArrayList<>();
+        for (CultureAspect aspect: aspects) {
+            CultureAspect copy = aspect.adopt(this);
+            if (copy == null) {
+                retry.add(aspect);
+            }
+            cultureCenter.getCultureAspectCenter().addCultureAspect(copy);
+        }
+        if (!retry.isEmpty()) {
+            if (retry.size() == aspects.size()) {
+                throw new GroupError("Cannot adopt CultureAspect " + retry.get(0));
+            }
+            copyCA(retry);
+        }
     }
 
     public ResourceCenter getResourceCenter() {
@@ -199,6 +218,7 @@ public class Group {
                     tile,
                     aspects,
                     memes,
+                    cultureCenter.getCultureAspectCenter().getAspectPool().getAll(),
                     territoryCenter.getSpreadAbility()
             ));
         }

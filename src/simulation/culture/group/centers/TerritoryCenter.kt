@@ -1,6 +1,5 @@
 package simulation.culture.group.centers
 
-import extra.SpaceProbabilityFuncs
 import shmp.random.randomTile
 import shmp.random.testProbability
 import simulation.Controller
@@ -10,7 +9,6 @@ import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
-import java.util.function.Consumer
 import java.util.function.Predicate
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
@@ -155,12 +153,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     private fun isTileReachable(tile: Tile) = getDistance(tile, territory.center) < 4
 
     fun claimTile(tile: Tile?) {
-        if (tile == null) {
-            return
-        }
-        if (!tile.tagPool.contains(tileTag) && hasResidingGroup(tile)) {
+        if (tile == null) return
+        if (!tile.tagPool.contains(tileTag) && hasResidingGroup(tile))
             throw RuntimeException()
-        }
         tileTag.group.parentGroup.claimTile(tile)
         tile.tagPool.add(tileTag)
         territory.add(tile)
