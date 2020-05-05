@@ -228,7 +228,7 @@ public class PopulationCenter {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder("Free - " + getFreePopulation() + "\n");
         for (Stratum stratum : strata) {
             if (stratum.getPopulation() != 0) {
                 stringBuilder.append(stratum).append("\n");
