@@ -19,7 +19,7 @@ fun takeOutSimilarRituals(
             ?: return null
     if (popularRituals.size >= bound) {
         aspectPool.removeAll(popularRituals)
-        return RitualSystem(group, popularRituals, popularReason)
+        return RitualSystem(popularRituals, popularReason)
     }
     return null
 }
