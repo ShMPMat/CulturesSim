@@ -1,6 +1,7 @@
 package simulation.culture.group
 
 import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.OwnershipMarker
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
 import simulation.space.tile.Tile
@@ -17,13 +18,17 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         tile.tagPool.add(tileTag)
     }
 
+    val ownershipMarker = OwnershipMarker(tileTag.name)
+
     fun delete() {
         tile.tagPool.remove(tileTag)
     }
 
     fun addResource(resource: Resource) {
-        if (tile.resourcePack.contains(resource))
+        if (tile.resourcePack.contains(resource)) {
             _owned.add(tile.resourcePack.getUnpackedResource(resource))
+        }
+        resource.ownershipMarker = ownershipMarker
         _owned.add(resource)
         maxAmounts[resource] = max(maxAmounts[resource] ?: 0, _owned.getResource(resource).amount)
         tile.addDelayedResource(resource)

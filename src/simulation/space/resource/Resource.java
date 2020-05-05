@@ -39,6 +39,7 @@ public class Resource {
      */
     private double deathPart = 1;
     private List<Event> events = new ArrayList<>();
+    private OwnershipMarker ownershipMarker = OwnershipMarkerKt.getFreeMarker();
 
     Resource(ResourceCore resourceCore, int amount) {
         this.amount = amount;
@@ -121,6 +122,14 @@ public class Resource {
 
     public Genome getGenome() {
         return resourceCore.getGenome();
+    }
+
+    public OwnershipMarker getOwnershipMarker() {
+        return ownershipMarker;
+    }
+
+    public void setOwnershipMarker(OwnershipMarker ownershipMarker) {
+        this.ownershipMarker = ownershipMarker;
     }
 
     public boolean hasMeaning() {
@@ -289,12 +298,15 @@ public class Resource {
         if (_hash != resource._hash) {
             return false;
         }
-        return getFullName().equals(resource.getFullName());
+        if (getFullName().equals(resource.getFullName()) && !ownershipMarker.equals(resource.ownershipMarker)) {
+            int j = 0;
+        }
+        return getFullName().equals(resource.getFullName()) && ownershipMarker.equals(resource.ownershipMarker);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFullName(), resourceCore.hashCode());
+        return Objects.hash(getFullName(), resourceCore.hashCode(), ownershipMarker);
     }
 
     @Override
