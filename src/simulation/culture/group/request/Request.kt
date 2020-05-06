@@ -31,7 +31,7 @@ abstract class Request(
         else -> null
     }
 
-    fun amountLeft(resourcePack: ResourcePack) = max(0, ceiling - evaluator.evaluate(resourcePack))
+    fun amountLeft(resourcePack: ResourcePack) = max(0.0, ceiling - evaluator.evaluate(resourcePack))
 
     fun end(resourcePack: MutableResourcePack): Result {
         val partPack = evaluator.pick(
@@ -55,10 +55,10 @@ abstract class Request(
     fun satisfactionLevel(sample: Resource) = evaluator.evaluate(sample.copy(1))
 
     fun satisfactionLevel(stratum: Stratum) =
-            if (stratum !is AspectStratum) 0
+            if (stratum !is AspectStratum) 0.0
             else stratum.aspect.producedResources
                     .map { satisfactionLevel(it) }
-                    .foldRight(0, Int::plus)
+                    .foldRight(0.0, Double::plus)
 
     open fun getController(ignoreAmount: Int) = AspectController(
             1,

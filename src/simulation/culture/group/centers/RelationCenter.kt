@@ -9,6 +9,7 @@ import simulation.space.resource.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
 import java.util.*
+import kotlin.math.ceil
 import kotlin.math.max
 
 class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
@@ -76,13 +77,13 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
             pack.addAll(trade(request, request.amountLeft(pack)))
     }
 
-    fun trade(request: Request, amount: Int): ResourcePack {
+    fun trade(request: Request, amount: Double): ResourcePack {
         if (amount <= 0) return ResourcePack()
         val pack = MutableResourcePack()
         var amountLeft = amount
         for (relation in relations.sortedByDescending { it.positive }) {
-            val given = relation.other.askFor(request.reducedAmountCopy(amountLeft), relation.owner)
-            relation.positiveInteractions += (request.evaluator.evaluate(given) / amount)
+            val given = relation.other.askFor(request.reducedAmountCopy(ceil(amountLeft).toInt()), relation.owner)
+            relation.positiveInteractions += (request.evaluator.evaluate(given) / amount).toInt()
             pack.addAll(given)
             amountLeft = amount - request.evaluator.evaluate(pack)
             if (amountLeft <= 0) break

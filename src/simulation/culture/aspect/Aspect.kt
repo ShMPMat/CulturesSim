@@ -118,19 +118,22 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
-        if (controller.evaluator.evaluate(producedResources) > 1) {
+        if (controller.evaluator.evaluate(producedResources) < 1) {
             val k = 9
         }
         val neededWorkers = ceil(max(
-                controller.getCeilingSatisfiableAmount(producedResources),
-                1
-        ) * core.standardComplexity).toInt()
+                controller.getCeilingSatisfiableAmount(producedResources) * core.standardComplexity,
+                1.0
+        ) ).toInt()
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
         val allowedAmount = min(
-                (gotWorkers.cumulativeWorkers / core.standardComplexity).toInt() *
-                        controller.evaluator.evaluate(producedResources),
+                ceil(gotWorkers.cumulativeWorkers / core.standardComplexity
+                        * controller.evaluator.evaluate(producedResources)).toInt(),
                         controller.ceiling
         )
+        if (controller.evaluator.evaluate(producedResources) < 1) {
+            val k = 9
+        }
         controller.setMax(allowedAmount)
         val node = ResultNode(this)
         if (controller.ceiling > 0)
@@ -149,7 +152,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         else {
             controller.populationCenter.freeStratumAmountByAspect(this, gotWorkers)
             neededResources.add(
-                    BaseNameLabeler(resource.baseName) to controller.floor - controller.evaluate(meaningfulPack)
+                    BaseNameLabeler(resource.baseName) to controller.floor - controller.evaluate(meaningfulPack).toInt()
             )
         }
         if (!isFinished) {

@@ -158,11 +158,11 @@ public class PopulationCenter {
                 (r, p) -> Collections.singletonList(r.getCleanPart(p))
         ).getResources());
         for (AspectStratum stratum : strataForRequest) {
-            int amount = evaluator.evaluate(pack);
+            double amount = evaluator.evaluate(pack);
             if (amount >= request.getCeiling()) {
                 break;
             }
-            ResourcePack produced = stratum.use(request.getController(amount));
+            ResourcePack produced = stratum.use(request.getController((int) Math.ceil(amount)));
             if (evaluator.evaluate(produced) > 0) {
                 usedAspects.add(stratum.getAspect());
             }
@@ -176,7 +176,7 @@ public class PopulationCenter {
     private List<AspectStratum> getStrataForRequest(Request request) {
         return getStrata().stream()
                 .filter(s -> request.isAcceptable(s) != null)
-                .sorted(Comparator.comparingInt(request::satisfactionLevel))
+                .sorted(Comparator.comparingDouble(request::satisfactionLevel))
                 .filter(s -> s instanceof AspectStratum)
                 .map(s -> (AspectStratum) s)
                 .collect(Collectors.toList());

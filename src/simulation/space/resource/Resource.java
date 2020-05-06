@@ -87,8 +87,8 @@ public class Resource {
                 .reduce(0.0, Double::sum) * amount  ;
     }
 
-    public int getTagPresence(ResourceTag tag) {
-        return amount * getTagLevel(tag);
+    public double getTagPresence(ResourceTag tag) {
+        return amount * getTagLevel(tag) * getGenome().getSize();
     }
 
     public int getTagLevel(ResourceTag tag) {
