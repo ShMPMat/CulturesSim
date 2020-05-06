@@ -88,7 +88,7 @@ public class Resource {
     }
 
     public double getTagPresence(ResourceTag tag) {
-        return amount * getTagLevel(tag) * getGenome().getSize();
+        return amount * getTagLevel(tag) /* * getGenome().getSize()*/;
     }
 
     public int getTagLevel(ResourceTag tag) {
