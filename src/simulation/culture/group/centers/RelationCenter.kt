@@ -1,5 +1,6 @@
 package simulation.culture.group.centers
 
+import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupError
 import simulation.culture.group.intergroup.Relation
 import simulation.culture.group.request.Request
@@ -22,11 +23,15 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     val relations: Collection<Relation>
         get() = relationsMap.values
 
-    val avgConglomerateRelation: Double
-        get() {
-            val result = max(relations.map { it.normalized }.average(), 0.0000001)
-            return if (result.isNaN()) 1.0 else result
-        }
+    fun getAvgConglomerateRelation(conglomerate: GroupConglomerate): Double {
+        val result = max(
+                relations.filter { it.other.parentGroup == conglomerate }
+                        .map { it.normalized }
+                        .average(),
+                0.0000001
+        )
+        return if (result.isNaN()) 1.0 else result
+    }
 
     fun getNormalizedRelation(group: Group): Double {
         return if (relationsMap.containsKey(group)) relationsMap[group]?.normalized ?: 0.0
@@ -90,4 +95,9 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
         }
         return pack
     }
+
+    override fun toString() = relations
+            .map { it.other.parentGroup }
+            .distinct()
+            .joinToString("\n") { "${it.name} average - ${getAvgConglomerateRelation(it)}" }
 }

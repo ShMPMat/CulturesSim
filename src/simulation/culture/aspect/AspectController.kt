@@ -8,6 +8,7 @@ import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
+import kotlin.math.max
 
 data class AspectController(
         val depth: Int,
@@ -32,13 +33,11 @@ data class AspectController(
 
     fun evaluate(pack: ResourcePack) = evaluator.evaluate(pack)
 
-    fun isFloorExceeded(resourcePack: MutableResourcePack): Boolean {
-        return evaluator.evaluate(resourcePack) >= floor
-    }
+    fun isFloorExceeded(resourcePack: MutableResourcePack) = evaluator.evaluate(resourcePack) >= floor
 
-    fun isCeilingExceeded(resourcePack: ResourcePack): Boolean {
-        return evaluator.evaluate(resourcePack) >= ceiling
-    }
+    fun isCeilingExceeded(resourcePack: ResourcePack) = evaluator.evaluate(resourcePack) >= ceiling
+
+    fun left(pack: ResourcePack) = max(0.0, ceiling - evaluate(pack))
 
     fun getCeilingSatisfiableAmount(resources: Collection<Resource>) =
             evaluator.getSatisfiableAmount(ceiling, resources)

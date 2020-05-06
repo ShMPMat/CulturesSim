@@ -262,8 +262,8 @@ public class Resource {
         this.amount = 0;
     }
 
-    public List<Resource> applyAndConsumeAspect(Aspect aspect, int part) {
-        Resource _r = getPart(part);
+    public List<Resource> applyAndConsumeAspect(Aspect aspect, int part, boolean isClean) {
+        Resource _r = isClean ? getCleanPart(part) : getPart(part);
         int p = Math.min(part, _r.amount);
         List<Resource> result = _r.resourceCore.applyAspect(aspect);
         result.forEach(resource -> resource.amount *= p);

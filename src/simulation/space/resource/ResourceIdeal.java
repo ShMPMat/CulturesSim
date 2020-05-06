@@ -40,9 +40,9 @@ public class ResourceIdeal extends Resource {
     }
 
     @Override
-    public List<Resource> applyAndConsumeAspect(Aspect aspect, int part) {
+    public List<Resource> applyAndConsumeAspect(Aspect aspect, int part, boolean isClean) {
         System.err.println("Ideal is changing");
-        return super.applyAndConsumeAspect(aspect, part);
+        return super.applyAndConsumeAspect(aspect, part, isClean);
     }
 
     void setAmount(int amount) {

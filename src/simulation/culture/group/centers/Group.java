@@ -66,7 +66,7 @@ public class Group {
 
     private void copyCA(Collection<CultureAspect> aspects) {
         List<CultureAspect> retry = new ArrayList<>();
-        for (CultureAspect aspect: aspects) {
+        for (CultureAspect aspect : aspects) {
             CultureAspect copy = aspect.adopt(this);
             if (copy == null) {
                 retry.add(aspect);
@@ -207,7 +207,7 @@ public class Group {
             memes.addAll(cultureCenter.getMemePool());
             MutableResourcePack pack = new MutableResourcePack();
             resourceCenter.getPack().getResources().forEach(r ->
-                pack.addAll(resourceCenter.takeResource(r, r.getAmount() / 2))
+                    pack.addAll(resourceCenter.takeResource(r, r.getAmount() / 2))
             );
             String name = parentGroup.getNewName();
             return new Add(new Group(
@@ -257,7 +257,7 @@ public class Group {
         if (parentGroup.subgroups.size() <= 1) {
             return false;
         }
-        double relations = relationCenter.getAvgConglomerateRelation();
+        double relations = relationCenter.getAvgConglomerateRelation(parentGroup);
         double exitProbability = session.defaultGroupExiting /*/ (relations * relations * relations)*/;
         if (testProbability(exitProbability, session.random)) {
             if (checkCoherencyAndDiverge()) {
@@ -337,10 +337,8 @@ public class Group {
         builder.append(s.toString());
         builder.append("\n").append(resourceCenter.toString())
                 .append(populationCenter.toString())
+                .append("\n").append(relationCenter)
                 .append("\n");
-        for (Relation relation : relationCenter.getRelations()) {
-            builder.append(relation).append("\n");
-        }
         builder.append(turnRequests);
         builder = OutputFunc.chompToSize(builder, 70);
 

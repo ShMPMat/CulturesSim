@@ -101,7 +101,11 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open val producedResources: List<Resource> = emptyList()
 
-    open fun use(controller: AspectController): AspectResult { //TODO instrument efficiency
+//    private var _debug: List<Resource>? = null
+//    private var _debugEnd: List<Resource>? = null
+//    private var _amount = -1
+//    private var _isSatisfied = ""
+    open fun use(controller: AspectController): AspectResult {
         //TODO put dependency resources only in node; otherwise they may merge with phony
         if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
                 || (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) })) {
@@ -118,9 +122,9 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
-        if (controller.evaluator.evaluate(producedResources) < 1) {
-            val k = 9
-        }
+//        if (controller.evaluator.evaluate(producedResources) < 1) {
+//            val k = 9
+//        }
         val neededWorkers = ceil(max(
                 controller.getCeilingSatisfiableAmount(producedResources) * core.standardComplexity,
                 1.0
@@ -131,9 +135,9 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                         * controller.evaluator.evaluate(producedResources)).toInt(),
                         controller.ceiling
         )
-        if (controller.evaluator.evaluate(producedResources) < 1) {
-            val k = 9
-        }
+//        if (controller.evaluator.evaluate(producedResources) < 1) {
+//            val k = 9
+//        }
         controller.setMax(allowedAmount)
         val node = ResultNode(this)
         if (controller.ceiling > 0)
@@ -161,6 +165,16 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                 tooManyFailsThisTurn = true
         }
         used = false
+//        if (name.contains("PlantSeed") && controller.populationCenter.turnResources.resources.any { it.fullName.contains("Seed") && it.amount > 0} && !controller.isCeilingExceeded(meaningfulPack)) {
+//
+//            val got = controller.populationCenter.turnResources.resources.filter { it.fullName.contains("Seed") }
+//            val j = 0
+//        } else if (name.contains("PlantSeed")) {
+//
+//            val j = 0
+//        }
+//        _debug = null
+//        _debugEnd = null
         return AspectResult(isFinished, neededResources, meaningfulPack, node)
     }
 
@@ -190,13 +204,23 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     }
 
     private fun getPhonyFromResources(controller: AspectController): ResourcePack {
-        val pack = resourceEvaluator((this as ConverseWrapper).resource).pick(
-                controller.populationCenter.turnResources
-        )
-        return controller.pickCeilingPart(
+//        if (name.contains("PlantSeed") && controller.populationCenter.turnResources.resources.any { it.fullName.contains("Seed") }) {
+//            val j = 0
+//        }
+//        _amount = controller.ceiling
+        val pack = resourceEvaluator((this as ConverseWrapper).resource).pick(controller.populationCenter.turnResources)
+//        _debug = pack.resources.map { it.copy(it.amount) }
+        val result = controller.pickCeilingPart(
                 pack.resources,
-                { it.applyAspect(this.aspect) }
-        ) { r, n -> r.applyAndConsumeAspect(this.aspect, n) }
+                { it.applyAspect(aspect) }
+        ) { r, n -> r.applyAndConsumeAspect(aspect, n, true) }
+//        _debugEnd = result.resources.map { it.copy(it.amount) }
+//        _isSatisfied = controller.isFloorExceeded(result).toString()
+//        if (_isSatisfied == "false" &&
+//                resourceEvaluator(resource).pick(controller.populationCenter.turnResources).amount > 0) {
+//            val k = 0
+//        }
+        return result
     }
 
     private fun satisfyRegularDependency(
