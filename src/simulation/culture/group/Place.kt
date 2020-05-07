@@ -22,19 +22,13 @@ class Place(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun addResource(resource: Resource) {
-        if (_owned.resources.any { it.ownershipMarker != ownershipMarker }) {
+        if (_owned.any { it.ownershipMarker != ownershipMarker }) {
             val j = 0
-        }
-        if (_owned.resources.groupBy { it.fullName }.any { it.value.size > 1 }) {
-            val k = 0
         }
         resource.ownershipMarker = ownershipMarker
         _owned.add(resource)
         maxAmounts[resource] = max(maxAmounts[resource] ?: 0, _owned.getResource(resource).amount)
         tile.addDelayedResource(resource)
-        if (_owned.resources.groupBy { it.fullName }.any { it.value.size > 1 }) {
-            val k = 0
-        }
     }
 
     fun addResources(resources: Collection<Resource>) = resources.forEach(this::addResource)

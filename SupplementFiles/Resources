@@ -225,19 +225,19 @@
 -Fibre           0       0.5    100        -500   500  100000000 1             1 1 0  None         @Fibre
         +Weaving:Cloth:1
 
--Cloth           0       0.5    100        -500   500  100000000 2             1 1 0  None         @Cloth
+-Cloth           0       0.5    100        -500   500  100000000 2             1 1 0  Artifact     @Cloth
         $clothes:1
         +MakeClothes:Clothes:1
 
--Clothes         0       0.5    100        -500   500  100000000 3             1 1 0  None         @Cloth
+-Clothes         0       0.5    100        -500   500  100000000 3             1 1 0  Artifact     @Cloth
 
--FurClothes      0       0.5    100        -500   500  100000000 3             1 1 0  None         @Fur
+-FurClothes      0       0.5    100        -500   500  100000000 3             1 1 0  Artifact     @Fur
         $clothes:1
 
--StoneAxe        0       0.1    10000      -500   500  100000000 0             1 1 0  None         @Stone
+-StoneAxe        0       0.1    10000      -500   500  100000000 0             1 1 0  Artifact     @Stone
         $weapon:3
 
--HandPlough      0       0.5    10000      -500   500  100000000 10            1 1 0  None         @TEMPLATE
+-HandPlough      0       0.5    10000      -500   500  100000000 10            1 1 0  Artifact     @TEMPLATE
         &a(PlantSeed)-0.02
         U
 
@@ -250,13 +250,13 @@
         &a(PlantSeed)-0.5
         U
 
--Dish            0       0.1    10000      -500   500  100000000 5             1 1 0  None         @TEMPLATE
+-Dish            0       0.1    10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
 
--Boat            0       2      10000      -500   500  100000000 5             1 1 0  None         @TEMPLATE
+-Boat            0       2      10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
 
--Spear           0       1      10000      -500   500  100000000 5             1 1 0  None         @TEMPLATE
+-Spear           0       1      10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
 
--Dye             0       0.05   10000      -500   500  100000000 5             1 1 0  None         @TEMPLATE
+-Dye             0       0.05   10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
         $colour:3
 
 -Fire            0       0.5    2          -500   500  100000000 0             1 0 0  None         @Flame

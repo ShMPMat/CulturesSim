@@ -33,7 +33,7 @@ public abstract class LabelerDependency extends CoefficientDependency {
 
     @Override
     public boolean hasNeeded(Tile tile) {
-        return tile.getResourcePack().getResources().stream().anyMatch(this::isResourceGood);
+        return tile.getResourcePack().any(this::isResourceGood);
     }
 
     boolean isResourceGood(Resource resource) {

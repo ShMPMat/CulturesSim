@@ -251,9 +251,9 @@ public class Tile {
             setType(Type.Water, false);
         }
         if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
-            if (resourcePack.getResources().stream().anyMatch(r -> r.getSimpleName().matches(".*Tree"))) {
+            if (resourcePack.any(r -> r.getSimpleName().matches(".*Tree"))) {
                 setType(Type.Woods, false);
-            } else if (resourcePack.getResources().stream().anyMatch(r -> r.getGenome().getType() == Genome.Type.Plant)) {
+            } else if (resourcePack.any(r -> r.getGenome().getType() == Genome.Type.Plant)) {
                 setType(Type.Growth, false);
             } else {
                 setType(Type.Normal, false);

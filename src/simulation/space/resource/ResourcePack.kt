@@ -61,6 +61,8 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
                 .forEach { resourceMap.remove(it.key) }
     }
 
+    fun any(predicate: (Resource) -> Boolean) = resources.any(predicate)
+
     override fun toString(): String {
         val stringBuilder = StringBuilder()
         for (resource in resources) {

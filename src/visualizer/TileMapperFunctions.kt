@@ -5,6 +5,7 @@ import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
+import simulation.space.resource.Genome
 import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.abs
@@ -113,21 +114,19 @@ fun windMapper(tile: Tile): String {
     return direction
 }
 
-fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile)
-{ t -> t.resourcePack.resources.any { it.hasMeaning() } }
+fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile) { t -> t.resourcePack.any { it.hasMeaning() } }
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
-    val artificialResources = setOf("House", "Clothes", "Dish", "Boat")//TODO more stuff
+    val artificialTypes = setOf(Genome.Type.Building, Genome.Type.Artifact)
     return when {
         meaningful != NOTHING -> meaningful
-        else -> predicateMapper(tile)
-        { t -> t.resourcePack.resources.any { artificialResources.contains(it.baseName) } }
+        else -> predicateMapper(tile) { t -> t.resourcePack.any { it.genome.type in artificialTypes} }
     }
 }
 
-fun resourceTypeMapper(type: simulation.space.resource.Genome.Type, tile: Tile) =
-        if (tile.resourcePack.resources.any { it.genome.type == type }) MARK
+fun resourceTypeMapper(type: Genome.Type, tile: Tile) =
+        if (tile.resourcePack.any { it.genome.type == type }) MARK
         else NOTHING
 
 fun aspectMapper(aspectName: String, tile: Tile): String {
@@ -150,7 +149,7 @@ fun groupConglomerateMapper(groupConglomerate: GroupConglomerate, tile: Tile) =
         if (groupConglomerate.territory.contains(tile))
             when {
                 groupConglomerate.subgroups.any { it.territoryCenter.territory.contains(tile) } -> "\u001b[31mO"
-                tile.resourcePack.resources.any { it.baseName.contains("House") } -> "\u001b[31m+"
+                tile.resourcePack.any { it.baseName.contains("House") } -> "\u001b[31m+"
                 else -> MARK
             }
         else NOTHING

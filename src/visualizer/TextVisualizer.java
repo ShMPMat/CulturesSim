@@ -302,7 +302,7 @@ public class TextVisualizer implements Visualizer {
     }
 
     private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResourcePack().getResources().stream().anyMatch(r -> r.getSimpleName().equals(resource.getSimpleName())
+        printMap(tile -> (tile.getResourcePack().any(r -> r.getSimpleName().equals(resource.getSimpleName())
                 && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
         System.out.println(PrintFunctionsKt.printResource(resource));
     }
