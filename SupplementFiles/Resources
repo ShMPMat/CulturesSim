@@ -145,7 +145,6 @@
         ~r:Vapour;0.1;100;0;CONSUME
         ~m:Wood;1;100;0;EXIST
         #Water
-        R
 
 -Fish            0.15    0.1    10         -20    30   100       0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.0001;10;0;CONSUME
@@ -242,12 +241,12 @@
         &a(PlantSeed)-0.02
         U
 
--House           0       5      10000      -500   500  100000000 10            0 1 0  None         @TEMPLATE
+-House           0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
 
--Temple          0       5      10000      -500   500  100000000 10            0 1 0  None         @TEMPLATE
+-Temple          0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
         U
 
--Farm            0       5      10000      -500   500  100000000 10            0 1 0  None         @TEMPLATE
+-Farm            0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
         &a(PlantSeed)-0.5
         U
 

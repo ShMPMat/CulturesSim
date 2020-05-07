@@ -421,6 +421,14 @@ public class TextVisualizer implements Visualizer {
                                 _oo.ifPresent(this::printResource);
                             }
                             break;
+                        case ResourceType:
+                            if (Arrays.stream(Genome.Type.values()).anyMatch(t -> t.toString().equals(splitCommand[1]))) {
+                                Genome.Type type = Genome.Type.valueOf(splitCommand[1]);
+                                printMap(t -> TileMapperFunctionsKt.resourceTypeMapper(type, t));
+                            } else {
+                                System.out.println("Unknown type - " + splitCommand[1]);
+                            }
+                            break;
                         case AllResources:
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;

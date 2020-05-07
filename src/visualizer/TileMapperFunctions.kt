@@ -118,13 +118,17 @@ fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile)
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
-    val artificialResources = setOf("House", "Clothes", "Dish", "Boat")
+    val artificialResources = setOf("House", "Clothes", "Dish", "Boat")//TODO more stuff
     return when {
         meaningful != NOTHING -> meaningful
         else -> predicateMapper(tile)
         { t -> t.resourcePack.resources.any { artificialResources.contains(it.baseName) } }
     }
 }
+
+fun resourceTypeMapper(type: simulation.space.resource.Genome.Type, tile: Tile) =
+        if (tile.resourcePack.resources.any { it.genome.type == type }) MARK
+        else NOTHING
 
 fun aspectMapper(aspectName: String, tile: Tile): String {
     return hotnessMapper(

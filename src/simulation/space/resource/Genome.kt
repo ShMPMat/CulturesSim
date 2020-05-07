@@ -177,6 +177,6 @@ open class Genome(
     }
 
     enum class Type {
-        Plant, Animal, Mineral, None
+        Plant, Animal, Mineral, Building, None
     }
 }
