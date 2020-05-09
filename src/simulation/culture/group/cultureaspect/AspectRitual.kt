@@ -12,7 +12,7 @@ import simulation.culture.group.resource_behaviour.getRandom
 import java.util.*
 
 class AspectRitual(
-        private val converseWrapper: ConverseWrapper,
+        val converseWrapper: ConverseWrapper,
         private val resourceBehaviour: ResourceBehaviour,
         reason: Reason
 ) : Ritual(reason) {

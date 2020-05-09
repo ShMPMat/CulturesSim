@@ -230,12 +230,13 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         return ArrayList()
     }
 
-    fun update() {
-//        val unimportantAspects = aspectPool.getAll()
-//                .filter { it.usefulness < session.aspectFalloff }
-//        if (unimportantAspects.isEmpty()) return
-//        val aspect = randomElement(unimportantAspects, session.random)
-//        if (aspect !in aspectPool.converseWrappers.map { it.aspect })
-//            _mutableAspectPool.remove(aspect)
+    fun update(crucialAspects: Collection<Aspect>) {
+        val unimportantAspects = aspectPool.all
+                .filter { it.usefulness < session.aspectFalloff }
+                .filter { it !in crucialAspects }
+        if (unimportantAspects.isEmpty()) return
+        val aspect = randomElement(unimportantAspects, session.random)
+        if (aspect !in aspectPool.converseWrappers.map { it.aspect })
+            _mutableAspectPool.remove(aspect)
     }
 }

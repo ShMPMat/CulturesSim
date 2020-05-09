@@ -119,7 +119,7 @@ public class CultureCenter {
 
     void update() {
         events.addAll(aspectCenter.mutateAspects());
-        aspectCenter.update();
+        aspectCenter.update(cultureAspectCenter.getAspectPool().getCwDependencies());
         createArtifact();
         cultureAspectCenter.useCultureAspects();
         cultureAspectCenter.addRandomCultureAspect(group);

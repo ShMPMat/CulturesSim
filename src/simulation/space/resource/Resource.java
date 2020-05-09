@@ -98,7 +98,6 @@ public class Resource {
 
     /**
      * Returns part of this resource and subtracts its amount from this resource amount;
-     * @param part what amount of this Resource is requested.
      * @return Copy of this Resource with amount equal or less than requested.
      * Exact amount depends on current amount of this Resource.
      */

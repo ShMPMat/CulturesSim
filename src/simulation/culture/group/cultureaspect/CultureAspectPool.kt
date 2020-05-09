@@ -9,8 +9,7 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
         get() = aspectMap.keys
 
     val ritualSystems
-        get() = aspects
-                .filterIsInstance<RitualSystem>()
+        get() = aspects.filterIsInstance<RitualSystem>()
 
     val depictSystems
         get() = aspects
@@ -27,6 +26,11 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
                         .filterIsInstance<Worship>()
                         .map { it.taleSystem }
                 )
+
+    val cwDependencies = ritualSystems
+            .flatMap { it.rituals.filterIsInstance<AspectRitual>() }
+            .union( aspects.filterIsInstance<AspectRitual>() )
+            .map { it.converseWrapper }
 
     fun isEmpty() = aspectMap.isEmpty()
 
