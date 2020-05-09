@@ -30,6 +30,8 @@ class Data(
     val mapSizeY: Int = 135,
     val platesAmount: Int = 10,
     val defaultWaterLevel: Int = 98,
-    val additionalTags: List<TagMatcher> = listOf()
+    val additionalTags: List<TagMatcher> = listOf(),
+    val xMapLooping: Boolean = false,
+    val yMapLooping: Boolean = true
 )
 

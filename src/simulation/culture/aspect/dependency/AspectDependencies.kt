@@ -14,9 +14,10 @@ data class AspectDependencies(val map: MutableMap<ResourceTag, MutableSet<Depend
 
     fun containsDependency(tag: ResourceTag) = map.containsKey(tag)
 
-    fun removeIf(predicate: (Dependency) -> Boolean) {
-        map.forEach {
-            it.value.removeIf(predicate)
-        }
+    fun removeIf(predicate: (Dependency) -> Boolean) = map.forEach {
+//        if (it.value.any(predicate)) {
+//            val k = 0
+//        }
+        it.value.removeIf(predicate)
     }
 }

@@ -67,11 +67,11 @@ private fun setTileNeighbours(map: WorldMap) {
     }
 }
 
-private fun createTiles(x: Int, y: Int): List<MutableList<Tile>> {
-    val map: MutableList<MutableList<Tile>> = ArrayList()
+private fun createTiles(x: Int, y: Int): List<List<Tile>> {
+    val map: MutableList<List<Tile>> = ArrayList()
     (0 until x).map { i ->
         map.add(
-                (0 until y).map { j -> Tile(i, j) }.toMutableList()
+                (0 until y).map { j -> Tile(i, j) }
         )
     }
     return map

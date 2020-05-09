@@ -230,13 +230,17 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         return ArrayList()
     }
 
+
+    private val _deleted = mutableListOf<Aspect>()
     fun update(crucialAspects: Collection<Aspect>) {
         val unimportantAspects = aspectPool.all
                 .filter { it.usefulness < session.aspectFalloff }
                 .filter { it !in crucialAspects }
         if (unimportantAspects.isEmpty()) return
         val aspect = randomElement(unimportantAspects, session.random)
-        if (aspect !in aspectPool.converseWrappers.map { it.aspect })
+        if (aspect !in aspectPool.converseWrappers.map { it.aspect }) {
             _mutableAspectPool.remove(aspect)
+            _deleted.add(aspect)
+        }
     }
 }

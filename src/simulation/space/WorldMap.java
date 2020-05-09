@@ -1,11 +1,14 @@
 package simulation.space;
 
+import simulation.Controller;
 import simulation.space.tile.Tile;
 import simulation.space.tile.TileTagSetterKt;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static simulation.Controller.*;
 
 /**
  * Represents tile map of the world
@@ -43,22 +46,34 @@ public class WorldMap {
     }
 
     public Tile get(int x, int y) {
-        if (x < 0) {
-            return null;
-        } else if (x >= getX()) {
+        if (SpaceData.INSTANCE.getData().getXMapLooping()) {
+            x = cutCoordinate(x, getX());
+        } else if (!checkCoordinate(x, getX())) {
             return null;
         }
-        while (y < 0) {
-            y += getY();
+        if (SpaceData.INSTANCE.getData().getYMapLooping()) {
+            y = cutCoordinate(y, getY());
+        } else if (!checkCoordinate(y, getY())) {
+            return null;
         }
-        y %= getY();
         return getLinedTiles().get(x).get(y);
+    }
+
+    private int cutCoordinate(int coordinate, int max) {
+        if (coordinate < 0) {
+            coordinate = coordinate % max + max;
+        }
+        return coordinate % max;
+    }
+
+    private boolean checkCoordinate(int coordinate, int max) {
+        return coordinate >= 0 && coordinate < max;
     }
 
     public void setTags() {
         int name = 0;
         List<Tile> allTiles = getTiles();
-        for(Tile tile : allTiles) {
+        for (Tile tile : allTiles) {
             if (TileTagSetterKt.setTags(tile, "" + name)) {
                 name++;
             }
