@@ -20,7 +20,7 @@ import java.util.*
 class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
     @JvmField
     var subgroups: MutableList<Group> = ArrayList()
-    private val shuffledSubgroups : List<Group>
+    private val shuffledSubgroups: List<Group>
         get() = subgroups.shuffled(Controller.session.random)
     var state = State.Live
 
@@ -115,7 +115,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         Controller.session.groupMainTime += System.nanoTime() - mainTime
         val othersTime = System.nanoTime()
         shuffledSubgroups.mapNotNull { it.populationUpdate() }
-                .forEach{ it.execute(this) }
+                .forEach { it.execute(this) }
         updatePopulation()
         if (state == State.Dead) return
         shuffledSubgroups.forEach { it.diverge() }
@@ -181,9 +181,11 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
 
     override fun toString(): String {
         var stringBuilder = StringBuilder()
-        for (subgroup in subgroups) {
+        for (subgroup in subgroups.take(10))
             stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false)
-        }
+        if (subgroups.size > 10) stringBuilder.append(
+                subgroups.joinToString(",", "\n all:") { it.name }
+        )
         return stringBuilder.toString()
     }
 

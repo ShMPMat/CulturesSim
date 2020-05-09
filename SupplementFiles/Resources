@@ -82,9 +82,14 @@
 -Coral           0.25    0.1    5          20     30   2000      0             1 0 0  Plant        @Coral
         #Normal:Mountain:Ice:Woods:Growth
 
--Herbivore       0.08    1      20         0      30   25        0             1 0 1  Animal       @Meat
+-Cow             0.08    1      20         0      25   25        0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
+        #Water
+
+-Deer            0.09    1.2    22         -10     5   15        0             1 0 1  Animal       @Meat
+        ~m:PlantFibre;0.05;2;0;CONSUME
+        +Killing:Meat:12,Fat:7,Bone:7,Fur:5,Blood:10
         #Water
 
 -MountainGoat    0.08    1      20         -10    30   25        0             1 0 1  Animal       @Meat
@@ -106,7 +111,7 @@
         #Water
         R
 
--Predator        0.08    1      20         0      30   5         0             1 0 1  Animal       @Meat
+-Predator        0.08    1      20         0      20   5         0             1 0 1  Animal       @Meat
         ~m:Meat,>=1;0.1;1.25;0;CONSUME
         +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
         #Water

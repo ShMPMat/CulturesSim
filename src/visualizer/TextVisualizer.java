@@ -350,7 +350,7 @@ public class TextVisualizer implements Visualizer {
                         continue;
                     }
                     switch (getCommand(line)) {
-                        case Group:
+                        case Conglomerate:
                             printGroupConglomerate(world.getGroups().get(Integer.parseInt(line.substring(1))));
                             break;
                         case GroupTileReach: {

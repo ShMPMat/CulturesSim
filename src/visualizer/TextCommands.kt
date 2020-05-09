@@ -7,7 +7,7 @@ enum class Command(command: String) {
     /**
      * Command for making turns until something important happens.
      */
-    Group("^G\\d+"),
+    Conglomerate("^G\\d+"),
     GroupTileReach("^G\\d+ r"),
     GroupProduced("^G\\d+ p"),
     Tile("\\d+ \\d+"),
