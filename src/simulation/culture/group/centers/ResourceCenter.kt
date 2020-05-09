@@ -66,9 +66,9 @@ class ResourceCenter(
 
     fun moveToNewStorage(newStorageTile: Tile) {
         if (newStorageTile == storageTile) return
-        if (pack.any { !it.genome.isMovable }) {
-            val k = 0
-        }
+//        if (pack.any { !it.genome.isMovable }) {
+//            val k = 0
+//        }
         val oldPlace = place
         movedAmount++
         place = Place(newStorageTile, tileTag)

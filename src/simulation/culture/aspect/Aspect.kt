@@ -34,7 +34,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     /**
      * Coefficient which represents how much this aspect is used by its owner.
      */
-    var usefulness = 50
+    var usefulness = session.defaultAspectUsefulness
         private set
 
     /**
@@ -276,7 +276,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     fun gainUsefulness(amount: Int) {
         if (amount <= 0) return
-        usefulness += amount
+        usefulness = max( usefulness + amount, session.defaultAspectUsefulness)
         usedThisTurn = true
     }
 

@@ -56,6 +56,7 @@ public class Controller {
     public final int maxGroupDependencyDepth = 5;
     public final int minimalStableFreePopulation = 10;
     public final int aspectFalloff = -500;
+    public final int defaultAspectUsefulness = 50;
 
     public final double windFillIn = 0.1;
 
