@@ -29,6 +29,11 @@
         ^SoftBranch:15 ^Leaf:30              ^Seed:2 ^SoftRoot:5
         #Water
 
+-Spruce          0.05    5      40         -15     15  100        0             0 0 0  Plant        @Wood
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^Trunk:1       ^PineNeedle:300 ^Branch:30  ^ConiferCone:10 ^Root:5
+        #Water
+
 -Cactus          0.2     1      15         10     50   50         0             0 0 0  Plant        @PlantFibre
         ~m:PlantFibre;1;100;0;AVOID
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
@@ -172,6 +177,8 @@
 
 -Leaf            0       0.03   3          -500   500  100000000 0             1 1 0  None         @PlantFibre
 
+-PineNeedle      0       0.02   3          -500   500  100000000 0             1 1 0  None         @PlantFibre
+
 -Flower          0       0.05   3          -500   500  100000000 0             1 1 0  None         @PlantFibre
 
 -Root            0       0.5    10         -500   500  100000000 0             1 1 0  None         @Wood
@@ -181,6 +188,9 @@
 -Fruit           0       0.1    5          -500   500  100000000 0             1 1 0  None         @Pulp
 
 -Nut             0       0.02   5          -500   500  100000000 0             1 1 0  None         @Nut
+
+-ConiferCone     0       0.05   20         -500   500  100000000 0             1 1 0  None         @Wood
+        ^Nut:15
 
 -Seed            0       0.01   100        -500   500  100000000 0             1 1 0  None         @Seed
         +PlantSeed:LEGACY:1

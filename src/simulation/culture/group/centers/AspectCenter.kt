@@ -10,6 +10,7 @@ import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.LineDependency
 import simulation.culture.aspect.labeler.ProducedLabeler
 import simulation.culture.group.AspectDependencyCalculator
+import simulation.culture.group.GroupError
 import simulation.culture.group.convert
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
@@ -104,6 +105,9 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             }
             if (options.isNotEmpty()) {
                 val aspect = randomElement(options, session.random)
+                if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect)) {
+                    return listOf()
+                }
                 if (addAspect(aspect)) {
                     return setOf(Event(
                             Event.Type.AspectGaining, String.format("Got aspect %s by itself", aspect.name)
@@ -111,7 +115,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
                 }
             }
         }
-        return ArrayList()
+        return listOf()
     }
 
     private val allPossibleConverseWrappers: List<ConverseWrapper>
@@ -231,8 +235,13 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     }
 
 
-    private val _deleted = mutableListOf<Aspect>()
+    private val _deleted = mutableListOf<Pair<Aspect, Set<Aspect>>>()
     fun update(crucialAspects: Collection<Aspect>) {
+        try {
+            _mutableAspectPool.converseWrappers.forEach { _mutableAspectPool.get(it.aspect) }
+        } catch (e: GroupError) {
+            val h = 0
+        }
         val unimportantAspects = aspectPool.all
                 .filter { it.usefulness < session.aspectFalloff }
                 .filter { it !in crucialAspects }
@@ -240,7 +249,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         val aspect = randomElement(unimportantAspects, session.random)
         if (aspect !in aspectPool.converseWrappers.map { it.aspect }) {
             _mutableAspectPool.remove(aspect)
-            _deleted.add(aspect)
+            _deleted.add(aspect to _mutableAspectPool.all.toSet())
         }
     }
 }

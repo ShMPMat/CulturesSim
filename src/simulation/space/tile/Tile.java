@@ -251,7 +251,7 @@ public class Tile {
             setType(Type.Water, false);
         }
         if (getType() == Type.Normal || getType() == Type.Woods || getType() == Type.Growth) {
-            if (resourcePack.any(r -> r.getSimpleName().matches(".*Tree"))) {
+            if (resourcePack.any(r -> r.getSimpleName().matches(".*Tree|Spruce"))) {
                 setType(Type.Woods, false);
             } else if (resourcePack.any(r -> r.getGenome().getType() == Genome.Type.Plant)) {
                 setType(Type.Growth, false);
