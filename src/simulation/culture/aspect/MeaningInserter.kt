@@ -9,9 +9,9 @@ import java.util.function.Consumer
 /**
  * Subclass of ConverseWrapper which inserts meaning in certain objects.
  */
-class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspect, resource.fullCopy()) {
+class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspect, resource.fullCopy().copy(1)) {
     override val producedResources: List<Resource>
-        get() = listOf(resource)
+        get() = listOf(resource.copy(1))
 
     init {
         canInsertMeaning = true

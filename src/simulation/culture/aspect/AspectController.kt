@@ -39,9 +39,6 @@ data class AspectController(
 
     fun left(pack: ResourcePack) = max(0.0, ceiling - evaluate(pack))
 
-    fun getCeilingSatisfiableAmount(resources: Collection<Resource>) =
-            evaluator.getSatisfiableAmount(ceiling, resources)
-
     fun pickCeilingPart(
             resources: Collection<Resource>,
             onePortionGetter: (Resource) -> Collection<Resource>,

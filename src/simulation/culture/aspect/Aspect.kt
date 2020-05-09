@@ -6,6 +6,7 @@ import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
 import simulation.culture.group.centers.AspectCenter
+import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.resourceEvaluator
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
@@ -101,10 +102,14 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open val producedResources: List<Resource> = emptyList()
 
-//    private var _debug: List<Resource>? = null
-//    private var _debugEnd: List<Resource>? = null
-//    private var _amount = -1
-//    private var _isSatisfied = ""
+    fun calculateNeededWorkers(evaluator: ResourceEvaluator, amount: Int) =  ceil(max(
+            evaluator.getSatisfiableAmount(amount, producedResources) * core.standardComplexity,
+            1.0
+    ) ).toInt()
+
+    fun calculateProducedValue(evaluator: ResourceEvaluator, workers: Int) =
+            (evaluator.evaluate(producedResources) * workers) / core.standardComplexity
+
     open fun use(controller: AspectController): AspectResult {
         //TODO put dependency resources only in node; otherwise they may merge with phony
         if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
@@ -122,13 +127,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
-//        if (controller.evaluator.evaluate(producedResources) < 1) {
-//            val k = 9
-//        }
-        val neededWorkers = ceil(max(
-                controller.getCeilingSatisfiableAmount(producedResources) * core.standardComplexity,
-                1.0
-        ) ).toInt()
+        val neededWorkers = calculateNeededWorkers(controller.evaluator, controller.ceiling)
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
         val allowedAmount = min(
                 ceil(gotWorkers.cumulativeWorkers / core.standardComplexity

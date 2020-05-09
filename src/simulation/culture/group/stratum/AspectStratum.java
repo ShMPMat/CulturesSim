@@ -117,11 +117,14 @@ public class AspectStratum implements Stratum {
             return;
         }
         int oldPopulation = population;
+        ResourceEvaluator evaluator = EvaluatorsKt.getPassingEvaluator();
+        double overhead = aspect.calculateNeededWorkers(evaluator, getFreePopulation());
+        int amount = (int) aspect.calculateProducedValue(evaluator, getFreePopulation());
         MutableResourcePack pack = use(new AspectController(
                 1,
-                getFreePopulation(),
-                getFreePopulation(),
-                EvaluatorsKt.getPassingEvaluator(),
+                amount,
+                amount,
+                evaluator,
                 group.getPopulationCenter(),
                 accessibleTerritory,
                 false,
