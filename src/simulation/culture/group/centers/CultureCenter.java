@@ -212,9 +212,16 @@ public class CultureCenter {
     }
 
     void addNeedAspect(Pair<ResourceLabeler, ResourceNeed> need) {
+        if (need.getFirst().toString().contains("clothes") && aspectCenter.getAspectPool().contains("MakeClothes") &&
+                aspectCenter.getAspectPool().contains("Killing")) {
+            int h = 0;
+        }
         List<Pair<Aspect, Group>> options = aspectCenter.findOptions(need.getFirst());
         if (options.isEmpty()) {
             return;
+        }
+        if (need.getFirst().toString().contains("clothes")) {
+            int h = 0;
         }
         Pair<Aspect, Group> pair = randomElement(options, session.random);
         aspectCenter.addAspect(pair.getFirst());

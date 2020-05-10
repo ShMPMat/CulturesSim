@@ -4,6 +4,7 @@
         +MakeClothes:Clothes:1
 
 -Clothes         0       0.5    100        -500   500  100000000 3             1 1 0  Artifact     @Cloth
+        $clothes:2
 
 -FurClothes      0       0.5    100        -500   500  100000000 3             1 1 0  Artifact     @Fur
         $clothes:1

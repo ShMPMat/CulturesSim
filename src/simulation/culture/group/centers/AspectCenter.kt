@@ -165,9 +165,9 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     }
 
     fun findOptions(labeler: ResourceLabeler): List<Pair<Aspect, Group?>> {
-        if (labeler.toString().contains("clothes")) {
-            val h = 0
-        }
+//        if (labeler.toString().contains("clothes")) {
+//            val h = 0
+//        }
         val options: MutableList<Pair<Aspect, Group?>> = ArrayList()
         val aspectLabeler = ProducedLabeler(labeler)
         for (aspect in session.world.aspectPool.all.filter { aspectLabeler.isSuitable(it) }) {

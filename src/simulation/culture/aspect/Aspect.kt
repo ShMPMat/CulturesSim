@@ -112,6 +112,9 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open fun use(controller: AspectController): AspectResult {
         //TODO put dependency resources only in node; otherwise they may merge with phony
+        if (name.contains("Weav")) {
+            val k = 0
+        }
         if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
                 || (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) })) {
             return AspectResult(
