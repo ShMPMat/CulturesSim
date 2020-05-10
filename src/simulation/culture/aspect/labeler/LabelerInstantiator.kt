@@ -1,5 +1,6 @@
 package simulation.culture.aspect.labeler
 
+
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 
 fun makeAspectLabeler(tags: Collection<String>): AspectLabeler {
@@ -14,5 +15,6 @@ private fun getLabel(key: String, value: String): AspectLabeler = when (key) {
     "P(" -> ProducedLabeler(makeResourceLabeler(value.dropLast(1).split(",")))
     "R(" -> RequiredResourceLabeler(makeResourceLabeler(value.dropLast(1).split(",")))
     "a(" -> ConverseAspectNameLabeler(value.dropLast(1))
+    "D(" -> DisjointLabeler(value.dropLast(1).split(":").map { getLabel(it.take(2), it.drop(2)) })
     else -> throw RuntimeException("Wrong tag for a labeler")
 }
