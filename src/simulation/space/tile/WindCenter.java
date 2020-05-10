@@ -3,6 +3,7 @@ package simulation.space.tile;
 import kotlin.Pair;
 import simulation.space.SpaceData;
 import simulation.space.WorldMap;
+import simulation.space.resource.OwnershipMarkerKt;
 import simulation.space.resource.Resource;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public class WindCenter {
                 int part = (int) (resource.getAmount() * pair.getSecond() / overallWindLevel *
                         Math.min(pair.getSecond() * 0.0001 / resource.getGenome().getMass(), 1));
                 if (part > 0) {
+                    if (!resource.getOwnershipMarker().equals(OwnershipMarkerKt.getFreeMarker())) {
+                        int t = 0;
+                    }
                     pair.getFirst().addDelayedResource(resource.getCleanPart(part));
                 }
             }

@@ -445,6 +445,9 @@ public class TextVisualizer implements Visualizer {
                                 System.out.println("Unknown type - " + splitCommand[1]);
                             }
                             break;
+                        case ResourceOwner:
+                            printMap(t -> TileMapperFunctionsKt.resourceOwnerMapper(splitCommand[1], t));
+                            break;
                         case AllResources:
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;

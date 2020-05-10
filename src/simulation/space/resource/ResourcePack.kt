@@ -25,9 +25,8 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
         get() = !isEmpty
 
     protected fun internalAdd(resource: Resource): Boolean {
-        if (resource.amount == 0) {
+        if (resource.amount == 0)
             return false
-        }
         val internal = resourceMap[resource]
         return if (internal == null) {
             resourceMap[resource] = resource

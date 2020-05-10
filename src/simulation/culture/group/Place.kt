@@ -1,5 +1,6 @@
 package simulation.culture.group
 
+import simulation.Controller
 import simulation.space.resource.*
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
@@ -21,14 +22,20 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         tile.tagPool.remove(tileTag)
     }
 
+    val _debugAdd = mutableListOf<Pair<Resource, String>>()
     fun addResource(resource: Resource) {
+        if (tile.x == 30 && tile.y == 60) {
+            val k = 0
+        }
+        if (resource.amount == 0) return
         if (_owned.any { it.ownershipMarker != ownershipMarker }) {
             val j = 0
         }
         resource.ownershipMarker = ownershipMarker
         _owned.add(resource)
         maxAmounts[resource] = max(maxAmounts[resource] ?: 0, _owned.getResource(resource).amount)
-        tile.addDelayedResource(resource)
+        _debugAdd.add(resource to Controller.session.world.getTurn())
+        tile.addDelayedResource(_owned.getUnpackedResource(resource))
     }
 
     fun addResources(resources: Collection<Resource>) = resources.forEach(this::addResource)
