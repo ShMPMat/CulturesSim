@@ -50,3 +50,13 @@ var passingReward =  { _: Pair<Group, MutableResourcePack>, _: Double -> }
 fun addNeed(labeler: ResourceLabeler) = { pair: Pair<Group, MutableResourcePack>, _: Double ->
     pair.first.cultureCenter.addAspiration(labeler)
 }
+
+fun unite(actions: List<(Pair<Group, MutableResourcePack>, Double) -> Unit>) = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
+    actions.forEach {
+        it(pair, percent)
+    }
+}
+
+fun put() = { pair: Pair<Group, MutableResourcePack>, _: Double ->
+    pair.first.resourceCenter.addAll(pair.second)
+}

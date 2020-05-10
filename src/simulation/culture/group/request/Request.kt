@@ -73,6 +73,20 @@ abstract class Request(
     )
 
     open fun finalFilter(pack: MutableResourcePack) = evaluator.pickAndRemove(pack)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Request
+
+        if (toString() != other.toString()) return false
+
+        return true
+    }
+
+    override fun hashCode() = toString().hashCode()
+
+
 }
 
 data class Result(val status: ResultStatus, val pack: ResourcePack) {

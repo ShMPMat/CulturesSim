@@ -16,6 +16,7 @@
         U
 
 -House           0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
+        $shelter:3
 
 -Temple          0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
         U

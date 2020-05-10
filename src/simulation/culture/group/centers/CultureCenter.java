@@ -6,11 +6,7 @@ import simulation.Event;
 import simulation.culture.aspect.*;
 import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject;
-import simulation.culture.group.cultureaspect.CultureAspect;
-import simulation.culture.group.request.EvaluatorsKt;
-import simulation.culture.group.request.Request;
-import simulation.culture.group.request.RequestPool;
-import simulation.culture.group.request.TagRequest;
+import simulation.culture.group.request.*;
 import simulation.culture.group.resource_behaviour.ResourceBehaviourKt;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.Meme;
@@ -37,6 +33,7 @@ public class CultureCenter {
     private Group group;
     private List<Event> events = new ArrayList<>();
     private GroupMemes memePool;
+    private RequestPool turnRequests = new RequestPool(new HashMap<>());
 
     CultureCenter(Group group, GroupMemes memePool, List<Aspect> aspects) {
         this.group = group;
@@ -53,12 +50,16 @@ public class CultureCenter {
         return cultureAspectCenter;
     }
 
-    RequestPool getRequests(int foodFloor) {
+    public RequestPool getTurnRequests() {
+        return turnRequests;
+    }
+
+    void updateRequests(int foodFloor) {
         Map<Request, MutableResourcePack> map = new HashMap<>();
-        for (Request request : updateRequests(foodFloor)) {
+        for (Request request : _updateRequests(foodFloor)) {
             map.put(request, new MutableResourcePack());
         }
-        return new RequestPool(map);
+        turnRequests = new RequestPool(map);
     }
 
     List<Event> getEvents() {
@@ -80,10 +81,18 @@ public class CultureCenter {
         ));
     }
 
-    private List<Request> updateRequests(int foodFloor) {
+    private List<Request> _updateRequests(int foodFloor) {
         List<Request> requests = new ArrayList<>();
-        requests.add(new TagRequest(group, new ResourceTag("food"), foodFloor,
-                foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1, getFoodPenalty(), getFoodReward()));
+        Request foodRequest = new TagRequest(
+                group,
+                new ResourceTag("food"),
+                foodFloor,
+                foodFloor + group.getPopulationCenter().getPopulation() / 100 + 1,
+                getFoodPenalty(),
+                getFoodReward()
+        );
+        requests.add(foodRequest);
+
         if (group.getTerritoryCenter().getTerritory().getMinTemperature() < 0) {
             requests.add(new TagRequest(
                     group,
@@ -94,26 +103,50 @@ public class CultureCenter {
                     getPassingReward()
             ));
         }
-        int neededClothes = group.getPopulationCenter().getPopulation() -
-                group.getResourceCenter().getPack().getAmount(r ->
-                        r.getTags().contains(new ResourceTag("Clothes"))
-                );
-        if (neededClothes > 0) {
-            requests.add(new TagRequest(
-                    group,
-                    new ResourceTag("Clothes"),
-                    neededClothes,
-                    neededClothes,
-                    addNeed(new TagLabeler(new ResourceTag("clothes"))),
-                    getPassingReward()
-            ));
-        } else if (group.getPopulationCenter().getPopulation() > 0) {
-            int h = 0;
+
+        if (turnRequests.getResultStatus().containsKey(foodRequest) &&
+                turnRequests.getResultStatus().get(foodRequest).getStatus() != ResultStatus.NotSatisfied) {
+            ResourceEvaluator clothesEvaluator = EvaluatorsKt.tagEvaluator(new ResourceTag("clothes"));
+            int neededClothes = group.getPopulationCenter().getPopulation() -
+                    (int) clothesEvaluator.evaluate(group.getResourceCenter().getPack());
+            if (neededClothes > 0) {
+                requests.add(new TagRequest(
+                        group,
+                        new ResourceTag("clothes"),
+                        neededClothes,
+                        neededClothes,
+                        unite(List.of(
+                                addNeed(new TagLabeler(new ResourceTag("clothes"))),
+                                put()
+                        )),
+                        put()
+                ));
+            } else if (group.getPopulationCenter().getPopulation() > 0) {
+                int h = 0;
+            }
+
+            ResourceEvaluator shelterEvaluator = EvaluatorsKt.tagEvaluator(new ResourceTag("shelter"));
+            int neededShelter = group.getPopulationCenter().getPopulation() -
+                    (int) shelterEvaluator.evaluate(group.getResourceCenter().getPack());
+            if (neededShelter > 0) {
+                requests.add(new TagRequest(
+                        group,
+                        new ResourceTag("shelter"),
+                        neededClothes,
+                        neededClothes,
+                        unite(List.of(
+                                addNeed(new TagLabeler(new ResourceTag("shelter"))),
+                                put()
+                        )),
+                        put()
+                ));
+            } else if (group.getPopulationCenter().getPopulation() > 0) {
+                int h = 0;
+            }
         }
         cultureAspectCenter.getAspectPool().getAspectRequests(group).stream()
                 .filter(Objects::nonNull)
                 .forEach(requests::add);
-
         return requests;
     }
 

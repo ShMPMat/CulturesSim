@@ -1,30 +1,26 @@
 package simulation.culture.group.centers;
 
 import extra.OutputFunc;
-
-import static shmp.random.RandomProbabilitiesKt.testProbability;
-import static shmp.random.RandomCollectionsKt.*;
-
 import kotlin.Pair;
 import simulation.Event;
-import simulation.culture.aspect.*;
+import simulation.culture.aspect.Aspect;
 import simulation.culture.group.*;
 import simulation.culture.group.cultureaspect.CultureAspect;
-import simulation.culture.group.intergroup.Relation;
 import simulation.culture.group.request.Request;
-import simulation.culture.group.request.RequestPool;
 import simulation.culture.thinking.meaning.GroupMemes;
 import simulation.culture.thinking.meaning.MemeSubject;
 import simulation.space.Territory;
+import simulation.space.resource.MutableResourcePack;
 import simulation.space.resource.ResourcePack;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
-import simulation.space.resource.MutableResourcePack;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static simulation.Controller.*;
+import static shmp.random.RandomCollectionsKt.randomElement;
+import static shmp.random.RandomProbabilitiesKt.testProbability;
+import static simulation.Controller.session;
 
 public class Group {
     public State state = State.Live;
@@ -37,8 +33,6 @@ public class Group {
     private PopulationCenter populationCenter;
     private RelationCenter relationCenter;
     private ResourceCenter resourceCenter;
-
-    private RequestPool turnRequests = new RequestPool(new HashMap<>());
 
     private int _direNeedTurns = 0;
 
@@ -136,8 +130,8 @@ public class Group {
     public void update() {
         long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
-        turnRequests = getCultureCenter().getRequests(populationCenter.getPopulation() / fertility + 1);
-        populationCenter.executeRequests(turnRequests);
+        cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
+        populationCenter.executeRequests(cultureCenter.getTurnRequests());
         territoryCenter.update();
         if (state == State.Dead) {
             return;
@@ -227,7 +221,7 @@ public class Group {
     }
 
     public void intergroupUpdate() {
-        relationCenter.requestTrade(turnRequests);
+        relationCenter.requestTrade(cultureCenter.getTurnRequests());
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> toUpdate = getOverallTerritory()
                     .getOuterBrink()//TODO dont like territory checks in Group
@@ -244,7 +238,7 @@ public class Group {
     }
 
     public void finishUpdate() {
-        resourceCenter.addAll(turnRequests.finish());
+        resourceCenter.addAll(cultureCenter.getTurnRequests().finish());
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
         populationCenter.finishUpdate(this);
         resourceCenter.finishUpdate();
@@ -339,7 +333,7 @@ public class Group {
                 .append(populationCenter.toString())
                 .append("\n").append(relationCenter)
                 .append("\n");
-        builder.append(turnRequests);
+        builder.append(cultureCenter.getTurnRequests());
         builder = OutputFunc.chompToSize(builder, 70);
 
         return builder.toString();
