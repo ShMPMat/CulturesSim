@@ -148,7 +148,14 @@ fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile)
 fun groupConglomerateMapper(groupConglomerate: GroupConglomerate, tile: Tile) =
         if (groupConglomerate.territory.contains(tile))
             when {
-                groupConglomerate.subgroups.any { it.territoryCenter.territory.contains(tile) } -> "\u001b[31mO"
+                tile.resourcePack.any { it.baseName.contains("House") } -> "\u001b[31m+"
+                else -> MARK
+            }
+        else NOTHING
+
+fun groupMapper(group: Group, tile: Tile) =
+        if (group.territoryCenter.territory.contains(tile))
+            when {
                 tile.resourcePack.any { it.baseName.contains("House") } -> "\u001b[31m+"
                 else -> MARK
             }

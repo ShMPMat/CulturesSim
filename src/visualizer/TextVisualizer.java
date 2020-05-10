@@ -301,6 +301,11 @@ public class TextVisualizer implements Visualizer {
         System.out.println(groupConglomerate);
     }
 
+    private void printGroup(Group group) {
+        printMap(t -> TileMapperFunctionsKt.groupMapper(group, t));
+        System.out.println(group);
+    }
+
     private void printResource(Resource resource) {
         printMap(tile -> (tile.getResourcePack().any(r -> r.getSimpleName().equals(resource.getSimpleName())
                 && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
@@ -350,10 +355,21 @@ public class TextVisualizer implements Visualizer {
                         continue;
                     }
                     switch (getCommand(line)) {
-                        case Conglomerate:
-                            printGroupConglomerate(world.getGroups().get(Integer.parseInt(line.substring(1))));
+                        case Conglomerate: {
+                            Optional<GroupConglomerate> conglomerate = world.getGroups().stream()
+                                    .filter(g -> g.getName().equals(line)).findFirst();
+                            Optional<Group> group = world.getGroups().stream()
+                                    .flatMap(c -> c.subgroups.stream())
+                                    .filter(g -> g.name.equals(line)).findFirst();
+                            if (conglomerate.isPresent()) {
+                                printGroupConglomerate(conglomerate.get());
+                            } else if (group.isPresent()) {
+                                printGroup(group.get());
+                            } else {
+                                System.out.println("No such Group exist");
+                            }
                             break;
-                        case GroupTileReach: {
+                        } case GroupTileReach: {
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
                             if (group == null) {
                                 break;
