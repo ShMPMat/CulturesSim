@@ -1,0 +1,35 @@
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
+-Cloth           0       0.5    100        -500   500  100000000 2             1 1 0  Artifact     @Cloth
+        $clothes:1
+        +MakeClothes:Clothes:1
+
+-Clothes         0       0.5    100        -500   500  100000000 3             1 1 0  Artifact     @Cloth
+
+-FurClothes      0       0.5    100        -500   500  100000000 3             1 1 0  Artifact     @Fur
+        $clothes:1
+
+-StoneAxe        0       0.1    10000      -500   500  100000000 0             1 1 0  Artifact     @Stone
+        $weapon:3
+
+-HandPlough      0       0.5    10000      -500   500  100000000 10            1 1 0  Artifact     @TEMPLATE
+        &a(PlantSeed)-0.02
+        U
+
+-House           0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
+
+-Temple          0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
+        U
+
+-Farm            0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
+        &a(PlantSeed)-0.5
+        U
+
+-Dish            0       0.1    10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
+
+-Boat            0       2      10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
+
+-Spear           0       1      10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
+
+-Dye             0       0.05   10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
+        $colour:3
+

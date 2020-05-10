@@ -1,0 +1,17 @@
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
+-Meat            0       0.1    5          -500   500  100000000 0             1 1 0  None         @Meat
+
+-Fat             0       0.1    5          -500   500  100000000 0             1 1 0  None         @Fat
+
+-Bone            0       0.1    1000       -500   500  100000000 0             1 1 0  None         @Bone
+
+-SeaShell        0       0.03   1000       -500   500  100000000 0             1 1 0  None         @SeaShell
+
+-Chitin          0       0.02   1000       -500   500  100000000 0             1 1 0  None         @Chitin
+
+-Fur             0       0.1    50         -500   500  100000000 0             1 1 0  None         @Fur
+        +MakeClothes:FurClothes:1
+
+-Feather         0       0.05   50         -500   500  100000000 0             1 1 0  None         @Feather
+
+-Blood           0       0.05   50         -500   500  100000000 0             1 1 0  None         @Blood

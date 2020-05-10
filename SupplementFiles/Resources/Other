@@ -1,0 +1,21 @@
+/         M - isMoving (whether can be moved), L - hasLegacy, N - canMove
+/
+/         ~tag labeler template with comma as a divisor
+/          :Required amount per Resource
+/          :Deprivation coefficient (the bigger it is the harder the time without this resource)
+/          :Whether necessary
+/          :TypeName
+/          R - whether Resource will resist
+/
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
+-Fibre           0       0.5    100        -500   500  100000000 1             1 1 0  None         @Fibre
+        +Weaving:Cloth:1
+-Fire            0       0.5    2          -500   500  100000000 0             1 0 0  None         @Flame
+
+-Ash             0       0.5    50         -500   500  100000000 0             1 0 0  None         @Ash
+
+-Vapour          0       0.01   1000000000 -1000  1000 25        0             1 0 1  None         @Water
+
+-Snow            0       0.1    1000000000 -1000  0    100000000 0             1 0 0  None         @Water
+
+-Water           0       10     1000000000 -1000  1000 100000000 0             1 0 0  None         @Water

@@ -13,9 +13,12 @@ import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.streams.toList
 
 class ResourceInstantiation(
-        private val path: String,
+        private val folderPath: String,
         private val aspectPool: AspectPool,
         private val materialPool: MaterialPool,
         private val allowedTags: Collection<ResourceTag>
@@ -24,13 +27,16 @@ class ResourceInstantiation(
     var resourcePool = ResourcePool(listOf())
 
     fun createPool(): ResourcePool {
-        val inputDatabase = InputDatabase(path)
+        val resourceFolders = Files.walk(Paths.get(folderPath)).toList().drop(1)
         var line: String?
         var tags: Array<String>
-        while (true) {
-            line = inputDatabase.readLine() ?: break
-            tags = line.split("\\s+".toRegex()).toTypedArray()
-            resourceTemplates.add(createResource(tags))
+        for (path in resourceFolders) {
+            val inputDatabase = InputDatabase(path.toString())
+            while (true) {
+                line = inputDatabase.readLine() ?: break
+                tags = line.split("\\s+".toRegex()).toTypedArray()
+                resourceTemplates.add(createResource(tags))
+            }
         }
         resourcePool = ResourcePool(resourceTemplates.map { it.resource })
         resourceTemplates.forEach { actualizeLinks(it) }
