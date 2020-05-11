@@ -103,6 +103,10 @@ public class Group {
         return parentGroup;
     }
 
+    public int getFertility() {
+        return fertility;
+    }
+
     public void setParentGroup(GroupConglomerate parentGroup) {
         this.parentGroup = parentGroup;
     }
@@ -130,8 +134,8 @@ public class Group {
     public void update() {
         long others = System.nanoTime();
         populationCenter.update(territoryCenter.getAccessibleTerritory(), this);
-        cultureCenter.updateRequests(populationCenter.getPopulation() / fertility + 1);
-        populationCenter.executeRequests(cultureCenter.getTurnRequests());
+        cultureCenter.getRequestCenter().updateRequests(this);
+        populationCenter.executeRequests(cultureCenter.getRequestCenter().getTurnRequests());
         territoryCenter.update();
         if (state == State.Dead) {
             return;
@@ -221,7 +225,7 @@ public class Group {
     }
 
     public void intergroupUpdate() {
-        relationCenter.requestTrade(cultureCenter.getTurnRequests());
+        relationCenter.requestTrade(cultureCenter.getRequestCenter().getTurnRequests());
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> toUpdate = getOverallTerritory()
                     .getOuterBrink()//TODO dont like territory checks in Group
@@ -238,7 +242,7 @@ public class Group {
     }
 
     public void finishUpdate() {
-        resourceCenter.addAll(cultureCenter.getTurnRequests().finish());
+        resourceCenter.addAll(cultureCenter.getRequestCenter().getTurnRequests().finish());
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
         populationCenter.finishUpdate(this);
         resourceCenter.finishUpdate();
@@ -333,7 +337,7 @@ public class Group {
                 .append(populationCenter.toString())
                 .append("\n").append(relationCenter)
                 .append("\n");
-        builder.append(cultureCenter.getTurnRequests());
+        builder.append(cultureCenter.getRequestCenter().getTurnRequests());
         builder = OutputFunc.chompToSize(builder, 70);
 
         return builder.toString();

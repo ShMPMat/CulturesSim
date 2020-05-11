@@ -57,6 +57,9 @@ public class Resource {
     }
 
     public boolean isEmpty() {
+        if (amount < 0) {
+            int h = 0;
+        }
         return amount == 0;
     }
 

@@ -137,9 +137,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                         * controller.evaluator.evaluate(producedResources)).toInt(),
                         controller.ceiling
         )
-//        if (controller.evaluator.evaluate(producedResources) < 1) {
-//            val k = 9
-//        }
         controller.setMax(allowedAmount)
         val node = ResultNode(this)
         if (controller.ceiling > 0)
@@ -167,16 +164,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                 tooManyFailsThisTurn = true
         }
         used = false
-//        if (name.contains("PlantSeed") && controller.populationCenter.turnResources.resources.any { it.fullName.contains("Seed") && it.amount > 0} && !controller.isCeilingExceeded(meaningfulPack)) {
-//
-//            val got = controller.populationCenter.turnResources.resources.filter { it.fullName.contains("Seed") }
-//            val j = 0
-//        } else if (name.contains("PlantSeed")) {
-//
-//            val j = 0
-//        }
-//        _debug = null
-//        _debugEnd = null
         return AspectResult(isFinished, neededResources, meaningfulPack, node)
     }
 
