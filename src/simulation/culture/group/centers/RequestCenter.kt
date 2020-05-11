@@ -22,24 +22,8 @@ class RequestCenter {
 
         if (turnRequests.resultStatus.containsKey(constructFoodRequest(group)) &&
                 turnRequests.resultStatus[constructFoodRequest(group)]?.status !== ResultStatus.NotSatisfied) {
-            val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
-            val neededClothes = group.populationCenter.population -
-                    clothesEvaluator.evaluate(group.resourceCenter.pack).toInt()
-            if (neededClothes > 0) {
-                _unfinishedRequestMap[constructTagRequest(group, ResourceTag("clothes"), neededClothes)] =
-                        MutableResourcePack()
-            } else if (group.populationCenter.population > 0) {
-                val h = 0
-            }
-            val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
-            val neededShelter = group.populationCenter.population -
-                    shelterEvaluator.evaluate(group.resourceCenter.pack).toInt()
-            if (neededShelter > 0) {
-                _unfinishedRequestMap[constructTagRequest(group, ResourceTag("shelter"), neededClothes)] =
-                        MutableResourcePack()
-            } else if (group.populationCenter.population > 0) {
-                val h = 0
-            }
+            addClothesRequest(group)
+            addShelterRequest(group)
         }
 
         group.cultureCenter.cultureAspectCenter.aspectPool.getAspectRequests(group)
@@ -56,6 +40,26 @@ class RequestCenter {
     private fun addWarmthRequest(group: Group) {
         if (group.territoryCenter.territory.minTemperature < 0)
             _unfinishedRequestMap[constructWarmthRequest(group)] = MutableResourcePack()
+    }
+
+    private fun addClothesRequest(group: Group) {
+        val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
+        val neededClothes = group.populationCenter.population -
+                clothesEvaluator.evaluate(group.resourceCenter.pack).toInt()
+        if (neededClothes > 0) {
+            _unfinishedRequestMap[constructTagRequest(group, ResourceTag("clothes"), neededClothes)] =
+                    MutableResourcePack()
+        }
+    }
+
+    private fun addShelterRequest(group: Group) {
+        val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
+        val neededShelter = group.populationCenter.population -
+                shelterEvaluator.evaluate(group.resourceCenter.pack).toInt()
+        if (neededShelter > 0) {
+            _unfinishedRequestMap[constructTagRequest(group, ResourceTag("shelter"), neededShelter)] =
+                    MutableResourcePack()
+        }
     }
 
     private fun constructFoodRequest(group: Group): Request {

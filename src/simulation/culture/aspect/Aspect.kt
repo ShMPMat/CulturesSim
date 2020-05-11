@@ -76,14 +76,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open fun canTakeResources() = false
 
-    @Deprecated("")
-    fun mergeDependencies(aspect: Aspect) { //TODO what's going on here?
-        if (aspect != this)
-            return
-        for (tag in dependencies.map.keys)
-            dependencies.map.getValue(tag).addAll(aspect.dependencies.map.getValue(tag))
-    }
-
     fun addOneDependency(newDependencies: AspectDependencies) {
         for (tag in dependencies.map.keys) try {
             for (dependency1 in newDependencies.map.getValue(tag)) {
