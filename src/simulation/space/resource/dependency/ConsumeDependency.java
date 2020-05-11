@@ -31,7 +31,7 @@ public class ConsumeDependency extends LabelerDependency {
                 }
                 if (isResourceDependency(res)) {
                     Resource part = res.getPart(partByResource(res, neededAmount - currentAmount));
-                    if (part.getAmount() > 0) {
+                    if (part.isNotEmpty()) {
                         lastConsumed.add(part.getFullName());
                         currentAmount += part.getAmount() * oneResourceWorth(res);
                     }

@@ -88,7 +88,7 @@ class ResourceCenter(
     fun hasDireNeed() = neededResourcesMap.any { it.value.importance >= _direBound }
 
     fun finishUpdate() {
-        place.owned.resources.filter { it.amount > 0 }.forEach {
+        place.owned.resources.filter { it.isNotEmpty }.forEach {
             if (!place.tile.resourcesWithMoved.contains(it)) {
                 val s = 0
             }

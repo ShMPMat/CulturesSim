@@ -20,7 +20,7 @@
 -Nut             0       0.02   5          -500   500  100000000 0             1 1 0  None         @Nut
 
 -ConiferCone     0       0.05   20         -500   500  100000000 0             1 1 0  None         @Wood
-        ^Nut:15
+        ^Wood:1  ^Nut:15
 
 -Seed            0       0.01   100        -500   500  100000000 0             1 1 0  None         @Seed
         +PlantSeed:LEGACY:1

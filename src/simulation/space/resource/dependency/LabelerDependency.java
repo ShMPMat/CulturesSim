@@ -41,7 +41,7 @@ public abstract class LabelerDependency extends CoefficientDependency {
     }
 
     public boolean isResourceDependency(Resource resource) {
-        return goodResource.isSuitable(resource.getGenome()) && resource.getAmount() > 0;
+        return goodResource.isSuitable(resource.getGenome()) && resource.isNotEmpty();
     }
 
     public int oneResourceWorth(Resource resource) {

@@ -175,7 +175,7 @@ public class Tile {
     }
 
     private void addResource(Resource resource) {
-        if (resource.getAmount() == 0) {
+        if (resource.isEmpty()) {
             return;
         }
         resourcePack.add(resource);
@@ -187,7 +187,7 @@ public class Tile {
      * @param resource resource which will be added.
      */
     public void addDelayedResource(Resource resource) {
-        if (resource.getAmount() == 0) {
+        if (resource.isEmpty()) {
             return;
         }
         _delayedResources.add(resource);

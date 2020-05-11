@@ -21,7 +21,7 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
     override fun use(controller: AspectController): AspectResult {
         val result = super.use(controller)
         val res = ArrayList(result.resources.getResourceAndRemove(resource).resources)
-        res.removeIf { it.amount == 0 }
+        res.removeIf { it.isEmpty }
         result.resources.addAll(res.map { it.insertMeaning(controller.meaning, result) })
         return result
     }

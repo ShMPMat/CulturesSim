@@ -56,6 +56,14 @@ public class Resource {
         return resourceCore.getAspectConversion();
     }
 
+    public boolean isEmpty() {
+        return amount == 0;
+    }
+
+    public  boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     void computeHash() {
         _hash = Objects.hash(getFullName());
     }

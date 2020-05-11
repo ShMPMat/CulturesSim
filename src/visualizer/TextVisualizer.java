@@ -256,7 +256,7 @@ public class TextVisualizer implements Visualizer {
                             case Growth:
                             case Normal:
                                 List<Resource> actual = tile.getResourcePack().getResources(r ->
-                                        r.getGenome().getType() != Genome.Type.Plant && r.getAmount() > 0 &&
+                                        r.getGenome().getType() != Genome.Type.Plant && r.isNotEmpty() &&
                                                 !r.getSimpleName().equals("Vapour")).getResources();
                                 if (/*actual.size() > 0*/ false) {
                                     token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
@@ -308,7 +308,7 @@ public class TextVisualizer implements Visualizer {
 
     private void printResource(Resource resource) {
         printMap(tile -> (tile.getResourcePack().any(r -> r.getSimpleName().equals(resource.getSimpleName())
-                && r.getAmount() > 0) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
+                && r.isNotEmpty()) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
         System.out.println(PrintFunctionsKt.printResource(resource));
     }
 

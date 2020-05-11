@@ -27,7 +27,7 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         if (tile.x == 30 && tile.y == 60) {
             val k = 0
         }
-        if (resource.amount == 0) return
+        if (resource.isEmpty) return
         if (_owned.any { it.ownershipMarker != ownershipMarker }) {
             val j = 0
         }
