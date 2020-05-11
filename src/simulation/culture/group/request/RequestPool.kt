@@ -8,7 +8,7 @@ data class RequestPool(val requests: Map<Request, MutableResourcePack>) {
 
     fun finish(): ResourcePack {
         resultStatus.putAll(requests.entries.map { it.key to it.key.end(it.value) })
-        return ResourcePack(requests.values.flatMap { it.resources }.map { it.copy(it.amount) })
+        return ResourcePack(requests.values.flatMap { it.resources }.map { it.exactCopy() })
     }
 
     override fun toString() = if (resultStatus.isEmpty()) "No requests were finished"

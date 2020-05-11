@@ -41,7 +41,7 @@ abstract class Request(
                 { r, n -> listOf(r.getCleanPart(n)) }
         )
         val amount = evaluator.evaluate(partPack)
-        val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.copy(it.amount) })
+        val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.exactCopy() })
 
         if (amount < floor) {
             penalty(Pair(group, partPack), amount / floor.toDouble())

@@ -167,13 +167,17 @@ public class Resource {
     }
 
     public Resource copy() {
-        Resource resource = resourceCore.copy();
+        Resource resource = new Resource(resourceCore);
         resource.setOwnershipMarker(ownershipMarker);
         return resource;
     }
 
+    public Resource exactCopy() {
+        return copy(amount);
+    }
+
     public Resource copy(int amount) {
-        Resource resource = resourceCore.copy(amount);
+        Resource resource = new Resource(resourceCore, amount);
         resource.setOwnershipMarker(ownershipMarker);
         return resource;
     }

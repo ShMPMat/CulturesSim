@@ -6,8 +6,6 @@ import simulation.culture.group.centers.starve
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.ResourceLabeler
-import simulation.space.resource.tag.labeler.TagLabeler
-import java.util.function.BiFunction
 
 /**
  * This operation is not commutative.
