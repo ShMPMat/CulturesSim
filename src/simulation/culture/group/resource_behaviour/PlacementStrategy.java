@@ -77,14 +77,15 @@ public class PlacementStrategy {
             return specialTiles.get(index);
         }
         for (int i = 0; i < 5; i++) {
-            Tile tile = SpaceProbabilityFuncs.randomTile(controlledTerritory);
-            if (!controlledTerritory.contains(tile)) {
-                specialTiles.add(tile);
-                return tile;
+            try {
+                Tile tile = SpaceProbabilityFuncs.randomTile(controlledTerritory);
+                if (!controlledTerritory.contains(tile)) {
+                    specialTiles.add(tile);
+                    return tile;
+                }
+            } catch (Exception e) {
+                int b = 0;
             }
-        }
-        if (specialTiles.size() == 0) {
-            int i = 0;
         }
         return randomElement(specialTiles, session.random);
     }

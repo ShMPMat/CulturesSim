@@ -10,6 +10,7 @@ import simulation.culture.group.GroupError;
 import simulation.culture.group.request.ExecutedRequestResult;
 import simulation.culture.group.stratum.AspectStratum;
 import simulation.culture.group.stratum.Stratum;
+import simulation.culture.group.stratum.WarriorStratum;
 import simulation.culture.group.stratum.WorkerBunch;
 import simulation.culture.group.request.Request;
 import simulation.culture.group.request.RequestPool;
@@ -35,6 +36,7 @@ public class PopulationCenter {
         this.population = population;
         this.maxPopulation = maxPopulation;
         this.minPopulation = minPopulation;
+        addStratum(new WarriorStratum());
     }
 
     public int getPopulation() {

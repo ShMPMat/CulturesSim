@@ -14,7 +14,7 @@ class ResourceBehaviour(private val placementStrategy: PlacementStrategy) {
 }
 
 fun getRandom(group: Group, random: Random): ResourceBehaviour = ResourceBehaviour(PlacementStrategy(
-        group.overallTerritory,
+        group.territoryCenter.territory,
         randomElement(
                 PlacementStrategy.Strategy.values().toList(),
                 random

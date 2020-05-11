@@ -239,15 +239,8 @@ public class Group {
             relationCenter.updateRelations(toUpdate, this);
         }
         cultureCenter.intergroupUpdate();
-        if (testProbability(0.1, session.random)) {
-            List<Group> options = territoryCenter.getAllNearGroups(this).stream()
-                    .filter(g -> g.parentGroup != parentGroup).collect(Collectors.toList());
-            if (!options.isEmpty()) {
-                Group target = randomElement(options, session.random);
-                return new Transfer(target);
-            }
-        }
-        return null;
+        return relationCenter.update(this);
+
     }
 
     public void finishUpdate() {
