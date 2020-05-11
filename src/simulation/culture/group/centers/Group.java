@@ -224,7 +224,7 @@ public class Group {
         return null;
     }
 
-    public void intergroupUpdate() {
+    public ConglomerateCommand intergroupUpdate() {
         relationCenter.requestTrade(cultureCenter.getRequestCenter().getTurnRequests());
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             List<Group> toUpdate = getOverallTerritory()
@@ -239,6 +239,15 @@ public class Group {
             relationCenter.updateRelations(toUpdate, this);
         }
         cultureCenter.intergroupUpdate();
+        if (testProbability(0.1, session.random)) {
+            List<Group> options = territoryCenter.getAllNearGroups(this).stream()
+                    .filter(g -> g.parentGroup != parentGroup).collect(Collectors.toList());
+            if (!options.isEmpty()) {
+                Group target = randomElement(options, session.random);
+                return new Transfer(target);
+            }
+        }
+        return null;
     }
 
     public void finishUpdate() {
