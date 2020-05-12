@@ -125,7 +125,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
             .map { it.other.parentGroup }
             .distinct()
             .joinToString("\n") {
-                "${it.name} average - ${getAvgConglomerateRelation(it)}, min - ${getMaxConglomerateRelation(it)}, " +
+                "${it.name} average - ${getAvgConglomerateRelation(it)}, min - ${getMinConglomerateRelation(it)}, " +
                         "max - ${getMaxConglomerateRelation(it)}\n"
             }
 }
