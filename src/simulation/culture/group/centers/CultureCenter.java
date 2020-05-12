@@ -186,4 +186,8 @@ public class CultureCenter {
     public void die() {
         cultureAspectCenter.die(group);
     }
+
+    public void finishUpdate() {
+        requestCenter.finishUpdate();
+    }
 }

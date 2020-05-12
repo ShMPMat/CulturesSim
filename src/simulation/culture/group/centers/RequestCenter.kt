@@ -6,12 +6,23 @@ import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*
-import java.util.List
+import kotlin.math.max
+import kotlin.math.sqrt
 
 class RequestCenter {
     private var _unfinishedRequestMap = mutableMapOf<Request, MutableResourcePack>()
     var turnRequests = RequestPool(HashMap())
         private set
+
+    private val nerfCoefficients = mutableMapOf<Request, Int>()
+
+    private fun getRequestNerfCoefficient(request: Request, amount: Int): Int {
+        val coefficient = max(
+                nerfCoefficients[request] ?: 1,
+                1
+        ).toDouble()
+        return max(1.0, amount / coefficient).toInt()
+    }
 
     fun updateRequests(group: Group) {
         _unfinishedRequestMap = mutableMapOf()
@@ -83,12 +94,31 @@ class RequestCenter {
             passingReward
     )
 
-    private fun constructTagRequest(group: Group, tag: ResourceTag, amount: Int) = TagRequest(
-            group,
-            tag,
-            amount,
-            amount,
-            unite(listOf(addNeed(TagLabeler(tag)), put())),
-            put()
-    )
+    private fun constructTagRequest(group: Group, tag: ResourceTag, amount: Int): TagRequest {
+        val notFinal = TagRequest(group, tag, amount, amount, put(), put())
+        val nerfed = getRequestNerfCoefficient(notFinal, amount)
+        return TagRequest(
+                group,
+                tag,
+                nerfed,
+                nerfed,
+                unite(listOf(addNeed(TagLabeler(tag)), put())),
+                put()
+        )
+    }
+
+    fun finishUpdate() {
+        for ((req, res) in turnRequests.resultStatus) {
+            nerfCoefficients[req] =
+                    if (res.status == ResultStatus.NotSatisfied)
+                        (nerfCoefficients[req] ?: 0) + 1
+                    else
+                        (nerfCoefficients[req] ?: 0) / 2
+        }
+    }
+
+    override fun toString() = if (turnRequests.resultStatus.isEmpty()) "No requests were finished"
+    else "Finished requests:\n" +
+            turnRequests.resultStatus.entries.joinToString("\n")
+            { (req, res) -> "$req - $res, unfinished estimation ${nerfCoefficients[req]}" }
 }

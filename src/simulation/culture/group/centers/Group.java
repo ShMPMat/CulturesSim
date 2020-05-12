@@ -248,6 +248,7 @@ public class Group {
         populationCenter.manageNewAspects(getCultureCenter().finishAspectUpdate());
         populationCenter.finishUpdate(this);
         resourceCenter.finishUpdate();
+        cultureCenter.finishUpdate();
     }
 
     public boolean diverge() {
@@ -339,7 +340,7 @@ public class Group {
                 .append(populationCenter.toString())
                 .append("\n").append(relationCenter)
                 .append("\n");
-        builder.append(cultureCenter.getRequestCenter().getTurnRequests());
+        builder.append(cultureCenter.getRequestCenter());
         builder = OutputFunc.chompToSize(builder, 70);
 
         return builder.toString();
