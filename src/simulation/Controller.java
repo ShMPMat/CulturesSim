@@ -23,6 +23,7 @@ public class Controller {
     public final Random random = RandomKt.Random(8565728 + 2);
 
     public final int proportionCoefficient = 1;
+    public final int resourceProportionCoefficient = 100;
     public final boolean doTurns = true;
 
     public final int geologyTurns = 50;

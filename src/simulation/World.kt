@@ -49,7 +49,8 @@ class World {
                 "SupplementFiles/Resources",
                 aspectPool,
                 materialPool,
-                tags
+                tags,
+                session.resourceProportionCoefficient
         ).createPool()
         map = generateMap(
                 data.mapSizeX,

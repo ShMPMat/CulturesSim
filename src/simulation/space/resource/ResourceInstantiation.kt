@@ -15,13 +15,15 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.math.min
 import kotlin.streams.toList
 
 class ResourceInstantiation(
         private val folderPath: String,
         private val aspectPool: AspectPool,
         private val materialPool: MaterialPool,
-        private val allowedTags: Collection<ResourceTag>
+        private val allowedTags: Collection<ResourceTag>,
+        private val amountCoefficient: Int = 1
 ) {
     private val resourceTemplates = ArrayList<ResourceTemplate>()
     var resourcePool = ResourcePool(listOf())
@@ -141,27 +143,27 @@ class ResourceInstantiation(
             }
         }
         var genome = Genome(
-                name,
-                Genome.Type.valueOf(tags[11]),
-                tags[2].toDouble(),
-                tags[1].toDouble(),
-                tags[4].toInt(),
-                tags[5].toInt(),
-                tags[7].toInt(),
-                tags[9] == "1",
-                false,
-                tags[8] == "1",
-                willResist,
-                isDesirable,
-                tags[9] == "1",
-                tags[3].toInt(),
-                tags[6].toInt(),
-                null,
-                null,
-                resourceDependencies,
-                resourceTags,
-                primaryMaterial,
-                secondaryMaterials
+                name = name,
+                type = Genome.Type.valueOf(tags[11]),
+                size = tags[2].toDouble(),
+                spreadProbability = tags[1].toDouble(),
+                temperatureMin = tags[4].toInt(),
+                temperatureMax = tags[5].toInt(),
+                baseDesirability = tags[7].toInt(),
+                canMove = tags[9] == "1",
+                isMutable = false,
+                isMovable = tags[8] == "1",
+                isResisting = willResist,
+                isDesirable = isDesirable,
+                hasLegacy = tags[9] == "1",
+                deathTime = tags[3].toInt(),
+                defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
+                legacy = null,
+                templateLegacy = null,
+                dependencies = resourceDependencies,
+                tags = resourceTags,
+                primaryMaterial = primaryMaterial,
+                secondaryMaterials = secondaryMaterials
         )
         if (isTemplate) {
             genome = GenomeTemplate(genome)
@@ -183,7 +185,7 @@ class ResourceInstantiation(
         val (resource, aspectConversion, _) = template
         for (entry in aspectConversion.entries) {
             resource.resourceCore.aspectConversion[entry.key] = entry.value
-                    .map {readConversion(template, it) }
+                    .map { readConversion(template, it) }
                     .toMutableList()
         }
         if (resource.resourceCore.materials.isEmpty()) {

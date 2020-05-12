@@ -259,10 +259,10 @@ public class Tile {
                 setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
+            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50 * session.resourceProportionCoefficient));
         }
         if (resourcePack.contains(session.world.getResourcePool().get("Water"))) {
-            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50));
+            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50 * session.resourceProportionCoefficient));
         }
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;
