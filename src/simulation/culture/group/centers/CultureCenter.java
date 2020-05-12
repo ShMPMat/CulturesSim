@@ -152,7 +152,7 @@ public class CultureCenter {
         if (pair.getSecond() == null) {
             events.add(new Event(
                     Event.Type.AspectGaining,
-                    "Group " + group.name + " developed aspect " + pair.getFirst().getName(),
+                    "Group " + group.getName() + " developed aspect " + pair.getFirst().getName(),
                     "group", this
             ));
         } else {
@@ -160,9 +160,9 @@ public class CultureCenter {
                     Event.Type.AspectGaining,
                     String.format(
                             "Group %s took aspect %s from group %s",
-                            group.name,
+                            group.getName(),
                             pair.getFirst().getName(),
-                            pair.getSecond().name
+                            pair.getSecond().getName()
                     ),
                     "group", this
             ));
@@ -173,7 +173,7 @@ public class CultureCenter {
         Set<Aspect> aspects = aspectCenter.finishUpdate();
         aspects.forEach(a -> {
             memePool.addAspectMemes(a);
-            memePool.addMemeCombination((new MemeSubject(group.name).addPredicate(
+            memePool.addMemeCombination((new MemeSubject(group.getName()).addPredicate(
                     session.world.getPoolMeme("acquireAspect").addPredicate(new MemeSubject(a.getName())))));
         });
         return aspects;

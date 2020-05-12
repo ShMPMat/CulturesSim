@@ -131,7 +131,8 @@ public class TextVisualizer implements Visualizer {
         }
         for (Event event : interactionModel.getEvents().stream().
                 filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
-            lastClaimedTiles.get(((Group) event.getAttribute("group")).name).add((Tile) event.getAttribute("tile"));
+            lastClaimedTiles.get(((Group) event.getAttribute("group")).getName())
+                    .add((Tile) event.getAttribute("tile"));
         }
         System.out.print(main.append(addToRight(
                 printedMap(tile -> ""),
@@ -360,7 +361,7 @@ public class TextVisualizer implements Visualizer {
                                     .filter(g -> g.getName().equals(line)).findFirst();
                             Optional<Group> group = world.getGroups().stream()
                                     .flatMap(c -> c.subgroups.stream())
-                                    .filter(g -> g.name.equals(line)).findFirst();
+                                    .filter(g -> g.getName().equals(line)).findFirst();
                             if (conglomerate.isPresent()) {
                                 printGroupConglomerate(conglomerate.get());
                             } else if (group.isPresent()) {

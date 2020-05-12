@@ -232,7 +232,7 @@ public class AspectStratum implements Stratum {
             List<Tile> goodTiles = group.getTerritoryCenter().getTerritory()
                     .getTiles(t -> resource.getGenome().isAcceptable(t));
             if (!goodTiles.isEmpty()) {
-                String tagType = "(Stratum " + aspect.getName() + " of " + group.name + ")";
+                String tagType = "(Stratum " + aspect.getName() + " of " + group.getName() + ")";
                 place = new Place(
                         randomElement(goodTiles, session.random),
                         new TileTag(tagType + "_" + places.size(), tagType)
