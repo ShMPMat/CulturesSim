@@ -30,26 +30,32 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     val relations: Collection<Relation>
         get() = relationsMap.values
 
+    fun getConglomerateGroups(conglomerate: GroupConglomerate) =
+            relations.filter { it.other.parentGroup == conglomerate }
+
     fun getAvgConglomerateRelation(conglomerate: GroupConglomerate): Double {
         val result = max(
-                relations.filter { it.other.parentGroup == conglomerate }
-                        .map { it.normalized }
-                        .average(),
+                getConglomerateGroups(conglomerate).map { it.normalized }.average(),
                 0.0000001
         )
         return if (result.isNaN()) 1.0 else result
     }
 
-    fun getNormalizedRelation(group: Group): Double {
-        return if (relationsMap.containsKey(group)) relationsMap[group]?.normalized ?: 0.0
-        else 1.0
-    }
+    fun getMinConglomerateRelation(conglomerate: GroupConglomerate) =
+            getConglomerateGroups(conglomerate).map { it.normalized }.min() ?: 1.0
+
+    fun getMaxConglomerateRelation(conglomerate: GroupConglomerate) =
+            getConglomerateGroups(conglomerate).map { it.normalized }.max() ?: 1.0
+
+    fun getNormalizedRelation(group: Group) =
+            if (relationsMap.containsKey(group)) relationsMap[group]?.normalized ?: 0.0
+            else 1.0
 
     fun evaluateTile(tile: Tile) = relations.map {
         (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.territory.center)).toInt()
     }.fold(0, Int::plus)
 
-    fun update(group: Group) : ConglomerateCommand? {
+    fun update(group: Group): ConglomerateCommand? {
         if (!testProbability(0.01, Controller.session.random)) return null
 
         val options = group.territoryCenter.getAllNearGroups(group).filter { it.parentGroup !== group.parentGroup }
@@ -118,5 +124,8 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     override fun toString() = relations
             .map { it.other.parentGroup }
             .distinct()
-            .joinToString("\n") { "${it.name} average - ${getAvgConglomerateRelation(it)}" }
+            .joinToString("\n") {
+                "${it.name} average - ${getAvgConglomerateRelation(it)}, min - ${getMaxConglomerateRelation(it)}, " +
+                        "max - ${getMaxConglomerateRelation(it)}\n"
+            }
 }
