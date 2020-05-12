@@ -86,11 +86,10 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     private fun updateRelations() {
         val dead: MutableList<Group> = ArrayList()
         for (relation in relationsMap.values) {
-            if (relation.other.state == Group.State.Dead) {
+            if (relation.other.state == Group.State.Dead)
                 dead.add(relation.other)
-            } else {
+            else
                 relation.positive = hostilityCalculator(relation)
-            }
         }
         dead.forEach { relationsMap.remove(it) }
     }

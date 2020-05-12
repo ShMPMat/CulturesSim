@@ -105,7 +105,7 @@ public class AspectStratum implements Stratum {
                 isRaisedAmount = true;
             }
         }
-        return new WorkerBunch(actualAmount, actualAmount);
+        return new WorkerBunch((int) (actualAmount * getEffectiveness()), actualAmount);
     }
 
     public void update(

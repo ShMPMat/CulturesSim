@@ -3,33 +3,51 @@ package simulation.culture.group.stratum
 import simulation.culture.group.centers.Group
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
-import kotlin.math.max
+import kotlin.math.ceil
 import kotlin.math.min
 
 class WarriorStratum : Stratum {
     var unusedTurns = 0
         private set
     private var usedThisTurn = false
-    var efficiency = 1.0
+    var _effectiveness = 1.0
         private set
+
+    private fun getEffectiveness(): Double {
+        if (_effectiveness == -1.0) _effectiveness = 1.0
+        return _effectiveness
+    }
+
+    private var workedPopulation = 0
 
     override var population: Int = 0
         private set
 
     override val freePopulation: Int
-        get() = population
+        get() = population - workedPopulation
 
     override fun decreaseAmount(amount: Int) {
         population -= amount
     }
 
     override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
-        if (amount <= 0)
+        if (amount <= 0) {
             return WorkerBunch(0, 0)
-        val additional = max(0, min(amount - population, maxOverhead))
-        population += additional
-        val resultAmount = min(population, amount)
-        return WorkerBunch(resultAmount, resultAmount)
+        }
+        usedThisTurn = true
+        var actualAmount = ceil(amount / getEffectiveness()).toInt()
+        if (actualAmount <= freePopulation) {
+            workedPopulation += actualAmount
+        } else {
+            val additional = min(maxOverhead, actualAmount - freePopulation)
+            actualAmount = additional + freePopulation
+            population += additional
+            workedPopulation = population
+//            if (additional > 0) {
+//                isRaisedAmount = true
+//            }
+        }
+        return WorkerBunch(actualAmount, actualAmount)
     }
 
     override fun update(
