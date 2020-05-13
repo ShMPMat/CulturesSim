@@ -12,7 +12,7 @@ import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
 data class CultWorship(
         val worship: Worship
-) : CultureAspect, WorshipObjectDependent {
+) : WorshipObjectDependent {
 
     override fun getRequest(group: Group): Request? = null
 

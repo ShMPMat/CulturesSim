@@ -9,7 +9,7 @@ class TaleSystem(
         tales: Collection<Tale>,
         val groupingMeme: Meme,
         val infoTag: String
-) : CultureAspect, WorshipObjectDependent {
+) : WorshipObjectDependent {
     val tales: MutableSet<Tale> = tales.toMutableSet()
     override fun getRequest(group: Group): Request? = null
 

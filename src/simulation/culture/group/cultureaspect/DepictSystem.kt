@@ -8,7 +8,7 @@ import java.util.*
 class DepictSystem(
         depictions: Collection<DepictObject>,
         val groupingMeme: Meme
-) : CultureAspect, WorshipObjectDependent {
+) : WorshipObjectDependent {
     val depictions: MutableSet<DepictObject> = depictions.toMutableSet()
 
     fun addDepiction(depiction: DepictObject) {

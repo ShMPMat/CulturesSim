@@ -3,6 +3,7 @@ package simulation.culture.group.cultureaspect
 import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemePredicate
+import simulation.culture.thinking.meaning.MemeSubject
 
 interface WorshipObject {
     val name: Meme
@@ -14,12 +15,14 @@ class MemeWorship(override val name: Meme) : WorshipObject {
 }
 
 class GodWorship(val godName: Meme, val sphere: Meme): WorshipObject {
-    override val name = godName.copy().addPredicate(MemePredicate("of").addPredicate(sphere.copy()))
+    override val name: Meme = MemeSubject("god").addPredicate(
+            godName.copy().addPredicate(MemePredicate("of").addPredicate(sphere.copy()))
+    )
 
     override fun copy(group: Group) = GodWorship(godName.copy(), sphere.copy())
 }
 
 
-interface WorshipObjectDependent {
+interface WorshipObjectDependent: CultureAspect {
     fun swapWorship(worshipObject: WorshipObject) : WorshipObjectDependent
 }

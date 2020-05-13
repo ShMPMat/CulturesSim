@@ -11,7 +11,7 @@ open class Worship(
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem,
         val placeSystem: PlaceSystem
-) : CultureAspect, WorshipObjectDependent {
+) : WorshipObjectDependent {
     init {
         if (worshipObject.name != taleSystem.groupingMeme || worshipObject.name != depictSystem.groupingMeme)
             throw GroupError("Inconsistent Worship: worship object's name is ${worshipObject.name}" +

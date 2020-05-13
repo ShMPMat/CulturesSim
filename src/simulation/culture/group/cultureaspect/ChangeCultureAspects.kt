@@ -1,6 +1,8 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
+import simulation.culture.group.GroupError
+import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random
@@ -94,4 +96,26 @@ fun takeOutCultWorship(
     val worship = randomElement(worships, random)
     aspectPool.remove(worship)
     return CultWorship(worship)
+}
+
+fun takeOutGod(
+        aspectPool: MutableCultureAspectPool,
+        group: Group,
+        random: Random
+): CultureAspect? {
+    val worshipsAndCults = aspectPool.all.filterIsInstance<Worship>().filter { it.worshipObject is MemeWorship }
+            .union(aspectPool.all.filterIsInstance<CultWorship>().filter { it.worship.worshipObject is MemeWorship })
+    if (worshipsAndCults.isEmpty()) return null
+    val chosen = randomElement(worshipsAndCults, random)
+    val meme = when (chosen) {
+        is Worship -> chosen.worshipObject.name
+        is CultWorship -> chosen.worship.worshipObject.name
+        else -> throw GroupError("Unexpected type of Worship")
+    }
+    val sphereMemes = group.cultureCenter.memePool.memes
+            .filterIsInstance<MemeSubject>()
+            .filter { it.predicates.isEmpty() }
+    val god = GodWorship(meme, randomElement(sphereMemes, { 1.0 / it.toString().length }, random))
+    aspectPool.remove(chosen)
+    return chosen.swapWorship(god)
 }

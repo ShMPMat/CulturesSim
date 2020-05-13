@@ -19,7 +19,11 @@ public class MemePredicate extends Meme {
 
     @Override
     public String toString() {
-        return observerWord;
+        StringBuilder stringBuilder = new StringBuilder(observerWord);
+        for (Meme meme : predicates) {
+            stringBuilder.append(" ").append(meme);
+        }
+        return stringBuilder.toString();
     }
 
     @Override
