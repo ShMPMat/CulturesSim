@@ -38,10 +38,10 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
         aspectMap[aspect.name] = aspect
     }
 
-    protected fun innerRemove(aspect: Aspect) {
+    protected fun innerRemove(aspect: Aspect) : Boolean {
         if (aspects.any { it is ConverseWrapper && it.aspect == aspect })
             throw GroupError("Cannot remove aspect ${aspect.name} while there are ConverseWrappers with it")
-        val innerAspect = aspectMap.remove(aspect.name) ?: return
+        val innerAspect = aspectMap.remove(aspect.name) ?: return false
         if (innerAspect is ConverseWrapper) {
             _cws.remove(innerAspect)
             if (_cwRequirements[innerAspect.resource] == null) {
@@ -57,6 +57,7 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
             a.dependencies.removeIf { it is LineDependency && it.converseWrapper == innerAspect
                     || it is AspectDependency && it.aspect == innerAspect}
         }
+        return true
     }
 
     fun getMeaningAspects() = aspects

@@ -26,7 +26,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
      * Equals to aspects added on the current turn
      */
     private val changedAspectPool = MutableAspectPool(HashSet())
-    private val _converseWrappers: MutableList<ConverseWrapper> = ArrayList()
+    private val _converseWrappers = mutableSetOf<ConverseWrapper>()
     private val _lastResourcesForCw: MutableList<Resource> = ArrayList()
 
     init {
@@ -231,22 +231,16 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         return ArrayList()
     }
 
-
-    private val _deleted = mutableListOf<Pair<Aspect, Set<Aspect>>>()
     fun update(crucialAspects: Collection<Aspect>) {
-        try {
-            _mutableAspectPool.converseWrappers.forEach { _mutableAspectPool.get(it.aspect) }
-        } catch (e: GroupError) {
-            val h = 0
-        }
         val unimportantAspects = aspectPool.all
                 .filter { it.usefulness < session.aspectFalloff }
                 .filter { it !in crucialAspects }
         if (unimportantAspects.isEmpty()) return
         val aspect = randomElement(unimportantAspects, session.random)
         if (aspect !in aspectPool.converseWrappers.map { it.aspect }) {
-            _mutableAspectPool.remove(aspect)
-            _deleted.add(aspect to _mutableAspectPool.all.toSet())
+            if (_mutableAspectPool.remove(aspect) && aspect !is ConverseWrapper) {
+                _converseWrappers.removeIf { it.aspect == aspect }
+            }
         }
     }
 }
