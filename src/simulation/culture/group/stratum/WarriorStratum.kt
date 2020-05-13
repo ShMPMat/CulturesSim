@@ -12,19 +12,19 @@ class WarriorStratum : Stratum {
     private var usedThisTurn = false
     var _effectiveness = 1.0
         private set
-
-    private fun getEffectiveness(): Double {
-        if (_effectiveness == -1.0) _effectiveness = 1.0
-        return _effectiveness
-    }
-
     private var workedPopulation = 0
-
     override var population: Int = 0
         private set
-
     override val freePopulation: Int
         get() = population - workedPopulation
+    override val importance: Int
+        get() = population * population - unusedTurns * unusedTurns
+
+    private val effectiveness: Double
+        get() {
+            if (_effectiveness == -1.0) _effectiveness = 1.0
+            return _effectiveness
+        }
 
     override fun decreaseAmount(amount: Int) {
         population -= amount
@@ -35,7 +35,7 @@ class WarriorStratum : Stratum {
             return WorkerBunch(0, 0)
         }
         usedThisTurn = true
-        var actualAmount = ceil(amount / getEffectiveness()).toInt()
+        var actualAmount = ceil(amount / effectiveness).toInt()
         if (actualAmount <= freePopulation) {
             workedPopulation += actualAmount
         } else {
@@ -68,6 +68,6 @@ class WarriorStratum : Stratum {
     }
 
     override fun toString(): String {
-        return "Stratum of warriors, population - $population"
+        return "Stratum of warriors, population - $population, effectiveness - $effectiveness, importance - $importance"
     }
 }

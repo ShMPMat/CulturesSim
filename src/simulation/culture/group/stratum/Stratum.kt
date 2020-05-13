@@ -7,6 +7,7 @@ import simulation.space.resource.MutableResourcePack
 interface Stratum {
     val population: Int
     val freePopulation: Int
+    val importance: Int
 
     fun decreaseAmount(amount: Int)
 

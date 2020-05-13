@@ -46,8 +46,9 @@ public class AspectStratum implements Stratum {
         });
     }
 
-    public int getWorkedAmount() {
-        return workedAmount;
+    @Override
+    public int getImportance() {
+        return aspect.getUsefulness();
     }
 
     public MutableResourcePack getInstrumentByTag(ResourceTag tag) {
@@ -274,8 +275,9 @@ public class AspectStratum implements Stratum {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Stratum with population ");
-        stringBuilder.append(population).append(", effectiveness ").append(getEffectiveness()).append(", ")
-                .append(aspect.getName()).append(" ");
+        stringBuilder.append(population).append(", effectiveness ").append(getEffectiveness())
+                .append(", importance ").append(getImportance())
+                .append(", ").append(aspect.getName()).append(" ");
 
         stringBuilder.append(", Places:");
         places.forEach(p -> stringBuilder.append(p).append(" "));
