@@ -37,6 +37,8 @@ public class Controller {
 
     public final double defaultGroupSpreadability = 1;
     public final int defaultGroupMaxPopulation = 1000;
+    public final int defaultGroupTerritoryRadius = 6;
+    public final int defaultGroupReach = defaultGroupTerritoryRadius + 1;
     public final int defaultGroupMinPopulationPerTile = 1;
     public final int defaultGroupFertility = 10;
     public final double defaultGroupExiting = 0.0002;

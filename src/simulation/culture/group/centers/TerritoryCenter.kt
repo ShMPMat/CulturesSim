@@ -2,14 +2,13 @@ package simulation.culture.group.centers
 
 import shmp.random.randomTile
 import shmp.random.testProbability
-import simulation.Controller
+import simulation.Controller.*
 import simulation.Event
 import simulation.culture.group.*
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
-import java.util.function.Predicate
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     val settled: Boolean
@@ -48,9 +47,6 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             .filter { it != exception }
             .toSet()
 
-    val disbandTile: Tile
-        get() = territory.center
-
     fun update() {//TODO change Water on GoodTiles
         leaveTiles(territory.getTiles { !canSettle(it) })
         if (territory.isEmpty) {
@@ -58,12 +54,12 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             return
         }
         if (!territory.contains(territory.center))
-            territory.center = randomTile(territory, Controller.session.random)
+            territory.center = randomTile(territory, session.random)
         notMoved++
-        if (settled && territory.center.tagPool.getByType(SETTLEMENT_TYPE).isEmpty()) {
+        if (settled && territory.center.tagPool.getByType(SETTLE_TAG).isEmpty()) {
             places.add(Place(
                     territory.center,
-                    TileTag(SETTLEMENT_TYPE + places.count { it.tileTag.type == SETTLEMENT_TYPE }, SETTLEMENT_TYPE)
+                    TileTag(SETTLE_TAG + places.count { it.tileTag.type == SETTLE_TAG }, SETTLE_TAG)
             ))
         }
     }
@@ -107,12 +103,10 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             tiles.addAll(queue.map { it.first })
             val currentTiles = queue
                     .filter { isTileReachableInTraverse(it) }
-                    .flatMap { it.first.neighbours }
-                    .asSequence()
+                    .flatMap { it.first.neighbours }.asSequence()
                     .distinct()
                     .filter { !tiles.contains(it) }
-                    .map { it to currentLayer }
-                    .toList()
+                    .map { it to currentLayer }.toList()
             if (currentTiles.isEmpty())
                 break
             queue.clear()
@@ -124,18 +118,18 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
         Tile.Type.Water ->
-            if (_oldTileTypes.contains(Tile.Type.Water)) pair.second <= 30
+            if (_oldTileTypes.contains(Tile.Type.Water)) pair.second <= session.defaultGroupReach * 6
             else false
         Tile.Type.Mountain ->
-            if (tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving")) pair.second <= 5
+            if (tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving")) pair.second <=
+                    session.defaultGroupReach
             else false
-        else -> pair.second <= 5
+        else -> pair.second <= session.defaultGroupReach
     }
 
     fun expand(): Boolean {
-        if (!testProbability(spreadAbility, Controller.session.random)) {
+        if (!testProbability(spreadAbility, session.random))
             return false
-        }
         claimTile(territory.getMostUsefulTileOnOuterBrink(
                 { canSettleAndNoGroup(it) && isTileReachable(it) },
                 this::tilePotentialMapper
@@ -144,13 +138,12 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     fun shrink() {
-        if (territory.size() <= 1) {
+        if (territory.size() <= 1)
             return
-        }
         leaveTile(territory.getMostUselessTile(this::tilePotentialMapper))
     }
 
-    private fun isTileReachable(tile: Tile) = getDistance(tile, territory.center) < 4
+    private fun isTileReachable(tile: Tile) = getDistance(tile, territory.center) < session.defaultGroupTerritoryRadius
 
     fun claimTile(tile: Tile?) {
         if (tile == null) return
@@ -189,15 +182,11 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             || (tile.type == Tile.Type.Mountain//TODO set of accessible tile types
             && tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("mountainLiving")))
 
-    fun canSettleAndNoGroup(tile: Tile) =
-            canSettle(tile, Predicate { hasNoResidingGroup(it) })
+    fun canSettleAndNoGroup(tile: Tile) = canSettle(tile) { hasNoResidingGroup(it) }
 
+    fun canSettleAndNoGroupExcept(tile: Tile) = canSettle(tile) { hasNoResidingGroupExcept(it, tileTag.group) }
 
-    fun canSettleAndNoGroupExcept(tile: Tile) =
-            canSettle(tile, Predicate { hasNoResidingGroupExcept(it, tileTag.group) })
-
-    fun canSettle(tile: Tile, additionalCondition: Predicate<Tile>) =
-            canSettle(tile) && additionalCondition.test(tile)
+    fun canSettle(tile: Tile, additionalCondition: (Tile) -> Boolean) = canSettle(tile) && additionalCondition(tile)
 }
 
-val SETTLEMENT_TYPE = "Settlement"
+const val SETTLE_TAG = "Settlement"
