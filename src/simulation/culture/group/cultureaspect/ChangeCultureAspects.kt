@@ -1,14 +1,12 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
-import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random
 
 fun takeOutSimilarRituals(
         aspectPool: MutableCultureAspectPool,
-        group: Group,
         bound: Int = 3
 ): RitualSystem? {
     val (popularReason, popularRituals) = aspectPool
@@ -47,10 +45,14 @@ fun takeOutWorship(
         aspectPool: MutableCultureAspectPool,
         random: Random
 ): Worship? {
+    val existing = aspectPool.worships
+            .map { it.worshipObject.name }
+            .toSet()
     val systems = aspectPool
             .filter { it is TaleSystem }
             .map { it as TaleSystem }
             .filter { it.groupingMeme is MemeSubject }
+            .filter { it.groupingMeme !in existing }
     if (systems.isEmpty()) return null
     val system = randomElement(systems, random)
     aspectPool.remove(system)
@@ -60,6 +62,7 @@ fun takeOutWorship(
             bound = 0
     ) ?: DepictSystem(setOf(), system.groupingMeme)
     return Worship(
+            MemeWorship(system.groupingMeme.copy()),
             system,
             depictSystem,
             PlaceSystem(mutableSetOf())

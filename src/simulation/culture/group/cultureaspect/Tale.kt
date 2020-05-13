@@ -6,7 +6,7 @@ import simulation.culture.thinking.language.templates.TextInfo
 import simulation.culture.thinking.meaning.Meme
 import java.util.*
 
-class Tale(private val template: Meme, val info: TextInfo) : CultureAspect {
+class Tale(internal val template: Meme, val info: TextInfo) : CultureAspect {
     private val meme: Meme = info.substitute(template)
 
     override fun getRequest(group: Group): Request? = null
@@ -17,6 +17,7 @@ class Tale(private val template: Meme, val info: TextInfo) : CultureAspect {
     }
 
     override fun adopt(group: Group) = Tale(template, info)
+
 
     override fun toString() = "Tale about $meme"
 

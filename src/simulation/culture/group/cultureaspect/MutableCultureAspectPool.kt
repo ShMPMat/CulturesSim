@@ -9,6 +9,8 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
                     is TaleSystem -> taleSystemAdd(aspect)
                     is DepictObject -> depictObjectAdd(aspect)
                     is DepictSystem -> depictSystemAdd(aspect)
+                    is Worship -> worshipAdd(aspect)
+                    is CultWorship -> worshipAdd(aspect.worship)
                     else -> false
                 }) return
         aspectMap[aspect] = aspect
@@ -60,7 +62,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
 
     private fun depictObjectAdd(depiction: DepictObject): Boolean {
         val existingSystem = depictSystems
-                .firstOrNull { s-> depiction.meme.anyMatch { s.groupingMeme == it.topMemeCopy() } }
+                .firstOrNull { s -> depiction.meme.anyMatch { s.groupingMeme == it.topMemeCopy() } }
                 ?: return false
         existingSystem.addDepiction(depiction)
         return true
@@ -74,5 +76,9 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
             existingSystem.addDepiction(it)
         }
         return true
+    }
+
+    private fun worshipAdd(worship: Worship): Boolean {
+        return worship in worships
     }
 }

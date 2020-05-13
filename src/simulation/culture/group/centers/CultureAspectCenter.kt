@@ -79,7 +79,7 @@ class CultureAspectCenter(private val group: Group) {
     }
 
     private fun joinSimilarRituals() {
-        val system = takeOutSimilarRituals(aspectPool, group) ?: return
+        val system = takeOutSimilarRituals(aspectPool) ?: return
         addCultureAspect(system)
         reasonsWithSystems.add(system.reason)
     }

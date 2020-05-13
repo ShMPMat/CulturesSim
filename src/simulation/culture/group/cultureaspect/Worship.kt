@@ -1,15 +1,23 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.testProbability
-import simulation.Controller.*
+import simulation.Controller.session
+import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 
 open class Worship(
+        val worshipObject: WorshipObject,
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem,
         val placeSystem: PlaceSystem
-) : CultureAspect {
+) : CultureAspect, WorshipObjectDependent {
+    init {
+        if (worshipObject.name != taleSystem.groupingMeme || worshipObject.name != depictSystem.groupingMeme)
+            throw GroupError("Inconsistent Worship: worship object's name is ${worshipObject.name}" +
+                    " but TaleSystem's meme is ${taleSystem.groupingMeme}")
+    }
+
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
@@ -44,6 +52,7 @@ open class Worship(
 
     override fun adopt(group: Group): Worship? {
         return Worship(
+                worshipObject.copy(group),
                 taleSystem.adopt(group) ?: return null,
                 depictSystem.adopt(group) ?: return null,
                 placeSystem.adopt(group)
@@ -56,6 +65,14 @@ open class Worship(
         placeSystem.die(group)
     }
 
+    override fun swapWorship(worshipObject: WorshipObject) =
+            Worship(
+                    worshipObject,
+                    taleSystem.swapWorship(worshipObject),
+                    depictSystem.swapWorship(worshipObject),
+                    PlaceSystem(mutableSetOf())
+            )
+
     override fun toString(): String {
         return "Worship of ${taleSystem.groupingMeme}"
     }
@@ -66,12 +83,13 @@ open class Worship(
 
         other as Worship
 
-        if (taleSystem != other.taleSystem) return false
+        if (worshipObject.name != other.worshipObject.name) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return taleSystem.hashCode()
+        return worshipObject.name.hashCode()
     }
 }
+

@@ -12,7 +12,8 @@ import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
 data class CultWorship(
         val worship: Worship
-) : CultureAspect {
+) : CultureAspect, WorshipObjectDependent {
+
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
@@ -70,6 +71,8 @@ data class CultWorship(
     }
 
     override fun die(group: Group) = worship.die(group)
+
+    override fun swapWorship(worshipObject: WorshipObject) = CultWorship(worship.swapWorship(worshipObject))
 
     override fun toString(): String {
         return "Cult of $worship"

@@ -8,7 +8,7 @@ import java.util.*
 class DepictSystem(
         depictions: Collection<DepictObject>,
         val groupingMeme: Meme
-) : CultureAspect {
+) : CultureAspect, WorshipObjectDependent {
     val depictions: MutableSet<DepictObject> = depictions.toMutableSet()
 
     fun addDepiction(depiction: DepictObject) {
@@ -28,6 +28,9 @@ class DepictSystem(
     }
 
     override fun die(group: Group) = depictions.forEach { it.die(group) }
+
+    override fun swapWorship(worshipObject: WorshipObject) =
+            DepictSystem(depictions.map { it.swapWorship(worshipObject) }, worshipObject.name)
 
     override fun toString(): String {
         return "Depiction system about $groupingMeme"

@@ -15,6 +15,16 @@ public class TextInfo {
         map.put("!receiver", receiver);
     }
 
+    public TextInfo(Map<String, Meme> map) {
+        this.map = map;
+    }
+
+    public TextInfo changedInfo(String key, Meme newMeme) {
+        Map<String, Meme> changedMap = new HashMap<>(map);
+        changedMap.put(key, newMeme);
+        return new TextInfo(changedMap);
+    }
+
     public Map<String, Meme> getMap() {
         return map;
     }

@@ -9,7 +9,7 @@ class TaleSystem(
         tales: Collection<Tale>,
         val groupingMeme: Meme,
         val infoTag: String
-) : CultureAspect {
+) : CultureAspect, WorshipObjectDependent {
     val tales: MutableSet<Tale> = tales.toMutableSet()
     override fun getRequest(group: Group): Request? = null
 
@@ -28,6 +28,14 @@ class TaleSystem(
     }
 
     override fun die(group: Group) {}
+
+    override fun swapWorship(worshipObject: WorshipObject) = TaleSystem(
+            tales.map {
+                Tale(it.template.copy(), it.info.changedInfo(infoTag, worshipObject.name))
+            },
+            worshipObject.name,
+            infoTag
+    )
 
     override fun toString(): String {
         return "Tale system about $groupingMeme"

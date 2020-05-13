@@ -13,7 +13,7 @@ class DepictObject(
         val meme: Meme,
         private val resource: Resource,
         private val resourceBehaviour: ResourceBehaviour
-) : CultureAspect {
+) : CultureAspect, WorshipObjectDependent {
 
     override fun getRequest(group: Group): Request? = null
 
@@ -43,9 +43,11 @@ class DepictObject(
                 )
             else null
 
-    override fun toString() = "Depict $meme on ${resource.fullName}, $resourceBehaviour"
-
     override fun die(group: Group) {}
+
+    override fun swapWorship(worshipObject: WorshipObject) = DepictObject(worshipObject.name, resource, resourceBehaviour)
+
+    override fun toString() = "Depict $meme on ${resource.fullName}, $resourceBehaviour"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
