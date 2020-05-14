@@ -28,7 +28,7 @@ fun complicateInfo(
         random: Random
 ): TextInfo {
     val substitutions: MutableMap<String, Meme> = HashMap()
-    for ((key, value) in info.getMap()) {
+    for ((key, value) in info.map) {
         if (key[0] == '!') {
             substitutions[key] = randomElement(templateBase.nounClauseBase, random).refactor { m: Meme ->
                 when {

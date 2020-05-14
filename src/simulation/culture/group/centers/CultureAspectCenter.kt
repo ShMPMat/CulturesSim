@@ -70,12 +70,12 @@ class CultureAspectCenter(private val group: Group) {
     fun mutateCultureAspects(group: Group) {
         if (!testProbability(session.groupCultureAspectCollapse, session.random))
             return
-        when (session.random.nextInt(5)) {
-            0 -> joinSimilarRituals()
-            1 -> joinSimilarTalesBy("!actor")
-            2 -> addCultureAspect(takeOutWorship(aspectPool, session.random))
-            3 -> makeCultWorship(group)
-            4 -> makeGod(group)
+        when (randomElement(ChangeRandom.values(), session.random)) {
+            ChangeRandom.RitualSystem -> joinSimilarRituals()
+            ChangeRandom.TaleSystem -> joinSimilarTalesBy("!actor")
+            ChangeRandom.Worship -> addCultureAspect(takeOutWorship(aspectPool, session.random))
+            ChangeRandom.Cult -> makeCultWorship(group)
+            ChangeRandom.God -> makeGod(group)
         }
     }
 
@@ -128,9 +128,17 @@ class CultureAspectCenter(private val group: Group) {
     fun die(group: Group) = aspectPool.all.forEach { it.die(group) }
 }
 
-enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
+private enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
     Depict(1.0),
     AestheticallyPleasing(1.0),
     Ritual(1.0),
     Tale(3.0)
+}
+
+private enum class ChangeRandom (override val probability: Double) : SampleSpaceObject {
+    RitualSystem(3.0),
+    TaleSystem(3.0),
+    Worship(2.0),
+    Cult(1.0),
+    God(1.0),
 }
