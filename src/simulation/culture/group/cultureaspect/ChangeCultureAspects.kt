@@ -1,9 +1,7 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
-import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
-import simulation.culture.group.cultureaspect.worship.CultWorship
 import simulation.culture.group.cultureaspect.worship.GodWorship
 import simulation.culture.group.cultureaspect.worship.MemeWorship
 import simulation.culture.group.cultureaspect.worship.Worship
@@ -71,7 +69,8 @@ fun takeOutWorship(
             MemeWorship(system.groupingMeme.copy()),
             system,
             depictSystem,
-            PlaceSystem(mutableSetOf())
+            PlaceSystem(mutableSetOf()),
+            mutableListOf()
     )
 }
 
@@ -91,31 +90,15 @@ fun takeOutDepictionSystem(
     return null
 }
 
-fun takeOutCultWorship(
-        aspectPool: MutableCultureAspectPool,
-        random: Random
-) : CultWorship? {
-    val worships = aspectPool.all.filterIsInstance<Worship>()
-    if (worships.isEmpty()) return null
-    val worship = randomElement(worships, random)
-    aspectPool.remove(worship)
-    return CultWorship(worship)
-}
-
 fun takeOutGod(
         aspectPool: MutableCultureAspectPool,
         group: Group,
         random: Random
 ): CultureAspect? {
-    val worshipsAndCults = aspectPool.all.filterIsInstance<Worship>().filter { it.worshipObject is MemeWorship }
-            .union(aspectPool.all.filterIsInstance<CultWorship>().filter { it.worship.worshipObject is MemeWorship })
+    val worshipsAndCults = aspectPool.worships
     if (worshipsAndCults.isEmpty()) return null
     val chosen = randomElement(worshipsAndCults, random)
-    val meme = when (chosen) {
-        is Worship -> chosen.worshipObject.name
-        is CultWorship -> chosen.worship.worshipObject.name
-        else -> throw GroupError("Unexpected type of Worship")
-    }
+    val meme = chosen.worshipObject.name
     val sphereMemes = group.cultureCenter.memePool.memes
             .filterIsInstance<MemeSubject>()
             .filter { it.predicates.isEmpty() }

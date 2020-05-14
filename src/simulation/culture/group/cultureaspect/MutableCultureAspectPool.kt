@@ -1,6 +1,5 @@
 package simulation.culture.group.cultureaspect
 
-import simulation.culture.group.cultureaspect.worship.CultWorship
 import simulation.culture.group.cultureaspect.worship.Worship
 
 class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : CultureAspectPool(initialAspects) {
@@ -13,7 +12,6 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
                     is DepictObject -> depictObjectAdd(aspect)
                     is DepictSystem -> depictSystemAdd(aspect)
                     is Worship -> worshipAdd(aspect)
-                    is CultWorship -> worshipAdd(aspect.worship)
                     else -> false
                 }) return
         aspectMap[aspect] = aspect

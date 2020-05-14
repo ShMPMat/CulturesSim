@@ -2,7 +2,6 @@ package simulation.culture.group.cultureaspect
 
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.Group
-import simulation.culture.group.cultureaspect.worship.CultWorship
 import simulation.culture.group.cultureaspect.worship.Worship
 
 open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
@@ -38,8 +37,7 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
                 .toSet()
 
     val worships: Set<Worship>
-        get() = aspects.filterIsInstance<Worship>()
-                .union(aspects.filterIsInstance<CultWorship>().map { it.worship })
+        get() = aspects.filterIsInstance<Worship>().toSet()
 
     fun isEmpty() = aspectMap.isEmpty()
 

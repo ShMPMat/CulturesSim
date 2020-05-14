@@ -11,7 +11,8 @@ open class Worship(
         val worshipObject: WorshipObject,
         val taleSystem: TaleSystem,
         val depictSystem: DepictSystem,
-        val placeSystem: PlaceSystem
+        val placeSystem: PlaceSystem,
+        val features: MutableList<WorshipFeature>
 ) : WorshipObjectDependent {
     init {
         if (worshipObject.name != taleSystem.groupingMeme || worshipObject.name != depictSystem.groupingMeme)
@@ -46,6 +47,11 @@ open class Worship(
     }
 
     private fun update(group: Group) {
+        features.forEach { it.use(group, this) }
+        if (group.populationCenter.freePopulation >= session.minimalStableFreePopulation
+                && features.filterIsInstance<Cult>().isEmpty())
+            if (testProbability(0.01, session.random))
+                features.add(Cult())
         if (!testProbability(session.worshipPlaceProb / (1 + placeSystem.places.size), session.random))
             return
         placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random)
@@ -53,15 +59,19 @@ open class Worship(
     }
 
     override fun adopt(group: Group): Worship? {
+        val newFeatures = features.map { it.adopt(group) }
+        if (newFeatures.any { it == null }) return null
         return Worship(
                 worshipObject.copy(group),
                 taleSystem.adopt(group) ?: return null,
                 depictSystem.adopt(group) ?: return null,
-                placeSystem.adopt(group)
+                placeSystem.adopt(group),
+                newFeatures.filterNotNull().toMutableList()
         )
     }
 
     override fun die(group: Group) {
+        features.forEach { it.die(group, this) }
         taleSystem.die(group)
         depictSystem.die(group)
         placeSystem.die(group)
@@ -72,12 +82,13 @@ open class Worship(
                     worshipObject,
                     taleSystem.swapWorship(worshipObject),
                     depictSystem.swapWorship(worshipObject),
-                    PlaceSystem(mutableSetOf())
+                    PlaceSystem(mutableSetOf()),
+                    features.map { it.swapWorship(worshipObject) }.toMutableList()
             )
 
-    override fun toString(): String {
-        return "Worship of ${taleSystem.groupingMeme}"
-    }
+    val simpleName = "Worship of ${taleSystem.groupingMeme}"
+
+    override fun toString() = "$simpleName, features - " + features.joinToString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -90,8 +101,6 @@ open class Worship(
         return true
     }
 
-    override fun hashCode(): Int {
-        return worshipObject.name.hashCode()
-    }
+    override fun hashCode() = worshipObject.name.hashCode()
 }
 

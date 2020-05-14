@@ -74,7 +74,6 @@ class CultureAspectCenter(private val group: Group) {
             ChangeRandom.RitualSystem -> joinSimilarRituals()
             ChangeRandom.TaleSystem -> joinSimilarTalesBy("!actor")
             ChangeRandom.Worship -> addCultureAspect(takeOutWorship(aspectPool, session.random))
-            ChangeRandom.Cult -> makeCultWorship(group)
             ChangeRandom.God -> makeGod(group)
         }
     }
@@ -83,12 +82,6 @@ class CultureAspectCenter(private val group: Group) {
         val system = takeOutSimilarRituals(aspectPool) ?: return
         addCultureAspect(system)
         reasonsWithSystems.add(system.reason)
-    }
-
-    private fun makeCultWorship(group: Group) {
-        if (group.populationCenter.freePopulation < session.minimalStableFreePopulation) return
-        val cult = takeOutCultWorship(aspectPool, session.random) ?: return
-        addCultureAspect(cult)
     }
 
     private fun makeGod(group: Group) {
@@ -139,6 +132,5 @@ private enum class ChangeRandom (override val probability: Double) : SampleSpace
     RitualSystem(3.0),
     TaleSystem(3.0),
     Worship(2.0),
-    Cult(1.0),
     God(1.0),
 }

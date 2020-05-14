@@ -26,7 +26,7 @@ class TaleSystem(
     override fun adopt(group: Group): TaleSystem? {
         val newTales = tales.map { it.adopt(group) }
         if (newTales.any { it == null }) return null
-        return TaleSystem(newTales.filterNotNull(), groupingMeme.copy(), infoTag)
+        return TaleSystem(newTales, groupingMeme.copy(), infoTag)
     }
 
     override fun die(group: Group) {}
