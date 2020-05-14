@@ -3,6 +3,10 @@ package simulation.culture.group.cultureaspect
 import shmp.random.randomElement
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.worship.CultWorship
+import simulation.culture.group.cultureaspect.worship.GodWorship
+import simulation.culture.group.cultureaspect.worship.MemeWorship
+import simulation.culture.group.cultureaspect.worship.Worship
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random

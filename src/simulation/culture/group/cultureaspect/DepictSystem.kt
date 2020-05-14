@@ -1,6 +1,8 @@
 package simulation.culture.group.cultureaspect
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.worship.WorshipObject
+import simulation.culture.group.cultureaspect.worship.WorshipObjectDependent
 import simulation.culture.group.request.Request
 import simulation.culture.thinking.meaning.Meme
 import java.util.*

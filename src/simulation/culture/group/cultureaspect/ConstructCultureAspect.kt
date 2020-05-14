@@ -2,11 +2,11 @@ package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.Place
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.worship.Worship
 import simulation.culture.group.reason.BetterAspectUseReason
 import simulation.culture.group.reason.Reason
 import simulation.culture.group.resource_behaviour.getRandom

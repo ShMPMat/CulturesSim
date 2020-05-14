@@ -1,4 +1,4 @@
-package simulation.culture.group.cultureaspect
+package simulation.culture.group.cultureaspect.worship
 
 import shmp.random.testProbability
 import simulation.Controller.*
@@ -67,7 +67,8 @@ data class CultWorship(
     }
 
     override fun adopt(group: Group) : CultWorship? {
-        return CultWorship(worship.adopt(group) ?: return null)
+        return CultWorship(worship.adopt(group)
+                ?: return null)
     }
 
     override fun die(group: Group) = worship.die(group)

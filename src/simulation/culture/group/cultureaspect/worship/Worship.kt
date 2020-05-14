@@ -1,9 +1,10 @@
-package simulation.culture.group.cultureaspect
+package simulation.culture.group.cultureaspect.worship
 
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.*
 import simulation.culture.group.request.Request
 
 open class Worship(
@@ -47,7 +48,8 @@ open class Worship(
     private fun update(group: Group) {
         if (!testProbability(session.worshipPlaceProb / (1 + placeSystem.places.size), session.random))
             return
-        placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random) ?: return)
+        placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random)
+                ?: return)
     }
 
     override fun adopt(group: Group): Worship? {

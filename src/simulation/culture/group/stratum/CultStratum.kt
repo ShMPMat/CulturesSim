@@ -1,7 +1,6 @@
 package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
-import simulation.culture.group.cultureaspect.Worship
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 import kotlin.math.max

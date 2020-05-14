@@ -2,6 +2,8 @@ package simulation.culture.group.cultureaspect
 
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.worship.CultWorship
+import simulation.culture.group.cultureaspect.worship.Worship
 
 open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
     protected val aspectMap = initialAspects.zip(initialAspects).toMap().toMutableMap()

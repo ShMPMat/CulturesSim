@@ -1,6 +1,7 @@
-package simulation.culture.group.cultureaspect
+package simulation.culture.group.cultureaspect.worship
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemePredicate
 import simulation.culture.thinking.meaning.MemeSubject
