@@ -15,8 +15,7 @@ class DepictObject(
         val meme: Meme,
         private val resource: Resource,
         private val resourceBehaviour: ResourceBehaviour
-) : WorshipObjectDependent {
-
+) : CultureAspect, WorshipObjectDependent {
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {

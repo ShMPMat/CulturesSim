@@ -10,7 +10,7 @@ import java.util.*
 class DepictSystem(
         depictions: Collection<DepictObject>,
         val groupingMeme: Meme
-) : WorshipObjectDependent {
+) : CultureAspect, WorshipObjectDependent {
     val depictions: MutableSet<DepictObject> = depictions.toMutableSet()
 
     fun addDepiction(depiction: DepictObject) {

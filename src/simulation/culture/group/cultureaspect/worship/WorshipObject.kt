@@ -24,6 +24,6 @@ class GodWorship(val godName: Meme, val sphere: Meme): WorshipObject {
 }
 
 
-interface WorshipObjectDependent: CultureAspect {
+interface WorshipObjectDependent {
     fun swapWorship(worshipObject: WorshipObject) : WorshipObjectDependent
 }
