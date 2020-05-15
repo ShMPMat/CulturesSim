@@ -5,7 +5,7 @@ import simulation.culture.group.centers.Group
 import simulation.space.resource.MutableResourcePack
 import kotlin.random.Random
 
-class ResourceBehaviour(private val placementStrategy: PlacementStrategy) {
+class ResourceBehaviour constructor(private val placementStrategy: PlacementStrategy) {
     fun proceedResources(resourcePack: MutableResourcePack) {
         placementStrategy.place(resourcePack)
     }

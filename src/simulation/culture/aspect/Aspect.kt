@@ -103,8 +103,8 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             (evaluator.evaluate(producedResources) * workers) / core.standardComplexity
 
     open fun use(controller: AspectController): AspectResult {
-        //TODO put dependency resources only in node; otherwise they may merge with phony
-        if (name.contains("Weav")) {
+        //TODO put dependency rgesources only in node; otherwise they may merge with phony
+        if (name.contains("Carve")) {
             val k = 0
         }
         if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
@@ -185,23 +185,11 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     }
 
     private fun getPhonyFromResources(controller: AspectController): ResourcePack {
-//        if (name.contains("PlantSeed") && controller.populationCenter.turnResources.resources.any { it.fullName.contains("Seed") }) {
-//            val j = 0
-//        }
-//        _amount = controller.ceiling
         val pack = resourceEvaluator((this as ConverseWrapper).resource).pick(controller.populationCenter.turnResources)
-//        _debug = pack.resources.map { it.copy(it.amount) }
-        val result = controller.pickCeilingPart(
+        return controller.pickCeilingPart(
                 pack.resources,
                 { it.applyAspect(aspect) }
         ) { r, n -> r.applyAndConsumeAspect(aspect, n, true) }
-//        _debugEnd = result.resources.map { it.copy(it.amount) }
-//        _isSatisfied = controller.isFloorExceeded(result).toString()
-//        if (_isSatisfied == "false" &&
-//                resourceEvaluator(resource).pick(controller.populationCenter.turnResources).amount > 0) {
-//            val k = 0
-//        }
-        return result
     }
 
     private fun satisfyRegularDependency(

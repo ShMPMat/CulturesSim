@@ -46,5 +46,8 @@ fun printResource(resource: Resource): String {
     return resource.toString() + "\n" +
             resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
                 a.name + ": " + v.joinToString { it.first?.fullName ?: "LEGEND" }
+            } + "\n\n" +
+            resource.genome.parts.joinToString("\n") { p ->
+                printResource(p).lines().joinToString("\n") { "--$it" }
             }
 }
