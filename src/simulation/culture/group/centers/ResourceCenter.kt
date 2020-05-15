@@ -105,6 +105,12 @@ class ResourceCenter(
 
     private fun printedNeeds() = neededResources.entries.joinToString("\n")
     { "${it.key} - importance ${it.value.importance}" }
+
+    fun needLevel(resource: Resource) = neededResources
+            .filter { it.key.isSuitable(resource.genome) }
+            .map { it.value.importance }
+            .max()
+            ?: 0
 }
 
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
