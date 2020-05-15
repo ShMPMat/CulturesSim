@@ -3,6 +3,7 @@ package visualizer
 import simulation.World
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
+import simulation.culture.group.centers.Group
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 
@@ -42,12 +43,12 @@ fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = 
         .filter { it.aspectConversion.containsKey(aspect) }
         .joinToString { it.fullName }
 
-fun printResource(resource: Resource): String {
-    return resource.toString() + "\n" +
-            resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
-                a.name + ": " + v.joinToString { it.first?.fullName ?: "LEGEND" }
-            } + "\n\n" +
-            resource.genome.parts.joinToString("\n") { p ->
-                printResource(p).lines().joinToString("\n") { "--$it" }
-            }
-}
+fun printResource(resource: Resource): String = resource.toString() + "\n" +
+        resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
+            a.name + ": " + v.joinToString { it.first?.fullName ?: "LEGEND" }
+        } + "\n\n" +
+        resource.genome.parts.joinToString("\n") { p ->
+            printResource(p).lines().joinToString("\n") { "--$it" }
+        }
+
+fun printGroup(group: Group) = group.toString()

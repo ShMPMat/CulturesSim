@@ -103,7 +103,7 @@ fun takeOutGod(
     val sphereMemes = group.cultureCenter.memePool.memes
             .filterIsInstance<MemeSubject>()
             .filter { it.predicates.isEmpty() }
-    val sphere = randomElement(sphereMemes, { 1.0 / it.toString().length }, random)
+    val sphere = randomElement(sphereMemes, { it.importance * 1.0 / it.toString().length }, random)
     val god = GodWorship(meme, sphere)
     aspectPool.remove(chosen)
     return chosen.swapWorship(god)

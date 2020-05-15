@@ -5,11 +5,14 @@ import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.culture.group.cultureaspect.*
+import simulation.culture.group.cultureaspect.worship.GodWorship
+import simulation.culture.group.cultureaspect.worship.Worship
 import simulation.culture.group.reason.Reason
 import simulation.culture.group.reason.constructBetterAspectUseReason
 import simulation.culture.thinking.meaning.constructAndAddSimpleMeme
 import simulation.space.resource.Resource
 import java.util.*
+import kotlin.math.pow
 
 class CultureAspectCenter(private val group: Group) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
@@ -113,9 +116,21 @@ class CultureAspectCenter(private val group: Group) {
                     session.random
             ).first.adopt(group)
                     ?: return
-            addCultureAspect(aspect)
+            if (shouldAdopt(aspect))
+                addCultureAspect(aspect)
         } catch (e: NoSuchElementException) {
         }
+    }
+
+    private fun shouldAdopt(aspect: CultureAspect): Boolean {
+        if (aspect is Worship) {
+            val similarGodsAmount = aspectPool.worships.count { w ->
+                w.worshipObject.memes.any { it in aspect.worshipObject.memes }
+            }
+            val probability = 1.0 / (similarGodsAmount + 1)
+            return testProbability(probability.pow(2), session.random)
+        }
+        return true
     }
 
     fun die(group: Group) = aspectPool.all.forEach { it.die(group) }
@@ -128,7 +143,7 @@ private enum class AspectRandom(override val probability: Double) : SampleSpaceO
     Tale(3.0)
 }
 
-private enum class ChangeRandom (override val probability: Double) : SampleSpaceObject {
+private enum class ChangeRandom(override val probability: Double) : SampleSpaceObject {
     RitualSystem(3.0),
     TaleSystem(3.0),
     Worship(2.0),

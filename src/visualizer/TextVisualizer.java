@@ -304,7 +304,7 @@ public class TextVisualizer implements Visualizer {
 
     private void printGroup(Group group) {
         printMap(t -> TileMapperFunctionsKt.groupMapper(group, t));
-        System.out.println(group);
+        PrintFunctionsKt.printGroup(group);
     }
 
     private void printResource(Resource resource) {
