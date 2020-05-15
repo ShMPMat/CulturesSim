@@ -13,5 +13,6 @@ class Ego {
             group: Group
     ) {
         if (!isActive) return
+        val k = 0
     }
 }
