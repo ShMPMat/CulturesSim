@@ -6,7 +6,7 @@ import simulation.space.resource.MutableResourcePack
 import kotlin.math.ceil
 import kotlin.math.min
 
-class WarriorStratum : Stratum {
+class WarriorStratum : BaseStratum() {
     var unusedTurns = 0
         private set
     private var usedThisTurn = false
@@ -31,21 +31,17 @@ class WarriorStratum : Stratum {
     }
 
     override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
-        if (amount <= 0) {
+        if (amount <= 0)
             return WorkerBunch(0, 0)
-        }
         usedThisTurn = true
         var actualAmount = ceil(amount / effectiveness).toInt()
-        if (actualAmount <= freePopulation) {
+        if (actualAmount <= freePopulation)
             workedPopulation += actualAmount
-        } else {
+        else {
             val additional = min(maxOverhead, actualAmount - freePopulation)
             actualAmount = additional + freePopulation
             population += additional
             workedPopulation = population
-//            if (additional > 0) {
-//                isRaisedAmount = true
-//            }
         }
         return WorkerBunch(actualAmount, actualAmount)
     }
@@ -55,6 +51,8 @@ class WarriorStratum : Stratum {
             accessibleTerritory: Territory,
             group: Group
     ) {
+        if (population == 0) return
+        ego.update(accessibleResources, accessibleTerritory, group)
     }
 
     override fun finishUpdate(group: Group) {
@@ -67,7 +65,6 @@ class WarriorStratum : Stratum {
         population = 0
     }
 
-    override fun toString(): String {
-        return "Stratum of warriors, population - $population, effectiveness - $effectiveness, importance - $importance"
-    }
+    override fun toString() =
+            "Stratum of warriors, population - $population, effectiveness - $effectiveness, importance - $importance"
 }

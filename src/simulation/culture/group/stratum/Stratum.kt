@@ -8,6 +8,7 @@ interface Stratum {
     val population: Int
     val freePopulation: Int
     val importance: Int
+    val ego: Ego
 
     fun decreaseAmount(amount: Int)
 
@@ -22,6 +23,10 @@ interface Stratum {
     fun finishUpdate(group: Group)
 
     fun die()
+}
+
+abstract class BaseStratum: Stratum {
+    override val ego = Ego()
 }
 
 data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)

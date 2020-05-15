@@ -22,7 +22,7 @@ import static shmp.random.RandomCollectionsKt.randomElement;
 import static simulation.Controller.session;
 import static simulation.culture.group.GroupsKt.getPassingReward;
 
-public class AspectStratum implements Stratum {
+public class AspectStratum extends BaseStratum {
     private double _effectiveness = -1.0;
     private int population;
     /**
@@ -138,6 +138,7 @@ public class AspectStratum implements Stratum {
         accessibleResources.addAll(pack);
         updateInfrastructure(accessibleTerritory, group);
         isRaisedAmount = false;
+        getEgo().update(accessibleResources, accessibleTerritory, group);
     }
 
     public MutableResourcePack use(AspectController controller) {

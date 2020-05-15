@@ -6,7 +6,7 @@ import simulation.space.resource.MutableResourcePack
 import kotlin.math.max
 import kotlin.math.min
 
-class CultStratum(val cultName: String) : Stratum {
+class CultStratum(val cultName: String) : BaseStratum() {
     override var population: Int = 0
         private set
     override val freePopulation: Int
@@ -32,6 +32,8 @@ class CultStratum(val cultName: String) : Stratum {
             accessibleTerritory: Territory,
             group: Group
     ) {
+        if (population == 0) return
+        ego.update(accessibleResources, accessibleTerritory, group)
     }
 
     override fun finishUpdate(group: Group) {}
