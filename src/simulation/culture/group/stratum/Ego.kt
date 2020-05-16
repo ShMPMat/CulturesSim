@@ -20,11 +20,11 @@ class Ego(tile: Tile, name: String) {
     ) {
         if (!isActive) return
         if (!testProbability(session.egoRenewalProb, session.random)) return
-        val best = accessibleResources.resources
+        val best = accessibleResources.resources.asSequence()
                 .map {group.cultureCenter.evaluateResource(it) to it }
                 .filter { it.first > 2 }
                 .sortedBy { it.first }
-                .take(5)
-        best.forEach { group.cultureCenter.evaluateResource(it.second) }//TODO Place!
+                .take(2).toList()
+        place.current.addResources(best.map { it.second })
     }
 }
