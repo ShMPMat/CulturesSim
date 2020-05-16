@@ -53,7 +53,7 @@ public class Controller {
     public final double worshipPlaceProb = 0.1;
     public final double placeSystemLimitsCheck = 0.05;
     public final double egoRenewalProb = 0.08;
-    public final double egoAcquisitionProb = 0.5;
+    public final double egoAcquisitionProb = 0.05;
 
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;

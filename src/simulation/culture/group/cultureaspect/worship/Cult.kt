@@ -50,11 +50,11 @@ class Cult : WorshipFeature {
                 val temple = request.evaluator.pickAndRemove(pack)
                 group.resourceCenter.addAll(pack)
                 val place = parent.placeSystem.places
-                        .minBy { t -> t.place.owned.getResources { it in temple.resources }.amount }
+                        .minBy { t -> t.staticPlace.owned.getResources { it in temple.resources }.amount }
                 if (place == null) {
                     throw GroupError("Couldn't find Special places")
                 } else {
-                    place.place.addResources(temple)
+                    place.staticPlace.addResources(temple)
                 }
             }
         }

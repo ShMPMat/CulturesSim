@@ -1,4 +1,4 @@
-package simulation.culture.group
+package simulation.culture.group.place
 
 import simulation.Controller
 import simulation.space.resource.*
@@ -6,7 +6,7 @@ import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import kotlin.math.max
 
-class Place(val tile: Tile, val tileTag: TileTag) {
+open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     private val _owned = MutableResourcePack()
     private val maxAmounts = mutableMapOf<Resource, Int>()
     val owned: ResourcePack
@@ -68,7 +68,7 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Place
+        other as StaticPlace
 
         if (tile != other.tile) return false
         if (tileTag != other.tileTag) return false
@@ -81,6 +81,4 @@ class Place(val tile: Tile, val tileTag: TileTag) {
         result = 31 * result + tileTag.hashCode()
         return result
     }
-
-
 }

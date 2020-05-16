@@ -103,6 +103,9 @@ class PopulationCenter(var population: Int, private val maxPopulation: Int, priv
 
     fun update(accessibleTerritory: Territory, group: Group) {
         if (testProbability(session.egoRenewalProb, session.random)) {
+            val mostImportantStratum = strata.maxBy { it.importance } ?: return
+            if (mostImportantStratum.importance > 0)
+                mostImportantStratum.ego.isActive = true
         }
         _strata.forEach { it.update(turnResources, accessibleTerritory, group) }
     }

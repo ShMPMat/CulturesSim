@@ -2,7 +2,8 @@ package simulation.culture.group.centers
 
 import shmp.random.randomElement
 import simulation.Controller.*
-import simulation.culture.group.Place
+import simulation.culture.group.place.MovablePlace
+import simulation.culture.group.place.StaticPlace
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
@@ -12,18 +13,15 @@ import simulation.space.tile.TileTag
 
 class ResourceCenter(
         cherishedResources: MutableResourcePack,
-        private var storageTile: Tile,
+        storageTile: Tile,
         private val groupName: String
 ) {
-    private var movedAmount = 0
-    private val tileTag: TileTag
-        get() = TileTag(groupName + "_storage" + movedAmount, "storage")
-    private var place = Place(storageTile, tileTag)
+    private var place = MovablePlace(storageTile, TileTag(groupName + "_storage", "storage"))
     val pack: ResourcePack
-        get() = place.owned
+        get() = place.current.owned
 
     init {
-        place.addResources(cherishedResources)
+        place.current.addResources(cherishedResources)
     }
 
     private val _direBound = 50
@@ -52,31 +50,19 @@ class ResourceCenter(
 
     private val _resourcesToAdd = mutableListOf<Resource>()
 
-    fun takeResource(resource: Resource, amount: Int) = place.takeResource(resource, amount)
+    fun takeResource(resource: Resource, amount: Int) = place.current.takeResource(resource, amount)
 
     fun die() {
-        session.world.strayPlacesManager.addPlace(place)
+        session.world.strayPlacesManager.addPlace(place.current)
     }
 
-    fun add(resource: Resource) = place.addResource(resource)
+    fun add(resource: Resource) = place.current.addResource(resource)
 
     fun addAll(resources: Collection<Resource>) = resources.forEach { add(it) }
 
     fun addAll(pack: ResourcePack) = addAll(pack.resources)
 
-    fun moveToNewStorage(newStorageTile: Tile) {
-        if (newStorageTile == storageTile) return
-//        if (pack.any { !it.genome.isMovable }) {
-//            val k = 0
-//        }
-        val oldPlace = place
-        movedAmount++
-        place = Place(newStorageTile, tileTag)
-        val movableResources = oldPlace.getResourcesAndRemove { it.genome.isMovable }
-        place.addResources(movableResources)
-        storageTile = newStorageTile
-        session.world.strayPlacesManager.addPlace(oldPlace)
-    }
+    fun moveToNewStorage(newStorageTile: Tile) = place.move(newStorageTile)
 
     fun addNeeded(resourceLabeler: ResourceLabeler, importance: Int = 1) {
         if (neededResourcesMap.containsKey(resourceLabeler))
@@ -88,8 +74,8 @@ class ResourceCenter(
     fun hasDireNeed() = neededResourcesMap.any { it.value.importance >= _direBound }
 
     fun finishUpdate() {
-        place.owned.resources.filter { it.isNotEmpty }.forEach {
-            if (!place.tile.resourcesWithMoved.contains(it)) {
+        place.current.owned.resources.filter { it.isNotEmpty }.forEach {
+            if (!place.current.tile.resourcesWithMoved.contains(it)) {
                 val s = 0
             }
         }
@@ -99,7 +85,7 @@ class ResourceCenter(
     }
 
     override fun toString(): String {
-        return "Current resources:\n${place.owned}\n" +
+        return "Current resources:\n${place.current.owned}\n" +
                 "Needed resources: \n${printedNeeds()}\n\n"
     }
 

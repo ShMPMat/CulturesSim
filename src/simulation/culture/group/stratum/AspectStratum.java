@@ -1,7 +1,7 @@
 package simulation.culture.group.stratum;
 
 import simulation.culture.aspect.*;
-import simulation.culture.group.Place;
+import simulation.culture.group.place.StaticPlace;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.request.*;
 import simulation.culture.thinking.meaning.ConstructMemeKt;
@@ -33,7 +33,7 @@ public class AspectStratum extends BaseStratum {
     private ConverseWrapper aspect;
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private MutableResourcePack enhancements = new MutableResourcePack();
-    private List<Place> places = new ArrayList<>();
+    private List<StaticPlace> places = new ArrayList<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
     public AspectStratum(int population, ConverseWrapper aspect) {
@@ -226,16 +226,16 @@ public class AspectStratum extends BaseStratum {
     }
 
     private void addUnmovableEnhancement(Resource resource, Group group) {
-        List<Place> goodPlaces = places.stream()
+        List<StaticPlace> goodPlaces = places.stream()
                 .filter(p -> resource.getGenome().isAcceptable(p.getTile()))
                 .collect(Collectors.toList());
-        Place place = null;
+        StaticPlace place = null;
         if (goodPlaces.isEmpty()) {
             List<Tile> goodTiles = group.getTerritoryCenter().getTerritory()
                     .getTiles(t -> resource.getGenome().isAcceptable(t));
             if (!goodTiles.isEmpty()) {
                 String tagType = "(Stratum " + aspect.getName() + " of " + group.getName() + ")";
-                place = new Place(
+                place = new StaticPlace(
                         randomElement(goodTiles, session.random),
                         new TileTag(tagType + "_" + places.size(), tagType)
                 );

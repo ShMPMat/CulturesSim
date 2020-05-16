@@ -1,5 +1,7 @@
 package simulation.culture.group.stratum
 
+import shmp.random.testProbability
+import simulation.Controller.session
 import simulation.culture.group.centers.Group
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
@@ -13,6 +15,12 @@ class Ego {
             group: Group
     ) {
         if (!isActive) return
-        val k = 0
+        if (!testProbability(session.egoRenewalProb, session.random)) return
+        val best = accessibleResources.resources
+                .map {group.cultureCenter.evaluateResource(it) to it }
+                .filter { it.first > 2 }
+                .sortedBy { it.first }
+                .take(5)
+        best.forEach { group.cultureCenter.evaluateResource(it.second) }//TODO Place!
     }
 }

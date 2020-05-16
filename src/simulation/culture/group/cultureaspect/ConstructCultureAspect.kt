@@ -4,7 +4,7 @@ import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
-import simulation.culture.group.Place
+import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.centers.Group
 import simulation.culture.group.cultureaspect.worship.Worship
 import simulation.culture.group.reason.BetterAspectUseReason
@@ -112,5 +112,5 @@ fun createSpecialPlaceForWorship(worship: Worship, group: Group, random: Random)
     val existsInCenter = !tilesWithoutPlaces.contains(group.territoryCenter.territory.center)
     val tile = if (!existsInCenter && testProbability(0.5, random)) group.territoryCenter.territory.center
     else randomElement(tilesWithoutPlaces, random)
-    return SpecialPlace(Place(tile, TileTag(tag + number, tag)))
+    return SpecialPlace(StaticPlace(tile, TileTag(tag + number, tag)))
 }

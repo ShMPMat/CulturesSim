@@ -5,6 +5,7 @@ import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.Event
 import simulation.culture.group.*
+import simulation.culture.group.place.StaticPlace
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
@@ -19,7 +20,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         private set
 
     private val tileTag: GroupTileTag = GroupTileTag(group)
-    private val places = mutableListOf<Place>()
+    private val places = mutableListOf<StaticPlace>()
 
     private var _oldCenter: Tile? = null
     private var _oldReach: Collection<Tile> = listOf()
@@ -57,7 +58,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             territory.center = randomTile(territory, session.random)
         notMoved++
         if (settled && territory.center.tagPool.getByType(SETTLE_TAG).isEmpty()) {
-            places.add(Place(
+            places.add(StaticPlace(
                     territory.center,
                     TileTag(SETTLE_TAG + places.count { it.tileTag.type == SETTLE_TAG }, SETTLE_TAG)
             ))

@@ -3,36 +3,36 @@ package simulation.culture.group.cultureaspect
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Controller.session
-import simulation.culture.group.Place
+import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.resourceToRequest
 
 class SpecialPlace(
-        val place: Place
+        val staticPlace: StaticPlace
 ) : CultureAspect {
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
         if (testProbability(0.1, Controller.session.random)) {//TODO lesser amount
-            val lacking = place.getLacking()
+            val lacking = staticPlace.getLacking()
             val gotResources = lacking
                     .map { resourceToRequest(it, group, it.amount) }
                     .flatMap { group.populationCenter.executeRequest(it).pack.resources }
-            place.addResources(gotResources)
+            staticPlace.addResources(gotResources)
         }
     }
 
     override fun adopt(group: Group): SpecialPlace {
-        return SpecialPlace(place)
+        return SpecialPlace(staticPlace)
     }
 
     override fun die(group: Group) {
-        session.world.strayPlacesManager.addPlace(place)
+        session.world.strayPlacesManager.addPlace(staticPlace)
     }
 
     override fun toString(): String {
-        return "Special place on tile ${place.tile.x} ${place.tile.y}"
+        return "Special place on tile ${staticPlace.tile.x} ${staticPlace.tile.y}"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -41,12 +41,12 @@ class SpecialPlace(
 
         other as SpecialPlace
 
-        if (place != other.place) return false
+        if (staticPlace != other.staticPlace) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return place.hashCode()
+        return staticPlace.hashCode()
     }
 }

@@ -22,7 +22,7 @@ class PlaceSystem(
     }
 
     private fun checkLimits(group: Group) {
-        places.filter { !group.territoryCenter.territory.contains(it.place.tile) }
+        places.filter { !group.territoryCenter.territory.contains(it.staticPlace.tile) }
                 .forEach { removePlace(it, group) }
     }
 
@@ -33,7 +33,7 @@ class PlaceSystem(
     }
 
     override fun adopt(group: Group) = PlaceSystem(
-            places.filter { group.territoryCenter.territory.contains(it.place.tile) }
+            places.filter { group.territoryCenter.territory.contains(it.staticPlace.tile) }
                     .map { it.adopt(group) }
                     .toMutableSet()
     )

@@ -6,7 +6,7 @@ import simulation.Controller.session
 import simulation.culture.aspect.AspectInstantiation
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.GroupConglomerate
-import simulation.culture.group.StrayPlacesManager
+import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.SpaceData.data
@@ -20,7 +20,6 @@ import simulation.space.resource.material.MaterialInstantiation
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.createTagMatchers
 import simulation.space.tile.Tile
-import java.io.FileReader
 import java.util.*
 
 /**

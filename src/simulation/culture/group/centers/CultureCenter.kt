@@ -132,7 +132,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     }
 
     fun evaluateResource(resource: Resource): Int {
-        val base = resource.genome.baseDesirability
+        val base = resource.genome.baseDesirability + 1
         val meaningPart = if (resource.hasMeaning()) 3 else 1
         val conglomerate = group.relationCenter.relations
                 .filter { it.other.parentGroup == group.parentGroup }
