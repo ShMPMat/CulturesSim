@@ -18,18 +18,24 @@ import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler
+import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.min
 
-class PopulationCenter(var population: Int, private val maxPopulation: Int, private val minPopulation: Int) {
+class PopulationCenter(
+        var population: Int,
+        private val maxPopulation: Int,
+        private val minPopulation: Int,
+        newTile: Tile
+) {
     private val _strata: MutableList<Stratum> = ArrayList()
     val strata: List<Stratum>
         get() = _strata
     val turnResources = MutableResourcePack()
 
     init {
-        addStratum(WarriorStratum())
+        addStratum(WarriorStratum(newTile))
     }
 
     fun getStratumByAspect(aspect: ConverseWrapper): AspectStratum {
@@ -148,22 +154,22 @@ class PopulationCenter(var population: Int, private val maxPopulation: Int, priv
                 .filterIsInstance<AspectStratum>()
     }
 
-    fun manageNewAspects(aspects: Set<Aspect?>) {
+    fun manageNewAspects(aspects: Set<Aspect?>, newTile: Tile) {
         aspects
                 .filterIsInstance<ConverseWrapper>()
                 .forEach { cw ->
                     if (_strata.filterIsInstance<AspectStratum>().none { it.aspect == cw }) {
-                        _strata.add(AspectStratum(0, cw))
+                        _strata.add(AspectStratum(0, cw, newTile))
                     }
                 }
     }
 
     fun finishUpdate(group: Group) = _strata.forEach { it.finishUpdate(group) }
 
-    fun getPart(fraction: Double): PopulationCenter {
+    fun getPart(fraction: Double, newTile: Tile): PopulationCenter {
         val populationPart = (fraction * population).toInt()
         decreasePopulation(populationPart)
-        return PopulationCenter(populationPart, maxPopulation, minPopulation)
+        return PopulationCenter(populationPart, maxPopulation, minPopulation, newTile)
     }
 
     fun wakeNeedStrata(need: Pair<ResourceLabeler, ResourceNeed>) {
@@ -190,4 +196,6 @@ class PopulationCenter(var population: Int, private val maxPopulation: Int, priv
     fun addStratum(stratum: Stratum) {
         _strata.add(stratum)
     }
+
+    fun movePopulation(tile: Tile) = _strata.forEach { it.ego.place.move(tile) }
 }

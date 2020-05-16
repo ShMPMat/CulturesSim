@@ -85,8 +85,10 @@ class Group(
             return
         val main = System.nanoTime()
         if (shouldMigrate())
-            if (territoryCenter.migrate())
+            if (territoryCenter.migrate()) {
                 resourceCenter.moveToNewStorage(territoryCenter.territory.center)
+                populationCenter.movePopulation(territoryCenter.territory.center)
+            }
         if (populationCenter.isMinPassed(territoryCenter.territory))
             territoryCenter.expand()
         else
@@ -143,7 +145,7 @@ class Group(
                     ResourceCenter(pack, tile, name),
                     parentGroup,
                     name,
-                    populationCenter.getPart(0.5),
+                    populationCenter.getPart(0.5, tile),
                     RelationCenter(relationCenter.hostilityCalculator),
                     tile,
                     aspects,
@@ -176,7 +178,7 @@ class Group(
 
     fun finishUpdate() {
         resourceCenter.addAll(cultureCenter.requestCenter.turnRequests.finish())
-        populationCenter.manageNewAspects(cultureCenter.finishAspectUpdate())
+        populationCenter.manageNewAspects(cultureCenter.finishAspectUpdate(), territoryCenter.territory.center)
         populationCenter.finishUpdate(this)
         resourceCenter.finishUpdate()
         cultureCenter.finishUpdate()

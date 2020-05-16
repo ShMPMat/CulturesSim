@@ -3,11 +3,15 @@ package simulation.culture.group.stratum
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.culture.group.centers.Group
+import simulation.culture.group.place.MovablePlace
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
+import simulation.space.tile.Tile
+import simulation.space.tile.TileTag
 
-class Ego {
+class Ego(tile: Tile, name: String) {
     var isActive = false
+    val place = MovablePlace(tile, TileTag(name, "stratum"))
 
     fun update(
             accessibleResources: MutableResourcePack,

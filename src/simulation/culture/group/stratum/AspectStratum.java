@@ -36,7 +36,8 @@ public class AspectStratum extends BaseStratum {
     private List<StaticPlace> places = new ArrayList<>();
     private List<Meme> popularMemes = new ArrayList<>();
 
-    public AspectStratum(int population, ConverseWrapper aspect) {
+    public AspectStratum(int population, ConverseWrapper aspect, Tile tile) {
+        super(tile, "Stratum of aspect " + aspect.getName());
         this.population = population;
         this.aspect = aspect;
         aspect.getDependencies().getMap().keySet().forEach(tag -> {

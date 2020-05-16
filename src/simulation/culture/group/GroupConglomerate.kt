@@ -43,7 +43,8 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                     PopulationCenter(
                             population / numberOfSubGroups,
                             Controller.session.defaultGroupMaxPopulation,
-                            Controller.session.defaultGroupMinPopulationPerTile
+                            Controller.session.defaultGroupMinPopulationPerTile,
+                            root
                     ),
                     RelationCenter {
                         val difference = getGroupsDifference(it.owner, it.other)

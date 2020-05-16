@@ -3,10 +3,11 @@ package simulation.culture.group.stratum
 import simulation.culture.group.centers.Group
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
+import simulation.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
 
-class CultStratum(val cultName: String) : BaseStratum() {
+class CultStratum(val cultName: String, tile: Tile) : BaseStratum(tile, "Stratum for $cultName") {
     override var population: Int = 0
         private set
     override val freePopulation: Int

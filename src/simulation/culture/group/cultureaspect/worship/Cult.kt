@@ -16,7 +16,7 @@ class Cult : WorshipFeature {
                 .filterIsInstance<CultStratum>()
                 .firstOrNull { it.cultName == parent.simpleName }
                 ?: kotlin.run {
-                    val newStratum = CultStratum(parent.simpleName)
+                    val newStratum = CultStratum(parent.simpleName, group.territoryCenter.territory.center)
                     group.populationCenter.addStratum(newStratum)
                     group.populationCenter.changeStratumAmount(newStratum, 1)
                     group.populationCenter.strata

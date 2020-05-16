@@ -3,6 +3,8 @@ package simulation.culture.group.stratum
 import simulation.culture.group.centers.Group
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
+import simulation.space.tile.Tile
+import simulation.space.tile.TileTag
 
 interface Stratum {
     val population: Int
@@ -25,8 +27,8 @@ interface Stratum {
     fun die()
 }
 
-abstract class BaseStratum: Stratum {
-    override val ego = Ego()
+abstract class BaseStratum(tile: Tile, name: String): Stratum {
+    override val ego = Ego(tile, name)
 }
 
 data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)

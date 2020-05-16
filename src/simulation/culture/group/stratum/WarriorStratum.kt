@@ -3,10 +3,11 @@ package simulation.culture.group.stratum
 import simulation.culture.group.centers.Group
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
+import simulation.space.tile.Tile
 import kotlin.math.ceil
 import kotlin.math.min
 
-class WarriorStratum : BaseStratum() {
+class WarriorStratum(tile: Tile) : BaseStratum(tile, "Stratum of warriors") {
     var unusedTurns = 0
         private set
     private var usedThisTurn = false
