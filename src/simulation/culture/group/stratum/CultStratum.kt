@@ -44,6 +44,6 @@ class CultStratum(val cultName: String, tile: Tile) : BaseStratum(tile, "Stratum
     }
 
     override fun toString(): String {
-        return "Stratum for $cultName, population - $population, importance - $importance"
+        return "Stratum for $cultName, population - $population, importance - $importance" + super.toString()
     }
 }

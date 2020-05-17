@@ -254,7 +254,7 @@ public class AspectStratum extends BaseStratum {
     public void finishUpdate(Group group) {
         popularMemes.forEach(m -> group.getCultureCenter().getMemePool().strengthenMeme(m));
         popularMemes.clear();
-        if (workedAmount < population) {
+        if (workedAmount < population && !getEgo().isActive()) {
             population = workedAmount;
         }
         workedAmount = 0;
@@ -283,6 +283,7 @@ public class AspectStratum extends BaseStratum {
 
         stringBuilder.append(", Places:");
         places.forEach(p -> stringBuilder.append(p).append(" "));
+        stringBuilder.append(super.toString());
         return stringBuilder.toString();
     }
 

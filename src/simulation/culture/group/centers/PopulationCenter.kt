@@ -109,9 +109,12 @@ class PopulationCenter(
 
     fun update(accessibleTerritory: Territory, group: Group) {
         if (testProbability(session.egoRenewalProb, session.random)) {
-            val mostImportantStratum = strata.maxBy { it.importance } ?: return
-            if (mostImportantStratum.importance > 0)
-                mostImportantStratum.ego.isActive = true
+            val mostImportantStratum = strata
+                    .filter { it.population > 0 }
+                    .maxBy { it.importance }
+            if (mostImportantStratum != null)
+                if (mostImportantStratum.importance > 0)
+                    mostImportantStratum.ego.isActive = true
         }
         _strata.forEach { it.update(turnResources, accessibleTerritory, group) }
     }
@@ -188,7 +191,7 @@ class PopulationCenter(
     override fun toString(): String {
         val stringBuilder = StringBuilder("Free - $freePopulation\n")
         for (stratum in _strata)
-            if (stratum.population != 0)
+            if (stratum.population != 0 || stratum.ego.isActive)
                 stringBuilder.append(stratum).append("\n")
         return stringBuilder.toString()
     }

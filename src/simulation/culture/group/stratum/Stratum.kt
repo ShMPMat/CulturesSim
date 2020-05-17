@@ -29,6 +29,8 @@ interface Stratum {
 
 abstract class BaseStratum(tile: Tile, name: String): Stratum {
     override val ego = Ego(tile, name)
+
+    override fun toString() = "\nEgo resources: ${ego.place.current.owned}"
 }
 
 data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)

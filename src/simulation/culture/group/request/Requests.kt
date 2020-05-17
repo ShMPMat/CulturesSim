@@ -6,8 +6,17 @@ import simulation.space.resource.Resource
 
 fun resourceToRequest(resource: Resource, group: Group, amount: Int): Request {
     if (resource.hasMeaning()) {
-        val k = 9
-        TODO()
+        //TODO read native!!!!!
+        return MeaningResourceRequest(
+                group,
+                group.cultureCenter.meaning,
+                resource,
+                amount,
+                amount,
+                passingReward,
+                passingReward
+
+        )
     } else {
         return ResourceRequest(
                 group,

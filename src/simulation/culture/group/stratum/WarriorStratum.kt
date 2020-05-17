@@ -67,5 +67,6 @@ class WarriorStratum(tile: Tile) : BaseStratum(tile, "Stratum of warriors") {
     }
 
     override fun toString() =
-            "Stratum of warriors, population - $population, effectiveness - $effectiveness, importance - $importance"
+            "Stratum of warriors, population - $population, effectiveness - $effectiveness, importance - $importance" +
+                    super.toString()
 }
