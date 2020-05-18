@@ -3,11 +3,11 @@ package simulation.culture.group.centers
 import simulation.culture.group.*
 import simulation.culture.group.request.*
 import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.ResourcePack
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*
 import kotlin.math.max
-import kotlin.math.sqrt
 
 class RequestCenter {
     private var _unfinishedRequestMap = mutableMapOf<Request, MutableResourcePack>()
@@ -25,71 +25,79 @@ class RequestCenter {
     }
 
     fun updateRequests(group: Group) {
+        turnRequests = constructRequests(RequestConstructController(
+                group,
+                group.populationCenter.population,
+                group.resourceCenter.pack,
+                turnRequests
+        ))
+    }
+
+    fun constructRequests(controller: RequestConstructController): RequestPool {
         _unfinishedRequestMap = mutableMapOf()
 
-        addFoodRequest(group)
+        addFoodRequest(controller)
 
-        addWarmthRequest(group)
+        addWarmthRequest(controller)
 
-        if (turnRequests.resultStatus.containsKey(constructFoodRequest(group)) &&
-                turnRequests.resultStatus[constructFoodRequest(group)]?.status !== ResultStatus.NotSatisfied) {
-            addClothesRequest(group)
-            addShelterRequest(group)
+        val foodRequestDummy = constructFoodRequest(controller)
+        if (controller.previous.resultStatus.containsKey(foodRequestDummy) &&
+                controller.previous.resultStatus[foodRequestDummy]?.status !== ResultStatus.NotSatisfied) {
+            addClothesRequest(controller)
+            addShelterRequest(controller)
         }
 
-        group.cultureCenter.cultureAspectCenter.aspectPool.getAspectRequests(group)
+        controller.group.cultureCenter.cultureAspectCenter.aspectPool.getAspectRequests(controller.group)
                 .filter { Objects.nonNull(it) }
                 .forEach { _unfinishedRequestMap[it] = MutableResourcePack() }
 
-        turnRequests = RequestPool(_unfinishedRequestMap)
+        return RequestPool(_unfinishedRequestMap)
     }
 
-    private fun addFoodRequest(group: Group) {
-        _unfinishedRequestMap[constructFoodRequest(group)] = MutableResourcePack()
+    private fun addFoodRequest(controller: RequestConstructController) {
+        _unfinishedRequestMap[constructFoodRequest(controller)] = MutableResourcePack()
     }
 
-    private fun addWarmthRequest(group: Group) {
-        if (group.territoryCenter.territory.minTemperature < 0)
-            _unfinishedRequestMap[constructWarmthRequest(group)] = MutableResourcePack()
+    private fun addWarmthRequest(controller: RequestConstructController) {
+        if (controller.group.territoryCenter.territory.minTemperature < 0)
+            _unfinishedRequestMap[constructWarmthRequest(controller)] = MutableResourcePack()
     }
 
-    private fun addClothesRequest(group: Group) {
+    private fun addClothesRequest(controller: RequestConstructController) {
         val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
-        val neededClothes = group.populationCenter.population -
-                clothesEvaluator.evaluate(group.resourceCenter.pack).toInt()
+        val neededClothes = controller.population - clothesEvaluator.evaluate(controller.accessibleResources).toInt()
         if (neededClothes > 0) {
-            _unfinishedRequestMap[constructTagRequest(group, ResourceTag("clothes"), neededClothes)] =
+            _unfinishedRequestMap[constructTagRequest(controller.group, ResourceTag("clothes"), neededClothes)] =
                     MutableResourcePack()
         }
     }
 
-    private fun addShelterRequest(group: Group) {
+    private fun addShelterRequest(controller: RequestConstructController) {
         val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
-        val neededShelter = group.populationCenter.population -
-                shelterEvaluator.evaluate(group.resourceCenter.pack).toInt()
+        val neededShelter = controller.population - shelterEvaluator.evaluate(controller.accessibleResources).toInt()
         if (neededShelter > 0) {
-            _unfinishedRequestMap[constructTagRequest(group, ResourceTag("shelter"), neededShelter)] =
+            _unfinishedRequestMap[constructTagRequest(controller.group, ResourceTag("shelter"), neededShelter)] =
                     MutableResourcePack()
         }
     }
 
-    private fun constructFoodRequest(group: Group): Request {
-        val foodFloor = group.populationCenter.population / group.fertility + 1
+    private fun constructFoodRequest(controller: RequestConstructController): Request {
+        val foodFloor = controller.population / controller.group.fertility + 1
         return TagRequest(
-                group,
+                controller.group,
                 ResourceTag("food"),
                 foodFloor,
-                foodFloor + group.populationCenter.population / 100 + 1,
+                foodFloor + controller.population / 100 + 1,
                 foodPenalty,
                 foodReward
         )
     }
 
-    private fun constructWarmthRequest(group: Group) = TagRequest(
-            group,
+    private fun constructWarmthRequest(controller: RequestConstructController) = TagRequest(
+            controller.group,
             ResourceTag("warmth"),
-            group.populationCenter.population,
-            group.populationCenter.population,
+            controller.population,
+            controller.population,
             warmthPenalty,
             passingReward
     )
@@ -122,3 +130,10 @@ class RequestCenter {
             turnRequests.resultStatus.entries.joinToString("\n")
             { (req, res) -> "$req - $res, unfinished estimation ${nerfCoefficients[req]}" }
 }
+
+data class RequestConstructController(
+        val group: Group,
+        val population: Int,
+        val accessibleResources: ResourcePack,
+        val previous: RequestPool
+)
