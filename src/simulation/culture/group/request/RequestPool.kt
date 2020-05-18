@@ -1,5 +1,6 @@
 package simulation.culture.group.request
 
+import simulation.culture.group.GroupError
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.ResourcePack
 

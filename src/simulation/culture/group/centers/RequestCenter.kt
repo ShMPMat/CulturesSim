@@ -11,6 +11,7 @@ import kotlin.math.max
 
 class RequestCenter {
     private var _unfinishedRequestMap = mutableMapOf<Request, MutableResourcePack>()
+
     var turnRequests = RequestPool(HashMap())
         private set
 
@@ -67,7 +68,7 @@ class RequestCenter {
         val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
         val neededClothes = controller.population - clothesEvaluator.evaluate(controller.accessibleResources).toInt()
         if (neededClothes > 0) {
-            _unfinishedRequestMap[constructTagRequest(controller.group, ResourceTag("clothes"), neededClothes)] =
+            _unfinishedRequestMap[constructTagRequest(controller, ResourceTag("clothes"), neededClothes)] =
                     MutableResourcePack()
         }
     }
@@ -76,7 +77,7 @@ class RequestCenter {
         val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
         val neededShelter = controller.population - shelterEvaluator.evaluate(controller.accessibleResources).toInt()
         if (neededShelter > 0) {
-            _unfinishedRequestMap[constructTagRequest(controller.group, ResourceTag("shelter"), neededShelter)] =
+            _unfinishedRequestMap[constructTagRequest(controller, ResourceTag("shelter"), neededShelter)] =
                     MutableResourcePack()
         }
     }
@@ -88,8 +89,8 @@ class RequestCenter {
                 ResourceTag("food"),
                 foodFloor,
                 foodFloor + controller.population / 100 + 1,
-                foodPenalty,
-                foodReward
+                if (controller.isClearEffects) passingReward else foodPenalty,
+                if (controller.isClearEffects) passingReward else foodReward
         )
     }
 
@@ -98,20 +99,20 @@ class RequestCenter {
             ResourceTag("warmth"),
             controller.population,
             controller.population,
-            warmthPenalty,
+            if (controller.isClearEffects) passingReward else warmthPenalty,
             passingReward
     )
 
-    private fun constructTagRequest(group: Group, tag: ResourceTag, amount: Int): TagRequest {
-        val notFinal = TagRequest(group, tag, amount, amount, put(), put())
+    private fun constructTagRequest(controller: RequestConstructController, tag: ResourceTag, amount: Int): TagRequest {
+        val notFinal = TagRequest(controller.group, tag, amount, amount, put(), put())
         val nerfed = getRequestNerfCoefficient(notFinal, amount)
         return TagRequest(
-                group,
+                controller.group,
                 tag,
                 nerfed,
                 nerfed,
-                unite(listOf(addNeed(TagLabeler(tag)), put())),
-                put()
+                if (controller.isClearEffects) passingReward else unite(listOf(addNeed(TagLabeler(tag)), put())),
+                if (controller.isClearEffects) passingReward else put()
         )
     }
 
@@ -135,5 +136,6 @@ data class RequestConstructController(
         val group: Group,
         val population: Int,
         val accessibleResources: ResourcePack,
-        val previous: RequestPool
+        val previous: RequestPool,
+        val isClearEffects: Boolean = false
 )

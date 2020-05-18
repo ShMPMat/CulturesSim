@@ -139,7 +139,7 @@ public class AspectStratum extends BaseStratum {
         accessibleResources.addAll(pack);
         updateInfrastructure(accessibleTerritory, group);
         isRaisedAmount = false;
-        getEgo().update(accessibleResources, accessibleTerritory, group);
+        getEgo().update(accessibleResources, accessibleTerritory, group, this);
     }
 
     public MutableResourcePack use(AspectController controller) {

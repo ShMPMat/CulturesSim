@@ -53,7 +53,7 @@ class WarriorStratum(tile: Tile) : BaseStratum(tile, "Stratum of warriors") {
             group: Group
     ) {
         if (population == 0) return
-        ego.update(accessibleResources, accessibleTerritory, group)
+        ego.update(accessibleResources, accessibleTerritory, group, this)
     }
 
     override fun finishUpdate(group: Group) {

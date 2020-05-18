@@ -34,7 +34,7 @@ class CultStratum(val cultName: String, tile: Tile) : BaseStratum(tile, "Stratum
             group: Group
     ) {
         if (population == 0) return
-        ego.update(accessibleResources, accessibleTerritory, group)
+        ego.update(accessibleResources, accessibleTerritory, group, this)
     }
 
     override fun finishUpdate(group: Group) {}
