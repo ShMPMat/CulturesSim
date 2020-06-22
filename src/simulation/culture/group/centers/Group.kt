@@ -51,7 +51,7 @@ class Group(
         }
         if (retry.isNotEmpty()) {
             if (retry.size == aspects.size)
-                return//                throw GroupError("Cannot adopt CultureAspect ${retry[0]}")
+                return//                throw GroupError("Cannot adopt CultureAspect ${retry[0]}")//TODO deal with it
             copyCA(retry)
         }
     }
