@@ -1,16 +1,18 @@
 package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 import simulation.space.tile.Tile
-import simulation.space.tile.TileTag
 
 interface Stratum {
     val population: Int
     val freePopulation: Int
     val importance: Int
     val ego: Ego
+
+    val places: List<SpecialPlace>
 
     fun decreaseAmount(amount: Int)
 

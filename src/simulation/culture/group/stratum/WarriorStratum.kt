@@ -1,6 +1,7 @@
 package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.space.Territory
 import simulation.space.resource.MutableResourcePack
 import simulation.space.tile.Tile
@@ -20,6 +21,7 @@ class WarriorStratum(tile: Tile) : BaseStratum(tile, "Stratum of warriors") {
         get() = population - workedPopulation
     override val importance: Int
         get() = population * population - unusedTurns * unusedTurns
+    override val places = listOf<SpecialPlace>()
 
     private val effectiveness: Double
         get() {

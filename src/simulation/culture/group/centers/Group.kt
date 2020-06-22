@@ -18,6 +18,7 @@ import simulation.space.tile.Tile
 import java.util.*
 
 class Group(
+        val administrationCenter: AdministrationCenter,
         val resourceCenter: ResourceCenter,
         var parentGroup: GroupConglomerate,
         var name: String,
@@ -35,6 +36,7 @@ class Group(
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)
     private var _direNeedTurns = 0
 
+
     init {
         copyCA(cultureAspects)
     }
@@ -48,7 +50,8 @@ class Group(
             cultureCenter.cultureAspectCenter.addCultureAspect(copy)
         }
         if (retry.isNotEmpty()) {
-            if (retry.size == aspects.size) throw GroupError("Cannot adopt CultureAspect ${retry[0]}")
+            if (retry.size == aspects.size)
+                return//                throw GroupError("Cannot adopt CultureAspect ${retry[0]}")
             copyCA(retry)
         }
     }
@@ -96,6 +99,7 @@ class Group(
         session.groupMigrationTime += System.nanoTime() - main
         checkNeeds()
         cultureCenter.update()
+        administrationCenter.update(this)
         session.groupInnerOtherTime += System.nanoTime() - others
     }
 
@@ -142,6 +146,7 @@ class Group(
             }
             val name = parentGroup.newName
             return Add(Group(
+                    AdministrationCenter(AdministrationType.Subordinate),
                     ResourceCenter(pack, tile, name),
                     parentGroup,
                     name,

@@ -14,7 +14,7 @@ class SpecialPlace(
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
-        if (testProbability(0.1, Controller.session.random)) {//TODO lesser amount
+        if (testProbability(0.1, session.random)) {//TODO lesser amount
             val lacking = staticPlace.getLacking()
             val gotResources = lacking
                     .map { resourceToRequest(it, group, it.amount) }
@@ -23,9 +23,7 @@ class SpecialPlace(
         }
     }
 
-    override fun adopt(group: Group): SpecialPlace {
-        return SpecialPlace(staticPlace)
-    }
+    override fun adopt(group: Group) = SpecialPlace(staticPlace)
 
     override fun die(group: Group) {
         session.world.strayPlacesManager.addPlace(staticPlace)

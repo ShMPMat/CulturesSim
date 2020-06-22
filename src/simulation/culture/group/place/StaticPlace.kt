@@ -29,7 +29,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
         }
         if (resource.isEmpty) return
         if (_owned.any { it.ownershipMarker != ownershipMarker }) {
-            val j = 0
+            val j = 0 //TODO return breakpoint and deal with it
         }
         resource.ownershipMarker = ownershipMarker
         _owned.add(resource)

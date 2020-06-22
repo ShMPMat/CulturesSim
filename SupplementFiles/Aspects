@@ -24,6 +24,10 @@
     &t:hard-->=0.5--#House:1
     Shard
     C10.0
+-BuildRoad
+    &t:hard-->=0.5--#Road:1
+    Shard
+    C20.0
 -BuildTemple
     &t:hard-->=0.5--#Temple:1
     Shard

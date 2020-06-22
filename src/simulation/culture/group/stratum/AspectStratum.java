@@ -1,6 +1,7 @@
 package simulation.culture.group.stratum;
 
 import simulation.culture.aspect.*;
+import simulation.culture.group.cultureaspect.SpecialPlace;
 import simulation.culture.group.place.StaticPlace;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.request.*;
@@ -33,8 +34,9 @@ public class AspectStratum extends BaseStratum {
     private ConverseWrapper aspect;
     private Map<ResourceTag, MutableResourcePack> dependencies = new HashMap<>();
     private MutableResourcePack enhancements = new MutableResourcePack();
-    private List<StaticPlace> places = new ArrayList<>();
+    private List<StaticPlace> _places = new ArrayList<>();
     private List<Meme> popularMemes = new ArrayList<>();
+
 
     public AspectStratum(int population, ConverseWrapper aspect, Tile tile) {
         super(tile, "Stratum of aspect " + aspect.getName());
@@ -82,7 +84,7 @@ public class AspectStratum extends BaseStratum {
 
     private double getEffectiveness() {
         if (_effectiveness == -1) {
-            _effectiveness = 1.0 + places.stream()
+            _effectiveness = 1.0 + _places.stream()
                     .flatMap(p -> p.getOwned().getResources().stream())
             .map(r -> r.getAspectImprovement(aspect))
                     .reduce(0.0, Double::sum);
@@ -227,7 +229,7 @@ public class AspectStratum extends BaseStratum {
     }
 
     private void addUnmovableEnhancement(Resource resource, Group group) {
-        List<StaticPlace> goodPlaces = places.stream()
+        List<StaticPlace> goodPlaces = _places.stream()
                 .filter(p -> resource.getGenome().isAcceptable(p.getTile()))
                 .collect(Collectors.toList());
         StaticPlace place = null;
@@ -238,12 +240,12 @@ public class AspectStratum extends BaseStratum {
                 String tagType = "(Stratum " + aspect.getName() + " of " + group.getName() + ")";
                 place = new StaticPlace(
                         randomElement(goodTiles, session.random),
-                        new TileTag(tagType + "_" + places.size(), tagType)
+                        new TileTag(tagType + "_" + _places.size(), tagType)
                 );
-                places.add(place);
+                _places.add(place);
             }
         } else {
-            place = randomElement(places, session.random);
+            place = randomElement(_places, session.random);
         }
         if (place == null) {
             return;
@@ -282,7 +284,7 @@ public class AspectStratum extends BaseStratum {
                 .append(", ").append(aspect.getName()).append(" ");
 
         stringBuilder.append(", Places:");
-        places.forEach(p -> stringBuilder.append(p).append(" "));
+        _places.forEach(p -> stringBuilder.append(p).append(" "));
         stringBuilder.append(super.toString());
         return stringBuilder.toString();
     }
@@ -291,6 +293,11 @@ public class AspectStratum extends BaseStratum {
     public void die() {
         population = 0;
         workedAmount = 0;
-        places.forEach(session.world.getStrayPlacesManager()::addPlace);
+        _places.forEach(session.world.getStrayPlacesManager()::addPlace);
+    }
+
+    @Override
+    public List<SpecialPlace> getPlaces() {
+        return _places.stream().map(SpecialPlace::new).collect(Collectors.toList());//TODO make adequate Places fiels
     }
 }

@@ -30,6 +30,10 @@
         &D(a(ShapeMalleable):a(Engrave):a(Sculpt):a(Carve):a(Paint):a(Incrust))-0.5
         U
 
+-Road            0       1000   10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
+        U
+
+
 -Dish            0       0.1    10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE
 
 -Boat            0       2      10000      -500   500  100000000 5             1 1 0  Artifact     @TEMPLATE

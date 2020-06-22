@@ -4,10 +4,7 @@ import extra.OutputFunc
 import simulation.Controller
 import simulation.Event
 import simulation.culture.aspect.Aspect
-import simulation.culture.group.centers.Group
-import simulation.culture.group.centers.PopulationCenter
-import simulation.culture.group.centers.RelationCenter
-import simulation.culture.group.centers.ResourceCenter
+import simulation.culture.group.centers.*
 import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
@@ -37,6 +34,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         for (i in 0 until numberOfSubGroups) {
             val name = name + "_" + i
             addGroup(Group(
+                    AdministrationCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), center, name),
                     this,
                     name,
