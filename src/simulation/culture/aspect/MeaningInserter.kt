@@ -2,6 +2,7 @@ package simulation.culture.aspect
 
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.thinking.meaning.Meme
+import simulation.space.resource.ExternalResourceFeature
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
@@ -23,12 +24,15 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
         val result = super.use(controller)
         val res = ArrayList(result.resources.getResourceAndRemove(resource).resources)
         res.removeIf { it.isEmpty }
-        result.resources.addAll(res.map { it.insertMeaning(controller.meaning, makePostfix(result, controller.meaning)) })
+        result.resources.addAll(res.map {
+            val name = makePostfix(result, controller.meaning)
+            it.insertMeaning(listOf(MeaningResourceFeature(controller.meaning, name)))
+        })
         return result
     }
 
     private fun makePostfix(result: AspectResult, meaning: Meme): String {
-        var meaningPostfix = "_representing_${meaning}_with_${result.node.aspect.name}"
+        var meaningPostfix = "representing_${meaning}_with_${result.node.aspect.name}"
         if (result.node.resourceUsed.size > 1) {
             val names = result.node.resourceUsed.entries
                     .filter { it.key.name != ResourceTag.phony().name }
@@ -55,3 +59,5 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
         return copy
     }
 }
+
+data class MeaningResourceFeature(val meme: Meme, override val name: String) : ExternalResourceFeature

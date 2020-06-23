@@ -170,11 +170,9 @@ class ResourceInstantiation(
         }
         val resourceCore = ResourceCore(
                 genome.name,
-                "",
                 genome.materials,
                 genome,
-                mapOf(),
-                null
+                mapOf()
         )
         if (!aspectConversion.containsKey(DEATH_ASPECT))
             aspectConversion[DEATH_ASPECT] = arrayOf()
@@ -184,19 +182,19 @@ class ResourceInstantiation(
     private fun actualizeLinks(template: ResourceTemplate) {
         val (resource, aspectConversion, _) = template
         for (entry in aspectConversion.entries) {
-            resource.resourceCore.aspectConversion[entry.key] = entry.value
+            resource.core.aspectConversion[entry.key] = entry.value
                     .map { readConversion(template, it) }
                     .toMutableList()
         }
-        if (resource.resourceCore.materials.isEmpty()) {
+        if (resource.core.materials.isEmpty()) {
             return
         }
         for (aspect in aspectPool.all) {//TODO why is it here?
             for (matcher in aspect.matchers) {
                 if (matcher.match(resource)) {
-                    resource.resourceCore.addAspectConversion(
+                    resource.core.addAspectConversion(
                             aspectPool.getValue(aspect.name),
-                            matcher.getResults(resource.resourceCore.copy(), resourcePool)
+                            matcher.getResults(resource.core.copy(), resourcePool)
                     )
                 }
             }
@@ -213,7 +211,7 @@ class ResourceInstantiation(
         }
         var nextTemplate: ResourceTemplate = getTemplateWithName(resourceNames[0])
         nextTemplate = if (nextTemplate.resource.genome.hasLegacy)
-            copyWithLegacyInsertion(nextTemplate, template.resource.resourceCore)
+            copyWithLegacyInsertion(nextTemplate, template.resource.core)
         else nextTemplate
         actualizeLinks(nextTemplate)
         return Pair(nextTemplate.resource, resourceNames[1].toInt())//TODO insert amount in Resource amount;
@@ -229,7 +227,7 @@ class ResourceInstantiation(
         val legacyTemplate = getTemplateWithName(legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
         return Pair(
                 if (legacyTemplate.resource.genome.hasLegacy)
-                    copyWithLegacyInsertion(legacyTemplate, resource.resourceCore).resource
+                    copyWithLegacyInsertion(legacyTemplate, resource.core).resource
                 else
                     legacyTemplate.resource,
                 amount)
@@ -245,11 +243,9 @@ class ResourceInstantiation(
         }
         val legacyResource = ResourceIdeal(ResourceCore(
                 resource.genome.name,
-                "",
-                ArrayList<Material>(resource.resourceCore.materials),
+                ArrayList<Material>(resource.core.materials),
                 resource.genome.copy(),
-                mutableMapOf(),
-                null
+                mutableMapOf()
         ))
         val legacyTemplate = ResourceTemplate(legacyResource, aspectConversion, parts)
         actualizeLinks(legacyTemplate)
@@ -263,7 +259,7 @@ class ResourceInstantiation(
         resource.genome.legacy = legacy
         for (entry in aspectConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
-                resource.resourceCore.aspectConversion[entry.key] = entry.value
+                resource.core.aspectConversion[entry.key] = entry.value
                         .map { readConversion(template, it) }
                         .toMutableList()//TODO should I do it if in upper level I call actualizeLinks?
             }
@@ -272,13 +268,13 @@ class ResourceInstantiation(
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {
-        for (resources in resource.resourceCore.aspectConversion.values) {
+        for (resources in resource.core.aspectConversion.values) {
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
                     resources[i] = Pair(resource.genome.legacy!!.copy(), conversionResourceAmount)//FIXME
                 } else if (conversionResource.simpleName == resource.genome.name) {
-                    resources[i] = Pair(resource.resourceCore.copy(), conversionResourceAmount)
+                    resources[i] = Pair(resource.core.copy(), conversionResourceAmount)
                 }
             }
         }
@@ -289,23 +285,23 @@ class ResourceInstantiation(
         for (part in parts) {
             val partResourceName = part.split(":".toRegex()).toTypedArray()[0]
             var partTemplate = getTemplateWithName(partResourceName)
-            if (partTemplate.resource.resourceCore.genome.hasLegacy)//TODO seems strange
-                partTemplate = copyWithLegacyInsertion(partTemplate, resource.resourceCore)
+            if (partTemplate.resource.core.genome.hasLegacy)//TODO seems strange
+                partTemplate = copyWithLegacyInsertion(partTemplate, resource.core)
 
             partTemplate.resource.amount = part.split(":".toRegex()).toTypedArray()[1].toInt()
-            resource.resourceCore.genome.addPart(partTemplate.resource)
+            resource.core.genome.addPart(partTemplate.resource)
         }
         addTakeApartAspect(template)
     }
 
     private fun addTakeApartAspect(template: ResourceTemplate) {//TODO remove it
         val (resource, aspectConversion, _) = template
-        if (resource.resourceCore.genome.parts.isNotEmpty()
+        if (resource.core.genome.parts.isNotEmpty()
                 && !aspectConversion.containsKey(aspectPool.getValue("TakeApart"))) {//TODO aspects shouldn't be here I recon
             val resourceList = mutableListOf<Pair<Resource?, Int>>()
-            for (partResource in resource.resourceCore.genome.parts) {
+            for (partResource in resource.core.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.resourceCore.aspectConversion[aspectPool.getValue("TakeApart")] = resourceList
+                resource.core.aspectConversion[aspectPool.getValue("TakeApart")] = resourceList
             }
         }
     }

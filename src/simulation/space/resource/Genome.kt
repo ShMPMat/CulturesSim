@@ -8,7 +8,6 @@ import simulation.space.resource.material.Material
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
 import java.util.*
-import java.util.function.Consumer
 import kotlin.math.ceil
 
 open class Genome(
@@ -107,7 +106,7 @@ open class Genome(
 
     private fun computePrimaryMaterial() {
         if (parts.size == 1) {
-            primaryMaterial = parts[0].resourceCore.materials[0]
+            primaryMaterial = parts[0].core.materials[0]
         }
     }
 

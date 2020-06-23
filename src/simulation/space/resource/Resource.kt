@@ -13,7 +13,7 @@ import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.min
 
-open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
+open class Resource(var core: ResourceCore, open var amount: Int) {
     // Precomputed hash.
     private var _hash = 0
 
@@ -29,7 +29,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
     var ownershipMarker = freeMarker
 
     val aspectConversion: Map<Aspect, List<Pair<Resource?, Int>>>
-        get() = resourceCore.aspectConversion
+        get() = core.aspectConversion
 
     val isEmpty: Boolean
         get() {
@@ -52,7 +52,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
         get() = genome.baseName
 
     val fullName: String
-        get() = genome.baseName + resourceCore.meaningPostfix
+        get() = genome.baseName + core.externalFeatures.joinToString("_", "_") { it.name }
 
     val tags: List<ResourceTag>
         get() = genome.tags
@@ -99,12 +99,12 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
     }
 
     val genome: Genome
-        get() = resourceCore.genome
+        get() = core.genome
 
-    fun hasMeaning() = resourceCore.hasMeaning
+    fun hasMeaning() = core.hasMeaning
 
     fun setHasMeaning(b: Boolean) {
-        resourceCore.hasMeaning = b
+        core.hasMeaning = b
     }
 
     open fun merge(resource: Resource): Resource {
@@ -122,7 +122,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
     }
 
     fun copy(): Resource {
-        val resource = Resource(resourceCore)
+        val resource = Resource(core)
         resource.ownershipMarker = ownershipMarker
         return resource
     }
@@ -130,19 +130,19 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
     fun exactCopy() = copy(amount)
 
     fun copy(amount: Int): Resource {
-        val resource = Resource(resourceCore, amount)
+        val resource = Resource(core, amount)
         resource.ownershipMarker = ownershipMarker
         return resource
     }
 
     fun fullCopy(): Resource {
-        val resource = resourceCore.fullCopy()
+        val resource = core.fullCopy()
         resource.ownershipMarker = ownershipMarker
         return resource
     }
 
-    fun insertMeaning(meaning: Meme, postfix: String): Resource {
-        val resource = Resource(resourceCore.insertMeaning(meaning, postfix), amount)
+    fun insertMeaning(features: List<ExternalResourceFeature>): Resource {
+        val resource = Resource(core.copyWithExternalFeatures(features), amount)
         destroy()
         return resource
     }
@@ -152,12 +152,12 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
 
-        for (dependency in resourceCore.genome.dependencies) {
+        for (dependency in core.genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)
-            deathOverhead += ((1 - part) * resourceCore.genome.deathTime).toInt()
+            deathOverhead += ((1 - part) * core.genome.deathTime).toInt()
         }
 
-        if (deathTurn + deathOverhead >= resourceCore.genome.deathTime) {
+        if (deathTurn + deathOverhead >= core.genome.deathTime) {
             val deadAmount = (deathPart * amount).toInt()
             amount -= deadAmount
             deathTurn = 0
@@ -169,7 +169,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
         if (amount <= 0)
             ResourceUpdateResult(false, result)
         deathTurn++
-        if (testProbability(resourceCore.genome.spreadProbability, Controller.session.random))
+        if (testProbability(core.genome.spreadProbability, Controller.session.random))
             expand(tile)
 
         if (simpleName == "Vapour") {
@@ -214,12 +214,12 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
 
     @JvmOverloads
     fun applyAspect(aspect: Aspect, part: Int = 1): List<Resource> {
-        val result = resourceCore.applyAspect(aspect)
+        val result = core.applyAspect(aspect)
         result.forEach { it.amount *= part }
         return result
     }
 
-    fun hasApplicationForAspect(aspect: Aspect) = resourceCore.hasApplicationForAspect(aspect)
+    fun hasApplicationForAspect(aspect: Aspect) = core.hasApplicationForAspect(aspect)
 
     fun destroy() {
         amount = 0
@@ -232,7 +232,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
             getPart(part)
 
         val p = min(part, resourcePart.amount)
-        val result = resourcePart.resourceCore.applyAspect(aspect)
+        val result = resourcePart.core.applyAspect(aspect)
         result.forEach { it.amount *= p }
         resourcePart.amount -= p
 
@@ -255,7 +255,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
             }
         }
         val resource = copy()
-        resource.amount = min(resourceCore.genome.defaultAmount, amount)
+        resource.amount = min(core.genome.defaultAmount, amount)
         newTile.addDelayedResource(resource)
         return true
     }
@@ -283,7 +283,7 @@ open class Resource(var resourceCore: ResourceCore, open var amount: Int) {
             fullName == resource.fullName && ownershipMarker == resource.ownershipMarker
     }
 
-    override fun hashCode() = Objects.hash(fullName, resourceCore.hashCode(), ownershipMarker)
+    override fun hashCode() = Objects.hash(fullName, core.hashCode(), ownershipMarker)
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, amount - $amount, tags: " +
