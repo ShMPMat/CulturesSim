@@ -33,8 +33,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
     override val producedResources: List<Resource>
         get() = resource.applyAspect(aspect)
 
-    override fun use(controller: AspectController) = try {
-        val result = super.use(controller)
+    open fun use(controller: AspectController) = try {
+        val result = super._use(controller)
         if (result.isFinished) {
             aspect.markAsUsed()
         }

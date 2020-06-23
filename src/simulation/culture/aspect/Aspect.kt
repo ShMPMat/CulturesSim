@@ -102,7 +102,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     fun calculateProducedValue(evaluator: ResourceEvaluator, workers: Int) =
             (evaluator.evaluate(producedResources) * workers) / core.standardComplexity
 
-    open fun use(controller: AspectController): AspectResult {
+    protected fun _use(controller: AspectController): AspectResult {
         //TODO put dependency rgesources only in node; otherwise they may merge with phony
         if (name.contains("Carve")) {
             val k = 0

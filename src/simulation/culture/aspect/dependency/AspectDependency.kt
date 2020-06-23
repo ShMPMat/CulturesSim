@@ -11,7 +11,7 @@ import java.util.*
 
 class AspectDependency(
         isPhony: Boolean,
-        aspect: Aspect,
+        aspect: ConverseWrapper,
         private val evaluator: ResourceEvaluator,
         private val parentAspect: Aspect
 ) : AbstractDependency(isPhony) {
@@ -49,7 +49,7 @@ class AspectDependency(
     override fun copy() = AspectDependency(isPhony, aspect, evaluator, parentAspect)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
-        aspect = aspectCenter.aspectPool.getValue(aspect)
+        aspect = aspectCenter.aspectPool.getValue(aspect) as ConverseWrapper
     }
 
     override fun equals(other: Any?): Boolean {
