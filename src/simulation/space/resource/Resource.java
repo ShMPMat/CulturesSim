@@ -4,17 +4,15 @@ import extra.SpaceProbabilityFuncs;
 import kotlin.Pair;
 import simulation.Event;
 import simulation.culture.aspect.Aspect;
-import simulation.culture.aspect.AspectResult;
 import simulation.culture.thinking.meaning.Meme;
-import simulation.space.resource.tag.AspectImprovementTag;
-import simulation.space.tile.Tile;
 import simulation.space.resource.dependency.ResourceDependency;
+import simulation.space.resource.tag.AspectImprovementTag;
 import simulation.space.resource.tag.ResourceTag;
-import simulation.space.tile.TileTag;
+import simulation.space.tile.Tile;
 
 import java.util.*;
 
-import static shmp.random.RandomProbabilitiesKt.*;
+import static shmp.random.RandomProbabilitiesKt.testProbability;
 import static simulation.Controller.session;
 
 public class Resource {
@@ -188,8 +186,8 @@ public class Resource {
         return resource;
     }
 
-    public Resource insertMeaning(Meme meaning, AspectResult result) {
-        Resource resource = new Resource(resourceCore.insertMeaning(meaning, result), amount);
+    public Resource insertMeaning(Meme meaning, String postfix) {
+        Resource resource = new Resource(resourceCore.insertMeaning(meaning, postfix), amount);
         destroy();
         return resource;
     }

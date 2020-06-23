@@ -1,12 +1,10 @@
 package simulation.space.resource
 
 import simulation.culture.aspect.Aspect
-import simulation.culture.aspect.AspectResult
 import simulation.culture.group.GroupError
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.SpaceError
 import simulation.space.resource.material.Material
-import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import java.util.stream.Collectors
 
@@ -73,23 +71,12 @@ class ResourceCore(
         )
     }
 
-    fun insertMeaning(meaning: Meme, result: AspectResult): ResourceCore {
+    fun insertMeaning(meaning: Meme, postfix: String): ResourceCore {
         val genome = genome.copy()
         genome.spreadProbability = 0.0
-        var meaningPostfix = StringBuilder("_representing_" + meaning + "_with_" + result.node.aspect.name)
-        if (result.node.resourceUsed.size > 1) {
-            val names = result.node.resourceUsed.entries
-                    .filter { it.key.name != ResourceTag.phony().name }
-                    .flatMap { p -> p.value.resources.map { it.fullName } }
-                    .distinct()
-            meaningPostfix.append("(")
-            for (name in names)
-                meaningPostfix.append(name).append(", ")
-            meaningPostfix = StringBuilder(meaningPostfix.substring(0, meaningPostfix.length - 2) + ")")
-        }
         val core = ResourceCore(
                 genome.name,
-                meaningPostfix.toString(),
+                postfix,
                 ArrayList(materials),
                 genome,
                 aspectConversion,
