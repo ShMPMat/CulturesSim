@@ -1,5 +1,6 @@
 package visualizer
 
+import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.centers.Group
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.getResidingGroup
@@ -114,7 +115,7 @@ fun windMapper(tile: Tile): String {
     return direction
 }
 
-fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile) { t -> t.resourcePack.any { it.hasMeaning() } }
+fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile) { t -> t.resourcePack.any { it.hasMeaning } }
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)

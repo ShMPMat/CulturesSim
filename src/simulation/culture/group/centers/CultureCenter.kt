@@ -4,9 +4,7 @@ import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.Event
-import simulation.culture.aspect.Aspect
-import simulation.culture.aspect.AspectController
-import simulation.culture.aspect.ConverseWrapper
+import simulation.culture.aspect.*
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject
 import simulation.culture.group.request.passingEvaluator
@@ -64,8 +62,12 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
             if (memePool.isEmpty)
                 return
             val wrappers: List<ConverseWrapper> = ArrayList(aspectCenter.aspectPool.getMeaningAspects())
-            if (wrappers.isEmpty())
+            if (wrappers.isEmpty()) {
+                if (aspectCenter.aspectPool.converseWrappers.filterIsInstance<MeaningInserter>().isNotEmpty()) {
+                    val k = 0
+                }
                 return
+            }
             val chosen = randomElement(wrappers, session.random)
             val result = chosen.use(AspectController(
                     1,
@@ -79,7 +81,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
                     memePool.valuableMeme
             ))
             group.resourceCenter.addAll(
-                    result.resources.getResources { it.hasMeaning() }
+                    result.resources.getResources { it.hasMeaning }
             )
         }
     }
@@ -133,7 +135,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
 
     fun evaluateResource(resource: Resource): Int {
         val base = resource.genome.baseDesirability + 1
-        val meaningPart = if (resource.hasMeaning()) 3 else 1
+        val meaningPart = if (resource.hasMeaning) 3 else 1
         val conglomerate = group.relationCenter.relations
                 .filter { it.other.parentGroup == group.parentGroup }
         val desire = group.resourceCenter.needLevel(resource) + 1

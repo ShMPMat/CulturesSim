@@ -35,9 +35,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
     open fun use(controller: AspectController) = try {
         val result = super._use(controller)
-        if (result.isFinished) {
+        if (result.isFinished)
             aspect.markAsUsed()
-        }
         result
     } catch (e: Exception) {
         throw GroupError("Error in using Converse Wrapper $name")

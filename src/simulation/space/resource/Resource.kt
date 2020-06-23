@@ -6,7 +6,6 @@ import simulation.Controller
 import simulation.Event
 import simulation.SimulationException
 import simulation.culture.aspect.Aspect
-import simulation.culture.thinking.meaning.Meme
 import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
@@ -52,10 +51,14 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         get() = genome.baseName
 
     val fullName: String
-        get() = genome.baseName + core.externalFeatures.joinToString("_", "_") { it.name }
+        get() = genome.baseName + if (externalFeatures.isNotEmpty())
+            externalFeatures.joinToString("_", "_") { it.name }
+        else ""
 
     val tags: List<ResourceTag>
         get() = genome.tags
+
+    val externalFeatures = core.externalFeatures
 
     init {
         computeHash()
@@ -101,12 +104,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     val genome: Genome
         get() = core.genome
 
-    fun hasMeaning() = core.hasMeaning
-
-    fun setHasMeaning(b: Boolean) {
-        core.hasMeaning = b
-    }
-
     open fun merge(resource: Resource): Resource {
         if (resource.baseName != baseName) throw RuntimeException(String.format(
                 "Different resource tried to merge - %s and %s",
@@ -141,7 +138,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         return resource
     }
 
-    fun insertMeaning(features: List<ExternalResourceFeature>): Resource {
+    fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): Resource {
         val resource = Resource(core.copyWithExternalFeatures(features), amount)
         destroy()
         return resource

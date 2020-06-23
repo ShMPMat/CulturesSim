@@ -2,7 +2,6 @@ package simulation.space.resource
 
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupError
-import simulation.culture.thinking.meaning.Meme
 import simulation.space.SpaceError
 import simulation.space.resource.material.Material
 import java.util.*
@@ -18,7 +17,6 @@ class ResourceCore(
         aspectConversion: Map<Aspect, MutableList<Pair<Resource?, Int>>>,
         internal val externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
-    var hasMeaning = false
     val aspectConversion: MutableMap<Aspect, MutableList<Pair<Resource?, Int>>>
 
     init {
@@ -61,18 +59,15 @@ class ResourceCore(
         )
     }
 
-    fun copyWithExternalFeatures(/*meaning: Meme, postfix: String*/features: List<ExternalResourceFeature>): ResourceCore {
+    fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): ResourceCore {
         val genome = genome.copy()
-        genome.spreadProbability = 0.0
-        val core = ResourceCore(
+        return ResourceCore(
                 genome.name,
                 ArrayList(materials),
                 genome,
                 aspectConversion,
                 features
         )
-        core.hasMeaning = true
-        return core
     }
 
     fun applyAspect(aspect: Aspect): List<Resource> { //TODO throw an exception on any attempt to copy template

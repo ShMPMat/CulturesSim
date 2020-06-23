@@ -1,6 +1,7 @@
 package simulation.culture.group.request
 
 import simulation.culture.aspect.AspectController
+import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.centers.Group
 import simulation.culture.group.stratum.AspectStratum
 import simulation.culture.group.stratum.Stratum
@@ -44,7 +45,7 @@ class MeaningResourceRequest(
     )
 
     override fun finalFilter(pack: MutableResourcePack): ResourcePack {
-        val result = pack.getResources { evaluator.evaluate(it) > 0 && it.hasMeaning() }
+        val result = pack.getResources { evaluator.evaluate(it) > 0 && it.hasMeaning }
         pack.removeAll(result)
         return result
     }
