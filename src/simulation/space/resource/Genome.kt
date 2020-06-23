@@ -162,7 +162,7 @@ open class Genome(
             parts.add(part)
             computePrimaryMaterial()
         } else
-            parts[i].addAmount(part.getAmount())
+            parts[i].addAmount(part.amount)
     }
 
     override fun equals(o: Any?): Boolean {

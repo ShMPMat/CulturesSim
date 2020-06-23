@@ -44,8 +44,4 @@ public class ResourceIdeal extends Resource {
         System.err.println("Ideal is changing");
         return super.applyAndConsumeAspect(aspect, part, isClean);
     }
-
-    void setAmount(int amount) {
-        this.amount = amount;
-    }
 }
