@@ -40,7 +40,7 @@ fun printProduced(group: GroupConglomerate) = group.subgroups
         .joinToString { it.fullName }
 
 fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = resources
-        .filter { it.aspectConversion.containsKey(aspect) }
+        .filter { it.aspectConversion.containsKey(aspect.core.resourceAction) }
         .joinToString { it.fullName }
 
 fun printResource(resource: Resource): String = resource.toString() + "\n" +

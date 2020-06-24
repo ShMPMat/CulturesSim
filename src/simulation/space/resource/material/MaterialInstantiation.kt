@@ -51,7 +51,7 @@ class MaterialInstantiation(private val allowedTags: Collection<ResourceTag>, pr
 
     private fun actualizeLinks(template: MaterialTemplate, materialPool: MaterialPool) {
         template.aspectConversion.forEach {
-            template.material.addAspectConversion(it.key, materialPool.get(it.value))
+            template.material.addAspectConversion(it.key.core.resourceAction, materialPool.get(it.value))
         }
     }
 }

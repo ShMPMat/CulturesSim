@@ -3,6 +3,7 @@ package simulation.culture.aspect
 import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 
 data class AspectCore(
@@ -13,7 +14,8 @@ data class AspectCore(
         var applyMeaning: Boolean,
         val resourceExposed: Boolean,
         val standardComplexity: Double,
-        val sideComplexities: List<ResourceComplexity>
+        val sideComplexities: List<ResourceComplexity>,
+        val resourceAction: ResourceAction
 ) {
     fun makeAspect(dependencies: AspectDependencies) = Aspect(this, dependencies)
 

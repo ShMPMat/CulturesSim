@@ -1,26 +1,21 @@
 package simulation.space.resource.material
 
-import simulation.culture.aspect.Aspect
+import simulation.space.resource.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class Material(val name: String, val density: Double, val tags: List<ResourceTag>) {
-    private val aspectConversion: MutableMap<Aspect, Material> = HashMap()
-    fun addAspectConversion(aspect: Aspect, material: Material) {
-        aspectConversion[aspect] = material
+    private val aspectConversion: MutableMap<ResourceAction, Material> = HashMap()
+
+    fun addAspectConversion(action: ResourceAction, material: Material) {
+        aspectConversion[action] = material
     }
 
-    fun applyAspect(aspect: Aspect): Material {
-        return aspectConversion[aspect] ?: this
-    }
+    fun applyAction(action: ResourceAction): Material = aspectConversion[action] ?: this
 
-    fun hasTagWithName(name: String): Boolean {
-        return tags.stream().anyMatch { tag: ResourceTag -> tag.name == name }
-    }
+    fun hasTagWithName(name: String) = tags.any { it.name == name }
 
-    fun hasApplicationForAspect(aspect: Aspect): Boolean {
-        return aspectConversion.containsKey(aspect)
-    }
+    fun hasApplicationForAspect(action: ResourceAction) = aspectConversion.containsKey(action)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -29,7 +24,5 @@ class Material(val name: String, val density: Double, val tags: List<ResourceTag
         return name == material.name
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(name)
-    }
+    override fun hashCode() = Objects.hash(name)
 }

@@ -1,12 +1,10 @@
 package simulation.space.resource
 
-import simulation.culture.aspect.Aspect
-import simulation.culture.group.GroupError
+import simulation.SimulationException
 import simulation.space.SpaceError
 import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
 import java.util.*
-import java.util.stream.Collectors
 
 /**
  * Class which contains all general information about all Resources with the same name.
@@ -15,18 +13,18 @@ class ResourceCore(
         name: String,
         val materials: List<Material>,
         val genome: Genome,
-        aspectConversion: Map<Aspect, MutableList<Pair<Resource?, Int>>>,
+        aspectConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>,
         internal val externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
-    val aspectConversion: MutableMap<Aspect, MutableList<Pair<Resource?, Int>>>
+    val aspectConversion: MutableMap<ResourceAction, MutableList<Pair<Resource?, Int>>>
 
     init {
         this.aspectConversion = HashMap(aspectConversion)
         setName(name)
     }
 
-    internal fun addAspectConversion(aspect: Aspect, resourceList: List<Pair<Resource?, Int>>) {
-        aspectConversion[aspect] = resourceList.toMutableList()
+    internal fun addAspectConversion(action: ResourceAction, resourceList: List<Pair<Resource?, Int>>) {
+        aspectConversion[action] = resourceList.toMutableList()
     }
 
     private fun setName(name: String) {
@@ -39,7 +37,7 @@ class ResourceCore(
 
     fun fullCopy(): Resource {
         if (genome is GenomeTemplate)
-            throw SpaceError("Cant make a full copy of a template")
+            throw SpaceError("Can't make a full copy of a template")
         return Resource(ResourceCore(
                 genome.name,
                 ArrayList(materials),
@@ -71,48 +69,43 @@ class ResourceCore(
         )
     }
 
-    fun applyAspect(aspect: Aspect): List<Resource> { //TODO throw an exception on any attempt to copy template
-        return if (aspectConversion.containsKey(aspect)) {
-            aspectConversion[aspect]!!.stream()
-                    .map { pair: Pair<Resource?, Int> ->
-                        var resource = pair.first ?: throw GroupError("Empty conversion")
-                        if (resource.core.genome is GenomeTemplate) {
-                            resource = resource.copy(pair.second)
-                            resource.core = resource.core.instantiateTemplateCopy(this)
-                            resource.computeHash()
-                            return@map resource
-                        } else {
-                            return@map resource.copy(pair.second)
-                        }
-                    }.collect(Collectors.toList())
-        } else listOf(applyAspectToMaterials(aspect).copy(1))
-    }
+    //TODO throw an exception on any attempt to copy template
+    fun applyAction(action: ResourceAction): List<Resource> = aspectConversion[action]
+            ?.map { (r, n) ->
+                var resource = r ?: throw SimulationException("Empty conversion")
+                if (resource.core.genome is GenomeTemplate) {
+                    resource = resource.copy(n)
+                    resource.core = resource.core.instantiateTemplateCopy(this)
+                    resource.computeHash()
+                    return@map resource
+                } else {
+                    return@map resource.copy(n)
+                }
+            } ?: listOf(applyActionToMaterials(action).copy(1))
 
-    private fun applyAspectToMaterials(aspect: Aspect): ResourceCore {
-        val newMaterials = materials.map { it.applyAspect(aspect) }
+    private fun applyActionToMaterials(action: ResourceAction): ResourceCore {
+        val newMaterials = materials.map { it.applyAction(action) }
         val genome = genome.copy()
         genome.spreadProbability = 0.0
         return ResourceCore(
-                genome.name + if (newMaterials == materials) "" else "_" + aspect.name,
+                genome.name + if (newMaterials == materials) "" else "_" + action.name,
                 newMaterials,
                 genome,
                 aspectConversion
         ) //TODO dangerous stuff for genome
     }
 
-    fun hasApplicationForAspect(aspect: Aspect) = aspectConversion.containsKey(aspect)
-            || materials.any { it.hasApplicationForAspect(aspect) }
+    fun hasApplicationForAction(action: ResourceAction) =
+            aspectConversion.containsKey(action) || materials.any { it.hasApplicationForAspect(action) }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null) return false
-        val resourceCore = o as ResourceCore
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+        val resourceCore = other as ResourceCore
         return genome.baseName == resourceCore.genome.baseName
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(genome.baseName)
-    }
+    override fun hashCode() = Objects.hash(genome.baseName)
 
     override fun toString() = genome.baseName
 }

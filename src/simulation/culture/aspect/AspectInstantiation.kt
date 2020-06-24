@@ -5,6 +5,7 @@ import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.group.GroupError
+import simulation.space.resource.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 import kotlin.collections.ArrayList
@@ -77,7 +78,8 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                 applyMeaning,
                 isResourceExposed,
                 standardComplexity,
-                sideComplexities
+                sideComplexities,
+                ResourceAction(name)
         )
     }
 }

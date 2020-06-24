@@ -40,7 +40,11 @@ class LineDependency(
                     evaluator = resourceEvaluator(parentConverseWrapper.resource)
             ))
             resourcePack.addAll(_p.resources.getResource(parentConverseWrapper.resource).resources.flatMap {
-                        it.applyAndConsumeAspect(parentConverseWrapper.aspect, controller.ceiling, true)
+                        it.applyActionAndConsume(
+                                parentConverseWrapper.aspect.core.resourceAction,
+                                controller.ceiling,
+                                true
+                        )
                     })
             resourcePack.addAll(_p.resources)
             isAlreadyUsed = false

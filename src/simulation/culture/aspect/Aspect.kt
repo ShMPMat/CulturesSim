@@ -190,8 +190,8 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         val pack = resourceEvaluator((this as ConverseWrapper).resource).pick(controller.populationCenter.turnResources)
         return controller.pickCeilingPart(
                 pack.resources,
-                { it.applyAspect(aspect) }
-        ) { r, n -> r.applyAndConsumeAspect(aspect, n, true) }
+                { it.applyAction(aspect.core.resourceAction) }
+        ) { r, n -> r.applyActionAndConsume(aspect.core.resourceAction, n, true) }
     }
 
     private fun satisfyRegularDependency(

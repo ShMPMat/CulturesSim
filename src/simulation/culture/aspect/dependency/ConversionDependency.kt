@@ -8,7 +8,6 @@ import simulation.culture.group.centers.AspectCenter
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import java.util.*
-import kotlin.math.ceil
 
 class ConversionDependency(
         isPhony: Boolean,
@@ -28,8 +27,8 @@ class ConversionDependency(
             return AspectResult(MutableResourcePack(), null)
         val gatheredPack = controller.pickCeilingPart(
                 controller.territory.getResourceInstances(resource),
-                { it.applyAspect(aspect) },
-                { r, n -> r.getPart(n).applyAndConsumeAspect(aspect, n, false) }
+                { it.applyAction(aspect.core.resourceAction) },
+                { r, n -> r.getPart(n).applyActionAndConsume(aspect.core.resourceAction, n, false) }
         )
         return AspectResult(gatheredPack, null)
     }

@@ -7,25 +7,23 @@ import simulation.space.resource.tag.labeler.ResourceLabeler
 class AspectMatcher(
         private val labeler: ResourceLabeler,
         private val results: List<Pair<String, Int>>,
-        private val coreName: String
+        private val resourceActionName: String
 ) {
     init {
         if (results.isEmpty()) throw ExceptionInInitializerError("Aspect matcher does nothing")
     }
 
-    fun match(resource: Resource): Boolean {
-        return if (resource.aspectConversion.keys
-                        .map { obj: Aspect -> obj.name }
-                        .any { name: String -> name == coreName }
-        ) false
-        else labeler.isSuitable(resource.genome)
-    }
+    fun match(resource: Resource) =
+            if (resource.aspectConversion.keys.map { it.name }.any { it == resourceActionName })
+                false
+            else
+                labeler.isSuitable(resource.genome)
 
     fun getResults(resource: Resource, resourcePool: ResourcePool): List<Pair<Resource, Int>> {
         return results
-                .map { (first, second) -> Pair(
-                        if (first == "MATCHED") resource else resourcePool.get(first),
-                        second
-                ) }
+                .map { (name, amount) ->
+                    val resultResource = if (name == "MATCHED") resource else resourcePool.get(name)
+                    resultResource to amount
+                }
     }
 }

@@ -19,7 +19,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
     }
 
     private fun addPhony(converseWrapper: ConverseWrapper) {
-        if (converseWrapper.resource.hasApplicationForAspect(converseWrapper.aspect)) {
+        if (converseWrapper.resource.hasApplicationForAction(converseWrapper.aspect.core.resourceAction)) {
             addTakeablePhony(converseWrapper)
             addLinePhony(converseWrapper)
         }

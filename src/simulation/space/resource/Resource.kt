@@ -5,7 +5,6 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.Event
 import simulation.SimulationException
-import simulation.culture.aspect.Aspect
 import simulation.space.SpaceData
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
@@ -27,7 +26,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     private val events: MutableList<Event> = ArrayList()
     var ownershipMarker = freeMarker
 
-    val aspectConversion: Map<Aspect, List<Pair<Resource?, Int>>>
+    val aspectConversion: Map<ResourceAction, List<Pair<Resource?, Int>>>
         get() = core.aspectConversion
 
     val isEmpty: Boolean
@@ -152,7 +151,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             deathTurn = 0
             deathOverhead = 0
             deathPart = 1.0
-            result = applyAspect(DEATH_ASPECT, deadAmount)
+            result = applyAction(DEATH_ACTION, deadAmount)
         }
 
         if (amount <= 0)
@@ -201,27 +200,27 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         this.amount += amount
     }
 
-    @JvmOverloads
-    fun applyAspect(aspect: Aspect, part: Int = 1): List<Resource> {
-        val result = core.applyAspect(aspect)
+    @JvmOverloads//TODO remove it?
+    fun applyAction(action: ResourceAction, part: Int = 1): List<Resource> {
+        val result = core.applyAction(action)
         result.forEach { it.amount *= part }
         return result
     }
 
-    fun hasApplicationForAspect(aspect: Aspect) = core.hasApplicationForAspect(aspect)
+    fun hasApplicationForAction(action: ResourceAction) = core.hasApplicationForAction(action)
 
     fun destroy() {
         amount = 0
     }
 
-    open fun applyAndConsumeAspect(aspect: Aspect, part: Int, isClean: Boolean): List<Resource> {
+    open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean): List<Resource> {
         val resourcePart = if (isClean)
             getCleanPart(part)
         else
             getPart(part)
 
         val p = min(part, resourcePart.amount)
-        val result = resourcePart.core.applyAspect(aspect)
+        val result = resourcePart.core.applyAction(action)
         result.forEach { it.amount *= p }
         resourcePart.amount -= p
 

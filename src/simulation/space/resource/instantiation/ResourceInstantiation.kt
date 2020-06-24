@@ -1,16 +1,15 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
-import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
 import simulation.space.resource.*
 import simulation.space.resource.dependency.*
-import simulation.space.tile.Tile
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
+import simulation.space.tile.Tile
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.math.min
@@ -57,7 +56,7 @@ class ResourceInstantiation(
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
         var elements: Array<String>
-        val aspectConversion = mutableMapOf<Aspect, Array<String>>()
+        val aspectConversion = mutableMapOf<ResourceAction, Array<String>>()
         val parts = mutableListOf<String>()
 
         for (i in 12..tags.lastIndex) {
@@ -66,9 +65,9 @@ class ResourceInstantiation(
             when (key) {
                 '+' -> {
                     val aspectName = tag.substring(0, tag.indexOf(':'))
-                    val aspect = if (aspectName == DEATH_ASPECT.name) DEATH_ASPECT
-                    else aspectPool.getValue(aspectName)
-                    aspectConversion[aspect] =
+                    val action = if (aspectName == DEATH_ACTION.name) DEATH_ACTION
+                    else aspectPool.getValue(aspectName).core.resourceAction
+                    aspectConversion[action] =
                             tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
                 }
                 '@' -> {
@@ -163,8 +162,8 @@ class ResourceInstantiation(
                 genome,
                 mapOf()
         )
-        if (!aspectConversion.containsKey(DEATH_ASPECT))
-            aspectConversion[DEATH_ASPECT] = arrayOf()
+        if (!aspectConversion.containsKey(DEATH_ACTION))
+            aspectConversion[DEATH_ACTION] = arrayOf()
         return ResourceTemplate(ResourceIdeal(resourceCore), aspectConversion, parts)
     }
 
@@ -182,7 +181,7 @@ class ResourceInstantiation(
             for (matcher in aspect.matchers) {
                 if (matcher.match(resource)) {
                     resource.core.addAspectConversion(
-                            aspectPool.getValue(aspect.name),
+                            aspectPool.getValue(aspect.name).core.resourceAction,
                             matcher.getResults(resource.core.copy(), resourcePool)
                     )
                 }
@@ -286,11 +285,11 @@ class ResourceInstantiation(
     private fun addTakeApartAspect(template: ResourceTemplate) {//TODO remove it
         val (resource, aspectConversion, _) = template
         if (resource.core.genome.parts.isNotEmpty()
-                && !aspectConversion.containsKey(aspectPool.getValue("TakeApart"))) {//TODO aspects shouldn't be here I recon
+                && !aspectConversion.containsKey(aspectPool.getValue("TakeApart").core.resourceAction)) {//TODO aspects shouldn't be here I recon
             val resourceList = mutableListOf<Pair<Resource?, Int>>()
             for (partResource in resource.core.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.core.aspectConversion[aspectPool.getValue("TakeApart")] = resourceList
+                resource.core.aspectConversion[aspectPool.getValue("TakeApart").core.resourceAction] = resourceList
             }
         }
     }
@@ -298,6 +297,6 @@ class ResourceInstantiation(
 
 data class ResourceTemplate(
         val resource: ResourceIdeal,
-        val aspectConversion: MutableMap<Aspect, Array<String>>,
+        val aspectConversion: MutableMap<ResourceAction, Array<String>>,
         val parts: List<String>
 )

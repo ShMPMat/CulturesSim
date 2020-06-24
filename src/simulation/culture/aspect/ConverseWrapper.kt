@@ -31,7 +31,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
     }
 
     override val producedResources: List<Resource>
-        get() = resource.applyAspect(aspect)
+        get() = resource.applyAction(aspect.core.resourceAction)
 
     open fun use(controller: AspectController) = try {
         val result = super._use(controller)
@@ -49,7 +49,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
         get() {
             if (resource.genome.isResisting && aspect.name == "Take")
                 return false
-            return resource.hasApplicationForAspect(aspect)
+            return resource.hasApplicationForAction(aspect.core.resourceAction)
         }
 
     override fun canTakeResources() =
@@ -96,7 +96,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
 private fun getReducedTags(resource: Resource, aspect: Aspect): List<ResourceTag> {
     val result: MutableList<ResourceTag> = ArrayList()
-    val allTags = resource.applyAspect(aspect).flatMap { it.tags }
+    val allTags = resource.applyAction(aspect.core.resourceAction).flatMap { it.tags }
     for (tag in allTags) {
         if (!result.contains(tag))
             result.add(tag)
