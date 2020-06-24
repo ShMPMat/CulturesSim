@@ -1,6 +1,7 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
+import simulation.SimulationException
 import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
 import simulation.space.resource.*
@@ -23,6 +24,7 @@ class ResourceInstantiation(
         private val tagParser: TagParser
 ) {
     private val resourceTemplates = ArrayList<ResourceTemplate>()
+    private val dependencyParser = DefaultDependencyParser()
     var resourcePool = ResourcePool(listOf())
 
     fun createPool(): ResourcePool {
@@ -87,34 +89,9 @@ class ResourceInstantiation(
                         tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
                 ))
                 '~' -> {
-                    elements = tag.split(";".toRegex()).toTypedArray()
-                    when (elements[4]) {
-                        "CONSUME" -> {
-                            resourceDependencies.add(ConsumeDependency(
-                                    elements[2].toDouble(),
-                                    elements[3] == "1",
-                                    elements[1].toDouble(),
-                                    makeResourceLabeler(elements[0].split(",".toRegex()))
-                            ))
-                        }
-                        "AVOID" -> {
-                            resourceDependencies.add(AvoidDependency(
-                                    elements[1].toDouble(),
-                                    elements[2].toDouble(),
-                                    elements[3] == "1",
-                                    makeResourceLabeler(elements[0].split(",".toRegex()))
-                            ));
-                        }
-                        "EXIST" -> {
-                            resourceDependencies.add(NeedDependency(
-                                    elements[1].toDouble(),
-                                    elements[2].toDouble(),
-                                    elements[3] == "1",
-                                    makeResourceLabeler(elements[0].split(",".toRegex()))
-                            ))
-                        }
-                        else -> throw ExceptionInInitializerError("Unknown dependency type - ${elements[4]}")
-                    }
+                    val rDependency = dependencyParser.parse(tag)
+                            ?: throw SimulationException("Unknown dependency with tags: $tag")
+                    resourceDependencies.add(rDependency)
                 }
                 '#' -> resourceDependencies.add(AvoidTiles(
                         tag.split(":".toRegex()).toTypedArray()
@@ -153,9 +130,8 @@ class ResourceInstantiation(
                 primaryMaterial = primaryMaterial,
                 secondaryMaterials = secondaryMaterials
         )
-        if (isTemplate) {
+        if (isTemplate)
             genome = GenomeTemplate(genome)
-        }
         val resourceCore = ResourceCore(
                 genome.name,
                 genome.materials,
@@ -164,6 +140,7 @@ class ResourceInstantiation(
         )
         if (!aspectConversion.containsKey(DEATH_ACTION))
             aspectConversion[DEATH_ACTION] = arrayOf()
+
         return ResourceTemplate(ResourceIdeal(resourceCore), aspectConversion, parts)
     }
 
@@ -174,14 +151,14 @@ class ResourceInstantiation(
                     .map { readConversion(template, it) }
                     .toMutableList()
         }
-        if (resource.core.materials.isEmpty()) {
+        if (resource.core.materials.isEmpty())
             return
-        }
+
         for (aspect in aspectPool.all) {//TODO why is it here?
             for (matcher in aspect.matchers) {
                 if (matcher.match(resource)) {
                     resource.core.addAspectConversion(
-                            aspectPool.getValue(aspect.name).core.resourceAction,
+                            aspect.core.resourceAction,
                             matcher.getResults(resource.core.copy(), resourcePool)
                     )
                 }
