@@ -1,6 +1,7 @@
 package simulation.space
 
 import simulation.space.resource.tag.TagMatcher
+import kotlin.random.Random
 
 object SpaceData {
     private var wasCalled = false
@@ -32,6 +33,7 @@ class Data(
     val defaultWaterLevel: Int = 98,
     val additionalTags: List<TagMatcher> = listOf(),
     val xMapLooping: Boolean = false,
-    val yMapLooping: Boolean = true
+    val yMapLooping: Boolean = true,
+    val random: Random = Random(0L)
 )
 

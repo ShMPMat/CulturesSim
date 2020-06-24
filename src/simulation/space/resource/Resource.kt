@@ -6,6 +6,7 @@ import simulation.Controller
 import simulation.Event
 import simulation.SimulationException
 import simulation.culture.aspect.Aspect
+import simulation.space.SpaceData
 import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
@@ -85,7 +86,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
      * Exact amount depends on current amount of this Resource.
      */
     open fun getPart(part: Int): Resource {
-        val prob = Controller.session.random.nextDouble() * 0.5
+        val prob = SpaceData.data.random.nextDouble() * 0.5
         val result = when {
             part <= amount * prob -> min(amount, part)
             amount * prob + 1 < amount -> (amount * prob).toInt() + 1
@@ -166,7 +167,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         if (amount <= 0)
             ResourceUpdateResult(false, result)
         deathTurn++
-        if (testProbability(core.genome.spreadProbability, Controller.session.random))
+        if (testProbability(core.genome.spreadProbability, SpaceData.data.random))
             expand(tile)
 
         if (simpleName == "Vapour") {

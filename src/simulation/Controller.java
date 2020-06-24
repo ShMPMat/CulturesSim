@@ -10,9 +10,6 @@ import simulation.space.resource.tag.TagMatcherInstantiationKt;
 import simulation.space.tile.Tile;
 import visualizer.Visualizer;
 
-/**
- * Class which wraps the World with its Interaction Model.
- */
 public class Controller {
     public static Controller session;
     public World world;
@@ -86,7 +83,8 @@ public class Controller {
         session = this;
         SpaceDataInstanciatorKt.instantiateSpaceData(
                 proportionCoefficient,
-                TagMatcherInstantiationKt.createTagMatchers("SupplementFiles/ResourceTagLabelers")
+                TagMatcherInstantiationKt.createTagMatchers("SupplementFiles/ResourceTagLabelers"),
+                random
         );
         templateBase = new TemplateBase();
         world = new World();
