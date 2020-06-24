@@ -2,7 +2,7 @@ package simulation.culture.group.request
 
 import simulation.culture.aspect.Aspect
 import simulation.space.resource.Resource
-import simulation.space.resource.tag.AspectImprovementTag
+import simulation.culture.aspect.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 
 val passingEvaluator: ResourceEvaluator

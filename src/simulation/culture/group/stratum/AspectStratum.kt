@@ -5,6 +5,7 @@ import simulation.Controller.session
 import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.dependency.Dependency
+import simulation.culture.aspect.getAspectImprovement
 import simulation.culture.group.centers.Group
 import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.passingReward

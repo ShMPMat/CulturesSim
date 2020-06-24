@@ -10,7 +10,6 @@ import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.LineDependency
 import simulation.culture.aspect.labeler.ProducedLabeler
 import simulation.culture.group.AspectDependencyCalculator
-import simulation.culture.group.GroupError
 import simulation.culture.group.convert
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag

@@ -4,7 +4,6 @@ import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.dependency.*
-import simulation.culture.group.request.resourceEvaluator
 import simulation.culture.group.request.tagEvaluator
 import simulation.space.Territory
 import simulation.space.resource.tag.ResourceTag

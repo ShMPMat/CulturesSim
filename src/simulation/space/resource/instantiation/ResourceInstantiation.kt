@@ -1,16 +1,14 @@
-package simulation.space.resource
+package simulation.space.resource.instantiation
 
 import extra.InputDatabase
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.AspectPool
-import simulation.culture.aspect.labeler.makeAspectLabeler
-import simulation.culture.group.GroupError
 import simulation.space.SpaceError
+import simulation.space.resource.*
 import simulation.space.resource.dependency.*
 import simulation.space.tile.Tile
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
-import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 import java.nio.file.Files
@@ -22,8 +20,8 @@ class ResourceInstantiation(
         private val folderPath: String,
         private val aspectPool: AspectPool,
         private val materialPool: MaterialPool,
-        private val allowedTags: Collection<ResourceTag>,
-        private val amountCoefficient: Int = 1
+        private val amountCoefficient: Int = 1,
+        private val tagParser: TagParser
 ) {
     private val resourceTemplates = ArrayList<ResourceTemplate>()
     var resourcePool = ResourcePool(listOf())
@@ -124,22 +122,13 @@ class ResourceInstantiation(
                                 .map { Tile.Type.valueOf(it) }
                                 .toSet()
                 ))
-                '$' -> {
-                    elements = tag.split(":".toRegex()).toTypedArray()
-                    val resourceTag = ResourceTag(elements[0], elements[1].toInt())
-                    if (!allowedTags.contains(resourceTag)) throw GroupError("Tag $resourceTag doesnt exist")
-                    resourceTags.add(resourceTag)
-                }
-                '&' -> {
-                    elements = tag.split("-".toRegex()).toTypedArray()
-                    resourceTags.add(AspectImprovementTag(
-                            makeAspectLabeler(elements[0].split(";")),
-                            elements[1].toDouble()
-                    ))
-                }
                 'R' -> willResist = true
                 'U' -> isDesirable = false
-                else -> throw ExceptionInInitializerError("Unknown resource description command - $key")
+                else -> {
+                    val rTag = tagParser.parse(key, tag)
+                            ?: throw ExceptionInInitializerError("Unknown resource description command - $key")
+                    resourceTags.add(rTag)
+                }
             }
         }
         var genome = Genome(

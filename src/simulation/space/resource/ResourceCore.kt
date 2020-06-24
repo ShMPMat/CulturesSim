@@ -3,6 +3,7 @@ package simulation.space.resource
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupError
 import simulation.space.SpaceError
+import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
 import java.util.*
 import java.util.stream.Collectors

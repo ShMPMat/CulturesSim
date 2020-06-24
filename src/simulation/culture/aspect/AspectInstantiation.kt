@@ -43,7 +43,7 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '/' -> requirements.add(ResourceTag(tag,false))
+                '/' -> requirements.add(ResourceTag(tag, false))
                 '#' -> if (tag == "MEANING") {
                     applyMeaning = true
                 } else {

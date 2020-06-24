@@ -5,12 +5,14 @@ import simulation.Controller.*
 import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
+import simulation.culture.aspect.labeler.makeAspectLabeler
 import simulation.culture.group.centers.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.resourceEvaluator
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
+import simulation.space.resource.instantiation.DefaultTagParser
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.BaseNameLabeler
 import simulation.space.resource.tag.labeler.ResourceLabeler
@@ -287,3 +289,22 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 private data class Result(val isFinished: Boolean = true, val need: List<Need> = emptyList())
 
 typealias Need = Pair<ResourceLabeler, Int>
+
+class AspectResourceTagParser(allowedTags: Collection<ResourceTag>): DefaultTagParser(allowedTags) {
+    override fun parse(key: Char, tag: String) = super.parse(key, tag) ?: when (key) {
+        '&' -> {
+            val elements = tag.split("-".toRegex()).toTypedArray()
+            AspectImprovementTag(
+                    makeAspectLabeler(elements[0].split(";")),
+                    elements[1].toDouble()
+            )
+        }
+        else -> null
+    }
+}
+
+fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() *
+        tags.filterIsInstance<AspectImprovementTag>()
+                .filter { it.labeler.isSuitable(aspect) }
+                .map { it.improvement }
+                .foldRight(0.0, Double::plus)

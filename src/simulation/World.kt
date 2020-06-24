@@ -4,6 +4,7 @@ import extra.InputDatabase
 import extra.SpaceProbabilityFuncs
 import simulation.Controller.session
 import simulation.culture.aspect.AspectInstantiation
+import simulation.culture.aspect.AspectResourceTagParser
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.place.StrayPlacesManager
@@ -14,7 +15,7 @@ import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
 import simulation.space.generator.fillResources
 import simulation.space.generator.generateMap
-import simulation.space.resource.ResourceInstantiation
+import simulation.space.resource.instantiation.ResourceInstantiation
 import simulation.space.resource.ResourcePool
 import simulation.space.resource.material.MaterialInstantiation
 import simulation.space.resource.tag.ResourceTag
@@ -48,8 +49,8 @@ class World {
                 "SupplementFiles/Resources",
                 aspectPool,
                 materialPool,
-                tags,
-                session.resourceProportionCoefficient
+                session.resourceProportionCoefficient,
+                AspectResourceTagParser(tags)
         ).createPool()
         map = generateMap(
                 data.mapSizeX,

@@ -1,6 +1,7 @@
-package simulation.space.resource.tag
+package simulation.culture.aspect
 
 import simulation.culture.aspect.labeler.AspectLabeler
+import simulation.space.resource.tag.ResourceTag
 
 class AspectImprovementTag(
         val labeler: AspectLabeler,

@@ -4,6 +4,7 @@ import simulation.space.SpaceData.data
 import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.dependency.TemperatureMax
 import simulation.space.resource.dependency.TemperatureMin
+import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile

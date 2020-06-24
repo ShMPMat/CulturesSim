@@ -1,4 +1,7 @@
-package simulation.space.resource
+package simulation.space.resource.instantiation
+
+import simulation.space.resource.Genome
+import simulation.space.resource.ResourceCore
 
 class GenomeTemplate(genome: Genome) : Genome(
         genome.name,

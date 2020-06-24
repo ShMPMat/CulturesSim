@@ -7,7 +7,6 @@ import simulation.Event
 import simulation.SimulationException
 import simulation.culture.aspect.Aspect
 import simulation.space.SpaceData
-import simulation.space.resource.tag.AspectImprovementTag
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
 import java.util.*
@@ -67,14 +66,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     }
 
     constructor(resourceCore: ResourceCore) : this(resourceCore, resourceCore.genome.defaultAmount)
-
-    fun getAspectImprovement(aspect: Aspect): Double {
-        return amount.toDouble() *
-                tags.filterIsInstance<AspectImprovementTag>()
-                        .filter { it.labeler.isSuitable(aspect) }
-                        .map { it.improvement }
-                        .foldRight(0.0, Double::plus)
-    }
 
     fun getTagPresence(tag: ResourceTag) = (amount * getTagLevel(tag)).toDouble() /* * getGenome().getSize()*/
 
@@ -258,7 +249,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         return true
     }
 
-    override fun equals(o: Any?) = fullEquals(o)
+    override fun equals(other: Any?) = fullEquals(other)
 
     fun ownershiplessEquals(o: Any?): Boolean {
         if (this === o) return true
