@@ -2,14 +2,14 @@ package simulation.space.resource.instantiation
 
 import extra.InputDatabase
 import simulation.SimulationException
-import simulation.culture.aspect.AspectPool
 import simulation.space.SpaceError
 import simulation.space.resource.*
-import simulation.space.resource.dependency.*
+import simulation.space.resource.dependency.AvoidTiles
+import simulation.space.resource.dependency.LevelRestrictions
+import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
-import simulation.space.resource.tag.labeler.makeResourceLabeler
 import simulation.space.tile.Tile
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -18,7 +18,7 @@ import kotlin.streams.toList
 
 class ResourceInstantiation(
         private val folderPath: String,
-        private val aspectPool: AspectPool,
+        private val actions: List<ResourceAction>,
         private val materialPool: MaterialPool,
         private val amountCoefficient: Int = 1,
         private val tagParser: TagParser
@@ -57,8 +57,7 @@ class ResourceInstantiation(
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
-        var elements: Array<String>
-        val aspectConversion = mutableMapOf<ResourceAction, Array<String>>()
+        val actionConversion = mutableMapOf<ResourceAction, Array<String>>()
         val parts = mutableListOf<String>()
 
         for (i in 12..tags.lastIndex) {
@@ -66,23 +65,20 @@ class ResourceInstantiation(
             val tag = tags[i].substring(1)
             when (key) {
                 '+' -> {
-                    val aspectName = tag.substring(0, tag.indexOf(':'))
-                    val action = if (aspectName == DEATH_ACTION.name) DEATH_ACTION
-                    else aspectPool.getValue(aspectName).core.resourceAction
-                    aspectConversion[action] =
+                    val actionName = tag.substring(0, tag.indexOf(':'))
+                    val action = if (actionName == DEATH_ACTION.name) DEATH_ACTION
+                    else actions.first { it.name == actionName }
+                    actionConversion[action] =
                             tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
                 }
-                '@' -> {
-                    if (tag == "TEMPLATE") {
-                        isTemplate = true
-                    } else {
-                        val material = materialPool.get(tag)
-                        if (primaryMaterial == null) {
-                            primaryMaterial = material
-                        } else {
-                            secondaryMaterials.add(material)
-                        }
-                    }
+                '@' -> if (tag == "TEMPLATE")
+                    isTemplate = true
+                else {
+                    val material = materialPool.get(tag)
+                    if (primaryMaterial == null)
+                        primaryMaterial = material
+                    else
+                        secondaryMaterials.add(material)
                 }
                 '^' -> parts.add(tag)
                 'l' -> resourceDependencies.add(LevelRestrictions(
@@ -138,29 +134,26 @@ class ResourceInstantiation(
                 genome,
                 mapOf()
         )
-        if (!aspectConversion.containsKey(DEATH_ACTION))
-            aspectConversion[DEATH_ACTION] = arrayOf()
+        if (!actionConversion.containsKey(DEATH_ACTION))
+            actionConversion[DEATH_ACTION] = arrayOf()
 
-        return ResourceTemplate(ResourceIdeal(resourceCore), aspectConversion, parts)
+        return ResourceTemplate(ResourceIdeal(resourceCore), actionConversion, parts)
     }
 
     private fun actualizeLinks(template: ResourceTemplate) {
-        val (resource, aspectConversion, _) = template
-        for (entry in aspectConversion.entries) {
-            resource.core.aspectConversion[entry.key] = entry.value
+        val (resource, actionConversion, _) = template
+        for (entry in actionConversion.entries) {
+            resource.core.actionConversion[entry.key] = entry.value
                     .map { readConversion(template, it) }
                     .toMutableList()
         }
         if (resource.core.materials.isEmpty())
             return
 
-        for (aspect in aspectPool.all) {//TODO why is it here?
-            for (matcher in aspect.matchers) {
+        for (action in actions) {
+            for (matcher in action.matchers) {
                 if (matcher.match(resource)) {
-                    resource.core.addAspectConversion(
-                            aspect.core.resourceAction,
-                            matcher.getResults(resource.core.copy(), resourcePool)
-                    )
+                    resource.core.addActionConversion(action, matcher.getResults(resource.core.copy(), resourcePool))
                 }
             }
         }
@@ -202,9 +195,9 @@ class ResourceInstantiation(
             template: ResourceTemplate,
             creator: ResourceCore
     ): ResourceTemplate {
-        val (resource, aspectConversion, parts) = template
+        val (resource, actionConversion, parts) = template
         if (template.resource.genome is GenomeTemplate) {
-            return ResourceTemplate(resource, aspectConversion, parts)//TODO give instantiated resource
+            return ResourceTemplate(resource, actionConversion, parts)//TODO give instantiated resource
         }
         val legacyResource = ResourceIdeal(ResourceCore(
                 resource.genome.name,
@@ -212,7 +205,7 @@ class ResourceInstantiation(
                 resource.genome.copy(),
                 mutableMapOf()
         ))
-        val legacyTemplate = ResourceTemplate(legacyResource, aspectConversion, parts)
+        val legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
         actualizeLinks(legacyTemplate)
         //TODO actualize parts?
         setLegacy(legacyTemplate, creator)
@@ -220,11 +213,11 @@ class ResourceInstantiation(
     }
 
     private fun setLegacy(template: ResourceTemplate, legacy: ResourceCore) {
-        val (resource, aspectConversion, _) = template
+        val (resource, actionConversion, _) = template
         resource.genome.legacy = legacy
-        for (entry in aspectConversion.entries) {
+        for (entry in actionConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
-                resource.core.aspectConversion[entry.key] = entry.value
+                resource.core.actionConversion[entry.key] = entry.value
                         .map { readConversion(template, it) }
                         .toMutableList()//TODO should I do it if in upper level I call actualizeLinks?
             }
@@ -233,7 +226,7 @@ class ResourceInstantiation(
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {
-        for (resources in resource.core.aspectConversion.values) {
+        for (resources in resource.core.actionConversion.values) {
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
@@ -256,17 +249,17 @@ class ResourceInstantiation(
             partTemplate.resource.amount = part.split(":".toRegex()).toTypedArray()[1].toInt()
             resource.core.genome.addPart(partTemplate.resource)
         }
-        addTakeApartAspect(template)
+        addTakeApartAction(template)
     }
 
-    private fun addTakeApartAspect(template: ResourceTemplate) {//TODO remove it
-        val (resource, aspectConversion, _) = template
+    private fun addTakeApartAction(template: ResourceTemplate) {
+        val (resource, actionConversion, _) = template
         if (resource.core.genome.parts.isNotEmpty()
-                && !aspectConversion.containsKey(aspectPool.getValue("TakeApart").core.resourceAction)) {//TODO aspects shouldn't be here I recon
+                && !actionConversion.containsKey(actions.first { it.name == "TakeApart" })) {//TODO TakeApart shouldn't be here I recon
             val resourceList = mutableListOf<Pair<Resource?, Int>>()
             for (partResource in resource.core.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.core.aspectConversion[aspectPool.getValue("TakeApart").core.resourceAction] = resourceList
+                resource.core.actionConversion[actions.first { it.name == "TakeApart" }] = resourceList
             }
         }
     }
@@ -274,6 +267,6 @@ class ResourceInstantiation(
 
 data class ResourceTemplate(
         val resource: ResourceIdeal,
-        val aspectConversion: MutableMap<ResourceAction, Array<String>>,
+        val actionConversion: MutableMap<ResourceAction, Array<String>>,
         val parts: List<String>
 )

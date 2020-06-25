@@ -40,11 +40,11 @@ fun printProduced(group: GroupConglomerate) = group.subgroups
         .joinToString { it.fullName }
 
 fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = resources
-        .filter { it.aspectConversion.containsKey(aspect.core.resourceAction) }
+        .filter { it.actionConversion.containsKey(aspect.core.resourceAction) }
         .joinToString { it.fullName }
 
 fun printResource(resource: Resource): String = resource.toString() + "\n" +
-        resource.aspectConversion.entries.joinToString("\n") { (a, v) ->
+        resource.actionConversion.entries.joinToString("\n") { (a, v) ->
             a.name + ": " + v.joinToString { it.first?.fullName ?: "LEGEND" }
         } + "\n\n" +
         resource.genome.parts.joinToString("\n") { p ->

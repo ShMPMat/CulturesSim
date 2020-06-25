@@ -47,7 +47,7 @@ class World {
     init {
         resourcePool = ResourceInstantiation(
                 "SupplementFiles/Resources",
-                aspectPool,
+                aspectPool.all.map { it.core.resourceAction },
                 materialPool,
                 session.resourceProportionCoefficient,
                 AspectResourceTagParser(tags)

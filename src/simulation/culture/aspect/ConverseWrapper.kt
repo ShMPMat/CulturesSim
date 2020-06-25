@@ -17,7 +17,6 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
                 name = aspect.name + "On" + resource.baseName,
                 tags = getReducedTags(resource, aspect),
                 requirements = ArrayList(aspect.requirements),
-                matchers = ArrayList(),
                 applyMeaning = false,
                 standardComplexity = aspect.core.getPrecomputedComplexity(resource)
         ),

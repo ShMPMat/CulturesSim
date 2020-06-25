@@ -5,6 +5,7 @@ import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.group.GroupError
+import simulation.space.resource.ActionMatcher
 import simulation.space.resource.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
@@ -35,7 +36,7 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
         val name = tags[0]
         val aspectTags = ArrayList<ResourceTag>()
         val requirements = ArrayList<ResourceTag>()
-        val matchers = ArrayList<AspectMatcher>()
+        val matchers = ArrayList<ActionMatcher>()
         var applyMeaning = false
         var isResourceExposed = true
         var standardComplexity = 1.0
@@ -58,7 +59,7 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                         val temp = it.drop(1).split(":".toRegex()).toTypedArray()
                         Pair(temp[0], temp[1].toInt())
                     }
-                    matchers.add(AspectMatcher(labeler, results, name))
+                    matchers.add(ActionMatcher(labeler, results, name))
                 }
                 'E' -> isResourceExposed = false
                 'C' -> standardComplexity = tag.toDouble()
@@ -74,12 +75,11 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                 name,
                 aspectTags,
                 requirements,
-                matchers,
                 applyMeaning,
                 isResourceExposed,
                 standardComplexity,
                 sideComplexities,
-                ResourceAction(name)
+                ResourceAction(name, matchers)
         )
     }
 }

@@ -1,20 +1,18 @@
-package simulation.culture.aspect
+package simulation.space.resource
 
-import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePool
 import simulation.space.resource.tag.labeler.ResourceLabeler
 
-class AspectMatcher(
+class ActionMatcher(
         private val labeler: ResourceLabeler,
         private val results: List<Pair<String, Int>>,
         private val resourceActionName: String
 ) {
     init {
-        if (results.isEmpty()) throw ExceptionInInitializerError("Aspect matcher does nothing")
+        if (results.isEmpty()) throw ExceptionInInitializerError("Action matcher does nothing")
     }
 
     fun match(resource: Resource) =
-            if (resource.aspectConversion.keys.map { it.name }.any { it == resourceActionName })
+            if (resource.actionConversion.keys.map { it.name }.any { it == resourceActionName })
                 false
             else
                 labeler.isSuitable(resource.genome)

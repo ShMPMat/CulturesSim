@@ -13,18 +13,18 @@ class ResourceCore(
         name: String,
         val materials: List<Material>,
         val genome: Genome,
-        aspectConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>,
+        actionConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>,
         internal val externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
-    val aspectConversion: MutableMap<ResourceAction, MutableList<Pair<Resource?, Int>>>
+    val actionConversion: MutableMap<ResourceAction, MutableList<Pair<Resource?, Int>>>
 
     init {
-        this.aspectConversion = HashMap(aspectConversion)
+        this.actionConversion = HashMap(actionConversion)
         setName(name)
     }
 
-    internal fun addAspectConversion(action: ResourceAction, resourceList: List<Pair<Resource?, Int>>) {
-        aspectConversion[action] = resourceList.toMutableList()
+    internal fun addActionConversion(action: ResourceAction, resourceList: List<Pair<Resource?, Int>>) {
+        actionConversion[action] = resourceList.toMutableList()
     }
 
     private fun setName(name: String) {
@@ -42,7 +42,7 @@ class ResourceCore(
                 genome.name,
                 ArrayList(materials),
                 genome.copy(),
-                aspectConversion,
+                actionConversion,
                 externalFeatures
         ))
     }
@@ -54,7 +54,7 @@ class ResourceCore(
                 genome.name,
                 ArrayList(legacy.materials),
                 genome.getInstantiatedGenome(legacy),
-                aspectConversion
+                actionConversion
         )
     }
 
@@ -64,13 +64,13 @@ class ResourceCore(
                 genome.name,
                 ArrayList(materials),
                 genome,
-                aspectConversion,
+                actionConversion,
                 features
         )
     }
 
     //TODO throw an exception on any attempt to copy template
-    fun applyAction(action: ResourceAction): List<Resource> = aspectConversion[action]
+    fun applyAction(action: ResourceAction): List<Resource> = actionConversion[action]
             ?.map { (r, n) ->
                 var resource = r ?: throw SimulationException("Empty conversion")
                 if (resource.core.genome is GenomeTemplate) {
@@ -91,12 +91,12 @@ class ResourceCore(
                 genome.name + if (newMaterials == materials) "" else "_" + action.name,
                 newMaterials,
                 genome,
-                aspectConversion
+                actionConversion
         ) //TODO dangerous stuff for genome
     }
 
     fun hasApplicationForAction(action: ResourceAction) =
-            aspectConversion.containsKey(action) || materials.any { it.hasApplicationForAspect(action) }
+            actionConversion.containsKey(action) || materials.any { it.hasApplicationForAction(action) }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

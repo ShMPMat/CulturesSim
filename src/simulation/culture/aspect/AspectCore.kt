@@ -10,7 +10,6 @@ data class AspectCore(
         val name: String,
         val tags: List<ResourceTag>,
         val requirements: List<ResourceTag>,
-        val matchers: List<AspectMatcher>,
         var applyMeaning: Boolean,
         val resourceExposed: Boolean,
         val standardComplexity: Double,

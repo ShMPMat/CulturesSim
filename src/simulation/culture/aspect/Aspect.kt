@@ -66,8 +66,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     val requirements = core.requirements
 
-    val matchers = core.matchers
-
     open val isValid = true
 
     fun canApplyMeaning() = core.applyMeaning

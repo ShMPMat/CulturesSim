@@ -5,17 +5,17 @@ import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 class Material(val name: String, val density: Double, val tags: List<ResourceTag>) {
-    private val aspectConversion: MutableMap<ResourceAction, Material> = HashMap()
+    private val actionConversion: MutableMap<ResourceAction, Material> = HashMap()
 
-    fun addAspectConversion(action: ResourceAction, material: Material) {
-        aspectConversion[action] = material
+    fun addActionConversion(action: ResourceAction, material: Material) {
+        actionConversion[action] = material
     }
 
-    fun applyAction(action: ResourceAction): Material = aspectConversion[action] ?: this
+    fun applyAction(action: ResourceAction): Material = actionConversion[action] ?: this
 
     fun hasTagWithName(name: String) = tags.any { it.name == name }
 
-    fun hasApplicationForAspect(action: ResourceAction) = aspectConversion.containsKey(action)
+    fun hasApplicationForAction(action: ResourceAction) = actionConversion.containsKey(action)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

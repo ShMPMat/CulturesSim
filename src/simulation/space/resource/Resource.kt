@@ -26,8 +26,8 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     private val events: MutableList<Event> = ArrayList()
     var ownershipMarker = freeMarker
 
-    val aspectConversion: Map<ResourceAction, List<Pair<Resource?, Int>>>
-        get() = core.aspectConversion
+    val actionConversion: Map<ResourceAction, List<Pair<Resource?, Int>>>
+        get() = core.actionConversion
 
     val isEmpty: Boolean
         get() {
