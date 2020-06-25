@@ -135,7 +135,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         return resource
     }
 
-    open fun update(tile: Tile): ResourceUpdateResult? {
+    open fun update(tile: Tile): ResourceUpdateResult {
         var result: List<Resource> = ArrayList()
         if (amount <= 0)
             return ResourceUpdateResult(false, result)

@@ -68,7 +68,7 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
 }
 
 fun temperatureMapper(tile: Tile): String {
-    return hotnessMapper(Tile::getTemperature, 10, tile, start = -30)
+    return hotnessMapper(Tile::temperature, 10, tile, start = -30)
 }
 
 fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile, start: Int = 1): String {
