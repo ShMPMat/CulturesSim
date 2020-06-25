@@ -63,6 +63,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
                 data.mapSizeX,
                 data.mapSizeY,
                 data.platesAmount,
+                resourcePool,
                 session.random
         )
     }

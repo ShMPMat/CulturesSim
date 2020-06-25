@@ -9,11 +9,12 @@ import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePool
 import simulation.space.resource.dependency.LabelerDependency
 import simulation.space.tile.Tile
+import simulation.space.tile.TypeUpdater
 import java.util.*
 import kotlin.random.Random
 
-fun generateMap(x: Int, y: Int, platesAmount: Int, random: Random): WorldMap {
-    val tiles = createTiles(x, y)
+fun generateMap(x: Int, y: Int, platesAmount: Int, resourcePool: ResourcePool, random: Random): WorldMap {
+    val tiles = createTiles(x, y, resourcePool.get("Water"))
     val map = WorldMap(tiles)
     setTileNeighbours(map)
     val tectonicPlates = randomPlates(
@@ -65,11 +66,11 @@ private fun setTileNeighbours(map: WorldMap) {
     }
 }
 
-private fun createTiles(x: Int, y: Int): List<List<Tile>> {
+private fun createTiles(x: Int, y: Int, water: Resource): List<List<Tile>> {
     val map: MutableList<List<Tile>> = ArrayList()
     (0 until x).map { i ->
         map.add(
-                (0 until y).map { j -> Tile(i, j) }
+                (0 until y).map { j -> Tile(i, j, TypeUpdater(water)) }
         )
     }
     return map

@@ -4,21 +4,17 @@ import simulation.Controller
 import simulation.space.SpaceData.data
 import simulation.space.SpaceError
 import simulation.space.TectonicPlate
-import simulation.space.resource.Genome
 import simulation.space.resource.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourcePack
 import java.util.*
-import java.util.function.Consumer
-import java.util.function.Predicate
-import java.util.stream.Collectors
 import kotlin.math.max
 
-class Tile(val x: Int, val y: Int) {
+class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     val tagPool = MutableTileTagPool()
 
     var type: Type? = null
-        private set
+        internal set
 
     var plate: TectonicPlate? = null
 
@@ -34,7 +30,7 @@ class Tile(val x: Int, val y: Int) {
     private val _delayedResources: MutableList<Resource> = ArrayList()
 
     var level = 0
-        private set
+        internal set
 
     //Lowest level of this Tile which corresponds to the ground level.
     var secondLevel = 0
@@ -101,7 +97,9 @@ class Tile(val x: Int, val y: Int) {
     fun setType(type: Type, updateLevel: Boolean) {
         if (type == this.type)
             return
+
         this.type = type
+
         if (!updateLevel)
             return
 
@@ -115,8 +113,11 @@ class Tile(val x: Int, val y: Int) {
                 secondLevel = 100
             }
             Type.Water -> {
-                level = 85
-                secondLevel = 85
+                level = data.seabedLevel
+                secondLevel = data.seabedLevel
+            }
+            Type.Ice -> {
+                level = data.defaultWaterLevel
             }
             else -> {}
         }
@@ -200,25 +201,12 @@ class Tile(val x: Int, val y: Int) {
     }
 
     private fun updateType() {
-        if (_resourcePack.contains(Controller.session.world.resourcePool.get("Water")))
-            setType(Type.Water, false)
-        if (type == Type.Normal || type == Type.Woods || type == Type.Growth) {
-            when {
-                _resourcePack.any { it.simpleName.matches(".*Tree|Spruce".toRegex()) } -> setType(Type.Woods, false)
-                _resourcePack.any { it.genome.type === Genome.Type.Plant } -> setType(Type.Growth, false)
-                else -> setType(Type.Normal, false)
-            }
-        } else if (type == Type.Water)
+        typeUpdater.updateType(this)
+
+        if (type == Type.Water)
             addDelayedResource(Controller.session.world.resourcePool.get("Vapour"))
         if (_resourcePack.contains(Controller.session.world.resourcePool.get("Water")))
             addDelayedResource(Controller.session.world.resourcePool.get("Vapour"))
-        if (type == Type.Water && temperature < -10) {
-            type = Type.Ice
-            level = data.defaultWaterLevel
-        } else if (type == Type.Ice && temperature > 0) {
-            type = Type.Water
-            level = secondLevel
-        }
     }
 
     fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop grow
