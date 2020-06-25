@@ -144,7 +144,7 @@ open class Genome(
         get() = name + if (hasLegacy) legacyPostfix else ""
 
     private val legacyPostfix: String
-        get() = (if (templateLegacy == null) "" else "_of_" + templateLegacy!!.genome.name + templateLegacy!!.genome.legacyPostfix) +
+        get() = (if (templateLegacy == null) "" else "_of_" + templateLegacy.genome.name + templateLegacy.genome.legacyPostfix) +
                 if (legacy == null) "" else "_of_" + legacy!!.genome.name + legacy!!.genome.legacyPostfix
 
     val mass: Double

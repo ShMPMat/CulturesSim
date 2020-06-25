@@ -50,7 +50,6 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
                 proportionCoefficient,
                 createTagMatchers("$path/ResourceTagLabelers"),
                 materialPool,
-                ResourcePool(listOf()),
                 random
         )
         resourcePool = ResourceInstantiation(

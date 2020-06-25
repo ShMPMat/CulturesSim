@@ -12,13 +12,11 @@ fun instantiateSpaceData(
         proportionFactor: Int,
         resourceTagMatchers: List<TagMatcher>,
         materialPool: MaterialPool,
-        resourcePool: ResourcePool,
         random: Random
 ) {
     val defaultData = Data()
     SpaceData.data = Data(
             materialPool = materialPool,
-            resourcePool = resourcePool,
             mapSizeX = defaultData.mapSizeX * proportionFactor,
             mapSizeY = defaultData.mapSizeY * proportionFactor,
             platesAmount = defaultData.platesAmount * proportionFactor,

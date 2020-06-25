@@ -22,7 +22,6 @@ object SpaceData {
 
 class Data(
         val materialPool: MaterialPool = MaterialPool(listOf()),
-        val resourcePool: ResourcePool = ResourcePool(listOf()),
         val maximalWind: Double = 10.0,
         val temperatureToWindCoefficient: Int = 1,
         val tileScale: Double = 5.0,
