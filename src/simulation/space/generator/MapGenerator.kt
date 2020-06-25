@@ -2,15 +2,13 @@ package simulation.space.generator
 
 import shmp.random.randomElement
 import shmp.random.randomTile
-import simulation.space.resource.ResourcePool
 import simulation.space.TectonicPlate
-import simulation.space.tile.Tile
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
-import simulation.space.resource.dependency.ConsumeDependency
+import simulation.space.resource.ResourcePool
 import simulation.space.resource.dependency.LabelerDependency
-import simulation.space.resource.dependency.NeedDependency
+import simulation.space.tile.Tile
 import java.util.*
 import kotlin.random.Random
 
@@ -129,14 +127,14 @@ private fun fill(map: WorldMap) {
 }
 
 private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
-    val ATTEMPTS = 1000
+    val attempts = 1000
     val goodTiles = map.getTiles { resource.genome.isOptimal(it) }//TODO something wrong, it optimal and acceptable works inside-out
     for (i in 0 until n) {
         var tile: Tile
         if (goodTiles.isEmpty()) {
             tile = randomTile(map, random)
             var j = 0
-            while (j < ATTEMPTS && !resource.genome.isAcceptable(tile)) {
+            while (j < attempts && !resource.genome.isAcceptable(tile)) {
                 tile = randomTile(map, random)
                 j++
             }

@@ -6,9 +6,14 @@ import simulation.culture.thinking.language.templates.TemplateBase;
 import simulation.interactionmodel.InteractionModel;
 import simulation.space.LandscapeChangesKt;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourcePool;
+import simulation.space.resource.material.MaterialInstantiation;
+import simulation.space.resource.material.MaterialPool;
 import simulation.space.resource.tag.TagMatcherInstantiationKt;
 import simulation.space.tile.Tile;
 import visualizer.Visualizer;
+
+import java.util.ArrayList;
 
 public class Controller {
     public static Controller session;
@@ -81,13 +86,8 @@ public class Controller {
 
     public Controller(InteractionModel interactionModel) {
         session = this;
-        SpaceDataInstanciatorKt.instantiateSpaceData(
-                proportionCoefficient,
-                TagMatcherInstantiationKt.createTagMatchers("SupplementFiles/ResourceTagLabelers"),
-                random
-        );
         templateBase = new TemplateBase();
-        world = new World();
+        world = new World(proportionCoefficient, random, "SupplementFiles");
         this.interactionModel = interactionModel;
     }
 

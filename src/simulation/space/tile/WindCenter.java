@@ -3,7 +3,6 @@ package simulation.space.tile;
 import kotlin.Pair;
 import simulation.space.SpaceData;
 import simulation.space.WorldMap;
-import simulation.space.resource.OwnershipMarkerKt;
 import simulation.space.resource.Resource;
 
 import java.util.List;
@@ -50,9 +49,9 @@ public class WindCenter {
         Tile host = map.get(x, y);
         host.getNeighbours().forEach(n -> setWindByTemperature(n, host));
 
-        if (!_newWind.isStill()) {
+        if (!_newWind.isStill())
             return;
-        }
+
         propagateWindStraight(map.get(x - 1, y), map.get(x + 1, y), host);
         propagateWindStraight(map.get(x + 1, y), map.get(x - 1, y), host);
         propagateWindStraight(map.get(x, y - 1), map.get(x, y + 1), host);

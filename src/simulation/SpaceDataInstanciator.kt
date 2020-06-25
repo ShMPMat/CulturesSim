@@ -2,13 +2,23 @@ package simulation
 
 import simulation.space.Data
 import simulation.space.SpaceData
+import simulation.space.resource.ResourcePool
+import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.TagMatcher
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-fun instantiateSpaceData(proportionFactor: Int, resourceTagMatchers: List<TagMatcher>, random: Random) {
+fun instantiateSpaceData(
+        proportionFactor: Int,
+        resourceTagMatchers: List<TagMatcher>,
+        materialPool: MaterialPool,
+        resourcePool: ResourcePool,
+        random: Random
+) {
     val defaultData = Data()
     SpaceData.data = Data(
+            materialPool = materialPool,
+            resourcePool = resourcePool,
             mapSizeX = defaultData.mapSizeX * proportionFactor,
             mapSizeY = defaultData.mapSizeY * proportionFactor,
             platesAmount = defaultData.platesAmount * proportionFactor,

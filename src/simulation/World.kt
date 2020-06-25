@@ -15,38 +15,46 @@ import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
 import simulation.space.generator.fillResources
 import simulation.space.generator.generateMap
-import simulation.space.resource.instantiation.ResourceInstantiation
 import simulation.space.resource.ResourcePool
+import simulation.space.resource.instantiation.ResourceInstantiation
 import simulation.space.resource.material.MaterialInstantiation
+import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.createTagMatchers
 import simulation.space.tile.Tile
 import java.util.*
+import kotlin.random.Random
 
 /**
  * Class which stores all entities in the simulation.
  */
-class World {
+class World(proportionCoefficient: Int, random: Random, path: String) {
+
     var groups: MutableList<GroupConglomerate> = ArrayList()
     val shuffledGroups: List<GroupConglomerate>
         get() = groups.shuffled(session.random)
-    private val tags = InputDatabase("SupplementFiles/ResourceTags").readLines().map { ResourceTag(it) }
-            .union(createTagMatchers("SupplementFiles/ResourceTagLabelers").map { it.tag })
-    val aspectPool = AspectInstantiation(tags).createPool("SupplementFiles/Aspects")
-    val materialPool = MaterialInstantiation(tags, aspectPool)
-            .createPool("SupplementFiles/Materials")
-    val resourcePool: ResourcePool
-
     val strayPlacesManager = StrayPlacesManager()
-
     private val memePool = GroupMemes()
-
     var map: WorldMap
     var events: MutableList<Event> = ArrayList()
 
+    private val tags = InputDatabase("$path/ResourceTags").readLines().map { ResourceTag(it) }
+            .union(createTagMatchers("$path/ResourceTagLabelers").map { it.tag })
+    val aspectPool = AspectInstantiation(tags).createPool("$path/Aspects")
+    val resourcePool: ResourcePool
+
     init {
+        val materialPool = MaterialInstantiation(tags, aspectPool.all.map { it.core.resourceAction })
+            .createPool("$path/Materials")
+        instantiateSpaceData(
+                proportionCoefficient,
+                createTagMatchers("$path/ResourceTagLabelers"),
+                materialPool,
+                ResourcePool(listOf()),
+                random
+        )
         resourcePool = ResourceInstantiation(
-                "SupplementFiles/Resources",
+                "$path/Resources",
                 aspectPool.all.map { it.core.resourceAction },
                 materialPool,
                 session.resourceProportionCoefficient,

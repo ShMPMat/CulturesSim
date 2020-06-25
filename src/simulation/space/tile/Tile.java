@@ -60,9 +60,6 @@ public class Tile {
         return _l;
     }
 
-    /**
-     * @return all Resources which are available from this Tile.
-     */
     public List<Resource> getAccessibleResources() {
         List<Resource> accessibleResources = new ArrayList<>(resourcePack.getResources());
         getNeighbours().forEach(t -> accessibleResources.addAll(t.resourcePack.getResources()));
@@ -260,10 +257,10 @@ public class Tile {
                 setType(Type.Normal, false);
             }
         } else if (getType() == Type.Water) {
-            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50 * session.resourceProportionCoefficient));
+            addDelayedResource(session.world.getResourcePool().get("Vapour"));
         }
         if (resourcePack.contains(session.world.getResourcePool().get("Water"))) {
-            addDelayedResource(session.world.getResourcePool().get("Vapour").copy(50 * session.resourceProportionCoefficient));
+            addDelayedResource(session.world.getResourcePool().get("Vapour"));
         }
         if (type == Type.Water && temperature < -10) {
             type = Type.Ice;

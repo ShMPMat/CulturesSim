@@ -1,14 +1,16 @@
 package simulation.space.resource.material
 
 import extra.InputDatabase
-import simulation.culture.aspect.Aspect
-import simulation.culture.aspect.AspectPool
-import simulation.culture.group.GroupError
+import simulation.SimulationException
+import simulation.space.resource.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MaterialInstantiation(private val allowedTags: Collection<ResourceTag>, private val aspectPool: AspectPool) {
+class MaterialInstantiation(
+        private val allowedTags: Collection<ResourceTag>,
+        private val actions: List<ResourceAction>
+) {
     fun createPool(path: String): MaterialPool {
         val materials: MutableList<MaterialTemplate> = ArrayList()
         val inputDatabase = InputDatabase(path)
@@ -23,7 +25,7 @@ class MaterialInstantiation(private val allowedTags: Collection<ResourceTag>, pr
     }
 
     private fun createMaterial(tags: Array<String>): MaterialTemplate {
-        val aspectConversion = HashMap<Aspect, String>()
+        val aspectConversion = HashMap<ResourceAction, String>()
         val name = tags[0]
         val density = tags[1].toDouble()
         val materialTags = ArrayList<ResourceTag>()
@@ -31,14 +33,14 @@ class MaterialInstantiation(private val allowedTags: Collection<ResourceTag>, pr
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '+' -> aspectConversion[aspectPool.getValue(tag.takeWhile { it != ':' })] =
+                '+' -> aspectConversion[actions.first { a -> a.name == tag.takeWhile { it != ':' } }] =
                         tag.substring(tag.indexOf(':') + 1)
                 '-' -> {
                     val resourceTag = ResourceTag(
                             tag.takeWhile { it != ':' },
                             tag.substring(tag.indexOf(':') + 1).toInt()
                     )
-                    if (!allowedTags.contains(resourceTag)) throw GroupError("Tag $resourceTag doesnt exist")
+                    if (!allowedTags.contains(resourceTag)) throw SimulationException("Tag $resourceTag doesnt exist")
                     materialTags.add(resourceTag)
                 }
             }
@@ -50,10 +52,10 @@ class MaterialInstantiation(private val allowedTags: Collection<ResourceTag>, pr
     }
 
     private fun actualizeLinks(template: MaterialTemplate, materialPool: MaterialPool) {
-        template.aspectConversion.forEach {
-            template.material.addActionConversion(it.key.core.resourceAction, materialPool.get(it.value))
+        template.actionConversion.forEach {
+            template.material.addActionConversion(it.key, materialPool.get(it.value))
         }
     }
 }
 
-data class MaterialTemplate(val material: Material, val aspectConversion: Map<Aspect, String>)
+data class MaterialTemplate(val material: Material, val actionConversion: Map<ResourceAction, String>)

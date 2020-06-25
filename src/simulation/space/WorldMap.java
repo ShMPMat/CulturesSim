@@ -1,14 +1,13 @@
 package simulation.space;
 
-import simulation.Controller;
 import simulation.space.tile.Tile;
 import simulation.space.tile.TileTagSetterKt;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static simulation.Controller.*;
 
 /**
  * Represents tile map of the world
