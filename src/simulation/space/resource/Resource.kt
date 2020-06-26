@@ -140,7 +140,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
 
-        result.addAll(applyAction(EACH_TURN_ACTION, amount))
+        result.addAll(applyAction(specialActions.getValue("_EachTurn_"), amount))
 
         for (dependency in core.genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)
@@ -153,7 +153,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             deathTurn = 0
             deathOverhead = 0
             deathPart = 1.0
-            result.addAll(applyAction(DEATH_ACTION, deadAmount))
+            result.addAll(applyAction(specialActions.getValue("_OnDeath_"), deadAmount))
         }
 
         if (amount <= 0)

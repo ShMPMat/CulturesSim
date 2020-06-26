@@ -2,6 +2,8 @@ package simulation.space.resource
 
 data class ResourceUpdateResult(val isAlive: Boolean, val produced: List<Resource> = emptyList())
 
-val DEATH_ACTION = ResourceAction("_OnDeath_", listOf())
+val specialActions = mapOf(
+        "_OnDeath_" to ResourceAction("_OnDeath_", listOf()),
+        "_EachTurn_" to ResourceAction("_EachTurn_", listOf())
+)
 
-val EACH_TURN_ACTION = ResourceAction("_EachTurn_", listOf())
