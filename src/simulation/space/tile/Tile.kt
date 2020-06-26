@@ -205,11 +205,9 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
         if (type == Type.Water)
             addDelayedResource(Controller.session.world.resourcePool.get("Vapour"))
-        if (_resourcePack.contains(Controller.session.world.resourcePool.get("Water")))
-            addDelayedResource(Controller.session.world.resourcePool.get("Vapour"))
     }
 
-    fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop grow
+    fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop growing
         for (i in 0 until if (type == Type.Water) 4 else if (level in 106..119) 5 else 1)
             distributeLevel()
     }

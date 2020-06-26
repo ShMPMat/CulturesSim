@@ -136,9 +136,11 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     }
 
     open fun update(tile: Tile): ResourceUpdateResult {
-        var result: List<Resource> = ArrayList()
+        val result = mutableListOf<Resource>()
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
+
+        result.addAll(applyAction(EACH_TURN_ACTION, amount))
 
         for (dependency in core.genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)
@@ -151,7 +153,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             deathTurn = 0
             deathOverhead = 0
             deathPart = 1.0
-            result = applyAction(DEATH_ACTION, deadAmount)
+            result.addAll(applyAction(DEATH_ACTION, deadAmount))
         }
 
         if (amount <= 0)
@@ -200,7 +202,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         this.amount += amount
     }
 
-    @JvmOverloads//TODO remove it?
     fun applyAction(action: ResourceAction, part: Int = 1): List<Resource> {
         val result = core.applyAction(action)
         result.forEach { it.amount *= part }

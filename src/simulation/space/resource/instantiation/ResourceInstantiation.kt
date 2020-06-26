@@ -66,8 +66,11 @@ class ResourceInstantiation(
             when (key) {
                 '+' -> {
                     val actionName = tag.substring(0, tag.indexOf(':'))
-                    val action = if (actionName == DEATH_ACTION.name) DEATH_ACTION
-                    else actions.first { it.name == actionName }
+                    val action = when (actionName) {
+                        DEATH_ACTION.name -> DEATH_ACTION
+                        EACH_TURN_ACTION.name -> EACH_TURN_ACTION
+                        else -> actions.first { it.name == actionName }
+                    }
                     actionConversion[action] =
                             tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
                 }
@@ -136,6 +139,8 @@ class ResourceInstantiation(
         )
         if (!actionConversion.containsKey(DEATH_ACTION))
             actionConversion[DEATH_ACTION] = arrayOf()
+        if (!actionConversion.containsKey(EACH_TURN_ACTION))
+            actionConversion[EACH_TURN_ACTION] = arrayOf()
 
         return ResourceTemplate(ResourceIdeal(resourceCore), actionConversion, parts)
     }
