@@ -8,7 +8,7 @@ class TypeUpdater(val water: Resource) {
         if (tile.resourcePack.contains(water))
             tile.setType(Tile.Type.Water, false)
         else if (tile.type in listOf(Tile.Type.Normal, Tile.Type.Woods, Tile.Type.Growth)) when {
-            tile.resourcePack.any { it.simpleName.matches(".*Tree|Spruce".toRegex()) } ->
+            tile.resourcePack.any { it.tags.any { t -> t.name == "Tree" } } ->
                 tile.setType(Tile.Type.Woods, false)
             tile.resourcePack.any { it.genome.type === Genome.Type.Plant } ->
                 tile.setType(Tile.Type.Growth, false)
