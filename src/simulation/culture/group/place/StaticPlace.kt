@@ -2,6 +2,8 @@ package simulation.culture.group.place
 
 import simulation.Controller
 import simulation.space.resource.*
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import kotlin.math.max

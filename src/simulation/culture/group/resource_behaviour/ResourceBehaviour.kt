@@ -2,7 +2,7 @@ package simulation.culture.group.resource_behaviour
 
 import shmp.random.randomElement
 import simulation.culture.group.centers.Group
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import kotlin.random.Random
 
 class ResourceBehaviour constructor(private val placementStrategy: PlacementStrategy) {

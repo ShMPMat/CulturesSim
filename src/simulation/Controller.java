@@ -6,14 +6,8 @@ import simulation.culture.thinking.language.templates.TemplateBase;
 import simulation.interactionmodel.InteractionModel;
 import simulation.space.LandscapeChangesKt;
 import simulation.space.resource.Resource;
-import simulation.space.resource.ResourcePool;
-import simulation.space.resource.material.MaterialInstantiation;
-import simulation.space.resource.material.MaterialPool;
-import simulation.space.resource.tag.TagMatcherInstantiationKt;
 import simulation.space.tile.Tile;
 import visualizer.Visualizer;
-
-import java.util.ArrayList;
 
 public class Controller {
     public static Controller session;

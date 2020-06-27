@@ -8,7 +8,7 @@ import simulation.culture.group.request.MeaningResourceRequest
 import simulation.culture.group.request.Request
 import simulation.culture.group.resource_behaviour.ResourceBehaviour
 import simulation.culture.thinking.meaning.Meme
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 
 class DepictObject(

@@ -1,5 +1,6 @@
-package simulation.space.resource
+package simulation.space.resource.container
 
+import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
 import java.util.*
@@ -18,15 +19,15 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         val innerResource = getResource(resource)
         val result = MutableResourcePack()
         var resultAmount = 0
+
         for (res in innerResource.resources) {
             val resAmount = min(res.amount, amount - resultAmount)
             resultAmount += resAmount
             if (resAmount == res.amount) {
                 remove(res)
                 result.add(res)
-            } else {
+            } else
                 result.add(resource.getCleanPart(resAmount))
-            }
         }
         return result
     }
@@ -37,6 +38,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     private fun getPart(pack: ResourcePack, amount: Int): MutableResourcePack {
         val result = MutableResourcePack()
         var counter = 0
+
         for (resource in pack.resources) {
             if (counter >= amount)
                 break
@@ -51,14 +53,13 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         val result: MutableList<Resource> = ArrayList()
         var counter = 0
         for (resource in innerResource) {
-            if (counter >= amount) {
+            if (counter >= amount)
                 break
-            }
             result.add(resource)
             counter += resource.amount
         }
         result.forEach { this.remove(it) }
-        return Pair<Int, List<Resource>>(counter, result)
+        return counter to result.toList()
     }
 
     fun getResourcesAndRemove(predicate: (Resource) -> Boolean): ResourcePack {
@@ -72,9 +73,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         resourceMap.clear()
     }
 
-    /**
-     * Returns true only if the Resource was merged
-     */
+    // Returns true if the Resource was merged
     fun add(resource: Resource): Boolean = internalAdd(resource)
 
     fun addAll(resources: Collection<Resource>) = resources.forEach { add(it) }

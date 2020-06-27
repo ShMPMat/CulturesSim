@@ -4,9 +4,9 @@ import simulation.Controller
 import simulation.space.SpaceData.data
 import simulation.space.SpaceError
 import simulation.space.TectonicPlate
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.ResourcePack
 import java.util.*
 import kotlin.math.max
 

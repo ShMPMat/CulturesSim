@@ -3,10 +3,9 @@ package simulation.culture.group.centers
 import shmp.random.randomElement
 import simulation.Controller.*
 import simulation.culture.group.place.MovablePlace
-import simulation.culture.group.place.StaticPlace
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag

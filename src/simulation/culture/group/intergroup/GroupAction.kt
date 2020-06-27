@@ -1,8 +1,8 @@
 package simulation.culture.group.intergroup
 
 import simulation.culture.group.centers.Group
-import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 import kotlin.math.ceil
 
 interface GroupAction {

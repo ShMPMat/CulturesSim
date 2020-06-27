@@ -4,9 +4,9 @@ import simulation.culture.aspect.AspectController
 import simulation.culture.group.centers.Group
 import simulation.culture.group.stratum.AspectStratum
 import simulation.culture.group.stratum.Stratum
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.ResourcePack
 import kotlin.math.max
 
 /**

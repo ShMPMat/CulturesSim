@@ -17,7 +17,7 @@ import simulation.culture.group.request.tagEvaluator
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.constructMeme
 import simulation.space.Territory
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile

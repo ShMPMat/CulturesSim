@@ -10,13 +10,11 @@ import simulation.culture.group.Transfer
 import simulation.culture.group.intergroup.Relation
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestPool
-import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
 import java.util.*
-import java.util.function.Predicate
-import java.util.stream.Collectors
 import kotlin.math.ceil
 import kotlin.math.max
 

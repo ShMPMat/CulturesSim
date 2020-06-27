@@ -1,8 +1,7 @@
 package simulation.culture.group.request
 
-import simulation.culture.group.GroupError
-import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 
 data class RequestPool(val requests: Map<Request, MutableResourcePack>) {
     val resultStatus: MutableMap<Request, Result> = mutableMapOf()

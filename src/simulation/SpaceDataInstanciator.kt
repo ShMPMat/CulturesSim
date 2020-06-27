@@ -2,7 +2,6 @@ package simulation
 
 import simulation.space.Data
 import simulation.space.SpaceData
-import simulation.space.resource.ResourcePool
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.TagMatcher
 import kotlin.math.roundToInt

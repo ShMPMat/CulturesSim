@@ -15,10 +15,9 @@ import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
 import simulation.space.generator.fillResources
 import simulation.space.generator.generateMap
-import simulation.space.resource.ResourcePool
+import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.instantiation.ResourceInstantiation
 import simulation.space.resource.material.MaterialInstantiation
-import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.createTagMatchers
 import simulation.space.tile.Tile

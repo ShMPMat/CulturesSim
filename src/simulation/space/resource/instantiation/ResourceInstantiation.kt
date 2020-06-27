@@ -4,6 +4,7 @@ import extra.InputDatabase
 import simulation.SimulationException
 import simulation.space.SpaceError
 import simulation.space.resource.*
+import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.dependency.AvoidTiles
 import simulation.space.resource.dependency.LevelRestrictions
 import simulation.space.resource.dependency.ResourceDependency

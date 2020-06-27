@@ -6,7 +6,7 @@ import simulation.space.TectonicPlate
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePool
+import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.dependency.LabelerDependency
 import simulation.space.tile.Tile
 import simulation.space.tile.TypeUpdater

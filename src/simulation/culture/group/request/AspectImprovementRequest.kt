@@ -2,7 +2,7 @@ package simulation.culture.group.request
 
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.centers.Group
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 
 class AspectImprovementRequest(
         group: Group,

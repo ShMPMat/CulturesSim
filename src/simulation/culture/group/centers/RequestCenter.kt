@@ -2,8 +2,8 @@ package simulation.culture.group.centers
 
 import simulation.culture.group.*
 import simulation.culture.group.request.*
-import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*

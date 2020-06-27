@@ -1,7 +1,7 @@
 package simulation.culture.group.request
 
 import simulation.culture.group.centers.Group
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 
 class SimpleResourceRequest(

@@ -9,7 +9,7 @@ import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.Territory
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*

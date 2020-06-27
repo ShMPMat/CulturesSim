@@ -5,9 +5,9 @@ import simulation.culture.group.centers.PopulationCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.Territory
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.ResourcePack
 import kotlin.math.max
 
 data class AspectController(

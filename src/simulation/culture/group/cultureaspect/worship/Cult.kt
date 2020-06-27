@@ -7,7 +7,7 @@ import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.stratum.Stratum
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
 class Cult : WorshipFeature {

@@ -15,8 +15,8 @@ import simulation.culture.group.stratum.Stratum
 import simulation.culture.group.stratum.WarriorStratum
 import simulation.culture.group.stratum.WorkerBunch
 import simulation.space.Territory
-import simulation.space.resource.MutableResourcePack
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
 import java.util.*

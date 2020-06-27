@@ -1,4 +1,7 @@
-package simulation.space.resource
+package simulation.space.resource.container
+
+import simulation.space.resource.Resource
+import simulation.space.resource.ResourceIdeal
 
 class ResourcePool(private val resources: List<ResourceIdeal>) {
     fun get(name: String): Resource {

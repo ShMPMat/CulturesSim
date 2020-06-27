@@ -6,7 +6,7 @@ import simulation.culture.aspect.AspectResult
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.AspectCenter
 import simulation.culture.group.request.resourceEvaluator
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import java.util.*
 
 class LineDependency(

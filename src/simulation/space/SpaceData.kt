@@ -1,6 +1,5 @@
 package simulation.space
 
-import simulation.space.resource.ResourcePool
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.TagMatcher
 import kotlin.random.Random

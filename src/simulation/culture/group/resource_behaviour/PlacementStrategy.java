@@ -3,7 +3,7 @@ package simulation.culture.group.resource_behaviour;
 import extra.SpaceProbabilityFuncs;
 import simulation.space.Territory;
 import simulation.space.tile.Tile;
-import simulation.space.resource.MutableResourcePack;
+import simulation.space.resource.container.MutableResourcePack;
 
 import java.util.ArrayList;
 import java.util.List;

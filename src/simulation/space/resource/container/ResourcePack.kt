@@ -1,5 +1,6 @@
-package simulation.space.resource
+package simulation.space.resource.container
 
+import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
@@ -24,10 +25,13 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     val isNotEmpty: Boolean
         get() = !isEmpty
 
+    // returns true if resource has been merged
     protected fun internalAdd(resource: Resource): Boolean {
         if (resource.amount == 0)
             return false
+
         val internal = resourceMap[resource]
+
         return if (internal == null) {
             resourceMap[resource] = resource
             false
@@ -39,8 +43,7 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
 
     fun getResources(predicate: (Resource) -> Boolean) = ResourcePack(resources.filter(predicate))
 
-    fun getResources(tag: ResourceTag): ResourcePack =
-            ResourcePack(resources.filter { it.tags.contains(tag) })
+    fun getResources(tag: ResourceTag) = ResourcePack(resources.filter { it.tags.contains(tag) })
 
     fun getResource(resource: Resource): ResourcePack {
         val resourceInMap = resourceMap[resource] ?: return ResourcePack()
@@ -55,24 +58,17 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResources(predicate).amount
 
-    fun clearEmpty() {
-        resourceMap.filter { it.value.amount == 0 }
-                .forEach { resourceMap.remove(it.key) }
-    }
+    fun clearEmpty() = resourceMap
+            .filter { it.value.amount == 0 }
+            .forEach { resourceMap.remove(it.key) }
 
     fun any(predicate: (Resource) -> Boolean) = resources.any(predicate)
-
-    override fun toString(): String {
-        val stringBuilder = StringBuilder()
-        for (resource in resources) {
-            stringBuilder.append("${resource.fullName} ${resource.amount}; \n")
-        }
-        return stringBuilder.toString()
-    }
 
     fun contains(resource: Resource) = resourceMap[resource] != null
 
     fun containsAll(resources: Collection<Resource>) = resources.all { contains(it) }
 
     fun containsAll(pack: ResourcePack) = containsAll(pack.resources)
+
+    override fun toString() = resources.joinToString { "${it.fullName} ${it.amount};\n" }
 }

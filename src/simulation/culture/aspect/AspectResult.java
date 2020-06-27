@@ -2,7 +2,7 @@ package simulation.culture.aspect;
 
 import kotlin.Pair;
 import simulation.culture.group.centers.Group;
-import simulation.space.resource.MutableResourcePack;
+import simulation.space.resource.container.MutableResourcePack;
 import simulation.space.resource.tag.ResourceTag;
 import simulation.space.resource.tag.labeler.ResourceLabeler;
 

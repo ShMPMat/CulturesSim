@@ -9,9 +9,9 @@ import simulation.culture.aspect.labeler.makeAspectLabeler
 import simulation.culture.group.centers.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.resourceEvaluator
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.instantiation.DefaultTagParser
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.BaseNameLabeler

@@ -3,7 +3,7 @@ package simulation.culture.group
 import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.freeze
 import simulation.culture.group.centers.starve
-import simulation.space.resource.MutableResourcePack
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.ResourceLabeler
 
