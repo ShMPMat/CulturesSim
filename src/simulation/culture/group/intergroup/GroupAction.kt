@@ -3,6 +3,8 @@ package simulation.culture.group.intergroup
 import simulation.culture.group.centers.Group
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
+import simulation.space.resource.container.ResourcePromise
+import simulation.space.resource.container.ResourcePromisePack
 import kotlin.math.ceil
 
 interface GroupAction {
@@ -32,8 +34,8 @@ class EvaluateResourcesAction(group: Group, val pack: ResourcePack) : AbstractGr
 }
 
 class ChooseResourcesAction(group: Group, val pack: ResourcePack, val amount: Int) : AbstractGroupAction(group) {
-    override fun run(): ResourcePack {
-        val chosenResources = MutableResourcePack()
+    override fun run(): ResourcePromisePack {
+        val chosenResources = mutableListOf<ResourcePromise>()
         var leftAmount = amount
         val sortedResources = pack.resources.sortedByDescending { group.cultureCenter.evaluateResource(it) }
 
@@ -41,13 +43,13 @@ class ChooseResourcesAction(group: Group, val pack: ResourcePack, val amount: In
             val worth = group.cultureCenter.evaluateResource(resource)
             val amountToTook = ceil(leftAmount.toDouble() / worth).toInt()
 
-            val takenPart = resource.getCleanPart(amountToTook)
-            leftAmount -= takenPart.amount
+            val takenPart = ResourcePromise(resource, amountToTook)
+            leftAmount -= takenPart.amount * worth
             chosenResources.add(takenPart)
 
             if (leftAmount <= 0) break
         }
 
-        return chosenResources
+        return ResourcePromisePack(chosenResources)
     }
 }
