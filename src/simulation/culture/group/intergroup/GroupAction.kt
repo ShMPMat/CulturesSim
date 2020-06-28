@@ -1,6 +1,7 @@
 package simulation.culture.group.intergroup
 
 import simulation.culture.group.centers.Group
+import simulation.space.resource.Resource
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.container.ResourcePromise
@@ -33,16 +34,27 @@ class EvaluateResourcesAction(group: Group, val pack: ResourcePack) : AbstractGr
             .foldRight(0, Int::plus)
 }
 
-class ChooseResourcesAction(group: Group, val pack: ResourcePack, val amount: Int) : AbstractGroupAction(group) {
+class ChooseResourcesAction(
+        group: Group,
+        val pack: ResourcePack,
+        val amount: Int,
+        val banned: List<Resource> = listOf()
+) : AbstractGroupAction(group) {
     override fun run(): ResourcePromisePack {
         val chosenResources = mutableListOf<ResourcePromise>()
         var leftAmount = amount
-        val sortedResources = pack.resources.sortedByDescending { group.cultureCenter.evaluateResource(it) }
+        val sortedResources = pack.resources
+                .filter { it.genome.isMovable }
+                .sortedByDescending { group.cultureCenter.evaluateResource(it) }
 
         for (resource in sortedResources) {
             val worth = group.cultureCenter.evaluateResource(resource)
-            val amountToTook = ceil(leftAmount.toDouble() / worth).toInt()
+            if(worth <= 1)
+                break
+            if (banned.any { it.ownershiplessEquals(resource) })
+                continue
 
+            val amountToTook = ceil(leftAmount.toDouble() / worth).toInt()
             val takenPart = ResourcePromise(resource, amountToTook)
             leftAmount -= takenPart.amount * worth
             chosenResources.add(takenPart)

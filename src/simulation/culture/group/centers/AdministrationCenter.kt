@@ -3,15 +3,22 @@ package simulation.culture.group.centers
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.cultureaspect.SpecialPlace
+import simulation.culture.group.intergroup.GroupBehaviour
+import simulation.culture.group.intergroup.RandomTradeBehaviour
 import simulation.space.resource.Resource
 
 class AdministrationCenter(val type: AdministrationType) {
     private val infrastructure = mutableListOf<Resource>()
+    private val behaviours: List<(Group) -> GroupBehaviour> = listOf(
+            ::RandomTradeBehaviour
+    )
 
     fun update(group: Group) {
+        runBehaviours(group)
         return when (type) {
             AdministrationType.Main -> administrate(group)
             else -> {
+
             }
         }
     }
@@ -45,6 +52,12 @@ class AdministrationCenter(val type: AdministrationType) {
             val k = 0
         }
         return places
+    }
+
+    private fun runBehaviours(group: Group) {
+        behaviours.forEach {
+            it(group).run()
+        }
     }
 }
 

@@ -31,9 +31,20 @@ class TradeInteraction(
         val amount: Int
 ) : AbstractGroupInteraction(initiator, participator) {
     override fun run() {//TODO special class for pre-split Resources
-        val wantedResources = ChooseResourcesAction(initiator, participator.resourceCenter.pack, amount).run()
+        val wantedResources = ChooseResourcesAction(
+                initiator,
+                participator.resourceCenter.pack,
+                amount
+        ).run()
         val price = EvaluateResourcesAction(participator, wantedResources.makeCopy()).run()
-        val priceInResources = ChooseResourcesAction(participator, initiator.resourceCenter.pack, price).run()
+        if (price == 0) return
+
+        val priceInResources = ChooseResourcesAction(
+                participator,
+                initiator.resourceCenter.pack,
+                price,
+                wantedResources.makeCopy().resources
+        ).run()
 
         if (price <= EvaluateResourcesAction(participator, priceInResources.makeCopy()).run()) {
             val got = wantedResources.extract()

@@ -9,4 +9,6 @@ class ResourcePromise(val resource: Resource, amount: Int) {
     fun extract() = resource.getCleanPart(amount)
 
     fun makeCopy() = resource.copy(amount)
+
+    override fun toString() = "${resource.fullName} - $amount"
 }
