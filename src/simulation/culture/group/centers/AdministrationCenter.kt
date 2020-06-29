@@ -9,8 +9,8 @@ import simulation.space.resource.Resource
 
 class AdministrationCenter(val type: AdministrationType) {
     private val infrastructure = mutableListOf<Resource>()
-    private val behaviours: List<(Group) -> GroupBehaviour> = listOf(
-            ::RandomTradeBehaviour
+    private val behaviours: MutableList<GroupBehaviour> = mutableListOf(
+            RandomTradeBehaviour
     )
 
     fun update(group: Group) {
@@ -56,7 +56,7 @@ class AdministrationCenter(val type: AdministrationType) {
 
     private fun runBehaviours(group: Group) {
         behaviours.forEach {
-            it(group).run()
+            it.run(group)
         }
     }
 }
