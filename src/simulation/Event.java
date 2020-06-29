@@ -22,7 +22,7 @@ public class Event {
     public Map<String, Object> attributes;
 
     private String turn;
-    private String description;
+    public String description;
 
     /**
      * @param type - type of event.

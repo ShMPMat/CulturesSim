@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static extra.OutputFunc.*;
 import static visualizer.PrintFunctionsKt.printApplicableResources;
+import static visualizer.PrintFunctionsKt.printEvents;
 import static visualizer.TextCommandsKt.getCommand;
 
 /**
@@ -131,7 +132,7 @@ public class TextVisualizer implements Visualizer {
         }
         for (Event event : interactionModel.getEvents().stream().
                 filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
-            lastClaimedTiles.get(((Group) event.getAttribute("group")).getName())
+            lastClaimedTiles.get(((Group) event.getAttribute("group")).getParentGroup().getName())
                     .add((Tile) event.getAttribute("tile"));
         }
         System.out.print(main.append(addToRight(
@@ -449,10 +450,23 @@ public class TextVisualizer implements Visualizer {
                         case ResourceOwner:
                             printMap(t -> TileMapperFunctionsKt.resourceOwnerMapper(splitCommand[1], t));
                             break;
-                        case AllResources:
+                        case AllResources: {
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;
-                        case Aspects: {
+                        } case Events: {
+                            System.out.println(printEvents(
+                                    controller.interactionModel.getAllEvents(),
+                                    100,
+                                    e -> {
+                                        if (splitCommand.length > 1) {
+                                            return e.description.contains(splitCommand[1]);
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                    ));
+                            break;
+                        } case Aspects: {
                             printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
                             Aspect aspect = world.getAspectPool().get(splitCommand[1]);
                             if (aspect != null) {

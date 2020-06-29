@@ -159,7 +159,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         tileTag.group.addEvent(Event(
                 Event.Type.TileAcquisition,
                 "Group " + tileTag.group.name + " claimed tile " + tile.x + " " + tile.y,
-                "group", this, "tile", tile
+                "group", tileTag.group, "tile", tile
         ))
     }
 

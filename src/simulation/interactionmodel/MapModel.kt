@@ -9,7 +9,8 @@ import java.util.*
  * Model with 2d map on which all interactions take place.
  */
 class MapModel : InteractionModel {
-    var events: MutableList<Event> = ArrayList()
+    override var events: MutableList<Event> = mutableListOf()
+    override val allEvents: MutableList<Event> = mutableListOf()
 
     override fun turn(world: World) {
         Controller.session.overallTime = System.nanoTime()
@@ -20,19 +21,22 @@ class MapModel : InteractionModel {
         Controller.session.groupMigrationTime = 0
         var groups = world.shuffledGroups
         for (group in groups) {
-            val eventsNumber = group.events.size
             group.update()
-            events.addAll(group.events.drop(eventsNumber))
         }
         Controller.session.groupTime = System.nanoTime() - Controller.session.groupTime
         Controller.session.othersTime = System.nanoTime()
-        val eventsNumber = world.events.size
+        var eventsNumber = world.events.size
         world.map.update()
         groups = world.shuffledGroups
-        for (group in groups)
+        for (group in groups) {
+            eventsNumber = group.events.size
             group.finishUpdate()
+            events.addAll(group.events.drop(eventsNumber))
+            allEvents.addAll(group.events.drop(eventsNumber))
+        }
         world.map.finishUpdate()
         events.addAll(world.events.drop(eventsNumber))
+        allEvents.addAll(world.events.drop(eventsNumber))
         world.strayPlacesManager.update()
         Controller.session.othersTime = System.nanoTime() - Controller.session.othersTime
         Controller.session.overallTime = System.nanoTime() - Controller.session.overallTime
@@ -45,8 +49,6 @@ class MapModel : InteractionModel {
             events.add(world.events[i])
         }
     }
-
-    override fun getEvents(): Collection<Event> = events
 
     override fun clearEvents() {
         events = ArrayList()

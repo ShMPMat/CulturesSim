@@ -1,5 +1,6 @@
 package visualizer
 
+import simulation.Event
 import simulation.World
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
@@ -52,3 +53,8 @@ fun printResource(resource: Resource): String = resource.toString() + "\n" +
         }
 
 fun printGroup(group: Group) = group.toString()
+
+fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean) = events
+        .filter { predicate(it) }
+        .takeLast(amount)
+        .joinToString("\n")

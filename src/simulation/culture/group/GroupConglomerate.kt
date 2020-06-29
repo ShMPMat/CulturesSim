@@ -21,7 +21,8 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         get() = subgroups.shuffled(Controller.session.random)
     var state = State.Live
 
-    val events: MutableList<Event> = ArrayList()
+    var events: List<Event> = ArrayList()
+        private set
 
     /**
      * Overall Territory which is under the child Groups
@@ -158,7 +159,10 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         group.territoryCenter.territory.tiles.forEach { removeTile(it) }
     }
 
-    fun finishUpdate() = subgroups.forEach { it.finishUpdate() }
+    fun finishUpdate() {
+        subgroups.forEach { it.finishUpdate() }
+        events = subgroups.flatMap { it.cultureCenter.events }
+    }
 
     fun removeTile(tile: Tile?) {
         if (tile == null) return
