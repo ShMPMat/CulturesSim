@@ -7,7 +7,9 @@ import simulation.culture.group.ConglomerateCommand
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupError
 import simulation.culture.group.Transfer
+import simulation.culture.group.intergroup.RandomGroupAddBehaviour
 import simulation.culture.group.intergroup.Relation
+import simulation.culture.group.intergroup.withProbability
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestPool
 import simulation.space.resource.container.MutableResourcePack
@@ -52,18 +54,6 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     fun evaluateTile(tile: Tile) = relations.map {
         (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.territory.center)).toInt()
     }.fold(0, Int::plus)
-
-    fun update(group: Group): ConglomerateCommand? {
-        if (!testProbability(0.01, Controller.session.random)) return null
-
-        val options = group.territoryCenter.getAllNearGroups(group).filter { it.parentGroup !== group.parentGroup }
-        if (options.isNotEmpty()) {
-            val target = randomElement(options, Controller.session.random)
-            return Transfer(target)
-        }
-
-        return null
-    }
 
     fun updateRelations(groups: Collection<Group>, owner: Group) {
         updateNewConnections(groups, owner)

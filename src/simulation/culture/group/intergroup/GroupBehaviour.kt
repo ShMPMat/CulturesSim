@@ -2,7 +2,9 @@ package simulation.culture.group.intergroup
 
 import shmp.random.randomElement
 import shmp.random.testProbability
+import simulation.Controller
 import simulation.Controller.session
+import simulation.culture.group.Transfer
 import simulation.culture.group.centers.Group
 import kotlin.math.pow
 
@@ -24,6 +26,18 @@ object RandomTradeBehaviour : AbstractGroupBehaviour() {
                 session.random
         )
         TradeInteraction(group, groupToTrade, 1000).run()
+    }
+}
+
+object RandomGroupAddBehaviour : AbstractGroupBehaviour() {
+    override fun run(group: Group) {
+        val options = group.territoryCenter.getAllNearGroups(group)
+                .filter { it.parentGroup !== group.parentGroup }
+
+        if (options.isNotEmpty()) {
+            val target = randomElement(options, session.random)
+            GroupTransferInteraction(group, target).run()
+        }
     }
 }
 

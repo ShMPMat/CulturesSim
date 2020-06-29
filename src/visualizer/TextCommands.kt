@@ -4,9 +4,6 @@ package visualizer
  * Represents commands which can be given to visualizer.
  */
 enum class Command(command: String) {
-    /**
-     * Command for making turns until something important happens.
-     */
     Conglomerate("^G\\d+_?\\d*"),
     GroupTileReach("^G\\d+ r"),
     GroupProduced("^G\\d+ p"),

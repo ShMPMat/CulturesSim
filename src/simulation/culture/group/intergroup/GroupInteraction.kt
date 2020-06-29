@@ -30,7 +30,7 @@ class TradeInteraction(
         participator: Group,
         val amount: Int
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run() {//TODO special class for pre-split Resources
+    override fun run() {
         val wantedResources = ChooseResourcesAction(
                 initiator,
                 participator.resourceCenter.pack,
@@ -54,5 +54,15 @@ class TradeInteraction(
 
             RelationsImprovementInteraction(initiator, participator, 0.001)
         }
+    }
+}
+
+class GroupTransferInteraction(
+        initiator: Group,
+        participator: Group
+): AbstractGroupInteraction(initiator, participator) {
+    override fun run() {
+        AddGroupAction(initiator, participator).run()
+        ProcessGroupRemovalAction(participator, participator).run()
     }
 }

@@ -4,13 +4,16 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.intergroup.GroupBehaviour
+import simulation.culture.group.intergroup.RandomGroupAddBehaviour
 import simulation.culture.group.intergroup.RandomTradeBehaviour
+import simulation.culture.group.intergroup.withProbability
 import simulation.space.resource.Resource
 
 class AdministrationCenter(val type: AdministrationType) {
     private val infrastructure = mutableListOf<Resource>()
     private val behaviours: MutableList<GroupBehaviour> = mutableListOf(
-            RandomTradeBehaviour
+            RandomTradeBehaviour,
+            RandomGroupAddBehaviour.withProbability(0.01)
     )
 
     fun update(group: Group) {

@@ -1,5 +1,6 @@
 package simulation.culture.group.intergroup
 
+import simulation.culture.group.Transfer
 import simulation.culture.group.centers.Group
 import simulation.space.resource.Resource
 import simulation.space.resource.container.MutableResourcePack
@@ -63,5 +64,17 @@ class ChooseResourcesAction(
         }
 
         return ResourcePromisePack(chosenResources)
+    }
+}
+
+class AddGroupAction(group: Group, val groupToAdd: Group): AbstractGroupAction(group) {
+    override fun run() {
+        Transfer(groupToAdd).execute(group.parentGroup)
+    }
+}
+
+class ProcessGroupRemovalAction(group: Group, val groupToRemove: Group): AbstractGroupAction(group) {
+    override fun run() {
+
     }
 }

@@ -162,7 +162,7 @@ class Group(
         return null
     }
 
-    fun intergroupUpdate(): ConglomerateCommand? {
+    fun intergroupUpdate() {
         relationCenter.requestTrade(cultureCenter.requestCenter.turnRequests)
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             var toUpdate = overallTerritory
@@ -178,7 +178,6 @@ class Group(
             relationCenter.updateRelations(toUpdate, this)
         }
         cultureCenter.intergroupUpdate()
-        return relationCenter.update(this)
     }
 
     fun finishUpdate() {
