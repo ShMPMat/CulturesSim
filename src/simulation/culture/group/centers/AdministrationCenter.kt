@@ -58,9 +58,10 @@ class AdministrationCenter(val type: AdministrationType) {
     }
 
     private fun runBehaviours(group: Group) {
-        behaviours.forEach {
+        val events = behaviours.mapNotNull {
             it.run(group)
         }
+        events.forEach { group.addEvent(it) }
     }
 }
 

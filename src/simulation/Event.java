@@ -13,38 +13,39 @@ public class Event {
         AspectGaining,
         TileAcquisition,
         DisbandResources,
+        GroupInteraction,
 
         Creation,
         Move,
-        Change
+        Change,
+
+        Other
     }
     public Type type;
-    public Map<String, Object> attributes;
+    public Map<String, Object> attributes = new HashMap<>();
 
     private String turn;
     public String description;
 
-    /**
-     * @param type - type of event.
-     * @param description - string describing event.
-     * @param attributes - list of attributes in pair of String name for attribute and any Object linked to it.
-     */
     public Event(Type type, String description, Object... attributes) {
-        this.type = type;
-        this.turn = Controller.session.world == null ? "None" : Controller.session.world.getTurn();
-        this.description = description;
-        this.attributes = new HashMap<>();
+        this(type, description);
         for (int i = 0; i < attributes.length; i += 2) {
             String name = (String) attributes[i];
-            if (name.equals("")) {
+            if (name.equals(""))
                 break;
-            }
             this.attributes.put(name, attributes[i + 1]);
         }
     }
 
+    public Event(Type type, String description, Map<String, Object> attributes) {
+        this(type, description);
+        this.attributes.putAll(attributes);
+    }
+
     public Event(Type type, String description) {
-        this(type, description, "");
+        this.type = type;
+        this.turn = Controller.session.world == null ? "None" : Controller.session.world.getTurn();
+        this.description = description;
     }
 
     public Object getAttribute(String name) {

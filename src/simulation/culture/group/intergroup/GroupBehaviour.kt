@@ -4,48 +4,50 @@ import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Controller.session
+import simulation.Event
 import simulation.culture.group.Transfer
 import simulation.culture.group.centers.Group
 import kotlin.math.pow
 
 interface GroupBehaviour {
-    fun run(group: Group)
+    fun run(group: Group): Event?
 }
 
-sealed class AbstractGroupBehaviour: GroupBehaviour
+sealed class AbstractGroupBehaviour : GroupBehaviour
 
 object RandomTradeBehaviour : AbstractGroupBehaviour() {
-    override fun run(group: Group) {
+    override fun run(group: Group): Event? {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        if (groups.isEmpty()) return
+        if (groups.isEmpty()) return null
 
         val groupToTrade = randomElement(
                 groups,
                 { group.relationCenter.getNormalizedRelation(it).pow(5) },
                 session.random
         )
-        TradeInteraction(group, groupToTrade, 1000).run()
+        return TradeInteraction(group, groupToTrade, 1000).run()
     }
 }
 
 object RandomGroupAddBehaviour : AbstractGroupBehaviour() {
-    override fun run(group: Group) {
+    override fun run(group: Group): Event? {
         val options = group.territoryCenter.getAllNearGroups(group)
                 .filter { it.parentGroup !== group.parentGroup }
 
         if (options.isNotEmpty()) {
             val target = randomElement(options, session.random)
-            GroupTransferInteraction(group, target).run()
+            return GroupTransferInteraction(group, target).run()
         }
+        return null
     }
 }
 
-class ChanceWrapperBehaviour(val behaviour: GroupBehaviour, val probability: Double): AbstractGroupBehaviour() {
-    override fun run(group: Group) {
-        if (testProbability(probability, session.random))
-            behaviour.run(group)
-    }
+class ChanceWrapperBehaviour(val behaviour: GroupBehaviour, val probability: Double) : AbstractGroupBehaviour() {
+    override fun run(group: Group) =
+            if (testProbability(probability, session.random))
+                behaviour.run(group)
+            else null
 }
 
 fun GroupBehaviour.withProbability(probability: Double)
