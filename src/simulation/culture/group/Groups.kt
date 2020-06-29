@@ -58,3 +58,6 @@ fun unite(actions: List<(Pair<Group, MutableResourcePack>, Double) -> Unit>) = {
 fun put() = { pair: Pair<Group, MutableResourcePack>, _: Double ->
     pair.first.resourceCenter.addAll(pair.second)
 }
+
+//Aspects to add in newly created Groups.
+val compulsoryAspects = listOf("TakeApart", "Take", "Trade")

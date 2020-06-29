@@ -7,6 +7,7 @@ import simulation.culture.aspect.AspectInstantiation
 import simulation.culture.aspect.AspectResourceTagParser
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.GroupConglomerate
+import simulation.culture.group.compulsoryAspects
 import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
@@ -24,22 +25,27 @@ import simulation.space.tile.Tile
 import java.util.*
 import kotlin.random.Random
 
-/**
- * Class which stores all entities in the simulation.
- */
-class World(proportionCoefficient: Int, random: Random, path: String) {
 
+//Stores all entities in the simulation.
+class World(proportionCoefficient: Int, random: Random, path: String) {
     var groups: MutableList<GroupConglomerate> = ArrayList()
+
     val shuffledGroups: List<GroupConglomerate>
         get() = groups.shuffled(session.random)
+
     val strayPlacesManager = StrayPlacesManager()
+
     private val memePool = GroupMemes()
+
     var map: WorldMap
+
     var events: MutableList<Event> = ArrayList()
 
     private val tags = InputDatabase("$path/ResourceTags").readLines().map { ResourceTag(it) }
             .union(createTagMatchers("$path/ResourceTagLabelers").map { it.tag })
+
     val aspectPool = AspectInstantiation(tags).createPool("$path/Aspects")
+
     val resourcePool: ResourcePool
 
     init {
@@ -67,9 +73,8 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
         )
     }
 
-    /**
-     * How many turns passed from the beginning of the simulation.
-     */
+
+    //How many turns passed from the beginning of the simulation.
     var lesserTurnNumber = 0
         private set
     private var thousandTurns = 0
@@ -86,12 +91,13 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
         for (i in 0 until session.startGroupAmount) {
             groups.add(GroupConglomerate(1, tileForGroup))
         }
-        groups.forEach { c ->
-            c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue("TakeApart")) }
+
+        for (aspectName in compulsoryAspects) {
+            groups.forEach { c ->
+                c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue(aspectName)) }
+            }
         }
-        groups.forEach { c ->
-            c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue("Take")) }
-        }
+
         groups.forEach { it.finishUpdate() }
     }
 
@@ -106,27 +112,8 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
             }
         }
 
-    /**
-     * Getter for turn.
-     *
-     * @return how many turns passed since the beginning of the simulation.
-     */
-    fun getTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
 
-    /**
-     * Returns Meme by name.
-     *
-     * @param name name of the Meme.
-     * @return Meme with this name.
-     */
-    fun getPoolMeme(name: String?): Meme? {
-        try {
-            return memePool.getMemeCopy(name)
-        } catch (e: Exception) {
-            val i = 0
-        }
-        return null
-    }
+    fun getTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
 
     fun addEvent(event: Event) {
         events.add(event)
