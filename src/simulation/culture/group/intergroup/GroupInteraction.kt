@@ -7,7 +7,7 @@ interface GroupInteraction {
     val initiator: Group
     val participator: Group
 
-    fun run(): Event?
+    fun run(): List<Event>
 }
 
 sealed class AbstractGroupInteraction(
@@ -20,17 +20,17 @@ class RelationsImprovementInteraction(
         participator: Group,
         val amount: Double
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): Event {
+    override fun run(): List<Event> {
         ImproveRelationsAction(participator, initiator, amount)
         ImproveRelationsAction(initiator, participator, amount)
 
         val relationTo = initiator.relationCenter.getNormalizedRelation(participator)
         val relationFrom = participator.relationCenter.getNormalizedRelation(initiator)
-        return Event(
+        return listOf(Event(
                 Event.Type.GroupInteraction,
                 "Groups ${initiator.name} and ${participator.name} improved their relations by $amount " +
                         "to the general of $relationTo and $relationFrom"
-        )
+        ))
     }
 }
 
@@ -39,14 +39,14 @@ class TradeInteraction(
         participator: Group,
         val amount: Int
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): Event? {
+    override fun run(): List<Event> {
         val wantedResources = ChooseResourcesAction(
                 initiator,
                 participator.populationCenter.turnResources,
                 amount
         ).run()
         val price = EvaluateResourcesAction(participator, wantedResources.makeCopy()).run()
-        if (price == 0) return null
+        if (price == 0) return emptyList()
 
         val priceInResources = ChooseResourcesAction(
                 participator,
@@ -66,9 +66,9 @@ class TradeInteraction(
             ReceiveResourcesAction(participator, given).run()
 
             RelationsImprovementInteraction(initiator, participator, 0.001).run()
-            return event
+            return listOf(event)
         }
-        return null
+        return emptyList()
     }
 }
 
@@ -76,12 +76,12 @@ class GroupTransferInteraction(
         initiator: Group,
         participator: Group
 ): AbstractGroupInteraction(initiator, participator) {
-    override fun run(): Event {
+    override fun run(): List<Event> {
         AddGroupAction(initiator, participator).run()
         ProcessGroupRemovalAction(participator, participator).run()
-        return Event(
+        return listOf(Event(
                 Event.Type.GroupInteraction,
                 "Group ${participator.name} joined to conglomerate ${initiator.parentGroup.name}"
-        )
+        ))
     }
 }
