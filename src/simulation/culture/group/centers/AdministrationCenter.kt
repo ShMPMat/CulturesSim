@@ -2,18 +2,26 @@ package simulation.culture.group.centers
 
 import shmp.random.testProbability
 import simulation.Controller
+import simulation.Controller.*
 import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.intergroup.*
 import simulation.space.resource.Resource
 
 class AdministrationCenter(val type: AdministrationType) {
-    private val infrastructure = mutableListOf<Resource>()
-    private val behaviours: MutableList<GroupBehaviour> = mutableListOf(
-            RandomTradeBehaviour.times(1, 5),
-            RandomGroupAddBehaviour.withProbability(0.01)
-    )
+    private var behaviours: MutableList<GroupBehaviour> = mutableListOf()
+
+
+    private fun updateBehaviours(group: Group) {
+        behaviours = mutableListOf(
+                RandomTradeBehaviour.times(1, 5),
+                RandomGroupAddBehaviour.withProbability(0.01)
+        )
+    }
 
     fun update(group: Group) {
+        if (behaviours.isEmpty() || testProbability(session.behaviourUpdateProb, session.random))
+            updateBehaviours(group)
+
         runBehaviours(group)
         return when (type) {
             AdministrationType.Main -> administrate(group)
@@ -25,7 +33,7 @@ class AdministrationCenter(val type: AdministrationType) {
 
     private fun administrate(group: Group) {
         if (group.territoryCenter.settled) {
-            if (testProbability(0.9, Controller.session.random))
+            if (testProbability(0.9, session.random))
                 return
             val places = getAllPlaceLocations(group)
         }

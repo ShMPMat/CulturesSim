@@ -45,22 +45,24 @@ class TradeInteraction(
                 participator.populationCenter.turnResources,
                 amount
         ).run()
-        val price = EvaluateResourcesAction(participator, wantedResources.makeCopy()).run()
-        if (price == 0) return emptyList()
+        val priceForP = EvaluateResourcesAction(participator, wantedResources.makeCopy()).run()
+        if (priceForP == 0) return emptyList()
 
         val priceInResources = ChooseResourcesAction(
                 participator,
                 initiator.populationCenter.turnResources,
-                price,
+                priceForP,
                 wantedResources.makeCopy().resources
         ).run()
+        val priceForI = EvaluateResourcesAction(participator, priceInResources.makeCopy()).run()
 
-        if (price <= EvaluateResourcesAction(participator, priceInResources.makeCopy()).run()) {
+        if (priceForP <= priceForI) {
             val got = wantedResources.extract()
             val given = priceInResources.extract()
             val event = Event(
                     Event.Type.GroupInteraction,
-                    "Groups ${initiator.name} and ${participator.name} traded $got and $given"
+                    "Groups ${initiator.name} and ${participator.name} " +
+                            "traded $got - $priceForP and $given - $priceForI"
             )
             ReceiveResourcesAction(initiator, got).run()
             ReceiveResourcesAction(participator, given).run()
