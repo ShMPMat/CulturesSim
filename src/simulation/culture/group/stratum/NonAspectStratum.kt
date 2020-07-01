@@ -40,4 +40,6 @@ abstract class NonAspectStratum(tile: Tile, name: String) : BaseStratum(tile, na
     override fun die() {
         population = 0
     }
+
+
 }

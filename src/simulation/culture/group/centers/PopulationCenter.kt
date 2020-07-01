@@ -10,10 +10,7 @@ import simulation.culture.group.GroupError
 import simulation.culture.group.request.ExecutedRequestResult
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestPool
-import simulation.culture.group.stratum.AspectStratum
-import simulation.culture.group.stratum.Stratum
-import simulation.culture.group.stratum.WarriorStratum
-import simulation.culture.group.stratum.WorkerBunch
+import simulation.culture.group.stratum.*
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
@@ -36,6 +33,7 @@ class PopulationCenter(
 
     init {
         addStratum(WarriorStratum(newTile))
+        addStratum(TraderStratum(newTile))
     }
 
     fun getStratumByAspect(aspect: ConverseWrapper): AspectStratum {

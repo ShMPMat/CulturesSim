@@ -1,6 +1,6 @@
 package simulation.culture.group.stratum
 
-import simulation.culture.group.cultureaspect.SpecialPlace
+import simulation.culture.group.centers.Group
 import simulation.space.tile.Tile
 import kotlin.math.ceil
 import kotlin.math.min
@@ -12,8 +12,6 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
     private var workedPopulation = 0
     override val freePopulation: Int
         get() = population - workedPopulation
-
-    override val places = listOf<SpecialPlace>()
 
     private val effectiveness: Double
         get() {
@@ -37,8 +35,12 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
         return WorkerBunch(actualAmount, actualAmount)
     }
 
+    override fun finishUpdate(group: Group) {
+        _effectiveness = -1.0
+        super.finishUpdate(group)
+    }
 
     override fun toString() =
-            "Stratum of warriors, population - $population, effectiveness - $effectiveness, importance - $importance" +
+            "$name, population - $population, effectiveness - $effectiveness, importance - $importance" +
                     super.toString()
 }

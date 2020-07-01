@@ -17,13 +17,15 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         get() = notMoved >= 50
 
     val territory = Territory()
+
     var notMoved = 0
         private set
 
     private val tileTag: GroupTileTag = GroupTileTag(group)
+
     private val _places = mutableListOf<StaticPlace>()
-    val places: List<SpecialPlace>
-        get() = _places.map { SpecialPlace(it) } //TODO no wrapping!
+    val places: List<StaticPlace>
+        get() = _places
 
     private var _oldCenter: Tile? = null
     private var _oldReach: Collection<Tile> = listOf()

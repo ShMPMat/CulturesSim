@@ -7,7 +7,6 @@ import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.dependency.Dependency
 import simulation.culture.aspect.getAspectImprovement
 import simulation.culture.group.centers.Group
-import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.passingReward
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.request.AspectImprovementRequest
@@ -38,7 +37,6 @@ class AspectStratum(
     private var isRaisedAmount = false
     private val dependencies: MutableMap<ResourceTag, MutableResourcePack> = HashMap()
     private val enhancements = MutableResourcePack()
-    private val _places: MutableList<StaticPlace> = ArrayList()
     private val popularMemes: MutableList<Meme> = ArrayList()
     override var importance: Int
         get() = aspect.usefulness
@@ -51,8 +49,6 @@ class AspectStratum(
     override val freePopulation: Int
         get() = population - workedAmount
 
-    override val places: List<SpecialPlace>
-        get() = _places.map { SpecialPlace(it) } //TODO make adequate Places field
 
     init {
         aspect.dependencies.map.keys.forEach { tag: ResourceTag ->
@@ -74,10 +70,13 @@ class AspectStratum(
     private val effectiveness: Double
         get() {
             if (_effectiveness == -1.0) {
-                _effectiveness = 1.0 + _places
+                _effectiveness = 1.0 + places
                         .flatMap { it.owned.resources }
                         .map { it.getAspectImprovement(aspect) }
                         .foldRight(0.0, Double::plus)
+            }
+            if (_effectiveness > 1) {
+                val k = 0
             }
             return _effectiveness
         }
@@ -210,7 +209,7 @@ class AspectStratum(
     }
 
     private fun addUnmovableEnhancement(resource: Resource, group: Group) {
-        val goodPlaces = _places.filter { resource.genome.isAcceptable(it.tile) }
+        val goodPlaces = innerPlaces.filter { resource.genome.isAcceptable(it.tile) }
         var place: StaticPlace? = null
 
         if (goodPlaces.isEmpty()) {
@@ -220,12 +219,12 @@ class AspectStratum(
                 val tagType = "(Stratum ${aspect.name} of ${group.name})"
                 place = StaticPlace(
                         randomElement(goodTiles, session.random),
-                        TileTag(tagType + "_" + _places.size, tagType)
+                        TileTag(tagType + "_" + innerPlaces.size, tagType)
                 )
-                _places.add(place)
+                innerPlaces.add(place)
             }
         } else
-            place = randomElement(_places, session.random)
+            place = randomElement(innerPlaces, session.random)
 
         if (place == null) return
 
@@ -252,18 +251,14 @@ class AspectStratum(
 
     override fun hashCode() = Objects.hash(aspect)
 
-    override fun toString(): String {
-        val stringBuilder = StringBuilder("Stratum with population ")
-        stringBuilder.append("$population, effectiveness $effectiveness, importance $importance, ${aspect.name} ")
-        stringBuilder.append(", Places:")
-        _places.forEach(Consumer { p: StaticPlace? -> stringBuilder.append(p).append(" ") })
-        stringBuilder.append(super.toString())
-        return stringBuilder.toString()
-    }
+    override fun toString() = "Stratum with population $population, " +
+            "effectiveness $effectiveness, importance $importance, ${aspect.name}, Places: " +
+            innerPlaces.joinToString { "$it " } +
+            super.toString()
 
     override fun die() {
         population = 0
         workedAmount = 0
-        _places.forEach { session.world.strayPlacesManager.addPlace(it) }
+        innerPlaces.forEach { session.world.strayPlacesManager.addPlace(it) }
     }
 }

@@ -1,7 +1,7 @@
 package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
-import simulation.culture.group.cultureaspect.SpecialPlace
+import simulation.culture.group.place.StaticPlace
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
@@ -12,7 +12,7 @@ interface Stratum {
     var importance: Int
     val ego: Ego
 
-    val places: List<SpecialPlace>
+    val places: List<StaticPlace>
 
     fun decreaseAmount(amount: Int)
 
@@ -30,8 +30,13 @@ interface Stratum {
 }
 
 
-abstract class BaseStratum(tile: Tile, name: String): Stratum {
+abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
     override val ego = Ego(tile, name)
+
+
+    protected val innerPlaces = mutableListOf<StaticPlace>()
+    override val places: List<StaticPlace>
+        get() = innerPlaces
 
     override fun toString() = "\nEgo resources: ${ego.place.current.owned}"
 }

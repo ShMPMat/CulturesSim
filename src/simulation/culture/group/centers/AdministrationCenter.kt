@@ -1,11 +1,10 @@
 package simulation.culture.group.centers
 
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.Controller.*
 import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.intergroup.*
-import simulation.space.resource.Resource
+import simulation.culture.group.place.StaticPlace
 
 class AdministrationCenter(val type: AdministrationType) {
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf()
@@ -39,22 +38,24 @@ class AdministrationCenter(val type: AdministrationType) {
         }
     }
 
-    private fun getAllPlaceLocations(group: Group): List<SpecialPlace> {
-        var places = mutableListOf<SpecialPlace>()
+    private fun getAllPlaceLocations(group: Group): List<StaticPlace> {
+        var places = mutableListOf<StaticPlace>()
         for (subgroup in group.parentGroup.subgroups) {
             places.addAll(
                     group.populationCenter.strata.flatMap { it.places }
             )
             places.addAll(
-                    group.cultureCenter.cultureAspectCenter.aspectPool.worships.flatMap { it.placeSystem.places }
+                    group.cultureCenter.cultureAspectCenter.aspectPool.worships
+                            .flatMap { it.placeSystem.places }
+                            .map { it.staticPlace }
             )
         }
         places = places
-                .filter { it.staticPlace.owned.isNotEmpty }
+                .filter { it.owned.isNotEmpty }
                 .toMutableList()
         places.addAll(group.parentGroup.subgroups.flatMap { it.territoryCenter.places })
         places = places
-                .distinctBy { it.staticPlace.tile }
+                .distinctBy { it.tile }
                 .toMutableList()
         if (places.size > 1) {
             val k = 0
