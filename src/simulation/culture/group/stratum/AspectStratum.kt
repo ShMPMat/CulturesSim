@@ -40,8 +40,11 @@ class AspectStratum(
     private val enhancements = MutableResourcePack()
     private val _places: MutableList<StaticPlace> = ArrayList()
     private val popularMemes: MutableList<Meme> = ArrayList()
-    override val importance: Int
+    override var importance: Int
         get() = aspect.usefulness
+        set(value) {
+            aspect.gainUsefulness(value - importance)
+        }
 
     fun getInstrumentByTag(tag: ResourceTag) = dependencies[tag] ?: MutableResourcePack()
 

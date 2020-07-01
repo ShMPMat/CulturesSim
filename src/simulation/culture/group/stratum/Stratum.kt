@@ -9,7 +9,7 @@ import simulation.space.tile.Tile
 interface Stratum {
     val population: Int
     val freePopulation: Int
-    val importance: Int
+    var importance: Int
     val ego: Ego
 
     val places: List<SpecialPlace>
@@ -29,10 +29,12 @@ interface Stratum {
     fun die()
 }
 
+
 abstract class BaseStratum(tile: Tile, name: String): Stratum {
     override val ego = Ego(tile, name)
 
     override fun toString() = "\nEgo resources: ${ego.place.current.owned}"
 }
+
 
 data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)

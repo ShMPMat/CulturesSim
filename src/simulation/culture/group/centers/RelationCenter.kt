@@ -1,15 +1,8 @@
 package simulation.culture.group.centers
 
-import shmp.random.randomElement
-import shmp.random.testProbability
-import simulation.Controller
-import simulation.culture.group.ConglomerateCommand
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupError
-import simulation.culture.group.Transfer
-import simulation.culture.group.intergroup.RandomGroupAddBehaviour
 import simulation.culture.group.intergroup.Relation
-import simulation.culture.group.intergroup.withProbability
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestPool
 import simulation.space.resource.container.MutableResourcePack
