@@ -131,7 +131,7 @@ public class TextVisualizer implements Visualizer {
             lastClaimedTiles.put(group.getName(), new HashSet<>());
         }
         for (Event event : interactionModel.getEvents().stream().
-                filter(event -> event.type == Event.Type.TileAcquisition).collect(Collectors.toList())) {
+                filter(event -> event.getType() == Event.Type.TileAcquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get(((Group) event.getAttribute("group")).getParentGroup().getName())
                     .add((Tile) event.getAttribute("tile"));
         }
@@ -322,7 +322,9 @@ public class TextVisualizer implements Visualizer {
     private StringBuilder printedEvents(Collection<Event> events, boolean printAll) {
         StringBuilder main = new StringBuilder();
         for (Event event : events) {
-            if (printAll || event.type == Event.Type.Death || event.type == Event.Type.ResourceDeath || event.type == Event.Type.DisbandResources) {
+            if (printAll || event.getType() == Event.Type.Death
+                    || event.getType() == Event.Type.ResourceDeath
+                    || event.getType() == Event.Type.DisbandResources) {
                 main.append(event).append("\n");
             }
         }
@@ -459,7 +461,7 @@ public class TextVisualizer implements Visualizer {
                                     100,
                                     e -> {
                                         if (splitCommand.length > 1) {
-                                            return e.description.contains(splitCommand[1]);
+                                            return e.getDescription().contains(splitCommand[1]);
                                         } else {
                                             return true;
                                         }
