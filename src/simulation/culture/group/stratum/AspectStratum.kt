@@ -104,8 +104,8 @@ class AspectStratum(
 
         val oldPopulation = population
         val evaluator = passingEvaluator
-        val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation).toDouble()
-        val amount = aspect.calculateProducedValue(evaluator, freePopulation).toInt()
+        val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation.toDouble()).toDouble()
+        val amount = aspect.calculateProducedValue(evaluator, freePopulation)
         val pack = use(AspectController(
                 1,
                 amount,
@@ -167,8 +167,8 @@ class AspectStratum(
                     val result = dependency.useDependency(
                             AspectController(
                                     1,
-                                    population - currentAmount,
-                                    1,
+                                    (population - currentAmount).toDouble(),
+                                    1.0,
                                     evaluator,
                                     group.populationCenter,
                                     accessibleTerritory,
@@ -193,8 +193,8 @@ class AspectStratum(
         val request: Request = AspectImprovementRequest(
                 group,
                 aspect,
-                1,
-                1,
+                0.5,
+                0.5,
                 passingReward,
                 passingReward
         )

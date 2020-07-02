@@ -7,15 +7,15 @@ import simulation.space.resource.Resource
 class ResourceRequest(
         group: Group,
         private val resource: Resource,
-        floor: Int,
-        ceiling: Int,
+        floor: Double,
+        ceiling: Double,
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
-    override fun reducedAmountCopy(amount: Int) = ResourceRequest(
+    override fun reducedAmountCopy(amount: Double) = ResourceRequest(
             group,
             resource,
-            0,
+            0.0,
             amount,
             penalty,
             reward

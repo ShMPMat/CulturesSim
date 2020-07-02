@@ -17,12 +17,12 @@ class RequestCenter {
 
     private val nerfCoefficients = mutableMapOf<Request, Int>()
 
-    private fun getRequestNerfCoefficient(request: Request, amount: Int): Int {
+    private fun getRequestNerfCoefficient(request: Request, amount: Double): Double {
         val coefficient = max(
                 nerfCoefficients[request] ?: 1,
                 1
         ).toDouble()
-        return max(1.0, amount / coefficient).toInt()
+        return max(1.0, amount / coefficient)
     }
 
     fun updateRequests(group: Group) {
@@ -66,7 +66,7 @@ class RequestCenter {
 
     private fun addClothesRequest(controller: RequestConstructController) {
         val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
-        val neededClothes = controller.population - clothesEvaluator.evaluate(controller.accessibleResources).toInt()
+        val neededClothes = controller.population.toDouble() - clothesEvaluator.evaluate(controller.accessibleResources)
         if (neededClothes > 0) {
             _unfinishedRequestMap[constructTagRequest(controller, ResourceTag("clothes"), neededClothes)] =
                     MutableResourcePack()
@@ -75,7 +75,7 @@ class RequestCenter {
 
     private fun addShelterRequest(controller: RequestConstructController) {
         val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
-        val neededShelter = controller.population - shelterEvaluator.evaluate(controller.accessibleResources).toInt()
+        val neededShelter = controller.population.toDouble() - shelterEvaluator.evaluate(controller.accessibleResources)
         if (neededShelter > 0) {
             _unfinishedRequestMap[constructTagRequest(controller, ResourceTag("shelter"), neededShelter)] =
                     MutableResourcePack()
@@ -83,7 +83,7 @@ class RequestCenter {
     }
 
     private fun constructFoodRequest(controller: RequestConstructController): Request {
-        val foodFloor = controller.population / controller.group.fertility + 1
+        val foodFloor = (controller.population / controller.group.fertility + 1).toDouble()
         return TagRequest(
                 controller.group,
                 ResourceTag("food"),
@@ -97,13 +97,13 @@ class RequestCenter {
     private fun constructWarmthRequest(controller: RequestConstructController) = TagRequest(
             controller.group,
             ResourceTag("warmth"),
-            controller.population,
-            controller.population,
+            controller.population.toDouble(),
+            controller.population.toDouble(),
             if (controller.isClearEffects) passingReward else warmthPenalty,
             passingReward
     )
 
-    private fun constructTagRequest(controller: RequestConstructController, tag: ResourceTag, amount: Int): TagRequest {
+    private fun constructTagRequest(controller: RequestConstructController, tag: ResourceTag, amount: Double): TagRequest {
         val notFinal = TagRequest(controller.group, tag, amount, amount, put(), put())
         val nerfed = getRequestNerfCoefficient(notFinal, amount)
         return TagRequest(

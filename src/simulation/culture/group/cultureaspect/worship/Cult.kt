@@ -36,8 +36,8 @@ class Cult : WorshipFeature {
             val request = SimpleResourceRequest(
                     group,
                     templeResource,
-                    1,
-                    1,
+                    1.0,
+                    1.0,
                     { _, _ -> },
                     { _, _ -> }
             )

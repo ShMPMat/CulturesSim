@@ -21,8 +21,8 @@ class AspectRitual(
     override fun use(group: Group) {
         val result = converseWrapper.use(AspectController(
                 1,
-                1,
-                1,
+                1.0,
+                1.0,
                 passingEvaluator,
                 group.populationCenter,
                 group.territoryCenter.accessibleTerritory,

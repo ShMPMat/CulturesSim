@@ -8,6 +8,7 @@ import simulation.culture.group.centers.AspectCenter
 import simulation.culture.group.request.resourceEvaluator
 import simulation.space.resource.container.MutableResourcePack
 import java.util.*
+import kotlin.math.ceil
 
 class LineDependency(
         isPhony: Boolean,
@@ -42,7 +43,7 @@ class LineDependency(
             resourcePack.addAll(_p.resources.getResource(parentConverseWrapper.resource).resources.flatMap {
                         it.applyActionAndConsume(
                                 parentConverseWrapper.aspect.core.resourceAction,
-                                controller.ceiling,
+                                ceil(controller.ceiling).toInt(),
                                 true
                         )
                     })

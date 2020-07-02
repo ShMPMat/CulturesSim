@@ -24,8 +24,8 @@ class DepictObject(
                 group,
                 group.cultureCenter.memePool.getMeme(meme.toString()),
                 resource,
-                1,
-                1,
+                1.0,
+                1.0,
                 passingReward,
                 passingReward
         ))//TODO do needs need pushing (they do)?

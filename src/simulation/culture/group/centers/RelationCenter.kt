@@ -92,7 +92,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
         val pack = MutableResourcePack()
         var amountLeft = amount
         for (relation in relations.sortedByDescending { it.positive }) {
-            val given = relation.other.askFor(request.reducedAmountCopy(ceil(amountLeft).toInt()), relation.owner)
+            val given = relation.other.askFor(request.reducedAmountCopy(amountLeft), relation.owner)
             relation.positiveInteractions += (request.evaluator.evaluate(given) / amount).toInt()
             pack.addAll(given)
             amountLeft = amount - request.evaluator.evaluate(pack)

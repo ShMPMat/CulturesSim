@@ -1,5 +1,6 @@
 package simulation.culture.group.request
 
+import simulation.SimulationException
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
@@ -24,7 +25,7 @@ class ResourceEvaluator(private val evaluator: (Resource) -> Double) {
 
     fun evaluate(resource: Resource) = evaluator(resource)
 
-    fun getSatisfiableAmount(part: Int, resources: Collection<Resource>): Double {
+    fun getSatisfiableAmount(part: Double, resources: Collection<Resource>): Double {
         val oneResourceWorth = evaluate(resources)
         if (oneResourceWorth == 0.0)
             return 0.0
@@ -32,23 +33,22 @@ class ResourceEvaluator(private val evaluator: (Resource) -> Double) {
     }
 
     fun pick(
-            part: Int,
+            part: Double,
             resources: Collection<Resource>,
             onePortionGetter: (Resource) -> Collection<Resource>,
             partGetter: (Resource, Int) -> Collection<Resource>
     ): MutableResourcePack {
         val resultPack = MutableResourcePack()
-        if (part == 0)
+        if (part == 0.0)
             return resultPack
         var amount = 0.0
         for (resource in resources) {
             val neededAmount = getSatisfiableAmount(part - amount.toInt(), onePortionGetter(resource))
-            if (neededAmount == 0.0) {
+            if (neededAmount == 0.0)
                 continue
-            }
-            if (neededAmount <= 0) {
-                continue
-            }
+            if (neededAmount <= 0)
+                throw SimulationException("Wrong needed amount - $neededAmount")
+
             resultPack.addAll(partGetter(resource, ceil(neededAmount).toInt()))
             amount = evaluate(resultPack)
             if (amount >= part) break

@@ -94,10 +94,10 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open val producedResources: List<Resource> = emptyList()
 
-    fun calculateNeededWorkers(evaluator: ResourceEvaluator, amount: Int) =  ceil(max(
+    fun calculateNeededWorkers(evaluator: ResourceEvaluator, amount: Double) = ceil(max(
             evaluator.getSatisfiableAmount(amount, producedResources) * core.standardComplexity,
             1.0
-    ) ).toInt()
+    )).toInt()
 
     fun calculateProducedValue(evaluator: ResourceEvaluator, workers: Int) =
             (evaluator.evaluate(producedResources) * workers) / core.standardComplexity
@@ -122,22 +122,25 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = true
         val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
         val meaningfulPack = MutableResourcePack()
+
         val neededWorkers = calculateNeededWorkers(controller.evaluator, controller.ceiling)
         val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
         val allowedAmount = min(
-                ceil(gotWorkers.cumulativeWorkers / core.standardComplexity
-                        * controller.evaluator.evaluate(producedResources)).toInt(),
-                        controller.ceiling
+                gotWorkers.cumulativeWorkers / core.standardComplexity
+                        * controller.evaluator.evaluate(producedResources),
+                controller.ceiling
         )
+
         controller.setMax(allowedAmount)
         val node = ResultNode(this)
+
         if (controller.ceiling > 0)
             for ((key, value) in dependencies.nonPhony.entries) {
                 val (isOk, needs) = satisfyRegularDependency(controller, key, value, meaningfulPack, node)
                 neededResources.addAll(needs)
                 if (!isOk) {
                     isFinished = false
-                    neededResources.add(TagLabeler(key) to controller.ceiling)
+                    neededResources.add(TagLabeler(key) to ceil(controller.ceiling).toInt())
                 }
             }
         if (isFinished)
@@ -146,9 +149,8 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             markAsUsed()
         else {
             controller.populationCenter.freeStratumAmountByAspect(this, gotWorkers)
-            neededResources.add(
-                    BaseNameLabeler(resource.baseName) to controller.floor - controller.evaluate(meaningfulPack).toInt()
-            )
+            val neededAmount = ceil(controller.floor - controller.evaluate(meaningfulPack)).toInt()
+            neededResources.add(BaseNameLabeler(resource.baseName) to neededAmount)
         }
         if (!isFinished) {
             timesUsedInTurnUnsuccessfully++
@@ -225,8 +227,9 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                 if (!requirementTag.isInstrumental)
                     usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
                             requirementTag,
-                            controller.ceiling).second
-                    ) else
+                            controller.ceiling
+                    ).second)
+                else
                     usedForDependency.addAll(_rp.getResources(requirementTag))
                 meaningfulPack.addAll(_rp)
                 isFinished = true
@@ -245,7 +248,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     fun gainUsefulness(amount: Int) {
         if (amount <= 0) return
-        usefulness = max( usefulness + amount, session.defaultAspectUsefulness)
+        usefulness = max(usefulness + amount, session.defaultAspectUsefulness)
         usedThisTurn = true
     }
 
@@ -288,7 +291,7 @@ private data class Result(val isFinished: Boolean = true, val need: List<Need> =
 
 typealias Need = Pair<ResourceLabeler, Int>
 
-class AspectResourceTagParser(allowedTags: Collection<ResourceTag>): DefaultTagParser(allowedTags) {
+class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTagParser(allowedTags) {
     override fun parse(key: Char, tag: String) = super.parse(key, tag) ?: when (key) {
         '&' -> {
             val elements = tag.split("-".toRegex()).toTypedArray()

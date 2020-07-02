@@ -14,12 +14,12 @@ import kotlin.math.max
  */
 abstract class Request(
         val group: Group,
-        var floor: Int,
-        var ceiling: Int,
+        var floor: Double,
+        var ceiling: Double,
         var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) {
-    abstract fun reducedAmountCopy(amount: Int): Request
+    abstract fun reducedAmountCopy(amount: Double): Request
 
     abstract val evaluator: ResourceEvaluator
 

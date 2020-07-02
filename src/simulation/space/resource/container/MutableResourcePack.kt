@@ -48,7 +48,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         return result
     }
 
-    fun getAmountOfResourcesWithTagAndErase(tag: ResourceTag, amount: Int): Pair<Int, List<Resource>> { //TODO looks bad
+    fun getAmountOfResourcesWithTagAndErase(tag: ResourceTag, amount: Double): Pair<Int, List<Resource>> { //TODO looks bad
         val innerResource: Collection<Resource> = getResources(tag).resources
         val result: MutableList<Resource> = ArrayList()
         var counter = 0

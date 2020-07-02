@@ -7,12 +7,13 @@ import simulation.space.resource.tag.ResourceTag
 class TagRequest(
         group: Group,
         private val tag: ResourceTag,
-        floor: Int,
-        ceiling: Int,
+        floor: Double,
+        ceiling: Double,
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
-    override fun reducedAmountCopy(amount: Int) = TagRequest(group, tag, 0, amount, penalty, reward)
+    override fun reducedAmountCopy(amount: Double)
+            = TagRequest(group, tag, 0.0, amount, penalty, reward)
 
     override val evaluator = tagEvaluator(tag)
 

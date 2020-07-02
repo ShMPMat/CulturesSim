@@ -12,8 +12,8 @@ import kotlin.math.max
 
 data class AspectController(
         val depth: Int,
-        var ceiling: Int,
-        var floor: Int,
+        var ceiling: Double,
+        var floor: Double,
         val evaluator: ResourceEvaluator,
         val populationCenter: PopulationCenter,
         val territory: Territory,
@@ -21,10 +21,15 @@ data class AspectController(
         val group: Group,
         val meaning: Meme = group.cultureCenter.meaning
 ) {
-    fun setMax(amount: Int) {
-        if (amount < 0) {
-            val o = 0
-        }
+    init {
+        floor = max(0.0, floor)
+        ceiling = max(0.0, ceiling)
+    }
+
+    fun setMax(amount: Double) {
+        if (amount < 0)
+            return
+
         if (ceiling > amount)
             ceiling = amount
         if (floor > amount)

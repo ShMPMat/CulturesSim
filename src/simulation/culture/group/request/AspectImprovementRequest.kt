@@ -7,13 +7,13 @@ import simulation.space.resource.container.MutableResourcePack
 class AspectImprovementRequest(
         group: Group,
         private val aspect: Aspect,
-        floor: Int,
-        ceiling: Int,
+        floor: Double,
+        ceiling: Double,
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
-    override fun reducedAmountCopy(amount: Int) =
-            AspectImprovementRequest(group, aspect, 0, amount, penalty, reward)
+    override fun reducedAmountCopy(amount: Double): Request =
+            AspectImprovementRequest(group, aspect, 0.0, amount, penalty, reward)
 
     override val evaluator = aspectEvaluator(aspect)
 

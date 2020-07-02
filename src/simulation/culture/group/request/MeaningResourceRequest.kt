@@ -14,13 +14,13 @@ class MeaningResourceRequest(
         group: Group,
         private val meme: Meme,
         private val resource: Resource,
-        floor: Int,
-        ceiling: Int,
+        floor: Double,
+        ceiling: Double,
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
 ) : Request(group, floor, ceiling, penalty, reward) {
-    override fun reducedAmountCopy(amount: Int) =
-            MeaningResourceRequest(group, meme, resource, 0, amount, penalty, reward)
+    override fun reducedAmountCopy(amount: Double) =
+            MeaningResourceRequest(group, meme, resource, 0.0, amount, penalty, reward)
 
     override fun isAcceptable(stratum: Stratum) =
             if (stratum is AspectStratum && stratum.aspect.canInsertMeaning)

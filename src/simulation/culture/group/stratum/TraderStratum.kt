@@ -65,8 +65,8 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
         val request: Request = AspectImprovementRequest(
                 group,
                 tradeAspect,
-                1,
-                1,
+                0.5,
+                0.5,
                 passingReward,
                 passingReward
         )

@@ -71,8 +71,8 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
             val chosen = randomElement(wrappers, session.random)
             val result = chosen.use(AspectController(
                     1,
-                    1,
-                    1,
+                    1.0,
+                    1.0,
                     passingEvaluator,
                     group.populationCenter,
                     group.territoryCenter.accessibleTerritory,
