@@ -16,7 +16,7 @@ public class Controller {
     public TemplateBase templateBase;
 
     public final int seed = (int) (Math.random() * 10000000);
-    public final Random random = RandomKt.Random(8565728 + 1);
+    public final Random random = RandomKt.Random(8565728 + 4);
 
     public final int proportionCoefficient = 1;
     public final int resourceProportionCoefficient = 100;
@@ -27,10 +27,11 @@ public class Controller {
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
     public final int cultureTurns = 0;
+
     public final int startResourceAmountMin = 40 * proportionCoefficient * proportionCoefficient;
     public final int startResourceAmountMax = startResourceAmountMin + 30 * proportionCoefficient * proportionCoefficient;
-    public final int startGroupAmount = 10;
 
+    public final int startGroupAmount = 10;
     public final double defaultGroupSpreadability = 1;
     public final int defaultGroupMaxPopulation = 1000;
     public final int defaultGroupTerritoryRadius = 6;

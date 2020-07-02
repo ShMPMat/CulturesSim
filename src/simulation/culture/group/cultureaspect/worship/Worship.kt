@@ -51,11 +51,12 @@ open class Worship(
         if (group.populationCenter.freePopulation >= session.minimalStableFreePopulation
                 && features.filterIsInstance<Cult>().isEmpty())
             if (testProbability(0.01, session.random))
-                features.add(Cult())
+                features.add(Cult(simpleName))
+
         if (!testProbability(session.worshipPlaceProb / (1 + placeSystem.places.size), session.random))
             return
-        placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random)
-                ?: return)
+
+        placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random) ?: return)
     }
 
     override fun adopt(group: Group): Worship? {
@@ -88,8 +89,6 @@ open class Worship(
 
     val simpleName = "Worship of ${taleSystem.groupingMeme}"
 
-    override fun toString() = "$simpleName, features - " + features.joinToString()
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -102,5 +101,7 @@ open class Worship(
     }
 
     override fun hashCode() = worshipObject.name.hashCode()
+
+    override fun toString() = "$simpleName, features - " + features.joinToString()
 }
 

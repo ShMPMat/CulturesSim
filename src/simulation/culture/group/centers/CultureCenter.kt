@@ -163,5 +163,4 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     private fun isResourceDesirable(resource: Resource) = resource.genome.isDesirable
                     && !group.resourceCenter.pack.contains(resource)
                     && !group.populationCenter.turnResources.contains(resource)
-
 }

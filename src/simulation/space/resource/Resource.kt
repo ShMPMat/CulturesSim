@@ -10,6 +10,7 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.min
+import kotlin.math.pow
 
 open class Resource(var core: ResourceCore, open var amount: Int) {
     // Precomputed hash.
@@ -66,7 +67,8 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
 
     constructor(resourceCore: ResourceCore) : this(resourceCore, resourceCore.genome.defaultAmount)
 
-    fun getTagPresence(tag: ResourceTag) = (amount * getTagLevel(tag)).toDouble() * genome.size
+    fun getTagPresence(tag: ResourceTag) =
+            (amount * getTagLevel(tag)).toDouble() * genome.size.pow(SpaceData.data.resourceSizeEffect)
 
     fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
 

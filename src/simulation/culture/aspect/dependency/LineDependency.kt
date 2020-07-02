@@ -62,7 +62,7 @@ class LineDependency(
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         parentConverseWrapper = aspectCenter.aspectPool.getValue(parentConverseWrapper) as ConverseWrapper
-        converseWrapper = aspectCenter.aspectPool.getValue(converseWrapper) as ConverseWrapper
+        converseWrapper = aspectCenter.aspectPool.getValue(converseWrapper) as ConverseWrapper//TODO sometimes it asks for wrapper and there are none
     }
 
     override fun equals(other: Any?): Boolean {

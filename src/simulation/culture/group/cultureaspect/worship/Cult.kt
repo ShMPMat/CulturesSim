@@ -2,15 +2,18 @@ package simulation.culture.group.cultureaspect.worship
 
 import shmp.random.testProbability
 import simulation.Controller.*
+import simulation.culture.aspect.MeaningResourceFeature
 import simulation.culture.group.stratum.CultStratum
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
+import simulation.culture.group.passingReward
 import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.stratum.Stratum
+import simulation.culture.thinking.meaning.MemeSubject
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
-class Cult : WorshipFeature {
+class Cult(val name: String) : WorshipFeature {
     override fun use(group: Group, parent: Worship) {
         val stratum: Stratum = group.populationCenter.strata
                 .filterIsInstance<CultStratum>()
@@ -26,6 +29,7 @@ class Cult : WorshipFeature {
                 }
         if (testProbability(0.01, session.random))
             group.populationCenter.changeStratumAmount(stratum, stratum.population + 1)
+
         manageSpecialPlaces(group, parent)
     }
 
@@ -38,33 +42,36 @@ class Cult : WorshipFeature {
                     templeResource,
                     1.0,
                     1.0,
-                    { _, _ -> },
-                    { _, _ -> }
+                    passingReward,
+                    passingReward
             )
             val result = group.populationCenter.executeRequest(request)
             val pack = MutableResourcePack(result.pack)
-            if (request.evaluator.evaluate(pack) == 0.0) {
+            if (request.evaluator.evaluate(pack) == 0.0)
                 group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
-            } else {
+            else {
                 result.usedAspects.forEach { it.gainUsefulness(20) }
-                val temple = request.evaluator.pickAndRemove(pack)
-                group.resourceCenter.addAll(pack)
+                val temple = request.evaluator.pickAndRemove(pack).resources
+                        .map {
+                            it.copyWithExternalFeatures(listOf(MeaningResourceFeature(MemeSubject(name), name)))
+                        }
+                group.resourceCenter.addAll(temple)
                 val place = parent.placeSystem.places
-                        .minBy { t -> t.staticPlace.owned.getResources { it in temple.resources }.amount }
-                if (place == null) {
+                        .minBy { t -> t.staticPlace.owned.getResources { it in temple }.amount }
+
+                if (place == null)
                     throw GroupError("Couldn't find Special places")
-                } else {
+                else
                     place.staticPlace.addResources(temple)
-                }
             }
         }
     }
 
-    override fun adopt(group: Group) = Cult()
+    override fun adopt(group: Group) = Cult(name)
 
     override fun die(group: Group, parent: Worship) = Unit
 
-    override fun swapWorship(worshipObject: WorshipObject) = Cult()
+    override fun swapWorship(worshipObject: WorshipObject) = Cult(name)
 
     override fun toString() = "Cult"
 }

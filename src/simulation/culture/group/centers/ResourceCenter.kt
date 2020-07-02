@@ -76,7 +76,7 @@ class ResourceCenter(
     fun finishUpdate() {
         place.current.owned.resources.filter { it.isNotEmpty }.forEach {
             if (!place.current.tile.resourcesWithMoved.contains(it)) {
-                val s = 0
+                val s = 0//TODO remove it if so
             }
         }
         _resourcesToAdd.clear()
