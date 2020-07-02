@@ -36,7 +36,6 @@ class AspectStratum(
     private var workedAmount = 0
     private var isRaisedAmount = false
     private val dependencies: MutableMap<ResourceTag, MutableResourcePack> = HashMap()
-    private val enhancements = MutableResourcePack()
     private val popularMemes: MutableList<Meme> = ArrayList()
     override var importance: Int
         get() = aspect.usefulness
@@ -70,13 +69,11 @@ class AspectStratum(
     private val effectiveness: Double
         get() {
             if (_effectiveness == -1.0) {
-                _effectiveness = 1.0 + places
-                        .flatMap { it.owned.resources }
-                        .map { it.getAspectImprovement(aspect) }
-                        .foldRight(0.0, Double::plus)
-            }
-            if (_effectiveness > 1) {
-                val k = 0
+                _effectiveness = 1.0 +
+                        places
+                                .flatMap { it.owned.resources }
+                                .map { it.getAspectImprovement(aspect) }
+                                .foldRight(0.0, Double::plus)
             }
             return _effectiveness
         }
@@ -134,7 +131,7 @@ class AspectStratum(
 
         if (result.resources.isNotEmpty) {
             popularMemes.add(constructMeme(aspect))
-            result.resources.resources.forEach(Consumer { r: Resource? -> popularMemes.add(constructMeme(r!!)) })
+            result.resources.resources.forEach { popularMemes.add(constructMeme(it)) }
         }
         if (result.isFinished)
             resourcePack.addAll(result.resources)
@@ -201,14 +198,14 @@ class AspectStratum(
                 passingReward
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
-        usedAspects.forEach { it.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2) }
-        enhancements.addAll(pack.getResources { it.genome.isMovable }
-        )
-        pack.getResources { !it.genome.isMovable }.resources
-                .forEach { addUnmovableEnhancement(it, group) }
+
+        usedAspects.forEach {
+            it.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2)
+        }
+        pack.resources.forEach { addEnhancement(it, group) }
     }
 
-    private fun addUnmovableEnhancement(resource: Resource, group: Group) {
+    private fun addEnhancement(resource: Resource, group: Group) {
         val goodPlaces = innerPlaces.filter { resource.genome.isAcceptable(it.tile) }
         var place: StaticPlace? = null
 

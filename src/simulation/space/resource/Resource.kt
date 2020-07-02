@@ -66,7 +66,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
 
     constructor(resourceCore: ResourceCore) : this(resourceCore, resourceCore.genome.defaultAmount)
 
-    fun getTagPresence(tag: ResourceTag) = (amount * getTagLevel(tag)).toDouble() /* * getGenome().getSize()*/
+    fun getTagPresence(tag: ResourceTag) = (amount * getTagLevel(tag)).toDouble() * genome.size
 
     fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
 

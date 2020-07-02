@@ -3,6 +3,7 @@ package simulation.culture.group.request
 import simulation.culture.aspect.Aspect
 import simulation.space.resource.Resource
 import simulation.culture.aspect.AspectImprovementTag
+import simulation.culture.aspect.getAspectImprovement
 import simulation.space.resource.tag.ResourceTag
 
 val passingEvaluator: ResourceEvaluator
@@ -16,8 +17,4 @@ fun simpleResourceEvaluator(resource: Resource) =
 
 fun tagEvaluator(tag: ResourceTag) = ResourceEvaluator { it.getTagPresence(tag) }
 
-fun aspectEvaluator(aspect: Aspect) = ResourceEvaluator { r ->
-    r.tags.filterIsInstance<AspectImprovementTag>()
-            .count { it.labeler.isSuitable(aspect) }
-            .toDouble()
-}
+fun aspectEvaluator(aspect: Aspect) = ResourceEvaluator { it.getAspectImprovement(aspect) }

@@ -16,6 +16,9 @@
         &a(PlantSeed)-0.02
         U
 
+-Basket          0       0.3    10         -500   500  100000000 10            1 1 0  Artifact     @TEMPLATE
+        &a(Take)-0.01
+
 -House           0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
         $shelter:3
 

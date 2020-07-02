@@ -4,6 +4,7 @@
 -Branch          0       0.2    10         -500   500  100000000 0             1 1 0  None         @Wood
 
 -SoftBranch      0       0.2    5          -500   500  100000000 0             1 1 0  None         @PlantFibre
+        +Weaving:Basket:1
 
 -Leaf            0       0.03   3          -500   500  100000000 0             1 1 0  None         @PlantFibre
 
@@ -14,6 +15,7 @@
 -Root            0       0.5    10         -500   500  100000000 0             1 1 0  None         @Wood
 
 -SoftRoot        0       0.5    5          -500   500  100000000 0             1 1 0  None         @PlantFibre
+        +Weaving:Basket:1
 
 -Fruit           0       0.1    5          -500   500  100000000 0             1 1 0  None         @Pulp
 
@@ -27,5 +29,6 @@
 
 -PlantFibre      0       0.5    5          -500   500  100000000 0             1 1 0  None         @PlantFibre
         +MakingFibre:Fibre:1
+        +Weaving:Basket:1
 
 -Wood            0       1      50         -500   500  100000000 0             1 1 0  None         @Wood
