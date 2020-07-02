@@ -98,6 +98,7 @@ class AspectStratum(
     }
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
+        super.update(accessibleResources, accessibleTerritory, group)
         if (population == 0)
             return
 

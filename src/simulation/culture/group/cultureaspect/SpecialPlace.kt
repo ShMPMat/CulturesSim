@@ -14,7 +14,7 @@ class SpecialPlace(
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
-        if (testProbability(0.1, session.random)) {//TODO lesser amount
+        if (testProbability(0.1, session.random)) {
             val lacking = staticPlace.getLacking()
             val gotResources = lacking
                     .map { resourceToRequest(it, group, it.amount) }

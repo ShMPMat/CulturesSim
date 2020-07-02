@@ -28,6 +28,7 @@ abstract class NonAspectStratum(tile: Tile, name: String) : BaseStratum(tile, na
 
         if (population == 0) return
 
+        super.update(accessibleResources, accessibleTerritory, group)
         ego.update(accessibleResources, accessibleTerritory, group, this)
     }
 
