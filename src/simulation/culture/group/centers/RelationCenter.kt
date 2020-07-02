@@ -1,5 +1,6 @@
 package simulation.culture.group.centers
 
+import extra.getTruncated
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupError
 import simulation.culture.group.intergroup.Relation
@@ -105,7 +106,8 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
             .map { it.other.parentGroup }
             .distinct()
             .joinToString("\n") {
-                "${it.name} average - ${getAvgConglomerateRelation(it)}, min - ${getMinConglomerateRelation(it)}, " +
-                        "max - ${getMaxConglomerateRelation(it)}\n"
+                "${it.name} average - ${getTruncated(getAvgConglomerateRelation(it), 4)}, " +
+                        "min - ${getTruncated(getMinConglomerateRelation(it), 4)}, " +
+                        "max - ${getTruncated(getMaxConglomerateRelation(it), 4)}\n"
             }
 }

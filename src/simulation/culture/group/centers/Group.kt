@@ -1,6 +1,6 @@
 package simulation.culture.group.centers
 
-import extra.OutputFunc
+import extra.chompToSize
 import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.*
@@ -262,7 +262,7 @@ class Group(
                 .append("\n").append(relationCenter)
                 .append("\n")
         builder.append(cultureCenter.requestCenter)
-        builder = OutputFunc.chompToSize(builder, 70)
+        builder = chompToSize(builder, 70)
         return builder.toString()
     }
 

@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static extra.OutputFunc.*;
+import static extra.OutputFunKt.*;
 import static visualizer.PrintFunctionsKt.printApplicableResources;
 import static visualizer.PrintFunctionsKt.printEvents;
 import static visualizer.TextCommandsKt.getCommand;

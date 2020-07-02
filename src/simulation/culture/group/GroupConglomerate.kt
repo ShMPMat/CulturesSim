@@ -1,6 +1,6 @@
 package simulation.culture.group
 
-import extra.OutputFunc
+import extra.addToRight
 import simulation.Controller
 import simulation.Event
 import simulation.culture.aspect.Aspect
@@ -185,7 +185,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     override fun toString(): String {
         var stringBuilder = StringBuilder()
         for (subgroup in subgroups.take(10))
-            stringBuilder = OutputFunc.addToRight(stringBuilder.toString(), subgroup.toString(), false)
+            stringBuilder = addToRight(stringBuilder.toString(), subgroup.toString(), false)
         if (subgroups.size > 10) stringBuilder.append(
                 subgroups.joinToString(",", "\n all:") { it.name }
         )
