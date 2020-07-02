@@ -70,5 +70,5 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
 
     fun containsAll(pack: ResourcePack) = containsAll(pack.resources)
 
-    override fun toString() = resources.joinToString { "${it.fullName} ${it.amount};\n" }
+    override fun toString() = resources.joinToString("\n") { "${it.fullName} ${it.amount};" }
 }

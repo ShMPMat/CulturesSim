@@ -1,5 +1,6 @@
 package simulation.culture.group.centers
 
+import extra.addLinePrefix
 import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.culture.aspect.Aspect
@@ -186,17 +187,15 @@ class PopulationCenter(
         options.forEach { it.useAmount(1, freePopulation) }
     }
 
-    override fun toString(): String {
-        val stringBuilder = StringBuilder("Free - $freePopulation\n")
-        for (stratum in _strata)
-            if (stratum.population != 0 || stratum.ego.isActive)
-                stringBuilder.append(stratum).append("\n")
-        return stringBuilder.toString()
-    }
-
     fun addStratum(stratum: Stratum) {
         _strata.add(stratum)
     }
 
     fun movePopulation(tile: Tile) = _strata.forEach { it.ego.place.move(tile) }
+
+    override fun toString(): String {
+        return "Free - $freePopulation\n" +
+                _strata.filter { it.population != 0 || it.ego.isActive }.joinToString("\n") { "    $it" } +
+                "\n\nCirculating resources:\n" + turnResources.addLinePrefix()
+    }
 }

@@ -103,3 +103,6 @@ fun chompToLines(text: StringBuilder, size: Int) = chompToLines(text.toString(),
 fun getTruncated(t: Double, signs: Int) = 10.0.pow(signs).toInt().let { p ->
     (t * p).toInt().toDouble() / p
 }.toString()
+
+fun <E> E.addLinePrefix(prefix: String = "    ") = this.toString().lines()
+        .joinToString("\n") { prefix + it }

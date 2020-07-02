@@ -259,7 +259,7 @@ class Group(
         builder.append(s.toString())
         builder.append("\n").append(resourceCenter.toString())
                 .append(populationCenter.toString())
-                .append("\n").append(relationCenter)
+                .append("\n\n").append(relationCenter)
                 .append("\n")
         builder.append(cultureCenter.requestCenter)
         builder = chompToSize(builder, 70)

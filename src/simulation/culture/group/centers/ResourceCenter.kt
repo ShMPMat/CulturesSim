@@ -1,5 +1,6 @@
 package simulation.culture.group.centers
 
+import extra.addLinePrefix
 import shmp.random.randomElement
 import simulation.Controller.*
 import simulation.culture.group.place.MovablePlace
@@ -83,11 +84,6 @@ class ResourceCenter(
         neededResourcesMap.entries.removeIf { it.value.importance <= 0 }
     }
 
-    override fun toString(): String {
-        return "Current resources:\n${place.current.owned}\n" +
-                "Needed resources: \n${printedNeeds()}\n\n"
-    }
-
     private fun printedNeeds() = neededResources.entries.joinToString("\n")
     { "${it.key} - importance ${it.value.importance}" }
 
@@ -96,6 +92,9 @@ class ResourceCenter(
             .map { it.value.importance }
             .max()
             ?: 0
+
+    override fun toString() = "Current resources:\n${place.current.owned.addLinePrefix()}\n" +
+            "Needed resources: \n${printedNeeds().addLinePrefix()}\n\n"
 }
 
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
