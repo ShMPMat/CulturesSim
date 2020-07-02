@@ -1,11 +1,15 @@
 package simulation.culture.group.stratum
 
+import shmp.random.randomElement
+import simulation.Controller.session
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.request.resourceToRequest
 import simulation.space.Territory
+import simulation.space.resource.Resource
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
+import simulation.space.tile.TileTag
 
 interface Stratum {
     val population: Int
@@ -47,6 +51,29 @@ abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
                     .flatMap { group.populationCenter.executeRequest(it).pack.resources }
             place.addResources(gotResources)
         }
+    }
+
+    protected fun addEnhancement(resource: Resource, group: Group) {
+        val goodPlaces = innerPlaces.filter { resource.genome.isAcceptable(it.tile) }
+        var place: StaticPlace? = null
+
+        if (goodPlaces.isEmpty()) {
+            val goodTiles = group.territoryCenter.territory
+                    .getTiles { resource.genome.isAcceptable(it) }
+            if (goodTiles.isNotEmpty()) {
+                val tagType = "(Stratum $name of ${group.name})"
+                place = StaticPlace(
+                        randomElement(goodTiles, session.random),
+                        TileTag(tagType + "_" + innerPlaces.size, tagType)
+                )
+                innerPlaces.add(place)
+            }
+        } else
+            place = randomElement(innerPlaces, session.random)
+
+        if (place == null) return
+
+        place.addResource(resource)
     }
 
     override fun toString() = "\nEgo resources: ${ego.place.current.owned}"

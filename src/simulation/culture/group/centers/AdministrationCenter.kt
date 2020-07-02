@@ -5,6 +5,7 @@ import simulation.Controller.*
 import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.intergroup.*
 import simulation.culture.group.place.StaticPlace
+import simulation.culture.group.stratum.TraderStratum
 
 class AdministrationCenter(val type: AdministrationType) {
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf()

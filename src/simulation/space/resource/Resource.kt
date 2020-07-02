@@ -83,6 +83,9 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             else -> amount
         }
         amount -= result
+        if (amount < 0) {
+            val k = 0
+        }
         return copy(result)
     }
 

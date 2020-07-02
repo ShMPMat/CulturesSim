@@ -15,7 +15,8 @@ abstract class NonAspectStratum(tile: Tile, name: String) : BaseStratum(tile, na
     override var importance: Int
         get() = defaultImportance + population - unusedTurns
         set(value) {
-            defaultImportance = value - importance
+            defaultImportance += value - importance
+            usedThisTurn = true
         }
 
     override fun decreaseAmount(amount: Int) {

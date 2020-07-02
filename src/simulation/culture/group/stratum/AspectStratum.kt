@@ -206,29 +206,6 @@ class AspectStratum(
         pack.resources.forEach { addEnhancement(it, group) }
     }
 
-    private fun addEnhancement(resource: Resource, group: Group) {
-        val goodPlaces = innerPlaces.filter { resource.genome.isAcceptable(it.tile) }
-        var place: StaticPlace? = null
-
-        if (goodPlaces.isEmpty()) {
-            val goodTiles = group.territoryCenter.territory
-                    .getTiles { resource.genome.isAcceptable(it) }
-            if (goodTiles.isNotEmpty()) {
-                val tagType = "(Stratum ${aspect.name} of ${group.name})"
-                place = StaticPlace(
-                        randomElement(goodTiles, session.random),
-                        TileTag(tagType + "_" + innerPlaces.size, tagType)
-                )
-                innerPlaces.add(place)
-            }
-        } else
-            place = randomElement(innerPlaces, session.random)
-
-        if (place == null) return
-
-        place.addResource(resource)
-    }
-
     override fun finishUpdate(group: Group) {
         popularMemes.forEach { group.cultureCenter.memePool.strengthenMeme(it) }
         popularMemes.clear()

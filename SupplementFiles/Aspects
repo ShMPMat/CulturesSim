@@ -40,6 +40,10 @@
     &t:hard-->=0.5--#CraftHouse:1
     Shard
     C10.0
+-BuildTradeHouse
+    &t:hard-->=0.5--#TradeHouse:1
+    Shard
+    C10.0
 -MakeDish
     &t:hard-->=0.05--#Dish:1
     Shard

@@ -2,12 +2,15 @@ package simulation.culture.group.intergroup
 
 import simulation.culture.group.Transfer
 import simulation.culture.group.centers.Group
+import simulation.culture.group.stratum.Stratum
+import simulation.culture.group.stratum.TraderStratum
 import simulation.space.resource.Resource
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.container.ResourcePromise
 import simulation.space.resource.container.ResourcePromisePack
 import kotlin.math.ceil
+import kotlin.math.log
 
 interface GroupAction {
     val group: Group
@@ -17,11 +20,11 @@ interface GroupAction {
 
 sealed class AbstractGroupAction(override val group: Group) : GroupAction
 
-class ReceiveResourcesAction(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
+class ReceiveResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run() = group.resourceCenter.addAll(pack)
 }
 
-class ImproveRelationsAction(group: Group, val target: Group, val amount: Double) : AbstractGroupAction(group) {
+class ImproveRelationsA(group: Group, val target: Group, val amount: Double) : AbstractGroupAction(group) {
     override fun run() {
         val targetRelation = group.relationCenter.relations.firstOrNull { it.other == target }
         if (targetRelation != null)
@@ -29,13 +32,30 @@ class ImproveRelationsAction(group: Group, val target: Group, val amount: Double
     }
 }
 
-class EvaluateResourcesAction(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
+class IncStratumImportanceA(group: Group, val stratum: Stratum, val amount: Int) : AbstractGroupAction(group) {
+    override fun run() {
+        stratum.importance += amount
+    }
+}
+
+class EvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run() = pack.resources
             .map { group.cultureCenter.evaluateResource(it) }
             .foldRight(0, Int::plus)
 }
 
-class ChooseResourcesAction(
+class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
+    override fun run(): Int {
+        val traderSkill = group.populationCenter.strata
+                .filterIsInstance<TraderStratum>()
+                .firstOrNull()
+                ?.effectiveness
+                ?: 1.0
+        return EvaluateResourcesA(group, pack).run() / log(traderSkill + 1.0, 2.0).toInt()
+    }
+}
+
+class ChooseResourcesA(
         group: Group,
         val pack: ResourcePack,
         val amount: Int,
@@ -67,13 +87,13 @@ class ChooseResourcesAction(
     }
 }
 
-class AddGroupAction(group: Group, val groupToAdd: Group): AbstractGroupAction(group) {
+class AddGroupA(group: Group, val groupToAdd: Group): AbstractGroupAction(group) {
     override fun run() {
         Transfer(groupToAdd).execute(group.parentGroup)
     }
 }
 
-class ProcessGroupRemovalAction(group: Group, val groupToRemove: Group): AbstractGroupAction(group) {
+class ProcessGroupRemovalA(group: Group, val groupToRemove: Group): AbstractGroupAction(group) {
     override fun run() {
 
     }
