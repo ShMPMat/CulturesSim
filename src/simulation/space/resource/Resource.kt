@@ -135,10 +135,13 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     }
 
     fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): Resource {
-        val resource = Resource(core.copyWithExternalFeatures(features), amount)
+        val resource = Resource(core.copyWithNewExternalFeatures(features), amount)
         destroy()
         return resource
     }
+
+    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>)
+            = copyWithExternalFeatures(externalFeatures + features)
 
     open fun update(tile: Tile): ResourceUpdateResult {
         val result = mutableListOf<Resource>()

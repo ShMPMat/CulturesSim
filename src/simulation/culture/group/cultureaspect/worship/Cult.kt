@@ -11,7 +11,6 @@ import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.stratum.Stratum
 import simulation.culture.thinking.meaning.MemeSubject
 import simulation.space.resource.container.MutableResourcePack
-import simulation.space.resource.tag.labeler.SimpleNameLabeler
 
 class Cult(val name: String) : WorshipFeature {
     override fun use(group: Group, parent: Worship) {
@@ -53,7 +52,7 @@ class Cult(val name: String) : WorshipFeature {
                 result.usedAspects.forEach { it.gainUsefulness(20) }
                 val temple = request.evaluator.pickAndRemove(pack).resources
                         .map {
-                            it.copyWithExternalFeatures(listOf(MeaningResourceFeature(MemeSubject(name), name)))
+                            it.copyWithNewExternalFeatures(listOf(MeaningResourceFeature(MemeSubject(name), name)))
                         }
                 group.resourceCenter.addAll(temple)
                 val place = parent.placeSystem.places

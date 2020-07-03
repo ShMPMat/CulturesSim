@@ -4,6 +4,8 @@ import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.LineDependency
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.AspectCenter
+import simulation.culture.thinking.meaning.Meme
+import simulation.space.resource.ExternalResourceFeature
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
@@ -36,10 +38,29 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
         val result = super._use(controller)
         if (result.isFinished)
             aspect.markAsUsed()
+
+        val targetResources = result.resources
+                .getResourcesAndRemove { it in producedResources }
+                .resources.toMutableList()
+        targetResources.removeIf { it.isEmpty }
+
+        result.resources.addAll(targetResources.map {
+            it.copyWithNewExternalFeatures(toFeatures(result.node))
+        })
+
         result
     } catch (e: Exception) {
         throw GroupError("Error in using Converse Wrapper $name")
     }
+
+    private fun toFeatures(node: AspectResult.ResultNode): List<ExternalResourceFeature> =
+            if (node.resourceUsed.isNotEmpty())
+                node.resourceUsed.entries
+                    .filter { it.key.name != ResourceTag.phony().name && !it.key.isInstrumental }
+                    .flatMap { p -> p.value.resources.map { it.fullName } }
+                    .distinct()
+                    .mapIndexed { i, n -> ElementResourceFeature(n, 1000 + i) }
+            else emptyList()
 
     override fun isDependenciesOk(dependencies: AspectDependencies) =
             requirements.size + 1 == dependencies.size
@@ -105,4 +126,8 @@ private fun getReducedTags(resource: Resource, aspect: Aspect): List<ResourceTag
         }
     }
     return result
+}
+
+class ElementResourceFeature(resourceName: String, override val index: Int) : ExternalResourceFeature {
+    override val name = "made_with_$resourceName"
 }

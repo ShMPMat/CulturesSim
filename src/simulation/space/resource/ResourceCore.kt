@@ -14,11 +14,16 @@ class ResourceCore(
         val materials: List<Material>,
         val genome: Genome,
         actionConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>,
-        internal val externalFeatures: List<ExternalResourceFeature> = listOf()
+        externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
+    internal val externalFeatures = externalFeatures.sortedBy { it.index }
+
     val actionConversion: MutableMap<ResourceAction, MutableList<Pair<Resource?, Int>>>
 
     init {
+        if (externalFeatures.groupBy { it.index }.map { it.value.size }.any { it != 1 })
+            throw SimulationException("${genome.name} has doubled external features: $externalFeatures")
+
         this.actionConversion = HashMap(actionConversion)
         setName(name)
     }
@@ -58,7 +63,7 @@ class ResourceCore(
         )
     }
 
-    fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): ResourceCore {
+    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>): ResourceCore {
         val genome = genome.copy()
         return ResourceCore(
                 genome.name,
