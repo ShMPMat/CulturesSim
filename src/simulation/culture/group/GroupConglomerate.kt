@@ -13,6 +13,7 @@ import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*
+import kotlin.math.max
 
 class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
     @JvmField
@@ -94,7 +95,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                         if (meme !in y)
                             y[meme] = meme.copy()
                         else
-                            y[meme]?.increaseImportance(meme.importance)
+                            y[meme]?.increaseImportance(max(meme.importance - y.getValue(meme).importance, 0))
                     }
                     y
                 }.values.toList()

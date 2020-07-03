@@ -511,9 +511,13 @@ public class TextVisualizer implements Visualizer {
                             print();
                             break;
                         case Turner:
-                            currentTurner = new Turner(Integer.parseInt(line), controller);
-                            turnerThread = new Thread(currentTurner);
-                            turnerThread.start();
+                            try {
+                                currentTurner = new Turner(Integer.parseInt(line), controller);
+                                turnerThread = new Thread(currentTurner);
+                                turnerThread.start();
+                            } catch (NumberFormatException e) {
+                                System.out.println("Wrong number format for amount of turns");
+                        }
                             break;
                         default:
                             controller.turn();
