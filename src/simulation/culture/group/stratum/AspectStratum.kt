@@ -196,7 +196,8 @@ class AspectStratum(
                 0.5,
                 0.5,
                 passingReward,
-                passingReward
+                passingReward,
+                30
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
 

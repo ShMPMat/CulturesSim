@@ -6,7 +6,6 @@ import simulation.culture.group.request.resourceToRequest
 import simulation.culture.group.stratum.Stratum
 import simulation.culture.group.stratum.TraderStratum
 import simulation.space.resource.Resource
-import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.container.ResourcePromise
 import simulation.space.resource.container.ResourcePromisePack
@@ -56,9 +55,14 @@ class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGr
     }
 }
 
-class ProduceResourceA(group: Group, val resource: Resource, val amount: Int): AbstractGroupAction(group) {
+class ProduceResourceA(
+        group: Group,
+        val resource: Resource,
+        val amount: Int,
+        val need: Int
+): AbstractGroupAction(group) {
     override fun run() =
-            group.populationCenter.executeRequest(resourceToRequest(resource, group, amount)).pack
+            group.populationCenter.executeRequest(resourceToRequest(resource, group, amount, need)).pack
 }
 
 class ChooseResourcesA(

@@ -10,20 +10,29 @@ class ResourceRequest(
         floor: Double,
         ceiling: Double,
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
-) : Request(group, floor, ceiling, penalty, reward) {
+        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit, need: Int
+) : Request(group, floor, ceiling, penalty, reward, need) {
     override fun reducedAmountCopy(amount: Double) = ResourceRequest(
             group,
             resource,
             0.0,
             amount,
             penalty,
-            reward
+            reward,
+            need
     )
 
     override val evaluator = resourceEvaluator(resource)
 
-    override fun reassign(group: Group) = ResourceRequest(group, resource, floor, ceiling, penalty, reward)
+    override fun reassign(group: Group) = ResourceRequest(
+            group,
+            resource,
+            floor,
+            ceiling,
+            penalty,
+            reward,
+            need
+    )
 
     override fun toString() = "Resource ${resource.baseName}"
 }

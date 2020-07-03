@@ -42,7 +42,7 @@ class MakeTradeResourceBehaviour(val amount: Int) : AbstractGroupBehaviour() {
 
         val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble().pow(3) }
         val chosenResource = randomElement(resources, evaluator, session.random)
-        val pack = ProduceResourceA(group, chosenResource, amount).run()
+        val pack = ProduceResourceA(group, chosenResource, amount, 20).run()
 
         val events = if (pack.isEmpty)
             emptyList()

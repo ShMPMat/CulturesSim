@@ -68,7 +68,8 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
                 0.5,
                 0.5,
                 passingReward,
-                passingReward
+                passingReward,
+                30
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
         if (pack.isNotEmpty) {

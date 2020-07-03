@@ -10,15 +10,16 @@ class AspectImprovementRequest(
         floor: Double,
         ceiling: Double,
         penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
-) : Request(group, floor, ceiling, penalty, reward) {
+        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit,
+        need: Int
+) : Request(group, floor, ceiling, penalty, reward, need) {
     override fun reducedAmountCopy(amount: Double): Request =
-            AspectImprovementRequest(group, aspect, 0.0, amount, penalty, reward)
+            AspectImprovementRequest(group, aspect, 0.0, amount, penalty, reward, need)
 
     override val evaluator = aspectEvaluator(aspect)
 
     override fun reassign(group: Group) =
-            AspectImprovementRequest(group, aspect, floor, ceiling, penalty, reward)
+            AspectImprovementRequest(group, aspect, floor, ceiling, penalty, reward, need)
 
     override fun toString() = "want improvement for ${aspect.name}"
 }

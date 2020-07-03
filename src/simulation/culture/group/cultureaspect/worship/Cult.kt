@@ -43,13 +43,13 @@ class Cult(val name: String) : WorshipFeature {
                     1.0,
                     1.0,
                     passingReward,
-                    passingReward
+                    passingReward,
+                    75
             )
             val result = group.populationCenter.executeRequest(request)
             val pack = MutableResourcePack(result.pack)
-            if (request.evaluator.evaluate(pack) == 0.0)
-                group.resourceCenter.addNeeded(SimpleNameLabeler("Temple"), 100)
-            else {
+            
+            if (request.evaluator.evaluate(pack) != 0.0) {
                 result.usedAspects.forEach { it.gainUsefulness(20) }
                 val temple = request.evaluator.pickAndRemove(pack).resources
                         .map {

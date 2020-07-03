@@ -90,7 +90,8 @@ class RequestCenter {
                 foodFloor,
                 foodFloor + controller.population / 100 + 1,
                 if (controller.isClearEffects) passingReward else foodPenalty,
-                if (controller.isClearEffects) passingReward else foodReward
+                if (controller.isClearEffects) passingReward else foodReward,
+                100
         )
     }
 
@@ -100,11 +101,12 @@ class RequestCenter {
             controller.population.toDouble(),
             controller.population.toDouble(),
             if (controller.isClearEffects) passingReward else warmthPenalty,
-            passingReward
+            passingReward,
+            90
     )
 
     private fun constructTagRequest(controller: RequestConstructController, tag: ResourceTag, amount: Double): TagRequest {
-        val notFinal = TagRequest(controller.group, tag, amount, amount, put(), put())
+        val notFinal = TagRequest(controller.group, tag, amount, amount, put(), put(), 90)
         val nerfed = getRequestNerfCoefficient(notFinal, amount)
         return TagRequest(
                 controller.group,
@@ -112,7 +114,8 @@ class RequestCenter {
                 nerfed,
                 nerfed,
                 if (controller.isClearEffects) passingReward else unite(listOf(addNeed(TagLabeler(tag)), put())),
-                if (controller.isClearEffects) passingReward else put()
+                if (controller.isClearEffects) passingReward else put(),
+                90
         )
     }
 

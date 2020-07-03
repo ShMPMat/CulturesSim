@@ -5,7 +5,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
 import simulation.space.resource.Resource
 
-fun resourceToRequest(resource: Resource, group: Group, amount: Int): Request {
+fun resourceToRequest(resource: Resource, group: Group, amount: Int, need: Int): Request {
     val amountD = amount.toDouble()
     if (resource.hasMeaning) {
         //TODO read native!!!!!
@@ -16,8 +16,8 @@ fun resourceToRequest(resource: Resource, group: Group, amount: Int): Request {
                 amountD,
                 amountD,
                 passingReward,
-                passingReward
-
+                passingReward,
+                need
         )
     } else {
         return ResourceRequest(
@@ -26,7 +26,8 @@ fun resourceToRequest(resource: Resource, group: Group, amount: Int): Request {
                 amountD,
                 amountD,
                 passingReward,
-                passingReward
+                passingReward,
+                need
         )
     }
 }

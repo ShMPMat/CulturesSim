@@ -10,7 +10,7 @@ import kotlin.math.ceil
 
 //Evaluates ResourcePacks for containing needed Resources.
 // If labeler returns true on a Resource, evaluator MUST return Double > 0.
-class ResourceEvaluator(private val labeler: ResourceLabeler, private val evaluator: (Resource) -> Double) {
+class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Resource) -> Double) {
     fun pick(resourcePack: ResourcePack) = resourcePack.getResources { evaluator(it) > 0 }
 
     fun pickAndRemove(pack: MutableResourcePack) : ResourcePack {

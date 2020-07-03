@@ -9,15 +9,15 @@ import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
 import kotlin.math.max
 
-/**
- * Represents a Resource request which may by executed by a Group.
- */
+
+//Represents a Resource request which may by executed by a Group.
 abstract class Request(
         val group: Group,
         var floor: Double,
         var ceiling: Double,
         var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit
+        var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit,
+        val need: Int
 ) {
     abstract fun reducedAmountCopy(amount: Double): Request
 
@@ -33,6 +33,8 @@ abstract class Request(
 
     fun amountLeft(resourcePack: ResourcePack) = max(0.0, ceiling - evaluator.evaluate(resourcePack))
 
+    fun isFloorSatisfied(resourcePack: ResourcePack) = evaluator.evaluate(resourcePack) >= floor
+
     fun end(resourcePack: MutableResourcePack): Result {
         val partPack = evaluator.pick(
                 ceiling,
@@ -44,10 +46,10 @@ abstract class Request(
         val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.exactCopy() })
 
         if (amount < floor) {
-            penalty(Pair(group, partPack), amount / floor.toDouble())
+            penalty(Pair(group, partPack), amount / floor)
             return Result(ResultStatus.NotSatisfied, neededCopy)
         } else
-            reward(Pair(group, partPack), amount / floor.toDouble() - 1)
+            reward(Pair(group, partPack), amount / floor - 1)
         return if (amount < ceiling) Result(ResultStatus.Satisfied, neededCopy)
         else Result(ResultStatus.Excellent, neededCopy)
     }
@@ -73,6 +75,7 @@ abstract class Request(
     )
 
     open fun finalFilter(pack: MutableResourcePack) = evaluator.pickAndRemove(pack)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -85,8 +88,6 @@ abstract class Request(
     }
 
     override fun hashCode() = toString().hashCode()
-
-
 }
 
 data class Result(val status: ResultStatus, val pack: ResourcePack) {

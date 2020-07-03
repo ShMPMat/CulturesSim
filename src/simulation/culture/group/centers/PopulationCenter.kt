@@ -128,6 +128,7 @@ class PopulationCenter(
         val evaluator = request.evaluator
         val strataForRequest = getStrataForRequest(request)
         strataForRequest.sortedBy { -it.aspect.usefulness }
+
         val pack = MutableResourcePack(
                 evaluator.pick(
                         request.ceiling,
@@ -135,17 +136,24 @@ class PopulationCenter(
                         { listOf(it.copy(1)) }
                 ) { r, p -> listOf(r.getCleanPart(p)) }
         )
+
         for (stratum in strataForRequest) {
             val amount = evaluator.evaluate(pack)
             if (amount >= request.ceiling)
                 break
+
             val produced: ResourcePack = stratum.use(request.getController(ceil(amount).toInt()))
             if (evaluator.evaluate(produced) > 0)
                 usedAspects.add(stratum.aspect)
             pack.addAll(produced)
         }
+
         val actualPack = request.finalFilter(pack)
         turnResources.addAll(pack)
+
+        if (!request.isFloorSatisfied(actualPack))
+            request.group.resourceCenter.addNeeded(request.evaluator.labeler, request.need)
+
         return ExecutedRequestResult(actualPack, usedAspects)
     }
 

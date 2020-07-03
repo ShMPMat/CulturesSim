@@ -12,14 +12,17 @@ class AestheticallyPleasingObject(
         private val resourceBehaviour: ResourceBehaviour
 ) : CultureAspect {
     override fun getRequest(group: Group): Request? {
-        return ResourceRequest(group, resource, 1.0, 10.0, { (g, p), _: Double ->
-            g.resourceCenter.addAll(p)
-            resourceBehaviour.proceedResources(p)
-        }
-        ) { (g, p), _: Double ->
-            g.resourceCenter.addAll(p)
-            resourceBehaviour.proceedResources(p)
-        }
+        return ResourceRequest(group, resource, 1.0, 10.0,
+                { (g, p), _: Double ->
+                    g.resourceCenter.addAll(p)
+                    resourceBehaviour.proceedResources(p)
+                },
+                { (g, p), _: Double ->
+                    g.resourceCenter.addAll(p)
+                    resourceBehaviour.proceedResources(p)
+                },
+                40
+                )
     }
 
     override fun use(group: Group) {}

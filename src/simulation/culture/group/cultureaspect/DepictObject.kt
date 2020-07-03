@@ -27,7 +27,8 @@ class DepictObject(
                 1.0,
                 1.0,
                 passingReward,
-                passingReward
+                passingReward,
+                40
         ))//TODO do needs need pushing (they do)?
         val meaningful = MutableResourcePack(result.pack.resources)
         group.resourceCenter.addAll(meaningful)

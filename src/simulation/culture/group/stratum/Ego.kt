@@ -48,7 +48,7 @@ class Ego(tile: Tile, name: String) {
                 .filter { it.first > 3 }.toList()
         if (allGoodProduced.isNotEmpty()) {
             val chosen = randomElement(allGoodProduced, { it.first }, session.random)
-            val request = resourceToRequest(chosen.second, group, 1)
+            val request = resourceToRequest(chosen.second, group, 1, 50)
             val result = group.populationCenter.executeRequest(request).pack
             place.current.addResources(result)
         }

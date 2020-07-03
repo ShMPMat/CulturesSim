@@ -43,7 +43,7 @@ val warmthPenalty = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
     freeze(pair.first, percent)
 }
 
-var passingReward =  { _: Pair<Group, MutableResourcePack>, _: Double -> }
+val passingReward =  { _: Pair<Group, MutableResourcePack>, _: Double -> }
 
 fun addNeed(labeler: ResourceLabeler) = { pair: Pair<Group, MutableResourcePack>, _: Double ->
     pair.first.cultureCenter.addAspiration(labeler)

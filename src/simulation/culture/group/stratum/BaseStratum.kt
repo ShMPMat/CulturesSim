@@ -22,7 +22,7 @@ abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
         places.forEach { place ->
             val lacking = place.getLacking()
             val gotResources = lacking
-                    .map { resourceToRequest(it, group, it.amount) }
+                    .map { resourceToRequest(it, group, it.amount, 50) }
                     .flatMap { group.populationCenter.executeRequest(it).pack.resources }
             place.addResources(gotResources)
         }
