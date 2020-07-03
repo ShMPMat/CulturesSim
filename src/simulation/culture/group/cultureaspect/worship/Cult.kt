@@ -48,7 +48,7 @@ class Cult(val name: String) : WorshipFeature {
             )
             val result = group.populationCenter.executeRequest(request)
             val pack = MutableResourcePack(result.pack)
-            
+
             if (request.evaluator.evaluate(pack) != 0.0) {
                 result.usedAspects.forEach { it.gainUsefulness(20) }
                 val temple = request.evaluator.pickAndRemove(pack).resources

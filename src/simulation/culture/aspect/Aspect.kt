@@ -27,7 +27,7 @@ import kotlin.math.pow
 open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     /**
      * Map which stores for every requirement some Dependencies, from which
-     * we can get get resource for using this aspect.
+     * Aspect can get get resource for use.
      */
     var dependencies = AspectDependencies(mutableMapOf())
 
@@ -35,9 +35,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         initDependencies(dependencies)
     }
 
-    /**
-     * Coefficient which represents how much this aspect is used by its owner.
-     */
     var usefulness = session.defaultAspectUsefulness
         private set
 
@@ -47,7 +44,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     var used = false
     private var usedThisTurn = false
     private var tooManyFailsThisTurn = false
-
     private var timesUsedInTurn = 0
     private var timesUsedInTurnUnsuccessfully = 0
 
@@ -103,25 +99,25 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     fun calculateProducedValue(evaluator: ResourceEvaluator, workers: Int) =
             (evaluator.evaluate(producedResources) * workers) / core.standardComplexity
 
+    private fun checkTermination(controller: AspectController) = tooManyFailsThisTurn
+            || controller.depth > session.maxGroupDependencyDepth
+            || used
+            || core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) }
+
     protected fun _use(controller: AspectController): AspectResult {
-        //TODO put dependency rgesources only in node; otherwise they may merge with phony
-        if (name.contains("Carve")) {
-            val k = 0
-        }
-        if (tooManyFailsThisTurn || controller.depth > session.maxGroupDependencyDepth || used
-                || (core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) })) {
-            return AspectResult(
-                    false,
-                    ArrayList(),
-                    MutableResourcePack(),
-                    ResultNode(this)
-            )
-        }
+        //TODO put dependency resources only in node; otherwise they may merge with phony
+        if (checkTermination(controller)) return AspectResult(
+                false,
+                ArrayList(),
+                MutableResourcePack(),
+                ResultNode(this)
+        )
+
         this as ConverseWrapper
         timesUsedInTurn++
         used = true
         var isFinished = true
-        val neededResources: MutableList<Pair<ResourceLabeler, Int>> = ArrayList()
+        val neededResources = mutableListOf<Pair<ResourceLabeler, Int>>()
         val meaningfulPack = MutableResourcePack()
 
         val neededWorkers = calculateNeededWorkers(controller.evaluator, controller.ceiling)
@@ -144,6 +140,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                     neededResources.add(TagLabeler(key) to ceil(controller.ceiling).toInt())
                 }
             }
+
         if (isFinished)
             isFinished = satisfyPhonyDependency(controller, dependencies.phony, meaningfulPack)
         if (controller.isFloorExceeded(meaningfulPack))
@@ -159,6 +156,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                 tooManyFailsThisTurn = true
         }
         used = false
+
         return AspectResult(isFinished, neededResources, meaningfulPack, node)
     }
 
@@ -263,58 +261,25 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
+        if (this === other)
             return true
-        }
-        if (other == null || javaClass != other.javaClass) {
+
+        if (other == null || javaClass != other.javaClass)
             return false
-        }
+
         val aspect = other as Aspect
         return core.name == aspect.core.name
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(core.name)
-    }
+    override fun hashCode() = Objects.hash(core.name)
 
-    override fun toString(): String {
-        val stringBuilder = StringBuilder("Aspect ${core.name} usefulness - $usefulness dependencies:")
-        for ((key, value) in dependencies.map) {
-            stringBuilder.append("\n**${key.name}:")
-            for (dependency in value)
-                stringBuilder.append("\n**${dependency.name}")
-        }
-        return stringBuilder.toString()
-    }
+    override fun toString() = "Aspect ${core.name} usefulness - $usefulness dependencies:\n" +
+            dependencies.map.entries.joinToString("\n") { (tag, deps) ->
+                "**${tag.name}:\n" +
+                        deps.joinToString("\n") { "****${it.name}" }
+            }
 }
 
 private data class Result(val isFinished: Boolean = true, val need: List<Need> = emptyList())
 
 typealias Need = Pair<ResourceLabeler, Int>
-
-class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTagParser(allowedTags) {
-    override fun parse(key: Char, tag: String) = super.parse(key, tag) ?: when (key) {
-        '&' -> {
-            val elements = tag.split("-".toRegex()).toTypedArray()
-            AspectImprovementTag(
-                    makeAspectLabeler(elements[0].split(";")),
-                    elements[1].toDouble()
-            )
-        }
-        else -> null
-    }
-}
-
-fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() * tags.getAspectImprovement(aspect)
-
-private fun List<ResourceTag>.getAspectImprovement(aspect: Aspect) = this
-        .filterIsInstance<AspectImprovementTag>()
-        .filter { it.labeler.isSuitable(aspect) }
-        .map { it.improvement }
-        .foldRight(0.0, Double::plus)
-
-class AspectImprovementLabeler(val aspect: Aspect): ResourceLabeler {
-    override fun isSuitable(genome: Genome) = genome.tags.getAspectImprovement(aspect) > 0
-
-    override fun toString() = "Resource improves Aspect ${aspect.name}"
-}
