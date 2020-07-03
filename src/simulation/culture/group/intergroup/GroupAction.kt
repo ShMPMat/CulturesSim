@@ -2,6 +2,7 @@ package simulation.culture.group.intergroup
 
 import simulation.culture.group.Transfer
 import simulation.culture.group.centers.Group
+import simulation.culture.group.request.resourceToRequest
 import simulation.culture.group.stratum.Stratum
 import simulation.culture.group.stratum.TraderStratum
 import simulation.space.resource.Resource
@@ -55,11 +56,10 @@ class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGr
     }
 }
 
-//class ProduceTradeResourcesA(group: Group): AbstractGroupAction(group) {
-//    override fun run(): ResourcePack {
-//        val resource = (group.cultureCenter.aspectCenter.aspectPool.producedResources)
-//    }
-//}
+class ProduceResourceA(group: Group, val resource: Resource, val amount: Int): AbstractGroupAction(group) {
+    override fun run() =
+            group.populationCenter.executeRequest(resourceToRequest(resource, group, amount)).pack
+}
 
 class ChooseResourcesA(
         group: Group,

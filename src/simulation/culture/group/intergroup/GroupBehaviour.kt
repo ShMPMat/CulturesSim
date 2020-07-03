@@ -2,17 +2,16 @@ package simulation.culture.group.intergroup
 
 import shmp.random.randomElement
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.Controller.session
 import simulation.Event
-import simulation.culture.group.Transfer
 import simulation.culture.group.centers.Group
+import simulation.space.resource.Resource
 import kotlin.math.pow
 
 interface GroupBehaviour {
     fun run(group: Group): List<Event>
 
-    fun update(group: Group): GroupBehaviour
+    fun update(group: Group): GroupBehaviour = this
 }
 
 sealed class AbstractGroupBehaviour : GroupBehaviour
@@ -31,8 +30,29 @@ object RandomTradeBehaviour : AbstractGroupBehaviour() {
         )
         return TradeInteraction(group, groupToTrade, 1000).run()
     }
+}
 
-    override fun update(group: Group) = this
+
+class MakeTradeResourceBehaviour(val amount: Int) : AbstractGroupBehaviour() {
+    override fun run(group: Group): List<Event> {
+        val resources = group.cultureCenter.aspectCenter.aspectPool.producedResources
+                .map { it.first }
+
+        if (resources.isEmpty()) return emptyList()
+
+        val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble().pow(3) }
+        val chosenResource = randomElement(resources, evaluator, session.random)
+        val pack = ProduceResourceA(group, chosenResource, amount).run()
+
+        val events = if (pack.isEmpty)
+            emptyList()
+        else
+            listOf(Event(Event.Type.Creation, "${group.name} created resources for trade: $pack"))
+
+        group.populationCenter.turnResources.addAll(pack)
+
+        return events
+    }
 }
 
 
@@ -47,8 +67,6 @@ object RandomGroupAddBehaviour : AbstractGroupBehaviour() {
         }
         return emptyList()
     }
-
-    override fun update(group: Group) = this
 }
 
 
@@ -76,12 +94,12 @@ fun GroupBehaviour.withProbability(probability: Double, probabilityUpdate: (Grou
 class TimesWrapperBehaviour(
         val behaviour: GroupBehaviour,
         val min: Int,
-        val max: Int = min,
+        val max: Int = min + 1,
         private val minUpdate: (Group) -> Int = { min },
-        private val maxUpdate: (Group) -> Int = { max }
+        private val maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
 ) : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
-         val times = session.random.nextInt(min, max)
+        val times = session.random.nextInt(min, max)
         return (0 until times).flatMap { behaviour.run(group) }
     }
 
@@ -96,8 +114,8 @@ class TimesWrapperBehaviour(
 
 fun GroupBehaviour.times(
         min: Int,
-        max: Int = min,
+        max: Int = min + 1,
         minUpdate: (Group) -> Int = { min },
-        maxUpdate: (Group) -> Int = { max }
+        maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
 )
         = TimesWrapperBehaviour(this, min, max, minUpdate, maxUpdate)
