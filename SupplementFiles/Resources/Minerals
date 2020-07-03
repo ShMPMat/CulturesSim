@@ -1,12 +1,12 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
--Clay            0       0.5    100000     -500   500  100000000 0             1 0 0  Mineral      @Clay
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials
+-Clay            0       0.5    100000     -500   500  100000000  0             1 0 0  Mineral      @Clay
         +BuildHouse:House:1
 
--Stone           0       0.1    100000     -500   500  100000000 0             1 0 0  Mineral      @Stone
+-Stone           0       0.1    100000     -500   500  100000000  0             1 0 0  Mineral      @Stone
         +Chisel:StoneAxe:1
 
--Boulder         0       0.5    100000     -500   500  100000000 0             1 0 0  Mineral      @Stone
+-Boulder         0       0.5    100000     -500   500  100000000  0             1 0 0  Mineral      @Stone
 
--Ruby            0       0.1    100000     -500   500  100000000 0             1 0 0  Mineral      @Ruby
+-Ruby            0       0.1    100000     -500   500  100000000  0             1 0 0  Mineral      @Ruby
 
--Iron            0       0.1    100000     -500   500  100000000 0             1 0 0  Mineral      @Iron
+-Iron            0       0.1    100000     -500   500  100000000  0             1 0 0  Mineral      @Iron

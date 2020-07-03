@@ -20,5 +20,8 @@
 -goodForFrame            t:hard       t:solid      t:sturdy
     >=0.2
 
+-goodForTent             t:soft       t:solid      t:thin        t:flexible
+    >=0.1
+
 -goodForMonuments        t:goodForEngraving
     >=1

@@ -14,9 +14,10 @@
 -Fur           200       -soft:3     -flexible:5                            -solid:1
 -Feather       200       -soft:2     -flexible:5                            -solid:1
 -Blood         200                                                          -liquid:1  -_has_colour:1
+-Leather       500       -soft:1     -flexible:7      -thin:2               -solid:1
 
--Fibre         100       -soft:2     -flexible:10     -thin:1               -solid:1   -_can_be_ignited:1
--Cloth         100       -soft:2     -wide:1          -thin:1     -warmth:1 -solid:1   -_can_be_ignited:1
+-Fibre         100       -soft:2     -flexible:10     -thin:3               -solid:1   -_can_be_ignited:1
+-Cloth         100       -soft:2     -flexible:15     -thin:4     -warmth:1 -solid:1   -_can_be_ignited:1
 
 -RoastedMeat   400       -springy:1  -flexible:1                            -solid:1   -food:6
 

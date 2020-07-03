@@ -1,84 +1,84 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
--Coral           0.25    0.1    5          20     30   2000      0             1 0 0  Plant        @Coral
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials
+-Coral           0.25    0.1    5          20     30   2000       0             1 0 0  Plant        @Coral
         #Normal:Mountain:Ice:Woods:Growth
 
--Cow             0.08    1      20         0      25   25        0             1 0 1  Animal       @Meat
+-Cow             0.08    1      20         0      25   25         0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
+        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10,Leather:1
         #Water
 
--Deer            0.09    1.2    22         -10     5   15        0             1 0 1  Animal       @Meat
+-Deer            0.09    1.2    22         -10     5   15         0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.05;2;0;CONSUME
-        +Killing:Meat:12,Fat:7,Bone:7,Fur:5,Blood:10
+        +Killing:Meat:12,Fat:7,Bone:7,Fur:5,Blood:10,Leather:2
         #Water
 
--MountainGoat    0.08    1      20         -10    30   25        0             1 0 1  Animal       @Meat
+-MountainGoat    0.08    1      20         -10    30   25         0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
-        +Killing:Meat:8,Fat:4,Bone:5,Fur:2,Blood:8
+        +Killing:Meat:8,Fat:4,Bone:5,Fur:2,Blood:8,Leather:1
         #Water
         l110;1000
         R
 
--Mouse           0.25    0.05   5          -5     35   100       0             1 0 1  Animal       @Meat
+-Mouse           0.25    0.05   5          -5     35   100        0             1 0 1  Animal       @Meat
         ~A(r:Seed);0.05;2;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
         #Water
         R
 
--Squirrel        0.25    0.05   5          -5     35   10        0             1 0 1  Animal       @Meat
+-Squirrel        0.25    0.05   5          -5     35   10         0             1 0 1  Animal       @Meat
         ~A(r:Nut);1;1.25;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
         #Water
         R
 
--Predator        0.08    1      20         0      20   5         0             1 0 1  Animal       @Meat
+-Predator        0.08    1      20         0      20   5          0             1 0 1  Animal       @Meat
         ~m:Meat,>=1;0.1;1.25;0;CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10
+        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10,Leather:1
         #Water
         R
 
--Bird            0.15    0.1    10         0      30   40        0             1 0 1  Animal       @Meat
+-Bird            0.15    0.1    10         0      30   40         0             1 0 1  Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10,Blood:3
         #Water
         R
 
--PredatorBird    0.15    0.1    10         0      30   5         0             1 0 1  Animal       @Meat
+-PredatorBird    0.15    0.1    10         0      30   5          0             1 0 1  Animal       @Meat
         ~m:Meat,<=0.05;1;1.25;0;CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Feather:10,Blood:3
         #Water
         R
 
--Insect          0.25    0.02   5          0      30   500       0             1 0 1  Animal       @Chitin
+-Insect          0.25    0.02   5          0      30   500        0             1 0 1  Animal       @Chitin
         ~m:PlantFibre;0.01;100;0;CONSUME
         +Killing:Chitin:1,Meat:1
         #Water
 
--Bee             0.4     0.01   5          10     30   200       0             1 0 1  Animal       @Chitin
+-Bee             0.4     0.01   5          10     30   200        0             1 0 1  Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water
         R
 
--BumbleBee       0.25    0.02   5          10     30   50        0             1 0 1  Animal       @Chitin
+-BumbleBee       0.25    0.02   5          10     30   50         0             1 0 1  Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
         +Killing:Chitin:1,Meat:1
         #Water
         R
 
--Fish            0.15    0.1    10         -20    30   100       0             1 0 1  Animal       @Meat
+-Fish            0.15    0.1    10         -20    30   100        0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.0001;10;0;CONSUME
         +Killing:Meat:2,Fat:1,Bone:1,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
--PredatorFish    0.15    0.1    10         -20    30   10        0             1 0 1  Animal       @Meat
+-PredatorFish    0.15    0.1    10         -20    30   10         0             1 0 1  Animal       @Meat
         ~m:Meat;0.025;1.25;0;CONSUME
         +Killing:Meat:1,Fat:1,Bone:1,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
--ShelledMollusk  0.15    0.03   10          10    30   600       0             1 0 1  Animal       @Meat
+-ShelledMollusk  0.15    0.03   10          10    30   600        0             1 0 1  Animal       @Meat
         +_OnDeath_:SeaShell:1
         +Killing:Meat:1,SeaShell:1
         #Normal:Mountain:Ice:Woods:Growth

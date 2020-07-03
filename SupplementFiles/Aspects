@@ -27,6 +27,9 @@
 -BuildWigwam                                                                 /goodForFrame
     &t:soft--t:solid--#Wigwam:1
     C3.0
+-BuildYurt                                                                   /goodForFrame
+    &t:goodForTent--#Yurt:1
+    C3.0
 -BuildRoad
     &t:hard-->=0.5--#Road:1
     Shard
