@@ -22,6 +22,12 @@
 -House           0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
         $shelter:3
 
+-Wigwam          0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
+        $shelter:2
+
+/-Yurt            0       5      10000      -500   500  100000000 10            1 1 0  Building     @TEMPLATE
+/        $shelter:2
+
 -Temple          0       5      10000      -500   500  100000000 10            0 1 0  Building     @TEMPLATE
         U
 

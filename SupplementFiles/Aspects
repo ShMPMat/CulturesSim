@@ -24,6 +24,9 @@
     &t:hard-->=0.5--#House:1
     Shard
     C10.0
+-BuildWigwam                                                                 /solid
+    &t:soft--t:solid--#Wigwam:1
+    C3.0
 -BuildRoad
     &t:hard-->=0.5--#Road:1
     Shard
@@ -44,6 +47,7 @@
     &t:hard-->=0.5--#TradeHouse:1
     Shard
     C10.0
+
 -MakeDish
     &t:hard-->=0.05--#Dish:1
     Shard
