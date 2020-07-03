@@ -24,7 +24,7 @@
     &t:hard-->=0.5--#House:1
     Shard
     C10.0
--BuildWigwam                                                                 /solid
+-BuildWigwam                                                                 /goodForFrame
     &t:soft--t:solid--#Wigwam:1
     C3.0
 -BuildRoad

@@ -17,5 +17,8 @@
 -goodForIncrusting       t:hard       t:sturdy
     <=0.1
 
+-goodForFrame            t:hard       t:solid      t:sturdy
+    >=0.2
+
 -goodForMonuments        t:goodForEngraving
     >=1

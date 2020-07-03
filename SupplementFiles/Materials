@@ -16,7 +16,7 @@
 -Blood         200                                                          -liquid:1  -_has_colour:1
 
 -Fibre         100       -soft:2     -flexible:10     -thin:1               -solid:1   -_can_be_ignited:1
--Cloth         100       -soft:2                      -wide:1     -warmth:1 -solid:1   -_can_be_ignited:1
+-Cloth         100       -soft:2     -wide:1          -thin:1     -warmth:1 -solid:1   -_can_be_ignited:1
 
 -RoastedMeat   400       -springy:1  -flexible:1                            -solid:1   -food:6
 

@@ -17,7 +17,7 @@
 -SoftRoot        0       0.5    5          -500   500  100000000 0             1 1 0  None         @PlantFibre
         +Weaving:Basket:1
 
--Fruit           0       0.1    5          -500   500  100000000 0             1 1 0  None         @Pulp
+-Fruit           0       0.05   5          -500   500  100000000 0             1 1 0  None         @Pulp
 
 -Nut             0       0.02   5          -500   500  100000000 0             1 1 0  None         @Nut
 

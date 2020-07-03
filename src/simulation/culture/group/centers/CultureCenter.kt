@@ -136,10 +136,11 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     fun evaluateResource(resource: Resource): Int {
         val base = resource.genome.baseDesirability + 1
         val meaningPart = if (resource.hasMeaning) 3 else 1
+        val desire = group.resourceCenter.needLevel(resource) + 1
+        val uniqueness = resource.externalFeatures.size + 1
+
         val conglomerate = group.relationCenter.relations
                 .filter { it.other.parentGroup == group.parentGroup }
-        val desire = group.resourceCenter.needLevel(resource) + 1
-
         val others = group.relationCenter.relations
                 .filter { it.other.parentGroup != group.parentGroup }
         val accessibility = when {
@@ -157,7 +158,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
                     } -> 6
             else -> 10
         }
-        return base * meaningPart * accessibility * desire
+        return base * meaningPart * desire * uniqueness * accessibility
     }
 
     private fun isResourceDesirable(resource: Resource) = resource.genome.isDesirable
