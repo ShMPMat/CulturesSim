@@ -8,14 +8,16 @@ import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.stratum.TraderStratum
 
 class AdministrationCenter(val type: AdministrationType) {
-    private var behaviours: MutableList<GroupBehaviour> = mutableListOf()
+    private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
+            RandomTradeBehaviour.times(1, 5),
+            RandomGroupAddBehaviour.withProbability(0.01)
+    )
 
 
     private fun updateBehaviours(group: Group) {
-        behaviours = mutableListOf(
-                RandomTradeBehaviour.times(1, 5),
-                RandomGroupAddBehaviour.withProbability(0.01)
-        )
+        behaviours = behaviours
+                .map { it.update(group) }
+                .toMutableList()
     }
 
     fun update(group: Group) {

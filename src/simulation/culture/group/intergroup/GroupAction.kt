@@ -55,6 +55,12 @@ class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGr
     }
 }
 
+//class ProduceTradeResourcesA(group: Group): AbstractGroupAction(group) {
+//    override fun run(): ResourcePack {
+//        val resource = (group.cultureCenter.aspectCenter.aspectPool.producedResources)
+//    }
+//}
+
 class ChooseResourcesA(
         group: Group,
         val pack: ResourcePack,
