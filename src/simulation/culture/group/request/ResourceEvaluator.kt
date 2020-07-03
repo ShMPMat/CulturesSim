@@ -4,12 +4,13 @@ import simulation.SimulationException
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
+import simulation.space.resource.tag.labeler.ResourceLabeler
 import kotlin.math.ceil
 
-/**
- * Class which evaluates ResourcePacks for containing needed Resources.
- */
-class ResourceEvaluator(private val evaluator: (Resource) -> Double) {
+
+//Evaluates ResourcePacks for containing needed Resources.
+// If labeler returns true on a Resource, evaluator MUST return Double > 0.
+class ResourceEvaluator(private val labeler: ResourceLabeler, private val evaluator: (Resource) -> Double) {
     fun pick(resourcePack: ResourcePack) = resourcePack.getResources { evaluator(it) > 0 }
 
     fun pickAndRemove(pack: MutableResourcePack) : ResourcePack {
@@ -17,6 +18,7 @@ class ResourceEvaluator(private val evaluator: (Resource) -> Double) {
         pack.removeAll(result)
         return result
     }
+
     fun evaluate(resources: Collection<Resource>) = resources
             .map { evaluator(it) }
             .foldRight(0.0, Double::plus)
@@ -27,9 +29,10 @@ class ResourceEvaluator(private val evaluator: (Resource) -> Double) {
 
     fun getSatisfiableAmount(part: Double, resources: Collection<Resource>): Double {
         val oneResourceWorth = evaluate(resources)
-        if (oneResourceWorth == 0.0)
-            return 0.0
-        return part / oneResourceWorth
+        return if (oneResourceWorth != 0.0)
+            part / oneResourceWorth
+        else
+            0.0
     }
 
     fun pick(

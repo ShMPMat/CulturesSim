@@ -9,6 +9,7 @@ import simulation.culture.aspect.labeler.makeAspectLabeler
 import simulation.culture.group.centers.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.resourceEvaluator
+import simulation.space.resource.Genome
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
@@ -304,8 +305,16 @@ class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTag
     }
 }
 
-fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() *
-        tags.filterIsInstance<AspectImprovementTag>()
-                .filter { it.labeler.isSuitable(aspect) }
-                .map { it.improvement }
-                .foldRight(0.0, Double::plus)
+fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() * tags.getAspectImprovement(aspect)
+
+private fun List<ResourceTag>.getAspectImprovement(aspect: Aspect) = this
+        .filterIsInstance<AspectImprovementTag>()
+        .filter { it.labeler.isSuitable(aspect) }
+        .map { it.improvement }
+        .foldRight(0.0, Double::plus)
+
+class AspectImprovementLabeler(val aspect: Aspect): ResourceLabeler {
+    override fun isSuitable(genome: Genome) = genome.tags.getAspectImprovement(aspect) > 0
+
+    override fun toString() = "Resource improves Aspect ${aspect.name}"
+}

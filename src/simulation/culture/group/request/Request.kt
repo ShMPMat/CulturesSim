@@ -10,7 +10,7 @@ import simulation.space.resource.container.ResourcePack
 import kotlin.math.max
 
 /**
- * Class which represents a request which may by executed by a Group.
+ * Represents a Resource request which may by executed by a Group.
  */
 abstract class Request(
         val group: Group,
