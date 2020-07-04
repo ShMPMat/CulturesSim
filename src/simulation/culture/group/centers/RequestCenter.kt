@@ -85,37 +85,43 @@ class RequestCenter {
     private fun constructFoodRequest(controller: RequestConstructController): Request {
         val foodFloor = (controller.population / controller.group.fertility + 1).toDouble()
         return TagRequest(
-                controller.group,
                 ResourceTag("food"),
-                foodFloor,
-                foodFloor + controller.population / 100 + 1,
-                if (controller.isClearEffects) passingReward else foodPenalty,
-                if (controller.isClearEffects) passingReward else foodReward,
-                100
+                RequestCore(
+                        controller.group,
+                        foodFloor,
+                        foodFloor + controller.population / 100 + 1,
+                        if (controller.isClearEffects) passingReward else foodPenalty,
+                        if (controller.isClearEffects) passingReward else foodReward,
+                        100
+                )
         )
     }
 
     private fun constructWarmthRequest(controller: RequestConstructController) = TagRequest(
-            controller.group,
             ResourceTag("warmth"),
-            controller.population.toDouble(),
-            controller.population.toDouble(),
-            if (controller.isClearEffects) passingReward else warmthPenalty,
-            passingReward,
-            90
+            RequestCore(
+                    controller.group,
+                    controller.population.toDouble(),
+                    controller.population.toDouble(),
+                    if (controller.isClearEffects) passingReward else warmthPenalty,
+                    passingReward,
+                    90
+            )
     )
 
     private fun constructTagRequest(controller: RequestConstructController, tag: ResourceTag, amount: Double): TagRequest {
-        val notFinal = TagRequest(controller.group, tag, amount, amount, put(), put(), 90)
+        val notFinal = TagRequest(tag, RequestCore(controller.group, amount, amount, put(), put(), 90))
         val nerfed = getRequestNerfCoefficient(notFinal, amount)
         return TagRequest(
-                controller.group,
                 tag,
-                nerfed,
-                nerfed,
-                if (controller.isClearEffects) passingReward else unite(listOf(addNeed(TagLabeler(tag)), put())),
-                if (controller.isClearEffects) passingReward else put(),
-                90
+                RequestCore(
+                        controller.group,
+                        nerfed,
+                        nerfed,
+                        if (controller.isClearEffects) passingReward else unite(listOf(addNeed(TagLabeler(tag)), put())),
+                        if (controller.isClearEffects) passingReward else put(),
+                        90
+                )
         )
     }
 

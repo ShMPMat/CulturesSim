@@ -2,6 +2,7 @@ package simulation.culture.group.cultureaspect
 
 import simulation.culture.group.centers.Group
 import simulation.culture.group.request.Request
+import simulation.culture.group.request.RequestCore
 import simulation.culture.group.request.ResourceRequest
 import simulation.culture.group.resource_behaviour.ResourceBehaviour
 import simulation.space.resource.Resource
@@ -12,17 +13,23 @@ class AestheticallyPleasingObject(
         private val resourceBehaviour: ResourceBehaviour
 ) : CultureAspect {
     override fun getRequest(group: Group): Request? {
-        return ResourceRequest(group, resource, 1.0, 10.0,
-                { (g, p), _: Double ->
-                    g.resourceCenter.addAll(p)
-                    resourceBehaviour.proceedResources(p)
-                },
-                { (g, p), _: Double ->
-                    g.resourceCenter.addAll(p)
-                    resourceBehaviour.proceedResources(p)
-                },
-                40
+        return ResourceRequest(
+                resource,
+                RequestCore(
+                        group,
+                        1.0,
+                        10.0,
+                        { (g, p), _: Double ->
+                            g.resourceCenter.addAll(p)
+                            resourceBehaviour.proceedResources(p)
+                        },
+                        { (g, p), _: Double ->
+                            g.resourceCenter.addAll(p)
+                            resourceBehaviour.proceedResources(p)
+                        },
+                        40
                 )
+        )
     }
 
     override fun use(group: Group) {}

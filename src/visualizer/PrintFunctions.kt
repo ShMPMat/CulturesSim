@@ -56,7 +56,7 @@ fun printResource(resource: Resource): String = resource.toString() + "\n" +
 fun printResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
         .flatMap { t -> t.resourcesWithMoved.map { r -> r to t } }
         .filter { it.first.fullName.contains(substring) }
-        .joinToString("\n") { (r, t) -> "${t.x} ${t.y}: ${r.fullName}" }
+        .joinToString("\n") { (r, t) -> "${t.x} ${t.y}: ${r.fullName} - ${r.amount}" }
 
 fun printGroup(group: Group) = group.toString()
 

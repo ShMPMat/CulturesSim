@@ -11,14 +11,20 @@ import kotlin.math.max
 
 
 //Represents a Resource request which may by executed by a Group.
-abstract class Request(
-        val group: Group,
-        var floor: Double,
-        var ceiling: Double,
-        var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        val need: Int
-) {
+abstract class Request(val core: RequestCore) {
+    val group
+        get() = core.group
+    val floor
+        get() = core.floor
+    val ceiling
+        get() = core.ceiling
+    val penalty
+        get() = core.penalty
+    val reward
+        get() = core.reward
+    val need
+        get() = core.need
+
     abstract fun reducedAmountCopy(amount: Double): Request
 
     abstract val evaluator: ResourceEvaluator
@@ -31,13 +37,13 @@ abstract class Request(
         else -> null
     }
 
-    fun amountLeft(resourcePack: ResourcePack) = max(0.0, ceiling - evaluator.evaluate(resourcePack))
+    fun amountLeft(resourcePack: ResourcePack) = max(0.0, core.ceiling - evaluator.evaluate(resourcePack))
 
-    fun isFloorSatisfied(resourcePack: ResourcePack) = evaluator.evaluate(resourcePack) >= floor
+    fun isFloorSatisfied(resourcePack: ResourcePack) = evaluator.evaluate(resourcePack) >= core.floor
 
     fun end(resourcePack: MutableResourcePack): Result {
         val partPack = evaluator.pick(
-                ceiling,
+                core.ceiling,
                 resourcePack.resources,
                 { listOf(it.copy(1)) },
                 { r, n -> listOf(r.getCleanPart(n)) }
@@ -45,12 +51,12 @@ abstract class Request(
         val amount = evaluator.evaluate(partPack)
         val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.exactCopy() })
 
-        if (amount < floor) {
-            penalty(Pair(group, partPack), amount / floor)
+        if (amount < core.floor) {
+            core.penalty(Pair(core.group, partPack), amount / core.floor)
             return Result(ResultStatus.NotSatisfied, neededCopy)
         } else
-            reward(Pair(group, partPack), amount / floor - 1)
-        return if (amount < ceiling) Result(ResultStatus.Satisfied, neededCopy)
+            core.reward(Pair(core.group, partPack), amount / core.floor - 1)
+        return if (amount < core.ceiling) Result(ResultStatus.Satisfied, neededCopy)
         else Result(ResultStatus.Excellent, neededCopy)
     }
 
@@ -64,14 +70,14 @@ abstract class Request(
 
     open fun getController(ignoreAmount: Int) = AspectController(
             1,
-            ceiling - ignoreAmount,
-            floor - ignoreAmount,
+            core.ceiling - ignoreAmount,
+            core.floor - ignoreAmount,
             evaluator,
-            group.populationCenter,
-            group.territoryCenter.accessibleTerritory,
+            core.group.populationCenter,
+            core.group.territoryCenter.accessibleTerritory,
             false,
-            group,
-            group.cultureCenter.meaning
+            core.group,
+            core.group.cultureCenter.meaning
     )
 
     open fun finalFilter(pack: MutableResourcePack) = evaluator.pickAndRemove(pack)

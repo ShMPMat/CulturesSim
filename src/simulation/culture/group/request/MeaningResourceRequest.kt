@@ -11,17 +11,12 @@ import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
 
 class MeaningResourceRequest(
-        group: Group,
         private val meme: Meme,
         private val resource: Resource,
-        floor: Double,
-        ceiling: Double,
-        penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        need: Int
-) : Request(group, floor, ceiling, penalty, reward, need) {
+        core: RequestCore
+) : Request(core) {
     override fun reducedAmountCopy(amount: Double) =
-            MeaningResourceRequest(group, meme, resource, 0.0, amount, penalty, reward, need)
+            MeaningResourceRequest(meme, resource, core.copy(floor = 0.0, ceiling = amount))
 
     override fun isAcceptable(stratum: Stratum) =
             if (stratum is AspectStratum && stratum.aspect.canInsertMeaning)
@@ -31,17 +26,17 @@ class MeaningResourceRequest(
     override val evaluator = resourceEvaluator(resource)
 
     override fun reassign(group: Group) =
-            MeaningResourceRequest(group, meme, resource, floor, ceiling, penalty, reward, need)
+            MeaningResourceRequest(meme, resource, core.copy(group = group))
 
     override fun getController(ignoreAmount: Int) = AspectController(
             1,
-            ceiling - ignoreAmount,
-            floor - ignoreAmount,
+            core.ceiling - ignoreAmount,
+            core.floor - ignoreAmount,
             evaluator,
-            group.populationCenter,
-            group.territoryCenter.accessibleTerritory,
+            core.group.populationCenter,
+            core.group.territoryCenter.accessibleTerritory,
             true,
-            group,
+            core.group,
             meme
     )
 

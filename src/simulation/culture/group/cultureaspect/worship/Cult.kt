@@ -7,6 +7,7 @@ import simulation.culture.group.stratum.CultStratum
 import simulation.culture.group.GroupError
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
+import simulation.culture.group.request.RequestCore
 import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.stratum.Stratum
 import simulation.culture.thinking.meaning.MemeSubject
@@ -35,15 +36,16 @@ class Cult(val name: String) : WorshipFeature {
     private fun manageSpecialPlaces(group: Group, parent: Worship) {
         if (parent.placeSystem.places.isEmpty()) return
         if (testProbability(0.1, session.random)) {//TODO lesser probability
-            val templeResource = session.world.resourcePool.get("Temple")
             val request = SimpleResourceRequest(
-                    group,
-                    templeResource,
-                    1.0,
-                    1.0,
-                    passingReward,
-                    passingReward,
-                    75
+                    session.world.resourcePool.get("Temple"),
+                    RequestCore(
+                            group,
+                            1.0,
+                            1.0,
+                            passingReward,
+                            passingReward,
+                            75
+                    )
             )
             val result = group.populationCenter.executeRequest(request)
             val pack = MutableResourcePack(result.pack)

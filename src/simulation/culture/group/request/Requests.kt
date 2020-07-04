@@ -10,24 +10,14 @@ fun resourceToRequest(resource: Resource, group: Group, amount: Int, need: Int):
     if (resource.hasMeaning) {
         //TODO read native!!!!!
         return MeaningResourceRequest(
-                group,
                 group.cultureCenter.meaning,
                 resource,
-                amountD,
-                amountD,
-                passingReward,
-                passingReward,
-                need
+                RequestCore(group, amountD, amountD, passingReward, passingReward, need)
         )
     } else {
         return ResourceRequest(
-                group,
                 resource,
-                amountD,
-                amountD,
-                passingReward,
-                passingReward,
-                need
+                RequestCore(group, amountD, amountD, passingReward, passingReward, need)
         )
     }
 }

@@ -4,35 +4,13 @@ import simulation.culture.group.centers.Group
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 
-class ResourceRequest(
-        group: Group,
-        private val resource: Resource,
-        floor: Double,
-        ceiling: Double,
-        penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        reward: (Pair<Group, MutableResourcePack>, Double) -> Unit, need: Int
-) : Request(group, floor, ceiling, penalty, reward, need) {
-    override fun reducedAmountCopy(amount: Double) = ResourceRequest(
-            group,
-            resource,
-            0.0,
-            amount,
-            penalty,
-            reward,
-            need
-    )
+class ResourceRequest(private val resource: Resource, core: RequestCore) : Request(core) {
+    override fun reducedAmountCopy(amount: Double) =
+            ResourceRequest(resource, core.copy(floor = 0.0, ceiling = amount))
 
     override val evaluator = resourceEvaluator(resource)
 
-    override fun reassign(group: Group) = ResourceRequest(
-            group,
-            resource,
-            floor,
-            ceiling,
-            penalty,
-            reward,
-            need
-    )
+    override fun reassign(group: Group) = ResourceRequest(resource, core.copy(group = group))
 
     override fun toString() = "Resource ${resource.baseName}"
 }

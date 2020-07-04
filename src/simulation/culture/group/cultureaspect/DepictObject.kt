@@ -6,6 +6,7 @@ import simulation.culture.group.cultureaspect.worship.WorshipObjectDependent
 import simulation.culture.group.passingReward
 import simulation.culture.group.request.MeaningResourceRequest
 import simulation.culture.group.request.Request
+import simulation.culture.group.request.RequestCore
 import simulation.culture.group.resource_behaviour.ResourceBehaviour
 import simulation.culture.thinking.meaning.Meme
 import simulation.space.resource.container.MutableResourcePack
@@ -21,14 +22,16 @@ class DepictObject(
     override fun use(group: Group) {
         if (group.cultureCenter.memePool.getMeme(meme.toString()) == null) return //TODO fix this
         val result = group.populationCenter.executeRequest(MeaningResourceRequest(
-                group,
                 group.cultureCenter.memePool.getMeme(meme.toString()),
                 resource,
-                1.0,
-                1.0,
-                passingReward,
-                passingReward,
-                40
+                RequestCore(
+                        group,
+                        1.0,
+                        1.0,
+                        passingReward,
+                        passingReward,
+                        40
+                )
         ))//TODO do needs need pushing (they do)?
         val meaningful = MutableResourcePack(result.pack.resources)
         group.resourceCenter.addAll(meaningful)

@@ -7,6 +7,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
 import simulation.culture.group.request.AspectImprovementRequest
 import simulation.culture.group.request.Request
+import simulation.culture.group.request.RequestCore
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
@@ -63,13 +64,15 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
             return
 
         val request: Request = AspectImprovementRequest(
-                group,
                 tradeAspect,
-                0.5,
-                0.5,
-                passingReward,
-                passingReward,
-                30
+                RequestCore(
+                        group,
+                        0.5,
+                        0.5,
+                        passingReward,
+                        passingReward,
+                        30
+                )
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
         if (pack.isNotEmpty) {
