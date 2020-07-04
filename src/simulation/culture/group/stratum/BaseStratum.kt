@@ -36,7 +36,7 @@ abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
             val goodTiles = group.territoryCenter.territory
                     .getTiles { resource.genome.isAcceptable(it) }
             if (goodTiles.isNotEmpty()) {
-                val tagType = "(Stratum $name of ${group.name})"
+                val tagType = "($name of ${group.name})"
                 place = StaticPlace(
                         randomElement(goodTiles, Controller.session.random),
                         TileTag(tagType + "_" + innerPlaces.size, tagType)

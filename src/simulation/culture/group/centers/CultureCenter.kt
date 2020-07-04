@@ -32,7 +32,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
 
     fun update() {
         events.addAll(aspectCenter.mutateAspects())
-        aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies)
+        aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
         cultureAspectCenter.useCultureAspects()
         cultureAspectCenter.addRandomCultureAspect(group)
         cultureAspectCenter.mutateCultureAspects(group)

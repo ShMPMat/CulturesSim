@@ -230,15 +230,18 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         return ArrayList()
     }
 
-    fun update(crucialAspects: Collection<Aspect>) {
+    fun update(crucialAspects: Collection<Aspect>, group: Group) {
         val unimportantAspects = aspectPool.all
                 .filter { it.usefulness < session.aspectFalloff }
                 .filter { it !in crucialAspects }
         if (unimportantAspects.isEmpty()) return
+
         val aspect = randomElement(unimportantAspects, session.random)
         if (aspect !in aspectPool.converseWrappers.map { it.aspect }) {
-            if (_mutableAspectPool.remove(aspect) && aspect !is ConverseWrapper) {
-                _converseWrappers.removeIf { it.aspect == aspect }
+            if (_mutableAspectPool.remove(aspect)) {
+                if (aspect !is ConverseWrapper)
+                    _converseWrappers.removeIf { it.aspect == aspect }
+                group.addEvent(Event(Event.Type.Change, "${group.name} lost aspect ${aspect.name}"))
             }
         }
     }

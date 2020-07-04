@@ -16,7 +16,7 @@ import java.util.HashMap
 
 class Ego(tile: Tile, name: String) {
     var isActive = false
-    val place = MovablePlace(tile, TileTag(name, "stratum"))
+    val place = MovablePlace(tile, TileTag(name, "Stratum people"))
     var turnRequests = RequestPool(HashMap())
         private set
 

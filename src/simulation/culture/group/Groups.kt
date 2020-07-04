@@ -60,4 +60,4 @@ fun put() = { pair: Pair<Group, MutableResourcePack>, _: Double ->
 }
 
 //Aspects to add in newly created Groups.
-val compulsoryAspects = listOf("TakeApart", "Take", "Trade")
+val compulsoryAspects = listOf("TakeApart", "Take")

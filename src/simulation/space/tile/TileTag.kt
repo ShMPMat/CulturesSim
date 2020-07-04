@@ -19,7 +19,5 @@ open class TileTag(val name: String, val type: String) {
         return result
     }
 
-    override fun toString(): String {
-        return "$type of $name"
-    }
+    override fun toString() = "$type of $name"
 }
