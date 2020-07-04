@@ -16,6 +16,7 @@ enum class Command(command: String) {
     GroupPotentials("^G\\d+ p \\d+"),
     Vapour("vapour"),
     Resource("r \\w+"),
+    ResourceSubstring("r' \\w+"),
     ResourceType("rt \\w+"),
     ResourceOwner("ro \\w+"),
     AllResources("rr"),

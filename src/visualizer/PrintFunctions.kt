@@ -5,6 +5,7 @@ import simulation.World
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.centers.Group
+import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 
@@ -51,6 +52,11 @@ fun printResource(resource: Resource): String = resource.toString() + "\n" +
         resource.genome.parts.joinToString("\n") { p ->
             printResource(p).lines().joinToString("\n") { "--$it" }
         }
+
+fun printResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
+        .flatMap { t -> t.resourcesWithMoved.map { r -> r to t } }
+        .filter { it.first.fullName.contains(substring) }
+        .joinToString("\n") { (r, t) -> "${t.x} ${t.y}: ${r.fullName}" }
 
 fun printGroup(group: Group) = group.toString()
 

@@ -27,8 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static extra.OutputFunKt.*;
-import static visualizer.PrintFunctionsKt.printApplicableResources;
-import static visualizer.PrintFunctionsKt.printEvents;
+import static visualizer.PrintFunctionsKt.*;
 import static visualizer.TextCommandsKt.getCommand;
 
 /**
@@ -440,6 +439,14 @@ public class TextVisualizer implements Visualizer {
                                         .map(Map.Entry::getKey).findFirst();
                                 _oo.ifPresent(this::printResource);
                             }
+                            break;
+                        case ResourceSubstring:
+                            printMap(t ->
+                                    t.getResourcesWithMoved().stream()
+                                            .anyMatch(r -> r.getFullName().contains(splitCommand[1]))
+                                        ? "X" : ""
+                            );
+                            System.out.println(printResourcesWithSubstring(map, splitCommand[1]));
                             break;
                         case ResourceType:
                             if (Arrays.stream(Genome.Type.values()).anyMatch(t -> t.toString().equals(splitCommand[1]))) {
