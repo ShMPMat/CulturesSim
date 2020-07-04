@@ -4,7 +4,9 @@ import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.Event
+import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.centers.Group
+import simulation.culture.group.request.resourceToRequest
 import simulation.space.resource.Resource
 import kotlin.math.pow
 
@@ -67,6 +69,32 @@ object RandomGroupAddBehaviour : AbstractGroupBehaviour() {
         }
         return emptyList()
     }
+}
+
+
+object RandomArtifactBehaviour : AbstractGroupBehaviour() {
+    override fun run(group: Group): List<Event> {
+        if (group.cultureCenter.memePool.isEmpty)
+            return emptyList()
+
+        val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
+                .filter { it.first.hasMeaning }
+                .map { it.first }
+        if (resourcesWithMeaning.isEmpty())
+            return emptyList()
+
+        val chosen = randomElement(resourcesWithMeaning, session.random)
+        val result = group.populationCenter.executeRequest(resourceToRequest(chosen, group, 1, 5)).pack
+
+        val events = if (result.isNotEmpty)
+            listOf(Event(Event.Type.Creation, "${group.name} created artifacts: $result"))
+        else emptyList()
+
+        ReceiveGroupWideResourcesA(group, result).run()
+
+        return events
+    }
+
 }
 
 

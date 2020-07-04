@@ -9,6 +9,7 @@ import simulation.culture.group.stratum.TraderStratum
 
 class AdministrationCenter(val type: AdministrationType) {
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
+            RandomArtifactBehaviour.withProbability(0.1),
             RandomTradeBehaviour.times(1, 5),
             RandomGroupAddBehaviour.withProbability(0.01),
             MakeTradeResourceBehaviour(5).times(
@@ -17,7 +18,6 @@ class AdministrationCenter(val type: AdministrationType) {
                     minUpdate = { g -> g.populationCenter.strata.first { it is TraderStratum }.population / 5 }
             )
     )
-
 
     private fun updateBehaviours(group: Group) {
         behaviours = behaviours

@@ -20,8 +20,13 @@ interface GroupAction {
 
 sealed class AbstractGroupAction(override val group: Group) : GroupAction
 
-class ReceiveResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
+class ReceiveGroupWideResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run() = group.resourceCenter.addAll(pack)
+}
+
+
+class ReceivePopulationResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
+    override fun run() = group.populationCenter.turnResources.addAll(pack)
 }
 
 class ImproveRelationsA(group: Group, val target: Group, val amount: Double) : AbstractGroupAction(group) {

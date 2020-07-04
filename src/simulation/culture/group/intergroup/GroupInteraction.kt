@@ -66,8 +66,8 @@ class TradeInteraction(
                             "traded $got - $priceForP and $given - $priceForI"
             )
 
-            ReceiveResourcesA(initiator, got).run()
-            ReceiveResourcesA(participator, given).run()
+            ReceivePopulationResourcesA(initiator, got).run()
+            ReceivePopulationResourcesA(participator, given).run()
 
             RelationsImprovementInteraction(initiator, participator, 0.001).run()
             IncStratumImportanceA(

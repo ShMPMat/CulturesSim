@@ -1,13 +1,12 @@
 package simulation.culture.group.centers
 
 import shmp.random.randomElement
-import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.Event
-import simulation.culture.aspect.*
+import simulation.culture.aspect.Aspect
+import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.GROUP_TAG_TYPE
 import simulation.culture.group.cultureaspect.AestheticallyPleasingObject
-import simulation.culture.group.request.passingEvaluator
 import simulation.culture.group.resource_behaviour.getRandom
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
@@ -34,7 +33,6 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     fun update() {
         events.addAll(aspectCenter.mutateAspects())
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies)
-        createArtifact()
         cultureAspectCenter.useCultureAspects()
         cultureAspectCenter.addRandomCultureAspect(group)
         cultureAspectCenter.mutateCultureAspects(group)
@@ -55,35 +53,6 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     fun intergroupUpdate() {
         events.addAll(aspectCenter.adoptAspects(group))
         cultureAspectCenter.adoptCultureAspects(group)
-    }
-
-    private fun createArtifact() {
-        if (testProbability(0.1, session.random)) {
-            if (memePool.isEmpty)
-                return
-            val wrappers: List<ConverseWrapper> = ArrayList(aspectCenter.aspectPool.getMeaningAspects())
-            if (wrappers.isEmpty()) {
-                if (aspectCenter.aspectPool.converseWrappers.filterIsInstance<MeaningInserter>().isNotEmpty()) {
-                    val k = 0
-                }
-                return
-            }
-            val chosen = randomElement(wrappers, session.random)
-            val result = chosen.use(AspectController(
-                    1,
-                    1.0,
-                    1.0,
-                    passingEvaluator,
-                    group.populationCenter,
-                    group.territoryCenter.accessibleTerritory,
-                    true,
-                    group,
-                    memePool.valuableMeme
-            ))
-            group.resourceCenter.addAll(
-                    result.resources.getResources { it.hasMeaning }
-            )
-        }
     }
 
     val meaning: Meme
