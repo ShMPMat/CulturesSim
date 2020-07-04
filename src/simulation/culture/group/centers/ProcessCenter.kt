@@ -2,12 +2,11 @@ package simulation.culture.group.centers
 
 import shmp.random.testProbability
 import simulation.Controller.*
-import simulation.culture.group.cultureaspect.SpecialPlace
-import simulation.culture.group.intergroup.*
 import simulation.culture.group.place.StaticPlace
+import simulation.culture.group.process.behaviour.*
 import simulation.culture.group.stratum.TraderStratum
 
-class AdministrationCenter(val type: AdministrationType) {
+class ProcessCenter(val type: AdministrationType) {
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
             RandomArtifactBehaviour.withProbability(0.1),
             RandomTradeBehaviour.times(1, 5),
@@ -77,6 +76,9 @@ class AdministrationCenter(val type: AdministrationType) {
         }
         events.forEach { group.addEvent(it) }
     }
+
+    override fun toString() = "Behaviours:\n" +
+            behaviours.joinToString("\n")
 }
 
 enum class AdministrationType {

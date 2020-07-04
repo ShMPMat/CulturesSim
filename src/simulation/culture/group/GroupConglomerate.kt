@@ -36,7 +36,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         for (i in 0 until numberOfSubGroups) {
             val name = name + "_" + i
             addGroup(Group(
-                    AdministrationCenter(AdministrationType.Main),
+                    ProcessCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), center, name),
                     this,
                     name,

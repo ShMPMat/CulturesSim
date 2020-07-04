@@ -18,7 +18,7 @@ import simulation.space.tile.Tile
 import java.util.*
 
 class Group(
-        val administrationCenter: AdministrationCenter,
+        val processCenter: ProcessCenter,
         val resourceCenter: ResourceCenter,
         var parentGroup: GroupConglomerate,
         var name: String,
@@ -99,7 +99,7 @@ class Group(
         session.groupMigrationTime += System.nanoTime() - main
         checkNeeds()
         cultureCenter.update()
-        administrationCenter.update(this)
+        processCenter.update(this)
         session.groupInnerOtherTime += System.nanoTime() - others
     }
 
@@ -146,7 +146,7 @@ class Group(
             }
             val name = parentGroup.newName
             return Add(Group(
-                    AdministrationCenter(AdministrationType.Subordinate),
+                    ProcessCenter(AdministrationType.Subordinate),
                     ResourceCenter(pack, tile, name),
                     parentGroup,
                     name,
@@ -261,7 +261,8 @@ class Group(
                 .append(populationCenter.toString())
                 .append("\n\n").append(relationCenter)
                 .append("\n")
-        builder.append(cultureCenter.requestCenter)
+        builder.append("${cultureCenter.requestCenter}\n\n")
+        builder.append(processCenter)
         builder = chompToSize(builder, 70)
         return builder.toString()
     }
