@@ -9,6 +9,9 @@
 -FurClothes      0       0.5    100        -500   500  100000000  3             1 1 0  Artifact     @Fur
         $clothes:1
 
+-LeatherClothes  0       0.5    100        -500   500  100000000  3             1 1 0  Artifact     @Fur
+        $clothes:1
+
 -StoneAxe        0       0.1    10000      -500   500  100000000  0             1 1 0  Artifact     @Stone
         $weapon:3
 
@@ -55,4 +58,3 @@
 
 -Dye             0       0.05   10000      -500   500  100000000  5             1 1 0  Artifact     @TEMPLATE
         $colour:3
-

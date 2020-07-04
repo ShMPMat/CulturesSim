@@ -1,6 +1,7 @@
 package simulation.culture.aspect
 
 import extra.InputDatabase
+import simulation.SimulationException
 import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
@@ -13,20 +14,23 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
+    private val aspects = mutableListOf<Aspect>()
+
     fun createPool(path: String): AspectPool {
-        val aspects: MutableSet<Aspect> = HashSet()
         val inputDatabase = InputDatabase(path)
+
         while (true) {
             val line = inputDatabase.readLine() ?: break
             val tags = line.split("\\s+".toRegex()).toTypedArray()
             aspects.add(createAspect(tags))
         }
-        return AspectPool(aspects)
+
+        checkAspectsCoherency()
+
+        return AspectPool(aspects.toMutableSet())
     }
 
-    private fun createAspect(tags: Array<String>): Aspect {
-        return Aspect(createCore(tags), AspectDependencies(mutableMapOf()))
-    }
+    private fun createAspect(tags: Array<String>) = Aspect(createCore(tags), AspectDependencies(mutableMapOf()))
 
     fun postResourceInstantiation() { //TODO all the creation must be moved after the resources
 
@@ -81,5 +85,14 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                 sideComplexities,
                 ResourceAction(name, matchers)
         )
+    }
+
+    private fun checkAspectsCoherency() {
+        val maxSimilarAspects = aspects
+                .groupBy { it.name }
+                .maxBy { it.value.size }
+                ?: return
+        if (maxSimilarAspects.value.size > 1)
+            throw SimulationException("Similar Aspects with a name ${maxSimilarAspects.key}")
     }
 }

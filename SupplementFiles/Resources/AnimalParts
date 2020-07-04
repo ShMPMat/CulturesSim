@@ -17,3 +17,4 @@
 -Blood           0       0.05   50         -500   500  100000000  0             1 1 0  None         @Blood
 
 -Leather         0       1.0    50         -500   500  100000000  0             1 1 0  None         @Leather
+        +MakeClothes:LeatherClothes:1

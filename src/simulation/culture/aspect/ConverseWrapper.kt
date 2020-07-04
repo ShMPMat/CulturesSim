@@ -98,8 +98,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
         other as ConverseWrapper
 
-        if (aspect != other.aspect) return false
-        if (resource != other.resource) return false
+//        if (aspect != other.aspect) return false//TODO is it better without this?
+//        if (resource != other.resource) return false
         if (name != other.name) return false
 
         return true
@@ -107,8 +107,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + aspect.hashCode()
-        result = 31 * result + resource.hashCode()
+//        result = 31 * result + aspect.hashCode()
+//        result = 31 * result + resource.hashCode()
         result = 31 * result + name.hashCode()
         return result
     }
