@@ -44,7 +44,7 @@ object RandomArtifactBehaviour : AbstractGroupBehaviour() {
 }
 
 class BuildRoadBehaviour(private val path: Territory, val projectName: String) : PlanBehaviour() {
-    private var built:Int = 0
+    private var built: Int = 0
 
     override fun run(group: Group): List<Event> {
         if (path.isEmpty)
@@ -77,6 +77,8 @@ class BuildRoadBehaviour(private val path: Territory, val projectName: String) :
             )
         } else listOf(event)
     }
+
+    override fun toString() = "Building a road, ${built.toDouble() / (built + path.size)} complete"
 }
 
 class ManageRoadsBehaviour : GroupBehaviour {
@@ -127,7 +129,7 @@ class ManageRoadsBehaviour : GroupBehaviour {
                 ?: throw SimulationException("IMPOSSIBLE")
         val start = startPlace.tile
 
-        val path = makePath(start, finish, group)
+        val path = group.territoryCenter.makePath(start, finish)
                 ?: return
         roadConstruction = BuildRoadBehaviour(
                 Territory(path),
@@ -158,41 +160,7 @@ class ManageRoadsBehaviour : GroupBehaviour {
 
         return places
     }
+
+    override fun toString() = "RoadManager, $projectsDone roads complete,  current project: " +
+            if (roadConstruction == null) "none" else roadConstruction.toString()
 }
-
-private fun makePath(start: Tile, finish: Tile, group: Group): Collection<Tile>? {
-    val checked = mutableSetOf<Tile>()
-    val queue = mutableListOf<TileAndPrev>()
-    queue.add(TileAndPrev(start, null))
-    var turns = 0
-    while (true) {
-        if (queue.isEmpty() || turns > 50)
-            break
-
-        checked.addAll(queue.map { it.tile })
-        val currentTiles = queue
-                .filter { group.territoryCenter.isTileReachableInTraverse(it.tile to 0) }
-                .flatMap { it.tile.neighbours.map { n -> TileAndPrev(n, it) } }.asSequence()
-                .groupBy { it.tile }
-                .map { it.value.minBy { p -> p.length } ?: throw SimulationException("IMPOSSIBLE") }
-                .filter { !checked.contains(it.tile) }.toList()
-
-        val maybeFinish = currentTiles.firstOrNull { it.tile == finish }
-
-        if (maybeFinish != null)
-            return maybeFinish.unwind()
-
-        queue.clear()
-        queue.addAll(currentTiles)
-        turns++
-    }
-
-    return null
-}
-
-data class TileAndPrev(val tile: Tile, val prev: TileAndPrev?, val length: Int = 0) {
-    fun next(next: Tile) = TileAndPrev(next, this, length + 1)
-}
-
-fun TileAndPrev.unwind(): List<Tile> =
-        listOf(this.tile) + if (this.prev == null) emptyList() else this.prev.unwind()

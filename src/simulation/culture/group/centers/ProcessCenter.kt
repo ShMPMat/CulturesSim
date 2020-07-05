@@ -6,7 +6,12 @@ import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.process.behaviour.*
 import simulation.culture.group.stratum.TraderStratum
 
-class ProcessCenter(val type: AdministrationType) {
+class ProcessCenter(type: AdministrationType) {
+    var type = type
+        set(value) {
+            field = value
+        }
+
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
             RandomArtifactBehaviour.withProbability(0.1),
             RandomTradeBehaviour.times(1, 5),
@@ -53,7 +58,8 @@ class ProcessCenter(val type: AdministrationType) {
         events.forEach { group.addEvent(it) }
     }
 
-    override fun toString() = "Behaviours:\n" +
+    override fun toString() = "Type: $type\n" +
+            "Behaviours:\n" +
             behaviours.joinToString("\n")
 }
 

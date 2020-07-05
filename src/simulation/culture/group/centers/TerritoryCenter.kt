@@ -4,6 +4,7 @@ import shmp.random.randomTile
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.Event
+import simulation.SimulationException
 import simulation.culture.group.*
 import simulation.culture.group.place.StaticPlace
 import simulation.space.Territory
@@ -128,7 +129,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         return tiles
     }
 
-    fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
+    private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
         Tile.Type.Water ->
             if (_oldTileTypes.contains(Tile.Type.Water)) pair.second <= session.defaultGroupReach * 6
             else false
@@ -197,6 +198,42 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     fun canSettleAndNoGroupExcept(tile: Tile) = canSettle(tile) { hasNoResidingGroupExcept(it, tileTag.group) }
 
     fun canSettle(tile: Tile, additionalCondition: (Tile) -> Boolean) = canSettle(tile) && additionalCondition(tile)
+
+    fun makePath(start: Tile, finish: Tile): Collection<Tile>? {
+        val checked = mutableSetOf<Tile>()
+        val queue = mutableListOf<TileAndPrev>()
+        queue.add(TileAndPrev(start, null))
+        var turns = 0
+        while (true) {
+            if (queue.isEmpty() || turns > 50)
+                break
+
+            checked.addAll(queue.map { it.tile })
+            val currentTiles = queue
+                    .filter { isTileReachableInTraverse(it.tile to 0) }
+                    .flatMap { it.tile.neighbours.map { n -> TileAndPrev(n, it) } }.asSequence()
+                    .groupBy { it.tile }
+                    .map { it.value.minBy { p -> p.length } ?: throw SimulationException("IMPOSSIBLE") }
+                    .filter { !checked.contains(it.tile) }.toList()
+
+            val maybeFinish = currentTiles.firstOrNull { it.tile == finish }
+
+            if (maybeFinish != null)
+                return maybeFinish.unwind()
+
+            queue.clear()
+            queue.addAll(currentTiles)
+            turns++
+        }
+
+        return null
+    }
 }
 
 const val SETTLE_TAG = "Settlement"
+
+data class TileAndPrev(val tile: Tile, val prev: TileAndPrev?, val length: Int = 0) {
+    fun next(next: Tile) = TileAndPrev(next, this, length + 1)
+
+    fun unwind(): List<Tile> = listOf(this.tile) + if (this.prev == null) emptyList() else this.prev.unwind()
+}

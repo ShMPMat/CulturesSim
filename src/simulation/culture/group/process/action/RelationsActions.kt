@@ -1,6 +1,7 @@
 package simulation.culture.group.process.action
 
 import simulation.culture.group.Transfer
+import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
 
 
@@ -19,5 +20,7 @@ class AddGroupA(group: Group, val groupToAdd: Group): AbstractGroupAction(group)
 }
 
 class ProcessGroupRemovalA(group: Group, val groupToRemove: Group): AbstractGroupAction(group) {
-    override fun run() {}
+    override fun run() {
+        groupToRemove.processCenter.type = AdministrationType.Subordinate
+    }
 }
