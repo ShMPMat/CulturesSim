@@ -17,7 +17,7 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.isResisting,
         genome.isDesirable,
         genome.hasLegacy,
-        genome.deathTime,
+        genome.lifespan,
         genome.defaultAmount,
         genome.legacy,
         genome.templateLegacy,
@@ -32,7 +32,7 @@ class GenomeTemplate(genome: Genome) : Genome(
 
     fun getInstantiatedGenome(templateLegacy: ResourceCore): Genome {
         val genome = copy(
-                deathTime = templateLegacy.genome.deathTime,
+                deathTime = templateLegacy.genome.lifespan,
                 templateLegacy = templateLegacy,
                 primaryMaterial = templateLegacy.genome.primaryMaterial
         )

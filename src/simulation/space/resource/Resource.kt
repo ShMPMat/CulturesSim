@@ -152,10 +152,10 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
 
         for (dependency in core.genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)
-            deathOverhead += ((1 - part) * core.genome.deathTime).toInt()
+            deathOverhead += ((1 - part) * core.genome.lifespan).toInt()
         }
 
-        if (deathTurn + deathOverhead >= core.genome.deathTime) {
+        if (deathTurn + deathOverhead >= core.genome.lifespan) {
             val deadAmount = (deathPart * amount).toInt()
             amount -= deadAmount
             deathTurn = 0
@@ -283,6 +283,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.deathTime}, amount - $amount, tags: " +
+            "lifespan - ${genome.lifespan}, amount - $amount, tags: " +
             tags.joinToString(" ") { it.name }
 }

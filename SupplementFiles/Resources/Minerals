@@ -1,5 +1,5 @@
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials
--Clay            0       0.5    100000     -500   500  100000000  0             1 0 0  Mineral      @Clay
+-Clay            0       0.5    100000     -500   500  1000000    0             1 0 0  Mineral      @Clay
         +BuildHouse:House:1
 
 -Stone           0       0.1    100000     -500   500  100000000  0             1 0 0  Mineral      @Stone

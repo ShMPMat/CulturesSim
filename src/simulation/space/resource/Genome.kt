@@ -23,9 +23,9 @@ open class Genome(
         val isMutable: Boolean,
         val isMovable: Boolean,
         val isResisting: Boolean,
-        isDesirable: Boolean,
+        val isDesirable: Boolean,
         val hasLegacy: Boolean,
-        val deathTime: Int,
+        val lifespan: Int,
         val defaultAmount: Int,
         var legacy: ResourceCore?,
         val templateLegacy: ResourceCore?,
@@ -34,7 +34,6 @@ open class Genome(
         var primaryMaterial: Material?,
         secondaryMaterials: List<Material>
 ) {
-    val isDesirable = false
     val naturalDensity: Int
     val parts: MutableList<Resource> = ArrayList()
     val dependencies: MutableList<ResourceDependency>
@@ -68,7 +67,7 @@ open class Genome(
             isResisting: Boolean = this.isResisting,
             isDesirable: Boolean = this.isDesirable,
             hasLegacy: Boolean = this.hasLegacy,
-            deathTime: Int = this.deathTime,
+            deathTime: Int = this.lifespan,
             defaultAmount: Int = this.defaultAmount,
             legacy: ResourceCore? = this.legacy,
             templateLegacy: ResourceCore? = this.templateLegacy,
@@ -106,9 +105,8 @@ open class Genome(
     }
 
     private fun computePrimaryMaterial() {
-        if (parts.size == 1) {
+        if (parts.size == 1)
             primaryMaterial = parts[0].core.materials[0]
-        }
     }
 
     val materials: List<Material>
@@ -165,16 +163,14 @@ open class Genome(
             parts[i].addAmount(part.amount)
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val genome = o as Genome
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val genome = other as Genome
         return baseName == genome.baseName
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(baseName)
-    }
+    override fun hashCode(): Int = Objects.hash(baseName)
 
     enum class Type {
         Plant, Animal, Mineral, Building, Artifact, None

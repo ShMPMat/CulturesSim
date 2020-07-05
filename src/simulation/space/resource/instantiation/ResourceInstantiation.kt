@@ -118,7 +118,7 @@ class ResourceInstantiation(
                 isResisting = willResist,
                 isDesirable = isDesirable,
                 hasLegacy = tags[9] == "1",
-                deathTime = tags[3].toInt(),
+                lifespan = tags[3].toInt(),
                 defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
                 legacy = null,
                 templateLegacy = null,

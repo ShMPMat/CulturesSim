@@ -16,6 +16,8 @@ import simulation.space.Territory
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import java.util.*
+import kotlin.math.log
+import kotlin.math.pow
 
 class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects: List<Aspect>) {
     val aspectCenter: AspectCenter = AspectCenter(group, aspects)
@@ -107,12 +109,16 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
         val meaningPart = if (resource.hasMeaning) 3 else 1
         val desire = group.resourceCenter.needLevel(resource) + 1
         val uniqueness = resource.externalFeatures.size + 1
+        val durability = if (resource.genome.lifespan < 1_000_000_000)
+            log(resource.genome.lifespan.toDouble(), 10.0).toInt() + 1
+        else 1
 
         val conglomerate = group.relationCenter.relations
                 .filter { it.other.parentGroup == group.parentGroup }
         val others = group.relationCenter.relations
                 .filter { it.other.parentGroup != group.parentGroup }
         val accessibility = when {
+            !resource.genome.isDesirable -> return 1
             !isResourceDesirable(resource) -> 1
             aspectCenter.aspectPool.producedResources.map { it.first }.contains(resource) -> 2
             conglomerate.any { it.other.resourceCenter.pack.contains(resource) } -> 3
@@ -122,15 +128,14 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
             } -> 4
             others.any { it.other.resourceCenter.pack.contains(resource) } -> 5
             others.any {
-                        it.other.cultureCenter.aspectCenter.aspectPool.producedResources
-                                .map { p -> p.first }.contains(resource)
-                    } -> 6
+                it.other.cultureCenter.aspectCenter.aspectPool.producedResources
+                        .map { p -> p.first }.contains(resource)
+            } -> 6
             else -> 10
         }
-        return base * meaningPart * desire * uniqueness * accessibility
+        return base * meaningPart * desire * uniqueness * durability * accessibility
     }
 
-    private fun isResourceDesirable(resource: Resource) = resource.genome.isDesirable
-                    && !group.resourceCenter.pack.contains(resource)
-                    && !group.populationCenter.turnResources.contains(resource)
+    private fun isResourceDesirable(resource: Resource) =
+            !group.resourceCenter.pack.contains(resource) && !group.populationCenter.turnResources.contains(resource)
 }
