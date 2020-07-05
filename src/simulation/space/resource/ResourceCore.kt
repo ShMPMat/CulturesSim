@@ -103,6 +103,21 @@ class ResourceCore(
     fun hasApplicationForAction(action: ResourceAction) =
             actionConversion.containsKey(action) || materials.any { it.hasApplicationForAction(action) }
 
+    fun copyCore(
+            name: String = this.genome.name,
+            materials: List<Material> = this.materials,
+            genome: Genome = this.genome,
+            actionConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>
+                = this.actionConversion.entries.map { (a, l) ->  a to l.toMutableList()}.toMap(),
+            externalFeatures: List<ExternalResourceFeature> = this.externalFeatures
+    ) = ResourceCore(
+            name,
+            materials,
+            genome,
+            actionConversion,
+            externalFeatures
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null) return false

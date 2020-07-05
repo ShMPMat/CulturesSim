@@ -5,9 +5,8 @@ import simulation.space.resource.material.Material
 
 fun makeResourceLabeler(tags: Collection<String>): ResourceLabeler {
     val labelers = ArrayList<ResourceLabeler>()
-    for (tag in tags) {
+    for (tag in tags)
         labelers.add(getLabel(tag.take(2), tag.drop(2)))
-    }
     return ConcatLabeler(labelers)
 }
 

@@ -11,6 +11,7 @@ import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
+import simulation.space.resource.transformer.ResourceTransformer
 import simulation.space.tile.Tile
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -58,7 +59,7 @@ class ResourceInstantiation(
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
-        val actionConversion = mutableMapOf<ResourceAction, Array<String>>()
+        val actionConversion = mutableMapOf<ResourceAction, List<String>>()
         val parts = mutableListOf<String>()
 
         for (i in 12..tags.lastIndex) {
@@ -69,8 +70,9 @@ class ResourceInstantiation(
                     val actionName = tag.substring(0, tag.indexOf(':'))
                     val action = specialActions[actionName]
                             ?: actions.first { it.name == actionName }
-                    actionConversion[action] =
-                            tag.substring(tag.indexOf(':') + 1).split(",".toRegex()).toTypedArray()
+                    actionConversion[action] = tag.substring(tag.indexOf(':') + 1)
+                            .split(",".toRegex())
+                            .toList()
                 }
                 '@' -> if (tag == "TEMPLATE")
                     isTemplate = true
@@ -137,7 +139,7 @@ class ResourceInstantiation(
         )
         specialActions.values.forEach {
             if (!actionConversion.containsKey(it))
-                actionConversion[it] = arrayOf()
+                actionConversion[it] = listOf()
         }
 
         return ResourceTemplate(ResourceIdeal(resourceCore), actionConversion, parts)
@@ -145,37 +147,36 @@ class ResourceInstantiation(
 
     private fun actualizeLinks(template: ResourceTemplate) {
         val (resource, actionConversion, _) = template
-        for (entry in actionConversion.entries) {
-            resource.core.actionConversion[entry.key] = entry.value
+        for ((a, l) in actionConversion.entries) {
+            resource.core.actionConversion[a] = l
                     .map { readConversion(template, it) }
                     .toMutableList()
         }
         if (resource.core.materials.isEmpty())
             return
 
-        for (action in actions) {
-            for (matcher in action.matchers) {
-                if (matcher.match(resource)) {
+        for (action in actions)
+            for (matcher in action.matchers)
+                if (matcher.match(resource))
                     resource.core.addActionConversion(action, matcher.getResults(resource.core.copy(), resourcePool))
-                }
-            }
-        }
     }
 
     private fun readConversion(
             template: ResourceTemplate,
             conversionString: String
     ): Pair<Resource?, Int> {
-        val resourceNames = conversionString.split(":".toRegex()).toTypedArray()
-        if (resourceNames[0] == "LEGACY") {
-            return manageLegacyConversion(template.resource, resourceNames[1].toInt())
-        }
-        var nextTemplate: ResourceTemplate = getTemplateWithName(resourceNames[0])
-        nextTemplate = if (nextTemplate.resource.genome.hasLegacy)
-            copyWithLegacyInsertion(nextTemplate, template.resource.core)
-        else nextTemplate
+        val link = parseLink(conversionString)
+        if (link.resourceName == "LEGACY")
+            return manageLegacyConversion(template.resource, link.amount)
+
+        var nextTemplate: ResourceTemplate = getTemplateWithName(link.resourceName)
+        if (nextTemplate.resource.genome.hasLegacy)
+            nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.core)
+
         actualizeLinks(nextTemplate)
-        return Pair(nextTemplate.resource, resourceNames[1].toInt())//TODO insert amount in Resource amount;
+
+        val resource = link.transform(nextTemplate.resource)
+        return Pair(resource, link.amount)//TODO insert amount in Resource amount;
     }
 
     private fun manageLegacyConversion(
@@ -244,13 +245,14 @@ class ResourceInstantiation(
     private fun actualizeParts(template: ResourceTemplate) {
         val (resource, _, parts) = template
         for (part in parts) {
-            val partResourceName = part.split(":".toRegex()).toTypedArray()[0]
-            var partTemplate = getTemplateWithName(partResourceName)
+            val link = parseLink(part)
+
+            var partTemplate = getTemplateWithName(link.resourceName)
             if (partTemplate.resource.core.genome.hasLegacy)//TODO seems strange
                 partTemplate = copyWithLegacyInsertion(partTemplate, resource.core)
 
-            partTemplate.resource.amount = part.split(":".toRegex()).toTypedArray()[1].toInt()
-            resource.core.genome.addPart(partTemplate.resource)
+            val partResource = link.transform(partTemplate.resource)
+            resource.core.genome.addPart(partResource)
         }
         addTakeApartAction(template)
     }
@@ -270,6 +272,6 @@ class ResourceInstantiation(
 
 data class ResourceTemplate(
         val resource: ResourceIdeal,
-        val actionConversion: MutableMap<ResourceAction, Array<String>>,
+        val actionConversion: MutableMap<ResourceAction, List<String>>,
         val parts: List<String>
 )

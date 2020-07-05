@@ -4,82 +4,82 @@
 
 -Cow             0.08    1      20         0      25   25         0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10,Leather:1
+        +Killing:Meat:10,Fat:5,Bone:5:s|0.5,Fur:3,Blood:10,Leather:1:s|2
         #Water
 
 -Deer            0.09    1.2    22         -10     5   15         0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.05;2;0;CONSUME
-        +Killing:Meat:12,Fat:7,Bone:7,Fur:5,Blood:10,Leather:2
+        +Killing:Meat:12,Fat:7,Bone:7:s|0.5,Fur:5,Blood:10,Leather:2:s|2.5
         #Water
 
--MountainGoat    0.08    1      20         -10    30   25         0             1 0 1  Animal       @Meat
+-MountainGoat    0.08    0.8    20         -10    30   25         0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
-        +Killing:Meat:8,Fat:4,Bone:5,Fur:2,Blood:8,Leather:1
+        +Killing:Meat:8,Fat:4,Bone:5:s|0.3,Fur:2,Blood:8,Leather:1:s|1
         #Water
         l110;1000
         R
 
 -Mouse           0.25    0.05   5          -5     35   100        0             1 0 1  Animal       @Meat
         ~A(r:Seed);0.05;2;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
+        +Killing:Meat:1,Fat:1,Bone:1:s|0.03,Fur:1,Blood:2
         #Water
         R
 
 -Squirrel        0.25    0.05   5          -5     35   10         0             1 0 1  Animal       @Meat
         ~A(r:Nut);1;1.25;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1,Fur:1,Blood:2
+        +Killing:Meat:1,Fat:1,Bone:1:s|0.04,Fur:1,Blood:2
         #Water
         R
 
 -Predator        0.08    1      20         0      20   5          0             1 0 1  Animal       @Meat
         ~m:Meat,>=1;0.1;1.25;0;CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5,Fur:3,Blood:10,Leather:1
+        +Killing:Meat:10,Fat:5,Bone:5:s|0.5,Fur:3,Blood:10,Leather:1:s|1.3
         #Water
         R
 
 -Bird            0.15    0.1    10         0      30   40         0             1 0 1  Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1,Feather:10,Blood:3
+        +Killing:Meat:2,Fat:1,Bone:1:s|0.04,Feather:10,Blood:3
         #Water
         R
 
 -PredatorBird    0.15    0.1    10         0      30   5          0             1 0 1  Animal       @Meat
         ~m:Meat,<=0.05;1;1.25;0;CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1,Feather:10,Blood:3
+        +Killing:Meat:2,Fat:1,Bone:1:s|0.5,Feather:10,Blood:3
         #Water
         R
 
 -Insect          0.25    0.02   5          0      30   500        0             1 0 1  Animal       @Chitin
         ~m:PlantFibre;0.01;100;0;CONSUME
-        +Killing:Chitin:1,Meat:1
+        +Killing:Chitin:1:s|0.01,Meat:1:s|0.01
         #Water
 
 -Bee             0.4     0.01   5          10     30   200        0             1 0 1  Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
-        +Killing:Chitin:1,Meat:1
+        +Killing:Chitin:1:s|0.01,Meat:1:s|0.01
         #Water
         R
 
 -BumbleBee       0.25    0.02   5          10     30   50         0             1 0 1  Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
-        +Killing:Chitin:1,Meat:1
+        +Killing:Chitin:1:s|0.015,Meat:1:s|0.015
         #Water
         R
 
 -Fish            0.15    0.1    10         -20    30   100        0             1 0 1  Animal       @Meat
         ~m:PlantFibre;0.0001;10;0;CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1,Blood:3
+        +Killing:Meat:2,Fat:1,Bone:5:s|0.03,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
 -PredatorFish    0.15    0.1    10         -20    30   10         0             1 0 1  Animal       @Meat
         ~m:Meat;0.025;1.25;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1,Blood:3
+        +Killing:Meat:1,Fat:1,Bone:5:s|0.03,Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         R
 
 -ShelledMollusk  0.15    0.03   10          10    30   600        0             1 0 1  Animal       @Meat
         +_OnDeath_:SeaShell:1
-        +Killing:Meat:1,SeaShell:1
+        +Killing:Meat:1:s|0.01,SeaShell:1
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000
