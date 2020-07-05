@@ -1,18 +1,23 @@
 package shmp.random
 
+import simulation.Controller
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.WorldMap
 import kotlin.random.Random
 
-/**
- * @param territory A Territory from which a random Tile will be chosen.
- * @return A random Tile from the Territory.
- */
-fun randomTile(territory: Territory, random: Random): Tile {
-    return randomElement(territory.tiles, random)
-}
+fun randomTile(territory: Territory, random: Random) = randomElement(territory.tiles, random)
 
-fun randomTile(map: WorldMap, random: Random): Tile {
-    return randomElement(randomElement(map.linedTiles, random), random)
+fun randomTile(map: WorldMap, random: Random): Tile = randomElement(randomElement(map.linedTiles, random), random)
+
+/**
+ *
+ * @return random Tile on brink of tiles, which satisfies predicate.
+ * If such Tile does not exists, returns null.
+ */
+fun randomTileOnBrink(tiles: Collection<Tile>, random: Random, predicate: (Tile) -> Boolean): Tile? {
+    val brink = Territory(tiles).getOuterBrink(predicate)
+    return if (brink.isNotEmpty())
+        randomElement(brink, random)
+    else null
 }

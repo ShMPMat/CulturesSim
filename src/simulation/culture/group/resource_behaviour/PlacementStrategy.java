@@ -1,6 +1,5 @@
 package simulation.culture.group.resource_behaviour;
 
-import extra.SpaceProbabilityFuncs;
 import simulation.space.Territory;
 import simulation.space.tile.Tile;
 import simulation.space.resource.container.MutableResourcePack;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static shmp.random.RandomCollectionsKt.*;
+import static shmp.random.RandomSpaceKt.randomTile;
 import static simulation.Controller.*;
 
 public class PlacementStrategy {
@@ -35,7 +35,7 @@ public class PlacementStrategy {
             case Sprinkle:
             case OneTile:
             case Clumps:
-                specialTiles.add(SpaceProbabilityFuncs.randomTile(controlledTerritory));
+                specialTiles.add(randomTile(controlledTerritory, session.random));
                 break;
         }
         this.strategy = strategy;
@@ -58,7 +58,7 @@ public class PlacementStrategy {
             case Homogeneous:
                 tiles = controlledTerritory.getTiles(t -> !t.getResourcePack().containsAll(resourcePack));
                 return tiles.isEmpty()
-                        ? SpaceProbabilityFuncs.randomTile(controlledTerritory)
+                        ? randomTile(controlledTerritory, session.random)
                         : randomElement(tiles, session.random);
             case Sprinkle:
                 return chooseSpecialTile();
@@ -78,7 +78,7 @@ public class PlacementStrategy {
         }
         for (int i = 0; i < 5; i++) {
             try {
-                Tile tile = SpaceProbabilityFuncs.randomTile(controlledTerritory);
+                Tile tile = randomTile(controlledTerritory, session.random);
                 if (!controlledTerritory.contains(tile)) {
                     specialTiles.add(tile);
                     return tile;

@@ -1,6 +1,6 @@
 package simulation.space.resource
 
-import extra.SpaceProbabilityFuncs
+import shmp.random.randomTileOnBrink
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Event
@@ -237,16 +237,16 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     }
 
     private fun expand(tile: Tile): Boolean {
-        val l = mutableListOf<Tile>()
-        l.add(tile)
-        var newTile = SpaceProbabilityFuncs.randomTileOnBrink(l) { t ->
+        val tileList = mutableListOf(tile)
+
+        var newTile = randomTileOnBrink(tileList, SpaceData.data.random) { t ->
             (genome.isAcceptable(t) && genome.dependencies.all { d -> d.hasNeeded(t) })
         }
         if (newTile == null) {
             if (genome.dependencies.all { d -> d.hasNeeded(tile) })
                 newTile = tile
             else {
-                newTile = SpaceProbabilityFuncs.randomTileOnBrink(l) { genome.isAcceptable(it) }
+                newTile = randomTileOnBrink(tileList, SpaceData.data.random) { genome.isAcceptable(it) }
                 if (newTile == null)
                     newTile = tile
             }
@@ -264,10 +264,9 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         if (o == null) return false
         val resource = o as Resource
 
-        return if (_hash != resource._hash)
-            false
-        else
+        return if (_hash == resource._hash)
             fullName == resource.fullName
+        else false
     }
 
     fun fullEquals(o: Any?): Boolean {

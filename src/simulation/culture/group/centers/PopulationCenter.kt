@@ -48,11 +48,11 @@ class PopulationCenter(
                 .map(Stratum::population)
                 .foldRight(0, Int::plus)
 
-    fun getMaxPopulation(controlledTerritory: Territory) = controlledTerritory.size() * maxPopulation
+    fun getMaxPopulation(controlledTerritory: Territory) = controlledTerritory.size * maxPopulation
 
     fun isMaxReached(controlledTerritory: Territory) = getMaxPopulation(controlledTerritory) <= population
 
-    fun getMinPopulation(controlledTerritory: Territory) = controlledTerritory.size() * minPopulation
+    fun getMinPopulation(controlledTerritory: Territory) = controlledTerritory.size * minPopulation
 
     fun isMinPassed(controlledTerritory: Territory) = getMinPopulation(controlledTerritory) <= population
 

@@ -17,6 +17,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         get() = notMoved >= 50
 
     val territory = Territory()
+    val center: Tile
+        get() = territory.center
+                ?: throw GroupError("Empty Group Territory")
 
     var notMoved = 0
         private set
@@ -59,19 +62,22 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             tileTag.group.die()
             return
         }
-        if (!territory.contains(territory.center))
+        if (!territory.contains(territory.center)) {
             territory.center = randomTile(territory, session.random)
+            territory.add(center)
+        }
         notMoved++
-        if (settled && territory.center.tagPool.getByType(SETTLE_TAG).isEmpty()) {
+        if (settled && center.tagPool.getByType(SETTLE_TAG).isEmpty()) {
             _places.add(StaticPlace(
-                    territory.center,
+                    center,
                     TileTag(SETTLE_TAG + _places.count { it.tileTag.type == SETTLE_TAG }, SETTLE_TAG)
             ))
         }
     }
 
     fun migrate(): Boolean {
-        val newCenter = migrationTile ?: return false
+        val newCenter = migrationTile
+                ?: return false
         territory.center = newCenter
         claimTile(newCenter)
         leaveTiles(territory.getTiles { !isTileReachable(it) })
@@ -88,7 +94,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             val tileTypes = getAccessibleTileTypes()
             if (_oldCenter != territory.center || tileTypes != _oldTileTypes) {
                 _oldCenter = territory.center
-                _oldReach = getReachableTilesFrom(territory.center)
+                _oldReach = getReachableTilesFrom(center)
                 _oldTileTypes = tileTypes
             }
             return _oldReach
@@ -144,12 +150,12 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     fun shrink() {
-        if (territory.size() <= 1)
+        if (territory.size <= 1)
             return
         leaveTile(territory.getMostUselessTile(this::tilePotentialMapper))
     }
 
-    private fun isTileReachable(tile: Tile) = getDistance(tile, territory.center) < session.defaultGroupTerritoryRadius
+    private fun isTileReachable(tile: Tile) = getDistance(tile, center) < session.defaultGroupTerritoryRadius
 
     fun claimTile(tile: Tile?) {
         if (tile == null) return

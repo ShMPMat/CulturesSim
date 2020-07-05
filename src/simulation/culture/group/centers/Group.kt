@@ -89,8 +89,8 @@ class Group(
         val main = System.nanoTime()
         if (shouldMigrate())
             if (territoryCenter.migrate()) {
-                resourceCenter.moveToNewStorage(territoryCenter.territory.center)
-                populationCenter.movePopulation(territoryCenter.territory.center)
+                resourceCenter.moveToNewStorage(territoryCenter.center)
+                populationCenter.movePopulation(territoryCenter.center)
             }
         if (populationCenter.isMinPassed(territoryCenter.territory))
             territoryCenter.expand()
@@ -182,7 +182,7 @@ class Group(
 
     fun finishUpdate() {
         resourceCenter.addAll(cultureCenter.requestCenter.turnRequests.finish())
-        populationCenter.manageNewAspects(cultureCenter.finishAspectUpdate(), territoryCenter.territory.center)
+        populationCenter.manageNewAspects(cultureCenter.finishAspectUpdate(), territoryCenter.center)
         populationCenter.finishUpdate(this)
         resourceCenter.finishUpdate()
         cultureCenter.finishUpdate()
@@ -222,7 +222,7 @@ class Group(
     }
 
     private fun createNewConglomerate(groups: Collection<Group>) {
-        val conglomerate = GroupConglomerate(0, territoryCenter.territory.center)
+        val conglomerate = GroupConglomerate(0, territoryCenter.center)
         for (group in groups) {
             group.parentGroup.removeGroup(group)
             conglomerate.addGroup(group)

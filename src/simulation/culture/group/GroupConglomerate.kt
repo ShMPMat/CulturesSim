@@ -107,6 +107,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
 
     val center: Tile
         get() = territory.center
+                ?: throw GroupError("Empty territory")
 
     fun update() { //TODO simplify
         if (state == State.Dead) return
@@ -147,7 +148,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     fun getClosestInnerGroupDistance(tile: Tile): Int {
         var d = Int.MAX_VALUE
         for (subgroup in subgroups) {
-            d = Math.min(d, getClosest(tile, setOf(subgroup.territoryCenter.territory.center)).second)
+            d = Math.min(d, getClosest(tile, setOf(subgroup.territoryCenter.center)).second)
         }
         return d
     }

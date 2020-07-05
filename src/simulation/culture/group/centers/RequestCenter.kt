@@ -60,7 +60,9 @@ class RequestCenter {
     }
 
     private fun addWarmthRequest(controller: RequestConstructController) {
-        if (controller.group.territoryCenter.territory.minTemperature < 0)
+        val temp = controller.group.territoryCenter.territory.minTemperature
+                ?: return
+        if (temp < 0)
             _unfinishedRequestMap[constructWarmthRequest(controller)] = MutableResourcePack()
     }
 

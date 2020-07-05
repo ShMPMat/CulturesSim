@@ -1,7 +1,7 @@
 package simulation
 
 import extra.InputDatabase
-import extra.SpaceProbabilityFuncs
+import shmp.random.randomTile
 import simulation.Controller.session
 import simulation.culture.aspect.AspectInstantiation
 import simulation.culture.aspect.AspectResourceTagParser
@@ -10,7 +10,6 @@ import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.compulsoryAspects
 import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
-import simulation.culture.thinking.meaning.Meme
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
@@ -104,7 +103,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
     private val tileForGroup: Tile
         private get() {
             while (true) {
-                val tile = SpaceProbabilityFuncs.randomTile(map)
+                val tile = randomTile(map, session.random)
                 if (tile.tagPool.getByType(GROUP_TAG_TYPE).isEmpty()
                         && tile.type != Tile.Type.Water && tile.type != Tile.Type.Mountain) {
                     return tile

@@ -108,9 +108,10 @@ fun createSpecialPlaceForWorship(worship: Worship, group: Group, random: Random)
         t.getTilesInRadius(2).all { it.tagPool.getByType(tag).isEmpty() }
     }
     if (tilesWithoutPlaces.isEmpty()) return null
-    val number = group.territoryCenter.territory.size() - tilesWithoutPlaces.size
+    val number = group.territoryCenter.territory.size - tilesWithoutPlaces.size
     val existsInCenter = !tilesWithoutPlaces.contains(group.territoryCenter.territory.center)
-    val tile = if (!existsInCenter && testProbability(0.5, random)) group.territoryCenter.territory.center
+    val tile = if (!existsInCenter && testProbability(0.5, random))
+        group.territoryCenter.center
     else randomElement(tilesWithoutPlaces, random)
     return SpecialPlace(StaticPlace(tile, TileTag(tag + number, tag)))
 }

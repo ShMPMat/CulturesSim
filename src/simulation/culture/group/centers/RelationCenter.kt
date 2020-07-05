@@ -46,7 +46,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
             else 1.0
 
     fun evaluateTile(tile: Tile) = relations.map {
-        (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.territory.center)).toInt()
+        (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.center)).toInt()
     }.fold(0, Int::plus)
 
     fun updateRelations(groups: Collection<Group>, owner: Group) {
