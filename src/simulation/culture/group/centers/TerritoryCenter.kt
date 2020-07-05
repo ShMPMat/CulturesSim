@@ -2,15 +2,15 @@ package simulation.culture.group.centers
 
 import shmp.random.randomTile
 import shmp.random.testProbability
-import simulation.Controller.*
+import simulation.Controller.session
 import simulation.Event
 import simulation.culture.group.*
-import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.culture.group.place.StaticPlace
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
+
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     val settled: Boolean
@@ -122,7 +122,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         return tiles
     }
 
-    private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
+    fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
         Tile.Type.Water ->
             if (_oldTileTypes.contains(Tile.Type.Water)) pair.second <= session.defaultGroupReach * 6
             else false
@@ -155,6 +155,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         if (tile == null) return
         if (!tile.tagPool.contains(tileTag) && hasResidingGroup(tile))
             throw RuntimeException()
+
         tileTag.group.parentGroup.claimTile(tile)
         tile.tagPool.add(tileTag)
         territory.add(tile)
@@ -166,23 +167,20 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     fun die() {
-        for (tile in territory.tiles) {
+        for (tile in territory.tiles)
             tile.tagPool.remove(tileTag)
-        }
     }
 
     private fun leaveTile(tile: Tile?) {
-        if (tile == null) {
+        if (tile == null)
             return
-        }
+
         tile.tagPool.remove(tileTag)
         territory.remove(tile)
         tileTag.group.parentGroup.removeTile(tile)
     }
 
-    private fun leaveTiles(tiles: Collection<Tile>) {
-        tiles.forEach { leaveTile(it) }
-    }
+    private fun leaveTiles(tiles: Collection<Tile>) = tiles.forEach { leaveTile(it) }
 
     fun canSettle(tile: Tile) = (tile.type != Tile.Type.Water && tile.type != Tile.Type.Mountain
             || (tile.type == Tile.Type.Mountain//TODO set of accessible tile types

@@ -4,7 +4,7 @@ import shmp.random.randomElement
 import simulation.Controller
 import simulation.Event
 import simulation.culture.group.centers.Group
-import simulation.culture.group.process.action.ProduceResourceA
+import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.interaction.TradeInteraction
 import simulation.space.resource.Resource
 import kotlin.math.pow
@@ -35,7 +35,7 @@ class MakeTradeResourceBehaviour(val amount: Int) : AbstractGroupBehaviour() {
 
         val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble().pow(3) }
         val chosenResource = randomElement(resources, evaluator, Controller.session.random)
-        val pack = ProduceResourceA(group, chosenResource, amount, 20).run()
+        val pack = ProduceExactResourceA(group, chosenResource, amount, 20).run()
 
         val events = if (pack.isEmpty)
             emptyList()

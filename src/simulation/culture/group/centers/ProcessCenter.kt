@@ -20,8 +20,15 @@ class ProcessCenter(val type: AdministrationType) {
 
     private fun updateBehaviours(group: Group) {
         behaviours = behaviours
-                .map { it.update(group) }
+                .mapNotNull { it.update(group) }
                 .toMutableList()
+
+        return when (type) {
+            AdministrationType.Main -> AddAdministrativeBehaviours(group)
+            else -> {
+
+            }
+        }
     }
 
     fun update(group: Group) {
@@ -29,46 +36,15 @@ class ProcessCenter(val type: AdministrationType) {
             updateBehaviours(group)
 
         runBehaviours(group)
-        return when (type) {
-            AdministrationType.Main -> administrate(group)
-            else -> {
-
-            }
-        }
     }
 
-    private fun administrate(group: Group) {
+    private fun AddAdministrativeBehaviours(group: Group) {
         if (group.territoryCenter.settled) {
-            if (testProbability(0.9, session.random))
-                return
-            val places = getAllPlaceLocations(group)
+            if (behaviours.none { it is ManageRoadsBehaviour })
+                behaviours.add(ManageRoadsBehaviour())
         }
     }
 
-    private fun getAllPlaceLocations(group: Group): List<StaticPlace> {
-        var places = mutableListOf<StaticPlace>()
-        for (subgroup in group.parentGroup.subgroups) {
-            places.addAll(
-                    group.populationCenter.strata.flatMap { it.places }
-            )
-            places.addAll(
-                    group.cultureCenter.cultureAspectCenter.aspectPool.worships
-                            .flatMap { it.placeSystem.places }
-                            .map { it.staticPlace }
-            )
-        }
-        places = places
-                .filter { it.owned.isNotEmpty }
-                .toMutableList()
-        places.addAll(group.parentGroup.subgroups.flatMap { it.territoryCenter.places })
-        places = places
-                .distinctBy { it.tile }
-                .toMutableList()
-        if (places.size > 1) {
-            val k = 0
-        }
-        return places
-    }
 
     private fun runBehaviours(group: Group) {
         val events = behaviours.flatMap {

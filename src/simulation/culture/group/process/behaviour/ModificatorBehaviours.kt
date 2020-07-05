@@ -15,11 +15,13 @@ class ChanceWrapperBehaviour(
                 behaviour.run(group)
             else emptyList()
 
-    override fun update(group: Group) = ChanceWrapperBehaviour(
-            behaviour.update(group),
-            probabilityUpdate(group),
-            probabilityUpdate
-    )
+    override fun update(group: Group): ChanceWrapperBehaviour? {
+        return ChanceWrapperBehaviour(
+                behaviour.update(group) ?: return null,
+                probabilityUpdate(group),
+                probabilityUpdate
+        )
+    }
 
     override fun toString() = "With probability $probability do:\n" +
             "  $behaviour"
@@ -41,13 +43,15 @@ class TimesWrapperBehaviour(
         return (0 until times).flatMap { behaviour.run(group) }
     }
 
-    override fun update(group: Group) = TimesWrapperBehaviour(
-            behaviour.update(group),
-            minUpdate(group),
-            maxUpdate(group),
-            minUpdate,
-            maxUpdate
-    )
+    override fun update(group: Group): TimesWrapperBehaviour? {
+        return TimesWrapperBehaviour(
+                behaviour.update(group) ?: return null,
+                minUpdate(group),
+                maxUpdate(group),
+                minUpdate,
+                maxUpdate
+        )
+    }
 
     override fun toString() = "From $min to ${max - 1} times do:\n" +
             "  $behaviour"

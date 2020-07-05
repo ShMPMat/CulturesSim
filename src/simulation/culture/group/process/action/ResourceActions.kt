@@ -1,6 +1,10 @@
 package simulation.culture.group.process.action
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.passingReward
+import simulation.culture.group.request.RequestCore
+import simulation.culture.group.request.ResourceRequest
+import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.request.resourceToRequest
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
@@ -22,7 +26,7 @@ class EvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAc
             .foldRight(0, Int::plus)
 }
 
-class ProduceResourceA(
+class ProduceExactResourceA(
         group: Group,
         val resource: Resource,
         val amount: Int,
@@ -30,6 +34,19 @@ class ProduceResourceA(
 ): AbstractGroupAction(group) {
     override fun run() =
             group.populationCenter.executeRequest(resourceToRequest(resource, group, amount, need)).pack
+}
+
+class ProduceSimpleResourceA(
+        group: Group,
+        val resource: Resource,
+        val amount: Int,
+        val need: Int
+): AbstractGroupAction(group) {
+    override fun run() =
+            group.populationCenter.executeRequest(SimpleResourceRequest(
+                    resource,
+                    RequestCore(group, amount.toDouble(), amount.toDouble(), passingReward, passingReward, need)
+            )).pack
 }
 
 class ChooseResourcesA(
