@@ -283,6 +283,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     override fun hashCode() = Objects.hash(fullName, core.hashCode(), ownershipMarker)
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
-            ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, amount - $amount, tags: " +
+            ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
+            "lifespan - ${genome.deathTime}, amount - $amount, tags: " +
             tags.joinToString(" ") { it.name }
 }

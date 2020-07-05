@@ -344,8 +344,10 @@ public class TextVisualizer implements Visualizer {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             readSymbols();
             print();
+            boolean isFirstTurn = true;
             while (true) {
-                String line = br.readLine();
+                String line = isFirstTurn ? "10000" : br.readLine();
+                isFirstTurn = false;
                 if (line != null) {
                     final String[] splitCommand = line.split(" ");
                     if (currentTurner != null) {
