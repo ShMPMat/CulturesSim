@@ -1,8 +1,6 @@
 package simulation.culture.group.centers
 
 import extra.addLinePrefix
-import shmp.random.testProbability
-import simulation.Controller.*
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.labeler.AspectLabeler
@@ -25,26 +23,14 @@ class PopulationCenter(
         var population: Int,
         private val maxPopulation: Int,
         private val minPopulation: Int,
-        newTile: Tile
+        initTile: Tile
 ) {
-    private val _strata: MutableList<Stratum> = ArrayList()
-    val strata: List<Stratum>
-        get() = _strata
+    val stratumCenter = StratumCenter(initTile)
+
     val turnResources = MutableResourcePack()
 
-    init {
-        addStratum(WarriorStratum(newTile))
-        addStratum(TraderStratum(newTile))
-    }
-
-    fun getStratumByAspect(aspect: ConverseWrapper): AspectStratum {
-        return _strata
-                .filterIsInstance<AspectStratum>()
-                .first { it.aspect == aspect }
-    }
-
     val freePopulation: Int
-        get() = population - _strata
+        get() = population - stratumCenter.strata
                 .map(Stratum::population)
                 .foldRight(0, Int::plus)
 
@@ -57,28 +43,31 @@ class PopulationCenter(
     fun isMinPassed(controlledTerritory: Territory) = getMinPopulation(controlledTerritory) <= population
 
     fun changeStratumAmountByAspect(aspect: ConverseWrapper, amount: Int) =
-            changeStratumAmount(getStratumByAspect(aspect), amount)
+            changeStratumAmount(stratumCenter.getByAspect(aspect), amount)
 
     fun changeStratumAmount(stratum: Stratum, amount: Int): WorkerBunch {
+        if (!stratumCenter.strata.contains(stratum))
+            throw GroupError("Stratum does not belong to this Population")
+
         var actualAmount = amount
-        if (!_strata.contains(stratum)) throw GroupError("Stratum does not belong to this Population")
         if (stratum.freePopulation < actualAmount)
-            actualAmount = Math.min(actualAmount, freePopulation + stratum.freePopulation)
+            actualAmount = min(actualAmount, freePopulation + stratum.freePopulation)
+
         if (actualAmount == 0)
             return WorkerBunch(0, 0)
+
         val bunch = stratum.useAmount(actualAmount, freePopulation)
-        if (freePopulation < 0) throw GroupError("Negative free population")
+        if (freePopulation < 0)
+            throw GroupError("Negative free population")
+
         return bunch
     }
 
-    fun freeStratumAmountByAspect(aspect: ConverseWrapper, bunch: WorkerBunch) = try {
-        getStratumByAspect(aspect).decreaseWorkedAmount(bunch.actualWorkers)
-    } catch (e: NullPointerException) {
-        throw RuntimeException("No stratum for Aspect")
-    }
+    fun freeStratumAmountByAspect(aspect: ConverseWrapper, bunch: WorkerBunch) =
+            stratumCenter.getByAspect(aspect).decreaseWorkedAmount(bunch.actualWorkers)
 
     fun die() {
-        _strata.forEach { it.die() }
+        stratumCenter.die()
         population = 0
     }
 
@@ -94,28 +83,20 @@ class PopulationCenter(
         if (freePopulation < 0) throw GroupError("Negative population in a PopulationCenter")
         actualAmount = min(population, actualAmount)
         val delta = actualAmount - freePopulation
-        if (delta > 0) {
-            for (stratum in _strata) {
+        if (delta > 0)
+            for (stratum in stratumCenter.strata) {
                 val part = min(
                         (actualAmount * (stratum.population.toDouble() / population) + 1).toInt(),
                         stratum.population
                 )
                 stratum.decreaseAmount(part)
             }
-        }
+
         population -= actualAmount
     }
 
     fun update(accessibleTerritory: Territory, group: Group) {
-        if (testProbability(session.egoRenewalProb, session.random)) {
-            val mostImportantStratum = strata
-                    .filter { it.population > 0 }
-                    .maxBy { it.importance }
-            if (mostImportantStratum != null)
-                if (mostImportantStratum.importance > 0)
-                    mostImportantStratum.ego.isActive = true
-        }
-        _strata.forEach { it.update(turnResources, accessibleTerritory, group) }
+        stratumCenter.update(accessibleTerritory, group, turnResources)
     }
 
     fun executeRequests(requests: RequestPool) {
@@ -126,7 +107,7 @@ class PopulationCenter(
     fun executeRequest(request: Request): ExecutedRequestResult {
         val usedAspects: MutableList<Aspect> = ArrayList()
         val evaluator = request.evaluator
-        val strataForRequest = getStrataForRequest(request)
+        val strataForRequest = stratumCenter.getStrataForRequest(request)
         strataForRequest.sortedBy { -it.aspect.usefulness }
 
         val pack = MutableResourcePack(
@@ -158,24 +139,14 @@ class PopulationCenter(
         return ExecutedRequestResult(actualPack, usedAspects)
     }
 
-    private fun getStrataForRequest(request: Request): List<AspectStratum> {
-        return _strata
-                .filter { request.isAcceptable(it) != null }
-                .sortedBy { request.satisfactionLevel(it) }
-                .filterIsInstance<AspectStratum>()
-    }
+    fun manageNewAspects(aspects: Set<Aspect?>, newTile: Tile) = aspects
+            .filterIsInstance<ConverseWrapper>()
+            .forEach { cw ->
+                if (stratumCenter.getByAspectOrNull(cw) == null)
+                    stratumCenter.addStratum(AspectStratum(0, cw, newTile))
+            }
 
-    fun manageNewAspects(aspects: Set<Aspect?>, newTile: Tile) {
-        aspects
-                .filterIsInstance<ConverseWrapper>()
-                .forEach { cw ->
-                    if (_strata.filterIsInstance<AspectStratum>().none { it.aspect == cw }) {
-                        _strata.add(AspectStratum(0, cw, newTile))
-                    }
-                }
-    }
-
-    fun finishUpdate(group: Group) = _strata.forEach { it.finishUpdate(group) }
+    fun finishUpdate(group: Group) = stratumCenter.finishUpdate(group)
 
     fun getPart(fraction: Double, newTile: Tile): PopulationCenter {
         val populationPart = (fraction * population).toInt()
@@ -185,7 +156,7 @@ class PopulationCenter(
 
     fun wakeNeedStrata(need: Pair<ResourceLabeler, ResourceNeed>) {
         val labeler: AspectLabeler = ProducedLabeler(need.first)
-        var options: List<AspectStratum> = _strata
+        var options: List<AspectStratum> = stratumCenter.strata
                 .filter { it.population == 0 }
                 .filterIsInstance<AspectStratum>()
                 .filter { labeler.isSuitable(it.aspect) }
@@ -196,15 +167,11 @@ class PopulationCenter(
         options.forEach { it.useAmount(1, freePopulation) }
     }
 
-    fun addStratum(stratum: Stratum) {
-        _strata.add(stratum)
-    }
-
-    fun movePopulation(tile: Tile) = _strata.forEach { it.ego.place.move(tile) }
-
-    override fun toString(): String {
-        return "Free - $freePopulation\n" +
-                _strata.filter { it.population != 0 || it.ego.isActive }.joinToString("\n") { "    $it" } +
-                "\n\nCirculating resources:\n" + turnResources.addLinePrefix()
-    }
+    override fun toString() = """
+        Free - $freePopulation
+        stratumCenter
+        
+        Circulating resources:
+        ${turnResources.addLinePrefix()}
+        """.trimIndent()
 }

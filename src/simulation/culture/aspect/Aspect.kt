@@ -5,15 +5,12 @@ import simulation.Controller.*
 import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
-import simulation.culture.aspect.labeler.makeAspectLabeler
 import simulation.culture.group.centers.AspectCenter
 import simulation.culture.group.request.ResourceEvaluator
 import simulation.culture.group.request.resourceEvaluator
-import simulation.space.resource.Genome
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
-import simulation.space.resource.instantiation.DefaultTagParser
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.BaseNameLabeler
 import simulation.space.resource.tag.labeler.ResourceLabeler
@@ -204,7 +201,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         var isFinished = false
         val _rp = MutableResourcePack()
         _rp.addAll(controller.pickCeilingPart(
-                controller.populationCenter.getStratumByAspect(this as ConverseWrapper)
+                controller.populationCenter.stratumCenter.getByAspect(this as ConverseWrapper)
                         .getInstrumentByTag(requirementTag).resources,
                 { listOf(it.copy(1)) }
         ) { r, n -> listOf(r.getCleanPart(n)) })

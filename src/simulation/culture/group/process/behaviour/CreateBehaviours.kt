@@ -142,7 +142,7 @@ class ManageRoadsBehaviour : GroupBehaviour {
         var places = mutableListOf<StaticPlace>()
         for (subgroup in group.parentGroup.subgroups) {
             places.addAll(
-                    group.populationCenter.strata.flatMap { it.places }
+                    group.populationCenter.stratumCenter.strata.flatMap { it.places }
             )
             places.addAll(
                     group.cultureCenter.cultureAspectCenter.aspectPool.worships

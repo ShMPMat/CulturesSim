@@ -14,12 +14,12 @@ class ProcessCenter(type: AdministrationType) {
 
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
             RandomArtifactBehaviour.withProbability(0.1),
-            RandomTradeBehaviour.times(1, 5),
+            RandomTradeBehaviour.times(1, 3),
             RandomGroupAddBehaviour.withProbability(0.01),
             MakeTradeResourceBehaviour(5).times(
                     0,
                     1,
-                    minUpdate = { g -> g.populationCenter.strata.first { it is TraderStratum }.population / 5 }
+                    minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 5 }
             )
     )
 

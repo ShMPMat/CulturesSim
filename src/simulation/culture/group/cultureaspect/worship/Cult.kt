@@ -15,16 +15,12 @@ import simulation.space.resource.container.MutableResourcePack
 
 class Cult(val name: String) : WorshipFeature {
     override fun use(group: Group, parent: Worship) {
-        val stratum: Stratum = group.populationCenter.strata
-                .filterIsInstance<CultStratum>()
-                .firstOrNull { it.cultName == parent.simpleName }
+        val stratum: Stratum = group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
                 ?: kotlin.run {
                     val newStratum = CultStratum(parent.simpleName, group.territoryCenter.center)
-                    group.populationCenter.addStratum(newStratum)
+                    group.populationCenter.stratumCenter.addStratum(newStratum)
                     group.populationCenter.changeStratumAmount(newStratum, 1)
-                    group.populationCenter.strata
-                            .filterIsInstance<CultStratum>()
-                            .firstOrNull { it.cultName == parent.simpleName }
+                    group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
                             ?: throw GroupError("Cannot create Stratum for $this")
                 }
         if (testProbability(0.01, session.random))

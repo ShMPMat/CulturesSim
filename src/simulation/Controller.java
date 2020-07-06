@@ -152,7 +152,7 @@ public class Controller {
         System.out.println("Overall - " + overallTime + " Groups - " + groupTime + " Others - " + othersTime
                 + " Groups to others - " + ((double) groupTime) / ((double) othersTime)
                 + " main update to others - " + ((double) groupMainTime) / ((double) groupOthersTime)
-                + " migration to others - " + ((double) groupMigrationTime) / ((double) groupInnerOtherTime));
+                + " current test to others - " + ((double) groupMigrationTime) / ((double) groupInnerOtherTime));
     }
 
     public void geologicTurn() {

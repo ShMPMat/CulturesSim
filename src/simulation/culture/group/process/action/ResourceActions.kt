@@ -1,5 +1,6 @@
 package simulation.culture.group.process.action
 
+import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
 import simulation.culture.group.request.RequestCore
@@ -58,9 +59,13 @@ class ChooseResourcesA(
     override fun run(): ResourcePromisePack {
         val chosenResources = mutableListOf<ResourcePromise>()
         var leftAmount = amount
+        val main = System.nanoTime()
         val sortedResources = pack.resources
-                .filter { it.genome.isMovable }
-                .sortedByDescending { group.cultureCenter.evaluateResource(it) }
+                .map { it to group.cultureCenter.evaluateResource(it) }
+                .filter { (r, n) -> r.genome.isMovable && n >= 10 }
+                .sortedByDescending { (_, n) -> n }
+                .map { (r, _) -> r }
+        Controller.session.groupMigrationTime += System.nanoTime() - main
 
         for (resource in sortedResources) {
             val worth = group.cultureCenter.evaluateResource(resource)

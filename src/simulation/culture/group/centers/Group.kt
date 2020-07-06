@@ -86,17 +86,15 @@ class Group(
         territoryCenter.update()
         if (state == State.Dead)
             return
-        val main = System.nanoTime()
         if (shouldMigrate())
             if (territoryCenter.migrate()) {
                 resourceCenter.moveToNewStorage(territoryCenter.center)
-                populationCenter.movePopulation(territoryCenter.center)
+                populationCenter.stratumCenter.movePopulation(territoryCenter.center)
             }
         if (populationCenter.isMinPassed(territoryCenter.territory))
             territoryCenter.expand()
         else
             territoryCenter.shrink()
-        session.groupMigrationTime += System.nanoTime() - main
         checkNeeds()
         cultureCenter.update()
         processCenter.update(this)

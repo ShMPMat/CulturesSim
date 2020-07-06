@@ -8,11 +8,7 @@ import kotlin.math.log
 
 class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run(): Int {
-        val traderSkill = group.populationCenter.strata
-                .filterIsInstance<TraderStratum>()
-                .firstOrNull()
-                ?.effectiveness
-                ?: 1.0
+        val traderSkill = group.populationCenter.stratumCenter.traderStratum.effectiveness
         return EvaluateResourcesA(group, pack).run() / log(traderSkill + 1.0, 2.0).toInt()
     }
 }

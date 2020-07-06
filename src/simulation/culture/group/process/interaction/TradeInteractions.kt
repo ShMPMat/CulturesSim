@@ -21,7 +21,9 @@ class TradeInteraction(
                 amount
         ).run()
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
-        if (priceForP == 0) return emptyList()
+        if (priceForP == 0) {
+            return emptyList()
+        }
 
         val priceInResources = ChooseResourcesA(
                 participator,
@@ -46,7 +48,7 @@ class TradeInteraction(
             RelationsChangeInteraction(initiator, participator, 0.001).run()
             IncStratumImportanceA(
                     initiator,
-                    initiator.populationCenter.strata.first { it is TraderStratum },
+                    initiator.populationCenter.stratumCenter.traderStratum,
                     1
             ).run()
 
