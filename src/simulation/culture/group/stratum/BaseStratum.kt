@@ -41,7 +41,7 @@ abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
                         randomElement(goodTiles, Controller.session.random),
                         TileTag(tagType + "_" + innerPlaces.size, tagType)
                 )
-                innerPlaces.add(place)
+                addPlace(place)
             }
         } else
             place = randomElement(innerPlaces, Controller.session.random)
@@ -50,6 +50,8 @@ abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
 
         place.addResource(resource)
     }
+
+    fun addPlace(place: StaticPlace) = innerPlaces.add(place)
 
     override fun toString() = "\nEgo resources: ${ego.place.current.owned}"
 }

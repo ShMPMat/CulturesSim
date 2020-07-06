@@ -16,8 +16,8 @@ class StratumCenter(initTile: Tile) {
         get() = _strata
 
     init {
-        addStratum(WarriorStratum(initTile))
-        addStratum(TraderStratum(initTile))
+        _strata.add(WarriorStratum(initTile))
+        _strata.add(TraderStratum(initTile))
     }
 
     val traderStratum: TraderStratum = strata
@@ -49,8 +49,16 @@ class StratumCenter(initTile: Tile) {
     }
 
     fun addStratum(stratum: Stratum) {
-        //TODO look at Warrior and Trade
-        _strata.add(stratum)
+        when (stratum) {
+            is TraderStratum -> mergeStrata(traderStratum, stratum)
+            is WarriorStratum -> mergeStrata(warriorStratum, stratum)
+            else -> _strata.add(stratum)
+        }
+    }
+
+    private fun mergeStrata(internal: NonAspectStratum, external: NonAspectStratum) {
+        internal.population += external.population
+        external.places.forEach { internal.addPlace(it) }
     }
 
     internal fun update(accessibleTerritory: Territory, group: Group, turnResources: MutableResourcePack) {

@@ -7,7 +7,7 @@ import simulation.space.tile.Tile
 
 abstract class NonAspectStratum(tile: Tile, name: String) : BaseStratum(tile, name) {
     override var population: Int = 0
-        protected set
+        internal set
 
     protected var usedThisTurn = false
     protected var unusedTurns = 0
