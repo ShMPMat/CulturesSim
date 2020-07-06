@@ -52,6 +52,7 @@ public class Controller {
     public final double egoRenewalProb = 0.08;
     public final double behaviourUpdateProb = 0.1;
     public final double egoAcquisitionProb = 0.05;
+    public final double tradeStockUpdateProb = 0.1;
 
     public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
@@ -149,10 +150,12 @@ public class Controller {
     public void turn() {
         interactionModel.turn(world);
         world.incrementTurn();
-        System.out.println("Overall - " + overallTime + " Groups - " + groupTime + " Others - " + othersTime
-                + " Groups to others - " + ((double) groupTime) / ((double) othersTime)
-                + " main update to others - " + ((double) groupMainTime) / ((double) groupOthersTime)
-                + " current test to others - " + ((double) groupMigrationTime) / ((double) groupInnerOtherTime));
+        System.out.println(
+                "Overall - " + overallTime + " Groups - " + groupTime + " Others - " + othersTime
+              + " Groups to others - " + ((double) groupTime) / ((double) othersTime)
+              + " main update to others - " + ((double) groupMainTime) / ((double) groupOthersTime)
+              + " current test to others - " + ((double) groupMigrationTime) / ((double) groupInnerOtherTime)
+        );
     }
 
     public void geologicTurn() {

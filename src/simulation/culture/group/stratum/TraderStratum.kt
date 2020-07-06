@@ -1,21 +1,26 @@
 package simulation.culture.group.stratum
 
+import shmp.random.testProbability
 import simulation.Controller
+import simulation.Controller.*
 import simulation.SimulationException
 import simulation.culture.aspect.getAspectImprovement
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
+import simulation.culture.group.process.action.TradeEvaluateResourcesA
 import simulation.culture.group.request.AspectImprovementRequest
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestCore
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePromise
+import simulation.space.resource.container.ResourcePromisePack
 import simulation.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
 
 class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
-    private val tradeAspect = Controller.session.world.aspectPool.get("Trade")
+    private val tradeAspect = session.world.aspectPool.get("Trade")
             ?: throw SimulationException("No aspect Trade exists for the $name")
 
     private var _effectiveness = 1.0
@@ -24,6 +29,9 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
     private var workedPopulation = 0
     override val freePopulation: Int
         get() = population - workedPopulation
+
+    var stock = ResourcePromisePack()
+        private set
 
     val effectiveness: Double
         get() {
@@ -53,11 +61,23 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
         super.update(accessibleResources, accessibleTerritory, group)
 
+        tradeStockUpdate(group)
         updatePlaces(group)
     }
 
+    private fun tradeStockUpdate(group: Group) {
+        if (testProbability(session.tradeStockUpdateProb, session.random)) {
+            val valuableResources = group.populationCenter.turnResources.resources
+                    .map { it to group.cultureCenter.evaluateResource(it) }
+                    .filter { (r, n) -> r.genome.isMovable && n >= 10 }
+                    .map { (r, _) -> ResourcePromise(r, r.amount) }
+            stock = ResourcePromisePack(valuableResources)
+        }
+    }
+
+
     private fun updatePlaces(group: Group) {
-        if (!Controller.session.isTime(Controller.session.stratumTurnsBeforeInstrumentRenewal))
+        if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal))
             return
 
         if (!group.territoryCenter.settled)
@@ -80,7 +100,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
         }
 
         usedAspects.forEach {
-            it.gainUsefulness(Controller.session.stratumTurnsBeforeInstrumentRenewal * 2)
+            it.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2)
         }
         pack.resources.forEach { addEnhancement(it, group) }
     }

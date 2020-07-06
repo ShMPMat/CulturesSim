@@ -4,7 +4,6 @@ import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
 import simulation.culture.group.request.RequestCore
-import simulation.culture.group.request.ResourceRequest
 import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.request.resourceToRequest
 import simulation.space.resource.Resource
@@ -52,30 +51,25 @@ class ProduceSimpleResourceA(
 
 class ChooseResourcesA(
         group: Group,
-        val pack: ResourcePack,
+        val pack: ResourcePromisePack,
         val amount: Int,
         val banned: List<Resource> = listOf()
 ) : AbstractGroupAction(group) {
     override fun run(): ResourcePromisePack {
+        pack.update()
+
         val chosenResources = mutableListOf<ResourcePromise>()
         var leftAmount = amount
         val main = System.nanoTime()
         val sortedResources = pack.resources
-                .map { it to group.cultureCenter.evaluateResource(it) }
-                .filter { (r, n) -> r.genome.isMovable && n >= 10 }
-                .sortedByDescending { (_, n) -> n }
-                .map { (r, _) -> r }
+                .filter { p -> p.resource.genome.isMovable && p.resource !in banned }
         Controller.session.groupMigrationTime += System.nanoTime() - main
 
-        for (resource in sortedResources) {
-            val worth = group.cultureCenter.evaluateResource(resource)
-            if(worth <= 1)
-                break
-            if (banned.any { it.ownershiplessEquals(resource) })
-                continue
+        for (promise in sortedResources) {
+            val worth = group.cultureCenter.evaluateResource(promise.makeCopy())
 
             val amountToTook = ceil(leftAmount.toDouble() / worth).toInt()
-            val takenPart = ResourcePromise(resource, amountToTook)
+            val takenPart = ResourcePromise(promise.resource, amountToTook)
             leftAmount -= takenPart.amount * worth
             chosenResources.add(takenPart)
 

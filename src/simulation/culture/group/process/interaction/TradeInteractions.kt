@@ -6,7 +6,6 @@ import simulation.culture.group.process.action.ChooseResourcesA
 import simulation.culture.group.process.action.IncStratumImportanceA
 import simulation.culture.group.process.action.ReceivePopulationResourcesA
 import simulation.culture.group.process.action.TradeEvaluateResourcesA
-import simulation.culture.group.stratum.TraderStratum
 
 
 class TradeInteraction(
@@ -17,7 +16,7 @@ class TradeInteraction(
     override fun run(): List<Event> {
         val wantedResources = ChooseResourcesA(
                 initiator,
-                participator.populationCenter.turnResources,
+                participator.populationCenter.stratumCenter.traderStratum.stock,
                 amount
         ).run()
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
@@ -27,7 +26,7 @@ class TradeInteraction(
 
         val priceInResources = ChooseResourcesA(
                 participator,
-                initiator.populationCenter.turnResources,
+                participator.populationCenter.stratumCenter.traderStratum.stock,
                 priceForP,
                 wantedResources.makeCopy().resources
         ).run()
