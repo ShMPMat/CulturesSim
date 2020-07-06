@@ -43,7 +43,7 @@ class TradeInteraction(
             ReceivePopulationResourcesA(initiator, got).run()
             ReceivePopulationResourcesA(participator, given).run()
 
-            RelationsImprovementInteraction(initiator, participator, 0.001).run()
+            RelationsChangeInteraction(initiator, participator, 0.001).run()
             IncStratumImportanceA(
                     initiator,
                     initiator.populationCenter.strata.first { it is TraderStratum },

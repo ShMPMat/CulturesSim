@@ -5,11 +5,15 @@ import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
 
 
-class ImproveRelationsA(group: Group, val target: Group, val amount: Double) : AbstractGroupAction(group) {
+class ChangeRelationsA(
+        group: Group,
+        private val target: Group,
+        private val delta: Double
+) : AbstractGroupAction(group) {
     override fun run() {
         val targetRelation = group.relationCenter.relations.firstOrNull { it.other == target }
         if (targetRelation != null)
-            targetRelation.positive += amount
+            targetRelation.positive += delta
     }
 }
 
