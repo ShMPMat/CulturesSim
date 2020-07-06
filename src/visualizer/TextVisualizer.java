@@ -123,7 +123,7 @@ public class TextVisualizer implements Visualizer {
      */
     public void print() {
         StringBuilder main = new StringBuilder();
-        main.append(world.getTurn()).append("\n");
+        main.append(world.getStringTurn()).append("\n");
         lastClaimedTiles = new HashMap<>();
         main.append(printedGroups());
         for (GroupConglomerate group : world.getGroups()) {

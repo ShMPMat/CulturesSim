@@ -56,7 +56,7 @@ class ChooseResourcesA(
         val banned: List<Resource> = listOf()
 ) : AbstractGroupAction(group) {
     override fun run(): ResourcePromisePack {
-        pack.update()
+//        pack.update()
 
         val chosenResources = mutableListOf<ResourcePromise>()
         var leftAmount = amount

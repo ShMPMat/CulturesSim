@@ -112,7 +112,8 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
         }
 
 
-    fun getTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
+    fun getStringTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
+    fun getTurn() = lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000
 
     fun addEvent(event: Event) {
         events.add(event)
@@ -142,5 +143,5 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
         millionTurns++
     }
 
-    override fun toString() = getTurn()
+    override fun toString() = getStringTurn()
 }

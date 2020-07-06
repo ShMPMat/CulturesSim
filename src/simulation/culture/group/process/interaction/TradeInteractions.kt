@@ -1,5 +1,6 @@
 package simulation.culture.group.process.interaction
 
+import simulation.Controller
 import simulation.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.ChooseResourcesA

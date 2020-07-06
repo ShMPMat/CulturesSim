@@ -22,7 +22,7 @@ class Event(var type: Type, val description: String) {
 
     private var attributes: MutableMap<String, Any> = HashMap()
 
-    private val turn: String = Controller.session.world?.getTurn() ?: "Pre-historic"
+    private val turn: String = Controller.session.world?.getStringTurn() ?: "Pre-historic"
 
     constructor(type: Type, description: String, vararg attributes: Any) : this(type, description) {
         var i = 0

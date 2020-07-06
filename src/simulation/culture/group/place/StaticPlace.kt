@@ -36,7 +36,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
         resource.ownershipMarker = ownershipMarker
         _owned.add(resource)
         maxAmounts[resource] = max(maxAmounts[resource] ?: 0, _owned.getResource(resource).amount)
-        _debugAdd.add(resource to Controller.session.world.getTurn())
+        _debugAdd.add(resource to Controller.session.world.getStringTurn())
         tile.addDelayedResource(_owned.getUnpackedResource(resource))
     }
 

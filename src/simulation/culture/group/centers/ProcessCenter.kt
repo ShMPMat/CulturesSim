@@ -38,27 +38,29 @@ class ProcessCenter(type: AdministrationType) {
     }
 
     fun update(group: Group) {
+        val main = System.nanoTime()
         if (testProbability(session.behaviourUpdateProb, session.random))
             updateBehaviours(group)
 
         runBehaviours(group)
+        Controller.session.groupMigrationTime += System.nanoTime() - main
     }
 
     private fun AddAdministrativeBehaviours(group: Group) {
-        if (group.territoryCenter.settled) {
+        if (group.territoryCenter.settled)
             if (behaviours.none { it is ManageRoadsBehaviour })
                 behaviours.add(ManageRoadsBehaviour())
-        }
     }
 
 
     private fun runBehaviours(group: Group) {
-        val main = System.nanoTime()
         val events = behaviours.flatMap {
-            it.run(group)
+//            val main = System.nanoTime()
+            val k = it.run(group)
+//            Controller.session.groupMigrationTime += System.nanoTime() - main
+            k
         }
         events.forEach { group.addEvent(it) }
-        Controller.session.groupMigrationTime += System.nanoTime() - main
     }
 
     override fun toString() = "Type: $type\n" +
