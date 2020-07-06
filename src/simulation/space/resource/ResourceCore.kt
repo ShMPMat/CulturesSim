@@ -82,6 +82,9 @@ class ResourceCore(
                     resource = resource.copy(n)
                     resource.core = resource.core.instantiateTemplateCopy(this)
                     resource.computeHash()
+                    if (resource.tags.groupBy { it.name }.map { it.value.size }.any { it > 1 } || resource.toString().contains("House")) {
+                        val k = 0
+                    }
                     return@map resource
                 } else {
                     return@map resource.copy(n)

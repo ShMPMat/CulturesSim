@@ -143,6 +143,7 @@ class PopulationCenter(
                 break
 
             val produced: ResourcePack = stratum.use(request.getController(ceil(amount).toInt()))
+
             if (evaluator.evaluate(produced) > 0)
                 usedAspects.add(stratum.aspect)
             pack.addAll(produced)

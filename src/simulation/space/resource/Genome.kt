@@ -130,12 +130,10 @@ open class Genome(
     }
 
     private fun computeTags() {
-        tags.addAll(primaryMaterial!!.tags)
-        for ((tag, labeler) in data.additionalTags) {
-            if (!tags.contains(tag) && labeler.isSuitable(this)) {
+        tags.addAll(primaryMaterial!!.tags.filter { it !in tags })
+        for ((tag, labeler) in data.additionalTags)
+            if (!tags.contains(tag) && labeler.isSuitable(this))
                 tags.add(tag.copy())
-            }
-        }
     }
 
     val baseName: String

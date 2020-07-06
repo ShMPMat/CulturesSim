@@ -30,13 +30,9 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.parts.forEach { addPart(it) }
     }
 
-    fun getInstantiatedGenome(templateLegacy: ResourceCore): Genome {
-        val genome = copy(
-                deathTime = templateLegacy.genome.lifespan,
-                templateLegacy = templateLegacy,
-                primaryMaterial = templateLegacy.genome.primaryMaterial
-        )
-        genome.computeTagsFromMaterials()
-        return genome
-    }
+    fun getInstantiatedGenome(templateLegacy: ResourceCore) = copy(
+            deathTime = templateLegacy.genome.lifespan,
+            templateLegacy = templateLegacy,
+            primaryMaterial = templateLegacy.genome.primaryMaterial
+    )
 }
