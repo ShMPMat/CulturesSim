@@ -120,16 +120,14 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
         val accessibility = when {
             !resource.genome.isDesirable -> return 1
             !isResourceDesirable(resource) -> 1
-            aspectCenter.aspectPool.producedResources.map { it.first }.contains(resource) -> 2
+            aspectCenter.aspectPool.producedResources.contains(resource) -> 2
             conglomerate.any { it.other.resourceCenter.pack.contains(resource) } -> 3
             conglomerate.any {
-                it.other.cultureCenter.aspectCenter.aspectPool.producedResources
-                        .map { p -> p.first }.contains(resource)
+                it.other.cultureCenter.aspectCenter.aspectPool.producedResources.contains(resource)
             } -> 4
             others.any { it.other.resourceCenter.pack.contains(resource) } -> 5
             others.any {
-                it.other.cultureCenter.aspectCenter.aspectPool.producedResources
-                        .map { p -> p.first }.contains(resource)
+                it.other.cultureCenter.aspectCenter.aspectPool.producedResources.contains(resource)
             } -> 6
             else -> 10
         }

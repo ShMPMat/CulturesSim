@@ -112,8 +112,6 @@ private fun findGroupResource(resourceName: String, group: Group) = group.overal
         ?: group.overallTerritory.differentResources
                 .firstOrNull { it.simpleName == resourceName }
         ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
-                .map { it.first }
                 .firstOrNull { it.baseName == resourceName }
         ?: group.cultureCenter.aspectCenter.aspectPool.producedResources
-                .map { it.first }
                 .firstOrNull { it.simpleName == resourceName }

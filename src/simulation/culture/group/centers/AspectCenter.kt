@@ -59,7 +59,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             changedAspectPool.add(currentAspect)
             if (currentAspect !is ConverseWrapper) { //TODO maybe should do the same in straight
                 val allResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
-                allResources.addAll(_mutableAspectPool.producedResources.map { it.first })
+                allResources.addAll(_mutableAspectPool.producedResources)
                 for (resource in allResources)
                     addConverseWrapper(currentAspect, resource)
             }
@@ -121,7 +121,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         get() {
             val options: List<ConverseWrapper> = ArrayList(_converseWrappers) //TODO maybe do it after the middle part?
             val newResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
-            newResources.addAll(_mutableAspectPool.producedResources.map { it.first })
+            newResources.addAll(_mutableAspectPool.producedResources)
             newResources.removeAll(_lastResourcesForCw)
             for (aspect in _mutableAspectPool.filter { it !is ConverseWrapper })
                 for (resource in newResources)

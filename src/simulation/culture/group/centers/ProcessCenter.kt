@@ -1,6 +1,7 @@
 package simulation.culture.group.centers
 
 import shmp.random.testProbability
+import simulation.Controller
 import simulation.Controller.*
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.process.behaviour.*
@@ -19,7 +20,7 @@ class ProcessCenter(type: AdministrationType) {
             MakeTradeResourceBehaviour(5).times(
                     0,
                     1,
-                    minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 5 }
+                    minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
             )
     )
 
@@ -28,7 +29,7 @@ class ProcessCenter(type: AdministrationType) {
                 .mapNotNull { it.update(group) }
                 .toMutableList()
 
-        return when (type) {
+        when (type) {
             AdministrationType.Main -> AddAdministrativeBehaviours(group)
             else -> {
 
@@ -52,10 +53,12 @@ class ProcessCenter(type: AdministrationType) {
 
 
     private fun runBehaviours(group: Group) {
+        val main = System.nanoTime()
         val events = behaviours.flatMap {
             it.run(group)
         }
         events.forEach { group.addEvent(it) }
+        Controller.session.groupMigrationTime += System.nanoTime() - main
     }
 
     override fun toString() = "Type: $type\n" +

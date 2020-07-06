@@ -44,8 +44,8 @@ class Ego(tile: Tile, name: String) {
                 .take(1).toList()
         place.current.addResources(best.map { it.second })
         val allGoodProduced = group.cultureCenter.aspectCenter.aspectPool.producedResources.asSequence()
-                .map { group.cultureCenter.evaluateResource(it.first).toDouble() to it.first }
-                .filter { it.first > 3 }.toList()
+                .map { group.cultureCenter.evaluateResource(it).toDouble() to it }
+                .filter { (n) -> n > 3 }.toList()
         if (allGoodProduced.isNotEmpty()) {
             val chosen = randomElement(allGoodProduced, { it.first }, session.random)
             val request = resourceToRequest(chosen.second, group, 1, 50)

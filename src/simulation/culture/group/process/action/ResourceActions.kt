@@ -60,10 +60,8 @@ class ChooseResourcesA(
 
         val chosenResources = mutableListOf<ResourcePromise>()
         var leftAmount = amount
-        val main = System.nanoTime()
         val sortedResources = pack.resources
                 .filter { p -> p.resource.genome.isMovable && p.resource !in banned }
-        Controller.session.groupMigrationTime += System.nanoTime() - main
 
         for (promise in sortedResources) {
             val worth = group.cultureCenter.evaluateResource(promise.makeCopy())

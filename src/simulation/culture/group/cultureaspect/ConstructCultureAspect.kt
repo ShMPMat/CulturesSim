@@ -82,9 +82,8 @@ fun constructBetterAspectUseReasonRitual(
             if (myAspect is ConverseWrapper)
                 return AspectRitual(myAspect, getRandom(group, random), reason)
         } else {
-            val options: List<ConverseWrapper> = aspectPool.producedResources
-                    .filter { (r) -> r.baseName == meme.observerWord }
-                    .map { it.second }
+            val options: List<ConverseWrapper> = aspectPool.converseWrappers
+                    .filter { meme.observerWord in it.producedResources.map { r -> r.baseName } }
             return if (options.isNotEmpty())
                 AspectRitual(randomElement(options, random), getRandom(group, random), reason)
             else {

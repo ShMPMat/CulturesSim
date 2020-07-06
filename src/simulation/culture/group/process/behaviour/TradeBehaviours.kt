@@ -13,7 +13,8 @@ object RandomTradeBehaviour : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        if (groups.isEmpty()) return emptyList()
+        if (groups.isEmpty())
+            return emptyList()
 
         val groupToTrade = randomElement(
                 groups,
@@ -29,12 +30,12 @@ object RandomTradeBehaviour : AbstractGroupBehaviour() {
 class MakeTradeResourceBehaviour(val amount: Int) : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         val resources = group.cultureCenter.aspectCenter.aspectPool.producedResources
-                .map { it.first }
 
-        if (resources.isEmpty()) return emptyList()
+        if (resources.isEmpty())
+            return emptyList()
 
-        val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble().pow(3) }
-        val chosenResource = randomElement(resources, evaluator, Controller.session.random)
+        val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble() }
+        val chosenResource = randomElement(resources, Controller.session.random)
         val pack = ProduceExactResourceA(group, chosenResource, amount, 20).run()
 
         val events = if (pack.isEmpty)

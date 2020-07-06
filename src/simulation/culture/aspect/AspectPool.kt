@@ -21,12 +21,8 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected val aspects: Set<Aspect>
         get() = aspectMap.values.toSet()
 
-    val producedResources: List<Pair<Resource, ConverseWrapper>>
-        get() = converseWrappers
-                .flatMap { w ->
-                    val result = w.producedResources
-                    result.zip(List(result.size) { w })
-                }
+    val producedResources: List<Resource>
+        get() = converseWrappers.flatMap { it.producedResources }
 
     val converseWrappers: Set<ConverseWrapper> get() = _cws
 

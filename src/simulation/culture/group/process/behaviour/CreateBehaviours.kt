@@ -1,6 +1,7 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
+import simulation.Controller
 import simulation.Controller.session
 import simulation.Event
 import simulation.SimulationException
@@ -19,14 +20,15 @@ import simulation.space.tile.getDistance
 
 object RandomArtifactBehaviour : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
-        if (group.cultureCenter.memePool.isEmpty)
+        if (group.cultureCenter.memePool.isEmpty) {
             return emptyList()
+        }
 
         val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
-                .filter { it.first.hasMeaning }
-                .map { it.first }
-        if (resourcesWithMeaning.isEmpty())
+                .filter { it.hasMeaning }
+        if (resourcesWithMeaning.isEmpty()) {
             return emptyList()
+        }
 
         val chosen = randomElement(resourcesWithMeaning, session.random)
         val result = group.populationCenter.executeRequest(resourceToRequest(chosen, group, 1, 5)).pack
