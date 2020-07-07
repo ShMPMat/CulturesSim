@@ -5,7 +5,7 @@ import simulation.Controller
 import simulation.Event
 import simulation.culture.group.centers.Group
 
-class ChanceWrapperBehaviour(
+class ChanceWrapperB(
         val behaviour: GroupBehaviour,
         val probability: Double,
         private val probabilityUpdate: (Group) -> Double = { probability }
@@ -15,8 +15,8 @@ class ChanceWrapperBehaviour(
                 behaviour.run(group)
             else emptyList()
 
-    override fun update(group: Group): ChanceWrapperBehaviour? {
-        return ChanceWrapperBehaviour(
+    override fun update(group: Group): ChanceWrapperB? {
+        return ChanceWrapperB(
                 behaviour.update(group) ?: return null,
                 probabilityUpdate(group),
                 probabilityUpdate
@@ -28,10 +28,10 @@ class ChanceWrapperBehaviour(
 }
 
 fun GroupBehaviour.withProbability(probability: Double, probabilityUpdate: (Group) -> Double = { probability })
-        = ChanceWrapperBehaviour(this, probability, probabilityUpdate)
+        = ChanceWrapperB(this, probability, probabilityUpdate)
 
 
-class TimesWrapperBehaviour(
+class TimesWrapperB(
         val behaviour: GroupBehaviour,
         val min: Int,
         val max: Int = min + 1,
@@ -43,8 +43,8 @@ class TimesWrapperBehaviour(
         return (0 until times).flatMap { behaviour.run(group) }
     }
 
-    override fun update(group: Group): TimesWrapperBehaviour? {
-        return TimesWrapperBehaviour(
+    override fun update(group: Group): TimesWrapperB? {
+        return TimesWrapperB(
                 behaviour.update(group) ?: return null,
                 minUpdate(group),
                 maxUpdate(group),
@@ -63,4 +63,4 @@ fun GroupBehaviour.times(
         minUpdate: (Group) -> Int = { min },
         maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
 )
-        = TimesWrapperBehaviour(this, min, max, minUpdate, maxUpdate)
+        = TimesWrapperB(this, min, max, minUpdate, maxUpdate)

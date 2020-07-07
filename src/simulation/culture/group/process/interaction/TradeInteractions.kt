@@ -1,6 +1,5 @@
 package simulation.culture.group.process.interaction
 
-import simulation.Controller
 import simulation.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.ChooseResourcesA
@@ -45,7 +44,7 @@ class TradeInteraction(
             ReceivePopulationResourcesA(initiator, got).run()
             ReceivePopulationResourcesA(participator, given).run()
 
-            RelationsChangeInteraction(initiator, participator, 0.001).run()
+            ChangeRelationsInteraction(initiator, participator, 0.5).run()
             IncStratumImportanceA(
                     initiator,
                     initiator.populationCenter.stratumCenter.traderStratum,

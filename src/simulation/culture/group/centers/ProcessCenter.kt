@@ -3,9 +3,7 @@ package simulation.culture.group.centers
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Controller.*
-import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.process.behaviour.*
-import simulation.culture.group.stratum.TraderStratum
 
 class ProcessCenter(type: AdministrationType) {
     var type = type
@@ -14,14 +12,15 @@ class ProcessCenter(type: AdministrationType) {
         }
 
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
-            RandomArtifactBehaviour.withProbability(0.1),
-            RandomTradeBehaviour.times(1, 3),
-            RandomGroupAddBehaviour.withProbability(0.01),
-            MakeTradeResourceBehaviour(5).times(
+            RandomArtifactB.withProbability(0.1),
+            RandomTradeB.times(1, 3),
+            RandomGroupAddB.withProbability(0.01),
+            MakeTradeResourceB(5).times(
                     0,
                     1,
                     minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
-            )
+            ),
+            TurnRequestsHelpB()
     )
 
     private fun updateBehaviours(group: Group) {
@@ -48,17 +47,14 @@ class ProcessCenter(type: AdministrationType) {
 
     private fun AddAdministrativeBehaviours(group: Group) {
         if (group.territoryCenter.settled)
-            if (behaviours.none { it is ManageRoadsBehaviour })
-                behaviours.add(ManageRoadsBehaviour())
+            if (behaviours.none { it is ManageRoadsB })
+                behaviours.add(ManageRoadsB())
     }
 
 
     private fun runBehaviours(group: Group) {
         val events = behaviours.flatMap {
-//            val main = System.nanoTime()
-            val k = it.run(group)
-//            Controller.session.groupMigrationTime += System.nanoTime() - main
-            k
+            it.run(group)
         }
         events.forEach { group.addEvent(it) }
     }

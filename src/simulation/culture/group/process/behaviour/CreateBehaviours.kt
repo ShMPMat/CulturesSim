@@ -1,7 +1,6 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
-import simulation.Controller
 import simulation.Controller.session
 import simulation.Event
 import simulation.SimulationException
@@ -13,12 +12,11 @@ import simulation.culture.group.process.action.ProduceSimpleResourceA
 import simulation.culture.group.process.action.ReceiveGroupWideResourcesA
 import simulation.culture.group.request.resourceToRequest
 import simulation.space.Territory
-import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
 
 
-object RandomArtifactBehaviour : AbstractGroupBehaviour() {
+object RandomArtifactB : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         if (group.cultureCenter.memePool.isEmpty) {
             return emptyList()
@@ -45,7 +43,7 @@ object RandomArtifactBehaviour : AbstractGroupBehaviour() {
     override fun toString() = "Make a random Resource with some meaning"
 }
 
-class BuildRoadBehaviour(private val path: Territory, val projectName: String) : PlanBehaviour() {
+class BuildRoadB(private val path: Territory, val projectName: String) : PlanBehaviour() {
     private var built: Int = 0
 
     override fun run(group: Group): List<Event> {
@@ -83,10 +81,10 @@ class BuildRoadBehaviour(private val path: Territory, val projectName: String) :
     override fun toString() = "Building a road, ${built.toDouble() / (built + path.size)} complete"
 }
 
-class ManageRoadsBehaviour : GroupBehaviour {
+class ManageRoadsB : GroupBehaviour {
     private var projectsDone = 0
     private val roadPlaces = mutableListOf<StaticPlace>()
-    private var roadConstruction: BuildRoadBehaviour? = null
+    private var roadConstruction: BuildRoadB? = null
 
     override fun run(group: Group): List<Event> {
         if (roadConstruction?.isFinished != false)
@@ -133,7 +131,7 @@ class ManageRoadsBehaviour : GroupBehaviour {
 
         val path = group.territoryCenter.makePath(start, finish)
                 ?: return
-        roadConstruction = BuildRoadBehaviour(
+        roadConstruction = BuildRoadB(
                 Territory(path),
                 "${group.name} road $projectsDone"
         )

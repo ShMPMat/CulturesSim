@@ -4,14 +4,9 @@ import extra.getTruncated
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupError
 import simulation.culture.group.intergroup.Relation
-import simulation.culture.group.request.Request
-import simulation.culture.group.request.RequestPool
-import simulation.space.resource.container.MutableResourcePack
-import simulation.space.resource.container.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getDistance
 import java.util.*
-import kotlin.math.ceil
 import kotlin.math.max
 
 class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
@@ -81,25 +76,6 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
         newRelation.pair = relation
         relationsMap[relation.owner] = newRelation
         return newRelation
-    }
-
-    fun requestTrade(pool: RequestPool) {
-        for ((request, pack) in pool.requests)
-            pack.addAll(trade(request, request.amountLeft(pack)))
-    }
-
-    fun trade(request: Request, amount: Double): ResourcePack {
-        if (amount <= 0) return ResourcePack()
-        val pack = MutableResourcePack()
-        var amountLeft = amount
-        for (relation in relations.sortedByDescending { it.positive }) {
-            val given = relation.other.askFor(request.reducedAmountCopy(amountLeft), relation.owner)
-            relation.positiveInteractions += (request.evaluator.evaluate(given) / amount).toInt()
-            pack.addAll(given)
-            amountLeft = amount - request.evaluator.evaluate(pack)
-            if (amountLeft <= 0) break
-        }
-        return pack
     }
 
     override fun toString() = relations

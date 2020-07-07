@@ -9,13 +9,12 @@ import simulation.culture.group.process.interaction.TradeInteraction
 import simulation.space.resource.Resource
 import kotlin.math.pow
 
-object RandomTradeBehaviour : AbstractGroupBehaviour() {
+object RandomTradeB : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        if (groups.isEmpty()) {
+        if (groups.isEmpty())
             return emptyList()
-        }
 
         val groupToTrade = randomElement(
                 groups,
@@ -28,15 +27,12 @@ object RandomTradeBehaviour : AbstractGroupBehaviour() {
     override fun toString() = "Trade with a random neighbour"
 }
 
-class MakeTradeResourceBehaviour(val amount: Int) : AbstractGroupBehaviour() {
+class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
-//        val main = System.nanoTime()
         val resources = group.cultureCenter.aspectCenter.aspectPool.producedResources
 
-        if (resources.isEmpty()) {
-//            Controller.session.groupMigrationTime += System.nanoTime() - main
+        if (resources.isEmpty())
             return emptyList()
-        }
 
         val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble() }
         val chosenResource = randomElement(resources, Controller.session.random)
@@ -49,7 +45,6 @@ class MakeTradeResourceBehaviour(val amount: Int) : AbstractGroupBehaviour() {
 
         group.populationCenter.turnResources.addAll(pack)
 
-//        Controller.session.groupMigrationTime += System.nanoTime() - main
         return events
     }
 

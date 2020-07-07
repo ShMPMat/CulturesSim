@@ -3,6 +3,7 @@ package simulation.culture.group.process.action
 import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
+import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestCore
 import simulation.culture.group.request.SimpleResourceRequest
 import simulation.culture.group.request.resourceToRequest
@@ -34,6 +35,13 @@ class ProduceExactResourceA(
 ): AbstractGroupAction(group) {
     override fun run() =
             group.populationCenter.executeRequest(resourceToRequest(resource, group, amount, need)).pack
+}
+
+class ExecuteRequestA(
+        group: Group,
+        val request: Request
+): AbstractGroupAction(group) {
+    override fun run() = group.populationCenter.executeRequest(request).pack
 }
 
 class ProduceSimpleResourceA(

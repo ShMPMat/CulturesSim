@@ -161,7 +161,6 @@ class Group(
     }
 
     fun intergroupUpdate() {
-        relationCenter.requestTrade(cultureCenter.requestCenter.turnRequests)
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             var toUpdate = overallTerritory
                     .outerBrink //TODO dont like territory checks in Group
@@ -227,10 +226,6 @@ class Group(
         }
         session.world.addGroupConglomerate(conglomerate)
     }
-
-    fun askFor(request: Request, owner: Group) =
-            if (owner.parentGroup != parentGroup) ResourcePack()
-            else populationCenter.executeRequest(request.reassign(this)).pack
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

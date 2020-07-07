@@ -11,7 +11,7 @@ class Relation(var owner: Group, var other: Group, var status: Status = Status.N
             if (field <= 0.00001) status = Status.War
         }
 
-    var positiveInteractions = 0
+    var positiveInteractions = 0.0
 
     var pair: Relation = this
 
