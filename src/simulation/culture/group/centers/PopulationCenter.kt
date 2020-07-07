@@ -169,7 +169,7 @@ class PopulationCenter(
 
     override fun toString() = """
         Free - $freePopulation
-        stratumCenter
+        $stratumCenter
         
         Circulating resources:
         ${turnResources.addLinePrefix()}

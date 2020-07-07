@@ -283,6 +283,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.lifespan}, amount - $amount, tags: " +
+            "lifespan - ${genome.lifespan}, amount - $amount, ownership - $ownershipMarker, tags: " +
             tags.joinToString(" ") { it.name }
 }
