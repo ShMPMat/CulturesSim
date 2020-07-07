@@ -16,7 +16,7 @@ fun resourcesCounter(world: World): String {
             .filter { it.genome.type in listOf(Genome.Type.Animal, Genome.Type.Plant) }
             .map { it to ResourceCount() }
             .toMap()
-    world.map.getTiles().forEach { t ->
+    world.map.tiles.forEach { t ->
         t.resourcePack.resources.forEach {
             if (resourceAmounts.containsKey(it))
                 resourceAmounts.getValue(it).add(it)
