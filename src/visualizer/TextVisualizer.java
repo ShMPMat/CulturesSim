@@ -473,16 +473,10 @@ public class TextVisualizer implements Visualizer {
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;
                         } case Events: {
-                            System.out.println(printEvents(
+                            System.out.println(printRegexEvents(
                                     controller.interactionModel.getAllEvents(),
                                     100,
-                                    e -> {
-                                        if (splitCommand.length > 1) {
-                                            return e.getDescription().contains(splitCommand[1]);
-                                        } else {
-                                            return true;
-                                        }
-                                    }
+                                    splitCommand[1]
                                     ));
                             break;
                         } case Aspects: {

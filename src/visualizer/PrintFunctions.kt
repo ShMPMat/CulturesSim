@@ -9,6 +9,7 @@ import simulation.culture.group.centers.Group
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
+import java.util.regex.PatternSyntaxException
 
 fun resourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
@@ -84,3 +85,11 @@ fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean)
         .filter { predicate(it) }
         .takeLast(amount)
         .joinToString("\n")
+
+fun printRegexEvents(events: List<Event>, amount: Int, regexString: String) = printEvents(events, amount) {
+    try {
+        regexString.toRegex().containsMatchIn(it.description)
+    } catch (e: PatternSyntaxException) {
+        false
+    }
+}
