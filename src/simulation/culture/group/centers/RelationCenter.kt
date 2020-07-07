@@ -36,9 +36,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     fun getMaxConglomerateRelation(conglomerate: GroupConglomerate) =
             getConglomerateGroups(conglomerate).map { it.normalized }.max() ?: 1.0
 
-    fun getNormalizedRelation(group: Group) =
-            if (relationsMap.containsKey(group)) relationsMap[group]?.normalized ?: 0.0
-            else 1.0
+    fun getNormalizedRelation(group: Group) = relationsMap[group]?.normalized ?: 0.5
 
     fun evaluateTile(tile: Tile) = relations.map {
         (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.center)).toInt()
@@ -50,14 +48,15 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     }
 
     private fun updateNewConnections(groups: Collection<Group>, owner: Group) {
-        if (relations.map { it.owner }.any { it != owner }) throw GroupError("Incoherent owner for relations")
-        for (group in groups) {
+        if (relations.map { it.owner }.any { it != owner })
+            throw GroupError("Incoherent owner for relations")
+
+        for (group in groups)
             if (!relationsMap.containsKey(group)) {
                 val relation = Relation(owner, group)
                 relation.pair = group.relationCenter.addMirrorRelation(relation)
                 relationsMap[relation.other] = relation
             }
-        }
     }
 
     private fun updateRelations() {

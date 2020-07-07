@@ -15,10 +15,10 @@ class Relation(var owner: Group, var other: Group, var status: Status = Status.N
 
     var pair: Relation = this
 
-    override fun toString() = "${other.name} is $positive"
-
     val normalized: Double
         get() = (positive + 1) / 2
+
+    override fun toString() = "${other.name} is $positive, $positiveInteractions positive interactions"
 }
 
 enum class Status {

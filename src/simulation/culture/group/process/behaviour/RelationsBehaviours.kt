@@ -1,6 +1,7 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
+import shmp.random.testProbability
 import simulation.Controller
 import simulation.Event
 import simulation.culture.group.centers.Group
@@ -38,6 +39,9 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
         val amount = request.ceiling
         var amountLeft = amount
         for (relation in group.relationCenter.relations.sortedByDescending { it.positive }) {
+            if (!testProbability(relation.normalized, Controller.session.random))
+                continue
+
             val reducedRequest = request.reducedAmountCopy(amountLeft)
             events.addAll(RequestHelpInteraction(relation.owner, relation.other, reducedRequest, pack).run())
 

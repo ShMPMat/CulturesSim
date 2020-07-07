@@ -1,12 +1,12 @@
 package visualizer
 
-/**
- * Represents commands which can be given to visualizer.
- */
+
+//Commands which can be given to visualizer.
 enum class Command(command: String) {
     Conglomerate("^G\\d+_?\\d*"),
     GroupTileReach("^G\\d+ r"),
     GroupProduced("^G\\d+ p"),
+    GroupRelations("^G\\d+ G\\d+"),
     Tile("\\d+ \\d+"),
     Plates("plates"),
     TileTag("tt \\w+"),
@@ -36,9 +36,7 @@ enum class Command(command: String) {
     var pattern = Regex(command)
 }
 
-/**
- * Function returning a command represented in the line.
- */
+
 fun getCommand(line: String): Command {
     for (command in Command.values())
         if (command.pattern.matches(line)) return command

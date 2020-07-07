@@ -1,5 +1,6 @@
 package visualizer
 
+import extra.getTruncated
 import simulation.Event
 import simulation.World
 import simulation.culture.aspect.Aspect
@@ -58,7 +59,26 @@ fun printResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
         .filter { it.first.fullName.contains(substring) }
         .joinToString("\n") { (r, t) -> "${t.x} ${t.y}: ${r.fullName} - ${r.amount}" }
 
-fun printGroup(group: Group) = group.toString()
+fun printGroup(group: Group) = "$group"
+
+fun printConglomerateRelations(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) =
+        """
+            ${printConglomerateRelation(conglomerate1, conglomerate2)}
+            
+            
+            ${printConglomerateRelation(conglomerate2, conglomerate1)}
+        """.trimIndent()
+
+fun printConglomerateRelation(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) =
+        conglomerate1.subgroups.joinToString("\n\n") { g ->
+            """${g.name} - ${g.processCenter.type}:
+                |average - ${g.relationCenter.getAvgConglomerateRelation(conglomerate2)}
+                |min -     ${g.relationCenter.getMinConglomerateRelation(conglomerate2)}
+                |max -     ${g.relationCenter.getMaxConglomerateRelation(conglomerate2)}
+                |In particular:
+                |${g.relationCenter.getConglomerateGroups(conglomerate2).joinToString("\n")}
+                |""".trimMargin()
+        }
 
 fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean) = events
         .filter { predicate(it) }

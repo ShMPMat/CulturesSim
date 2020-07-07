@@ -383,11 +383,19 @@ public class TextVisualizer implements Visualizer {
                             break;
                         } case GroupProduced: {
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
-
                             if (group == null) {
                                 break;
                             }
                             System.out.println(chompToSize(PrintFunctionsKt.printProduced(group), 150));
+                            break;
+                        } case GroupRelations: {
+                            GroupConglomerate c1 = getConglomerate(splitCommand[0]);
+                            GroupConglomerate c2 = getConglomerate(splitCommand[1]);
+                            if (c1 == null || c2 == null) {
+                                System.out.println("No such Conglomerates exist");
+                                break;
+                            }
+                            System.out.println(printConglomerateRelations(c1, c2));
                             break;
                         } case Tile:
                             printTile(
