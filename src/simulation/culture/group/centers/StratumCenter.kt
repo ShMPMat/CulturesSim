@@ -27,32 +27,46 @@ class StratumCenter(initTile: Tile) {
             .filterIsInstance<WarriorStratum>()
             .first()
 
-    fun getByCultNameOrNull(name: String) = strata
-            .filterIsInstance<CultStratum>()
-            .firstOrNull { it.cultName == name }
+    private val cultStrata = mutableMapOf<String, CultStratum>()
+    private val aspectStrata = mutableMapOf<ConverseWrapper, AspectStratum>()
+
+    fun getByCultNameOrNull(name: String) = cultStrata[name]
 
     fun getByCultName(name: String) = getByCultNameOrNull(name)
             ?: throw GroupError("No Stratum for a Cult $name")
 
-    fun getByAspectOrNull(aspect: ConverseWrapper) = _strata
-            .filterIsInstance<AspectStratum>()
-            .firstOrNull { it.aspect == aspect }
+    fun getByAspectOrNull(aspect: ConverseWrapper) = aspectStrata[aspect]
 
     fun getByAspect(aspect: ConverseWrapper) = getByAspectOrNull(aspect)
             ?: throw GroupError("No Stratum for an Aspect ${aspect.name}")
 
-    fun getStrataForRequest(request: Request): List<AspectStratum> {
-        return _strata
-                .filter { request.isAcceptable(it) != null }
-                .sortedBy { request.satisfactionLevel(it) }
-                .filterIsInstance<AspectStratum>()
-    }
+    fun getStrataForRequest(request: Request): List<AspectStratum> = _strata
+            .filter { request.isAcceptable(it) != null }
+            .sortedBy { request.satisfactionLevel(it) }
+            .filterIsInstance<AspectStratum>()
 
     fun addStratum(stratum: Stratum) {
         when (stratum) {
             is TraderStratum -> mergeStrata(traderStratum, stratum)
             is WarriorStratum -> mergeStrata(warriorStratum, stratum)
-            else -> _strata.add(stratum)
+            else -> {
+                when (stratum) {
+                    is CultStratum -> {
+                        val innerStratum = cultStrata[stratum.cultName]
+                        if (innerStratum != null)
+                            mergeStrata(innerStratum, stratum)
+                        else
+                            cultStrata[stratum.cultName] = stratum
+                    }
+                    is AspectStratum -> {
+                        val innerStratum = aspectStrata[stratum.aspect]
+                        if (innerStratum != null)
+                            throw GroupError("$stratum is already present in the Center")
+                        aspectStrata[stratum.aspect] = stratum
+                    }
+                }
+                _strata.add(stratum)
+            }
         }
     }
 
