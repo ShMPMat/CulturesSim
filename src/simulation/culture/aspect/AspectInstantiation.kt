@@ -6,12 +6,11 @@ import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.group.GroupError
-import simulation.space.resource.ActionMatcher
-import simulation.space.resource.ResourceAction
+import simulation.space.resource.action.ActionMatcher
+import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
     private val aspects = mutableListOf<Aspect>()

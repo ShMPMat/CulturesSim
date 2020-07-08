@@ -27,6 +27,7 @@
 
 -Stone         2500      -hard:7     -sturdy:7                              -solid:1
 -Ruby          2500      -hard:8     -sturdy:8                              -solid:1
+-Pearl         2000      -hard:5     -sturdy:5                              -solid:1
 
 -Flame         10        -burns:1                                 -warmth:1 -gas:1
 -Ash           80        -soft:2     -powder:1                              -mass:1

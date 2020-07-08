@@ -3,7 +3,7 @@ package simulation.culture.aspect
 import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.space.resource.Resource
-import simulation.space.resource.ResourceAction
+import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 
 data class AspectCore(

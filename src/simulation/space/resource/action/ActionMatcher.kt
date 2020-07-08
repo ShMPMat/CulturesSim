@@ -1,5 +1,6 @@
-package simulation.space.resource
+package simulation.space.resource.action
 
+import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.tag.labeler.ResourceLabeler
 

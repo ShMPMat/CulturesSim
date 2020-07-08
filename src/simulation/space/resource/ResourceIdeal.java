@@ -1,6 +1,6 @@
 package simulation.space.resource;
 
-import simulation.culture.aspect.Aspect;
+import simulation.space.resource.action.ResourceAction;
 import simulation.space.tile.Tile;
 
 import java.util.List;

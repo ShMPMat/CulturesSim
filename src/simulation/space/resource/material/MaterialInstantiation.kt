@@ -2,7 +2,7 @@ package simulation.space.resource.material
 
 import extra.InputDatabase
 import simulation.SimulationException
-import simulation.space.resource.ResourceAction
+import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.collections.ArrayList

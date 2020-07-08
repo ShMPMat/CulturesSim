@@ -2,6 +2,8 @@ package simulation.space.resource
 
 import simulation.SimulationException
 import simulation.space.SpaceError
+import simulation.space.resource.action.ConversionCore
+import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
 import java.util.*

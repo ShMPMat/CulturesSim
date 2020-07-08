@@ -6,6 +6,9 @@ import simulation.Controller
 import simulation.Event
 import simulation.SimulationException
 import simulation.space.SpaceData
+import simulation.space.resource.action.ConversionCore
+import simulation.space.resource.action.ResourceAction
+import simulation.space.resource.action.ResourceProbabilityAction
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
 import java.util.*
@@ -149,6 +152,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             return ResourceUpdateResult(false, result)
 
         result.addAll(applyAction(specialActions.getValue("_EachTurn_"), amount))
+        result.addAll(core.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) })
 
         for (dependency in core.genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)
@@ -180,6 +184,21 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         distribute(tile)
 
         return ResourceUpdateResult(true, result)
+    }
+
+    private fun applyProbabilityAction(action: ResourceProbabilityAction): List<Resource> {
+        val expectedValue = amount * action.probability
+        val part =
+                if (expectedValue < 1.0)
+                    if (testProbability(expectedValue, Controller.session.random))
+                        1
+                    else 0
+                else expectedValue.toInt()
+
+        return if (action.isWasting)
+            applyActionAndConsume(action, part, true)
+        else
+            applyAction(action, part)
     }
 
     private fun distribute(tile: Tile) {
