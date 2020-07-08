@@ -3,6 +3,7 @@ package simulation.space.tile
 import simulation.Controller
 import simulation.space.SpaceData.data
 import simulation.space.resource.Resource
+import simulation.space.resource.freeMarker
 import kotlin.math.min
 
 class WindCenter internal constructor() {
@@ -20,15 +21,17 @@ class WindCenter internal constructor() {
             if (!resource.genome.isMovable)
                 continue
 
-            for ((first, second) in wind.affectedTiles) {
-                val part = (resource.amount * second / wind.sumLevel *
-                        min(second * 0.0001 / resource.genome.mass, 1.0)).toInt()
+            for ((tile, t) in wind.affectedTiles) {
+                val part = (resource.amount * t * t / wind.sumLevel * getFlyCoefficient(resource)).toInt()
 
                 if (part > 0)
-                    first.addDelayedResource(resource.getCleanPart(part))
+                    tile.addDelayedResource(resource.getCleanPart(part))
             }
         }
     }
+
+    private fun getFlyCoefficient(resource: Resource) = 0.0001 / resource.genome.mass /
+            if (resource.ownershipMarker == freeMarker) 1 else 10
 
     fun middleUpdate(x: Int, y: Int) {
         val map = Controller.session.world.map

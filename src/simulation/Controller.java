@@ -106,7 +106,7 @@ public class Controller {
     }
 
     public void initializeSecond() {
-        Resource water = world.getResourcePool().get("Water");//TODO debug
+        Resource water = world.getResourcePool().get("Water");
         for (int j = 0; j < fillCycles && doTurns; j++) {
             if (j != 0) {
                 world.fillResources();

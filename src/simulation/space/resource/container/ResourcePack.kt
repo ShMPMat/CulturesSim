@@ -5,14 +5,14 @@ import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 open class ResourcePack(resources: Collection<Resource> = listOf()) {
-    protected var resourceMap: MutableMap<Resource, Resource> = HashMap()
+    protected var resourceMap = mutableMapOf<Resource, Resource>()
 
     init {
         resources.forEach { internalAdd(it) }
     }
 
     val resources: List<Resource>
-        get() = ArrayList(resourceMap.values)
+        get() = resourceMap.values.toList()
 
     val amount: Int
         get() = resources
@@ -58,7 +58,7 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResources(predicate).amount
 
-    fun clearEmpty() = resourceMap
+    fun clearEmpty() = resourceMap.entries
             .filter { it.value.amount == 0 }
             .forEach { resourceMap.remove(it.key) }
 

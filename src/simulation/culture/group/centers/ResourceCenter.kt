@@ -14,7 +14,7 @@ import simulation.space.tile.TileTag
 class ResourceCenter(
         cherishedResources: MutableResourcePack,
         storageTile: Tile,
-        private val groupName: String
+        groupName: String
 ) {
     private var place = MovablePlace(storageTile, TileTag(groupName + "_storage", "storage"))
     val pack: ResourcePack
@@ -82,6 +82,9 @@ class ResourceCenter(
         _resourcesToAdd.clear()
         neededResourcesMap.values.forEach(ResourceNeed::finishUpdate)
         neededResourcesMap.entries.removeIf { it.value.importance <= 0 }
+
+        if (session.isTime(500))
+            pack.clearEmpty()
     }
 
     private fun printedNeeds() = neededResources.entries.joinToString("\n")
@@ -93,8 +96,14 @@ class ResourceCenter(
             .max()
             ?: 0
 
-    override fun toString() = "Current resources:\n${place.current.owned.addLinePrefix()}\n" +
-            "Needed resources: \n${printedNeeds().addLinePrefix()}\n\n"
+    override fun toString() = """
+        Current resources:
+        ${place.current.owned.addLinePrefix()}
+        Needed resources: 
+        ${printedNeeds().addLinePrefix()}
+        
+        
+        """.trimIndent()
 }
 
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {

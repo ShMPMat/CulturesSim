@@ -1,6 +1,7 @@
 package simulation.culture.group.centers
 
 import extra.addLinePrefix
+import simulation.Controller
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.aspect.labeler.AspectLabeler
@@ -73,9 +74,8 @@ class PopulationCenter(
 
     fun goodConditionsGrow(fraction: Double, territory: Territory) {
         population += (fraction * population).toInt() / 10 + 1
-        if (isMaxReached(territory)) {
+        if (isMaxReached(territory))
             decreasePopulation(population - getMaxPopulation(territory))
-        }
     }
 
     fun decreasePopulation(amount: Int) {
@@ -97,6 +97,9 @@ class PopulationCenter(
 
     fun update(accessibleTerritory: Territory, group: Group) {
         stratumCenter.update(accessibleTerritory, group, turnResources)
+
+        if (Controller.session.isTime(500))
+            turnResources.clearEmpty()
     }
 
     fun executeRequests(requests: RequestPool) {
