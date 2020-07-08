@@ -13,7 +13,7 @@ class ActionMatcher(
     }
 
     fun match(resource: Resource) =
-            if (resource.actionConversion.keys.map { it.name }.any { it == resourceActionName })
+            if (resource.conversionCore.actionConversion.keys.map { it.name }.any { it == resourceActionName })
                 false
             else
                 labeler.isSuitable(resource.genome)

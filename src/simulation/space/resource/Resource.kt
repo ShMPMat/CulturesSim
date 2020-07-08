@@ -27,8 +27,8 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     private val events: MutableList<Event> = ArrayList()
     var ownershipMarker = freeMarker
 
-    val actionConversion: Map<ResourceAction, List<Pair<Resource?, Int>>>
-        get() = core.actionConversion
+    val conversionCore: ConversionCore
+        get() = core.conversionCore
 
     val isEmpty: Boolean
         get() {
@@ -216,7 +216,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         return result
     }
 
-    fun hasApplicationForAction(action: ResourceAction) = core.hasApplicationForAction(action)
+    fun hasApplicationForAction(action: ResourceAction) = core.hasApplication(action)
 
     fun destroy() {
         amount = 0

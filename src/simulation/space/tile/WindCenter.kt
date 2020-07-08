@@ -4,7 +4,6 @@ import simulation.Controller
 import simulation.space.SpaceData.data
 import simulation.space.resource.Resource
 import simulation.space.resource.freeMarker
-import kotlin.math.min
 
 class WindCenter internal constructor() {
     var wind = Wind()

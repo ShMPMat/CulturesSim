@@ -15,7 +15,7 @@ class Material(val name: String, val density: Double, val tags: List<ResourceTag
 
     fun hasTagWithName(name: String) = tags.any { it.name == name }
 
-    fun hasApplicationForAction(action: ResourceAction) = actionConversion.containsKey(action)
+    fun hasApplication(action: ResourceAction) = actionConversion.containsKey(action)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

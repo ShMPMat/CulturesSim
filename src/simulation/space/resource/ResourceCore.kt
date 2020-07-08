@@ -13,23 +13,15 @@ class ResourceCore(
         name: String,
         val materials: List<Material>,
         val genome: Genome,
-        actionConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>,
+        internal val conversionCore: ConversionCore,
         externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
     internal val externalFeatures = externalFeatures.sortedBy { it.index }
 
-    val actionConversion: MutableMap<ResourceAction, MutableList<Pair<Resource?, Int>>>
-
     init {
         if (externalFeatures.groupBy { it.index }.map { it.value.size }.any { it != 1 })
             throw SimulationException("${genome.name} has doubled external features: $externalFeatures")
-
-        this.actionConversion = HashMap(actionConversion)
         setName(name)
-    }
-
-    internal fun addActionConversion(action: ResourceAction, resourceList: List<Pair<Resource?, Int>>) {
-        actionConversion[action] = resourceList.toMutableList()
     }
 
     private fun setName(name: String) {
@@ -47,7 +39,7 @@ class ResourceCore(
                 genome.name,
                 ArrayList(materials),
                 genome.copy(),
-                actionConversion,
+                conversionCore.copy(),
                 externalFeatures
         ))
     }
@@ -59,7 +51,7 @@ class ResourceCore(
                 genome.name,
                 ArrayList(legacy.materials),
                 genome.getInstantiatedGenome(legacy),
-                actionConversion
+                conversionCore.copy()
         )
     }
 
@@ -69,13 +61,14 @@ class ResourceCore(
                 genome.name,
                 ArrayList(materials),
                 genome,
-                actionConversion,
+                conversionCore,
                 features
         )
     }
 
     //TODO throw an exception on any attempt to copy template
-    fun applyAction(action: ResourceAction): List<Resource> = actionConversion[action]
+    //TODO get rid of Templates in the conversions and move this to the ConversionCore
+    fun applyAction(action: ResourceAction): List<Resource> = conversionCore.actionConversion[action]
             ?.map { (r, n) ->
                 var resource = r ?: throw SimulationException("Empty conversion")
                 if (resource.core.genome is GenomeTemplate) {
@@ -99,25 +92,24 @@ class ResourceCore(
                 genome.name + if (newMaterials == materials) "" else "_" + action.name,
                 newMaterials,
                 genome,
-                actionConversion
+                conversionCore
         ) //TODO dangerous stuff for genome
     }
 
-    fun hasApplicationForAction(action: ResourceAction) =
-            actionConversion.containsKey(action) || materials.any { it.hasApplicationForAction(action) }
+    fun hasApplication(action: ResourceAction) =
+            conversionCore.hasApplication(action) || materials.any { it.hasApplication(action) }
 
     fun copyCore(
             name: String = this.genome.name,
             materials: List<Material> = this.materials,
             genome: Genome = this.genome,
-            actionConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>
-                = this.actionConversion.entries.map { (a, l) ->  a to l.toMutableList()}.toMap(),
+            conversionCore: ConversionCore = this.conversionCore,
             externalFeatures: List<ExternalResourceFeature> = this.externalFeatures
     ) = ResourceCore(
             name,
             materials,
             genome,
-            actionConversion,
+            conversionCore,
             externalFeatures
     )
 
