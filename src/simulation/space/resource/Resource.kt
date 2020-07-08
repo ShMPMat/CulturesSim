@@ -151,7 +151,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
 
-        result.addAll(applyAction(specialActions.getValue("_EachTurn_"), amount))
         result.addAll(core.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) })
 
         for (dependency in core.genome.dependencies) {

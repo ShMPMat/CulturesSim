@@ -22,7 +22,7 @@
 -Snow            0       0.1    1000000000 -1000  0    100000000  0             1 0 0  None         @Water
 
 -Water           0       10     1000000000 -1000  1000 100000000  0             1 0 0  None         @Water
-        +_EachTurn_:Vapour:2500
+        +_evaporate_prob_1.0_false:Vapour:2500
 
 
 -Pearl           0       0.01   100000     -500   500  100000000  0             1 0 0  None         @Pearl
