@@ -8,8 +8,6 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.type,
         genome.size,
         genome.spreadProbability,
-        genome.temperatureMin,
-        genome.temperatureMax,
         genome.baseDesirability,
         genome.canMove,
         genome.isMutable,

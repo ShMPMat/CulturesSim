@@ -7,9 +7,7 @@ import simulation.space.resource.*
 import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.container.ResourcePool
-import simulation.space.resource.dependency.AvoidTiles
-import simulation.space.resource.dependency.LevelRestrictions
-import simulation.space.resource.dependency.ResourceDependency
+import simulation.space.resource.dependency.*
 import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.ResourceTag
@@ -56,6 +54,8 @@ class ResourceInstantiation(
         var willResist = false
         var isTemplate = false
         var isDesirable = true
+        var minTempDeprivation = 2.0
+        var maxTempDeprivation = 2.0
         val resourceTags: MutableList<ResourceTag> = ArrayList()
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
@@ -108,13 +108,17 @@ class ResourceInstantiation(
                 }
             }
         }
+
+        if (tags[4] != "None")
+            resourceDependencies.add(TemperatureMin(tags[4].toInt(), minTempDeprivation))
+        if (tags[5] != "None")
+            resourceDependencies.add(TemperatureMax(tags[5].toInt(), maxTempDeprivation))
+
         var genome = Genome(
                 name = name,
                 type = Genome.Type.valueOf(tags[11]),
                 size = tags[2].toDouble(),
                 spreadProbability = tags[1].toDouble(),
-                temperatureMin = tags[4].toInt(),
-                temperatureMax = tags[5].toInt(),
                 baseDesirability = tags[7].toInt(),
                 canMove = tags[9] == "1",
                 isMutable = false,

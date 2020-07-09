@@ -11,13 +11,11 @@ import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.ceil
 
-open class Genome(
+open class Genome constructor(
         var name: String,
         val type: Type,
         val size: Double,
         var spreadProbability: Double,
-        val temperatureMin: Int,
-        val temperatureMax: Int,
         val baseDesirability: Int,
         val canMove: Boolean,
         val isMutable: Boolean,
@@ -36,15 +34,12 @@ open class Genome(
 ) {
     val naturalDensity: Int
     val parts: MutableList<Resource> = ArrayList()
-    val dependencies: MutableList<ResourceDependency>
+    val dependencies = dependencies.toMutableList()
     val tags: MutableList<ResourceTag>
     val secondaryMaterials: List<Material>
 
     init {
         this.tags = ArrayList(tags)
-        this.dependencies = ArrayList(dependencies)
-        this.dependencies.add(TemperatureMin(temperatureMin, 2.0))
-        this.dependencies.add(TemperatureMax(temperatureMax, 2.0))
         naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
         if (naturalDensity > 1000000000)
             System.err.println("Very high density in Genome $name - $naturalDensity")
@@ -58,8 +53,6 @@ open class Genome(
             type: Type = this.type,
             size: Double = this.size,
             spreadProbability: Double = this.spreadProbability,
-            temperatureMin: Int = this.temperatureMin,
-            temperatureMax: Int = this.temperatureMax,
             baseDesirability: Int = this.baseDesirability,
             canMove: Boolean = this.canMove,
             isMutable: Boolean = this.isMutable,
@@ -82,8 +75,6 @@ open class Genome(
                 type,
                 size,
                 spreadProbability,
-                temperatureMin,
-                temperatureMax,
                 baseDesirability,
                 canMove,
                 isMutable,

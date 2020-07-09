@@ -10,6 +10,8 @@
 /          :TypeName
 /          R - whether Resource will resist
 /
+/          "None" in temperature - no temperature restriction.
+/
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials
 -Fibre           0       0.5    100        -500   500  100000000  1             1 1 0  None         @Fibre
         +Weaving:Cloth:1

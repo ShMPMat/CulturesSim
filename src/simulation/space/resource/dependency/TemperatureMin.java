@@ -10,9 +10,6 @@ public class TemperatureMin extends Temperature {
 
     @Override
     public double satisfaction(Tile tile, Resource resource) {
-        if (tile == null) {
-            throw new RuntimeException();
-        }
         double result = threshold -  tile.getTemperature();
         result = 1 / Math.sqrt(Math.max(0, result) + 1);
         return result;
