@@ -65,7 +65,7 @@ class ResourceInstantiation(
 
         for (i in 12..tags.lastIndex) {
             val key = tags[i][0]
-            val tag = tags[i].substring(1)
+            val tag = tags[i].drop(1)
             when (key) {
                 '+' -> {
                     val actionName = tag.substring(0, tag.indexOf(':'))
@@ -101,6 +101,15 @@ class ResourceInstantiation(
                 ))
                 'R' -> willResist = true
                 'U' -> isDesirable = false
+                'T' -> {
+                    val tempBound = tag.take(3)
+                    val coefficient = tag.drop(3).toDouble()
+                    when (tempBound) {
+                        "min" -> minTempDeprivation = coefficient
+                        "max" -> maxTempDeprivation = coefficient
+                        else -> throw ExceptionInInitializerError("Unknown temperature command - $tag")
+                    }
+                }
                 else -> {
                     val rTag = tagParser.parse(key, tag)
                             ?: throw ExceptionInInitializerError("Unknown resource description command - $key")

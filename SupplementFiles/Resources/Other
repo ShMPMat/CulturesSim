@@ -5,12 +5,13 @@
 /
 /         ~tag labeler template with comma as a divisor
 /          :Required amount per Resource
-/          :Deprivation coefficient (the bigger it is the harder the time without this resource)
+/          :Deprivation coefficient (the bigger it is the harder the time deprived, value is from 1+0 to +infinity)
 /          :Whether necessary
 /          :TypeName
 /          R - whether Resource will resist
 /
 /          "None" in temperature - no temperature restriction.
+/          T(min|max)\NUM - add special deprivation coefficient value to the Resource (base is 2.0)
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L|N||Type       ||Materials
 -Fibre           0       0.5    100        -500   500  100000000  1             1 1 0  None         @Fibre
