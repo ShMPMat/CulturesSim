@@ -129,13 +129,13 @@ private fun fill(map: WorldMap) {
 
 private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
     val attempts = 1000
-    val goodTiles = map.getTiles { resource.genome.isOptimal(it) }//TODO something wrong, it optimal and acceptable works inside-out
+    val goodTiles = map.getTiles { resource.isOptimal(it) }//TODO something wrong, it optimal and acceptable works inside-out
     for (i in 0 until n) {
         var tile: Tile
         if (goodTiles.isEmpty()) {
             tile = randomTile(map, random)
             var j = 0
-            while (j < attempts && !resource.genome.isAcceptable(tile)) {
+            while (j < attempts && !resource.isAcceptable(tile)) {
                 tile = randomTile(map, random)
                 j++
             }
@@ -157,7 +157,7 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
                     .getWithPredicate { dependency.isResourceDependency(it) }
                     .filter { filterDependencyResources(it, newStack) }
             for (dependencyResource in suitableResources) {
-                if (dependencyResource.genome.isAcceptable(tile)) {
+                if (dependencyResource.isAcceptable(tile)) {
                     tile.addDelayedResource(dependencyResource)
                     addDependencies(newStack, dependencyResource, tile, resourcePool)
                 }

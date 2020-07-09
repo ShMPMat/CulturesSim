@@ -2,6 +2,7 @@ package simulation.culture.aspect
 
 import shmp.random.testProbability
 import simulation.Controller.*
+import simulation.SimulationException
 import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
@@ -99,7 +100,11 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     private fun checkTermination(controller: AspectController) = tooManyFailsThisTurn
             || controller.depth > session.maxGroupDependencyDepth
             || used
-            || core.resourceExposed && producedResources.any { !it.genome.isAcceptable(controller.territory.center) }
+            || core.resourceExposed && producedResources.any {
+        val center = controller.territory.center
+                ?: throw SimulationException("Empty Territory for the Aspect use")
+        !it.isAcceptable(center)
+    }
 
     protected fun _use(controller: AspectController): AspectResult {
         //TODO put dependency resources only in node; otherwise they may merge with phony

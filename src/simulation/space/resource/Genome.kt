@@ -137,12 +137,6 @@ open class Genome constructor(
     val mass: Double
         get() = if (primaryMaterial == null) 0.0 else primaryMaterial!!.density * size * size * size
 
-    fun isAcceptable(tile: Tile?) =
-            dependencies.filter { it.isNecessary }.all { it.satisfactionPercent(tile, null) == 1.0 }
-
-    fun isOptimal(tile: Tile?) = isAcceptable(tile)
-            && dependencies.filter { !it.isPositive }.all { it.satisfactionPercent(tile, null) >= 0.9 }
-
     fun addPart(part: Resource) {
         val i = parts.indexOf(part)
         if (i == -1) {

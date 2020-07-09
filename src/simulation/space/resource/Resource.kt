@@ -200,9 +200,15 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             applyAction(action, part)
     }
 
+    fun isAcceptable(tile: Tile) =
+            genome.dependencies.filter { it.isNecessary }.all { it.satisfactionPercent(tile, this) == 1.0 }
+
+    fun isOptimal(tile: Tile) = isAcceptable(tile)
+            && genome.dependencies.filter { !it.isPositive }.all { it.satisfactionPercent(tile, this) >= 0.9 }
+
     private fun distribute(tile: Tile) {
         if (genome.canMove && amount > genome.naturalDensity) {
-            val tiles = tile.getNeighbours { genome.isAcceptable(it) }
+            val tiles = tile.getNeighbours { isAcceptable(it) }
                     .sortedBy { it.resourcePack.getAmount(this) }
 
             for (neighbour in tiles) {
@@ -258,13 +264,13 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         val tileList = mutableListOf(tile)
 
         var newTile = randomTileOnBrink(tileList, SpaceData.data.random) { t ->
-            (genome.isAcceptable(t) && genome.dependencies.all { d -> d.hasNeeded(t) })
+            (isAcceptable(t) && genome.dependencies.all { d -> d.hasNeeded(t) })
         }
         if (newTile == null) {
             if (genome.dependencies.all { d -> d.hasNeeded(tile) })
                 newTile = tile
             else {
-                newTile = randomTileOnBrink(tileList, SpaceData.data.random) { genome.isAcceptable(it) }
+                newTile = randomTileOnBrink(tileList, SpaceData.data.random) { isAcceptable(it) }
                 if (newTile == null)
                     newTile = tile
             }

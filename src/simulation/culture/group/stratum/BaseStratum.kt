@@ -29,12 +29,12 @@ abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
     }
 
     protected fun addEnhancement(resource: Resource, group: Group) {
-        val goodPlaces = innerPlaces.filter { resource.genome.isAcceptable(it.tile) }
+        val goodPlaces = innerPlaces.filter { resource.isAcceptable(it.tile) }
         var place: StaticPlace? = null
 
         if (goodPlaces.isEmpty()) {
             val goodTiles = group.territoryCenter.territory
-                    .getTiles { resource.genome.isAcceptable(it) }
+                    .getTiles { resource.isAcceptable(it) }
             if (goodTiles.isNotEmpty()) {
                 val tagType = "($name of ${group.name})"
                 place = StaticPlace(
