@@ -71,9 +71,9 @@ class ProcessCenter(type: AdministrationType) {
     }
 
     override fun toString() = """
-        Type: $type
-        Behaviours:
-        ${behaviours.joinToString("\n")}
+        |Type: $type
+        |Behaviours:
+        |${behaviours.joinToString("\n")}
         """.trimMargin()
 }
 

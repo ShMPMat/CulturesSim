@@ -36,6 +36,6 @@ class TimedResourceDeliveryB(
         ))
     }
 
-    override fun toString() =
+    override val internalToString =
             "Delivery of ${pack.listResources()} to ${target.name}, $timePassed out of $deliveryTime"
 }

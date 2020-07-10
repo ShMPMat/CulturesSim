@@ -40,7 +40,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
         return events
     }
 
-    override fun toString() = "Make a random Resource with some meaning"
+    override val internalToString = "Make a random Resource with some meaning"
 }
 
 class BuildRoadB(private val path: Territory, val projectName: String) : PlanBehaviour() {
@@ -78,10 +78,10 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
         } else listOf(event)
     }
 
-    override fun toString() = "Building a road, ${built.toDouble() / (built + path.size)} complete"
+    override val internalToString = "Building a road, ${built.toDouble() / (built + path.size)} complete"
 }
 
-class ManageRoadsB : GroupBehaviour {
+class ManageRoadsB : AbstractGroupBehaviour() {
     private var projectsDone = 0
     private val roadPlaces = mutableListOf<StaticPlace>()
     private var roadConstruction: BuildRoadB? = null
@@ -161,6 +161,6 @@ class ManageRoadsB : GroupBehaviour {
         return places
     }
 
-    override fun toString() = "RoadManager, $projectsDone roads complete,  current project: " +
+    override val internalToString = "RoadManager, $projectsDone roads complete,  current project: " +
             if (roadConstruction == null) "none" else roadConstruction.toString()
 }

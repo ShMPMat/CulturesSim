@@ -24,7 +24,7 @@ object RandomGroupAddB : AbstractGroupBehaviour() {
         return emptyList()
     }
 
-    override fun toString() = "Choose a random Neighbour and add it to the Conglomerate"
+    override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"
 }
 
 
@@ -55,7 +55,7 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
         return events
     }
 
-    override fun toString() = "Ask help from all neighbours with $request if needed"
+    override val internalToString = "Ask help from all neighbours with $request if needed"
 }
 
 class TurnRequestsHelpB : AbstractGroupBehaviour() {
@@ -64,5 +64,5 @@ class TurnRequestsHelpB : AbstractGroupBehaviour() {
                 RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack)), pack).run(group)
             }
 
-    override fun toString() = "Ask help from all neighbours with all base request if needed"
+    override val internalToString = "Ask help from all neighbours with all base request if needed"
 }

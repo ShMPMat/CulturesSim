@@ -7,6 +7,10 @@ interface GroupBehaviour {
     fun run(group: Group): List<Event>
 
     fun update(group: Group): GroupBehaviour? = this
+
+    val internalToString: String
 }
 
-abstract class AbstractGroupBehaviour : GroupBehaviour
+abstract class AbstractGroupBehaviour : GroupBehaviour {
+    override fun toString() = internalToString
+}

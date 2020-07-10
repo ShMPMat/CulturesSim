@@ -23,7 +23,7 @@ class ChanceWrapperB(
         )
     }
 
-    override fun toString() = "With probability $probability do:\n" +
+    override val internalToString = "With probability $probability do:\n" +
             "  $behaviour"
 }
 
@@ -53,7 +53,7 @@ class TimesWrapperB(
         )
     }
 
-    override fun toString() = "From $min to ${max - 1} times do:\n" +
+    override val internalToString = "From $min to ${max - 1} times do:\n" +
             "  $behaviour"
 }
 

@@ -24,7 +24,7 @@ object RandomTradeB : AbstractGroupBehaviour() {
         return TradeInteraction(group, groupToTrade, 1000).run()
     }
 
-    override fun toString() = "Trade with a random neighbour"
+    override val internalToString = "Trade with a random neighbour"
 }
 
 class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
@@ -34,7 +34,6 @@ class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
         if (resources.isEmpty())
             return emptyList()
 
-        val evaluator = { r: Resource -> group.cultureCenter.evaluateResource(r).toDouble() }
         val chosenResource = randomElement(resources, Controller.session.random)
         val pack = ProduceExactResourceA(group, chosenResource, amount, 20).run()
 
@@ -48,5 +47,5 @@ class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
         return events
     }
 
-    override fun toString() = "Choose some valuable resource and try to create it"
+    override val internalToString = "Choose some valuable resource and try to create it"
 }
