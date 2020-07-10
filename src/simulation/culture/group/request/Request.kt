@@ -1,5 +1,6 @@
 package simulation.culture.group.request
 
+import extra.addLinePrefix
 import simulation.culture.aspect.AspectController
 import simulation.culture.group.centers.Group
 import simulation.culture.group.stratum.AspectStratum
@@ -97,8 +98,10 @@ abstract class Request(val core: RequestCore) {
 }
 
 data class Result(val status: ResultStatus, val pack: ResourcePack) {
-    override fun toString() = "$status, \n" +
-            pack.toString().lines().joinToString("\n") { "  $it" }
+    override fun toString() = """
+        |$status, 
+        |${pack.addLinePrefix("  ") }
+        """.trimMargin()
 }
 
 enum class ResultStatus {

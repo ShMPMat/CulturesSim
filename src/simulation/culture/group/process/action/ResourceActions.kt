@@ -1,6 +1,5 @@
 package simulation.culture.group.process.action
 
-import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
 import simulation.culture.group.request.Request
@@ -21,6 +20,16 @@ class ReceivePopulationResourcesA(group: Group, val pack: ResourcePack) : Abstra
     override fun run() = group.populationCenter.turnResources.addAll(pack)
 }
 
+class ReceiveRequestResourcesA(
+        group: Group,
+        val request: Request,
+        val pack: ResourcePack
+) : AbstractGroupAction(group) {
+    override fun run() = group.cultureCenter.requestCenter.turnRequests.requests[request]?.addAll(pack)
+            ?: ReceivePopulationResourcesA(group, pack).run()
+}
+
+
 class EvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run() = pack.resources
             .map { group.cultureCenter.evaluateResource(it) }
@@ -32,7 +41,7 @@ class ProduceExactResourceA(
         val resource: Resource,
         val amount: Int,
         val need: Int
-): AbstractGroupAction(group) {
+) : AbstractGroupAction(group) {
     override fun run() =
             group.populationCenter.executeRequest(resourceToRequest(resource, group, amount, need)).pack
 }
@@ -40,7 +49,7 @@ class ProduceExactResourceA(
 class ExecuteRequestA(
         group: Group,
         val request: Request
-): AbstractGroupAction(group) {
+) : AbstractGroupAction(group) {
     override fun run() = group.populationCenter.executeRequest(request).pack
 }
 
@@ -49,7 +58,7 @@ class ProduceSimpleResourceA(
         val resource: Resource,
         val amount: Int,
         val need: Int
-): AbstractGroupAction(group) {
+) : AbstractGroupAction(group) {
     override fun run() =
             group.populationCenter.executeRequest(SimpleResourceRequest(
                     resource,

@@ -70,8 +70,8 @@ class RequestHelpInteraction(
             listOf(Event(
                     Event.Type.GroupInteraction,
                     "${initiator.name} got help in $request from ${participator.name}: " +
-                            given.toString().replace("\n", " "))
-            )
+                            given.listResources()
+            ))
         else emptyList()
 
         targetPack.addAll(given)

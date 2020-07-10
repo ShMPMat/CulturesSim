@@ -23,6 +23,10 @@ class ProcessCenter(type: AdministrationType) {
             TurnRequestsHelpB()
     )
 
+    private val addedBehaviours = mutableListOf<GroupBehaviour>()
+
+    fun addBehaviour(behaviour: AbstractGroupBehaviour) = addedBehaviours.add(behaviour)
+
     private fun updateBehaviours(group: Group) {
         behaviours = behaviours
                 .mapNotNull { it.update(group) }
@@ -51,17 +55,26 @@ class ProcessCenter(type: AdministrationType) {
                 behaviours.add(ManageRoadsB())
     }
 
-
     private fun runBehaviours(group: Group) {
         val events = behaviours.flatMap {
             it.run(group)
+        }.toMutableList()
+        while (addedBehaviours.isNotEmpty()) {
+            val newBehaviours = addedBehaviours.toList()
+            addedBehaviours.clear()
+
+            events += newBehaviours.flatMap {
+                it.run(group)
+            }
         }
         events.forEach { group.addEvent(it) }
     }
 
-    override fun toString() = "Type: $type\n" +
-            "Behaviours:\n" +
-            behaviours.joinToString("\n")
+    override fun toString() = """
+        Type: $type
+        Behaviours:
+        ${behaviours.joinToString("\n")}
+        """.trimMargin()
 }
 
 enum class AdministrationType {

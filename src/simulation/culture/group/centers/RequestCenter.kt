@@ -25,7 +25,7 @@ class RequestCenter {
         return max(1.0, amount / coefficient)
     }
 
-    fun updateRequests(group: Group) {
+    internal fun updateRequests(group: Group) {
         turnRequests = constructRequests(RequestConstructController(
                 group,
                 group.populationCenter.population,

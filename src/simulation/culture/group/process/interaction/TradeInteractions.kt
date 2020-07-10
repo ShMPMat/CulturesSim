@@ -2,10 +2,8 @@ package simulation.culture.group.process.interaction
 
 import simulation.Event
 import simulation.culture.group.centers.Group
-import simulation.culture.group.process.action.ChooseResourcesA
-import simulation.culture.group.process.action.IncStratumImportanceA
-import simulation.culture.group.process.action.ReceivePopulationResourcesA
-import simulation.culture.group.process.action.TradeEvaluateResourcesA
+import simulation.culture.group.process.action.*
+import simulation.culture.group.process.behaviour.TimedResourceDeliveryB
 
 
 class TradeInteraction(
@@ -41,8 +39,8 @@ class TradeInteraction(
                             "traded $got - $priceForP and $given - $priceForI".replace("\n", " ")
             )
 
-            ReceivePopulationResourcesA(initiator, got).run()
-            ReceivePopulationResourcesA(participator, given).run()
+            ScheduleDefaultDelivery(participator, initiator, got).run()
+            ScheduleDefaultDelivery(initiator, participator, given).run()
 
             ChangeRelationsInteraction(initiator, participator, 0.5).run()
             IncStratumImportanceA(

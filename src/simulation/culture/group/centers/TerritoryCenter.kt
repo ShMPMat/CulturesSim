@@ -14,6 +14,8 @@ import simulation.space.tile.getDistance
 
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
+    val reachDistance = session.defaultGroupReach
+
     val settled: Boolean
         get() = notMoved >= 50
 
@@ -131,13 +133,14 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     private fun isTileReachableInTraverse(pair: Pair<Tile, Int>) = when (pair.first.type) {
         Tile.Type.Water ->
-            if (_oldTileTypes.contains(Tile.Type.Water)) pair.second <= session.defaultGroupReach * 6
+            if (_oldTileTypes.contains(Tile.Type.Water))
+                pair.second <= reachDistance * 6
             else false
         Tile.Type.Mountain ->
-            if (tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving")) pair.second <=
-                    session.defaultGroupReach
+            if (tileTag.group.cultureCenter.aspectCenter.aspectPool.contains("MountainLiving"))
+                pair.second <= reachDistance
             else false
-        else -> pair.second <= session.defaultGroupReach
+        else -> pair.second <= reachDistance
     }
 
     fun expand(): Boolean {
