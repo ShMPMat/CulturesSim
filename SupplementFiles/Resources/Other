@@ -26,6 +26,9 @@
 
 -Water           0       10     1000000000 -1000  1000 100000000  0             1 0  Migrate   None         @Water
         +_evaporate_prob_1.0_false:Vapour:2500
+/        +_makeCloud_prob_1.0_false:Cloud:2500
 
+/-Cloud           0       0.0001 1000000000 -1000  1000 100000000  0             1 0  Migrate   None         @Cloud
+/        +_evaporate_prob_0.01_true:Vapour:50
 
 -Pearl           0       0.01   100000     -500   500  100000000  0             1 0  Migrate   None         @Pearl

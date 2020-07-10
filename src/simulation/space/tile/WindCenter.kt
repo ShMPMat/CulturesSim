@@ -4,6 +4,7 @@ import simulation.Controller
 import simulation.space.SpaceData.data
 import simulation.space.resource.Resource
 import simulation.space.resource.freeMarker
+import kotlin.math.max
 
 class WindCenter internal constructor() {
     var wind = Wind()
@@ -60,11 +61,13 @@ class WindCenter internal constructor() {
     private fun setWindByTemperature(tile: Tile?, master: Tile) {
         tile ?: return
 
-        var temperatureChange = data.temperatureToWindCoefficient
-
+        var change = data.temperatureToWindCoefficient
         if (tile.level + 2 < master.level)
-            temperatureChange *= 5
-        val level = (tile.temperature.toDouble() - 1 - master.temperature) / temperatureChange
+            change *= 5
+        if (tile.type == master.type)
+            change *= 5
+
+        val level = max(tile.temperature.toDouble() - 1 - master.temperature, 0.0) / change
         if (level > 0)
             _newWind.changeLevelOnTile(tile, level)
     }

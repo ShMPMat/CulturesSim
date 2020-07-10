@@ -32,3 +32,4 @@
 -Flame         10        -burns:1                                 -warmth:1 -gas:1
 -Ash           80        -soft:2     -powder:1                              -mass:1
 -Water         1                                                            -gas:1
+-Cloud         1                                                            -gas:1
