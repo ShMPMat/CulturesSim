@@ -33,7 +33,7 @@
         $Tree:1
 
 -Cactus          0.2     1      15         10     50   50         0             0 0 0  Plant        @PlantFibre
-        ~m:PlantFibre;1;100;0;AVOID
+        ~A(m:PlantFibre),>=5;1;100;0;AVOID
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
         #Water
 
