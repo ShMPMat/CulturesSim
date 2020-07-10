@@ -54,7 +54,7 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
         get() = !isEmpty
 
     fun getResourceInstances(resource: Resource?) = tiles.flatMap { t ->
-        t.resourcePack.getResources { r -> r == resource }.resources
+        t.resourcePack.getResources { it == resource }.resources
     }
 
     operator fun contains(tile: Tile?) = tiles.contains(tile)

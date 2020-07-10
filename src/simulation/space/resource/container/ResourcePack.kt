@@ -1,6 +1,7 @@
 package simulation.space.resource.container
 
 import simulation.space.resource.Resource
+import simulation.space.resource.freeMarker
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 

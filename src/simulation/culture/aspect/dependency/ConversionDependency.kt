@@ -7,6 +7,7 @@ import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.AspectCenter
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
+import simulation.space.resource.freeMarker
 import java.util.*
 
 class ConversionDependency(

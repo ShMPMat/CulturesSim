@@ -14,6 +14,7 @@ import simulation.culture.group.stratum.*
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
+import simulation.space.resource.freeMarker
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
 import java.util.*
@@ -113,13 +114,11 @@ class PopulationCenter(
         val strataForRequest = stratumCenter.getStrataForRequest(request)
         strataForRequest.sortedBy { -it.aspect.usefulness }
 
-        val pack = MutableResourcePack(
-                evaluator.pick(
+        val pack = evaluator.pick(
                         request.ceiling,
                         turnResources.resources,
                         { listOf(it.copy(1)) }
                 ) { r, p -> listOf(r.getCleanPart(p)) }
-        )
 
         for (stratum in strataForRequest) {
             val amount = evaluator.evaluate(pack)

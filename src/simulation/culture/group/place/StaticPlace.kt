@@ -24,20 +24,16 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
         tile.tagPool.remove(tileTag)
     }
 
-    val _debugAdd = mutableListOf<Pair<Resource, String>>()
     fun addResource(resource: Resource) {
-        if (tile.x == 30 && tile.y == 60) {
-            val k = 0
-        }
-        if (resource.isEmpty) return
+        if (resource.isEmpty)
+            return
         if (_owned.any { it.ownershipMarker != ownershipMarker }) {
-            val j = 0 //TODO return breakpoint and deal with it
+            val j = 0
         }
-        resource.ownershipMarker = ownershipMarker
-        _owned.add(resource)
-        maxAmounts[resource] = max(maxAmounts[resource] ?: 0, _owned.getResource(resource).amount)
-        _debugAdd.add(resource to Controller.session.world.getStringTurn())
-        tile.addDelayedResource(_owned.getUnpackedResource(resource))
+        val ownedResource = resource.exactCopyAndDestroy(ownershipMarker = ownershipMarker)
+        _owned.add(ownedResource)
+        maxAmounts[ownedResource] = max(maxAmounts[ownedResource] ?: 0, _owned.getResource(ownedResource).amount)
+        tile.addDelayedResource(_owned.getUnpackedResource(ownedResource))
     }
 
     fun addResources(resources: Collection<Resource>) = resources.forEach(this::addResource)
@@ -52,16 +48,17 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun takeResource(resource: Resource, amount: Int): ResourcePack {
-        val remapedResource = remapOwner(resource.copy(), ownershipMarker)
+        val remapedResource = resource.copy(ownershipMarker = ownershipMarker)
         val result = _owned.getResourcePartAndRemove(remapedResource, amount)
+
         if (result.contains(remapedResource))
             maxAmounts[remapedResource] = max(0, (maxAmounts[remapedResource] ?: 0) - result.amount)
+
         return ResourcePack(result.resources.map { free(it) })
     }
 
-    fun getResourcesAndRemove(predicate: (Resource) -> Boolean): ResourcePack {
-        return ResourcePack(_owned.getResourcesAndRemove(predicate).resources.map { free(it) })
-    }
+    fun getResourcesAndRemove(predicate: (Resource) -> Boolean) =
+            ResourcePack(_owned.getResourcesAndRemove(predicate).resources.map { free(it) })
 
     override fun toString() = "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
             _owned.resources.joinToString { it.fullName + ":" + it.amount }

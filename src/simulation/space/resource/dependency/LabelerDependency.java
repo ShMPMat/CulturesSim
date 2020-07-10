@@ -45,13 +45,13 @@ public abstract class LabelerDependency extends CoefficientDependency {
     }
 
     public int oneResourceWorth(Resource resource) {
-        return goodResource.actualMatches(resource.copy(1)).stream()
+        return goodResource.actualMatches(resource.copy(1, resource.getOwnershipMarker())).stream()
                 .map(Resource::getAmount)
                 .reduce(0, Integer::sum);
     }
 
     public int partByResource(Resource resource, double amount) {
-        return (int) Math.ceil(amount / goodResource.actualMatches(resource.copy(1)).stream()
+        return (int) Math.ceil(amount / goodResource.actualMatches(resource.copy(1, resource.getOwnershipMarker())).stream()
                 .map(Resource::getAmount)
                 .reduce(0, Integer::sum));
     }

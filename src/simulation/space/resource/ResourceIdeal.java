@@ -5,6 +5,8 @@ import simulation.space.tile.Tile;
 
 import java.util.List;
 
+import static simulation.space.resource.OwnershipMarkerKt.getFreeMarker;
+
 /**
  * Special resource instance, which is never placed on the map and prints
  * a warning on any attempt of changing it, but which can be used as
@@ -12,7 +14,7 @@ import java.util.List;
  */
 public class ResourceIdeal extends Resource {
     public ResourceIdeal(ResourceCore resourceCore) {
-        super(resourceCore, 1);
+        super(resourceCore, 1, getFreeMarker());
     }
 
     @Override

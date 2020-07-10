@@ -15,7 +15,11 @@ import java.util.*
 import kotlin.math.min
 import kotlin.math.pow
 
-open class Resource(var core: ResourceCore, open var amount: Int) {
+open class Resource(
+        var core: ResourceCore,
+        open var amount: Int = core.genome.defaultAmount,
+        val ownershipMarker: OwnershipMarker = freeMarker
+) {
     // Precomputed hash.
     private var _hash = 0
 
@@ -28,7 +32,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
     //What part of this Resource will be destroyed on the next death.
     private var deathPart = 1.0
     private val events: MutableList<Event> = ArrayList()
-    var ownershipMarker = freeMarker
 
     val conversionCore: ConversionCore
         get() = core.conversionCore
@@ -44,7 +47,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         get() = !isEmpty
 
     fun computeHash() {
-        _hash = Objects.hash(fullName)
+        _hash = Objects.hash(fullName, core.hashCode(), ownershipMarker)
     }
 
     val simpleName: String
@@ -67,8 +70,6 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         computeHash()
         events.add(Event(Event.Type.Creation, "Resource was created", "name", fullName))
     }
-
-    constructor(resourceCore: ResourceCore) : this(resourceCore, resourceCore.genome.defaultAmount)
 
     fun getTagPresence(tag: ResourceTag) =
             (amount * getTagLevel(tag)).toDouble() * genome.size.pow(SpaceData.data.resourceSizeEffect)
@@ -117,25 +118,24 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
         return this
     }
 
-    fun copy(): Resource {
-        val resource = Resource(core)
-        resource.ownershipMarker = ownershipMarker
-        return resource
+    fun exactCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) = copy(amount, ownershipMarker)
+
+    fun exactCopyAndDestroy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
+            copyAndDestroy(amount, ownershipMarker)
+
+    fun copy(amount: Int = genome.defaultAmount, ownershipMarker: OwnershipMarker = this.ownershipMarker) =
+            Resource(core, amount, ownershipMarker)
+
+    fun copyAndDestroy(
+            amount: Int = genome.defaultAmount,
+            ownershipMarker: OwnershipMarker = this.ownershipMarker
+    ): Resource {
+        val result = Resource(core, amount, ownershipMarker)
+        destroy()
+        return result
     }
 
-    fun exactCopy() = copy(amount)
-
-    fun copy(amount: Int): Resource {
-        val resource = Resource(core, amount)
-        resource.ownershipMarker = ownershipMarker
-        return resource
-    }
-
-    fun fullCopy(): Resource {
-        val resource = core.fullCopy()
-        resource.ownershipMarker = ownershipMarker
-        return resource
-    }
+    fun fullCopy() = core.fullCopy(ownershipMarker)
 
     fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): Resource {
         val resource = Resource(core.copyWithNewExternalFeatures(features), amount)
@@ -303,7 +303,7 @@ open class Resource(var core: ResourceCore, open var amount: Int) {
             fullName == resource.fullName && ownershipMarker == resource.ownershipMarker
     }
 
-    override fun hashCode() = Objects.hash(fullName, core.hashCode(), ownershipMarker)
+    override fun hashCode() = _hash
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
