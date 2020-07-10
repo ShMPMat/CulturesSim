@@ -123,6 +123,12 @@ class ResourceInstantiation(
         if (tags[5] != "None")
             resourceDependencies.add(TemperatureMax(tags[5].toInt(), maxTempDeprivation))
 
+        val lifespan =
+                if (tags[3] == "inf")
+                    Double.POSITIVE_INFINITY
+                else
+                    tags[3].toDouble()
+
         var genome = Genome(
                 name = name,
                 type = ResourceType.valueOf(tags[11]),
@@ -135,7 +141,7 @@ class ResourceInstantiation(
                 isResisting = willResist,
                 isDesirable = isDesirable,
                 hasLegacy = tags[9] == "1",
-                lifespan = tags[3].toInt(),
+                lifespan = lifespan,
                 defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
                 legacy = null,
                 templateLegacy = null,

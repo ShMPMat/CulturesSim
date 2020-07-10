@@ -29,7 +29,7 @@ class GenomeTemplate(genome: Genome) : Genome(
     }
 
     fun getInstantiatedGenome(templateLegacy: ResourceCore) = copy(
-            deathTime = templateLegacy.genome.lifespan,
+            lifespan = templateLegacy.genome.lifespan,
             templateLegacy = templateLegacy,
             primaryMaterial = templateLegacy.genome.primaryMaterial
     )
