@@ -97,13 +97,11 @@ class ResourceCenter(
             ?: 0
 
     override fun toString() = """
-        Current resources:
-        ${place.current.owned.addLinePrefix()}
-        Needed resources: 
-        ${printedNeeds().addLinePrefix()}
-        
-        
-        """.trimIndent()
+        |Current resources:
+        |${place.current.owned.addLinePrefix()}
+        |Needed resources: 
+        |${printedNeeds().addLinePrefix()}
+        """.trimMargin()
 }
 
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {

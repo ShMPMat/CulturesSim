@@ -62,13 +62,12 @@ fun printResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
 
 fun printGroup(group: Group) = "$group"
 
-fun printConglomerateRelations(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) =
-        """
-            ${printConglomerateRelation(conglomerate1, conglomerate2)}
-            
-            
-            ${printConglomerateRelation(conglomerate2, conglomerate1)}
-        """.trimIndent()
+fun printConglomerateRelations(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) = """
+        |${printConglomerateRelation(conglomerate1, conglomerate2)}
+        |
+        |
+        |${printConglomerateRelation(conglomerate2, conglomerate1)}
+        """.trimMargin()
 
 fun printConglomerateRelation(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) =
         conglomerate1.subgroups.joinToString("\n\n") { g ->

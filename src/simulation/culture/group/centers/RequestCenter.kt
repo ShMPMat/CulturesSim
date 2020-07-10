@@ -137,10 +137,12 @@ class RequestCenter {
         }
     }
 
-    override fun toString() = if (turnRequests.resultStatus.isEmpty()) "No requests were finished"
-    else "Finished requests:\n" +
-            turnRequests.resultStatus.entries.joinToString("\n")
-            { (req, res) -> "$req - $res, unfinished estimation ${nerfCoefficients[req]}" }
+    override fun toString() =
+            if (turnRequests.resultStatus.isNotEmpty())
+                "Finished requests:\n" +
+                        turnRequests.resultStatus.entries.joinToString("\n")
+                        { (req, res) -> "$req - $res, unfinished estimation ${nerfCoefficients[req]}" }
+            else "No requests were finished"
 }
 
 data class RequestConstructController(

@@ -16,14 +16,12 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import java.util.*
 import java.util.function.Predicate
+import kotlin.math.max
 
 class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     private val _mutableAspectPool = MutableAspectPool(HashSet())
 
-
-    /**
-     * Equals to aspects added on the current turn
-     */
+    //    Aspects added on the current turn
     private val changedAspectPool = MutableAspectPool(HashSet())
     private val _converseWrappers = mutableSetOf<ConverseWrapper>()
     private val _lastResourcesForCw: MutableList<Resource> = ArrayList()
@@ -205,29 +203,27 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     private val newNeighbourAspects: List<Pair<Aspect, Group>>
         get() = neighbourAspects.filter { (a) -> !_mutableAspectPool.contains(a) }
 
-    private fun getNeighbourAspects(predicate: Predicate<Aspect>) =
-            neighbourAspects.filter { (a) -> predicate.test(a) }
+    private fun getNeighbourAspects(predicate: (Aspect) -> Boolean) = neighbourAspects
+            .filter { (a) -> predicate(a) }
 
     fun adoptAspects(group: Group): Collection<Event> {
         if (!session.isTime(session.groupTurnsBetweenAdopts))
-            return ArrayList()
-        val allExistingAspects = getNeighbourAspects(Predicate { !changedAspectPool.contains(it) })
-        if (allExistingAspects.isNotEmpty()) try {
+            return emptyList()
+
+        val allExistingAspects = getNeighbourAspects { !changedAspectPool.contains(it) }
+        if (allExistingAspects.isNotEmpty()) {
             val (aspect, aspectGroup) = randomElement(
                     allExistingAspects,
-                    { (a, g) -> a.usefulness * group.relationCenter.getNormalizedRelation(g) },
+                    { (a, g) -> max(a.usefulness * group.relationCenter.getNormalizedRelation(g), 0.0) + 1.0 },
                     session.random
             )
-            if (addAspect(aspect)) return setOf(Event(
-                    Event.Type.AspectGaining, String.format(
-                    "Got aspect %s from group %s",
-                    aspect.name, aspectGroup.name)))
-        } catch (e: Exception) {
-            if (e is RandomException) {
-                val i = 0 //TODO
-            }
+            if (addAspect(aspect))
+                return setOf(Event(
+                        Event.Type.AspectGaining,
+                        "${group.name} got ${aspect.name} from ${aspectGroup.name}"
+                ))
         }
-        return ArrayList()
+        return emptyList()
     }
 
     fun update(crucialAspects: Collection<Aspect>, group: Group) {
@@ -245,4 +241,9 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             }
         }
     }
+
+    override fun toString()= """
+        |Aspects:
+        |${aspectPool.all.joinToString("\n\n")}
+    """.trimMargin()
 }

@@ -72,8 +72,6 @@ fun chompToSize(text: String, size: Int): StringBuilder {
     return stringBuilder
 }
 
-fun chompToSize(text: StringBuilder, size: Int) = chompToSize(text.toString(), size)
-
 /**
  * Edits text via adding lines after size + 1 recursively to the right.
  * @param text text which will be modified.

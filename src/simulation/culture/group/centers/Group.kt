@@ -3,17 +3,18 @@ package simulation.culture.group.centers
 import extra.chompToSize
 import shmp.random.randomElement
 import shmp.random.testProbability
-import simulation.Controller.*
+import simulation.Controller.session
 import simulation.Event
 import simulation.culture.aspect.Aspect
-import simulation.culture.group.*
+import simulation.culture.group.Add
+import simulation.culture.group.ConglomerateCommand
+import simulation.culture.group.GroupConglomerate
+import simulation.culture.group.GroupTileTag
 import simulation.culture.group.cultureaspect.CultureAspect
-import simulation.culture.group.request.Request
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.MemeSubject
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
-import simulation.space.resource.container.ResourcePack
 import simulation.space.tile.Tile
 import java.util.*
 
@@ -240,25 +241,22 @@ class Group(
 
     override fun hashCode() = Objects.hash(name)
 
-    override fun toString(): String {
-        var builder = StringBuilder("Group $name is $state, population=${populationCenter.population}, aspects:\n")
-        for (aspect in cultureCenter.aspectCenter.aspectPool.all)
-            builder.append(aspect).append("\n\n")
-        val s = StringBuilder()
-        s.append("Aspects: ")
-        for (aspect in cultureCenter.cultureAspectCenter.aspectPool.all)
-            s.append(aspect).append(", ")
-        s.append(if (cultureCenter.cultureAspectCenter.aspectPool.isEmpty()) "none\n" else "\n")
-        builder.append(s.toString())
-        builder.append("\n").append(resourceCenter.toString())
-                .append(populationCenter.toString())
-                .append("\n\n").append(relationCenter)
-                .append("\n")
-        builder.append("${cultureCenter.requestCenter}\n\n")
-        builder.append(processCenter)
-        builder = chompToSize(builder, 70)
-        return builder.toString()
-    }
+    override fun toString() = chompToSize("""
+        |Group $name is $state, population = ${populationCenter.population}
+        |
+        |$cultureCenter
+        |
+        |
+        |$resourceCenter
+        |
+        |
+        |$populationCenter
+        |
+        |
+        |$relationCenter
+        |
+        |$processCenter
+    """.trimMargin(), 70).toString()
 
     enum class State {
         Live, Dead

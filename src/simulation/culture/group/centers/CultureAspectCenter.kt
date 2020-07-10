@@ -132,6 +132,11 @@ class CultureAspectCenter(private val group: Group) {
     }
 
     fun die(group: Group) = aspectPool.all.forEach { it.die(group) }
+
+    override fun toString() = """
+        |Culture Aspects:
+        |${aspectPool.all.joinToString()}
+    """.trimMargin()
 }
 
 private enum class AspectRandom(override val probability: Double) : SampleSpaceObject {

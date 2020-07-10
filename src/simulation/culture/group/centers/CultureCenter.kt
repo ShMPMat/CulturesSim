@@ -164,6 +164,16 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
 
     private fun isResourceDesirable(resource: Resource) =
             !group.resourceCenter.pack.contains(resource) && !group.populationCenter.turnResources.contains(resource)
+
+    override fun toString() = """
+        |$aspectCenter
+        |
+        |
+        |$cultureAspectCenter
+        |
+        |
+        |$requestCenter
+    """.trimMargin()
 }
 
 private data class ValueEntry(val value: Int) {

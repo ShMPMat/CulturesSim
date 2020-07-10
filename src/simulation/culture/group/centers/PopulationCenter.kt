@@ -170,10 +170,10 @@ class PopulationCenter(
     }
 
     override fun toString() = """
-        Free - $freePopulation
-        $stratumCenter
-        
-        Circulating resources:
-        ${turnResources.addLinePrefix()}
-        """.trimIndent()
+        |Free - $freePopulation
+        |$stratumCenter
+        |
+        |Circulating resources:
+        |${turnResources.addLinePrefix()}
+        """.trimMargin()
 }

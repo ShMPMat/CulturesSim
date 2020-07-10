@@ -54,6 +54,8 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
 
         return events
     }
+
+    override fun toString() = "Ask help from all neighbours with $request if needed"
 }
 
 class TurnRequestsHelpB : AbstractGroupBehaviour() {
@@ -61,4 +63,6 @@ class TurnRequestsHelpB : AbstractGroupBehaviour() {
             .flatMap { (request, pack) ->
                 RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack)), pack).run(group)
             }
+
+    override fun toString() = "Ask help from all neighbours with all base request if needed"
 }
