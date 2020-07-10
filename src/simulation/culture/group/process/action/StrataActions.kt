@@ -8,4 +8,6 @@ class IncStratumImportanceA(group: Group, val stratum: Stratum, val amount: Int)
     override fun run() {
         stratum.importance += amount
     }
+
+    override val internalToString = "Increase importance of $stratum in ${group.name} on $amount"
 }

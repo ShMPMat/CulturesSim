@@ -6,6 +6,10 @@ interface GroupAction {
     val group: Group
 
     fun run(): Any
+
+    val internalToString: String
 }
 
-abstract class AbstractGroupAction(override val group: Group) : GroupAction
+abstract class AbstractGroupAction(override val group: Group) : GroupAction {
+    override fun toString() = internalToString
+}

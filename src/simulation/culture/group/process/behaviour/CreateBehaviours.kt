@@ -78,7 +78,8 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
         } else listOf(event)
     }
 
-    override val internalToString = "Building a road, ${built.toDouble() / (built + path.size)} complete"
+    override val internalToString
+        get() = "Building a road, ${built.toDouble() / (built + path.size)} complete"
 }
 
 class ManageRoadsB : AbstractGroupBehaviour() {
@@ -161,6 +162,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         return places
     }
 
-    override val internalToString = "RoadManager, $projectsDone roads complete,  current project: " +
-            if (roadConstruction == null) "none" else roadConstruction.toString()
+    override val internalToString
+        get() = "RoadManager, $projectsDone roads complete,  current project: " +
+                if (roadConstruction == null) "none" else roadConstruction.toString()
 }

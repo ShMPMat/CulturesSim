@@ -11,4 +11,6 @@ class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGr
         val traderSkill = group.populationCenter.stratumCenter.traderStratum.effectiveness
         return EvaluateResourcesA(group, pack).run() / log(traderSkill + 1.0, 2.0).toInt()
     }
+
+    override val internalToString  = "Let ${group.name} evaluate the trade value of ${pack.listResources}"
 }

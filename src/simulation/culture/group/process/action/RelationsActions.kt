@@ -18,6 +18,8 @@ class ChangeRelationsA(
         if (targetRelation != null)
             targetRelation.positiveInteractions += delta
     }
+
+    override val internalToString = "Change relations of ${group.name} and ${target.name} on $delta"
 }
 
 class GrantHelpA(
@@ -34,16 +36,22 @@ class GrantHelpA(
 
         return answer
     }
+
+    override val internalToString = "Let ${group.name} decide whether to grant help to ${target.name}, help amount - $helpAmount"
 }
 
-class AddGroupA(group: Group, val groupToAdd: Group): AbstractGroupAction(group) {
+class AddGroupA(group: Group, val groupToAdd: Group) : AbstractGroupAction(group) {
     override fun run() {
         Transfer(groupToAdd).execute(group.parentGroup)
     }
+
+    override val internalToString = "Add a group ${groupToAdd.name} to the ${group.parentGroup.name}"
 }
 
-class ProcessGroupRemovalA(group: Group, val groupToRemove: Group): AbstractGroupAction(group) {
+class ProcessGroupRemovalA(group: Group, val groupToRemove: Group) : AbstractGroupAction(group) {
     override fun run() {
         groupToRemove.processCenter.type = AdministrationType.Subordinate
     }
+
+    override val internalToString = "Let ${group.name} deal with the removal of ${groupToRemove.name}"
 }

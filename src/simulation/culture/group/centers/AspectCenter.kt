@@ -89,7 +89,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     }
 
     fun mutateAspects(): Collection<Event> { //TODO separate adding of new aspects and updating old
-        if (testProbability(session.rAspectAcquisition, session.random)) {
+        if (testProbability(session.rAspectAcquisition / (aspectPool.all.size + 1), session.random)) {
             val options: MutableList<Aspect> = ArrayList()
             if (session.independentCvSimpleAspectAdding) {
                 if (testProbability(0.1, session.random))

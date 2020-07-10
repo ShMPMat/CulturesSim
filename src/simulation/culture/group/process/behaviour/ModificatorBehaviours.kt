@@ -23,12 +23,15 @@ class ChanceWrapperB(
         )
     }
 
-    override val internalToString = "With probability $probability do:\n" +
-            "  $behaviour"
+    override val internalToString
+        get() = """
+            |With probability $probability do:
+            |$behaviour
+            """.trimMargin()
 }
 
-fun GroupBehaviour.withProbability(probability: Double, probabilityUpdate: (Group) -> Double = { probability })
-        = ChanceWrapperB(this, probability, probabilityUpdate)
+fun GroupBehaviour.withProbability(probability: Double, probabilityUpdate: (Group) -> Double = { probability }) =
+        ChanceWrapperB(this, probability, probabilityUpdate)
 
 
 class TimesWrapperB(
@@ -53,8 +56,11 @@ class TimesWrapperB(
         )
     }
 
-    override val internalToString = "From $min to ${max - 1} times do:\n" +
-            "  $behaviour"
+    override val internalToString
+        get() = """
+            |From $min to ${max - 1} times do:
+            |$behaviour
+            """.trimMargin()
 }
 
 fun GroupBehaviour.times(
@@ -62,5 +68,4 @@ fun GroupBehaviour.times(
         max: Int = min + 1,
         minUpdate: (Group) -> Int = { min },
         maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
-)
-        = TimesWrapperB(this, min, max, minUpdate, maxUpdate)
+) = TimesWrapperB(this, min, max, minUpdate, maxUpdate)

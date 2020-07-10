@@ -70,7 +70,7 @@ class RequestHelpInteraction(
             listOf(Event(
                     Event.Type.GroupInteraction,
                     "${initiator.name} got help in $request from ${participator.name}: " +
-                            given.listResources()
+                            given.listResources
             ))
         else emptyList()
 
