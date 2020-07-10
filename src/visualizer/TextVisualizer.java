@@ -16,6 +16,7 @@ import simulation.space.SpaceData;
 import simulation.space.WorldMap;
 import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
+import simulation.space.resource.ResourceType;
 import simulation.space.tile.Tile;
 
 import java.io.BufferedReader;
@@ -257,7 +258,7 @@ public class TextVisualizer implements Visualizer {
                             case Growth:
                             case Normal:
                                 List<Resource> actual = tile.getResourcePack().getResources(r ->
-                                        r.getGenome().getType() != Genome.Type.Plant && r.isNotEmpty() &&
+                                        r.getGenome().getType() != ResourceType.Plant && r.isNotEmpty() &&
                                                 !r.getSimpleName().equals("Vapour")).getResources();
                                 if (/*actual.size() > 0*/ false) {
                                     token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
@@ -459,8 +460,8 @@ public class TextVisualizer implements Visualizer {
                             System.out.println(printResourcesWithSubstring(map, splitCommand[1]));
                             break;
                         case ResourceType:
-                            if (Arrays.stream(Genome.Type.values()).anyMatch(t -> t.toString().equals(splitCommand[1]))) {
-                                Genome.Type type = Genome.Type.valueOf(splitCommand[1]);
+                            if (Arrays.stream(ResourceType.values()).anyMatch(t -> t.toString().equals(splitCommand[1]))) {
+                                ResourceType type = ResourceType.valueOf(splitCommand[1]);
                                 printMap(t -> TileMapperFunctionsKt.resourceTypeMapper(type, t));
                             } else {
                                 System.out.println("Unknown type - " + splitCommand[1]);

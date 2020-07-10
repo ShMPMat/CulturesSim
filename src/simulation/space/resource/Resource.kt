@@ -89,9 +89,7 @@ open class Resource(
             else -> amount
         }
         amount -= result
-        if (amount < 0) {
-            val k = 0
-        }
+
         return copy(result)
     }
 
@@ -143,8 +141,7 @@ open class Resource(
         return resource
     }
 
-    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>)
-            = copyWithExternalFeatures(externalFeatures + features)
+    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = copyWithExternalFeatures(externalFeatures + features)
 
     open fun update(tile: Tile): ResourceUpdateResult {
         val result = mutableListOf<Resource>()
@@ -207,24 +204,31 @@ open class Resource(
             && genome.dependencies.filter { !it.isPositive }.all { it.satisfactionPercent(tile, this) >= 0.9 }
 
     private fun distribute(tile: Tile) {
-        if (genome.canMove && amount > genome.naturalDensity) {
-            val tiles = tile.getNeighbours { isAcceptable(it) }
-                    .sortedBy { it.resourcePack.getAmount(this) }
+        if (amount <= genome.naturalDensity)
+            return
 
-            for (neighbour in tiles) {
-                if (amount <= genome.naturalDensity / 2)
-                    break
+        when (genome.overflowType) {
+            OverflowType.Migrate -> {
+                val tiles = tile.getNeighbours { isAcceptable(it) }
+                        .sortedBy { it.resourcePack.getAmount(this) }
 
-                var part = min(
-                        amount - genome.naturalDensity / 2,
-                        genome.naturalDensity - neighbour.resourcePack.getAmount(this)
-                )
-                part = if (part <= 0)
-                    (amount - genome.naturalDensity / 2) / tiles.size
-                else part
+                for (neighbour in tiles) {
+                    if (amount <= genome.naturalDensity / 2)
+                        break
 
-                neighbour.addDelayedResource(getCleanPart(part))
+                    var part = min(
+                            amount - genome.naturalDensity / 2,
+                            genome.naturalDensity - neighbour.resourcePack.getAmount(this)
+                    )
+                    part = if (part <= 0)
+                        (amount - genome.naturalDensity / 2) / tiles.size
+                    else part
+
+                    neighbour.addDelayedResource(getCleanPart(part))
+                }
             }
+            OverflowType.Cut -> amount = genome.naturalDensity
+            OverflowType.Ignore -> {}
         }
     }
 

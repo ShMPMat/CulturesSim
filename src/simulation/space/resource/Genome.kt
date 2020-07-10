@@ -2,22 +2,19 @@ package simulation.space.resource
 
 import simulation.space.SpaceData.data
 import simulation.space.resource.dependency.ResourceDependency
-import simulation.space.resource.dependency.TemperatureMax
-import simulation.space.resource.dependency.TemperatureMin
 import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
 import simulation.space.resource.tag.ResourceTag
-import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.ceil
 
 open class Genome constructor(
         var name: String,
-        val type: Type,
+        val type: ResourceType,
         val size: Double,
         var spreadProbability: Double,
         val baseDesirability: Int,
-        val canMove: Boolean,
+        val overflowType: OverflowType,
         val isMutable: Boolean,
         val isMovable: Boolean,
         val isResisting: Boolean,
@@ -50,11 +47,11 @@ open class Genome constructor(
 
     fun copy(
             name: String = this.name,
-            type: Type = this.type,
+            type: ResourceType = this.type,
             size: Double = this.size,
             spreadProbability: Double = this.spreadProbability,
             baseDesirability: Int = this.baseDesirability,
-            canMove: Boolean = this.canMove,
+            overflowType: OverflowType = this.overflowType,
             isMutable: Boolean = this.isMutable,
             isMovable: Boolean = this.isMovable,
             isResisting: Boolean = this.isResisting,
@@ -76,7 +73,7 @@ open class Genome constructor(
                 size,
                 spreadProbability,
                 baseDesirability,
-                canMove,
+                overflowType,
                 isMutable,
                 isMovable,
                 isResisting,
@@ -135,7 +132,11 @@ open class Genome constructor(
                 if (legacy == null) "" else "_of_" + legacy!!.genome.name + legacy!!.genome.legacyPostfix
 
     val mass: Double
-        get() = if (primaryMaterial == null) 0.0 else primaryMaterial!!.density * size * size * size
+        get() {
+            val material = primaryMaterial
+                    ?: return 0.0
+            return material.density * size * size * size
+        }
 
     fun addPart(part: Resource) {
         val i = parts.indexOf(part)
@@ -154,8 +155,4 @@ open class Genome constructor(
     }
 
     override fun hashCode(): Int = Objects.hash(baseName)
-
-    enum class Type {
-        Plant, Animal, Mineral, Building, Artifact, None
-    }
 }

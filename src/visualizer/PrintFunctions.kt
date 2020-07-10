@@ -9,11 +9,12 @@ import simulation.culture.group.centers.Group
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourceType
 import java.util.regex.PatternSyntaxException
 
 fun resourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
-            .filter { it.genome.type in listOf(Genome.Type.Animal, Genome.Type.Plant) }
+            .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
             .map { it to ResourceCount() }
             .toMap()
     world.map.tiles.forEach { t ->

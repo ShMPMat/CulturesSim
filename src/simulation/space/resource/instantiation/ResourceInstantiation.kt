@@ -125,11 +125,11 @@ class ResourceInstantiation(
 
         var genome = Genome(
                 name = name,
-                type = Genome.Type.valueOf(tags[11]),
+                type = ResourceType.valueOf(tags[11]),
                 size = tags[2].toDouble(),
                 spreadProbability = tags[1].toDouble(),
                 baseDesirability = tags[7].toInt(),
-                canMove = tags[9] == "1",
+                overflowType = OverflowType.valueOf(tags[10]),
                 isMutable = false,
                 isMovable = tags[8] == "1",
                 isResisting = willResist,

@@ -7,6 +7,7 @@ import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
 import simulation.space.resource.Genome
+import simulation.space.resource.ResourceType
 import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.abs
@@ -119,14 +120,14 @@ fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile) { t -> t.resou
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
-    val artificialTypes = setOf(Genome.Type.Building, Genome.Type.Artifact)
+    val artificialTypes = setOf(ResourceType.Building, ResourceType.Artifact)
     return when {
         meaningful != NOTHING -> meaningful
         else -> predicateMapper(tile) { t -> t.resourcePack.any { it.genome.type in artificialTypes} }
     }
 }
 
-fun resourceTypeMapper(type: Genome.Type, tile: Tile) =
+fun resourceTypeMapper(type: ResourceType, tile: Tile) =
         if (tile.resourcePack.any { it.genome.type == type }) MARK
         else NOTHING
 

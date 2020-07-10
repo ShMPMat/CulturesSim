@@ -6,6 +6,7 @@ import simulation.space.TectonicPlate
 import simulation.space.WorldMap
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourceType
 import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.dependency.LabelerDependency
 import simulation.space.tile.Tile
@@ -36,7 +37,7 @@ fun fillResources(
 ) {
     for (resource in resourcePool.getWithPredicate {
         it.genome.spreadProbability != 0.0
-                || it.genome.type == Genome.Type.Mineral
+                || it.genome.type == ResourceType.Mineral
     }) {
         scatter(
                 map,
@@ -167,6 +168,6 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
 }
 
 private fun filterDependencyResources(resource: Resource, previous: List<Resource>) =
-        resource.genome.type in listOf(Genome.Type.Plant, Genome.Type.Animal)
+        resource.genome.type in listOf(ResourceType.Plant, ResourceType.Animal)
                 && previous.none { resource.simpleName == it.simpleName }
                 && resource.genome.primaryMaterial != null

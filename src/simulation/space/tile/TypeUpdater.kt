@@ -2,6 +2,7 @@ package simulation.space.tile
 
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
+import simulation.space.resource.ResourceType
 
 class TypeUpdater(val water: Resource) {
     fun updateType(tile: Tile) {
@@ -10,7 +11,7 @@ class TypeUpdater(val water: Resource) {
         else if (tile.type in listOf(Tile.Type.Normal, Tile.Type.Woods, Tile.Type.Growth)) when {
             tile.resourcePack.any { it.tags.any { t -> t.name == "Tree" } } ->
                 tile.setType(Tile.Type.Woods, false)
-            tile.resourcePack.any { it.genome.type === Genome.Type.Plant } ->
+            tile.resourcePack.any { it.genome.type === ResourceType.Plant } ->
                 tile.setType(Tile.Type.Growth, false)
             else -> tile.setType(Tile.Type.Normal, false)
         } else if (tile.type == Tile.Type.Water && tile.temperature < -10) {

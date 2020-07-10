@@ -9,7 +9,7 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.size,
         genome.spreadProbability,
         genome.baseDesirability,
-        genome.canMove,
+        genome.overflowType,
         genome.isMutable,
         genome.isMovable,
         genome.isResisting,
