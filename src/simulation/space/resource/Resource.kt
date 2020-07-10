@@ -33,9 +33,6 @@ open class Resource(
     private var deathPart = 1.0
     private val events: MutableList<Event> = ArrayList()
 
-    val conversionCore: ConversionCore
-        get() = core.conversionCore
-
     val isEmpty: Boolean
         get() {
             if (amount < 0)
@@ -148,7 +145,7 @@ open class Resource(
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
 
-        result.addAll(core.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) })
+        result.addAll(genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) })
 
         for (dependency in core.genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)

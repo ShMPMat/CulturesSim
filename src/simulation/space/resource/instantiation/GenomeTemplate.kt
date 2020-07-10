@@ -22,7 +22,8 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.dependencies,
         genome.tags,
         genome.primaryMaterial,
-        genome.secondaryMaterials
+        genome.secondaryMaterials,
+        genome.conversionCore
 ) {
     init {
         genome.parts.forEach { addPart(it) }

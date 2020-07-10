@@ -15,7 +15,6 @@ class ResourceCore(
         name: String,
         val materials: List<Material>,
         val genome: Genome,
-        internal val conversionCore: ConversionCore,
         externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
     internal val externalFeatures = externalFeatures.sortedBy { it.index }
@@ -42,7 +41,6 @@ class ResourceCore(
                         genome.name,
                         ArrayList(materials),
                         genome.copy(),
-                        conversionCore.copy(),
                         externalFeatures
                 ),
                 ownershipMarker = ownershipMarker
@@ -55,8 +53,7 @@ class ResourceCore(
         return ResourceCore(
                 genome.name,
                 ArrayList(legacy.materials),
-                genome.getInstantiatedGenome(legacy),
-                conversionCore.copy()
+                genome.getInstantiatedGenome(legacy)
         )
     }
 
@@ -66,23 +63,19 @@ class ResourceCore(
                 genome.name,
                 ArrayList(materials),
                 genome,
-                conversionCore,
                 features
         )
     }
 
     //TODO throw an exception on any attempt to copy template
     //TODO get rid of Templates in the conversions and move this to the ConversionCore
-    fun applyAction(action: ResourceAction): List<Resource> = conversionCore.actionConversion[action]
+    fun applyAction(action: ResourceAction): List<Resource> = genome.conversionCore.actionConversion[action]
             ?.map { (r, n) ->
                 var resource = r ?: throw SimulationException("Empty conversion")
                 if (resource.core.genome is GenomeTemplate) {
                     resource = resource.copy(n)
                     resource.core = resource.core.instantiateTemplateCopy(this)
                     resource.computeHash()
-                    if (resource.tags.groupBy { it.name }.map { it.value.size }.any { it > 1 } || resource.toString().contains("House")) {
-                        val k = 0
-                    }
                     return@map resource
                 } else {
                     return@map resource.copy(n)
@@ -96,25 +89,22 @@ class ResourceCore(
         return ResourceCore(
                 genome.name + if (newMaterials == materials) "" else "_" + action.name,
                 newMaterials,
-                genome,
-                conversionCore
+                genome
         ) //TODO dangerous stuff for genome
     }
 
     fun hasApplication(action: ResourceAction) =
-            conversionCore.hasApplication(action) || materials.any { it.hasApplication(action) }
+            genome.conversionCore.hasApplication(action) || materials.any { it.hasApplication(action) }
 
     fun copyCore(
             name: String = this.genome.name,
             materials: List<Material> = this.materials,
             genome: Genome = this.genome,
-            conversionCore: ConversionCore = this.conversionCore,
             externalFeatures: List<ExternalResourceFeature> = this.externalFeatures
     ) = ResourceCore(
             name,
             materials,
             genome,
-            conversionCore,
             externalFeatures
     )
 

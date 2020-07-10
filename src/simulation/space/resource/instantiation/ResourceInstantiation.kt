@@ -148,15 +148,15 @@ class ResourceInstantiation(
                 dependencies = resourceDependencies,
                 tags = resourceTags,
                 primaryMaterial = primaryMaterial,
-                secondaryMaterials = secondaryMaterials
+                secondaryMaterials = secondaryMaterials,
+                conversionCore = ConversionCore(mapOf())
         )
         if (isTemplate)
             genome = GenomeTemplate(genome)
         val resourceCore = ResourceCore(
                 genome.name,
                 genome.materials,
-                genome,
-                ConversionCore(mapOf())
+                genome
         )
         specialActions.values.forEach {
             if (!actionConversion.containsKey(it))
@@ -169,7 +169,7 @@ class ResourceInstantiation(
     private fun actualizeLinks(template: ResourceTemplate) {
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
-            resource.core.conversionCore.addActionConversion(a, l
+            resource.core.genome.conversionCore.addActionConversion(a, l
                     .map { readConversion(template, it) }
                     .toMutableList()
             )
@@ -180,7 +180,7 @@ class ResourceInstantiation(
         for (action in actions)
             for (matcher in action.matchers)
                 if (matcher.match(resource))
-                    resource.core.conversionCore.addActionConversion(
+                    resource.core.genome.conversionCore.addActionConversion(
                             action,
                             matcher.getResults(resource.core.copy(), resourcePool)
                     )
@@ -231,8 +231,7 @@ class ResourceInstantiation(
         val legacyResource = ResourceIdeal(ResourceCore(
                 resource.genome.name,
                 ArrayList<Material>(resource.core.materials),
-                resource.genome.copy(),
-                ConversionCore(mapOf())
+                resource.genome.copy()
         ))
         val legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
         actualizeLinks(legacyTemplate)
@@ -246,7 +245,7 @@ class ResourceInstantiation(
         resource.genome.legacy = legacy
         for (entry in actionConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
-                resource.core.conversionCore.addActionConversion(entry.key, entry.value
+                resource.core.genome.conversionCore.addActionConversion(entry.key, entry.value
                         .map { readConversion(template, it) }
                         .toMutableList())//TODO should I do it if in upper level I call actualizeLinks?
             }
@@ -255,7 +254,7 @@ class ResourceInstantiation(
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {
-        for (resources in resource.core.conversionCore.actionConversion.values) {
+        for (resources in resource.core.genome.conversionCore.actionConversion.values) {
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
@@ -289,7 +288,10 @@ class ResourceInstantiation(
             val resourceList = mutableListOf<Pair<Resource?, Int>>()
             for (partResource in resource.core.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.core.conversionCore.addActionConversion(actions.first { it.name == "TakeApart" }, resourceList)
+                resource.core.genome.conversionCore.addActionConversion(
+                        actions.first { it.name == "TakeApart" },
+                        resourceList
+                )
             }
         }
     }

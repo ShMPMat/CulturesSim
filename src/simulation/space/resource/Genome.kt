@@ -1,6 +1,7 @@
 package simulation.space.resource
 
 import simulation.space.SpaceData.data
+import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.dependency.ResourceDependency
 import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
@@ -27,22 +28,21 @@ open class Genome constructor(
         dependencies: List<ResourceDependency>,
         tags: List<ResourceTag>,
         var primaryMaterial: Material?,
-        secondaryMaterials: List<Material>
+        secondaryMaterials: List<Material>,
+        val conversionCore: ConversionCore
 ) {
-    val naturalDensity: Int
+    val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
     val parts: MutableList<Resource> = ArrayList()
     val dependencies = dependencies.toMutableList()
-    val tags: MutableList<ResourceTag>
+    val tags = tags.toMutableList()
     val secondaryMaterials: List<Material>
 
     init {
-        this.tags = ArrayList(tags)
-        naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
         if (naturalDensity > 1000000000)
             System.err.println("Very high density in Genome $name - $naturalDensity")
         computePrimaryMaterial()
         computeTagsFromMaterials()
-        this.secondaryMaterials = ArrayList(secondaryMaterials)
+        this.secondaryMaterials = secondaryMaterials.toMutableList()
     }
 
     fun copy(
@@ -65,6 +65,7 @@ open class Genome constructor(
             tags: List<ResourceTag> = this.tags,
             primaryMaterial: Material? = this.primaryMaterial,
             secondaryMaterials: List<Material> = this.secondaryMaterials,
+            conversionCore: ConversionCore = this.conversionCore.copy(),
             parts: MutableList<Resource> = this.parts
     ): Genome {
         val genome = Genome(
@@ -86,7 +87,8 @@ open class Genome constructor(
                 dependencies,
                 tags,
                 primaryMaterial,
-                secondaryMaterials
+                secondaryMaterials,
+                conversionCore
         )
         parts.forEach { genome.addPart(it) }
         return genome
