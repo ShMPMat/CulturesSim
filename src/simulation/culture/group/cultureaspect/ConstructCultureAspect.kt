@@ -33,8 +33,8 @@ fun createDepictObject(
     return null
 }
 
-fun createAestheticallyPleasingObject(resource: Resource?, group: Group, random: Random): AestheticallyPleasingObject? {
-    if (resource != null) return AestheticallyPleasingObject(resource, getRandom(group, random))
+fun createAestheticallyPleasingObject(resource: Resource?, group: Group, random: Random): CherishedResource? {
+    if (resource != null) return CherishedResource(resource, getRandom(group, random))
     return null
 }
 

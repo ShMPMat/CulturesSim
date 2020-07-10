@@ -5,7 +5,6 @@ import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.culture.group.cultureaspect.*
-import simulation.culture.group.cultureaspect.worship.GodWorship
 import simulation.culture.group.cultureaspect.worship.Worship
 import simulation.culture.group.reason.Reason
 import simulation.culture.group.reason.constructBetterAspectUseReason
@@ -22,7 +21,7 @@ class CultureAspectCenter(private val group: Group) {
     fun addCultureAspect(cultureAspect: CultureAspect?) {
         cultureAspect ?: return
         aspectPool.add(cultureAspect)
-        if (cultureAspect is AestheticallyPleasingObject)
+        if (cultureAspect is CherishedResource)
             aestheticallyPleasingResources.add(cultureAspect.resource)
     }
 

@@ -36,6 +36,10 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
                 .map { it.converseWrapper }
                 .toSet()
 
+    val cherishedResources
+        get() = aspects
+                .filterIsInstance<CherishedResource>()
+
     val worships: Set<Worship>
         get() = aspects.filterIsInstance<Worship>().toSet()
 

@@ -8,7 +8,7 @@ import simulation.culture.group.resource_behaviour.ResourceBehaviour
 import simulation.space.resource.Resource
 import java.util.*
 
-class AestheticallyPleasingObject(
+class CherishedResource(
         val resource: Resource,
         private val resourceBehaviour: ResourceBehaviour
 ) : CultureAspect {
@@ -34,14 +34,14 @@ class AestheticallyPleasingObject(
 
     override fun use(group: Group) {}
 
-    override fun adopt(group: Group) = AestheticallyPleasingObject(resource, resourceBehaviour)
+    override fun adopt(group: Group) = CherishedResource(resource, resourceBehaviour)
 
     override fun toString() = "Aesthetically pleasing ${resource.fullName}, $resourceBehaviour"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as AestheticallyPleasingObject
+        val that = other as CherishedResource
         return resource == that.resource
     }
 
