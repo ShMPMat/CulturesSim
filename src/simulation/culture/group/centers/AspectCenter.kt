@@ -106,9 +106,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
                     return listOf()
                 }
                 if (addAspect(aspect)) {
-                    return setOf(Event(
-                            Event.Type.AspectGaining, String.format("Got aspect %s by itself", aspect.name)
-                    ))
+                    return setOf(Event(Event.Type.AspectGaining, " got aspect ${aspect.name} by itself"))
                 }
             }
         }

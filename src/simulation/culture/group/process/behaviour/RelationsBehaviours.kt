@@ -35,7 +35,6 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
 
         val events = mutableListOf<Event>()
 
-        val pack = MutableResourcePack()
         val amount = request.ceiling
         var amountLeft = amount
         for (relation in group.relationCenter.relations.sortedByDescending { it.positive }) {
@@ -43,14 +42,16 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
                 continue
 
             val reducedRequest = request.reducedAmountCopy(amountLeft)
-            events.addAll(RequestHelpInteraction(relation.owner, relation.other, reducedRequest, pack).run())
+            val newEvents = RequestHelpInteraction(relation.owner, relation.other, reducedRequest).run()
 
-            amountLeft = amount - request.evaluator.evaluate(pack)
+            amountLeft = amount - newEvents
+                    .mapNotNull { it.getAttribute("value")?.let { a -> a as Double } }
+                    .foldRight(0.0, Double::plus)
+
+            events.addAll(newEvents)
             if (amountLeft <= 0)
                 break
         }
-
-        targetPack.addAll(pack)
 
         return events
     }

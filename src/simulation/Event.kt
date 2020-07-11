@@ -20,7 +20,9 @@ class Event(var type: Type, val description: String) {
         Other
     }
 
-    private var attributes: MutableMap<String, Any> = HashMap()
+    private var _attributes: MutableMap<String, Any> = HashMap()
+    val attributes: Map<String, Any>
+        get() = _attributes
 
     private val turn: String = Controller.session.world?.getStringTurn() ?: "Pre-historic"
 
@@ -29,16 +31,16 @@ class Event(var type: Type, val description: String) {
         while (i < attributes.size) {
             val name = attributes[i] as String
             if (name == "") break
-            this.attributes[name] = attributes[i + 1]
+            this._attributes[name] = attributes[i + 1]
             i += 2
         }
     }
 
     constructor(type: Type, description: String, attributes: Map<String, Any>) : this(type, description) {
-        this.attributes.putAll(attributes)
+        this._attributes.putAll(attributes)
     }
 
-    fun getAttribute(name: String) = attributes[name]
+    fun getAttribute(name: String) = _attributes[name]
 
     override fun toString() = "$turn. $description"
 }

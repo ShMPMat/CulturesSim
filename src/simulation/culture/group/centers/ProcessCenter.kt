@@ -66,6 +66,7 @@ class ProcessCenter(type: AdministrationType) {
             events += newBehaviours.flatMap {
                 it.run(group)
             }
+            behaviours.addAll(newBehaviours)
         }
         events.forEach { group.addEvent(it) }
     }

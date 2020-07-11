@@ -22,12 +22,10 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         get() = subgroups.shuffled(Controller.session.random)
     var state = State.Live
 
-    var events: List<Event> = ArrayList()
+    var events: List<Event> = mutableListOf()
         private set
 
-    /**
-     * Overall Territory which is under the child Groups
-     */
+    //Overall Territory under of the child Groups
     val territory = Territory()
     private var namesScore = 0
 

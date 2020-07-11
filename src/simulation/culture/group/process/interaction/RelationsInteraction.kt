@@ -6,7 +6,6 @@ import simulation.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.*
 import simulation.culture.group.request.Request
-import simulation.space.resource.container.MutableResourcePack
 import kotlin.math.pow
 
 
@@ -57,27 +56,29 @@ class GroupTransferInteraction(
 class RequestHelpInteraction(
         initiator: Group,
         participator: Group,
-        val request: Request,
-        val targetPack: MutableResourcePack
+        val request: Request
 ) : AbstractGroupInteraction(initiator, participator) {
     override fun run(): List<Event> {
         if (!GrantHelpA(participator, initiator, 0.5).run())
             return emptyList()
 
         val given = ExecuteRequestA(participator, request.reassign(participator)).run()
+        val delivery = ScheduleActionA(
+                participator,
+                ReceiveRequestResourcesA(initiator, request, given),
+                ComputeTravelTime(participator, initiator).run()
+        )
 
-        val events = if (given.isNotEmpty)
+        return if (given.isNotEmpty) {
+            delivery.run()
+            ChangeRelationsA(initiator, participator, request.evaluator.evaluate(given) / request.ceiling).run()
+
             listOf(Event(
                     Event.Type.GroupInteraction,
                     "${initiator.name} got help in $request from ${participator.name}: " +
-                            given.listResources
+                            "${given.listResources}, with delay ${delivery.delay}",
+                    "value", request.evaluator.evaluate(given)
             ))
-        else emptyList()
-
-        targetPack.addAll(given)
-
-        ChangeRelationsA(initiator, participator, request.evaluator.evaluate(given) / request.ceiling).run()
-
-        return events
+        } else emptyList()
     }
 }
