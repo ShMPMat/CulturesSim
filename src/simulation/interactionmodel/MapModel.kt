@@ -1,7 +1,7 @@
 package simulation.interactionmodel
 
 import simulation.Controller
-import simulation.Event
+import simulation.event.Event
 import simulation.World
 
 /**
@@ -64,5 +64,5 @@ class MapModel : InteractionModel {
         events.addAll(world.events.drop(worldEventsSize))
     }
 
-    override fun clearEvents() = events.clear()
+    fun clearEvents() = events.clear()
 }

@@ -1,6 +1,6 @@
 package simulation.interactionmodel
 
-import simulation.Event
+import simulation.event.Event
 import simulation.World
 
 /**
@@ -11,5 +11,4 @@ interface InteractionModel {
     fun geologicTurn(world: World)
     val events: List<Event>
     val allEvents: List<Event>
-    fun clearEvents()
 }

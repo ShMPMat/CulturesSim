@@ -4,7 +4,7 @@ import extra.chompToSize
 import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.session
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.Add
 import simulation.culture.group.ConglomerateCommand

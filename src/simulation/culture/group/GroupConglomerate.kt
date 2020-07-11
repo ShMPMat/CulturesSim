@@ -2,7 +2,7 @@ package simulation.culture.group
 
 import extra.addToRight
 import simulation.Controller
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.centers.*
 import simulation.culture.group.cultureaspect.CultureAspect

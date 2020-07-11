@@ -3,7 +3,7 @@ package simulation.culture.group.centers
 import shmp.random.randomTile
 import shmp.random.testProbability
 import simulation.Controller.session
-import simulation.Event
+import simulation.event.Event
 import simulation.SimulationException
 import simulation.culture.group.*
 import simulation.culture.group.place.StaticPlace

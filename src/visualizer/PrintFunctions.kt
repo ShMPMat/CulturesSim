@@ -1,13 +1,11 @@
 package visualizer
 
-import extra.getTruncated
-import simulation.Event
+import simulation.event.Event
 import simulation.World
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.centers.Group
 import simulation.space.WorldMap
-import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceType
 import java.util.regex.PatternSyntaxException

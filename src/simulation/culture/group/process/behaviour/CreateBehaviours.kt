@@ -2,7 +2,7 @@ package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
 import simulation.Controller.session
-import simulation.Event
+import simulation.event.Event
 import simulation.SimulationException
 import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.centers.Group

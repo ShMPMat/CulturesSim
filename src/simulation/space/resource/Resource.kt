@@ -3,10 +3,9 @@ package simulation.space.resource
 import shmp.random.randomTileOnBrink
 import shmp.random.testProbability
 import simulation.Controller
-import simulation.Event
+import simulation.event.Event
 import simulation.SimulationException
 import simulation.space.SpaceData
-import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.action.ResourceProbabilityAction
 import simulation.space.resource.tag.ResourceTag

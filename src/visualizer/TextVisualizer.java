@@ -1,7 +1,7 @@
 package visualizer;
 
 import simulation.Controller;
-import simulation.Event;
+import simulation.event.Event;
 import simulation.World;
 import simulation.culture.aspect.Aspect;
 import simulation.culture.group.GroupTileTagKt;
@@ -14,7 +14,6 @@ import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
 import simulation.space.SpaceData;
 import simulation.space.WorldMap;
-import simulation.space.resource.Genome;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceType;
 import simulation.space.tile.Tile;
@@ -145,7 +144,6 @@ public class TextVisualizer implements Visualizer {
                 true
                 ))
         );
-        interactionModel.clearEvents();
     }
 
     /**

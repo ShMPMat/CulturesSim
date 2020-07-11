@@ -2,11 +2,10 @@ package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
 import simulation.Controller
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.interaction.TradeInteraction
-import simulation.space.resource.Resource
 import kotlin.math.pow
 
 object RandomTradeB : AbstractGroupBehaviour() {

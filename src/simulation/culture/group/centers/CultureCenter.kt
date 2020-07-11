@@ -2,7 +2,7 @@ package simulation.culture.group.centers
 
 import shmp.random.randomElement
 import simulation.Controller.session
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.GROUP_TAG_TYPE

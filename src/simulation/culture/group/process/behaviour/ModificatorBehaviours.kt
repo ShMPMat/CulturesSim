@@ -2,7 +2,7 @@ package simulation.culture.group.process.behaviour
 
 import shmp.random.testProbability
 import simulation.Controller
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.group.centers.Group
 
 class ChanceWrapperB(

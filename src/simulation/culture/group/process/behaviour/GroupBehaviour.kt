@@ -1,6 +1,6 @@
 package simulation.culture.group.process.behaviour
 
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.group.centers.Group
 
 interface GroupBehaviour {

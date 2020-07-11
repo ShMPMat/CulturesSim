@@ -3,12 +3,11 @@ package simulation.culture.group.process.behaviour
 import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.interaction.GroupTransferInteraction
 import simulation.culture.group.process.interaction.RequestHelpInteraction
 import simulation.culture.group.request.Request
-import simulation.culture.group.request.RequestPool
 import simulation.space.resource.container.MutableResourcePack
 
 

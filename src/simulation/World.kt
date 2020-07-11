@@ -10,6 +10,7 @@ import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.compulsoryAspects
 import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
+import simulation.event.Event
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement

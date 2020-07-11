@@ -1,10 +1,8 @@
 package simulation.culture.group.process.behaviour
 
-import simulation.Event
+import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.GroupAction
-import simulation.culture.group.process.action.ReceivePopulationResourcesA
-import simulation.space.resource.container.ResourcePack
 
 
 class DelayedB(val action: GroupAction, val delay: Int): PlanBehaviour() {

@@ -1,5 +1,6 @@
-package simulation
+package simulation.event
 
+import simulation.Controller
 import java.util.*
 
 
