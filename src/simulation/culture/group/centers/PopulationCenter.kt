@@ -150,6 +150,10 @@ class PopulationCenter(
 
     fun finishUpdate(group: Group) = stratumCenter.finishUpdate(group)
 
+    fun movePopulation(tile: Tile) {
+        stratumCenter.movePopulation(tile)
+    }
+
     fun getPart(fraction: Double, newTile: Tile): PopulationCenter {
         val populationPart = (fraction * population).toInt()
         decreasePopulation(populationPart)

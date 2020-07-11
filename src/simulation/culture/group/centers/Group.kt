@@ -87,11 +87,7 @@ class Group(
         territoryCenter.update()
         if (state == State.Dead)
             return
-        if (shouldMigrate())
-            if (territoryCenter.migrate()) {
-                resourceCenter.moveToNewStorage(territoryCenter.center)
-                populationCenter.stratumCenter.movePopulation(territoryCenter.center)
-            }
+        move()
         if (populationCenter.isMinPassed(territoryCenter.territory))
             territoryCenter.expand()
         else
@@ -100,6 +96,14 @@ class Group(
         cultureCenter.update()
         processCenter.update(this)
         session.groupInnerOtherTime += System.nanoTime() - others
+    }
+
+    private fun move() {
+        if (shouldMigrate())
+            if (territoryCenter.migrate()) {
+                resourceCenter.moveToNewStorage(territoryCenter.center)
+                populationCenter.movePopulation(territoryCenter.center)
+            }
     }
 
     private fun checkNeeds() {

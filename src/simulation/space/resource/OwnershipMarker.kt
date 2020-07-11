@@ -9,3 +9,5 @@ val freeMarker = OwnershipMarker("free")
 
 
 fun free(resource: Resource) = resource.exactCopyAndDestroy(freeMarker)
+
+fun freeCopy(resource: Resource) = resource.exactCopy(freeMarker)

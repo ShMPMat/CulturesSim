@@ -1,9 +1,11 @@
 package simulation.culture.group.place
 
-import simulation.Controller
-import simulation.space.resource.*
+import simulation.space.resource.OwnershipMarker
+import simulation.space.resource.Resource
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
+import simulation.space.resource.free
+import simulation.space.resource.freeCopy
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import kotlin.math.max
@@ -58,7 +60,9 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun getResourcesAndRemove(predicate: (Resource) -> Boolean) =
-            ResourcePack(_owned.getResourcesAndRemove(predicate).resources.map { free(it) })
+            ResourcePack(_owned.getResourcesAndRemove { predicate(freeCopy(it)) }.resources.map { free(it) })
+
+    fun contains(resource: Resource) = _owned.contains(resource.copy(ownershipMarker = ownershipMarker))
 
     override fun toString() = "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
             _owned.resources.joinToString { it.fullName + ":" + it.amount }
