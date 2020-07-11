@@ -2,6 +2,7 @@ package simulation.interactionmodel
 
 import simulation.event.Event
 import simulation.World
+import simulation.event.EventLog
 
 /**
  * Represents general model by which World changes.
@@ -9,6 +10,5 @@ import simulation.World
 interface InteractionModel {
     fun turn(world: World)
     fun geologicTurn(world: World)
-    val newEvents: List<Event>
-    val allEvents: List<Event>
+    val eventLog: EventLog
 }

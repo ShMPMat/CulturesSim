@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static extra.OutputFunKt.*;
 import static visualizer.PrintFunctionsKt.*;
@@ -47,11 +46,8 @@ public class TextVisualizer implements Visualizer {
      * Used for estimating population change.
      */
     private List<Integer> groupPopulations = new ArrayList<>();
-    /**
-     * Map of all the tiles claimed by groups during the last sequence of turns;
-     * Used for displaying new tiles for groups.
-     */
-    private Map<String, Set<Tile>> lastClaimedTiles;
+    private Map<Group, Set<Tile>> lastClaimedTiles;
+    private Integer lastClaimedTilesPrintTurn = 0;
     private MapPrintInfo mapPrintInfo;
     /**
      * Main controller of the simulation
@@ -124,21 +120,16 @@ public class TextVisualizer implements Visualizer {
     public void print() {
         StringBuilder main = new StringBuilder();
         main.append(world.getStringTurn()).append("\n");
-        lastClaimedTiles = new HashMap<>();
-        main.append(printedGroups());
-        for (GroupConglomerate group : world.getGroups()) {
-            lastClaimedTiles.put(group.getName(), new HashSet<>());
-        }
-        for (Event event : interactionModel.getNewEvents().stream().
-                filter(event -> event.getType() == Event.Type.TileAcquisition).collect(Collectors.toList())) {
-            lastClaimedTiles.get(((Group) event.getAttribute("group")).getParentGroup().getName())
-                    .add((Tile) event.getAttribute("tile"));
-        }
+        lastClaimedTiles = EventConverterFunctionsKt.lastClaimedTiles(
+                interactionModel.getEventLog(),
+                lastClaimedTilesPrintTurn
+        );
+        lastClaimedTilesPrintTurn = world.getTurn();
         System.out.print(main.append(addToRight(
                 printedMap(tile -> ""),
                 addToRight(
                         chompToLines(printedResources().toString(), map.getLinedTiles().size() + 2),
-                        printedEvents(interactionModel.getNewEvents(), false),
+                        printedEvents(interactionModel.getEventLog().getNewEvents(), false),
                         false
                 ),
                 true
@@ -274,9 +265,14 @@ public class TextVisualizer implements Visualizer {
                         }
                     } else {
                         Group group = ((GroupTileTag) tile.getTagPool().getByType("Group").get(0)).getGroup();
-                        token += (lastClaimedTiles.get(group.getParentGroup().getName()).contains(tile)
-                                ? "\033[31m" :
-                                "\033[96m\033[1m") + groupSymbols.get(group.getParentGroup().getName());
+                        if (lastClaimedTiles.get(group) != null) {
+                            token += lastClaimedTiles.get(group).contains(tile)
+                                    ? "\033[31m"
+                                    : "\033[96m\033[1m";
+                        } else {
+                            token += "\033[96m\033[1m";
+                        }
+                        token += groupSymbols.get(group.getParentGroup().getName());
                     }
                 }
                 map.append(token).append("\033[0m");
@@ -473,7 +469,7 @@ public class TextVisualizer implements Visualizer {
                             break;
                         } case Events: {
                             System.out.println(printRegexEvents(
-                                    controller.interactionModel.getAllEvents(),
+                                    controller.interactionModel.getEventLog().getAllEvents(),
                                     100,
                                     splitCommand[1]
                                     ));

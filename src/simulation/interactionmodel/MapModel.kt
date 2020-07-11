@@ -7,12 +7,7 @@ import simulation.event.EventLog
 
 //Model with a 2d map on which all interactions take place.
 class MapModel : InteractionModel {
-    private val eventLog = EventLog()
-
-    override val newEvents
-        get() = eventLog.newEvents
-    override val allEvents
-        get() = eventLog.allEvents
+    override val eventLog = EventLog()
 
     override fun turn(world: World) {
         Controller.session.overallTime = System.nanoTime()
@@ -44,8 +39,8 @@ class MapModel : InteractionModel {
         Controller.session.othersTime = System.nanoTime() - Controller.session.othersTime
         Controller.session.overallTime = System.nanoTime() - Controller.session.overallTime
 
-        val j = allEvents.groupBy { it }.filter { it.value.size > 1 }
-        val i = newEvents.groupBy { it }.filter { it.value.size > 1 }
+        val j = eventLog.allEvents.groupBy { it }.filter { it.value.size > 1 }
+        val i = eventLog.newEvents.groupBy { it }.filter { it.value.size > 1 }
         if (j.isNotEmpty()) {
             val k = 0
         }
