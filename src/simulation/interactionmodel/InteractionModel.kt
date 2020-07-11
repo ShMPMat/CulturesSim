@@ -9,6 +9,6 @@ import simulation.World
 interface InteractionModel {
     fun turn(world: World)
     fun geologicTurn(world: World)
-    val events: List<Event>
+    val newEvents: List<Event>
     val allEvents: List<Event>
 }

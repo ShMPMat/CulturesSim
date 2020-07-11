@@ -1,15 +1,18 @@
 package simulation.interactionmodel
 
 import simulation.Controller
-import simulation.event.Event
 import simulation.World
+import simulation.event.EventLog
 
-/**
- * Model with 2d map on which all interactions take place.
- */
+
+//Model with a 2d map on which all interactions take place.
 class MapModel : InteractionModel {
-    override var events: MutableList<Event> = mutableListOf()
-    override val allEvents: MutableList<Event> = mutableListOf()
+    private val eventLog = EventLog()
+
+    override val newEvents
+        get() = eventLog.newEvents
+    override val allEvents
+        get() = eventLog.allEvents
 
     override fun turn(world: World) {
         Controller.session.overallTime = System.nanoTime()
@@ -18,11 +21,6 @@ class MapModel : InteractionModel {
         Controller.session.groupOthersTime = 0
         Controller.session.groupInnerOtherTime = 0
         Controller.session.groupMigrationTime = 0
-
-        val worldEventsNumber = world.events.size
-        val groupEventSize = world.groups
-                .map { it to it.events.size }
-                .toMap()
 
         world.map.update()
         var groups = world.shuffledGroups
@@ -38,31 +36,24 @@ class MapModel : InteractionModel {
         world.map.finishUpdate()
         world.strayPlacesManager.update()
 
-        events.addAll(world.events.drop(worldEventsNumber))
-        allEvents.addAll(world.events.drop(worldEventsNumber))
+        eventLog.joinNewEvents(world.events)
         groups.forEach {
-            events.addAll(it.events.drop(groupEventSize[it] ?: 0))
-            allEvents.addAll(it.events.drop(groupEventSize[it] ?: 0))
+            eventLog.joinNewEvents(it.events)
         }
 
         Controller.session.othersTime = System.nanoTime() - Controller.session.othersTime
         Controller.session.overallTime = System.nanoTime() - Controller.session.overallTime
 
         val j = allEvents.groupBy { it }.filter { it.value.size > 1 }
-        val i = events.groupBy { it }.filter { it.value.size > 1 }
+        val i = newEvents.groupBy { it }.filter { it.value.size > 1 }
         if (j.isNotEmpty()) {
             val k = 0
         }
-        clearEvents()
     }
 
     override fun geologicTurn(world: World) {
-        val worldEventsSize = world.events.size
-
         world.map.geologicUpdate()
 
-        events.addAll(world.events.drop(worldEventsSize))
+        eventLog.joinNewEvents(world.events)
     }
-
-    fun clearEvents() = events.clear()
 }

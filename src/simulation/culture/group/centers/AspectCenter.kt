@@ -202,7 +202,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     private fun getNeighbourAspects(predicate: (Aspect) -> Boolean) = neighbourAspects
             .filter { (a) -> predicate(a) }
 
-    fun adoptAspects(group: Group): Collection<Event> {
+    fun adoptAspects(group: Group): List<Event> {
         if (!session.isTime(session.groupTurnsBetweenAdopts))
             return emptyList()
 
@@ -214,7 +214,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
                     session.random
             )
             if (addAspect(aspect))
-                return setOf(Event(
+                return listOf(Event(
                         Event.Type.AspectGaining,
                         "${group.name} got ${aspect.name} from ${aspectGroup.name}"
                 ))

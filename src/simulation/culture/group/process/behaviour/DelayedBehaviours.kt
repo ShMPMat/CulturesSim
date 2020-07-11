@@ -27,6 +27,10 @@ class DelayedB(val action: GroupAction, val delay: Int): PlanBehaviour() {
         action.run()
         isFinished = true
 
+        if (delay > 1) {
+            val k = 0
+        }
+
         return events + listOf(Event(
                 Event.Type.GroupInteraction,
                 "${group.name} ended $action after $timePassed"

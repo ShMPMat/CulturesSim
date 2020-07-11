@@ -25,7 +25,8 @@ class Event(var type: Type, val description: String) {
     val attributes: Map<String, Any>
         get() = _attributes
 
-    private val turn: String = Controller.session.world?.getStringTurn() ?: "Pre-historic"
+    val turnString = Controller.session.world?.getStringTurn() ?: "Pre-historic"
+    val turn = turnString.toIntOrNull()
 
     constructor(type: Type, description: String, vararg attributes: Any) : this(type, description) {
         var i = 0
@@ -43,5 +44,5 @@ class Event(var type: Type, val description: String) {
 
     fun getAttribute(name: String) = _attributes[name]
 
-    override fun toString() = "$turn. $description"
+    override fun toString() = "$turnString. $description"
 }

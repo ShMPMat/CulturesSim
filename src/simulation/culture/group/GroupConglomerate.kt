@@ -2,18 +2,19 @@ package simulation.culture.group
 
 import extra.addToRight
 import simulation.Controller
-import simulation.event.Event
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.centers.*
 import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
+import simulation.event.EventLog
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*
 import kotlin.math.max
+import kotlin.math.min
 
 class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
     @JvmField
@@ -22,8 +23,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         get() = subgroups.shuffled(Controller.session.random)
     var state = State.Live
 
-    var events: List<Event> = mutableListOf()
-        private set
+    var events = EventLog()
 
     //Overall Territory under of the child Groups
     val territory = Territory()
@@ -108,7 +108,8 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                 ?: throw GroupError("Empty territory")
 
     fun update() { //TODO simplify
-        if (state == State.Dead) return
+        if (state == State.Dead)
+            return
         val mainTime = System.nanoTime()
         subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
@@ -117,7 +118,8 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         shuffledSubgroups.mapNotNull { it.populationUpdate() }
                 .forEach { it.execute(this) }
         updatePopulation()
-        if (state == State.Dead) return
+        if (state == State.Dead)
+            return
         shuffledSubgroups.forEach { it.diverge() }
         shuffledSubgroups.forEach { it.intergroupUpdate() }
         Controller.session.groupOthersTime += System.nanoTime() - othersTime
@@ -125,7 +127,8 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
 
     private fun updatePopulation() {
         computePopulation()
-        if (population == 0) overgroupDie()
+        if (population == 0)
+            overgroupDie()
     }
 
     private fun computePopulation() {
@@ -143,39 +146,30 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         group.parentGroup = this
     }
 
-    fun getClosestInnerGroupDistance(tile: Tile): Int {
-        var d = Int.MAX_VALUE
-        for (subgroup in subgroups) {
-            d = Math.min(d, getClosest(tile, setOf(subgroup.territoryCenter.center)).second)
-        }
-        return d
-    }
+    fun getClosestInnerGroupDistance(tile: Tile) = subgroups
+            .map { getClosest(tile, setOf(it.territoryCenter.center)).second }
+            .min()
+            ?: Int.MAX_VALUE
 
     fun removeGroup(group: Group) {
         population -= group.populationCenter.population
-        if (!subgroups.remove(group)) {
+        if (!subgroups.remove(group))
             throw RuntimeException("Trying to remove non-child subgroup ${group.name} from Group $name")
-        }
         group.territoryCenter.territory.tiles.forEach { removeTile(it) }
     }
 
     fun finishUpdate() {
         subgroups.forEach { it.finishUpdate() }
-        events = subgroups.flatMap { it.cultureCenter.events }
+        subgroups.forEach { events.joinNewEvents(it.cultureCenter.events) }
     }
 
-    fun removeTile(tile: Tile?) {
-        if (tile == null) return
-        territory.remove(tile)
-    }
+    fun removeTile(tile: Tile?) = territory.remove(tile)
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
+        if (this === other)
             return true
-        }
-        if (other == null || javaClass != other.javaClass) {
+        if (other == null || javaClass != other.javaClass)
             return false
-        }
         val group = other as GroupConglomerate
         return name == group.name
     }

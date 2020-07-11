@@ -129,7 +129,7 @@ public class TextVisualizer implements Visualizer {
         for (GroupConglomerate group : world.getGroups()) {
             lastClaimedTiles.put(group.getName(), new HashSet<>());
         }
-        for (Event event : interactionModel.getEvents().stream().
+        for (Event event : interactionModel.getNewEvents().stream().
                 filter(event -> event.getType() == Event.Type.TileAcquisition).collect(Collectors.toList())) {
             lastClaimedTiles.get(((Group) event.getAttribute("group")).getParentGroup().getName())
                     .add((Tile) event.getAttribute("tile"));
@@ -138,7 +138,7 @@ public class TextVisualizer implements Visualizer {
                 printedMap(tile -> ""),
                 addToRight(
                         chompToLines(printedResources().toString(), map.getLinedTiles().size() + 2),
-                        printedEvents(interactionModel.getEvents(), false),
+                        printedEvents(interactionModel.getNewEvents(), false),
                         false
                 ),
                 true

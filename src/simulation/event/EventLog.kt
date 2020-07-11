@@ -9,12 +9,12 @@ class EventLog {
     val newEvents: List<Event>
         get() = _newEvents
 
-    fun addEvent(event: Event) {
+    fun add(event: Event) {
         _newEvents.add(event)
         _allEvents.add(event)
     }
 
-    fun addEvents(events: List<Event>) {
+    fun addAll(events: List<Event>) {
         _newEvents.addAll(events)
         _allEvents.addAll(events)
     }
@@ -22,7 +22,7 @@ class EventLog {
     fun clearNewEvents() = _newEvents.clear()
 
     fun joinNewEvents(log: EventLog) {
-        addEvents(log.newEvents)
+        addAll(log.newEvents)
         log.clearNewEvents()
     }
 }

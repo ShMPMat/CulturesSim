@@ -11,6 +11,7 @@ import simulation.culture.group.compulsoryAspects
 import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.event.Event
+import simulation.event.EventLog
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
@@ -39,7 +40,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
     var map: WorldMap
 
-    var events: MutableList<Event> = ArrayList()
+    var events = EventLog()
 
     private val tags = InputDatabase("$path/ResourceTags").readLines().map { ResourceTag(it) }
             .union(createTagMatchers("$path/ResourceTagLabelers").map { it.tag })

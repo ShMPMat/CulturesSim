@@ -12,10 +12,10 @@ import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemePredicate
 import simulation.culture.thinking.meaning.MemeSubject
+import simulation.event.EventLog
 import simulation.space.Territory
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.labeler.ResourceLabeler
-import java.util.*
 import kotlin.math.log
 
 class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects: List<Aspect>) {
@@ -23,7 +23,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     val cultureAspectCenter: CultureAspectCenter = CultureAspectCenter(group)
     val requestCenter = RequestCenter()
 
-    val events: MutableList<Event> = ArrayList()
+    val events = EventLog()
 
     private val evaluatedMap = mutableMapOf<Resource, ValueEntry>()
 
