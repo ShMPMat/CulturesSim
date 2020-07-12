@@ -17,6 +17,7 @@ enum class Command(command: String) {
     Vapour("vapour"),
     Resource("r \\w+"),
     ResourceSubstring("r' \\w+"),
+    ResourceSubstringOnTile("\\d+ \\d+ r' \\w+"),
     ResourceType("rt \\w+"),
     ResourceOwner("ro \\w+"),
     AllResources("rr"),

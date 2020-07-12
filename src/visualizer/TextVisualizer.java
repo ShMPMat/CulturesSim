@@ -369,21 +369,24 @@ public class TextVisualizer implements Visualizer {
                                 System.out.println("No such Group exist");
                             }
                             break;
-                        } case GroupTileReach: {
+                        }
+                        case GroupTileReach: {
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
                             if (group == null) {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.groupReachMapper(group.subgroups.get(0), t));
                             break;
-                        } case GroupProduced: {
+                        }
+                        case GroupProduced: {
                             GroupConglomerate group = getConglomerate(splitCommand[0]);
                             if (group == null) {
                                 break;
                             }
                             System.out.println(chompToSize(PrintFunctionsKt.printProduced(group), 150));
                             break;
-                        } case GroupRelations: {
+                        }
+                        case GroupRelations: {
                             GroupConglomerate c1 = getConglomerate(splitCommand[0]);
                             GroupConglomerate c2 = getConglomerate(splitCommand[1]);
                             if (c1 == null || c2 == null) {
@@ -392,10 +395,13 @@ public class TextVisualizer implements Visualizer {
                             }
                             System.out.println(printConglomerateRelations(c1, c2));
                             break;
-                        } case Tile:
+                        }
+                        case Tile:
                             printTile(
-                                    map.get(Integer.parseInt(line.substring(0, line.indexOf(' '))),
-                                            Integer.parseInt(line.substring(line.indexOf(' ') + 1)) + mapPrintInfo.getCut())
+                                    map.get(
+                                            Integer.parseInt(splitCommand[0]),
+                                            Integer.parseInt(splitCommand[1]) + mapPrintInfo.getCut()
+                                    )
                             );
                             break;
                         case Plates:
@@ -416,7 +422,8 @@ public class TextVisualizer implements Visualizer {
                                     Integer.parseInt(splitCommand[2])
                             ));
                             break;
-                        } case Wind:
+                        }
+                        case Wind:
                             printMap(TileMapperFunctionsKt::windMapper);
                             break;
                         case TerrainLevel:
@@ -449,9 +456,18 @@ public class TextVisualizer implements Visualizer {
                             printMap(t ->
                                     t.getResourcesWithMoved().stream()
                                             .anyMatch(r -> r.getFullName().contains(splitCommand[1]))
-                                        ? "X" : ""
+                                            ? "X" : ""
                             );
-                            System.out.println(printResourcesWithSubstring(map, splitCommand[1]));
+                            System.out.println(briefPrintResourcesWithSubstring(map, splitCommand[1]));
+                            break;
+                        case ResourceSubstringOnTile:
+                            System.out.println(printResourcesOnTile(
+                                    map.get(
+                                            Integer.parseInt(splitCommand[0]),
+                                            Integer.parseInt(splitCommand[1]) + mapPrintInfo.getCut()
+                                    ),
+                                    splitCommand[3]
+                            ));
                             break;
                         case ResourceType:
                             if (Arrays.stream(ResourceType.values()).anyMatch(t -> t.toString().equals(splitCommand[1]))) {
@@ -467,7 +483,8 @@ public class TextVisualizer implements Visualizer {
                         case AllResources: {
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
                             break;
-                        } case ResourceDensity: {
+                        }
+                        case ResourceDensity: {
                             printMap(t ->
                                     TileMapperFunctionsKt.resourceDensityMapper(
                                             SpaceData.INSTANCE.getData().getTileResourceCapacity(),
@@ -475,14 +492,16 @@ public class TextVisualizer implements Visualizer {
                                     )
                             );
                             break;
-                        } case Events: {
+                        }
+                        case Events: {
                             System.out.println(printRegexEvents(
                                     controller.interactionModel.getEventLog().getAllEvents(),
                                     100,
                                     splitCommand[1]
-                                    ));
+                            ));
                             break;
-                        } case Aspects: {
+                        }
+                        case Aspects: {
                             printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
                             Aspect aspect = world.getAspectPool().get(splitCommand[1]);
                             if (aspect != null) {
@@ -492,7 +511,8 @@ public class TextVisualizer implements Visualizer {
                                 ));
                             }
                             break;
-                        } case Map:
+                        }
+                        case Map:
                             printMap(tile -> "");
                             break;
                         case Exit:
@@ -531,7 +551,7 @@ public class TextVisualizer implements Visualizer {
                                 turnerThread.start();
                             } catch (NumberFormatException e) {
                                 System.out.println("Wrong number format for amount of turns");
-                        }
+                            }
                             break;
                         default:
                             controller.turn();

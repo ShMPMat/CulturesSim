@@ -8,7 +8,9 @@ import simulation.culture.group.centers.Group
 import simulation.space.WorldMap
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceType
+import simulation.space.tile.Tile
 import java.util.regex.PatternSyntaxException
+
 
 fun resourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
@@ -54,7 +56,13 @@ fun printResource(resource: Resource): String = resource.toString() + "\n" +
             printResource(p).lines().joinToString("\n") { "--$it" }
         }
 
-fun printResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
+fun printResources(resources: List<Resource>) = resources
+        .joinToString("\n\n\n\n") { printResource(it) }
+
+fun printResourcesOnTile(tile: Tile, substring: String) =
+        printResources(tile.resourcesWithMoved.filter { it.fullName.contains(substring) })
+
+fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
         .flatMap { t -> t.resourcesWithMoved.map { r -> r to t } }
         .filter { it.first.fullName.contains(substring) }
         .joinToString("\n") { (r, t) -> "${t.x} ${t.y}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
