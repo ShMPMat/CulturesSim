@@ -20,7 +20,7 @@ class ResourceInstantiation(
 ) {
     private val resourceTemplateCreator = ResourceTemplateCreator(actions, materialPool, amountCoefficient, tagParser)
 
-    private val resourceTemplates = ArrayList<ResourceTemplate>()
+    private val resourceTemplates = ArrayList<ResourceStringTemplate>()
 
     fun createPool(): ResourcePool {
         val resourceFolders = Files.walk(Paths.get(folderPath))
@@ -43,10 +43,10 @@ class ResourceInstantiation(
         return finalizePool()
     }
 
-    private fun getTemplateWithName(name: String): ResourceTemplate = resourceTemplates
+    private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceTemplates
             .first { it.resource.baseName == name }
 
-    private fun actualizeLinks(template: ResourceTemplate) {
+    private fun actualizeLinks(template: ResourceStringTemplate) {
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
             resource.core.genome.conversionCore.addActionConversion(a, l
@@ -68,7 +68,7 @@ class ResourceInstantiation(
     }
 
     private fun readConversion(
-            template: ResourceTemplate,
+            template: ResourceStringTemplate,
             conversionString: String
     ): Pair<Resource?, Int> {
         val link = parseLink(conversionString)
@@ -89,16 +89,16 @@ class ResourceInstantiation(
             amount: Int
     ): Pair<Resource?, Int> {
         val legacy = resource.genome.legacy
-                ?: return Pair(null, amount) //TODO this is so wrong
+                ?: return null to amount //TODO this is so wrong
         //        val legacyResource = resource.genome.legacy.copy()
         val legacyTemplate = getTemplateWithName(legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
-        return Pair(copyWithLegacyInsertion(legacyTemplate, resource.core).resource, amount)
+        return copyWithLegacyInsertion(legacyTemplate, resource.core).resource to amount
     }
 
     private fun copyWithLegacyInsertion(
-            template: ResourceTemplate,
+            template: ResourceStringTemplate,
             creator: ResourceCore
-    ): ResourceTemplate {
+    ): ResourceStringTemplate {
         if (!template.resource.genome.hasLegacy || template.resource.core == creator)
             return template
 
@@ -111,7 +111,7 @@ class ResourceInstantiation(
                     else ResourceCore(resource.genome.copy())
                 }
         )
-        var legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
+        var legacyTemplate = ResourceStringTemplate(legacyResource, actionConversion, parts)
         actualizeLinks(legacyTemplate)
         //TODO actualize parts?
         if (resource.genome !is GenomeTemplate)
@@ -123,7 +123,7 @@ class ResourceInstantiation(
     private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore) =
             ResourceCore(genome.getInstantiatedGenome(legacy))
 
-    private fun setLegacy(template: ResourceTemplate, legacy: ResourceCore): ResourceTemplate {
+    private fun setLegacy(template: ResourceStringTemplate, legacy: ResourceCore): ResourceStringTemplate {
         var (resource, actionConversion, parts) = template
         val newGenome = resource.genome.copy(legacy = legacy)
         resource = ResourceIdeal(ResourceCore(newGenome))
@@ -135,7 +135,7 @@ class ResourceInstantiation(
             }
         }
         replaceLinks(resource)
-        return ResourceTemplate(resource, mutableMapOf(), parts)
+        return ResourceStringTemplate(resource, mutableMapOf(), parts)
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {
@@ -151,7 +151,7 @@ class ResourceInstantiation(
         }
     }
 
-    private fun actualizeParts(template: ResourceTemplate) {
+    private fun actualizeParts(template: ResourceStringTemplate) {
         val (resource, _, parts) = template
         for (part in parts) {
             val link = parseLink(part)
@@ -165,7 +165,7 @@ class ResourceInstantiation(
         addTakeApartAction(template)
     }
 
-    private fun addTakeApartAction(template: ResourceTemplate) {
+    private fun addTakeApartAction(template: ResourceStringTemplate) {
         val (resource, actionConversion, _) = template
         if (resource.core.genome.parts.isNotEmpty()
                 && !actionConversion.containsKey(actions.first { it.name == "TakeApart" })) {//TODO TakeApart shouldn't be here I recon
@@ -183,21 +183,44 @@ class ResourceInstantiation(
     private fun finalizePool(): ResourcePool {
         val finalizedResources = mutableListOf<ResourceIdeal>()
         val resourcesToAdd = mutableListOf<ResourceIdeal>()
-        resourcesToAdd.addAll(resourceTemplates.map { it.resource }/*.filter { it.genome !is GenomeTemplate }*/)
+        resourcesToAdd.addAll(resourceTemplates.map { it.resource }.filter { it.genome !is GenomeTemplate })
 
         while (resourcesToAdd.isNotEmpty()) {
             finalizedResources.addAll(resourcesToAdd)
+            val lastResources = resourcesToAdd.toList()
             resourcesToAdd.clear()
 
+            resourcesToAdd.addAll(
+                    lastResources
+                            .flatMap { it.genome.parts }
+                            .map { ResourceIdeal(it.core) }
+            )
+            resourcesToAdd.addAll(
+                    lastResources
+                            .flatMap { it.genome.conversionCore.actionConversion.values }
+                            .flatten()
+                            .mapNotNull { (r) -> r?.core } //TODO why are there nulls?
+                            .map { ResourceIdeal(it) }
+            )
 
+            resourcesToAdd.removeIf { it in finalizedResources }
         }
 
-        return ResourcePool(finalizedResources)
+        return ResourcePool(finalizedResources.sortedBy { it.baseName })
     }
 }
 
-data class ResourceTemplate(
+data class ResourceStringTemplate(
         val resource: ResourceIdeal,
         val actionConversion: MutableMap<ResourceAction, List<String>>,
         val parts: List<String>
 )
+
+typealias TemplateConversions = Map<ResourceAction, MutableList<Pair<Resource?, Int>>>
+
+data class ResourceConversionTemplate(
+        val resource: ResourceIdeal,
+        val actionConversion: TemplateConversions,
+        val parts: List<String>
+)
+

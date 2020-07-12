@@ -43,7 +43,6 @@ class ResourceCore(
             ?.map { (r, n) ->
                 val resource = r?.copy(n)
                         ?: throw SimulationException("Empty conversion")
-
                 return@map if (resource.core.genome is GenomeTemplate)
                     throw SimulationException("No GenomeTemplates allowed")
                 else resource

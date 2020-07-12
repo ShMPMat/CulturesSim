@@ -21,7 +21,7 @@ class ResourceTemplateCreator(
 ) {
     private val dependencyParser = DefaultDependencyParser()
 
-    fun createResource(tags: Array<String>): ResourceTemplate {
+    fun createResource(tags: Array<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
                 ?: throw SpaceError("Tags for Resource are empty")
         var willResist = false
@@ -131,6 +131,6 @@ class ResourceTemplateCreator(
                 actionConversion[it] = listOf()
         }
 
-        return ResourceTemplate(ResourceIdeal(resourceCore), actionConversion, parts)
+        return ResourceStringTemplate(ResourceIdeal(resourceCore), actionConversion, parts)
     }
 }
