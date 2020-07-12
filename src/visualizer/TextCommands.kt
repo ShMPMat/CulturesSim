@@ -20,6 +20,7 @@ enum class Command(command: String) {
     ResourceType("rt \\w+"),
     ResourceOwner("ro \\w+"),
     AllResources("rr"),
+    ResourceDensity("rd"),
     MeaningfulResources("meaning"),
     ArtificialResources("artificial"),
     Aspects("a \\w+"),

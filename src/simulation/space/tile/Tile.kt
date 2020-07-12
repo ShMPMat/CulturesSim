@@ -1,6 +1,7 @@
 package simulation.space.tile
 
 import simulation.Controller
+import simulation.space.SpaceData
 import simulation.space.SpaceData.data
 import simulation.space.SpaceError
 import simulation.space.TectonicPlate
@@ -19,15 +20,17 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     var plate: TectonicPlate? = null
 
     private val _resourcePack = MutableResourcePack()
-
     val resourcePack: ResourcePack
         get() = _resourcePack
 
-    /**
-     * Resources which were added on this Tile during this turn. They are
-     * stored here before the end of the turn.
-     */
+    //Resources added on this Tile on a last turn. They are
+    //stored here before the end of the turn.
     private val _delayedResources: MutableList<Resource> = ArrayList()
+
+    val resourceDensity
+        get() = resourcePack.resources
+                .map { it.amount * it.genome.size }
+                .foldRight(0.0, Double::plus) / data.tileResourceCapacity
 
     var level = 0
         internal set

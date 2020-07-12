@@ -68,11 +68,8 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
     return "\u001b[" + (30 + ord) + "m" + direction
 }
 
-fun temperatureMapper(tile: Tile): String {
-    return hotnessMapper(Tile::temperature, 10, tile, start = -30)
-}
 
-fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile, start: Int = 1): String {
+fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1): String {
     val result = mapper(tile)
     val colour = when {
         result < start -> NOTHING
@@ -85,6 +82,8 @@ fun hotnessMapper(mapper: (Tile) -> Int, step: Int, tile: Tile, start: Int = 1):
     }
     return if (result < start) "" else "\u001b[90m" + colour + abs(result % 10)
 }
+
+fun temperatureMapper(tile: Tile) = hotnessMapper(10, tile, Tile::temperature, start = -30)
 
 fun windMapper(tile: Tile): String {
     var direction: String
@@ -123,7 +122,7 @@ fun artificialResourcesMapper(tile: Tile): String {
     val artificialTypes = setOf(ResourceType.Building, ResourceType.Artifact)
     return when {
         meaningful != NOTHING -> meaningful
-        else -> predicateMapper(tile) { t -> t.resourcePack.any { it.genome.type in artificialTypes} }
+        else -> predicateMapper(tile) { t -> t.resourcePack.any { it.genome.type in artificialTypes } }
     }
 }
 
@@ -132,18 +131,23 @@ fun resourceTypeMapper(type: ResourceType, tile: Tile) =
         else NOTHING
 
 fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =
-        if (tile.resourcePack.any { it.ownershipMarker.name.contains(ownerSubstring)}) MARK
+        if (tile.resourcePack.any { it.ownershipMarker.name.contains(ownerSubstring) }) MARK
         else NOTHING
 
-fun aspectMapper(aspectName: String, tile: Tile): String {
-    return hotnessMapper(
-            {
-                val group: Group = getResidingGroup(it) ?: return@hotnessMapper 0
-                group.cultureCenter.aspectCenter.aspectPool.get(aspectName)?.usefulness ?: 0
-            },
-            100,
-            tile)
-}
+fun aspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
+        100,
+        tile,
+        {
+            val group: Group = getResidingGroup(it) ?: return@hotnessMapper 0
+            group.cultureCenter.aspectCenter.aspectPool.get(aspectName)?.usefulness ?: 0
+        }
+)
+
+fun resourceDensityMapper(threshold: Double, tile: Tile) = hotnessMapper(
+        (threshold / 5.0).toInt(),
+        tile,
+        { it.resourceDensity.toInt() }
+)
 
 fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile)
 { group.territoryCenter.accessibleTerritory.contains(it) }

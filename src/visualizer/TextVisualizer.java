@@ -410,9 +410,9 @@ public class TextVisualizer implements Visualizer {
                                 break;
                             }
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
                                     Integer.parseInt(splitCommand[2]),
                                     t,
+                                    group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
                                     Integer.parseInt(splitCommand[2])
                             ));
                             break;
@@ -466,6 +466,14 @@ public class TextVisualizer implements Visualizer {
                             break;
                         case AllResources: {
                             System.out.println(PrintFunctionsKt.resourcesCounter(world));
+                            break;
+                        } case ResourceDensity: {
+                            printMap(t ->
+                                    TileMapperFunctionsKt.resourceDensityMapper(
+                                            SpaceData.INSTANCE.getData().getTileResourceCapacity(),
+                                            t
+                                    )
+                            );
                             break;
                         } case Events: {
                             System.out.println(printRegexEvents(
