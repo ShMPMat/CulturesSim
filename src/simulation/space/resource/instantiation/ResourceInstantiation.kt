@@ -21,7 +21,6 @@ class ResourceInstantiation(
     private val resourceTemplateCreator = ResourceTemplateCreator(actions, materialPool, amountCoefficient, tagParser)
 
     private val resourceTemplates = ArrayList<ResourceTemplate>()
-    var resourcePool = ResourcePool(listOf())
 
     fun createPool(): ResourcePool {
         val resourceFolders = Files.walk(Paths.get(folderPath))
@@ -38,10 +37,10 @@ class ResourceInstantiation(
                 resourceTemplates.add(resourceTemplateCreator.createResource(tags))
             }
         }
-        resourcePool = ResourcePool(resourceTemplates.map { it.resource })
         resourceTemplates.forEach { actualizeLinks(it) }
-        resourceTemplates.forEach { actualizeParts(it) }//TODO Maybe legacy resources dont have parts!
-        return resourcePool
+        resourceTemplates.forEach { actualizeParts(it) }
+
+        return finalizePool()
     }
 
     private fun getTemplateWithName(name: String): ResourceTemplate = resourceTemplates
@@ -179,6 +178,21 @@ class ResourceInstantiation(
                 )
             }
         }
+    }
+
+    private fun finalizePool(): ResourcePool {
+        val finalizedResources = mutableListOf<ResourceIdeal>()
+        val resourcesToAdd = mutableListOf<ResourceIdeal>()
+        resourcesToAdd.addAll(resourceTemplates.map { it.resource }/*.filter { it.genome !is GenomeTemplate }*/)
+
+        while (resourcesToAdd.isNotEmpty()) {
+            finalizedResources.addAll(resourcesToAdd)
+            resourcesToAdd.clear()
+
+
+        }
+
+        return ResourcePool(finalizedResources)
     }
 }
 

@@ -9,11 +9,11 @@ import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.math.ceil
 
-open class Genome constructor(
-        var name: String,
+open class Genome(
+        val name: String,
         val type: ResourceType,
         val size: Double,
-        var spreadProbability: Double,
+        val spreadProbability: Double,
         val baseDesirability: Int,
         val overflowType: OverflowType,
         val isMutable: Boolean,

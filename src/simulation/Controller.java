@@ -106,7 +106,7 @@ public class Controller {
     }
 
     public void initializeSecond() {
-        Resource water = world.getResourcePool().get("Water");
+        Resource water = world.getResourcePool().getBaseName("Water");
         for (int j = 0; j < fillCycles && doTurns; j++) {
             if (j != 0) {
                 world.fillResources();
@@ -122,7 +122,7 @@ public class Controller {
                     5 * proportionCoefficient * proportionCoefficient,
                     water,
                     t -> t.getType() == Tile.Type.Mountain
-                            && t.getResourcePack().contains(world.getResourcePool().get("Snow"))
+                            && t.getResourcePack().contains(world.getResourcePool().getBaseName("Snow"))
                             && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty()
                             ? (t.getTemperature() + 100) * (t.getTemperature() + 100) : 0.0,
                     t -> t.getType() != Tile.Type.Ice,

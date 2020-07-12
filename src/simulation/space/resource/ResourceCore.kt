@@ -33,13 +33,10 @@ class ResourceCore(
         )
     }
 
-    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>): ResourceCore {
-        val genome = genome.copy()
-        return ResourceCore(
-                genome,
-                features
-        )
-    }
+    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = ResourceCore(
+            genome.copy(),
+            features
+    )
 
     //TODO get rid of Templates in the conversions and move this to the ConversionCore
     fun applyAction(action: ResourceAction): List<Resource> = genome.conversionCore.actionConversion[action]

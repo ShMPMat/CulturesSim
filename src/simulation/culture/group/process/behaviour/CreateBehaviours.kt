@@ -50,7 +50,7 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
         if (path.isEmpty)
             return emptyList()
 
-        val roadExample = session.world.resourcePool.get("Road")
+        val roadExample = session.world.resourcePool.getSimpleName("Road")
         val roadResource = ProduceSimpleResourceA(group, roadExample, 1, 50).run()
                 .resources.getOrNull(0) ?: return emptyList()
 

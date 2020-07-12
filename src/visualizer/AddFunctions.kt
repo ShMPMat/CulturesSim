@@ -16,7 +16,7 @@ fun addResourceOnTile(tile: Tile?, resourceName: String, resourcePool: ResourceP
         return
     }
     try {
-        val resource = resourcePool.get(resourceName)
+        val resource = resourcePool.getBaseName(resourceName)
         tile.addDelayedResource(resource.copy())
     } catch (e: NoSuchElementException) {
         System.err.println("No such Resource")
@@ -30,7 +30,7 @@ fun addGroupWant(group: Group?, wantName: String, resourcePool: ResourcePool) {
         return
     }
     try {
-        val resource = resourcePool.get(wantName)
+        val resource = resourcePool.getBaseName(wantName)
         group.cultureCenter.addResourceWant(resource)
     } catch (e: NoSuchElementException) {
         System.err.println("Cannot addAll want to the group")

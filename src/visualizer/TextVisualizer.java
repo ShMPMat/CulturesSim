@@ -125,6 +125,7 @@ public class TextVisualizer implements Visualizer {
                 lastClaimedTilesPrintTurn
         );
         lastClaimedTilesPrintTurn = world.getTurn();
+        System.out.println(printedGroups().toString());
         System.out.print(main.append(addToRight(
                 printedMap(tile -> ""),
                 addToRight(
@@ -258,7 +259,7 @@ public class TextVisualizer implements Visualizer {
                                 break;
                             case Mountain:
                                 token = (tile.getLevel() > 130 ? "\033[43m" : "") +
-                                        (tile.getResourcePack().contains(world.getResourcePool().get("Snow")) ? "\033[30m" : "\033[93m") + "^";
+                                        (tile.getResourcePack().contains(world.getResourcePool().getBaseName("Snow")) ? "\033[30m" : "\033[93m") + "^";
                                 break;
                             default:
                                 token += " ";
@@ -443,7 +444,7 @@ public class TextVisualizer implements Visualizer {
                             break;
                         case Resource:
                             try {
-                                Resource resource = world.getResourcePool().get(line.substring(2));
+                                Resource resource = world.getResourcePool().getBaseName(line.substring(2));
                                 printResource(resource);
                             } catch (NoSuchElementException e) {
                                 Optional<Resource> _oo = resourceSymbols.entrySet().stream()

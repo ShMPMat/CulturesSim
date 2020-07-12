@@ -4,7 +4,6 @@ import shmp.random.randomElement
 import shmp.random.randomTile
 import simulation.space.TectonicPlate
 import simulation.space.WorldMap
-import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceType
 import simulation.space.resource.container.ResourcePool
@@ -15,7 +14,7 @@ import java.util.*
 import kotlin.random.Random
 
 fun generateMap(x: Int, y: Int, platesAmount: Int, resourcePool: ResourcePool, random: Random): WorldMap {
-    val tiles = createTiles(x, y, resourcePool.get("Water"))
+    val tiles = createTiles(x, y, resourcePool.getBaseName("Water"))
     val map = WorldMap(tiles)
     setTileNeighbours(map)
     val tectonicPlates = randomPlates(
@@ -35,7 +34,7 @@ fun fillResources(
         supplement: MapGeneratorSupplement,
         random: Random
 ) {
-    for (resource in resourcePool.getWithPredicate {
+    for (resource in resourcePool.getAll {
         it.genome.spreadProbability != 0.0
                 || it.genome.type == ResourceType.Mineral
     }) {
@@ -155,7 +154,7 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
             continue
         if (dependency is LabelerDependency) {
             val suitableResources = resourcePool
-                    .getWithPredicate { dependency.isResourceDependency(it) }
+                    .getAll { dependency.isResourceDependency(it) }
                     .filter { filterDependencyResources(it, newStack) }
             for (dependencyResource in suitableResources) {
                 if (dependencyResource.isAcceptable(tile)) {

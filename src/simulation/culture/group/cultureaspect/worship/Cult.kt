@@ -33,7 +33,7 @@ class Cult(val name: String) : WorshipFeature {
         if (parent.placeSystem.places.isEmpty()) return
         if (testProbability(0.1, session.random)) {//TODO lesser probability
             val request = SimpleResourceRequest(
-                    session.world.resourcePool.get("Temple"),
+                    session.world.resourcePool.getSimpleName("Temple"),
                     RequestCore(
                             group,
                             1.0,
