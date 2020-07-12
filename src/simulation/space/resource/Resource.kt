@@ -240,7 +240,7 @@ open class Resource(
         return result
     }
 
-    fun hasApplicationForAction(action: ResourceAction) = core.hasApplication(action)
+    fun hasApplicationForAction(action: ResourceAction) = genome.conversionCore.hasApplication(action)
 
     fun destroy() {
         amount = 0

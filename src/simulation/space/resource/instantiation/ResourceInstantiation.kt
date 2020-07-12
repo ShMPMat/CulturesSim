@@ -1,20 +1,14 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
-import simulation.SimulationException
-import simulation.space.SpaceError
-import simulation.space.resource.*
-import simulation.space.resource.action.ConversionCore
+import simulation.space.resource.Resource
+import simulation.space.resource.ResourceCore
+import simulation.space.resource.ResourceIdeal
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.container.ResourcePool
-import simulation.space.resource.dependency.*
-import simulation.space.resource.material.Material
 import simulation.space.resource.material.MaterialPool
-import simulation.space.resource.tag.ResourceTag
-import simulation.space.tile.Tile
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.math.min
 import kotlin.streams.toList
 
 class ResourceInstantiation(

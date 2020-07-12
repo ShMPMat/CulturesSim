@@ -25,9 +25,7 @@ class ResourceCore(
         genome.name = name
     }
 
-    fun copy() = Resource(this)
-
-    fun copy(amount: Int) = Resource(this, amount)
+    fun copy(amount: Int = genome.defaultAmount) = Resource(this, amount)
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker): Resource {
         if (genome is GenomeTemplate)
@@ -51,7 +49,6 @@ class ResourceCore(
         )
     }
 
-    //TODO throw an exception on any attempt to copy template
     //TODO get rid of Templates in the conversions and move this to the ConversionCore
     fun applyAction(action: ResourceAction): List<Resource> = genome.conversionCore.actionConversion[action]
             ?.map { (r, n) ->
@@ -61,7 +58,7 @@ class ResourceCore(
                 return@map if (resource.core.genome is GenomeTemplate)
                     throw SimulationException("No GenomeTemplates allowed")
                 else resource
-            } ?: listOf(applyActionToMaterials(action).copy(1))
+            } ?: listOf(copy(1))
 
     private fun applyActionToMaterials(action: ResourceAction): ResourceCore {
         val newMaterials = genome.materials.map { it.applyAction(action) }
@@ -72,9 +69,6 @@ class ResourceCore(
                 genome
         ) //TODO dangerous stuff for genome
     }
-
-    fun hasApplication(action: ResourceAction) =
-            genome.conversionCore.hasApplication(action) || genome.materials.any { it.hasApplication(action) }
 
     fun copyCore(
             name: String = this.genome.name,
