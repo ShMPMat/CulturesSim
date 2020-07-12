@@ -115,25 +115,24 @@ class ResourceInstantiation(
                     )
                 }
         )
-        val legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
+        var legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
         actualizeLinks(legacyTemplate)
         //TODO actualize parts?
         if (resource.genome !is GenomeTemplate)
-            setLegacy(legacyTemplate, creator)
+            legacyTemplate = setLegacy(legacyTemplate, creator)
 
         return legacyTemplate //TODO is legacy passed to parts in genome?
     }
 
-    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore): ResourceCore {
-        return ResourceCore(
-                genome.name,
-                genome.getInstantiatedGenome(legacy)
-        )
-    }
+    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore) = ResourceCore(
+            genome.name,
+            genome.getInstantiatedGenome(legacy)
+    )
 
-    private fun setLegacy(template: ResourceTemplate, legacy: ResourceCore) {
-        val (resource, actionConversion, _) = template
-        resource.genome.legacy = legacy
+    private fun setLegacy(template: ResourceTemplate, legacy: ResourceCore): ResourceTemplate {
+        var (resource, actionConversion, parts) = template
+        val newGenome = resource.genome.copy(legacy = legacy)
+        resource = ResourceIdeal(ResourceCore(newGenome.name, newGenome))
         for (entry in actionConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
                 resource.core.genome.conversionCore.addActionConversion(entry.key, entry.value
@@ -142,6 +141,7 @@ class ResourceInstantiation(
             }
         }
         replaceLinks(resource)
+        return ResourceTemplate(resource, mutableMapOf(), parts)
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {

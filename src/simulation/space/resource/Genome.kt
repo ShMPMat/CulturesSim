@@ -23,8 +23,7 @@ open class Genome constructor(
         val hasLegacy: Boolean,
         val lifespan: Double,
         val defaultAmount: Int,
-        var legacy: ResourceCore?,
-        val templateLegacy: ResourceCore?,
+        val legacy: ResourceCore?,
         dependencies: List<ResourceDependency>,
         tags: List<ResourceTag>,
         var primaryMaterial: Material?,
@@ -60,7 +59,6 @@ open class Genome constructor(
             lifespan: Double = this.lifespan,
             defaultAmount: Int = this.defaultAmount,
             legacy: ResourceCore? = this.legacy,
-            templateLegacy: ResourceCore? = this.templateLegacy,
             dependencies: List<ResourceDependency> = this.dependencies,
             tags: List<ResourceTag> = this.tags,
             primaryMaterial: Material? = this.primaryMaterial,
@@ -83,7 +81,6 @@ open class Genome constructor(
                 lifespan,
                 defaultAmount,
                 legacy,
-                templateLegacy,
                 dependencies,
                 tags,
                 primaryMaterial,
@@ -130,8 +127,8 @@ open class Genome constructor(
         get() = name + if (hasLegacy) legacyPostfix else ""
 
     private val legacyPostfix: String
-        get() = (if (templateLegacy == null) "" else "_of_" + templateLegacy.genome.name + templateLegacy.genome.legacyPostfix) +
-                if (legacy == null) "" else "_of_" + legacy!!.genome.name + legacy!!.genome.legacyPostfix
+        get() = legacy?.genome?.baseName?.let { "_of_$it" }
+                ?: ""
 
     val mass: Double
         get() {

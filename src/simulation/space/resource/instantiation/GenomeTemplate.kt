@@ -18,7 +18,6 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.lifespan,
         genome.defaultAmount,
         genome.legacy,
-        genome.templateLegacy,
         genome.dependencies,
         genome.tags,
         genome.primaryMaterial,
@@ -31,7 +30,7 @@ class GenomeTemplate(genome: Genome) : Genome(
 
     fun getInstantiatedGenome(templateLegacy: ResourceCore) = copy(
             lifespan = templateLegacy.genome.lifespan,
-            templateLegacy = templateLegacy,
+            legacy = templateLegacy,
             primaryMaterial = templateLegacy.genome.primaryMaterial
     )
 }

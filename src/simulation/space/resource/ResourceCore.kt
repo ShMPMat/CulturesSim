@@ -8,7 +8,7 @@ import java.util.*
 
 
 //Contains all general information about all Resources with the same name.
-class ResourceCore(
+class ResourceCore constructor(
         name: String,
         val genome: Genome,
         externalFeatures: List<ExternalResourceFeature> = listOf()
@@ -59,16 +59,6 @@ class ResourceCore(
                     throw SimulationException("No GenomeTemplates allowed")
                 else resource
             } ?: listOf(copy(1))
-
-    private fun applyActionToMaterials(action: ResourceAction): ResourceCore {
-        val newMaterials = genome.materials.map { it.applyAction(action) }
-        val genome = genome.copy(primaryMaterial = newMaterials[0], secondaryMaterials = newMaterials.drop(1))
-        genome.spreadProbability = 0.0
-        return ResourceCore(
-                genome.name + if (newMaterials == genome.materials) "" else "_" + action.name,
-                genome
-        ) //TODO dangerous stuff for genome
-    }
 
     fun copyCore(
             name: String = this.genome.name,

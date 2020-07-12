@@ -117,7 +117,6 @@ class ResourceTemplateCreator(
                 lifespan = lifespan,
                 defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
                 legacy = null,
-                templateLegacy = null,
                 dependencies = resourceDependencies,
                 tags = resourceTags,
                 primaryMaterial = primaryMaterial,
