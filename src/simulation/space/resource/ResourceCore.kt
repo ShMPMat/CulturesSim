@@ -8,8 +8,7 @@ import java.util.*
 
 
 //Contains all general information about all Resources with the same name.
-class ResourceCore constructor(
-        name: String,
+class ResourceCore(
         val genome: Genome,
         externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
@@ -18,11 +17,6 @@ class ResourceCore constructor(
     init {
         if (externalFeatures.groupBy { it.index }.map { it.value.size }.any { it != 1 })
             throw SimulationException("${genome.name} has doubled external features: $externalFeatures")
-        setName(name)
-    }
-
-    private fun setName(name: String) {
-        genome.name = name
     }
 
     fun copy(amount: Int = genome.defaultAmount) = Resource(this, amount)
@@ -32,7 +26,6 @@ class ResourceCore constructor(
             throw SpaceError("Can't make a full copy of a template")
         return Resource(
                 ResourceCore(
-                        genome.name,
                         genome.copy(),
                         externalFeatures
                 ),
@@ -43,7 +36,6 @@ class ResourceCore constructor(
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>): ResourceCore {
         val genome = genome.copy()
         return ResourceCore(
-                genome.name,
                 genome,
                 features
         )
@@ -61,11 +53,9 @@ class ResourceCore constructor(
             } ?: listOf(copy(1))
 
     fun copyCore(
-            name: String = this.genome.name,
             genome: Genome = this.genome,
             externalFeatures: List<ExternalResourceFeature> = this.externalFeatures
     ) = ResourceCore(
-            name,
             genome,
             externalFeatures
     )

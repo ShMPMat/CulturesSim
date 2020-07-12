@@ -109,10 +109,7 @@ class ResourceInstantiation(
                 template.resource.core.genome.let { g ->
                     if (g is GenomeTemplate)
                         instantiateTemplateCopy(g, creator)
-                    else ResourceCore(
-                            resource.genome.name,
-                            resource.genome.copy()
-                    )
+                    else ResourceCore(resource.genome.copy())
                 }
         )
         var legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
@@ -124,15 +121,13 @@ class ResourceInstantiation(
         return legacyTemplate //TODO is legacy passed to parts in genome?
     }
 
-    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore) = ResourceCore(
-            genome.name,
-            genome.getInstantiatedGenome(legacy)
-    )
+    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore) =
+            ResourceCore(genome.getInstantiatedGenome(legacy))
 
     private fun setLegacy(template: ResourceTemplate, legacy: ResourceCore): ResourceTemplate {
         var (resource, actionConversion, parts) = template
         val newGenome = resource.genome.copy(legacy = legacy)
-        resource = ResourceIdeal(ResourceCore(newGenome.name, newGenome))
+        resource = ResourceIdeal(ResourceCore(newGenome))
         for (entry in actionConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
                 resource.core.genome.conversionCore.addActionConversion(entry.key, entry.value

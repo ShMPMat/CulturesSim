@@ -125,10 +125,7 @@ class ResourceTemplateCreator(
         )
         if (isTemplate)
             genome = GenomeTemplate(genome)
-        val resourceCore = ResourceCore(
-                genome.name,
-                genome
-        )
+        val resourceCore = ResourceCore(genome)
         specialActions.values.forEach {
             if (!actionConversion.containsKey(it))
                 actionConversion[it] = listOf()
