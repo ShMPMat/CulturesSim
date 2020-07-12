@@ -61,7 +61,7 @@ class ResourceInstantiation(
                     .toMutableList()
             )
         }
-        if (resource.core.materials.isEmpty())
+        if (resource.genome.materials.isEmpty())//TODO why is it here? What is it?
             return
 
         for (action in actions)
@@ -117,7 +117,6 @@ class ResourceInstantiation(
                         instantiateTemplateCopy(g, creator)
                     else ResourceCore(
                             resource.genome.name,
-                            ArrayList<Material>(resource.core.materials),
                             resource.genome.copy()
                     )
                 }
@@ -134,7 +133,6 @@ class ResourceInstantiation(
     private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore): ResourceCore {
         return ResourceCore(
                 genome.name,
-                java.util.ArrayList(legacy.materials),
                 genome.getInstantiatedGenome(legacy)
         )
     }

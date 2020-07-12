@@ -4,14 +4,12 @@ import simulation.SimulationException
 import simulation.space.SpaceError
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.instantiation.GenomeTemplate
-import simulation.space.resource.material.Material
 import java.util.*
 
 
 //Contains all general information about all Resources with the same name.
 class ResourceCore(
         name: String,
-        val materials: List<Material>,
         val genome: Genome,
         externalFeatures: List<ExternalResourceFeature> = listOf()
 ) {
@@ -37,7 +35,6 @@ class ResourceCore(
         return Resource(
                 ResourceCore(
                         genome.name,
-                        ArrayList(materials),
                         genome.copy(),
                         externalFeatures
                 ),
@@ -49,7 +46,6 @@ class ResourceCore(
         val genome = genome.copy()
         return ResourceCore(
                 genome.name,
-                ArrayList(materials),
                 genome,
                 features
         )
@@ -68,27 +64,24 @@ class ResourceCore(
             } ?: listOf(applyActionToMaterials(action).copy(1))
 
     private fun applyActionToMaterials(action: ResourceAction): ResourceCore {
-        val newMaterials = materials.map { it.applyAction(action) }
-        val genome = genome.copy()
+        val newMaterials = genome.materials.map { it.applyAction(action) }
+        val genome = genome.copy(primaryMaterial = newMaterials[0], secondaryMaterials = newMaterials.drop(1))
         genome.spreadProbability = 0.0
         return ResourceCore(
-                genome.name + if (newMaterials == materials) "" else "_" + action.name,
-                newMaterials,
+                genome.name + if (newMaterials == genome.materials) "" else "_" + action.name,
                 genome
         ) //TODO dangerous stuff for genome
     }
 
     fun hasApplication(action: ResourceAction) =
-            genome.conversionCore.hasApplication(action) || materials.any { it.hasApplication(action) }
+            genome.conversionCore.hasApplication(action) || genome.materials.any { it.hasApplication(action) }
 
     fun copyCore(
             name: String = this.genome.name,
-            materials: List<Material> = this.materials,
             genome: Genome = this.genome,
             externalFeatures: List<ExternalResourceFeature> = this.externalFeatures
     ) = ResourceCore(
             name,
-            materials,
             genome,
             externalFeatures
     )

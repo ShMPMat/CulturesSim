@@ -128,7 +128,6 @@ class ResourceTemplateCreator(
             genome = GenomeTemplate(genome)
         val resourceCore = ResourceCore(
                 genome.name,
-                genome.materials,
                 genome
         )
         specialActions.values.forEach {
