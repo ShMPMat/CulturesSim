@@ -130,7 +130,9 @@ class ResourceInstantiation(
         val legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
         actualizeLinks(legacyTemplate)
         //TODO actualize parts?
-        setLegacy(legacyTemplate, creator)
+        if (resource.genome !is GenomeTemplate)
+            setLegacy(legacyTemplate, creator)
+
         return legacyTemplate //TODO is legacy passed to parts in genome?
     }
 
