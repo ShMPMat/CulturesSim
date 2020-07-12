@@ -78,9 +78,8 @@ class ResourceInstantiation(
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
-        var nextTemplate: ResourceTemplate = getTemplateWithName(link.resourceName)
-        if (nextTemplate.resource.genome.hasLegacy)
-            nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.core)
+        var nextTemplate = getTemplateWithName(link.resourceName)
+        nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.core)
 
         actualizeLinks(nextTemplate)
 
@@ -92,22 +91,20 @@ class ResourceInstantiation(
             resource: ResourceIdeal,
             amount: Int
     ): Pair<Resource?, Int> {
-        val legacy = resource.genome.legacy //TODO this is so wrong
-        if (legacy == null) return Pair(null, amount)
+        val legacy = resource.genome.legacy
+                ?: return Pair(null, amount) //TODO this is so wrong
         //        val legacyResource = resource.genome.legacy.copy()
         val legacyTemplate = getTemplateWithName(legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
-        return Pair(
-                if (legacyTemplate.resource.genome.hasLegacy)
-                    copyWithLegacyInsertion(legacyTemplate, resource.core).resource
-                else
-                    legacyTemplate.resource,
-                amount)
+        return Pair(copyWithLegacyInsertion(legacyTemplate, resource.core).resource, amount)
     }
 
     private fun copyWithLegacyInsertion(
             template: ResourceTemplate,
             creator: ResourceCore
     ): ResourceTemplate {
+        if (!template.resource.genome.hasLegacy)
+            return template
+
         val (resource, actionConversion, parts) = template
         if (template.resource.genome is GenomeTemplate) {
             return ResourceTemplate(resource, actionConversion, parts)//TODO give instantiated resource
@@ -154,10 +151,9 @@ class ResourceInstantiation(
         val (resource, _, parts) = template
         for (part in parts) {
             val link = parseLink(part)
-
             var partTemplate = getTemplateWithName(link.resourceName)
-            if (partTemplate.resource.core.genome.hasLegacy)//TODO seems strange
-                partTemplate = copyWithLegacyInsertion(partTemplate, resource.core)
+
+            partTemplate = copyWithLegacyInsertion(partTemplate, resource.core)
 
             val partResource = link.transform(partTemplate.resource)
             resource.core.genome.addPart(partResource)
