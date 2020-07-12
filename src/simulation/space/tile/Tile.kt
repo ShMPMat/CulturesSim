@@ -10,6 +10,7 @@ import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
 import java.util.*
 import kotlin.math.max
+import kotlin.math.pow
 
 class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     val tagPool = MutableTileTagPool()
@@ -29,7 +30,7 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
     val resourceDensity
         get() = resourcePack.resources
-                .map { it.amount * it.genome.size }
+                .map { it.amount * it.genome.size.pow(3) }
                 .foldRight(0.0, Double::plus) / data.tileResourceCapacity
 
     var level = 0

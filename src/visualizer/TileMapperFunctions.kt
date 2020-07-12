@@ -80,7 +80,7 @@ fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1):
         result < start + 5 * step -> "\u001b[43m"
         else -> "\u001b[41m"
     }
-    return if (result < start) "" else "\u001b[90m" + colour + abs(result % 10)
+    return if (result < start) "" else "\u001b[90m" + colour + abs(((result - start) % step) / (step / 10))
 }
 
 fun temperatureMapper(tile: Tile) = hotnessMapper(10, tile, Tile::temperature, start = -30)

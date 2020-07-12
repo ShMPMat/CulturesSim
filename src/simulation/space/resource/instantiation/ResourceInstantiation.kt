@@ -50,7 +50,8 @@ class ResourceInstantiation(
             resourceTemplates.first { it.resource.baseName == name }
 
     private fun createResource(tags: Array<String>): ResourceTemplate {
-        val name = tags.getOrNull(0) ?: throw SpaceError("Tags for Resource are empty")
+        val name = tags.getOrNull(0)
+                ?: throw SpaceError("Tags for Resource are empty")
         var willResist = false
         var isTemplate = false
         var isDesirable = true
