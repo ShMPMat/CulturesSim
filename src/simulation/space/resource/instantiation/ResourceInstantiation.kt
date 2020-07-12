@@ -30,13 +30,16 @@ class ResourceInstantiation(
     var resourcePool = ResourcePool(listOf())
 
     fun createPool(): ResourcePool {
-        val resourceFolders = Files.walk(Paths.get(folderPath)).toList().drop(1)
+        val resourceFolders = Files.walk(Paths.get(folderPath))
+                .toList()
+                .drop(1)
         var line: String?
         var tags: Array<String>
         for (path in resourceFolders) {
             val inputDatabase = InputDatabase(path.toString())
             while (true) {
-                line = inputDatabase.readLine() ?: break
+                line = inputDatabase.readLine()
+                        ?: break
                 tags = line.split("\\s+".toRegex()).toTypedArray()
                 resourceTemplates.add(resourceTemplateCreator.createResource(tags))
             }
@@ -66,7 +69,13 @@ class ResourceInstantiation(
                 if (matcher.match(resource))
                     resource.core.genome.conversionCore.addActionConversion(
                             action,
-                            matcher.getResults(resource.core.copy(), resourcePool)
+                            matcher.getResults(resource.core.copy(), resourcePool)//TODO why does it returns resources?
+                                    .map { (r, n) ->
+                                        copyWithLegacyInsertion(
+                                                ResourceTemplate(ResourceIdeal(r.core), mutableMapOf(), listOf()),
+                                                resource.core
+                                        ).resource to n
+                                    }
                     )
     }
 
@@ -102,23 +111,35 @@ class ResourceInstantiation(
             template: ResourceTemplate,
             creator: ResourceCore
     ): ResourceTemplate {
-        if (!template.resource.genome.hasLegacy)
+        if (!template.resource.genome.hasLegacy || template.resource.core == creator)
             return template
 
         val (resource, actionConversion, parts) = template
-        if (template.resource.genome is GenomeTemplate) {
-            return ResourceTemplate(resource, actionConversion, parts)//TODO give instantiated resource
-        }
-        val legacyResource = ResourceIdeal(ResourceCore(
-                resource.genome.name,
-                ArrayList<Material>(resource.core.materials),
-                resource.genome.copy()
-        ))
+
+        val legacyResource = ResourceIdeal(
+                template.resource.core.genome.let { g ->
+                    if (g is GenomeTemplate)
+                        instantiateTemplateCopy(g, creator)
+                    else ResourceCore(
+                            resource.genome.name,
+                            ArrayList<Material>(resource.core.materials),
+                            resource.genome.copy()
+                    )
+                }
+        )
         val legacyTemplate = ResourceTemplate(legacyResource, actionConversion, parts)
         actualizeLinks(legacyTemplate)
         //TODO actualize parts?
         setLegacy(legacyTemplate, creator)
         return legacyTemplate //TODO is legacy passed to parts in genome?
+    }
+
+    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore): ResourceCore {
+        return ResourceCore(
+                genome.name,
+                java.util.ArrayList(legacy.materials),
+                genome.getInstantiatedGenome(legacy)
+        )
     }
 
     private fun setLegacy(template: ResourceTemplate, legacy: ResourceCore) {

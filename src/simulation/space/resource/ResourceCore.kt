@@ -2,15 +2,13 @@ package simulation.space.resource
 
 import simulation.SimulationException
 import simulation.space.SpaceError
-import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.instantiation.GenomeTemplate
 import simulation.space.resource.material.Material
 import java.util.*
 
-/**
- * Class which contains all general information about all Resources with the same name.
- */
+
+//Contains all general information about all Resources with the same name.
 class ResourceCore(
         name: String,
         val materials: List<Material>,
@@ -47,16 +45,6 @@ class ResourceCore(
         )
     }
 
-    private fun instantiateTemplateCopy(legacy: ResourceCore): ResourceCore {
-        if (genome !is GenomeTemplate)
-            throw SpaceError("Cant make a instantiated copy not from a template")
-        return ResourceCore(
-                genome.name,
-                ArrayList(legacy.materials),
-                genome.getInstantiatedGenome(legacy)
-        )
-    }
-
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>): ResourceCore {
         val genome = genome.copy()
         return ResourceCore(
@@ -71,15 +59,12 @@ class ResourceCore(
     //TODO get rid of Templates in the conversions and move this to the ConversionCore
     fun applyAction(action: ResourceAction): List<Resource> = genome.conversionCore.actionConversion[action]
             ?.map { (r, n) ->
-                var resource = r ?: throw SimulationException("Empty conversion")
-                if (resource.core.genome is GenomeTemplate) {
-                    resource = resource.copy(n)
-                    resource.core = resource.core.instantiateTemplateCopy(this)
-                    resource.computeHash()
-                    return@map resource
-                } else {
-                    return@map resource.copy(n)
-                }
+                val resource = r?.copy(n)
+                        ?: throw SimulationException("Empty conversion")
+
+                return@map if (resource.core.genome is GenomeTemplate)
+                    throw SimulationException("No GenomeTemplates allowed")
+                else resource
             } ?: listOf(applyActionToMaterials(action).copy(1))
 
     private fun applyActionToMaterials(action: ResourceAction): ResourceCore {

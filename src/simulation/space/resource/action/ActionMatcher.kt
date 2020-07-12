@@ -14,10 +14,12 @@ class ActionMatcher(
     }
 
     fun match(resource: Resource) =
-            if (resource.genome.conversionCore.actionConversion.keys.map { it.name }.any { it == resourceActionName })
-                false
-            else
-                labeler.isSuitable(resource.genome)
+            if (!resource.genome.conversionCore.actionConversion.keys.map { it.name }.any { it == resourceActionName })
+                if (resource.genome.hasLegacy && resource.simpleName in results.map { (n) -> n })
+                    false
+                else
+                    labeler.isSuitable(resource.genome)
+            else false
 
     fun getResults(resource: Resource, resourcePool: ResourcePool): List<Pair<Resource, Int>> {
         return results

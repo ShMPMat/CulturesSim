@@ -21,50 +21,50 @@
     C3.0
 
 -BuildHouse
-    &t:hard-->=0.5--#House:1
+    &t:hard-->=0.5--!!t:composite--#House:1
     Shard
     C10.0
 -BuildWigwam                                                                 /goodForFrame
-    &t:soft--t:solid--#Wigwam:1
+    &t:soft--t:solid--!!t:composite--#Wigwam:1
     C3.0
 -BuildYurt                                                                   /goodForFrame
-    &t:goodForTent--#Yurt:1
+    &t:goodForTent--!!t:composite--#Yurt:1
     C3.0
 -BuildRoad
-    &t:hard-->=0.5--#Road:1
+    &t:hard-->=0.5--!!t:composite--#Road:1
     Shard
     C20.0
 -BuildTemple
-    &t:hard-->=0.5--#Temple:1
+    &t:hard-->=0.5--!!t:composite--#Temple:1
     Shard
     C30.0
 -BuildFarm
-    &t:hard-->=0.5--#Farm:1
+    &t:hard-->=0.5--!!t:composite--#Farm:1
     Shard
     C10.0
 -BuildCraftHouse
-    &t:hard-->=0.5--#CraftHouse:1
+    &t:hard-->=0.5--!!t:composite--#CraftHouse:1
     Shard
     C10.0
 -BuildTradeHouse
-    &t:hard-->=0.5--#TradeHouse:1
+    &t:hard-->=0.5--!!t:composite--#TradeHouse:1
     Shard
     C10.0
 
 -MakeDish
-    &t:hard-->=0.05--#Dish:1
+    &t:hard-->=0.05--<=1.5--!!t:composite--#Dish:1
     Shard
     C3.0
 -MakeBoat
-    &t:hard-->=2--<D900--#Boat:1
+    &t:hard-->=2--<D900--!!t:composite--#Boat:1
     Shard
     C3.0
 -MakeSpear
-    &t:hard--t:sturdy-->=1--#Spear:1
+    &t:hard--t:sturdy-->=1--<=2.5--!!t:composite--#Spear:1
     Shard
     C3.0
 -MakeHandPlough
-    &t:hard--t:sturdy-->=0.5--#HandPlough:1
+    &t:hard--t:sturdy-->=0.5--<=2--!!t:composite--#HandPlough:1
     C3.0
     Shard
 -MakeDye

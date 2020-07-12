@@ -5,56 +5,71 @@
 
 -Clothes         0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Cloth
         $clothes:2
+        $composite:1
 
 -FurClothes      0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
         $clothes:1
+        $composite:1
 
 -LeatherClothes  0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
         $clothes:1
+        $composite:1
 
 -StoneAxe        0       0.1    10000      -500   500  100000000  0             1 1  Ignore    Artifact     @Stone
         $weapon:3
 
 -HandPlough      0       0.5    10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1
         &a(PlantSeed)-0.02
         U
 
 -Basket          0       0.3    10         -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1
         &a(Take)-0.01
 
 -House           0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         $shelter:3
 
 -Wigwam          0       3      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         $shelter:2
 
 -Yurt            0       3      10000      -500   500  100000000  10            1 1  Ignore    Building     @TEMPLATE
+        $composite:1
         $shelter:2
 
 -Temple          0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         U
 
 -Farm            0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         &a(PlantSeed)-0.5
         U
 
 -CraftHouse      0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         &D(a(ShapeMalleable):a(Engrave):a(Sculpt):a(Carve):a(Paint):a(Incrust))-0.5
         U
 
 -TradeHouse      0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         &a(Trade)-0.5
         U
 
 -Road            0       1000   10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+        $composite:1
         U
 
 
 -Dish            0       0.1    10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
 
 -Boat            0       2      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1
 
 -Spear           0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1
 
 -Dye             0       0.05   10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $colour:3

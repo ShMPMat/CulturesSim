@@ -1,5 +1,6 @@
 package simulation.space.resource.tag.labeler
 
+import simulation.space.resource.ResourceType
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.material.Material
 
@@ -12,6 +13,7 @@ fun makeResourceLabeler(tags: Collection<String>): ResourceLabeler {
 
 private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {
     "t:" -> TagLabeler(ResourceTag(value))
+    "T:" -> TypeLabeler(ResourceType.valueOf(value))
     "m:" -> PrimaryMaterialLabeler(Material(value, 0.0, listOf()))
     "r:" -> SimpleNameLabeler(value)
     "<=" -> SmallerSizeLabeler(value.toDouble())
