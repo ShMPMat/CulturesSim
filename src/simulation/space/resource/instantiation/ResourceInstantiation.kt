@@ -69,13 +69,8 @@ class ResourceInstantiation(
                 if (matcher.match(resource))
                     resource.core.genome.conversionCore.addActionConversion(
                             action,
-                            matcher.getResults(resource.core.copy(), resourcePool)//TODO why does it returns resources?
-                                    .map { (r, n) ->
-                                        copyWithLegacyInsertion(
-                                                ResourceTemplate(ResourceIdeal(r.core), mutableMapOf(), listOf()),
-                                                resource.core
-                                        ).resource to n
-                                    }
+                            matcher.getResults(template, resourceTemplates)
+                                    .map { (r, n) -> copyWithLegacyInsertion(r, resource.core).resource to n }
                     )
     }
 

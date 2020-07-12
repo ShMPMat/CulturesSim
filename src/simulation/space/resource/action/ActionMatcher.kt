@@ -1,7 +1,7 @@
 package simulation.space.resource.action
 
 import simulation.space.resource.Resource
-import simulation.space.resource.container.ResourcePool
+import simulation.space.resource.instantiation.ResourceTemplate
 import simulation.space.resource.tag.labeler.ResourceLabeler
 
 class ActionMatcher(
@@ -21,11 +21,12 @@ class ActionMatcher(
                     labeler.isSuitable(resource.genome)
             else false
 
-    fun getResults(resource: Resource, resourcePool: ResourcePool): List<Pair<Resource, Int>> {
-        return results
-                .map { (name, amount) ->
-                    val resultResource = if (name == "MATCHED") resource else resourcePool.get(name)
-                    resultResource to amount
-                }
-    }
+    fun getResults(resource: ResourceTemplate, resources: List<ResourceTemplate>): List<Pair<ResourceTemplate, Int>> =
+            results.map { (name, amount) ->
+                val resultResource =
+                        if (name != "MATCHED")
+                            resources.first { it.resource.baseName == name }
+                        else resource
+                resultResource to amount
+            }
 }
