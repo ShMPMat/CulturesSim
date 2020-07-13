@@ -15,22 +15,20 @@ fun addToRight(left: String, right: String, guarantiedLength: Boolean): StringBu
         return StringBuilder(right)
 
     val stringBuilder = StringBuilder()
-    val m: Int = (left.lines().map { it.length }.max() ?: 0) + 4
-    val list1 = left.lines()
-    val list2 = right.lines()
+    val lineLength: Int = (left.lines().map { it.length }.max() ?: 0) + 4
+    val linesAmount = max(left.lines().count(), right.lines().count())
+    val list1 = left.lines() + ((0 until linesAmount - left.lines().size).map { "" })
+    val list2 = right.lines() + ((0 until linesAmount - right.lines().size).map { "" })
 
-    for (i in 0 until max(left.lines().count(), right.lines().count())) {
-        val ss1 = if (i < list1.size)
-            list1[i]
-        else ""
-        val ss2 = if (i < list2.size)
-            list2[i]
-        else ""
-        val k = " "
+    for (i in 0 until linesAmount) {
+        val ss1 = list1[i]
+        val ss2 = list2[i]
         stringBuilder
                 .append(ss1)
-                .append(" ".repeat(if (guarantiedLength) 4 else m - ss1.length))
-                .append(ss2).append("\n")
+                .append(" ".repeat(if (guarantiedLength) 4 else lineLength - ss1.length))
+                .append(ss2)
+        if (i != linesAmount - 1)
+            stringBuilder.append("\n")
     }
 
     return stringBuilder
@@ -79,21 +77,18 @@ fun chompToSize(text: String, size: Int): StringBuilder {
  * @return edited text, has no more than size lines, greater lines added to the right.
  */
 fun chompToLines(text: String, size: Int): StringBuilder {
-    var index = 0
-    var counter = 0
+    val prefix = text.lines().take(size).joinToString("\n")
+    val postfix = text.lines().drop(size).joinToString("\n")
 
-    while (index + 1 < text.length) {
-        index = text.indexOf("\n", index + 1)
-        counter++
-        if (counter == size)
-            return addToRight(
-                    text.substring(0, index),
-                    chompToLines(text.substring(index + 1), size).toString(),
-                    false
-            )
-    }
+    if (postfix == "")
+        return java.lang.StringBuilder(prefix)
 
-    return StringBuilder(text)
+    return addToRight(
+            prefix,
+            chompToLines(postfix, size).toString(),
+            false
+    )
+
 }
 
 fun chompToLines(text: StringBuilder, size: Int) = chompToLines(text.toString(), size)
