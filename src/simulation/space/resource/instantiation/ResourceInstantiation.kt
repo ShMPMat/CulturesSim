@@ -4,6 +4,7 @@ import extra.InputDatabase
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceCore
 import simulation.space.resource.ResourceIdeal
+import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.material.MaterialPool
@@ -77,7 +78,6 @@ class ResourceInstantiation(
 
         var nextTemplate = getTemplateWithName(link.resourceName)
         nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.core)
-
         actualizeLinks(nextTemplate)
 
         val resource = link.transform(nextTemplate.resource)
@@ -117,7 +117,48 @@ class ResourceInstantiation(
         if (resource.genome !is GenomeTemplate)
             legacyTemplate = setLegacy(legacyTemplate, creator)
 
-        return legacyTemplate //TODO is legacy passed to parts in genome?
+        legacyTemplate = legacyTemplate.copy(
+                resource = swapDependentResourcesLegacy(legacyTemplate.resource, template.resource.core)
+        )
+
+        return legacyTemplate
+    }
+
+    private fun swapDependentResourcesLegacy(resource: ResourceIdeal, oldLegacy: ResourceCore): ResourceIdeal {
+        if (resource.baseName.contains("Nut_of_ConiferCone_of_Spruce")) {
+            val k = 0
+        }
+        var swappedResource = resource
+
+        val newParts = resource.genome.parts.map {
+            val newGenome = it.genome.copy(legacy = resource.core)
+            swapDependentResourcesLegacy(
+                    ResourceIdeal(ResourceCore(newGenome)),
+                    it.core
+            ).copy()
+        }.toMutableList()
+        swappedResource = ResourceIdeal(ResourceCore(swappedResource.genome.copy(parts = newParts)))
+                newParts.forEach { resource.genome.addPart(it) }
+
+        val newConversionCore = ConversionCore(mutableMapOf())
+
+        resource.genome.conversionCore.actionConversion.forEach { (action, resources) ->
+            newConversionCore.addActionConversion(
+                    action,
+                    resources.map { (r, n) ->
+                        val newResource =
+                                if (r?.genome?.legacy == oldLegacy)
+                                    swapDependentResourcesLegacy(
+                                            ResourceIdeal(ResourceCore(r.genome.copy(legacy = resource.core))),
+                                            r.core
+                                    )
+                                else r?.copy()
+                        newResource to n
+                    }
+            )
+        }
+
+        return ResourceIdeal(ResourceCore(swappedResource.genome.copy(conversionCore = newConversionCore)))
     }
 
     private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore) =
