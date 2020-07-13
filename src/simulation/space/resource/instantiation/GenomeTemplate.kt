@@ -28,9 +28,9 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.parts.forEach { addPart(it) }
     }
 
-    fun getInstantiatedGenome(templateLegacy: ResourceCore) = copy(
-            lifespan = templateLegacy.genome.lifespan,
-            legacy = templateLegacy,
-            primaryMaterial = templateLegacy.genome.primaryMaterial
+    fun getInstantiatedGenome(legacy: Genome) = copy(
+            lifespan = legacy.lifespan,
+            legacy = legacy,
+            primaryMaterial = legacy.primaryMaterial
     )
 }

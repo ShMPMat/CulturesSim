@@ -1,6 +1,7 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
+import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceCore
 import simulation.space.resource.ResourceIdeal
@@ -64,7 +65,7 @@ class ResourceInstantiation(
                     resource.core.genome.conversionCore.addActionConversion(
                             action,
                             matcher.getResults(template, resourceTemplates)
-                                    .map { (r, n) -> copyWithLegacyInsertion(r, resource.core).resource to n }
+                                    .map { (r, n) -> copyWithLegacyInsertion(r, resource.genome).resource to n }
                     )
     }
 
@@ -77,7 +78,7 @@ class ResourceInstantiation(
             return manageLegacyConversion(template.resource, link.amount)
 
         var nextTemplate = getTemplateWithName(link.resourceName)
-        nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.core)
+        nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.genome)
         actualizeLinks(nextTemplate)
 
         val resource = link.transform(nextTemplate.resource)
@@ -91,15 +92,15 @@ class ResourceInstantiation(
         val legacy = resource.genome.legacy
                 ?: return null to amount //TODO this is so wrong
         //        val legacyResource = resource.genome.legacy.copy()
-        val legacyTemplate = getTemplateWithName(legacy.genome.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
-        return copyWithLegacyInsertion(legacyTemplate, resource.core).resource to amount
+        val legacyTemplate = getTemplateWithName(legacy.baseName)//TODO VERY DANGEROUS will break on legacy depth > 1
+        return copyWithLegacyInsertion(legacyTemplate, resource.genome).resource to amount
     }
 
     private fun copyWithLegacyInsertion(
             template: ResourceStringTemplate,
-            creator: ResourceCore
+            creator: Genome
     ): ResourceStringTemplate {
-        if (!template.resource.genome.hasLegacy || template.resource.core == creator)
+        if (!template.resource.genome.hasLegacy || template.resource.genome == creator)
             return template
 
         val (resource, actionConversion, parts) = template
@@ -118,23 +119,23 @@ class ResourceInstantiation(
             legacyTemplate = setLegacy(legacyTemplate, creator)
 
         legacyTemplate = legacyTemplate.copy(
-                resource = swapDependentResourcesLegacy(legacyTemplate.resource, template.resource.core)
+                resource = swapDependentResourcesLegacy(legacyTemplate.resource, template.resource.genome)
         )
 
         return legacyTemplate
     }
 
-    private fun swapDependentResourcesLegacy(resource: ResourceIdeal, oldLegacy: ResourceCore): ResourceIdeal {
+    private fun swapDependentResourcesLegacy(resource: ResourceIdeal, oldLegacy: Genome): ResourceIdeal {
         if (resource.baseName.contains("Nut_of_ConiferCone_of_Spruce")) {
             val k = 0
         }
         var swappedResource = resource
 
         val newParts = resource.genome.parts.map {
-            val newGenome = it.genome.copy(legacy = resource.core)
+            val newGenome = it.genome.copy(legacy = resource.genome)
             swapDependentResourcesLegacy(
                     ResourceIdeal(ResourceCore(newGenome)),
-                    it.core
+                    it.genome
             ).copy()
         }.toMutableList()
         swappedResource = ResourceIdeal(ResourceCore(swappedResource.genome.copy(parts = newParts)))
@@ -149,8 +150,8 @@ class ResourceInstantiation(
                         val newResource =
                                 if (r?.genome?.legacy == oldLegacy)
                                     swapDependentResourcesLegacy(
-                                            ResourceIdeal(ResourceCore(r.genome.copy(legacy = resource.core))),
-                                            r.core
+                                            ResourceIdeal(ResourceCore(r.genome.copy(legacy = resource.genome))),
+                                            r.genome
                                     )
                                 else r?.copy()
                         newResource to n
@@ -161,10 +162,10 @@ class ResourceInstantiation(
         return ResourceIdeal(ResourceCore(swappedResource.genome.copy(conversionCore = newConversionCore)))
     }
 
-    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: ResourceCore) =
+    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: Genome) =
             ResourceCore(genome.getInstantiatedGenome(legacy))
 
-    private fun setLegacy(template: ResourceStringTemplate, legacy: ResourceCore): ResourceStringTemplate {
+    private fun setLegacy(template: ResourceStringTemplate, legacy: Genome): ResourceStringTemplate {
         var (resource, actionConversion, parts) = template
         val newGenome = resource.genome.copy(legacy = legacy)
         resource = ResourceIdeal(ResourceCore(newGenome))
@@ -184,9 +185,9 @@ class ResourceInstantiation(
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
-                    resources[i] = Pair(resource.genome.legacy!!.copy(), conversionResourceAmount)//FIXME
+                    resources[i] = Pair(ResourceCore(resource.genome.legacy!!).copy(), conversionResourceAmount)//FIXME
                 } else if (conversionResource.simpleName == resource.genome.name) {
-                    resources[i] = Pair(resource.core.copy(), conversionResourceAmount)
+                    resources[i] = Pair(resource.copy(), conversionResourceAmount)
                 }
             }
         }
@@ -198,7 +199,7 @@ class ResourceInstantiation(
             val link = parseLink(part)
             var partTemplate = getTemplateWithName(link.resourceName)
 
-            partTemplate = copyWithLegacyInsertion(partTemplate, resource.core)
+            partTemplate = copyWithLegacyInsertion(partTemplate, resource.genome)
 
             val partResource = link.transform(partTemplate.resource)
             resource.core.genome.addPart(partResource)

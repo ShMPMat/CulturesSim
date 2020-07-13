@@ -23,7 +23,7 @@ open class Genome(
         val hasLegacy: Boolean,
         val lifespan: Double,
         val defaultAmount: Int,
-        val legacy: ResourceCore?,
+        val legacy: Genome?,
         dependencies: List<ResourceDependency>,
         tags: List<ResourceTag>,
         var primaryMaterial: Material?,
@@ -58,7 +58,7 @@ open class Genome(
             hasLegacy: Boolean = this.hasLegacy,
             lifespan: Double = this.lifespan,
             defaultAmount: Int = this.defaultAmount,
-            legacy: ResourceCore? = this.legacy,
+            legacy: Genome? = this.legacy,
             dependencies: List<ResourceDependency> = this.dependencies,
             tags: List<ResourceTag> = this.tags,
             primaryMaterial: Material? = this.primaryMaterial,
@@ -127,7 +127,7 @@ open class Genome(
         get() = name + if (hasLegacy) legacyPostfix else ""
 
     private val legacyPostfix: String
-        get() = legacy?.genome?.baseName?.let { "_of_$it" }
+        get() = legacy?.baseName?.let { "_of_$it" }
                 ?: ""
 
     val mass: Double
