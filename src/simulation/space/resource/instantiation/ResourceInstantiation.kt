@@ -109,7 +109,7 @@ class ResourceInstantiation(
                 template.resource.core.genome.let { g ->
                     if (g is GenomeTemplate)
                         instantiateTemplateCopy(g, creator)
-                    else ResourceCore(resource.genome.copy())
+                    else resource.genome.copy()
                 }
         )
         var legacyTemplate = ResourceStringTemplate(legacyResource, actionConversion, parts)
@@ -134,11 +134,11 @@ class ResourceInstantiation(
         val newParts = resource.genome.parts.map {
             val newGenome = it.genome.copy(legacy = resource.genome)
             swapDependentResourcesLegacy(
-                    ResourceIdeal(ResourceCore(newGenome)),
+                    ResourceIdeal(newGenome),
                     it.genome
             ).copy()
         }.toMutableList()
-        swappedResource = ResourceIdeal(ResourceCore(swappedResource.genome.copy(parts = newParts)))
+        swappedResource = ResourceIdeal(swappedResource.genome.copy(parts = newParts))
                 newParts.forEach { resource.genome.addPart(it) }
 
         val newConversionCore = ConversionCore(mutableMapOf())
@@ -150,7 +150,7 @@ class ResourceInstantiation(
                         val newResource =
                                 if (r?.genome?.legacy == oldLegacy)
                                     swapDependentResourcesLegacy(
-                                            ResourceIdeal(ResourceCore(r.genome.copy(legacy = resource.genome))),
+                                            ResourceIdeal(r.genome.copy(legacy = resource.genome)),
                                             r.genome
                                     )
                                 else r?.copy()
@@ -159,16 +159,16 @@ class ResourceInstantiation(
             )
         }
 
-        return ResourceIdeal(ResourceCore(swappedResource.genome.copy(conversionCore = newConversionCore)))
+        return ResourceIdeal(swappedResource.genome.copy(conversionCore = newConversionCore))
     }
 
     private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: Genome) =
-            ResourceCore(genome.getInstantiatedGenome(legacy))
+            genome.getInstantiatedGenome(legacy)
 
     private fun setLegacy(template: ResourceStringTemplate, legacy: Genome): ResourceStringTemplate {
         var (resource, actionConversion, parts) = template
         val newGenome = resource.genome.copy(legacy = legacy)
-        resource = ResourceIdeal(ResourceCore(newGenome))
+        resource = ResourceIdeal(newGenome)
         for (entry in actionConversion.entries) {
             if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
                 resource.core.genome.conversionCore.addActionConversion(entry.key, entry.value
@@ -235,13 +235,13 @@ class ResourceInstantiation(
             resourcesToAdd.addAll(
                     lastResources
                             .flatMap { it.genome.parts }
-                            .map { ResourceIdeal(it.core) }
+                            .map { ResourceIdeal(it.genome) }
             )
             resourcesToAdd.addAll(
                     lastResources
                             .flatMap { it.genome.conversionCore.actionConversion.values }
                             .flatten()
-                            .mapNotNull { (r) -> r?.core } //TODO why are there nulls?
+                            .mapNotNull { (r) -> r?.genome } //TODO why are there nulls?
                             .map { ResourceIdeal(it) }
             )
 

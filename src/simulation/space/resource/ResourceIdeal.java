@@ -3,6 +3,7 @@ package simulation.space.resource;
 import simulation.space.resource.action.ResourceAction;
 import simulation.space.tile.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static simulation.space.resource.OwnershipMarkerKt.getFreeMarker;
@@ -13,8 +14,8 @@ import static simulation.space.resource.OwnershipMarkerKt.getFreeMarker;
  * an example instance of a resource inside classes working with resources.
  */
 public class ResourceIdeal extends Resource {
-    public ResourceIdeal(ResourceCore resourceCore) {
-        super(resourceCore, 1, getFreeMarker());
+    public ResourceIdeal(Genome genome) {
+        super(new ResourceCore(genome, new ArrayList<>()), 1, getFreeMarker());
     }
 
     @Override
