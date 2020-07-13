@@ -23,7 +23,7 @@ class ResourceTemplateCreator(
 
     fun createResource(tags: Array<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
-                ?: throw SpaceError("Tags for Resource are empty")
+                ?: throw SimulationException("Tags for Resource are empty")
         var willResist = false
         var isTemplate = false
         var isDesirable = true
@@ -80,12 +80,12 @@ class ResourceTemplateCreator(
                     when (tempBound) {
                         "min" -> minTempDeprivation = coefficient
                         "max" -> maxTempDeprivation = coefficient
-                        else -> throw ExceptionInInitializerError("Unknown temperature command - $tag")
+                        else -> throw SimulationException("Unknown temperature command - $tag")
                     }
                 }
                 else -> {
                     val rTag = tagParser.parse(key, tag)
-                            ?: throw ExceptionInInitializerError("Unknown resource description command - $key")
+                            ?: throw SimulationException("Unknown resource description command - $key")
                     resourceTags.add(rTag)
                 }
             }

@@ -1,6 +1,7 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
+import simulation.SimulationException
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceCore
@@ -22,7 +23,7 @@ class ResourceInstantiation(
 ) {
     private val resourceTemplateCreator = ResourceTemplateCreator(actions, materialPool, amountCoefficient, tagParser)
 
-    private val resourceTemplates = ArrayList<ResourceStringTemplate>()
+    private val resourceStringTemplates = ArrayList<ResourceStringTemplate>()
 
     fun createPool(): ResourcePool {
         val resourceFolders = Files.walk(Paths.get(folderPath))
@@ -36,16 +37,18 @@ class ResourceInstantiation(
                 line = inputDatabase.readLine()
                         ?: break
                 tags = line.split("\\s+".toRegex()).toTypedArray()
-                resourceTemplates.add(resourceTemplateCreator.createResource(tags))
+                resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
             }
         }
-        resourceTemplates.forEach { actualizeLinks(it) }
-        resourceTemplates.forEach { actualizeParts(it) }
+        resourceStringTemplates.forEach { actualizeLinks(it) }
+        resourceStringTemplates.forEach { actualizeParts(it) }
 
-        return finalizePool()
+        val endResources = resourceStringTemplates.map { swapLegacies(it.resource) }
+
+        return finalizePool(endResources)
     }
 
-    private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceTemplates
+    private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceStringTemplates
             .first { it.resource.baseName == name }
 
     private fun actualizeLinks(template: ResourceStringTemplate) {
@@ -64,7 +67,7 @@ class ResourceInstantiation(
                 if (matcher.match(resource))
                     resource.core.genome.conversionCore.addActionConversion(
                             action,
-                            matcher.getResults(template, resourceTemplates)
+                            matcher.getResults(template, resourceStringTemplates)
                                     .map { (r, n) -> copyWithLegacyInsertion(r, resource.genome).resource to n }
                     )
     }
@@ -222,33 +225,8 @@ class ResourceInstantiation(
         }
     }
 
-    private fun finalizePool(): ResourcePool {
-        val finalizedResources = mutableListOf<ResourceIdeal>()
-        val resourcesToAdd = mutableListOf<ResourceIdeal>()
-        resourcesToAdd.addAll(resourceTemplates.map { it.resource }.filter { it.genome !is GenomeTemplate })
-
-        while (resourcesToAdd.isNotEmpty()) {
-            finalizedResources.addAll(resourcesToAdd)
-            val lastResources = resourcesToAdd.toList()
-            resourcesToAdd.clear()
-
-            resourcesToAdd.addAll(
-                    lastResources
-                            .flatMap { it.genome.parts }
-                            .map { ResourceIdeal(it.genome) }
-            )
-            resourcesToAdd.addAll(
-                    lastResources
-                            .flatMap { it.genome.conversionCore.actionConversion.values }
-                            .flatten()
-                            .mapNotNull { (r) -> r?.genome } //TODO why are there nulls?
-                            .map { ResourceIdeal(it) }
-            )
-
-            resourcesToAdd.removeIf { it in finalizedResources }
-        }
-
-        return ResourcePool(finalizedResources.sortedBy { it.baseName })
+    private fun swapLegacies(resource: ResourceIdeal): ResourceIdeal {
+        return resource
     }
 }
 
