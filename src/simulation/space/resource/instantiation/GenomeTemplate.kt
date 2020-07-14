@@ -1,7 +1,6 @@
 package simulation.space.resource.instantiation
 
 import simulation.space.resource.Genome
-import simulation.space.resource.ResourceCore
 
 class GenomeTemplate(genome: Genome) : Genome(
         genome.name,
@@ -28,9 +27,9 @@ class GenomeTemplate(genome: Genome) : Genome(
         genome.parts.forEach { addPart(it) }
     }
 
-    fun getInstantiatedGenome(legacy: Genome) = copy(
-            lifespan = legacy.lifespan,
-            legacy = legacy,
-            primaryMaterial = legacy.primaryMaterial
+    fun getInstantiatedGenome(legacyGenome: Genome) = copy(
+            lifespan = legacyGenome.lifespan,
+            legacy = legacyGenome.baseName,
+            primaryMaterial = legacyGenome.primaryMaterial
     )
 }

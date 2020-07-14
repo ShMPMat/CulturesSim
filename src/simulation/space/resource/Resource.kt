@@ -49,7 +49,7 @@ open class Resource(
     val simpleName: String
         get() = genome.name
 
-    val baseName: String
+    val baseName: BaseName
         get() = genome.baseName
 
     val fullName: String
