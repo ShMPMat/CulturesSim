@@ -1,5 +1,6 @@
 package simulation.space
 
+import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.TagMatcher
 import kotlin.random.Random
@@ -20,6 +21,7 @@ object SpaceData {
 }
 
 class Data(
+        var resourcePool: ResourcePool = ResourcePool(listOf()),
         val materialPool: MaterialPool = MaterialPool(listOf()),
         val maximalWind: Double = 10.0,
         val temperatureToWindCoefficient: Int = 1,

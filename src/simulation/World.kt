@@ -12,6 +12,7 @@ import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.event.Event
 import simulation.event.EventLog
+import simulation.space.SpaceData
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
@@ -67,6 +68,9 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
                 session.resourceProportionCoefficient,
                 AspectResourceTagParser(tags)
         ).createPool()
+
+        data.resourcePool = resourcePool
+
         map = generateMap(
                 data.mapSizeX,
                 data.mapSizeY,

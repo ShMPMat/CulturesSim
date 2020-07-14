@@ -53,9 +53,10 @@ open class Resource(
         get() = genome.baseName
 
     val fullName: String
-        get() = genome.baseName + if (externalFeatures.isNotEmpty())
-            externalFeatures.joinToString("_", "_") { it.name }
-        else ""
+        get() = genome.baseName +
+                if (externalFeatures.isNotEmpty())
+                    externalFeatures.joinToString("_", "_") { it.name }
+                else ""
 
     val tags: List<ResourceTag>
         get() = genome.tags
