@@ -21,17 +21,13 @@ class ResourceCore(
 
     fun copy(amount: Int = genome.defaultAmount) = Resource(this, amount)
 
-    internal fun fullCopy(ownershipMarker: OwnershipMarker): Resource {
-        if (genome is GenomeTemplate)
-            throw SpaceError("Can't make a full copy of a template")
-        return Resource(
-                ResourceCore(
-                        genome.copy(),
-                        externalFeatures
-                ),
-                ownershipMarker = ownershipMarker
-        )
-    }
+    internal fun fullCopy(ownershipMarker: OwnershipMarker) =
+            if (genome is GenomeTemplate)
+                throw SpaceError("Can't make a full copy of a template")
+            else Resource(
+                    ResourceCore(genome.copy(), externalFeatures),
+                    ownershipMarker = ownershipMarker
+            )
 
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = ResourceCore(
             genome.copy(),
