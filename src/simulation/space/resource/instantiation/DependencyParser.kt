@@ -1,6 +1,5 @@
 package simulation.space.resource.instantiation
 
-import simulation.SimulationException
 import simulation.space.resource.dependency.AvoidDependency
 import simulation.space.resource.dependency.ConsumeDependency
 import simulation.space.resource.dependency.NeedDependency
@@ -19,19 +18,19 @@ open class DefaultDependencyParser : DependencyParser {
                     elements[2].toDouble(),
                     elements[3] == "1",
                     elements[1].toDouble(),
-                    makeResourceLabeler(elements[0].split(",".toRegex()))
+                    makeResourceLabeler(elements[0])
             )
             "AVOID" -> AvoidDependency(
                     elements[1].toDouble(),
                     elements[2].toDouble(),
                     elements[3] == "1",
-                    makeResourceLabeler(elements[0].split(",".toRegex()))
+                    makeResourceLabeler(elements[0])
             )
             "EXIST" -> NeedDependency(
                     elements[1].toDouble(),
                     elements[2].toDouble(),
                     elements[3] == "1",
-                    makeResourceLabeler(elements[0].split(",".toRegex()))
+                    makeResourceLabeler(elements[0])
             )
             else -> null
         }

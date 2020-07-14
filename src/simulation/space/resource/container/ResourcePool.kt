@@ -3,6 +3,7 @@ package simulation.space.resource.container
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceIdeal
 
+
 class ResourcePool(private val resources: List<ResourceIdeal>) {
     private val baseNameMap: Map<String, ResourceIdeal> = resources
             .map { it.baseName to it }

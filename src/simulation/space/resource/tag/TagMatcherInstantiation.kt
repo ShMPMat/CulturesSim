@@ -8,11 +8,11 @@ fun createTagMatchers(path: String): List<TagMatcher> {
     val inputDatabase = InputDatabase(path)
     while (true) {
         val line = inputDatabase.readLine() ?: break
-        val tags = line.split("\\s+".toRegex()).toTypedArray()
+        val tags = line.split("\\s+".toRegex())
         matchers.add(TagMatcher(
                 ResourceTag(tags[0]),
-                makeResourceLabeler(tags.drop(1))
+                makeResourceLabeler(tags.drop(1).joinToString(","))
         ))
     }
     return matchers
-    }
+}

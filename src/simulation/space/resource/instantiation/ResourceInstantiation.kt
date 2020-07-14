@@ -43,7 +43,7 @@ class ResourceInstantiation(
         resourceStringTemplates.forEach { actualizeLinks(it) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
-        val endResources = resourceStringTemplates.map { swapLegacies(it.resource) }
+        val endResources = resourceStringTemplates.map { swapLegacies(it.resource, true) as ResourceIdeal }
 
         return finalizePool(endResources)
     }
@@ -151,7 +151,9 @@ class ResourceInstantiation(
                     action,
                     resources.map { (r, n) ->
                         val newResource =
-                                if (r?.genome?.legacy == oldLegacy)
+                                if (r?.genome == oldLegacy)
+                                    resource
+                                else if (r?.genome?.legacy == oldLegacy)
                                     swapDependentResourcesLegacy(
                                             ResourceIdeal(r.genome.copy(legacy = resource.genome)),
                                             r.genome
@@ -225,7 +227,17 @@ class ResourceInstantiation(
         }
     }
 
-    private fun swapLegacies(resource: ResourceIdeal): ResourceIdeal {
+    private fun swapLegacies(resource: Resource, isTop: Boolean = false): Resource {
+//        resource.genome.legacy
+//                ?: if (!isTop) return resource
+//        if (resource.genome.parts.any { it.genome.legacy != null && it.genome.legacy != resource.genome }) {
+//            val k = 0
+//        }
+//        if (resource.genome.conversionCore.actionConversion.values.flatten().mapNotNull { it.first }.any { it.genome.legacy != null && it.genome.legacy != resource.genome }) {
+//            val k = 0
+//        }
+//        resource.genome.parts.forEach { swapLegacies(it) }
+//        resource.genome.conversionCore.actionConversion.values.flatten().mapNotNull { it.first }.forEach { swapLegacies(it) }
         return resource
     }
 }

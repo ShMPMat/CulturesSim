@@ -1,10 +1,12 @@
 package simulation.space.resource.tag.labeler
 
 import simulation.space.resource.ResourceType
+import simulation.space.resource.instantiation.bracketSensitiveSplit
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.material.Material
 
-fun makeResourceLabeler(tags: Collection<String>): ResourceLabeler {
+fun makeResourceLabeler(tagString: String): ResourceLabeler {
+    val tags = tagString.bracketSensitiveSplit(',')
     val labelers = ArrayList<ResourceLabeler>()
     for (tag in tags)
         labelers.add(getLabel(tag.take(2), tag.drop(2)))

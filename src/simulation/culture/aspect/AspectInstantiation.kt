@@ -57,7 +57,7 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                 '&' -> {
                     val matcherTags = tag.split("-+".toRegex()).toTypedArray()
                     val (resultsTags, labelerTags) = matcherTags.partition { it[0] == '#' }
-                    val labeler = makeResourceLabeler(labelerTags)
+                    val labeler = makeResourceLabeler(labelerTags.joinToString(","))
                     val results = resultsTags.map {
                         val temp = it.drop(1).split(":".toRegex()).toTypedArray()
                         Pair(temp[0], temp[1].toInt())

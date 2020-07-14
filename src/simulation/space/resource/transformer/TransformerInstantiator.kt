@@ -1,6 +1,7 @@
 package simulation.space.resource.transformer
 
-fun makeResourceTransformer(tags: Collection<String>): ResourceTransformer {
+fun makeResourceTransformer(tagString: String): ResourceTransformer {
+    val tags = tagString.split("#")
     val transformers = ArrayList<ResourceTransformer>()
     for (tag in tags)
         transformers.add(getLabel(tag.take(2), tag.drop(2)))
@@ -10,5 +11,7 @@ fun makeResourceTransformer(tags: Collection<String>): ResourceTransformer {
 
 private fun getLabel(key: String, value: String): ResourceTransformer = when (key) {
     "s|" -> SizeTransformer(value.toDouble())
+    "a|" -> TODO()
+    "P(" -> PartsPipe(makeResourceTransformer(value.dropLast(1)))
     else -> throw RuntimeException("Wrong tag for a labeler")
 }

@@ -16,7 +16,7 @@ fun parseLink(tag: String): ResourceLink {
 
     val name = nameAndTrans[0]
     val transformer = if (nameAndTrans.size > 2)
-        makeResourceTransformer(nameAndTrans[2].split("#"))
+        makeResourceTransformer(nameAndTrans[2])
     else null
 
     return ResourceLink(name, transformer, amount)

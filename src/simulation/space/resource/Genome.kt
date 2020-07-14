@@ -64,7 +64,7 @@ open class Genome(
             primaryMaterial: Material? = this.primaryMaterial,
             secondaryMaterials: List<Material> = this.secondaryMaterials,
             conversionCore: ConversionCore = this.conversionCore.copy(),
-            parts: MutableList<Resource> = this.parts
+            parts: List<Resource> = this.parts
     ): Genome {
         val genome = Genome(
                 name,

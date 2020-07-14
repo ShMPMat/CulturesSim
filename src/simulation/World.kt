@@ -42,8 +42,10 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
     var events = EventLog()
 
+    val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
+
     private val tags = InputDatabase("$path/ResourceTags").readLines().map { ResourceTag(it) }
-            .union(createTagMatchers("$path/ResourceTagLabelers").map { it.tag })
+            .union(tagMatchers.map { it.tag })
 
     val aspectPool = AspectInstantiation(tags).createPool("$path/Aspects")
 
@@ -54,7 +56,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
             .createPool("$path/Materials")
         instantiateSpaceData(
                 proportionCoefficient,
-                createTagMatchers("$path/ResourceTagLabelers"),
+                tagMatchers,
                 materialPool,
                 random
         )
