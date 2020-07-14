@@ -1,7 +1,6 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
-import simulation.SimulationException
 import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceCore
@@ -190,7 +189,7 @@ class ResourceInstantiation(
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
-                    resources[i] = Pair(ResourceCore(resource.genome.legacy!!).copy(), conversionResourceAmount)//FIXME
+                    resources[i] = Pair(ResourceCore(resource.genome.legacy!!).makeResource(), conversionResourceAmount)//FIXME
                 } else if (conversionResource.simpleName == resource.genome.name) {
                     resources[i] = Pair(resource.copy(), conversionResourceAmount)
                 }

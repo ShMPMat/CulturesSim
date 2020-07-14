@@ -224,7 +224,8 @@ open class Resource(
                 }
             }
             OverflowType.Cut -> amount = genome.naturalDensity
-            OverflowType.Ignore -> {}
+            OverflowType.Ignore -> {
+            }
         }
     }
 
@@ -235,7 +236,7 @@ open class Resource(
     }
 
     fun applyAction(action: ResourceAction, part: Int = 1): List<Resource> {
-        val result = core.applyAction(action)
+        val result = genome.conversionCore.applyAction(action) ?: listOf(copy(1))
         result.forEach { it.amount *= part }
         return result
     }
@@ -247,17 +248,13 @@ open class Resource(
     }
 
     open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean): List<Resource> {
-        val resourcePart = if (isClean)
-            getCleanPart(part)
-        else
-            getPart(part)
+        val resourcePart =
+                if (isClean)
+                    getCleanPart(part)
+                else
+                    getPart(part)
 
-        val p = min(part, resourcePart.amount)
-        val result = resourcePart.core.applyAction(action)
-        result.forEach { it.amount *= p }
-        resourcePart.amount -= p
-
-        return result
+        return resourcePart.applyAction(action, resourcePart.amount)
     }
 
     private fun expand(tile: Tile): Boolean {

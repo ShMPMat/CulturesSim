@@ -19,7 +19,7 @@ class ResourceCore(
             throw SimulationException("${genome.name} has doubled external features: $externalFeatures")
     }
 
-    fun copy(amount: Int = genome.defaultAmount) = Resource(this, amount)
+    fun makeResource(amount: Int = genome.defaultAmount) = Resource(this, amount)
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker) =
             if (genome is GenomeTemplate)
@@ -33,16 +33,6 @@ class ResourceCore(
             genome.copy(),
             features
     )
-
-    //TODO get rid of Templates in the conversions and move this to the ConversionCore
-    fun applyAction(action: ResourceAction): List<Resource> = genome.conversionCore.actionConversion[action]
-            ?.map { (r, n) ->
-                val resource = r?.copy(n)
-                        ?: throw SimulationException("Empty conversion")
-                return@map if (resource.core.genome is GenomeTemplate)
-                    throw SimulationException("No GenomeTemplates allowed")
-                else resource
-            } ?: listOf(copy(1))
 
     fun copyCore(
             genome: Genome = this.genome,
