@@ -7,7 +7,7 @@ import simulation.space.resource.container.ResourcePool
 fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
     val finalizedResources = mutableListOf<ResourceIdeal>()
     val resourcesToAdd = mutableListOf<ResourceIdeal>()
-    resourcesToAdd.addAll(startResources.filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy })
+    resourcesToAdd.addAll(startResources)
 
     while (resourcesToAdd.isNotEmpty()) {
         resourcesToAdd.firstOrNull { it.genome is GenomeTemplate }?.let { templateResource ->

@@ -1,6 +1,7 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
+import simulation.SimulationException
 import simulation.space.resource.*
 import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
@@ -39,7 +40,10 @@ class ResourceInstantiation(
         resourceStringTemplates.forEach { actualizeLinks(it) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
-        val endResources = resourceStringTemplates.map { swapLegacies(it.resource, true) as ResourceIdeal }
+        val endResources = resourceStringTemplates
+                .map { (r) -> r }
+                .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
+                .map { swapLegacies(it) as ResourceIdeal }
 
         return finalizePool(endResources)
     }
@@ -55,7 +59,7 @@ class ResourceInstantiation(
                     .toMutableList()
             )
         }
-        if (resource.genome.materials.isEmpty())//TODO why is it here? What is it?
+        if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
             return
 
         for (action in actions)
@@ -64,7 +68,7 @@ class ResourceInstantiation(
                     resource.core.genome.conversionCore.addActionConversion(
                             action,
                             matcher.getResults(template, resourceStringTemplates)
-                                    .map { (r, n) -> copyWithLegacyInsertion(r, resource.genome).resource to n }
+                                    .map { (t, n) -> t.resource to n }
                     )
     }
 
@@ -77,9 +81,7 @@ class ResourceInstantiation(
             return manageLegacyConversion(template.resource, link.amount)
 
         var nextTemplate = getTemplateWithName(link.resourceName)
-        nextTemplate = copyWithLegacyInsertion(nextTemplate, template.resource.genome)
         actualizeLinks(nextTemplate)
-
         val resource = link.transform(nextTemplate.resource)
         return Pair(resource, link.amount)//TODO insert amount in Resource amount;
     }
@@ -92,93 +94,7 @@ class ResourceInstantiation(
                 ?: return null to amount //TODO this is so wrong
         //        val legacyResource = resource.genome.legacy.copy()
         val legacyTemplate = getTemplateWithName(legacy)//TODO VERY DANGEROUS will break on legacy depth > 1
-        return copyWithLegacyInsertion(legacyTemplate, resource.genome).resource to amount
-    }
-
-    private fun copyWithLegacyInsertion(
-            template: ResourceStringTemplate,
-            creator: Genome
-    ): ResourceStringTemplate {
-        if (!template.resource.genome.hasLegacy || template.resource.genome == creator)
-            return template
-
-        val (resource, actionConversion, parts) = template
-
-        val legacyResource = ResourceIdeal(
-                template.resource.core.genome.let { g ->
-                    if (g is GenomeTemplate)
-                        instantiateTemplateCopy(g, creator)
-                    else resource.genome.copy()
-                }
-        )
-        var legacyTemplate = ResourceStringTemplate(legacyResource, actionConversion, parts)
-        actualizeLinks(legacyTemplate)
-        //TODO actualize parts?
-        if (resource.genome !is GenomeTemplate)
-            legacyTemplate = setLegacy(legacyTemplate, creator.baseName)
-
-        legacyTemplate = legacyTemplate.copy(
-                resource = swapDependentResourcesLegacy(legacyTemplate.resource, template.resource.baseName)
-        )
-
-        return legacyTemplate
-    }
-
-    private fun swapDependentResourcesLegacy(resource: ResourceIdeal, oldLegacy: BaseName): ResourceIdeal {
-        if (resource.baseName.contains("Nut_of_ConiferCone_of_Spruce")) {
-            val k = 0
-        }
-        var swappedResource = resource
-
-        val newParts = resource.genome.parts.map {
-            val newGenome = it.genome.copy(legacy = resource.baseName)
-            swapDependentResourcesLegacy(
-                    ResourceIdeal(newGenome),
-                    it.baseName
-            ).copy()
-        }.toMutableList()
-        swappedResource = ResourceIdeal(swappedResource.genome.copy(parts = newParts))
-                newParts.forEach { resource.genome.addPart(it) }
-
-        val newConversionCore = ConversionCore(mutableMapOf())
-
-        resource.genome.conversionCore.actionConversion.forEach { (action, resources) ->
-            newConversionCore.addActionConversion(
-                    action,
-                    resources.map { (r, n) ->
-                        val newResource =
-                                if (r?.baseName == oldLegacy)
-                                    resource
-                                else if (r?.genome?.legacy == oldLegacy)
-                                    swapDependentResourcesLegacy(
-                                            ResourceIdeal(r.genome.copy(legacy = resource.baseName)),
-                                            r.baseName
-                                    )
-                                else r?.copy()
-                        newResource to n
-                    }
-            )
-        }
-
-        return ResourceIdeal(swappedResource.genome.copy(conversionCore = newConversionCore))
-    }
-
-    private fun instantiateTemplateCopy(genome: GenomeTemplate, legacy: Genome) =
-            genome.getInstantiatedGenome(legacy)
-
-    private fun setLegacy(template: ResourceStringTemplate, legacy: BaseName): ResourceStringTemplate {
-        var (resource, actionConversion, parts) = template
-        val newGenome = resource.genome.copy(legacy = legacy)
-        resource = ResourceIdeal(newGenome)
-        for (entry in actionConversion.entries) {
-            if (entry.value.any { it.split(":".toRegex()).toTypedArray()[0] == "LEGACY" }) {
-                resource.core.genome.conversionCore.addActionConversion(entry.key, entry.value
-                        .map { readConversion(template, it) }
-                        .toMutableList())//TODO should I do it if in upper level I call actualizeLinks?
-            }
-        }
-        replaceLinks(resource)
-        return ResourceStringTemplate(resource, mutableMapOf(), parts)
+        return legacyTemplate.resource to amount
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {
@@ -198,10 +114,7 @@ class ResourceInstantiation(
         val (resource, _, parts) = template
         for (part in parts) {
             val link = parseLink(part)
-            var partTemplate = getTemplateWithName(link.resourceName)
-
-            partTemplate = copyWithLegacyInsertion(partTemplate, resource.genome)
-
+            val partTemplate = getTemplateWithName(link.resourceName)
             val partResource = link.transform(partTemplate.resource)
             resource.core.genome.addPart(partResource)
         }
@@ -223,18 +136,43 @@ class ResourceInstantiation(
         }
     }
 
-    private fun swapLegacies(resource: Resource, isTop: Boolean = false): Resource {
-//        resource.genome.legacy
-//                ?: if (!isTop) return resource
-//        if (resource.genome.parts.any { it.genome.legacy != null && it.genome.legacy != resource.genome }) {
-//            val k = 0
-//        }
-//        if (resource.genome.conversionCore.actionConversion.values.flatten().mapNotNull { it.first }.any { it.genome.legacy != null && it.genome.legacy != resource.genome }) {
-//            val k = 0
-//        }
-//        resource.genome.parts.forEach { swapLegacies(it) }
-//        resource.genome.conversionCore.actionConversion.values.flatten().mapNotNull { it.first }.forEach { swapLegacies(it) }
-        return resource
+    private fun swapLegacies(resource: Resource, legacyResource: Resource? = null): Resource {
+        if (!resource.genome.hasLegacy && legacyResource != null)
+            return resource
+
+        val newGenome = resource.core.genome.let { oldGenome ->
+            if (oldGenome is GenomeTemplate)
+                oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
+            else oldGenome
+        }
+        var newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName))
+
+        val newParts = resource.genome.parts.map {
+            swapLegacies(
+                    it,
+                    newResource
+            ).copy()
+        }.toMutableList()
+
+        newResource = ResourceIdeal(newResource.genome.copy(parts = newParts))
+
+        val newConversionCore = ConversionCore(mutableMapOf())
+
+        resource.genome.conversionCore.actionConversion.map { (action, results) ->
+            action to results.map { (r, n) ->
+                if (r == resource)
+                    newResource to n
+                else {
+                    if (r == null)
+                        legacyResource to n
+                    else
+                        swapLegacies(r, newResource) to n
+                }
+            }
+        }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
+
+        newResource.genome.conversionCore = newConversionCore
+        return newResource
     }
 }
 
@@ -251,4 +189,3 @@ data class ResourceConversionTemplate(
         val actionConversion: TemplateConversions,
         val parts: List<String>
 )
-

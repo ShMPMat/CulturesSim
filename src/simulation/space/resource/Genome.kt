@@ -28,7 +28,7 @@ open class Genome(
         tags: List<ResourceTag>,
         var primaryMaterial: Material?,
         secondaryMaterials: List<Material>,
-        val conversionCore: ConversionCore
+        var conversionCore: ConversionCore
 ) {
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
     val parts: MutableList<Resource> = ArrayList()
