@@ -1,8 +1,9 @@
 package simulation.space.resource.instantiation
 
 import extra.InputDatabase
-import simulation.SimulationException
-import simulation.space.resource.*
+import simulation.space.SpaceData
+import simulation.space.resource.Resource
+import simulation.space.resource.ResourceIdeal
 import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.container.ResourcePool
@@ -37,16 +38,21 @@ class ResourceInstantiation(
                 resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
             }
         }
+        SpaceData.data.resourcePool = ResourcePool(filteredFinalResources)
         resourceStringTemplates.forEach { actualizeLinks(it) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
-        val endResources = resourceStringTemplates
-                .map { (r) -> r }
-                .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
+        val endResources = filteredFinalResources
                 .map { swapLegacies(it) as ResourceIdeal }
 
+        SpaceData.data.resourcePool = ResourcePool(listOf())
         return finalizePool(endResources)
     }
+
+    private val filteredFinalResources
+        get() = resourceStringTemplates
+                .map { (r) -> r }
+                .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
 
     private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceStringTemplates
             .first { it.resource.baseName == name }
@@ -54,9 +60,9 @@ class ResourceInstantiation(
     private fun actualizeLinks(template: ResourceStringTemplate) {
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
-            resource.core.genome.conversionCore.addActionConversion(a, l
-                    .map { readConversion(template, it) }
-                    .toMutableList()
+            resource.core.genome.conversionCore.addActionConversion(
+                    a,
+                    l.map { readConversion(template, it) }
             )
         }
         if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
@@ -76,11 +82,11 @@ class ResourceInstantiation(
             template: ResourceStringTemplate,
             conversionString: String
     ): Pair<Resource?, Int> {
-        val link = parseLink(conversionString)
+        val link = parseLink(conversionString, actions)
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
-        var nextTemplate = getTemplateWithName(link.resourceName)
+        val nextTemplate = getTemplateWithName(link.resourceName)
         actualizeLinks(nextTemplate)
         val resource = link.transform(nextTemplate.resource)
         return Pair(resource, link.amount)//TODO insert amount in Resource amount;
@@ -92,8 +98,7 @@ class ResourceInstantiation(
     ): Pair<Resource?, Int> {
         val legacy = resource.genome.legacy
                 ?: return null to amount //TODO this is so wrong
-        //        val legacyResource = resource.genome.legacy.copy()
-        val legacyTemplate = getTemplateWithName(legacy)//TODO VERY DANGEROUS will break on legacy depth > 1
+        val legacyTemplate = getTemplateWithName(legacy)
         return legacyTemplate.resource to amount
     }
 
@@ -113,7 +118,7 @@ class ResourceInstantiation(
     private fun actualizeParts(template: ResourceStringTemplate) {
         val (resource, _, parts) = template
         for (part in parts) {
-            val link = parseLink(part)
+            val link = parseLink(part, actions)
             val partTemplate = getTemplateWithName(link.resourceName)
             val partResource = link.transform(partTemplate.resource)
             resource.core.genome.addPart(partResource)
@@ -162,12 +167,10 @@ class ResourceInstantiation(
             action to results.map { (r, n) ->
                 if (r == resource)
                     newResource to n
-                else {
-                    if (r == null)
-                        legacyResource to n
-                    else
-                        swapLegacies(r, newResource) to n
-                }
+                else if (r == null)
+                    legacyResource to n
+                else
+                    swapLegacies(r, newResource) to n
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
 

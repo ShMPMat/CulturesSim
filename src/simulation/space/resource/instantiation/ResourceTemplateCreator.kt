@@ -42,7 +42,7 @@ class ResourceTemplateCreator(
             when (key) {
                 '+' -> {
                     val actionName = tag.substring(0, tag.indexOf(':'))
-                    val action = specialActions[actionName]
+                    val action = specialActions[actionName]//TODO to the parseConversion
                             ?: parseProbabilityAction(actionName)
                             ?: actions.first { it.name == actionName }
                     actionConversion[action] = tag.substring(tag.indexOf(':') + 1)
