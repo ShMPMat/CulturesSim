@@ -1,11 +1,14 @@
 package simulation.culture.group.process.action
 
+import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.Transfer
-import simulation.culture.group.centers.AdministrationType
-import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.*
+import simulation.culture.thinking.meaning.GroupMemes
+import simulation.space.resource.container.MutableResourcePack
+import simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.pow
 
@@ -50,7 +53,7 @@ class TryDivergeA(group: Group) : AbstractGroupAction(group) {
 
         if (!checkCoherencyAndDiverge())
             NewConglomerateA(group, emptyList()).run()
-        
+
         return true
     }
 
@@ -80,3 +83,38 @@ class TryDivergeA(group: Group) : AbstractGroupAction(group) {
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"
 }
+
+class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroupAction(group) {
+    override fun run(): Group {
+
+        val aspects = group.cultureCenter.aspectCenter.aspectPool.all
+                .map { it.copy(it.dependencies) }
+
+        val memes = GroupMemes()
+        memes.addAll(group.cultureCenter.memePool)
+
+        val pack = MutableResourcePack()
+        group.resourceCenter.pack.resources.forEach {
+            pack.addAll(group.resourceCenter.takeResource(it, it.amount / 2))
+        }
+
+        val name = group.parentGroup.newName
+
+        return Group(
+                ProcessCenter(AdministrationType.Subordinate),
+                ResourceCenter(pack, startTile, name),
+                group.parentGroup,
+                name,
+                group.populationCenter.getPart(0.5, startTile),
+                RelationCenter(group.relationCenter.hostilityCalculator),
+                startTile,
+                aspects,
+                memes,
+                group.cultureCenter.cultureAspectCenter.aspectPool.all,
+                group.territoryCenter.spreadAbility
+        )
+    }
+
+    override val internalToString = "Make a new Group from ${group.name}"
+}
+

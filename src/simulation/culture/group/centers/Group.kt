@@ -12,6 +12,7 @@ import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupTileTag
 import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.group.process.action.AddGroupA
+import simulation.culture.group.process.action.MakeSplitGroupA
 import simulation.culture.group.process.action.NewConglomerateA
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.MemeSubject
@@ -141,29 +142,10 @@ class Group(
                 return null
             if (!session.groupMultiplication)
                 return null
+
             val tile = randomElement(tiles, session.random)
-            val aspects = cultureCenter.aspectCenter.aspectPool.all
-                    .map { it.copy(it.dependencies) }
-            val memes = GroupMemes()
-            memes.addAll(cultureCenter.memePool)
-            val pack = MutableResourcePack()
-            resourceCenter.pack.resources.forEach {
-                pack.addAll(resourceCenter.takeResource(it, it.amount / 2))
-            }
-            val name = parentGroup.newName
-            return Add(Group(
-                    ProcessCenter(AdministrationType.Subordinate),
-                    ResourceCenter(pack, tile, name),
-                    parentGroup,
-                    name,
-                    populationCenter.getPart(0.5, tile),
-                    RelationCenter(relationCenter.hostilityCalculator),
-                    tile,
-                    aspects,
-                    memes,
-                    cultureCenter.cultureAspectCenter.aspectPool.all,
-                    territoryCenter.spreadAbility
-            ))
+
+            return Add(MakeSplitGroupA(this, tile).run())
         }
         return null
     }

@@ -107,7 +107,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         get() = territory.center
                 ?: throw GroupError("Empty territory")
 
-    fun update() { //TODO simplify
+    fun update() {
         if (state == State.Dead)
             return
         val mainTime = System.nanoTime()
