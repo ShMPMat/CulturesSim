@@ -12,13 +12,11 @@ import simulation.culture.group.place.StrayPlacesManager
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.event.Event
 import simulation.event.EventLog
-import simulation.space.SpaceData
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
 import simulation.space.generator.fillResources
 import simulation.space.generator.generateMap
-import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.instantiation.ResourceInstantiation
 import simulation.space.resource.material.MaterialInstantiation
 import simulation.space.resource.tag.ResourceTag
@@ -50,7 +48,8 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
     val aspectPool = AspectInstantiation(tags).createPool("$path/Aspects")
 
-    val resourcePool: ResourcePool
+    val resourcePool
+        get() = data.resourcePool
 
     init {
         val materialPool = MaterialInstantiation(tags, aspectPool.all.map { it.core.resourceAction })
@@ -61,7 +60,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
                 materialPool,
                 random
         )
-        resourcePool = ResourceInstantiation(
+        val initialResourcePool = ResourceInstantiation(
                 "$path/Resources",
                 aspectPool.all.map { it.core.resourceAction },
                 materialPool,
@@ -69,13 +68,13 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
                 AspectResourceTagParser(tags)
         ).createPool()
 
-        data.resourcePool = resourcePool
+        data.resourcePool = initialResourcePool
 
         map = generateMap(
                 data.mapSizeX,
                 data.mapSizeY,
                 data.platesAmount,
-                resourcePool,
+                initialResourcePool,
                 session.random
         )
     }
@@ -109,7 +108,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
     }
 
     private val tileForGroup: Tile
-        private get() {
+        get() {
             while (true) {
                 val tile = randomTile(map, session.random)
                 if (tile.tagPool.getByType(GROUP_TAG_TYPE).isEmpty()
@@ -122,10 +121,6 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
     fun getStringTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
     fun getTurn() = lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000
-
-    fun addEvent(event: Event) {
-        events.add(event)
-    }
 
     fun addGroupConglomerate(groupConglomerate: GroupConglomerate) {
         groups.add(groupConglomerate)
