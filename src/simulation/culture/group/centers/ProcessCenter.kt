@@ -27,6 +27,9 @@ class ProcessCenter(type: AdministrationType) {
             },
             TryDivergeB().withProbability(session.defaultGroupExiting) {
                 session.defaultGroupExiting / it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)
+            },
+            ManageOwnType().withProbability(session.defaultTypeRenewal) {
+                session.defaultTypeRenewal / it.parentGroup.subgroups.size
             }
     )
 
