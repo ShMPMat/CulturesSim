@@ -11,22 +11,6 @@ import simulation.culture.group.request.Request
 import simulation.space.resource.container.MutableResourcePack
 
 
-object RandomGroupAddB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
-        val options = group.territoryCenter.getAllNearGroups(group)
-                .filter { it.parentGroup !== group.parentGroup }
-
-        if (options.isNotEmpty()) {
-            val target = randomElement(options, Controller.session.random)
-            return GroupTransferInteraction(group, target).run()
-        }
-        return emptyList()
-    }
-
-    override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"
-}
-
-
 class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         if (request.ceiling <= 0)

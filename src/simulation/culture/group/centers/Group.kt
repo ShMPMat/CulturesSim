@@ -193,45 +193,6 @@ class Group(
         cultureCenter.finishUpdate()
     }
 
-    fun diverge(): Boolean {
-        if (!session.groupDiverge)
-            return false
-        if (parentGroup.subgroups.size <= 1)
-            return false
-        val relations = relationCenter.getAvgConglomerateRelation(parentGroup)
-        val exitProbability = session.defaultGroupExiting / relations.pow(2)
-        if (testProbability(exitProbability, session.random)) {
-            if (checkCoherencyAndDiverge())
-                NewConglomerateA(this, emptyList()).run()
-            return true
-        }
-        return false
-    }
-
-    private fun checkCoherencyAndDiverge(): Boolean {
-        val queue: Queue<Group> = ArrayDeque()
-        queue.add(this)
-        val cluster = mutableSetOf<Group>()
-
-        while (!queue.isEmpty()) {
-            val cur = queue.poll()
-            cluster.add(cur)
-            queue.addAll(cur.territoryCenter.getAllNearGroups(cur)
-                    .filter { it.parentGroup === parentGroup }
-                    .filter { !cluster.contains(it) }
-            )
-        }
-
-        if (parentGroup.subgroups.size == cluster.size)
-            return false
-
-        cluster.toList().let {
-            NewConglomerateA(it[0], it.drop(1)).run()
-        }
-
-        return true
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true

@@ -4,6 +4,7 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.Controller.*
 import simulation.culture.group.process.behaviour.*
+import kotlin.math.pow
 
 class ProcessCenter(type: AdministrationType) {
     var type = type
@@ -20,7 +21,10 @@ class ProcessCenter(type: AdministrationType) {
                     1,
                     minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
             ),
-            TurnRequestsHelpB()
+            TurnRequestsHelpB(),
+            TryDivergeB().withProbability(session.defaultGroupExiting) {
+                session.defaultGroupExiting / it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)
+            }
     )
 
     private val addedBehaviours = mutableListOf<GroupBehaviour>()
