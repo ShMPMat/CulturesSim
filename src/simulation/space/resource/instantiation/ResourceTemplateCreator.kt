@@ -33,7 +33,7 @@ class ResourceTemplateCreator(
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
-        val actionConversion = mutableMapOf<ResourceAction, List<String>>()
+        val actionConversion = mutableMapOf<ResourceAction, List<ResourceLink>>()
         val parts = mutableListOf<String>()
 
         for (i in 12..tags.lastIndex) {
@@ -41,13 +41,8 @@ class ResourceTemplateCreator(
             val tag = tags[i].drop(1)
             when (key) {
                 '+' -> {
-                    val actionName = tag.substring(0, tag.indexOf(':'))
-                    val action = specialActions[actionName]//TODO to the parseConversion
-                            ?: parseProbabilityAction(actionName)
-                            ?: actions.first { it.name == actionName }
-                    actionConversion[action] = tag.substring(tag.indexOf(':') + 1)
-                            .split(",".toRegex())
-                            .toList()
+                    val (action, result) = parseConversion(tag, actions)
+                    actionConversion[action] = result
                 }
                 '@' -> if (tag == "TEMPLATE")
                     isTemplate = true

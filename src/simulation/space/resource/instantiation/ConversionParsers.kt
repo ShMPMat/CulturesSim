@@ -6,7 +6,7 @@ import simulation.space.resource.specialActions
 fun parseConversion(conversionStr: String, actions: List<ResourceAction>) : Pair<ResourceAction, List<ResourceLink>> {
     val actionName = conversionStr.substring(0, conversionStr.indexOf(':'))
 
-    val action = specialActions[actionName]//TODO to the parseConversion
+    val action = specialActions[actionName]
             ?: parseProbabilityAction(actionName)
             ?: actions.first { it.name == actionName }
 

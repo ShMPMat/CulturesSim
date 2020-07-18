@@ -80,9 +80,8 @@ class ResourceInstantiation(
 
     private fun readConversion(
             template: ResourceStringTemplate,
-            conversionString: String
+            link: ResourceLink
     ): Pair<Resource?, Int> {
-        val link = parseLink(conversionString, actions)
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
@@ -181,14 +180,8 @@ class ResourceInstantiation(
 
 data class ResourceStringTemplate(
         val resource: ResourceIdeal,
-        val actionConversion: MutableMap<ResourceAction, List<String>>,
-        val parts: List<String>
-)
-
-typealias TemplateConversions = Map<ResourceAction, MutableList<Pair<Resource?, Int>>>
-
-data class ResourceConversionTemplate(
-        val resource: ResourceIdeal,
         val actionConversion: TemplateConversions,
         val parts: List<String>
 )
+
+typealias TemplateConversions = Map<ResourceAction, List<ResourceLink>>
