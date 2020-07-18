@@ -15,7 +15,7 @@ import kotlin.math.min
 import kotlin.math.pow
 
 open class Resource(
-        var core: ResourceCore,
+        internal val core: ResourceCore,
         open var amount: Int = core.genome.defaultAmount,
         val ownershipMarker: OwnershipMarker = freeMarker
 ) {

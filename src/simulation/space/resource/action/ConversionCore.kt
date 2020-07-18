@@ -24,7 +24,7 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Pair<Reso
             ?.map { (r, n) ->
                 val resource = r?.copy(n)
                         ?: throw SimulationException("Empty conversion")
-                return@map if (resource.core.genome is GenomeTemplate)
+                return@map if (resource.genome is GenomeTemplate)
                     throw SimulationException("No GenomeTemplates allowed")
                 else resource
             }

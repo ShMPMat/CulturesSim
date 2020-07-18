@@ -60,7 +60,7 @@ class ResourceInstantiation(
     private fun actualizeLinks(template: ResourceStringTemplate) {
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
-            resource.core.genome.conversionCore.addActionConversion(
+            resource.genome.conversionCore.addActionConversion(
                     a,
                     l.map { readConversion(template, it) }
             )
@@ -71,7 +71,7 @@ class ResourceInstantiation(
         for (action in actions)
             for (matcher in action.matchers)
                 if (matcher.match(resource))
-                    resource.core.genome.conversionCore.addActionConversion(
+                    resource.genome.conversionCore.addActionConversion(
                             action,
                             matcher.getResults(template, resourceStringTemplates)
                                     .map { (t, n) -> t.resource to n }
@@ -102,7 +102,7 @@ class ResourceInstantiation(
     }
 
     private fun replaceLinks(resource: ResourceIdeal) {
-        for (resources in resource.core.genome.conversionCore.actionConversion.values) {
+        for (resources in resource.genome.conversionCore.actionConversion.values) {
             for (i in resources.indices) {
                 val (conversionResource, conversionResourceAmount) = resources[i]
                 if (conversionResource == null) {
@@ -120,19 +120,19 @@ class ResourceInstantiation(
             val link = parseLink(part, actions)
             val partTemplate = getTemplateWithName(link.resourceName)
             val partResource = link.transform(partTemplate.resource)
-            resource.core.genome.addPart(partResource)
+            resource.genome.addPart(partResource)
         }
         addTakeApartAction(template)
     }
 
     private fun addTakeApartAction(template: ResourceStringTemplate) {
         val (resource, actionConversion, _) = template
-        if (resource.core.genome.parts.isNotEmpty()
+        if (resource.genome.parts.isNotEmpty()
                 && !actionConversion.containsKey(actions.first { it.name == "TakeApart" })) {//TODO TakeApart shouldn't be here I recon
             val resourceList = mutableListOf<Pair<Resource?, Int>>()
-            for (partResource in resource.core.genome.parts) {
+            for (partResource in resource.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.core.genome.conversionCore.addActionConversion(
+                resource.genome.conversionCore.addActionConversion(
                         actions.first { it.name == "TakeApart" },
                         resourceList
                 )
@@ -144,7 +144,7 @@ class ResourceInstantiation(
         if (!resource.genome.hasLegacy && legacyResource != null)
             return resource
 
-        val newGenome = resource.core.genome.let { oldGenome ->
+        val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
                 oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
             else oldGenome

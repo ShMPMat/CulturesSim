@@ -93,7 +93,7 @@ open class Genome(
 
     private fun computePrimaryMaterial() {
         if (parts.size == 1)
-            primaryMaterial = parts[0].core.genome.primaryMaterial
+            primaryMaterial = parts[0].genome.primaryMaterial
     }
 
     val materials: List<Material>
