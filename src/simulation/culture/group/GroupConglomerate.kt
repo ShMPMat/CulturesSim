@@ -115,8 +115,6 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
         shuffledSubgroups.forEach { it.update() }
         Controller.session.groupMainTime += System.nanoTime() - mainTime
         val othersTime = System.nanoTime()
-        shuffledSubgroups.mapNotNull { it.populationUpdate() }
-                .forEach { it.execute(this) }
         updatePopulation()
         if (state == State.Dead)
             return

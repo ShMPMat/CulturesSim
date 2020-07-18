@@ -22,6 +22,9 @@ class ProcessCenter(type: AdministrationType) {
                     minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
             ),
             TurnRequestsHelpB(),
+            SplitGroupB().withProbability(session.defaultGroupDiverge) {
+                session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
+            },
             TryDivergeB().withProbability(session.defaultGroupExiting) {
                 session.defaultGroupExiting / it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)
             }

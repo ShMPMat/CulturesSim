@@ -99,6 +99,9 @@ class Group(
         checkNeeds()
         cultureCenter.update()
         processCenter.update(this)
+
+        if (populationCenter.population == 0)
+            die()
         session.groupInnerOtherTime += System.nanoTime() - others
     }
 
@@ -117,7 +120,6 @@ class Group(
     }
 
     private fun shouldMigrate(): Boolean {
-        //TODO worth it?
         if (testProbability(0.9, session.random))
             return false
         if (resourceCenter.hasDireNeed())
@@ -125,29 +127,6 @@ class Group(
         else
             _direNeedTurns = 0
         return _direNeedTurns > 5 + territoryCenter.notMoved / 10
-    }
-
-    fun populationUpdate(): ConglomerateCommand? {
-        if (populationCenter.population == 0) {
-            die()
-            return null
-        }
-        val denominator = parentGroup.subgroups.size + 1
-        val isMax = populationCenter.isMaxReached(territoryCenter.territory)
-        if (isMax || testProbability(session.defaultGroupDiverge / denominator, session.random)) {
-            val tiles = overallTerritory.getOuterBrink {
-                territoryCenter.canSettleAndNoGroup(it) && parentGroup.getClosestInnerGroupDistance(it) > 2
-            }
-            if (tiles.isEmpty())
-                return null
-            if (!session.groupMultiplication)
-                return null
-
-            val tile = randomElement(tiles, session.random)
-
-            return Add(MakeSplitGroupA(this, tile).run())
-        }
-        return null
     }
 
     fun intergroupUpdate() {

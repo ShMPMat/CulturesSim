@@ -39,7 +39,7 @@ public class Controller {
     public final int defaultGroupMinPopulationPerTile = 1;
     public final int defaultGroupFertility = 10;
     public final double defaultGroupExiting = 0.0002;
-    public final double defaultGroupDiverge = 0.002;
+    public final double defaultGroupDiverge = 0.008;
     public final double rAspectAcquisition = 1.0;
     public final double cultureAspectBaseProbability = 0.02;
     public final double groupCultureAspectCollapse = 0.05;
