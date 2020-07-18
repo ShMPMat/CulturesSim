@@ -169,7 +169,7 @@ open class Resource(
 
         if (simpleName == "Vapour") {
             if (tile.temperature < 0) {
-                tile.addDelayedResource(Controller.session.world.resourcePool.getBaseName("Snow").copy(amount / 2))
+                tile.addDelayedResource(SpaceData.data.resourcePool.getBaseName("Snow").copy(amount / 2))
                 amount -= amount / 2
             }
         }

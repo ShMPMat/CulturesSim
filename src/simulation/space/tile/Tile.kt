@@ -1,6 +1,7 @@
 package simulation.space.tile
 
 import simulation.Controller
+import simulation.space.SpaceData
 import simulation.space.SpaceData.data
 import simulation.space.SpaceError
 import simulation.space.TectonicPlate
@@ -207,7 +208,7 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         typeUpdater.updateType(this)
 
         if (type == Type.Water)
-            addDelayedResource(Controller.session.world.resourcePool.getBaseName("Vapour"))
+            addDelayedResource(SpaceData.data.resourcePool.getBaseName("Vapour"))
     }
 
     fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop growing
