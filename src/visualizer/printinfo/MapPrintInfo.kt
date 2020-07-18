@@ -1,11 +1,10 @@
-package visualizer
+package visualizer.printinfo
 
-import simulation.space.SpaceData
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.tile.Tile
 
-data class MapPrintInfo(val map: WorldMap) {
+class MapPrintInfo(val map: WorldMap) {
     var cut = 0
 
     fun computeCut() {

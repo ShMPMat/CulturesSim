@@ -1,14 +1,16 @@
 package visualizer
 
-import simulation.event.Event
+import extra.chompToSize
 import simulation.World
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.centers.Group
+import simulation.event.Event
 import simulation.space.WorldMap
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceType
 import simulation.space.tile.Tile
+import visualizer.printinfo.ConglomeratePrintInfo
 import java.util.regex.PatternSyntaxException
 
 
@@ -68,6 +70,44 @@ fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.til
         .joinToString("\n") { (r, t) -> "${t.x} ${t.y}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
 
 fun printGroup(group: Group) = "$group"
+
+fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: ConglomeratePrintInfo): String {
+    val main = StringBuilder()
+    for (group in conglomerates) {
+        val stringBuilder = StringBuilder()
+        if (group.state === GroupConglomerate.State.Dead)
+            continue
+
+        stringBuilder.append(info.getConglomerateSymbol(group)).append(" ").append(group.name).append(" \u001b[31m")
+        val aspects = group.aspects.sortedBy { -it.usefulness }
+        for (aspect in aspects) {
+            if (aspect.usefulness <= 0)
+                break
+            stringBuilder.append("(").append(aspect.name).append(" ").append(aspect.usefulness)
+                    .append(") ")
+        }
+        stringBuilder.append(" \u001b[32m\n")
+
+        group.cultureAspects.forEach {
+            stringBuilder.append("($it)")
+        }
+
+        stringBuilder.append(" \u001b[33m\n")
+        group.memes.sortedBy { -it.importance }.take(10).forEach {
+            stringBuilder.append("($it ${it.importance})")
+        }
+        stringBuilder.append(" \u001b[39m\n")
+
+        val hasGrown = group.population > info.populations[group] ?: 0
+        stringBuilder.append(if (hasGrown) "\u001b[32m" else "\u001b[31m")
+                .append("population=${group.population}")
+                .append(if (hasGrown) "↑" else "↓")
+                .append("\u001b[39m\n\n")
+        info.populations[group] = group.population
+        main.append(chompToSize(stringBuilder.toString(), 220))
+    }
+    return main.toString()
+}
 
 fun printConglomerateRelations(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) = """
         |${printConglomerateRelation(conglomerate1, conglomerate2)}

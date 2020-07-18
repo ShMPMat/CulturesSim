@@ -8,8 +8,6 @@ import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
-import simulation.culture.group.cultureaspect.CultureAspect;
-import simulation.culture.thinking.meaning.Meme;
 import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
 import simulation.space.SpaceData;
@@ -17,6 +15,8 @@ import simulation.space.WorldMap;
 import simulation.space.resource.Resource;
 import simulation.space.resource.ResourceType;
 import simulation.space.tile.Tile;
+import visualizer.printinfo.ConglomeratePrintInfo;
+import visualizer.printinfo.MapPrintInfo;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,19 +33,11 @@ import static visualizer.TextCommandsKt.getCommand;
  * Main class, running and visualizing simulation.
  */
 public class TextVisualizer implements Visualizer {
-    /**
-     * Symbols for representation of groups on the Map.
-     */
-    private Map<String, String> groupSymbols = new HashMap<>();
+    private ConglomeratePrintInfo groupInfo = new ConglomeratePrintInfo(new ArrayList<>());
     /**
      * Symbols for representation of resource on the Map.
      */
     private Map<Resource, String> resourceSymbols = new HashMap<>();
-    /**
-     * List of group population before beginning of the last sequence turn;
-     * Used for estimating population change.
-     */
-    private List<Integer> groupPopulations = new ArrayList<>();
     private Map<Group, Set<Tile>> lastClaimedTiles;
     private Integer lastClaimedTilesPrintTurn = 0;
     private MapPrintInfo mapPrintInfo;
@@ -86,9 +78,6 @@ public class TextVisualizer implements Visualizer {
         controller.initializeSecond();
         print();
         controller.initializeThird();
-        for (int i = 0; i < controller.startGroupAmount; i++) {
-            groupPopulations.add(0);
-        }
         mapPrintInfo.computeCut();
     }
 
@@ -109,9 +98,11 @@ public class TextVisualizer implements Visualizer {
             i++;
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
-        for (GroupConglomerate group : world.getGroups()) {
-            groupSymbols.put(group.getName(), s.nextLine());
+        List<String> l = new ArrayList<>();
+        while (s.hasNextLine()){
+            l.add(s.nextLine());
         }
+        groupInfo = new ConglomeratePrintInfo(l);
     }
 
     /**
@@ -125,7 +116,7 @@ public class TextVisualizer implements Visualizer {
                 lastClaimedTilesPrintTurn
         );
         lastClaimedTilesPrintTurn = world.getTurn();
-        System.out.println(printedGroups().toString());
+        System.out.println(PrintFunctionsKt.printedConglomerates(world.getGroups(), groupInfo));
         System.out.print(main.append(addToRight(
                 printedMap(tile -> ""),
                 addToRight(
@@ -151,50 +142,6 @@ public class TextVisualizer implements Visualizer {
                 chompToLines(printedResources(), map.getLinedTiles().size() + 2),
                 true
         ));
-    }
-
-    private StringBuilder printedGroups() {
-        StringBuilder main = new StringBuilder();
-        int i = -1;
-        while (groupPopulations.size() < world.getGroups().size()) {
-            groupSymbols.put(world.getGroups().get(groupPopulations.size()).getName(), s.nextLine());
-            groupPopulations.add(0);
-        }
-        for (GroupConglomerate group : world.getGroups()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            i++;
-            if (group.getState() == GroupConglomerate.State.Dead) {
-                continue;
-            }
-            stringBuilder.append(groupSymbols.get(group.getName())).append(" ").append(group.getName()).append(" \033[31m");
-            List<Aspect> aspects = new ArrayList<>(group.getAspects());
-            aspects.sort(Comparator.comparingInt(Aspect::getUsefulness).reversed());
-            for (Aspect aspect : aspects) {
-                if (aspect.getUsefulness() <= 0) {
-                    break;
-                }
-                stringBuilder.append("(").append(aspect.getName()).append(" ").append(aspect.getUsefulness())
-                        .append(") ");
-            }
-            stringBuilder.append(" \033[32m\n");
-            for (CultureAspect aspect : group.getCultureAspects()) {
-                stringBuilder.append("(").append(aspect).append(") ");
-            }
-            stringBuilder.append(" \033[33m\n");
-            List<Meme> memes = group.getMemes();
-            memes.sort(Comparator.comparingInt(Meme::getImportance).reversed());
-            for (int j = 0; j < 10 && memes.size() > j; j++) {
-                Meme meme = memes.get(j);
-                stringBuilder.append("(").append(meme).append(" ").append(meme.getImportance()).append(") ");
-            }
-            stringBuilder.append(" \033[39m\n");
-            boolean hasGrown = group.getPopulation() > groupPopulations.get(i);
-            stringBuilder.append(hasGrown ? "\033[32m" : "\033[31m").append("population=").append(group.getPopulation())
-                    .append(hasGrown ? "↑" : "↓").append("\033[39m\n\n");
-            groupPopulations.set(i, group.getPopulation());
-            main.append(chompToSize(stringBuilder.toString(), 220));
-        }
-        return main;
     }
 
     /**
@@ -273,7 +220,7 @@ public class TextVisualizer implements Visualizer {
                         } else {
                             token += "\033[96m\033[1m";
                         }
-                        token += groupSymbols.get(group.getParentGroup().getName());
+                        token += groupInfo.getConglomerateSymbol(group.getParentGroup());
                     }
                 }
                 map.append(token).append("\033[0m");
