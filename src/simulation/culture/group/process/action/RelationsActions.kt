@@ -2,8 +2,6 @@ package simulation.culture.group.process.action
 
 import shmp.random.testProbability
 import simulation.Controller
-import simulation.culture.group.Transfer
-import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.interaction.ChangeRelationsInteraction
 
@@ -38,20 +36,4 @@ class GrantHelpA(
     }
 
     override val internalToString = "Let ${group.name} decide whether to grant help to ${target.name}, help amount - $helpAmount"
-}
-
-class AddGroupA(group: Group, val groupToAdd: Group) : AbstractGroupAction(group) {
-    override fun run() {
-        Transfer(groupToAdd).execute(group.parentGroup)
-    }
-
-    override val internalToString = "Add a group ${groupToAdd.name} to the ${group.parentGroup.name}"
-}
-
-class ProcessGroupRemovalA(group: Group, val groupToRemove: Group) : AbstractGroupAction(group) {
-    override fun run() {
-        groupToRemove.processCenter.type = AdministrationType.Subordinate
-    }
-
-    override val internalToString = "Let ${group.name} deal with the removal of ${groupToRemove.name}"
 }

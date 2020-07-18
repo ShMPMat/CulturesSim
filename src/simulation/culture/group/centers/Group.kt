@@ -11,12 +11,15 @@ import simulation.culture.group.ConglomerateCommand
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupTileTag
 import simulation.culture.group.cultureaspect.CultureAspect
+import simulation.culture.group.process.action.AddGroupA
+import simulation.culture.group.process.action.NewConglomerateA
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.MemeSubject
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import java.util.*
+import kotlin.math.pow
 
 class Group(
         val processCenter: ProcessCenter,
@@ -196,10 +199,10 @@ class Group(
         if (parentGroup.subgroups.size <= 1)
             return false
         val relations = relationCenter.getAvgConglomerateRelation(parentGroup)
-        val exitProbability = session.defaultGroupExiting /*/ (relations * relations * relations)*/
+        val exitProbability = session.defaultGroupExiting / relations.pow(2)
         if (testProbability(exitProbability, session.random)) {
             if (checkCoherencyAndDiverge())
-                createNewConglomerate(setOf(this))
+                NewConglomerateA(this, emptyList()).run()
             return true
         }
         return false
@@ -208,7 +211,8 @@ class Group(
     private fun checkCoherencyAndDiverge(): Boolean {
         val queue: Queue<Group> = ArrayDeque()
         queue.add(this)
-        val cluster: MutableSet<Group> = HashSet()
+        val cluster = mutableSetOf<Group>()
+
         while (!queue.isEmpty()) {
             val cur = queue.poll()
             cluster.add(cur)
@@ -217,19 +221,15 @@ class Group(
                     .filter { !cluster.contains(it) }
             )
         }
+
         if (parentGroup.subgroups.size == cluster.size)
             return false
-        createNewConglomerate(cluster)
-        return true
-    }
 
-    private fun createNewConglomerate(groups: Collection<Group>) {
-        val conglomerate = GroupConglomerate(0, territoryCenter.center)
-        for (group in groups) {
-            group.parentGroup.removeGroup(group)
-            conglomerate.addGroup(group)
+        cluster.toList().let {
+            NewConglomerateA(it[0], it.drop(1)).run()
         }
-        session.world.addGroupConglomerate(conglomerate)
+
+        return true
     }
 
     override fun equals(other: Any?): Boolean {
