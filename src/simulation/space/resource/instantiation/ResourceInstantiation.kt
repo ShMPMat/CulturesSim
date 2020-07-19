@@ -140,7 +140,11 @@ class ResourceInstantiation(
         }
     }
 
-    private fun swapLegacies(resource: Resource, legacyResource: Resource? = null): Resource {
+    private fun swapLegacies(
+            resource: Resource,
+            legacyResource: Resource? = null,
+            treeStart: Resource = resource
+    ): Resource {
         if (!resource.genome.hasLegacy && legacyResource != null)
             return resource
 
@@ -152,10 +156,7 @@ class ResourceInstantiation(
         var newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName))
 
         val newParts = resource.genome.parts.map {
-            swapLegacies(
-                    it,
-                    newResource
-            ).copy()
+            swapLegacies(it, newResource, treeStart).copy()
         }.toMutableList()
 
         newResource = ResourceIdeal(newResource.genome.copy(parts = newParts))
@@ -167,9 +168,9 @@ class ResourceInstantiation(
                 if (r == resource)
                     newResource to n
                 else if (r == null)
-                    legacyResource to n
+                    treeStart to n
                 else
-                    swapLegacies(r, newResource) to n
+                    swapLegacies(r, newResource, treeStart) to n
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
 
