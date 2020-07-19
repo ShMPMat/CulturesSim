@@ -1,13 +1,11 @@
 package simulation.culture.group.stratum
 
 import shmp.random.testProbability
-import simulation.Controller
 import simulation.Controller.*
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.culture.aspect.getAspectImprovement
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
-import simulation.culture.group.process.action.TradeEvaluateResourcesA
 import simulation.culture.group.request.AspectImprovementRequest
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestCore
@@ -21,7 +19,7 @@ import kotlin.math.min
 
 class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
     private val tradeAspect = session.world.aspectPool.get("Trade")
-            ?: throw SimulationException("No aspect Trade exists for the $name")
+            ?: throw SimulationError("No aspect Trade exists for the $name")
 
     private var _effectiveness = 1.0
         private set

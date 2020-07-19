@@ -1,7 +1,6 @@
 package simulation.space.resource.instantiation
 
-import simulation.SimulationException
-import simulation.space.SpaceError
+import simulation.DataInitializationError
 import simulation.space.resource.*
 import simulation.space.resource.action.ConversionCore
 import simulation.space.resource.action.ResourceAction
@@ -23,7 +22,7 @@ class ResourceTemplateCreator(
 
     fun createResource(tags: Array<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
-                ?: throw SimulationException("Tags for Resource are empty")
+                ?: throw DataInitializationError("Tags for Resource are empty")
         var willResist = false
         var isTemplate = false
         var isDesirable = true
@@ -59,7 +58,7 @@ class ResourceTemplateCreator(
                 ))
                 '~' -> {
                     val rDependency = dependencyParser.parse(tag)
-                            ?: throw SimulationException("Unknown dependency with tags: $tag")
+                            ?: throw DataInitializationError("Unknown dependency with tags: $tag")
                     resourceDependencies.add(rDependency)
                 }
                 '#' -> resourceDependencies.add(AvoidTiles(
@@ -75,12 +74,12 @@ class ResourceTemplateCreator(
                     when (tempBound) {
                         "min" -> minTempDeprivation = coefficient
                         "max" -> maxTempDeprivation = coefficient
-                        else -> throw SimulationException("Unknown temperature command - $tag")
+                        else -> throw DataInitializationError("Unknown temperature command - $tag")
                     }
                 }
                 else -> {
                     val rTag = tagParser.parse(key, tag)
-                            ?: throw SimulationException("Unknown resource description command - $key")
+                            ?: throw DataInitializationError("Unknown resource description command - $key")
                     resourceTags.add(rTag)
                 }
             }

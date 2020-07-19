@@ -1,6 +1,6 @@
 package simulation.space.resource.instantiation
 
-import simulation.SimulationException
+import simulation.SimulationError
 
 fun String.bracketSensitiveSplit(separator: Char, bracketLeft: Char = '(', bracketRight: Char = ')'): List<String> {
     val splitString = mutableListOf<String>()
@@ -18,7 +18,7 @@ fun String.bracketSensitiveSplit(separator: Char, bracketLeft: Char = '(', brack
             bracketRight -> {
                 depth--
                 if (depth < 0)
-                    throw SimulationException("Wrong bracket sequence - $this")
+                    throw SimulationError("Wrong bracket sequence - $this")
             }
         }
         finish++

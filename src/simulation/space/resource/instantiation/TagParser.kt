@@ -1,7 +1,8 @@
 package simulation.space.resource.instantiation
 
-import simulation.SimulationException
+import simulation.DataInitializationError
 import simulation.space.resource.tag.ResourceTag
+
 
 interface TagParser {
     fun parse(key: Char, tag: String): ResourceTag?
@@ -12,7 +13,8 @@ open class DefaultTagParser(private val allowedTags: Collection<ResourceTag>): T
         '$' -> {
             val (name, level) = tag.split(":".toRegex()).toTypedArray()
             val resourceTag = ResourceTag(name, level.toInt())
-            if (!allowedTags.contains(resourceTag)) throw SimulationException("Tag $resourceTag doesnt exist")
+            if (!allowedTags.contains(resourceTag))
+                throw DataInitializationError("Tag $resourceTag doesnt exist")
             resourceTag
         }
         else -> null

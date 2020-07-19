@@ -4,7 +4,7 @@ import shmp.random.randomTile
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.event.Event
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.culture.group.*
 import simulation.culture.group.place.StaticPlace
 import simulation.space.Territory
@@ -216,7 +216,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                     .filter { isTileReachableInTraverse(it.tile to 0) }
                     .flatMap { it.tile.neighbours.map { n -> TileAndPrev(n, it) } }.asSequence()
                     .groupBy { it.tile }
-                    .map { it.value.minBy { p -> p.length } ?: throw SimulationException("IMPOSSIBLE") }
+                    .map { it.value.minBy { p -> p.length } ?: throw SimulationError("IMPOSSIBLE") }
                     .filter { !checked.contains(it.tile) }.toList()
 
             val maybeFinish = currentTiles.firstOrNull { it.tile == finish }

@@ -1,5 +1,7 @@
 package simulation.space
 
+import simulation.DataInitializationError
+import simulation.SimulationError
 import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.material.MaterialPool
 import simulation.space.resource.tag.TagMatcher
@@ -14,7 +16,7 @@ object SpaceData {
         }
         set(value) {
             if (wasCalled)
-                throw ExceptionInInitializerError("Tried to change Space Data after use")
+                throw SimulationError("Tried to change Space Data after use")
             field = value
         }
 
@@ -45,6 +47,6 @@ class Data(
 ) {
     init {
         if (resourceSizeEffect !in 0.0..1.0)
-            throw SpaceError("resourceSizeEffect value $resourceSizeEffect is not in 0..1 range")
+            throw DataInitializationError("resourceSizeEffect value $resourceSizeEffect is not in 0..1 range")
     }
 }

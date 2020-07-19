@@ -1,8 +1,9 @@
 package simulation.space.resource.instantiation
 
-import simulation.SimulationException
+import simulation.DataInitializationError
 import simulation.space.resource.ResourceIdeal
 import simulation.space.resource.container.ResourcePool
+
 
 fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
     val finalizedResources = mutableListOf<ResourceIdeal>()
@@ -11,7 +12,7 @@ fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
 
     while (resourcesToAdd.isNotEmpty()) {
         resourcesToAdd.firstOrNull { it.genome is GenomeTemplate }?.let { templateResource ->
-            throw SimulationException("Template Resource in the final Resources - ${templateResource.baseName}")
+            throw DataInitializationError("Template Resource in the final Resources - ${templateResource.baseName}")
         }
 
         finalizedResources.addAll(resourcesToAdd)

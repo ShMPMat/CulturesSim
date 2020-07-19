@@ -3,7 +3,7 @@ package simulation.culture.group.process.behaviour
 import shmp.random.randomElement
 import simulation.Controller.session
 import simulation.event.Event
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
@@ -127,7 +127,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
                 ?: disconnected
                         .filter { it.tile != finish }
                         .minBy { getDistance(it.tile, finish) }
-                ?: throw SimulationException("IMPOSSIBLE")
+                ?: throw SimulationError("IMPOSSIBLE")
         val start = startPlace.tile
 
         val path = group.territoryCenter.makePath(start, finish)

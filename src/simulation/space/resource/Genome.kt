@@ -109,7 +109,7 @@ open class Genome(
 
     fun computeTagsFromMaterials() {
         if (primaryMaterial == null && this !is GenomeTemplate) {
-            //TODO hell
+            val k = 0//TODO hell
 //            throw new ExceptionInInitializerError("Resource " + getName() + " has no materials.");
         } else if (primaryMaterial != null) {
             computeTags()

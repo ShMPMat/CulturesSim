@@ -2,7 +2,7 @@ package simulation.culture.aspect
 
 import shmp.random.testProbability
 import simulation.Controller.*
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.culture.aspect.AspectResult.ResultNode
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.aspect.dependency.Dependency
@@ -102,7 +102,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             || used
             || core.resourceExposed && producedResources.any {
         val center = controller.territory.center
-                ?: throw SimulationException("Empty Territory for the Aspect use")
+                ?: throw SimulationError("Empty Territory for the Aspect use")
         !it.isAcceptable(center)
     }
 

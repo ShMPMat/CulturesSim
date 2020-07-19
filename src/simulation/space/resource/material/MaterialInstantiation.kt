@@ -1,11 +1,12 @@
 package simulation.space.resource.material
 
 import extra.InputDatabase
-import simulation.SimulationException
+import simulation.DataInitializationError
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class MaterialInstantiation(
         private val allowedTags: Collection<ResourceTag>,
@@ -40,7 +41,8 @@ class MaterialInstantiation(
                             tag.takeWhile { it != ':' },
                             tag.substring(tag.indexOf(':') + 1).toInt()
                     )
-                    if (!allowedTags.contains(resourceTag)) throw SimulationException("Tag $resourceTag doesnt exist")
+                    if (!allowedTags.contains(resourceTag))
+                        throw DataInitializationError("Tag $resourceTag doesnt exist")
                     materialTags.add(resourceTag)
                 }
             }

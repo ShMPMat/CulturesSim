@@ -1,6 +1,6 @@
 package simulation.space.resource
 
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.space.SpaceError
 import simulation.space.resource.instantiation.GenomeTemplate
 import java.util.*
@@ -15,7 +15,7 @@ class ResourceCore(
 
     init {
         if (externalFeatures.groupBy { it.index }.map { it.value.size }.any { it != 1 })
-            throw SimulationException("${genome.name} has doubled external features: $externalFeatures")
+            throw SimulationError("${genome.name} has doubled external features: $externalFeatures")
     }
 
     fun makeResource(amount: Int = genome.defaultAmount) = Resource(this, amount)

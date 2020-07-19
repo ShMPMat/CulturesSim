@@ -1,16 +1,16 @@
 package simulation.space.tile
 
-import simulation.Controller
+import simulation.DataInitializationError
 import simulation.space.SpaceData
 import simulation.space.SpaceData.data
-import simulation.space.SpaceError
 import simulation.space.TectonicPlate
-import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
+import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
 import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
+
 
 class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     val tagPool = MutableTileTagPool()
@@ -46,7 +46,7 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     var neighbours = listOf<Tile>()
         set(value) {
             if (field.isNotEmpty())
-                throw SpaceError("Neighbours are already set")
+                throw DataInitializationError("Neighbours are already set")
             field = value
         }
 

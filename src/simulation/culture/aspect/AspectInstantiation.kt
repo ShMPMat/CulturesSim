@@ -1,7 +1,7 @@
 package simulation.culture.aspect
 
 import extra.InputDatabase
-import simulation.SimulationException
+import simulation.DataInitializationError
 import simulation.culture.aspect.complexity.ResourceComplexity
 import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
@@ -11,7 +11,6 @@ import simulation.space.resource.action.ActionTag
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
-import kotlin.collections.ArrayList
 
 
 class AspectInstantiation(
@@ -74,7 +73,7 @@ class AspectInstantiation(
                 '$' -> allowedActionTags
                         .firstOrNull { it.name == tag }
                         ?.let { actionTags.add(it) }
-                        ?: throw SimulationException("No such ActionTag - $tag")
+                        ?: throw DataInitializationError("No such ActionTag - $tag")
                 'E' -> isResourceExposed = false
                 'C' -> standardComplexity = tag.toDouble()
                 'S' -> sideComplexities.addAll( tag.split(",").map {
@@ -103,6 +102,6 @@ class AspectInstantiation(
                 .maxBy { it.value.size }
                 ?: return
         if (maxSimilarAspects.value.size > 1)
-            throw SimulationException("Similar Aspects with a name ${maxSimilarAspects.key}")
+            throw DataInitializationError("Similar Aspects with a name ${maxSimilarAspects.key}")
     }
 }

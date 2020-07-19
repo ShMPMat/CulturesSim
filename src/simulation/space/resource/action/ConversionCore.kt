@@ -1,6 +1,6 @@
 package simulation.space.resource.action
 
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.space.resource.Resource
 import simulation.space.resource.instantiation.GenomeTemplate
 
@@ -23,9 +23,9 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Pair<Reso
     fun applyAction(action: ResourceAction): List<Resource>? = actionConversion[action]
             ?.map { (r, n) ->
                 val resource = r?.copy(n)
-                        ?: throw SimulationException("Empty conversion")
+                        ?: throw SimulationError("Empty conversion")
                 return@map if (resource.genome is GenomeTemplate)
-                    throw SimulationException("No GenomeTemplates allowed")
+                    throw SimulationError("No GenomeTemplates allowed")
                 else resource
             }
 

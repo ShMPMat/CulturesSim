@@ -1,6 +1,6 @@
 package simulation.culture.group.request
 
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
@@ -50,7 +50,7 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
             if (neededAmount == 0.0)
                 continue
             if (neededAmount <= 0)
-                throw SimulationException("Wrong needed amount - $neededAmount")
+                throw SimulationError("Wrong needed amount - $neededAmount")
 
             resultPack.addAll(partGetter(resource, ceil(neededAmount).toInt()))
             amount = evaluate(resultPack)

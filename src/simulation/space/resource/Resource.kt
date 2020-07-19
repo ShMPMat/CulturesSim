@@ -4,7 +4,7 @@ import shmp.random.randomTileOnBrink
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.event.Event
-import simulation.SimulationException
+import simulation.SimulationError
 import simulation.space.SpaceData
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.action.ResourceProbabilityAction
@@ -35,7 +35,7 @@ open class Resource(
     val isEmpty: Boolean
         get() {
             if (amount < 0)
-                throw SimulationException("Resource amount is below zero: $this")
+                throw SimulationError("Resource amount is below zero: $this")
             return amount == 0
         }
 

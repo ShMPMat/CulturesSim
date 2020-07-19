@@ -1,5 +1,6 @@
 package simulation.space.resource.action
 
+import simulation.DataInitializationError
 import simulation.space.resource.Resource
 import simulation.space.resource.instantiation.ResourceStringTemplate
 import simulation.space.resource.tag.labeler.ResourceLabeler
@@ -10,7 +11,7 @@ class ActionMatcher(
         private val resourceActionName: String
 ) {
     init {
-        if (results.isEmpty()) throw ExceptionInInitializerError("Action matcher does nothing")
+        if (results.isEmpty()) throw DataInitializationError("Action matcher does nothing")
     }
 
     fun match(resource: Resource) =
