@@ -79,7 +79,7 @@ fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: Conglomer
             continue
 
         stringBuilder.append(info.getConglomerateSymbol(group)).append(" ").append(group.name).append(" \u001b[31m")
-        val aspects = group.aspects.sortedBy { -it.usefulness }
+        val aspects = group.aspects.sortedByDescending { it.usefulness }
         for (aspect in aspects) {
             if (aspect.usefulness <= 0)
                 break
@@ -93,7 +93,7 @@ fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: Conglomer
         }
 
         stringBuilder.append(" \u001b[33m\n")
-        group.memes.sortedBy { -it.importance }.take(10).forEach {
+        group.memes.sortedByDescending { it.importance }.take(10).forEach {
             stringBuilder.append("($it ${it.importance})")
         }
         stringBuilder.append(" \u001b[39m\n")

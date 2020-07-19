@@ -115,7 +115,7 @@ class PopulationCenter(
         val usedAspects: MutableList<Aspect> = ArrayList()
         val evaluator = request.evaluator
         val strataForRequest = stratumCenter.getStrataForRequest(request)
-        strataForRequest.sortedBy { -it.aspect.usefulness }
+        strataForRequest.sortedByDescending { it.aspect.usefulness }
 
         val pack = evaluator.pick(
                         request.ceiling,

@@ -98,7 +98,7 @@ fun windMapper(tile: Tile): String {
         else -> "\u001b[44m"
     }
     if (tile.wind.affectedTiles.size >= 1) {
-        val affected = tile.wind.affectedTiles.sortedBy { -it.second }[0].first
+        val affected = tile.wind.affectedTiles.sortedByDescending { it.second }[0].first
         direction += when {
             affected.x - tile.x == 1 && affected.y - tile.y == 1 -> "J"
             affected.x - tile.x == 1 && affected.y - tile.y == -1 -> "L"

@@ -7,6 +7,7 @@ import simulation.culture.group.process.interaction.RequestHelpInteraction
 import simulation.culture.group.request.Request
 import simulation.event.Event
 import simulation.space.resource.container.MutableResourcePack
+import kotlin.math.pow
 
 
 class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : AbstractGroupBehaviour() {
@@ -19,8 +20,8 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
         val amount = request.ceiling
         var amountLeft = amount
         for (relation in group.relationCenter.relations.sortedByDescending { it.positive }) {
-            if (!testProbability(relation.normalized, Controller.session.random))
-                continue
+            if (!testProbability(relation.normalized.pow(2), Controller.session.random))
+                break
 
             val reducedRequest = request.reducedAmountCopy(amountLeft)
             val newEvents = RequestHelpInteraction(relation.owner, relation.other, reducedRequest).run()
