@@ -7,12 +7,17 @@ import simulation.culture.aspect.complexity.getComplexity
 import simulation.culture.aspect.dependency.AspectDependencies
 import simulation.culture.group.GroupError
 import simulation.space.resource.action.ActionMatcher
+import simulation.space.resource.action.ActionTag
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 import kotlin.collections.ArrayList
 
-class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
+
+class AspectInstantiation(
+        private val allowedResourceTags: Collection<ResourceTag>,
+        val allowedActionTags: List<ActionTag>
+) {
     private val aspects = mutableListOf<Aspect>()
 
     fun createPool(path: String): AspectPool {
@@ -44,6 +49,8 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
         var isResourceExposed = true
         var standardComplexity = 1.0
         val sideComplexities = mutableListOf<ResourceComplexity>()
+        val actionTags = mutableListOf<ActionTag>()
+
         for (i in 1 until tags.size) {
             val key = tags[i][0]
             val tag = tags[i].substring(1)
@@ -64,10 +71,14 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                     }
                     matchers.add(ActionMatcher(labeler, results, name))
                 }
+                '$' -> allowedActionTags
+                        .firstOrNull { it.name == tag }
+                        ?.let { actionTags.add(it) }
+                        ?: throw SimulationException("No such ActionTag - $tag")
                 'E' -> isResourceExposed = false
                 'C' -> standardComplexity = tag.toDouble()
                 'S' -> sideComplexities.addAll( tag.split(",").map {
-                    if (allowedTags.none { t -> t.name == it }) {
+                    if (allowedResourceTags.none { t -> t.name == it }) {
                         throw GroupError("Tag $it doesnt exist")
                     }
                     getComplexity(it)
@@ -82,7 +93,7 @@ class AspectInstantiation(private val allowedTags: Collection<ResourceTag>) {
                 isResourceExposed,
                 standardComplexity,
                 sideComplexities,
-                ResourceAction(name, matchers)
+                ResourceAction(name, matchers, actionTags)
         )
     }
 

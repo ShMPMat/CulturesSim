@@ -1,5 +1,6 @@
 / Grammar for matches:     main grammar is the grammar for ResourceTagLabelers
 /                          # - resulting resource:its amount (no spaces); use MATCHED to reference matched resource
+/                          $ - ActionTag
 /
 / Grammar for other tags:  # - needed instrument, / - needed ingredient
 /
@@ -8,45 +9,45 @@
 
 -Incinerate
     &t:_can_be_ignited--#Fire:1--#Ash:1
--Bake                                                                        /burns
--Roast                                                                       /burns
+-Bake                                  $fire_use                             /burns
+-Roast                                 $fire_use                             /burns
 
--MakingFibre
+-MakingFibre                           $clothes
     C3.0
--Weaving
+-Weaving                               $clothes
     C3.0
--MakeClothes
+-MakeClothes                           $clothes
     C3.0
--Chisel
+-Chisel                                $fine_material_work
     C3.0
 
--BuildHouse
+-BuildHouse                            $building
     &t:hard-->=0.5--!!t:composite--#House:1
     Shard
     C10.0
--BuildWigwam                                                                 /goodForFrame
+-BuildWigwam                           $building                             /goodForFrame
     &t:soft--t:solid--!!t:composite--#Wigwam:1
     C3.0
--BuildYurt                                                                   /goodForFrame
+-BuildYurt                             $building                             /goodForFrame
     &t:goodForTent--!!t:composite--#Yurt:1
     C3.0
 -BuildRoad
     &t:hard-->=0.5--!!t:composite--#Road:1
     Shard
     C20.0
--BuildTemple
+-BuildTemple                           $building
     &t:hard-->=0.5--!!t:composite--#Temple:1
     Shard
     C30.0
--BuildFarm
+-BuildFarm                             $building
     &t:hard-->=0.5--!!t:composite--#Farm:1
     Shard
     C10.0
--BuildCraftHouse
+-BuildCraftHouse                       $building
     &t:hard-->=0.5--!!t:composite--#CraftHouse:1
     Shard
     C10.0
--BuildTradeHouse
+-BuildTradeHouse                       $building
     &t:hard-->=0.5--!!t:composite--#TradeHouse:1
     Shard
     C10.0
@@ -59,11 +60,11 @@
     &t:hard-->=2--<D900--!!t:composite--#Boat:1
     Shard
     C3.0
--MakeSpear
+-MakeSpear                             $weapon
     &t:hard--t:sturdy-->=1--<=2.5--!!t:composite--#Spear:1
     Shard
     C3.0
--MakeHandPlough
+-MakeHandPlough                        $instrument
     &t:hard--t:sturdy-->=0.5--<=2--!!t:composite--#HandPlough:1
     C3.0
     Shard
@@ -87,22 +88,22 @@
     &t:malleable--#MATCHED:1
     C3.0
     Smalleable
--Engrave                                                                                         #MEANING
+-Engrave                               $fine_material_work                                       #MEANING
     &t:goodForEngraving--#MATCHED:1
     C3.0
     Shard
--Sculpt                                                                                         #MEANING
+-Sculpt                                $fine_material_work                                       #MEANING
     &t:goodForMonuments--#MATCHED:1
     C5.0
     Shard
--Carve                                                                                           #MEANING
+-Carve                                 $fine_material_work                                       #MEANING
     &t:goodForEngraving--#MATCHED:1
     C3.0
     Shard
 -Paint                                                                   #colour                 #MEANING
     &t:solid--#MATCHED:1
     C5.0
--Incrust                                                                 /goodForIncrusting      #MEANING
+-Incrust                               $fine_material_work               /goodForIncrusting      #MEANING
     &t:hard--#MATCHED:1
     C5.0
     Shard

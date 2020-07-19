@@ -1,24 +1,22 @@
 package extra;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class InputDatabase {
     private BufferedReader bufferedReader;
     private String lastLine;
 
-    public InputDatabase(String path) {
-        try {
-            this.bufferedReader = new BufferedReader(new FileReader(path));
+    public InputDatabase(String path) throws IOException {
+        this.bufferedReader = new BufferedReader(new FileReader(path));
+        lastLine = bufferedReader.readLine();
+        while (lastLine != null && (lastLine.trim().isEmpty() || lastLine.charAt(0) == '/')) {
             lastLine = bufferedReader.readLine();
-            while (lastLine.trim().isEmpty() || lastLine.charAt(0) == '/') {
-                lastLine = bufferedReader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

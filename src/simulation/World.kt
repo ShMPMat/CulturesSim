@@ -17,6 +17,7 @@ import simulation.space.WorldMap
 import simulation.space.generator.MapGeneratorSupplement
 import simulation.space.generator.fillResources
 import simulation.space.generator.generateMap
+import simulation.space.resource.action.ActionTag
 import simulation.space.resource.instantiation.ResourceInstantiation
 import simulation.space.resource.material.MaterialInstantiation
 import simulation.space.resource.tag.ResourceTag
@@ -43,10 +44,16 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
     val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
 
-    private val tags = InputDatabase("$path/ResourceTags").readLines().map { ResourceTag(it) }
+    private val tags = InputDatabase("$path/ResourceTags")
+            .readLines()
+            .map { ResourceTag(it) }
             .union(tagMatchers.map { it.tag })
 
-    val aspectPool = AspectInstantiation(tags).createPool("$path/Aspects")
+    private val actionTags = InputDatabase("$path/ActionTags")
+            .readLines()
+            .map { ActionTag(it) }
+
+    val aspectPool = AspectInstantiation(tags, actionTags).createPool("$path/Aspects")
 
     val resourcePool
         get() = data.resourcePool
