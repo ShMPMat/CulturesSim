@@ -1,9 +1,7 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
-import shmp.random.testProbability
-import simulation.Controller
-import simulation.Controller.*
+import simulation.Controller.session
 import simulation.culture.group.Add
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.MakeSplitGroupA
@@ -39,9 +37,6 @@ class TryDivergeB : AbstractGroupBehaviour() {
 class SplitGroupB : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         if (!session.groupMultiplication)
-            return emptyList()
-
-        if (!group.populationCenter.isMaxReached(group.territoryCenter.territory))
             return emptyList()
 
         val tiles = group.overallTerritory.getOuterBrink {

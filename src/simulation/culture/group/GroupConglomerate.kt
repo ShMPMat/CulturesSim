@@ -10,6 +10,7 @@ import simulation.culture.thinking.meaning.Meme
 import simulation.event.EventLog
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
+import simulation.space.resource.container.ResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*
@@ -42,7 +43,8 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                             population / numberOfSubGroups,
                             Controller.session.defaultGroupMaxPopulation,
                             Controller.session.defaultGroupMinPopulationPerTile,
-                            root
+                            root,
+                            ResourcePack()
                     ),
                     RelationCenter {
                         val difference = getGroupsDifference(it.owner, it.other)

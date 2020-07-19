@@ -5,6 +5,7 @@ import simulation.space.resource.freeMarker
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
+
 open class ResourcePack(resources: Collection<Resource> = listOf()) {
     protected var resourceMap = mutableMapOf<Resource, Resource>()
 

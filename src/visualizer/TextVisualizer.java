@@ -442,10 +442,16 @@ public class TextVisualizer implements Visualizer {
                             break;
                         }
                         case Events: {
+                            int amount = 100;
+                            String regexp = splitCommand[1];
+                            if (splitCommand[0].charAt(0) != 'e') {
+                                amount = Integer.parseInt(splitCommand[0]);
+                                regexp = splitCommand[2];
+                            }
                             System.out.println(printRegexEvents(
                                     controller.interactionModel.getEventLog().getAllEvents(),
-                                    100,
-                                    splitCommand[1]
+                                    amount,
+                                    regexp
                             ));
                             break;
                         }

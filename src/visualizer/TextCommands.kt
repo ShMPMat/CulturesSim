@@ -25,7 +25,7 @@ enum class Command(command: String) {
     MeaningfulResources("meaning"),
     ArtificialResources("artificial"),
     Aspects("a \\w+"),
-    Events("e ?.*"),
+    Events("(\\d+ )?e ?.*"),
     Map("[mM]"),
     Exit("EXIT"),
     AddAspect("^G\\d+ \\w+"),

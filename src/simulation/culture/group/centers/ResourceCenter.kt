@@ -11,6 +11,7 @@ import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 
+
 class ResourceCenter(
         cherishedResources: MutableResourcePack,
         storageTile: Tile,
@@ -87,8 +88,9 @@ class ResourceCenter(
             pack.clearEmpty()
     }
 
-    private fun printedNeeds() = neededResources.entries.joinToString("\n")
-    { "${it.key} - importance ${it.value.importance}" }
+    private fun printedNeeds() = neededResources.entries.joinToString("\n") {
+        "${it.key} - importance ${it.value.importance}"
+    }
 
     fun needLevel(resource: Resource) = neededResources
             .filter { it.key.isSuitable(resource.genome) }

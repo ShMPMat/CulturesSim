@@ -25,11 +25,12 @@ class PopulationCenter(
         var population: Int,
         private val maxPopulation: Int,
         private val minPopulation: Int,
-        initTile: Tile
+        initTile: Tile,
+        initResources: ResourcePack
 ) {
     val stratumCenter = StratumCenter(initTile)
 
-    val turnResources = MutableResourcePack()
+    val turnResources = MutableResourcePack(initResources)
 
     val freePopulation: Int
         get() = population - stratumCenter.strata
@@ -39,6 +40,8 @@ class PopulationCenter(
     fun getMaxPopulation(controlledTerritory: Territory) = controlledTerritory.size * maxPopulation
 
     fun isMaxReached(controlledTerritory: Territory) = getMaxPopulation(controlledTerritory) <= population
+
+    fun maxPopulationPart(controlledTerritory: Territory) = population.toDouble() / getMaxPopulation(controlledTerritory)
 
     fun getMinPopulation(controlledTerritory: Territory) = controlledTerritory.size * minPopulation
 
@@ -157,7 +160,13 @@ class PopulationCenter(
     fun getPart(fraction: Double, newTile: Tile): PopulationCenter {
         val populationPart = (fraction * population).toInt()
         decreasePopulation(populationPart)
-        return PopulationCenter(populationPart, maxPopulation, minPopulation, newTile)
+
+        val pack = MutableResourcePack()
+        turnResources.resources.forEach {
+            pack.addAll(turnResources.getResourcePartAndRemove(it, it.amount / 2))
+        }
+
+        return PopulationCenter(populationPart, maxPopulation, minPopulation, newTile, pack)
     }
 
     fun wakeNeedStrata(need: Pair<ResourceLabeler, ResourceNeed>) {
