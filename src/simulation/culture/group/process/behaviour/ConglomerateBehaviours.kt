@@ -45,7 +45,7 @@ class SplitGroupB : AbstractGroupBehaviour() {
         if (tiles.isEmpty())
             return emptyList()
 
-        val tile = randomElement(tiles, session.random)
+        val tile = tiles.sortedBy { group.territoryCenter.tilePotentialMapper(it) } [0]
         val newGroup = MakeSplitGroupA(group, tile).run()
 
         Add(newGroup).execute(group.parentGroup)

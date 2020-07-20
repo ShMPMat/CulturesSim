@@ -43,6 +43,10 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         return neededResourcePart + relationPart
     }
 
+    fun territoryPotentialMapper(territory: Territory) = territory.tiles
+            .map { tilePotentialMapper(it) }
+            .foldRight(0, Int::plus)
+
     private fun evaluateOneTile(tile: Tile) = 3 * tile.resourcePack.getAmount {
         tileTag.group.cultureCenter.aspectCenter.aspectPool.getResourceRequirements().contains(it)
     }
