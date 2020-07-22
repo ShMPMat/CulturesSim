@@ -1,12 +1,12 @@
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -AppleTree       0.15    2      10         0       30  150        0             0 0  Cut       Plant        @PlantFibre
         ~r:Vapour;0.00025;2;0;CONSUME
-        ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5    ^Seed:2 ^SoftRoot:5
+        ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple ^SoftRoot:5
         #Water
 
 -PeachTree       0.15    2.5    10         10      30  100        0             0 0  Cut       Plant        @PlantFibre
         ~r:Vapour;0.00025;2;0;CONSUME
-        ^Trunk:1:s|2.5 ^SoftBranch:15 ^Leaf:100 ^Drupe:5    ^Seed:2 ^SoftRoot:5
+        ^Trunk:1:s|2.5 ^SoftBranch:15 ^Leaf:100 ^Drupe:5 ^SoftRoot:5
         #Water
 
 -ColdPlant       0.1     1      15         -30     0   50         0             0 0  Cut       Plant        @PlantFibre
@@ -16,7 +16,7 @@
 
 -ColdBerry       0.1     1      15         -30     0   50         0             0 0  Cut       Plant        @PlantFibre
         ~r:Vapour;0.0001;2;0;CONSUME
-        ^Trunk:1:s|1  ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.01    ^Seed:2 ^SoftRoot:5
+        ^Trunk:1:s|1  ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.01 ^SoftRoot:5
         #Water
 
 -FlowerBush      0.15    1      10         0       30  150        0             0 0 Cut  Plant        @PlantFibre

@@ -5,6 +5,7 @@ import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.instantiation.parseConversion
 import simulation.space.resource.tag.labeler.makeResourceLabeler
 
+
 class TransformerInstantiator(private val actions: List<ResourceAction>) {
     fun makeResourceTransformer(tagString: String): ResourceTransformer {
         val tags = tagString.split("#")
@@ -17,6 +18,7 @@ class TransformerInstantiator(private val actions: List<ResourceAction>) {
 
     private fun getLabel(key: String, value: String): ResourceTransformer = when (key) {
         "s|" -> SizeTransformer(value.toDouble())
+        "n|" -> NameTransformer { value.split("$").joinToString(it) }
         "a|" -> {
             val (action, resources) = parseConversion(value, actions)
 
