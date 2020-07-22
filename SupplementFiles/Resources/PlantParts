@@ -4,17 +4,22 @@
 -Branch          0       0.2    10         -500   500  100000000  0             1 1  Ignore    None         @Wood
 
 -SoftBranch      0       0.2    5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+        ^PlantFibre:3
         +Weaving:Basket:1
 
 -Leaf            0       0.03   3          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+        ^PlantFibre:1
 
 -PineNeedle      0       0.02   3          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+        ^PlantFibre:1
 
 -Flower          0       0.05   3          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+        ^PlantFibre:1
 
 -Root            0       0.5    10         -500   500  100000000  0             1 1  Ignore    None         @Wood
 
 -SoftRoot        0       0.5    5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+        ^PlantFibre:3
         +Weaving:Basket:1
 
 -Pulp            0       0.01   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
