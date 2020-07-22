@@ -401,11 +401,7 @@ public class TextVisualizer implements Visualizer {
                             }
                             break;
                         case ResourceSubstring:
-                            printMap(t ->
-                                    t.getResourcesWithMoved().stream()
-                                            .anyMatch(r -> r.getFullName().contains(splitCommand[1]))
-                                            ? "X" : ""
-                            );
+                            printMap(t -> TileMapperFunctionsKt.resourceSubstringMapper(splitCommand[1], t));
                             System.out.println(briefPrintResourcesWithSubstring(map, splitCommand[1]));
                             break;
                         case ResourceSubstringOnTile:

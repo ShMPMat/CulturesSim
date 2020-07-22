@@ -1,12 +1,11 @@
 package visualizer
 
 import simulation.culture.aspect.hasMeaning
-import simulation.culture.group.centers.Group
 import simulation.culture.group.GroupConglomerate
+import simulation.culture.group.centers.Group
 import simulation.culture.group.getResidingGroup
 import simulation.space.SpaceData.data
 import simulation.space.TectonicPlate
-import simulation.space.resource.Genome
 import simulation.space.resource.ResourceType
 import simulation.space.tile.Tile
 import java.util.*
@@ -128,6 +127,10 @@ fun artificialResourcesMapper(tile: Tile): String {
 
 fun resourceTypeMapper(type: ResourceType, tile: Tile) =
         if (tile.resourcePack.any { it.genome.type == type }) MARK
+        else NOTHING
+
+fun resourceSubstringMapper(substring: String, tile: Tile) =
+        if (tile.resourcesWithMoved.any { it.fullName.contains(substring)}) MARK
         else NOTHING
 
 fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =
