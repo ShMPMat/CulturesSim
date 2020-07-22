@@ -15,7 +15,7 @@ class ProcessCenter(type: AdministrationType) {
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
             RandomArtifactB.withProbability(0.1),
             RandomTradeB.times(1, 3),
-            RandomGroupAddB.withProbability(0.01),
+            RandomGroupSeizureB.withProbability(0.01),
             MakeTradeResourceB(5).times(
                     0,
                     1,

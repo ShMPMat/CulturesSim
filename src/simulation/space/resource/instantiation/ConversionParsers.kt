@@ -3,6 +3,7 @@ package simulation.space.resource.instantiation
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.specialActions
 
+
 fun parseConversion(conversionStr: String, actions: List<ResourceAction>) : Pair<ResourceAction, List<ResourceLink>> {
     val actionName = conversionStr.substring(0, conversionStr.indexOf(':'))
 

@@ -35,7 +35,7 @@ class TradeInteraction(
             val event = Event(
                     Event.Type.GroupInteraction,
                     "Groups ${initiator.name} and ${participator.name} " +
-                            "traded $got - $priceForP and $given - $priceForI".replace("\n", " ")
+                            "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
             )
 
             ScheduleActionA(

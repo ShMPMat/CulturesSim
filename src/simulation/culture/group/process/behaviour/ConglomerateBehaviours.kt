@@ -8,15 +8,25 @@ import simulation.culture.group.process.action.MakeSplitGroupA
 import simulation.culture.group.process.action.TryDivergeA
 import simulation.culture.group.process.interaction.GroupTransferInteraction
 import simulation.event.Event
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
-object RandomGroupAddB : AbstractGroupBehaviour() {
+object RandomGroupSeizureB : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
+        val groupValueMapper = { g: Group ->
+            val relation = group.relationCenter.getNormalizedRelation(g).pow(3)
+            val territoryValue = group.territoryCenter.territoryPotentialMapper(g.territoryCenter.territory).toDouble()
+            relation * sqrt(territoryValue)
+        }
+
         val options = group.territoryCenter.getAllNearGroups(group)
                 .filter { it.parentGroup !== group.parentGroup }
+                .map { it to groupValueMapper(it) }
+                .filter { (_, n) -> n > 0 }
 
         if (options.isNotEmpty()) {
-            val target = randomElement(options, session.random)
+            val target = randomElement(options, { (_, n) -> n }, session.random).first
             return GroupTransferInteraction(group, target).run()
         }
         return emptyList()
@@ -45,7 +55,7 @@ class SplitGroupB : AbstractGroupBehaviour() {
         if (tiles.isEmpty())
             return emptyList()
 
-        val tile = tiles.sortedBy { group.territoryCenter.tilePotentialMapper(it) } [0]
+        val tile = tiles.sortedBy { group.territoryCenter.tilePotentialMapper(it) }[0]
         val newGroup = MakeSplitGroupA(group, tile).run()
 
         Add(newGroup).execute(group.parentGroup)
