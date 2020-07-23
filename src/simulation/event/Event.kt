@@ -6,19 +6,19 @@ import java.util.*
 
 //Object storing memory about something that happened in the world.
 class Event(var type: Type, val description: String) {
-    enum class Type {
-        Death,
-        ResourceDeath,
-        AspectGaining,
-        TileAcquisition,
-        DisbandResources,
+    enum class Type(val colourString: String) {
+        Death(("\u001B[31m")),
+        ResourceDeath(("\u001B[31m")),
+        AspectGaining("\u001B[32m"),
+        TileAcquisition("\u001B[32m"),
+        DisbandResources("\u001B[32m"),
 
-        GroupInteraction,
+        GroupInteraction("\u001B[35m"),
 
-        Creation,
-        Move,
-        Change,
-        Other
+        Creation("\u001B[34m"),
+        Move("\u001B[33m"),
+        Change("\u001B[33m"),
+        Other("")
     }
 
     private var _attributes: MutableMap<String, Any> = HashMap()
@@ -44,5 +44,5 @@ class Event(var type: Type, val description: String) {
 
     fun getAttribute(name: String) = _attributes[name]
 
-    override fun toString() = "$turnString. $description"
+    override fun toString() = "${type.colourString}$turnString. $description\u001B[37m"
 }
