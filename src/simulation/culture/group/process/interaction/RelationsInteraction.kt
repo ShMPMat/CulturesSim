@@ -9,7 +9,7 @@ import simulation.culture.group.request.Request
 import kotlin.math.pow
 
 
-class ChangeRelationsInteraction(
+class ChangeRelationsI(
         initiator: Group,
         participator: Group,
         private val delta: Double
@@ -29,31 +29,7 @@ class ChangeRelationsInteraction(
 }
 
 
-class GroupTransferInteraction(
-        initiator: Group,
-        participator: Group
-) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
-        val relation = participator.relationCenter.getNormalizedRelation(initiator)
-        if (!testProbability(relation.pow(2), Controller.session.random)) {
-            ChangeRelationsInteraction(initiator, participator, -1.0).run()
-            return listOf(Event(
-                    Event.Type.GroupInteraction,
-                    "Group ${participator.name} refused to join conglomerate ${initiator.parentGroup.name}"
-            ))
-        }
-
-        AddGroupA(initiator, participator).run()
-        ProcessGroupRemovalA(participator, participator).run()
-
-        return listOf(Event(
-                Event.Type.GroupInteraction,
-                "Group ${participator.name} joined to conglomerate ${initiator.parentGroup.name}"
-        ))
-    }
-}
-
-class RequestHelpInteraction(
+class RequestHelpI(
         initiator: Group,
         participator: Group,
         val request: Request

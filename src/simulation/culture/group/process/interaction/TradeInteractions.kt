@@ -3,9 +3,10 @@ package simulation.culture.group.process.interaction
 import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.*
+import simulation.space.resource.container.ResourcePack
 
 
-class TradeInteraction(
+class TradeI(
         initiator: Group,
         participator: Group,
         val amount: Int
@@ -17,9 +18,8 @@ class TradeInteraction(
                 amount
         ).run()
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
-        if (priceForP == 0) {
+        if (priceForP == 0)
             return emptyList()
-        }
 
         val priceInResources = ChooseResourcesA(
                 participator,
@@ -29,35 +29,52 @@ class TradeInteraction(
         ).run()
         val priceForI = TradeEvaluateResourcesA(participator, priceInResources.makeCopy()).run()
 
-        if (priceForP <= priceForI) {
-            val got = wantedResources.extract()
-            val given = priceInResources.extract()
-            val event = Event(
-                    Event.Type.GroupInteraction,
-                    "Groups ${initiator.name} and ${participator.name} " +
-                            "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
-            )
+        if (priceForP > priceForI)
+            return emptyList()
 
-            ScheduleActionA(
-                    participator,
-                    ReceivePopulationResourcesA(initiator, got),
-                    ComputeTravelTime(participator, initiator).run()
-            ).run()
-            ScheduleActionA(
-                    initiator,
-                    ReceivePopulationResourcesA(participator, given),
-                    ComputeTravelTime(initiator, participator).run()
-            ).run()
+        val got = wantedResources.extract()
+        val given = priceInResources.extract()
+        val events = mutableListOf(Event(
+                Event.Type.GroupInteraction,
+                "${initiator.name} and ${participator.name} " +
+                        "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
+        ))
 
-            ChangeRelationsInteraction(initiator, participator, 0.5).run()
-            IncStratumImportanceA(
-                    initiator,
-                    initiator.populationCenter.stratumCenter.traderStratum,
-                    1
-            ).run()
+        events.addAll(SwapResourcesI(initiator, participator, got, given).run())
 
-            return listOf(event)
-        }
-        return emptyList()
+        ChangeRelationsI(initiator, participator, 0.5).run()
+        IncStratumImportanceA(
+                initiator,
+                initiator.populationCenter.stratumCenter.traderStratum,
+                1
+        ).run()
+
+        return events
+    }
+}
+
+
+class SwapResourcesI(
+        initiator: Group,
+        participator: Group,
+        private val gotPack: ResourcePack,
+        private val givePack: ResourcePack
+) : AbstractGroupInteraction(initiator, participator) {
+    override fun run(): List<Event> {
+        ScheduleActionA(
+                participator,
+                ReceivePopulationResourcesA(initiator, gotPack),
+                ComputeTravelTime(participator, initiator).run()
+        ).run()
+        ScheduleActionA(
+                initiator,
+                ReceivePopulationResourcesA(participator, givePack),
+                ComputeTravelTime(initiator, participator).run()
+        ).run()
+
+        return listOf(Event(
+                Event.Type.GroupInteraction,
+                "${initiator.name} and ${participator.name} begun swapping of $gotPack and $givePack"
+        ))
     }
 }

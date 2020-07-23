@@ -3,7 +3,7 @@ package simulation.culture.group.process.action
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.centers.Group
-import simulation.culture.group.process.interaction.ChangeRelationsInteraction
+import simulation.culture.group.process.interaction.ChangeRelationsI
 
 
 class ChangeRelationsA(
@@ -30,7 +30,7 @@ class GrantHelpA(
         val answer = testProbability(probability, Controller.session.random)
 
         val relationsChange = 1.0 * if (answer) 1 else -1
-        ChangeRelationsInteraction(group, target, relationsChange).run()
+        ChangeRelationsI(group, target, relationsChange).run()
 
         return answer
     }

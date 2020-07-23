@@ -3,7 +3,7 @@ package simulation.culture.group.process.behaviour
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.centers.Group
-import simulation.culture.group.process.interaction.RequestHelpInteraction
+import simulation.culture.group.process.interaction.RequestHelpI
 import simulation.culture.group.request.Request
 import simulation.event.Event
 import simulation.space.resource.container.MutableResourcePack
@@ -24,7 +24,7 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
                 break
 
             val reducedRequest = request.reducedAmountCopy(amountLeft)
-            val newEvents = RequestHelpInteraction(relation.owner, relation.other, reducedRequest).run()
+            val newEvents = RequestHelpI(relation.owner, relation.other, reducedRequest).run()
 
             amountLeft = amount - newEvents
                     .mapNotNull { it.getAttribute("value")?.let { a -> a as Double } }

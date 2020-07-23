@@ -5,7 +5,7 @@ import simulation.Controller
 import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.ProduceExactResourceA
-import simulation.culture.group.process.interaction.TradeInteraction
+import simulation.culture.group.process.interaction.TradeI
 import kotlin.math.pow
 
 object RandomTradeB : AbstractGroupBehaviour() {
@@ -20,7 +20,7 @@ object RandomTradeB : AbstractGroupBehaviour() {
                 { group.relationCenter.getNormalizedRelation(it).pow(2) },
                 Controller.session.random
         )
-        return TradeInteraction(group, groupToTrade, 1000).run()
+        return TradeI(group, groupToTrade, 1000).run()
     }
 
     override val internalToString = "Trade with a random neighbour"
