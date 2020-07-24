@@ -1,13 +1,14 @@
 package simulation.culture.group.process.action
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.action.pseudo.GroupPseudoAction
 
-interface GroupAction {
+interface GroupAction: GroupPseudoAction {
     val group: Group
 
-    fun run(): Any
+    override fun run(): Any
 
-    val internalToString: String
+    override val internalToString: String
 }
 
 abstract class AbstractGroupAction(override val group: Group) : GroupAction {
