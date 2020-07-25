@@ -206,7 +206,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
     fun canSettle(tile: Tile, additionalCondition: (Tile) -> Boolean) = canSettle(tile) && additionalCondition(tile)
 
-    fun makePath(start: Tile, finish: Tile): Collection<Tile>? {
+    fun makePath(start: Tile, finish: Tile): List<Tile>? {
         val checked = mutableSetOf<Tile>()
         val queue = mutableListOf<TileAndPrev>()
         queue.add(TileAndPrev(start, null))

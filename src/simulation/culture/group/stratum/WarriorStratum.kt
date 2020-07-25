@@ -12,6 +12,8 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
     private var workedPopulation = 0
     override val freePopulation: Int
         get() = population - workedPopulation
+    override val cumulativeWorkAblePopulation: Double
+        get() = freePopulation * effectiveness
 
     private val effectiveness: Double
         get() {
@@ -32,7 +34,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
             population += additional
             workedPopulation = population
         }
-        return WorkerBunch(actualAmount, actualAmount)
+        return WorkerBunch((actualAmount * effectiveness).toInt(), actualAmount)
     }
 
     override fun finishUpdate(group: Group) {

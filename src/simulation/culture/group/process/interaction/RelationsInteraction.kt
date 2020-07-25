@@ -50,7 +50,7 @@ class RequestHelpI(
             ChangeRelationsA(initiator, participator, request.evaluator.evaluate(given) / request.ceiling).run()
 
             listOf(Event(
-                    Event.Type.GroupInteraction,
+                    Event.Type.Cooperation,
                     "${initiator.name} got help in $request from ${participator.name}: " +
                             "${given.listResources}, with delay ${delivery.delay}",
                     "value", request.evaluator.evaluate(given)

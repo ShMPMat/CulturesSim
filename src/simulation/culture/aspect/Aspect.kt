@@ -123,7 +123,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         val meaningfulPack = MutableResourcePack()
 
         val neededWorkers = calculateNeededWorkers(controller.evaluator, controller.ceiling)
-        val gotWorkers = controller.populationCenter.changeStratumAmountByAspect(this, neededWorkers)
+        val gotWorkers = controller.populationCenter.getPeopleByAspect(this, neededWorkers)
         val allowedAmount = min(
                 gotWorkers.cumulativeWorkers / core.standardComplexity
                         * controller.evaluator.evaluate(producedResources),

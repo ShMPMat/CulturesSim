@@ -35,7 +35,7 @@ class TradeI(
         val got = wantedResources.extract()
         val given = priceInResources.extract()
         val events = mutableListOf(Event(
-                Event.Type.GroupInteraction,
+                Event.Type.Cooperation,
                 "${initiator.name} and ${participator.name} " +
                         "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
         ))

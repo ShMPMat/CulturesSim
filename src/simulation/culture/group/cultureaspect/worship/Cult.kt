@@ -19,12 +19,12 @@ class Cult(val name: String) : WorshipFeature {
                 ?: kotlin.run {
                     val newStratum = CultStratum(parent.simpleName, group.territoryCenter.center)
                     group.populationCenter.stratumCenter.addStratum(newStratum)
-                    group.populationCenter.changeStratumAmount(newStratum, 1)
+                    group.populationCenter.getStratumPeople(newStratum, 1)
                     group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
                             ?: throw GroupError("Cannot create Stratum for $this")
                 }
         if (testProbability(0.01, session.random))
-            group.populationCenter.changeStratumAmount(stratum, stratum.population + 1)
+            group.populationCenter.getStratumPeople(stratum, stratum.population + 1)
 
         manageSpecialPlaces(group, parent)
     }

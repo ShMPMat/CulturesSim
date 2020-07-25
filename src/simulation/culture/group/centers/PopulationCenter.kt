@@ -14,7 +14,6 @@ import simulation.culture.group.stratum.*
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
-import simulation.space.resource.freeMarker
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import simulation.space.tile.Tile
 import java.util.*
@@ -47,10 +46,10 @@ class PopulationCenter(
 
     fun isMinPassed(controlledTerritory: Territory) = getMinPopulation(controlledTerritory) <= population
 
-    fun changeStratumAmountByAspect(aspect: ConverseWrapper, amount: Int) =
-            changeStratumAmount(stratumCenter.getByAspect(aspect), amount)
+    fun getPeopleByAspect(aspect: ConverseWrapper, amount: Int) =
+            getStratumPeople(stratumCenter.getByAspect(aspect), amount)
 
-    fun changeStratumAmount(stratum: Stratum, amount: Int): WorkerBunch {
+    fun getStratumPeople(stratum: Stratum, amount: Int): WorkerBunch {
         if (!stratumCenter.strata.contains(stratum))
             throw GroupError("Stratum does not belong to this Population")
 

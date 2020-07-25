@@ -1,6 +1,5 @@
 package simulation.culture.group.stratum
 
-import shmp.random.randomElement
 import simulation.Controller.session
 import simulation.culture.aspect.AspectController
 import simulation.culture.aspect.ConverseWrapper
@@ -8,18 +7,14 @@ import simulation.culture.aspect.dependency.Dependency
 import simulation.culture.aspect.getAspectImprovement
 import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
-import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.request.*
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.constructMeme
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
-import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile
-import simulation.space.tile.TileTag
 import java.util.*
-import java.util.function.Consumer
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -44,7 +39,8 @@ class AspectStratum(
 
     override val freePopulation: Int
         get() = population - workedAmount
-
+    override val cumulativeWorkAblePopulation: Double
+        get() = freePopulation * effectiveness
 
     init {
         aspect.dependencies.map.keys.forEach { tag: ResourceTag ->

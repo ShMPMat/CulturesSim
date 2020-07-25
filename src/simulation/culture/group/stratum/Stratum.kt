@@ -5,9 +5,11 @@ import simulation.culture.group.place.StaticPlace
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 
+
 interface Stratum {
     val population: Int
     val freePopulation: Int
+    val cumulativeWorkAblePopulation: Double
     var importance: Int
     val ego: Ego
 
@@ -29,4 +31,6 @@ interface Stratum {
 }
 
 
-data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int)
+data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int) {
+    override fun toString() = "$actualWorkers people"
+}

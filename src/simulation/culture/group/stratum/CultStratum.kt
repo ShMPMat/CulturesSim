@@ -11,6 +11,8 @@ import kotlin.math.min
 class CultStratum(val cultName: String, tile: Tile) : NonAspectStratum(tile, "Stratum for $cultName") {
     override val freePopulation: Int
         get() = population
+    override val cumulativeWorkAblePopulation: Double
+        get() = freePopulation.toDouble()
 
     override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
         if (amount <= 0)

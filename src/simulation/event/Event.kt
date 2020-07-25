@@ -5,7 +5,7 @@ import java.util.*
 
 
 //Object storing memory about something that happened in the world.
-class Event(var type: Type, val description: String) {
+open class Event(var type: Type, val description: String) {
     enum class Type(val colourString: String) {
         Death(("\u001B[31m")),
         ResourceDeath(("\u001B[31m")),
@@ -14,6 +14,8 @@ class Event(var type: Type, val description: String) {
         DisbandResources("\u001B[32m"),
 
         GroupInteraction("\u001B[35m"),
+        Conflict("\u001B[31m"),
+        Cooperation("\u001B[32m"),
 
         Creation("\u001B[34m"),
         Move("\u001B[33m"),
@@ -32,7 +34,8 @@ class Event(var type: Type, val description: String) {
         var i = 0
         while (i < attributes.size) {
             val name = attributes[i] as String
-            if (name == "") break
+            if (name == "")
+                break
             this._attributes[name] = attributes[i + 1]
             i += 2
         }

@@ -5,6 +5,7 @@ import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 
+
 abstract class NonAspectStratum(tile: Tile, name: String) : BaseStratum(tile, name) {
     override var population: Int = 0
         internal set

@@ -27,6 +27,8 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
     private var workedPopulation = 0
     override val freePopulation: Int
         get() = population - workedPopulation
+    override val cumulativeWorkAblePopulation: Double
+        get() = freePopulation * effectiveness
 
     var stock = ResourcePromisePack()
         private set
@@ -53,7 +55,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
         val additional = max(0, min(amount - population, maxOverhead))
         population += additional
         val resultAmount = min(population, amount)
-        return WorkerBunch(resultAmount, resultAmount)
+        return WorkerBunch((resultAmount * effectiveness).toInt(), resultAmount)
     }
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {

@@ -11,6 +11,7 @@ import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 
+
 abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
     override val ego = Ego(tile, name)
 
