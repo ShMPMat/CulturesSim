@@ -1,8 +1,5 @@
 package simulation.culture.group.process.action.pseudo
 
-import simulation.culture.group.centers.Group
-import simulation.culture.group.process.action.GroupAction
-
 
 interface GroupPseudoAction {
     fun run(): Any
@@ -10,6 +7,6 @@ interface GroupPseudoAction {
     val internalToString: String
 }
 
-abstract class AbstractGroupPseudoAction(override val group: Group) : GroupAction {
+abstract class AbstractGroupPseudoAction : GroupPseudoAction {
     override fun toString() = internalToString
 }
