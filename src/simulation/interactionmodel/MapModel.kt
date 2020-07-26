@@ -7,7 +7,7 @@ import simulation.event.EventLog
 
 //Model with a 2d map on which all interactions take place.
 class MapModel : InteractionModel {
-    override val eventLog = EventLog()
+    override val eventLog = EventLog(isOblivious = false)
 
     override fun turn(world: World) {
         Controller.session.overallTime = System.nanoTime()
@@ -35,15 +35,10 @@ class MapModel : InteractionModel {
         groups.forEach {
             eventLog.joinNewEvents(it.events)
         }
+        eventLog.clearNewEvents()
 
         Controller.session.othersTime = System.nanoTime() - Controller.session.othersTime
         Controller.session.overallTime = System.nanoTime() - Controller.session.overallTime
-
-        val j = eventLog.allEvents.groupBy { it }.filter { it.value.size > 1 }
-        val i = eventLog.newEvents.groupBy { it }.filter { it.value.size > 1 }
-        if (j.isNotEmpty()) {
-            val k = 0
-        }
     }
 
     override fun geologicTurn(world: World) {

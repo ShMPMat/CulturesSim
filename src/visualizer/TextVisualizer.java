@@ -445,7 +445,7 @@ public class TextVisualizer implements Visualizer {
                                 regexp = splitCommand.length > 2 ? splitCommand[2] : "";
                             }
                             System.out.println(printRegexEvents(
-                                    controller.interactionModel.getEventLog().getAllEvents(),
+                                    controller.interactionModel.getEventLog().getLastEvents(),
                                     amount,
                                     regexp
                             ));
