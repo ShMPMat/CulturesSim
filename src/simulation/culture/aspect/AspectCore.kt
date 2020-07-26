@@ -6,11 +6,12 @@ import simulation.space.resource.Resource
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.tag.ResourceTag
 
+
 data class AspectCore(
         val name: String,
         val tags: List<ResourceTag>,
         val requirements: List<ResourceTag>,
-        var applyMeaning: Boolean,
+        val applyMeaning: Boolean,
         val resourceExposed: Boolean,
         val standardComplexity: Double,
         val sideComplexities: List<ResourceComplexity>,

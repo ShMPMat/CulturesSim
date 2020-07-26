@@ -10,6 +10,7 @@ import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
 import kotlin.math.max
 
+
 data class AspectController(
         val depth: Int,
         var ceiling: Double,
