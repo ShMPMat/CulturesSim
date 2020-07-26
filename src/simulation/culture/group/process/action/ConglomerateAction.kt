@@ -1,23 +1,22 @@
 package simulation.culture.group.process.action
 
-import shmp.random.randomElement
-import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.Transfer
 import simulation.culture.group.centers.*
 import simulation.culture.thinking.meaning.GroupMemes
+import simulation.event.Event
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import java.util.*
-import kotlin.math.pow
 
-class AddGroupA(group: Group, val groupToAdd: Group) : AbstractGroupAction(group) {
+
+class AddGroupA(group: Group, private val groupToAdd: Group) : AbstractGroupAction(group) {
     override fun run() {
         Transfer(groupToAdd).execute(group.parentGroup)
     }
 
-    override val internalToString = "Add a group ${groupToAdd.name} to the ${group.parentGroup.name}"
+    override val internalToString = "Add the group ${groupToAdd.name} to the ${group.parentGroup.name}"
 }
 
 class ProcessGroupRemovalA(group: Group, val groupToRemove: Group) : AbstractGroupAction(group) {
@@ -27,6 +26,21 @@ class ProcessGroupRemovalA(group: Group, val groupToRemove: Group) : AbstractGro
 
     override val internalToString = "Let ${group.name} deal with the removal of ${groupToRemove.name}"
 }
+
+class GroupTransferA(group: Group, private val groupToAdd: Group) : AbstractGroupAction(group) {
+    override fun run(): List<Event> {
+        AddGroupA(group, groupToAdd).run()
+        ProcessGroupRemovalA(groupToAdd, groupToAdd).run()
+
+        return listOf(simulation.event.Event(
+                simulation.event.Event.Type.GroupInteraction,
+                "${groupToAdd.name} joined to conglomerate ${group.parentGroup.name}"
+        ))
+    }
+
+    override val internalToString = "Let ${groupToAdd.name} joined to conglomerate ${group.parentGroup.name}"
+}
+
 
 class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAction(group) {
     override fun run() {

@@ -3,9 +3,9 @@ package simulation.culture.group.process.interaction
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
-import simulation.culture.group.process.action.pseudo.ActionSequence
+import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.BattlePA
-import simulation.culture.group.process.action.pseudo.GroupPseudoAction
+import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.event.Event
 
 
@@ -35,9 +35,9 @@ class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(i
 class ActionBattleI(
         initiator: Group,
         participator: Group,
-        val initiatorWinAction: GroupPseudoAction,
-        val participatorWinAction: GroupPseudoAction,
-        val drawWinAction: GroupPseudoAction = ActionSequence(listOf())
+        private val initiatorWinAction: EventfulGroupPseudoAction,
+        private val participatorWinAction: EventfulGroupPseudoAction,
+        private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA()
 ) : AbstractGroupInteraction(initiator, participator) {
     override fun run(): List<Event> {
         val resultEvents = BattleI(initiator, participator).run()
@@ -46,13 +46,13 @@ class ActionBattleI(
             BattlePA.Winner.Second -> participatorWinAction
             BattlePA.Winner.Draw -> drawWinAction
         }
-        action.run()
+        val actionInternalEvents = action.run()
 
         val actionEvent = Event(
                 Event.Type.Change,
                 "In the result of battle between ${initiator.name} and ${participator.name}: $action"
         )
-        return resultEvents + listOf(actionEvent)
+        return resultEvents + actionInternalEvents + listOf(actionEvent)
     }
 }
 

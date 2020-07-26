@@ -1,12 +1,9 @@
 package simulation.culture.group.process.interaction
 
-import shmp.random.testProbability
-import simulation.Controller
-import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.*
 import simulation.culture.group.request.Request
-import kotlin.math.pow
+import simulation.event.Event
 
 
 class ChangeRelationsI(

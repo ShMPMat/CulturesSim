@@ -6,7 +6,7 @@ import simulation.culture.group.Add
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.MakeSplitGroupA
 import simulation.culture.group.process.action.TryDivergeA
-import simulation.culture.group.process.interaction.GroupTransferI
+import simulation.culture.group.process.interaction.GroupTransferWithNegotiationI
 import simulation.event.Event
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -27,7 +27,7 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
 
         if (options.isNotEmpty()) {
             val target = randomElement(options, { (_, n) -> n }, session.random).first
-            return GroupTransferI(group, target).run()
+            return GroupTransferWithNegotiationI(group, target).run()
         }
         return emptyList()
     }

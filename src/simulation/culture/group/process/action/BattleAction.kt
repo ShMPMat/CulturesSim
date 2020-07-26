@@ -32,7 +32,7 @@ class GatherWarriorsA(group: Group, val ceiling: Double) : AbstractGroupAction(g
         neededWarriors -= warriors[0].cumulativeWorkers
 
         if (group.processCenter.type == AdministrationType.Main) {
-            for (subordinate in group.parentGroup.subgroups) {
+            for (subordinate in group.parentGroup.subgroups.filter { it != group }) {
                 if (neededWarriors <= 0)
                     break
 
