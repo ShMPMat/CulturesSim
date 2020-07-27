@@ -4,6 +4,7 @@ import shmp.random.randomElement
 import simulation.Controller
 import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.getSubordinates
 import simulation.culture.group.stratum.WorkerBunch
 import simulation.space.tile.Tile
 import kotlin.math.ceil
@@ -31,18 +32,16 @@ class GatherWarriorsA(group: Group, val ceiling: Double) : AbstractGroupAction(g
         ))
         neededWarriors -= warriors[0].cumulativeWorkers
 
-        if (group.processCenter.type == AdministrationType.Main) {
-            for (subordinate in group.parentGroup.subgroups.filter { it != group }) {
-                if (neededWarriors <= 0)
-                    break
+        for (subordinate in group.processCenter.type.getSubordinates(group)) {
+            if (neededWarriors <= 0)
+                break
 
-                val newWarriors = GatherWarriorsA(subordinate, neededWarriors).run()
-                neededWarriors -= newWarriors
-                        .map { it.cumulativeWorkers }
-                        .foldRight(0, Int::plus)
+            val newWarriors = GatherWarriorsA(subordinate, neededWarriors).run()
+            neededWarriors -= newWarriors
+                    .map { it.cumulativeWorkers }
+                    .foldRight(0, Int::plus)
 
-                warriors += newWarriors
-            }
+            warriors += newWarriors
         }
 
         return warriors

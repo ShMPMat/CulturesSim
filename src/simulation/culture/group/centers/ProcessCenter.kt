@@ -90,7 +90,13 @@ class ProcessCenter(type: AdministrationType) {
         """.trimMargin()
 }
 
+
 enum class AdministrationType {
     Subordinate,
     Main
+}
+
+fun AdministrationType.getSubordinates(group: Group) = when (this) {
+    AdministrationType.Main -> group.parentGroup.subgroups.filter { it != group }
+    AdministrationType.Subordinate -> listOf()
 }
