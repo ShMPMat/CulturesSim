@@ -7,7 +7,7 @@ import simulation.culture.group.process.interaction.GiveGiftI
 import simulation.event.Event
 
 
-class GiveGiftB: AbstractGroupBehaviour() {
+object GiveGiftB: AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         val relatedGroups = group.relationCenter.relatedGroups
                 .map { it to group.relationCenter.getNormalizedRelation(group) }

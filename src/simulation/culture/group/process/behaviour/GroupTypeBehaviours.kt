@@ -4,7 +4,7 @@ import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
 import simulation.event.Event
 
-class ManageOwnType : AbstractGroupBehaviour() {
+object ManageOwnType : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         if (group.parentGroup.subgroups.none { it.processCenter.type == AdministrationType.Main }) {
             group.processCenter.type = AdministrationType.Main

@@ -21,17 +21,17 @@ class ProcessCenter(type: AdministrationType) {
                     1,
                     minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
             ),
-            TurnRequestsHelpB(),
-            GiveGiftB().withProbability(0.1),
-            SplitGroupB().withProbability(session.defaultGroupDiverge) {
+            TurnRequestsHelpB,
+            GiveGiftB.withProbability(0.1),
+            SplitGroupB.withProbability(session.defaultGroupDiverge) {
                 session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
             },
-            TryDivergeB().withProbability(session.defaultGroupExiting) {
+            TryDivergeB.withProbability(session.defaultGroupExiting) {
                 it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
                         session.defaultGroupExiting /
                         it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)
             },
-            ManageOwnType().withProbability(session.defaultTypeRenewal) {
+            ManageOwnType.withProbability(session.defaultTypeRenewal) {
                 session.defaultTypeRenewal / it.parentGroup.subgroups.size
             }
     )

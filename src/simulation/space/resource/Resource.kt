@@ -65,7 +65,7 @@ open class Resource(
 
     init {
         computeHash()
-        events.add(Event(Event.Type.Creation, "Resource was created", "name", fullName))
+//        events.add(Event(Event.Type.Creation, "Resource was created", "name", fullName))
     }
 
     fun getTagPresence(tag: ResourceTag) =
