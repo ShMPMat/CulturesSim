@@ -15,6 +15,7 @@ import simulation.culture.thinking.meaning.MemeSubject
 import simulation.event.EventLog
 import simulation.space.Territory
 import simulation.space.resource.Resource
+import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import kotlin.math.log
 

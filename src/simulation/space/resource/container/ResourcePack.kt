@@ -75,5 +75,5 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     override fun toString() = resources.joinToString("\n") { "${it.fullName} ${it.amount};" }
 
     val listResources
-        get() = resources.joinToString() { "${it.fullName} ${it.amount};" }
+        get() = resources.joinToString { "${it.fullName} ${it.amount};" }
 }

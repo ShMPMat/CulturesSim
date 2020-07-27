@@ -12,6 +12,7 @@ import simulation.space.resource.container.ResourcePromise
 import simulation.space.resource.container.ResourcePromisePack
 import kotlin.math.ceil
 
+
 class ReceiveGroupWideResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run() = group.resourceCenter.addAll(pack)
 
@@ -40,6 +41,7 @@ class EvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAc
     override fun run() = pack.resources
             .map { group.cultureCenter.evaluateResource(it) }
             .foldRight(0, Int::plus)
+            .toDouble()
 
     override val internalToString = "Let ${group.name} evaluate ${pack.listResources}"
 }
