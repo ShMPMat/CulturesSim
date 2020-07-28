@@ -1,8 +1,8 @@
 package simulation.space.tile
 
-import simulation.space.resource.Genome
 import simulation.space.resource.Resource
 import simulation.space.resource.ResourceType
+
 
 class TypeUpdater(val water: Resource) {
     fun updateType(tile: Tile) {

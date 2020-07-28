@@ -42,13 +42,13 @@
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
         #Water
 
--Tree            0.05    5      40         0      30   100        0             0 0 Cut        Plant        @Wood
+-Oak             0.05    5      40         0      30   100        0             0 0 Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
         $Tree:1
 
--NutTree         0.05    5      40         0      30   10         0             0 0 Cut        Plant        @Wood
+-Filbert         0.05    5      40         0      30   10         0             0 0 Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
         #Water
