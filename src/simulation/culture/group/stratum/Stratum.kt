@@ -7,10 +7,14 @@ import simulation.space.resource.container.MutableResourcePack
 
 
 interface Stratum {
+    val name: String
+
     val population: Int
     val freePopulation: Int
     val cumulativeWorkAblePopulation: Double
+
     var importance: Int
+
     val ego: Ego
 
     val places: List<StaticPlace>

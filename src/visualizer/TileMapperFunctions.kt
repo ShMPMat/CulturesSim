@@ -141,8 +141,22 @@ fun aspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
         100,
         tile,
         {
-            val group: Group = getResidingGroup(it) ?: return@hotnessMapper 0
+            val group: Group = getResidingGroup(it)
+                    ?: return@hotnessMapper 0
             group.cultureCenter.aspectCenter.aspectPool.get(aspectName)?.usefulness ?: 0
+        }
+)
+
+fun strataMapper(strataSubstr: String, tile: Tile) = hotnessMapper(
+        100,
+        tile,
+        { t ->
+            val group: Group = getResidingGroup(t)
+                    ?: return@hotnessMapper 0
+            group.populationCenter.stratumCenter.strata
+                    .filter { it.name.contains(strataSubstr) }
+                    .map { it.population }
+                    .foldRight(0, Int::plus)
         }
 )
 

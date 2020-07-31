@@ -450,8 +450,7 @@ public class TextVisualizer implements Visualizer {
                                     regexp
                             ));
                             break;
-                        }
-                        case Aspects: {
+                        } case Aspects: {
                             printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
                             Aspect aspect = world.getAspectPool().get(splitCommand[1]);
                             if (aspect != null) {
@@ -461,8 +460,10 @@ public class TextVisualizer implements Visualizer {
                                 ));
                             }
                             break;
-                        }
-                        case Map:
+                        } case Strata: {
+                            printMap(t -> TileMapperFunctionsKt.strataMapper(splitCommand[1], t));
+                            break;
+                        } case Map:
                             printMap(tile -> "");
                             break;
                         case Exit:

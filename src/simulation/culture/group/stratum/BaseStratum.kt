@@ -12,7 +12,7 @@ import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 
 
-abstract class BaseStratum(tile: Tile, protected val name: String) : Stratum {
+abstract class BaseStratum(tile: Tile, final override val name: String) : Stratum {
     override val ego = Ego(tile, name)
 
     protected val innerPlaces = mutableListOf<StaticPlace>()
