@@ -143,23 +143,26 @@ class ResourceInstantiation(
     private fun swapLegacies(
             resource: Resource,
             legacyResource: Resource? = null,
-            treeStart: Resource = resource
+            treeStart: List<Resource> = listOf()
     ): Resource {
         if (!resource.genome.hasLegacy && legacyResource != null)
-            return resource
+            return treeStart.firstOrNull { it.fullName == resource.fullName }
+                    ?: resource //TODO damn, there should be a new Resource
 
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
                 oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
             else oldGenome
         }
-        var newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName))
+        val newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName, parts = listOf()))
 
         val newParts = resource.genome.parts.map {
-            swapLegacies(it, newResource, treeStart).copy()
+            swapLegacies(it, newResource, treeStart + listOf(newResource)).copy()
         }.toMutableList()
 
-        newResource = ResourceIdeal(newResource.genome.copy(parts = newParts))
+        newParts.forEach {
+            newResource.genome.addPart(it)
+        }
 
         val newConversionCore = ConversionCore(mutableMapOf())
 
@@ -168,9 +171,9 @@ class ResourceInstantiation(
                 if (r == resource)
                     newResource to n
                 else if (r == null)
-                    treeStart to n
+                    treeStart[0] to n
                 else
-                    swapLegacies(r, newResource, treeStart) to n
+                    swapLegacies(r, newResource, treeStart + listOf(newResource)) to n
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
 
