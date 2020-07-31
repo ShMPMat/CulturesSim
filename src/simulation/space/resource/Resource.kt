@@ -14,6 +14,7 @@ import java.util.*
 import kotlin.math.min
 import kotlin.math.pow
 
+
 open class Resource(
         internal val core: ResourceCore,
         open var amount: Int = core.genome.defaultAmount,

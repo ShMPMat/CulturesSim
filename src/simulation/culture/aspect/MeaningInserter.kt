@@ -1,6 +1,7 @@
 package simulation.culture.aspect
 
 import simulation.culture.aspect.dependency.AspectDependencies
+import simulation.culture.group.centers.Group
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemeSubject
 import simulation.space.resource.ExternalResourceFeature
@@ -26,7 +27,10 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
         targetResources.removeIf { it.isEmpty }
         result.resources.addAll(targetResources.map {
             val name = makePostfix(result, controller.meaning)
-            it.copyWithNewExternalFeatures(listOf(MeaningResourceFeature(controller.meaning, name)))
+            it.copyWithNewExternalFeatures(listOf(
+                    MeaningResourceFeature(controller.meaning, name),
+                    MadeByResourceFeature(controller.group)
+            ))
         })
 
         return result
@@ -51,11 +55,22 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
     }
 }
 
-data class MeaningResourceFeature(val meme: Meme, override val name: String) : ExternalResourceFeature {
-    override val index: Int = 0
+
+data class MeaningResourceFeature(
+        val meme: Meme,
+        override val name: String = meme.observerWord
+) : ExternalResourceFeature {
+    override val index = 0
 }
 
-private val phonyMeaningFeature = MeaningResourceFeature(MemeSubject(""), "")
+class MadeByResourceFeature(group: Group) : ExternalResourceFeature {
+    override val name = "MadeBy_${group.name}"
+
+    override val index = 1
+}
+
+
+private val phonyMeaningFeature = MeaningResourceFeature(MemeSubject(""))
 
 val Resource.hasMeaning: Boolean
     get() = externalFeatures.any { it is MeaningResourceFeature }

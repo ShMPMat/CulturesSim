@@ -18,8 +18,6 @@ class ResourceCore(
             throw SimulationError("${genome.name} has doubled external features: $externalFeatures")
     }
 
-    fun makeResource(amount: Int = genome.defaultAmount) = Resource(this, amount)
-
     internal fun fullCopy(ownershipMarker: OwnershipMarker) =
             if (genome is GenomeTemplate)
                 throw SpaceError("Can't make a full copy of a template")

@@ -2,6 +2,7 @@ package simulation.culture.group.cultureaspect.worship
 
 import shmp.random.testProbability
 import simulation.Controller.*
+import simulation.culture.aspect.MadeByResourceFeature
 import simulation.culture.aspect.MeaningResourceFeature
 import simulation.culture.group.stratum.CultStratum
 import simulation.culture.group.GroupError
@@ -50,7 +51,10 @@ class Cult(val name: String) : WorshipFeature {
                 result.usedAspects.forEach { it.gainUsefulness(20) }
                 val temple = request.evaluator.pickAndRemove(pack).resources
                         .map {
-                            it.copyWithNewExternalFeatures(listOf(MeaningResourceFeature(MemeSubject(name), name)))
+                            it.copyWithNewExternalFeatures(listOf(
+                                    MeaningResourceFeature(MemeSubject(name)),
+                                    MadeByResourceFeature(group)
+                            ))
                         }
                 group.resourceCenter.addAll(temple)
                 val place = parent.placeSystem.places
