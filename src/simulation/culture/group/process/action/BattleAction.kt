@@ -21,13 +21,6 @@ class DecideWarDeclarationA(group: Group, val opponent: Group): AbstractGroupAct
         val relationCoefficient = (1 - relation).pow(10)
         val forcesCoefficient = ownForcesEstimation.pow(0.5) / opponentForcesEstimation.pow(0.5)
 
-        if (forcesCoefficient != 1.0) {
-            val k = 0
-        }
-        if (group.populationCenter.stratumCenter.warriorStratum.population > 0 || opponent.populationCenter.stratumCenter.warriorStratum.population > 0) {
-            val k = 0
-        }
-
         return testProbability(relationCoefficient * forcesCoefficient, Controller.session.random)
     }
 

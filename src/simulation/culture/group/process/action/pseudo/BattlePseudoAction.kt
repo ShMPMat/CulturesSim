@@ -15,7 +15,7 @@ class BattlePA(val firstSide: List<WorkerBunch>, val secondSide: List<WorkerBunc
         val drawChance = min(
                 firstSideForces.pow(2) / secondSideForces,
                 secondSideForces.pow(2) / firstSideForces
-        )
+        ) + 1.0
 
         return randomElement(
                 listOf(First to firstSideForces, Second to secondSideForces, Draw to drawChance),
