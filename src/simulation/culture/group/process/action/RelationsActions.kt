@@ -20,7 +20,7 @@ class ChangeRelationsA(
     override val internalToString = "Change relations of ${group.name} and ${target.name} on $delta"
 }
 
-class GrantHelpA(
+class CooperateA(
         group: Group,
         private val target: Group,
         private val helpAmount: Double //range - 0-1
@@ -35,5 +35,6 @@ class GrantHelpA(
         return answer
     }
 
-    override val internalToString = "Let ${group.name} decide whether to grant help to ${target.name}, help amount - $helpAmount"
+    override val internalToString =
+            "Let ${group.name} decide whether to cooperate with ${target.name}, help amount - $helpAmount"
 }

@@ -17,7 +17,7 @@ class RequestHelpI(
         val request: Request
 ) : AbstractGroupInteraction(initiator, participator) {
     override fun run(): List<Event> {
-        if (!GrantHelpA(participator, initiator, 0.5).run())
+        if (!CooperateA(participator, initiator, 0.5).run())
             return emptyList()
 
         val given = ExecuteRequestA(participator, request.reassign(participator)).run()

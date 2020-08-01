@@ -33,6 +33,9 @@ class ProcessCenter(type: AdministrationType) {
             },
             ManageOwnType.withProbability(session.defaultTypeRenewal) {
                 session.defaultTypeRenewal / it.parentGroup.subgroups.size
+            },
+            EstablishTradeRelationsB.withProbability(0.0) {
+                it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
             }
     )
 
