@@ -73,7 +73,7 @@ fun printGroup(group: Group) = "$group"
 
 fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: ConglomeratePrintInfo): String {
     val main = StringBuilder()
-    for (group in conglomerates.takeLast(20)) {
+    for (group in conglomerates.takeLast(15)) {
         val stringBuilder = StringBuilder()
         if (group.state === GroupConglomerate.State.Dead)
             continue

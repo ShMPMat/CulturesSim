@@ -19,6 +19,7 @@ class BattlePA(val firstSide: List<WorkerBunch>, val secondSide: List<WorkerBunc
 
         return randomElement(
                 listOf(First to firstSideForces, Second to secondSideForces, Draw to drawChance),
+                { (_, n) -> n },
                 Controller.session.random
         ).first
     }

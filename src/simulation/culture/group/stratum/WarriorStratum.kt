@@ -37,8 +37,15 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
         return WorkerBunch((actualAmount * effectiveness).toInt(), actualAmount)
     }
 
+    override fun decreaseAmount(amount: Int) {
+        super.decreaseAmount(amount)
+        if (workedPopulation > population)
+            workedPopulation = population
+    }
+
     override fun finishUpdate(group: Group) {
         _effectiveness = -1.0
+        workedPopulation = 0
         super.finishUpdate(group)
     }
 

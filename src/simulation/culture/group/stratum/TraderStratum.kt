@@ -58,6 +58,12 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
         return WorkerBunch((resultAmount * effectiveness).toInt(), resultAmount)
     }
 
+    override fun decreaseAmount(amount: Int) {
+        super.decreaseAmount(amount)
+        if (workedPopulation > population)
+            workedPopulation = population
+    }
+
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
         super.update(accessibleResources, accessibleTerritory, group)
 
@@ -107,6 +113,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
 
     override fun finishUpdate(group: Group) {
         _effectiveness = -1.0
+        workedPopulation = 0
         super.finishUpdate(group)
     }
 

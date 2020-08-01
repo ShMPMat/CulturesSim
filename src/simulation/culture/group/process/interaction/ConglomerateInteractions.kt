@@ -3,6 +3,7 @@ package simulation.culture.group.process.interaction
 import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.GroupTransferA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.InteractionWrapperPA
@@ -19,7 +20,7 @@ class GroupTransferWithNegotiationI(
         if (!testProbability(relation.pow(2), session.random)) {
             ChangeRelationsI(initiator, participator, -1.0).run()
 
-            val conflictEvents = if (testProbability((1 - relation).pow(10), session.random)) {
+            val conflictEvents = if (DecideWarDeclarationA(participator, initiator).run()) {
                 val decreaseRelations = InteractionWrapperPA(
                         ChangeRelationsI(initiator, participator, -10.0),
                         "${initiator.name} and ${participator.name} decreased their relations due to a battle"
