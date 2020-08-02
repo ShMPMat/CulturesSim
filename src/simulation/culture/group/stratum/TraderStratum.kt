@@ -67,18 +67,18 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
         super.update(accessibleResources, accessibleTerritory, group)
 
-        tradeStockUpdate(group)
+        if (testProbability(session.tradeStockUpdateProb, session.random))
+            tradeStockUpdate(group)
+
         updatePlaces(group)
     }
 
     private fun tradeStockUpdate(group: Group) {
-        if (testProbability(session.tradeStockUpdateProb, session.random)) {
-            val valuableResources = group.populationCenter.turnResources.resources
-                    .map { it to group.cultureCenter.evaluateResource(it) }
-                    .filter { (r, n) -> r.genome.isMovable && n >= 10 }
-                    .map { (r, _) -> ResourcePromise(r, r.amount) }
-            stock = ResourcePromisePack(valuableResources)
-        }
+        val valuableResources = group.populationCenter.turnResources.resources
+                .map { it to group.cultureCenter.evaluateResource(it) }
+                .filter { (r, n) -> r.genome.isMovable && n >= 10 }
+                .map { (r, _) -> ResourcePromise(r) }
+        stock = ResourcePromisePack(valuableResources)
     }
 
 

@@ -6,6 +6,7 @@ import simulation.Controller.*
 import simulation.culture.group.process.behaviour.*
 import kotlin.math.pow
 
+
 class ProcessCenter(type: AdministrationType) {
     var type = type
         set(value) {

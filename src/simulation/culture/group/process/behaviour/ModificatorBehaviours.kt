@@ -26,7 +26,7 @@ class ChanceWrapperB(
     override val internalToString
         get() = """
             |With probability $probability do:
-            |$behaviour
+            |    $behaviour
             """.trimMargin()
 }
 
@@ -59,7 +59,7 @@ class TimesWrapperB(
     override val internalToString
         get() = """
             |From $min to ${max - 1} times do:
-            |$behaviour
+            |    $behaviour
             """.trimMargin()
 }
 
