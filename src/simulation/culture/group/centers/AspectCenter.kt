@@ -86,9 +86,10 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         _converseWrappers.add(wrapper)
     }
 
-    fun mutateAspects(): Collection<Event> { //TODO separate adding of new aspects and updating old
+    fun mutateAspects(): List<Aspect> { //TODO separate adding of new aspects and updating old
         if (testProbability(session.rAspectAcquisition / (aspectPool.all.size + 1), session.random)) {
-            val options: MutableList<Aspect> = ArrayList()
+            val options = mutableListOf<Aspect>()
+
             if (session.independentCvSimpleAspectAdding) {
                 if (testProbability(0.1, session.random))
                     options.addAll(session.world.aspectPool.all)
@@ -100,12 +101,11 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             }
             if (options.isNotEmpty()) {
                 val aspect = randomElement(options, session.random)
-                if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect)) {
+                if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
                     return listOf()
-                }
-                if (addAspect(aspect)) {
-                    return setOf(Event(Event.Type.AspectGaining, " got aspect ${aspect.name} by itself"))
-                }
+
+                if (addAspect(aspect))
+                    return listOf(aspect)
             }
         }
         return listOf()

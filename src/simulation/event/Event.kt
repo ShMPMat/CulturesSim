@@ -24,8 +24,6 @@ open class Event(var type: Type, val description: String) {
     }
 
     private var _attributes: MutableMap<String, Any> = HashMap()
-    val attributes: Map<String, Any>
-        get() = _attributes
 
     val turnString = Controller.session.world?.getStringTurn() ?: "Pre-historic"
     val turn = turnString.toIntOrNull()

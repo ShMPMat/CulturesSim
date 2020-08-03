@@ -37,8 +37,9 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
 
     fun update() {
         events.addAll(
-                aspectCenter.mutateAspects()
-                        .map { Event(it.type, group.name + it.description, it.attributes) }
+                aspectCenter.mutateAspects().map {
+                    Event(Event.Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
+                }
         )
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
         cultureAspectCenter.useCultureAspects()
@@ -48,11 +49,12 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     }
 
     private fun lookOnTerritory(accessibleTerritory: Territory) {
-        val tags = accessibleTerritory.tiles
-                .flatMap { it.tagPool.all }
+        val tags = accessibleTerritory.tiles.flatMap { it.tagPool.all }
+
         for (tag in tags) {
             if (tag.type == GROUP_TAG_TYPE)
                 continue
+
             memePool.add(MemeSubject(tag.name))
             memePool.strengthenMeme(MemeSubject(tag.name))
         }

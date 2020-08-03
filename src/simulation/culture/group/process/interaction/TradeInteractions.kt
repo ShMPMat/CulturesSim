@@ -14,7 +14,7 @@ class TradeI(
     override fun run(): List<Event> {
         val wantedResources = ChooseResourcesA(
                 initiator,
-                participator.populationCenter.stratumCenter.traderStratum.stock,
+                RequestStockA(participator).run(),
                 amount
         ).run()
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
@@ -23,7 +23,7 @@ class TradeI(
 
         val priceInResources = ChooseResourcesA(
                 participator,
-                participator.populationCenter.stratumCenter.traderStratum.stock,
+                RequestStockA(initiator).run(),
                 priceForP,
                 wantedResources.makeCopy().resources
         ).run()
