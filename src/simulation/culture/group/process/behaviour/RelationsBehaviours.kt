@@ -2,6 +2,7 @@ package simulation.culture.group.process.behaviour
 
 import shmp.random.testProbability
 import simulation.Controller
+import simulation.culture.group.HelpEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.interaction.RequestHelpI
 import simulation.culture.group.request.Request
@@ -27,7 +28,8 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
             val newEvents = RequestHelpI(relation.owner, relation.other, reducedRequest).run()
 
             amountLeft = amount - newEvents
-                    .mapNotNull { it.getAttribute("value")?.let { a -> a as Double } }
+                    .filterIsInstance<HelpEvent>()
+                    .map { it.helpValue }
                     .foldRight(0.0, Double::plus)
 
             events.addAll(newEvents)

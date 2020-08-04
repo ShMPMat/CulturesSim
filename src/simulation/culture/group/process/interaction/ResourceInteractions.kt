@@ -2,6 +2,7 @@ package simulation.culture.group.process.interaction
 
 import shmp.random.testProbability
 import simulation.Controller
+import simulation.culture.group.HelpEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.*
 import simulation.culture.group.request.Request
@@ -31,11 +32,10 @@ class RequestHelpI(
             delivery.run()
             ChangeRelationsA(initiator, participator, request.evaluator.evaluate(given) / request.ceiling).run()
 
-            listOf(Event(
-                    Event.Type.Cooperation,
+            listOf(HelpEvent(
                     "${initiator.name} got help in $request from ${participator.name}: " +
                             "${given.listResources}, with delay ${delivery.delay}",
-                    "value", request.evaluator.evaluate(given)
+                    request.evaluator.evaluate(given)
             ))
         } else emptyList()
     }

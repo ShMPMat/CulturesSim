@@ -1,5 +1,6 @@
 package simulation.culture.group.process.interaction
 
+import simulation.culture.group.BattleResultEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
@@ -55,9 +56,3 @@ class ActionBattleI(
         return resultEvents + actionInternalEvents + listOf(actionEvent)
     }
 }
-
-
-class BattleResultEvent(
-        description: String,
-        val status: BattlePA.Winner
-): Event(Type.Conflict, description, "status", status)

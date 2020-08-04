@@ -39,11 +39,5 @@ open class Event(var type: Type, val description: String) {
         }
     }
 
-    constructor(type: Type, description: String, attributes: Map<String, Any>) : this(type, description) {
-        this._attributes.putAll(attributes)
-    }
-
-    fun getAttribute(name: String) = _attributes[name]
-
     override fun toString() = "${type.colourString}$turnString. $description\u001B[37m"
 }

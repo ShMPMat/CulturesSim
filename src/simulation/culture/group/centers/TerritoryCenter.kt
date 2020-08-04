@@ -173,10 +173,10 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         tileTag.group.parentGroup.claimTile(tile)
         tile.tagPool.add(tileTag)
         territory.add(tile)
-        tileTag.group.addEvent(Event(
-                Event.Type.TileAcquisition,
-                "Group " + tileTag.group.name + " claimed tile " + tile.x + " " + tile.y,
-                "group", tileTag.group, "tile", tile
+        tileTag.group.addEvent(ClaimTileEvent(
+                "Group ${tileTag.group.name} claimed tile ${tile.x} ${tile.y}",
+                tileTag.group,
+                tile
         ))
     }
 

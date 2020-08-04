@@ -5,6 +5,7 @@ import simulation.Controller.session
 import simulation.event.Event
 import simulation.SimulationError
 import simulation.culture.aspect.hasMeaning
+import simulation.culture.group.RoadCreationEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.process.action.ProduceExactResourceA
@@ -12,6 +13,7 @@ import simulation.culture.group.process.action.ProduceSimpleResourceA
 import simulation.culture.group.process.action.ReceiveGroupWideResourcesA
 import simulation.culture.group.request.resourceToRequest
 import simulation.space.Territory
+import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
 
@@ -63,10 +65,9 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
         place.addResource(roadResource)
         path.remove(tile)
 
-        val event = Event(
-                Event.Type.Creation,
+        val event = RoadCreationEvent(
                 "${group.name} created a road on a tile ${tile.x} ${tile.y}",
-                "place", place
+                place
         )
 
         return if (path.isEmpty) {
@@ -81,6 +82,7 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
     override val internalToString
         get() = "Building a road, ${built.toDouble() / (built + path.size)} complete"
 }
+
 
 class ManageRoadsB : AbstractGroupBehaviour() {
     private var projectsDone = 0
@@ -104,8 +106,8 @@ class ManageRoadsB : AbstractGroupBehaviour() {
 
         roadPlaces.addAll(
                 events
-                        .mapNotNull { it.getAttribute("place") }
-                        .filterIsInstance<StaticPlace>()
+                        .filterIsInstance<RoadCreationEvent>()
+                        .map { it.place }
         )
 
         return events
