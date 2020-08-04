@@ -6,6 +6,7 @@ import simulation.Controller.*
 import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.CooperateA
+import simulation.culture.group.process.action.MakeTradeResourcesA
 import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.interaction.ChangeRelationsI
 import simulation.culture.group.process.interaction.TradeI
@@ -33,18 +34,11 @@ object RandomTradeB : AbstractGroupBehaviour() {
 
 class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
-        val resources = group.cultureCenter.aspectCenter.aspectPool.producedResources
+        val pack = MakeTradeResourcesA(group, amount).run()
 
-        if (resources.isEmpty())
-            return emptyList()
-
-        val chosenResource = randomElement(resources, session.random)
-        val pack = ProduceExactResourceA(group, chosenResource, amount, 20).run()
-
-        val events = if (pack.isEmpty)
-            emptyList()
-        else
+        val events = if (pack.isNotEmpty)
             listOf(Event(Event.Type.Creation, "${group.name} created resources for trade: $pack"))
+        else emptyList()
 
         group.populationCenter.turnResources.addAll(pack)
 

@@ -73,7 +73,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
         updatePlaces(group)
     }
 
-    private fun tradeStockUpdate(group: Group) {
+    fun tradeStockUpdate(group: Group) {
         val valuableResources = group.populationCenter.turnResources.resources
                 .map { it to group.cultureCenter.evaluateResource(it) }
                 .filter { (r, n) -> r.genome.isMovable && n >= 10 }
