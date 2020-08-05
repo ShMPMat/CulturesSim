@@ -3,6 +3,7 @@ package simulation.culture.group
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.process.action.pseudo.BattlePA
+import simulation.culture.group.process.action.pseudo.ConflictWinner
 import simulation.event.Event
 import simulation.space.tile.Tile
 
@@ -18,9 +19,9 @@ class HelpEvent(
         val helpValue: Double
 ): Event(Type.Cooperation, description)
 
-class BattleResultEvent(
+class ConflictResultEvent(
         description: String,
-        val status: BattlePA.Winner
+        val status: ConflictWinner
 ): Event(Type.Conflict, description)
 
 class RoadCreationEvent(

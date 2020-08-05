@@ -1,17 +1,18 @@
 package simulation.culture.group.process.interaction
 
-import simulation.culture.group.BattleResultEvent
+import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.BattlePA
+import simulation.culture.group.process.action.pseudo.ConflictWinner
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.event.Event
 
 
 class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<BattleResultEvent> {
+    override fun run(): List<ConflictResultEvent> {
         val tile = DecideBattleTileA(initiator, participator)
         val iniEvaluation = evaluateForces(participator)
         val partEvaluation = evaluateForces(initiator)
@@ -21,12 +22,12 @@ class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(i
         val result = BattlePA(iniWarriors, partWarriors).run()
 
         val description = when (result) {
-            BattlePA.Winner.First -> "${initiator.name} won a battle with ${participator.name} on $tile"
-            BattlePA.Winner.Second -> "${participator.name} won a battle with ${initiator.name} on $tile"
-            BattlePA.Winner.Draw -> "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
+            ConflictWinner.First -> "${initiator.name} won a battle with ${participator.name} on $tile"
+            ConflictWinner.Second -> "${participator.name} won a battle with ${initiator.name} on $tile"
+            ConflictWinner.Draw -> "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
         }
 
-        return listOf(BattleResultEvent(description, result))
+        return listOf(ConflictResultEvent(description, result))
     }
 
     private fun evaluateForces(group: Group) =
@@ -43,9 +44,9 @@ class ActionBattleI(
     override fun run(): List<Event> {
         val resultEvents = BattleI(initiator, participator).run()
         val action = when (resultEvents[0].status) {
-            BattlePA.Winner.First -> initiatorWinAction
-            BattlePA.Winner.Second -> participatorWinAction
-            BattlePA.Winner.Draw -> drawWinAction
+            ConflictWinner.First -> initiatorWinAction
+            ConflictWinner.Second -> participatorWinAction
+            ConflictWinner.Draw -> drawWinAction
         }
         val actionInternalEvents = action.run()
 
