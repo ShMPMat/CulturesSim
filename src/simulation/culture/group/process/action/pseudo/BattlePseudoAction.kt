@@ -35,3 +35,9 @@ class BattlePA(val firstSide: List<WorkerBunch>, val secondSide: List<WorkerBunc
 
 
 enum class ConflictWinner { First, Second, Draw }
+
+fun <E> ConflictWinner.decide(fst: E, snd: E, draw: E) = when (this) {
+    First -> fst
+    Second -> snd
+    Draw -> draw
+}

@@ -239,9 +239,11 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         return result
     }
 
-    override fun toString() = "Tile $x $y, type=$type, temperature=$temperature, level=$level\n" +
+    override fun toString() = "Tile $posStr, type=$type, temperature=$temperature, level=$level\n" +
             "Tags: " + tagPool.all.joinToString("; ") + "\n\nResources:" +
             _resourcePack.resources.joinToString("\n", "\n", "\n")
+
+    val posStr = "$x $y"
 
     enum class Type {
         Normal, Mountain, Water, Ice, Woods, Growth

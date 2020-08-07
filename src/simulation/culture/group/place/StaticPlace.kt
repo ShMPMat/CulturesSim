@@ -64,7 +64,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
 
     fun contains(resource: Resource) = _owned.contains(resource.copy(ownershipMarker = ownershipMarker))
 
-    override fun toString() = "Place on ${tile.x} ${tile.y}, ${tileTag.name}, resources:" +
+    override fun toString() = "Place on ${tile.posStr}, ${tileTag.name}, resources:" +
             _owned.resources.joinToString { it.fullName + ":" + it.amount }
 
     override fun equals(other: Any?): Boolean {

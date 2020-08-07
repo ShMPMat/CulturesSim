@@ -29,9 +29,7 @@ class SpecialPlace(
         session.world.strayPlacesManager.addPlace(staticPlace)
     }
 
-    override fun toString(): String {
-        return "Special place on tile ${staticPlace.tile.x} ${staticPlace.tile.y}"
-    }
+    override fun toString() = "Special place on tile ${staticPlace.tile.posStr}"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -3,7 +3,6 @@ package simulation.culture.group.centers
 import shmp.random.randomTile
 import shmp.random.testProbability
 import simulation.Controller.session
-import simulation.event.Event
 import simulation.SimulationError
 import simulation.culture.group.*
 import simulation.culture.group.place.StaticPlace
@@ -174,7 +173,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         tile.tagPool.add(tileTag)
         territory.add(tile)
         tileTag.group.addEvent(ClaimTileEvent(
-                "Group ${tileTag.group.name} claimed tile ${tile.x} ${tile.y}",
+                "Group ${tileTag.group.name} claimed tile ${tile.posStr}",
                 tileTag.group,
                 tile
         ))

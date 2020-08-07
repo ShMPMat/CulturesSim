@@ -66,7 +66,7 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
         path.remove(tile)
 
         val event = RoadCreationEvent(
-                "${group.name} created a road on a tile ${tile.x} ${tile.y}",
+                "${group.name} created a road on a tile ${tile.posStr}",
                 place
         )
 

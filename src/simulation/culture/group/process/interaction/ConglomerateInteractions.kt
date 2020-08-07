@@ -7,6 +7,7 @@ import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.GroupTransferA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.InteractionWrapperPA
+import simulation.culture.group.process.behaviour.WarB
 import simulation.event.Event
 import kotlin.math.pow
 
@@ -26,13 +27,17 @@ class GroupTransferWithNegotiationI(
                         "${initiator.name} and ${participator.name} decreased their relations due to a battle"
                 )
 
-                ActionBattleI(
-                        initiator,
+                initiator.processCenter.addBehaviour(WarB(
                         participator,
                         ActionSequencePA(GroupTransferA(initiator, participator)),
                         decreaseRelations,
                         decreaseRelations
-                ).run()
+                ))
+                listOf(Event(
+                        Event.Type.Conflict,
+                        "${initiator.name} started a war with ${participator.name}, " +
+                                "because it wants to leave the Conglomerate"
+                ))
             }
             else listOf()
 

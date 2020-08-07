@@ -439,11 +439,12 @@ public class TextVisualizer implements Visualizer {
                         }
                         case Events: {
                             int amount = 100;
-                            String regexp = splitCommand.length > 1 ? splitCommand[1] : "";
+                            int drop = splitCommand[0].length() + 1;
                             if (splitCommand[0].charAt(0) != 'e') {
                                 amount = Integer.parseInt(splitCommand[0]);
-                                regexp = splitCommand.length > 2 ? splitCommand[2] : "";
+                                drop += splitCommand[1].length() + 1;
                             }
+                            String regexp = line.substring(drop);
                             System.out.println(printRegexEvents(
                                     controller.interactionModel.getEventLog().getLastEvents(),
                                     amount,
