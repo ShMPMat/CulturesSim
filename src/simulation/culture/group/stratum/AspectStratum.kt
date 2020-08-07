@@ -73,7 +73,7 @@ class AspectStratum(
 
     override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
         if (amount <= 0)
-            return WorkerBunch(0, 0)
+            return WorkerBunch(0)
 
         var actualAmount = ceil(amount / effectiveness).toInt()
         if (actualAmount <= freePopulation)
@@ -87,7 +87,7 @@ class AspectStratum(
                 isRaisedAmount = true
         }
 
-        return WorkerBunch((actualAmount * effectiveness).toInt(), actualAmount)
+        return WorkerBunch(actualAmount, effectiveness)
     }
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {

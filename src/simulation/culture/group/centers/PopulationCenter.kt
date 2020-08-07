@@ -58,7 +58,7 @@ class PopulationCenter(
             actualAmount = min(actualAmount, freePopulation + stratum.freePopulation)
 
         if (actualAmount == 0)
-            return WorkerBunch(0, 0)
+            return WorkerBunch(0)
 
         val bunch = stratum.useAmount(actualAmount, freePopulation)
         if (freePopulation < 0)
@@ -68,7 +68,7 @@ class PopulationCenter(
     }
 
     fun freeStratumAmountByAspect(aspect: ConverseWrapper, bunch: WorkerBunch) =
-            stratumCenter.getByAspect(aspect).decreaseWorkedAmount(bunch.actualWorkers)
+            stratumCenter.getByAspect(aspect).decreaseWorkedAmount(bunch.workers)
 
     fun die() {
         stratumCenter.die()

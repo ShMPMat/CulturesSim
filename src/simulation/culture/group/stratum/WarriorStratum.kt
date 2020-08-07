@@ -23,7 +23,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
 
     override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
         if (amount <= 0)
-            return WorkerBunch(0, 0)
+            return WorkerBunch(0)
         usedThisTurn = true
         var actualAmount = ceil(amount / effectiveness).toInt()
         if (actualAmount <= freePopulation)
@@ -34,7 +34,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors")
             population += additional
             workedPopulation = population
         }
-        return WorkerBunch((actualAmount * effectiveness).toInt(), actualAmount)
+        return WorkerBunch(actualAmount, effectiveness)
     }
 
     override fun decreaseAmount(amount: Int) {

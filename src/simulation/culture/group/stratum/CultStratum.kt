@@ -16,12 +16,12 @@ class CultStratum(val cultName: String, tile: Tile) : NonAspectStratum(tile, "St
 
     override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
         if (amount <= 0)
-            return WorkerBunch(0, 0)
+            return WorkerBunch(0)
 
         val additional = max(0, min(amount - population, maxOverhead))
         population += additional
         val resultAmount = min(population, amount)
-        return WorkerBunch(resultAmount, resultAmount)
+        return WorkerBunch(resultAmount)
     }
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {

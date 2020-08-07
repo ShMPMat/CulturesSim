@@ -35,6 +35,9 @@ interface Stratum {
 }
 
 
-data class WorkerBunch(val cumulativeWorkers: Int, val actualWorkers: Int) {
-    override fun toString() = "$actualWorkers people"
+data class WorkerBunch(val workers: Int, val effectiveness: Double = 1.0) {
+    val cumulativeWorkers: Int
+        get() = (workers * effectiveness).toInt()
+
+    override fun toString() = "$workers people, working as $cumulativeWorkers"
 }
