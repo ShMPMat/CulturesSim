@@ -24,23 +24,24 @@ public class NeedDependency extends LabelerDependency {
     double satisfaction(Tile tile, Resource resource) {
         double _amount = amount * (resource == null ? 1 : resource.getAmount());
         int currentAmount = 0;
-        for (Resource res : tile.getAccessibleResources()) {
-            if (res.equals(resource)) {
-                continue;
-            }
-            if (isResourceDependency(res)) {
-                currentAmount += res.getAmount() * oneResourceWorth(res);
-                if (currentAmount >= _amount) {
-                    break;
+        for (List<Resource> list : tile.getAccessibleResources())
+            for (Resource res : list) {
+                if (res.equals(resource)) {
+                    continue;
+                }
+                if (isResourceDependency(res)) {
+                    currentAmount += res.getAmount() * oneResourceWorth(res);
+                    if (currentAmount >= _amount) {
+                        break;
+                    }
                 }
             }
-        }
         return Math.min(((double) currentAmount) / _amount, 1);
     }
 
     @Override
     public boolean hasNeeded(Tile tile) {
-        return tile.getAccessibleResources().stream().anyMatch(this::isResourceDependency);
+        return tile.getAccessibleResources().stream().anyMatch(lst -> lst.stream().anyMatch(this::isResourceDependency));
     }
 
     @Override

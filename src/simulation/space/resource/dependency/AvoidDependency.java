@@ -5,6 +5,7 @@ import simulation.space.resource.tag.labeler.ResourceLabeler;
 import simulation.space.tile.Tile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AvoidDependency extends LabelerDependency {
@@ -24,24 +25,25 @@ public class AvoidDependency extends LabelerDependency {
         double result;
         double _amount = amount * (resource == null ? 1 : resource.getAmount());
         int currentAmount = 0;
-        for (Resource res : tile.getAccessibleResources()) {
-            if (res.equals(resource)) {
-                continue;
-            }
-            if (super.isResourceDependency(res)) {
-                currentAmount += res.getAmount() * oneResourceWorth(res);
-                if (currentAmount >= _amount) {
-                    break;
+        for (List<Resource> list : tile.getAccessibleResources())
+            for (Resource res : list) {
+                if (res.equals(resource)) {
+                    continue;
+                }
+                if (super.isResourceDependency(res)) {
+                    currentAmount += res.getAmount() * oneResourceWorth(res);
+                    if (currentAmount >= _amount) {
+                        break;
+                    }
                 }
             }
-        }
         result = Math.min(((double) currentAmount) / _amount, 1);
         return 1 - result;
     }
 
     @Override
     public boolean hasNeeded(Tile tile) {
-        return tile.getAccessibleResources().stream().anyMatch(this::isResourceDependency);
+        return tile.getAccessibleResources().stream().anyMatch(lst -> lst.stream().anyMatch(this::isResourceDependency));
     }
 
     @Override

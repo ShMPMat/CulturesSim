@@ -65,12 +65,8 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
             return resources
         }
 
-    val accessibleResources: List<Resource>
-        get() {
-            val accessibleResources: MutableList<Resource> = ArrayList(_resourcePack.resources)
-            accessibleResources.addAll(neighbours.flatMap { it._resourcePack.resources })
-            return accessibleResources
-        }
+    val accessibleResources: List<List<Resource>>
+        get() = listOf(_resourcePack.resources) + neighbours.map { it._resourcePack.resources }
 
     fun getNeighbours(predicate: (Tile) -> Boolean) = neighbours.filter(predicate)
 
