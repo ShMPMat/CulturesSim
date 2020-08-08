@@ -266,7 +266,7 @@ open class Resource(
             (isAcceptable(t) && genome.dependencies.all { d -> d.hasNeeded(t) })
         }
         if (newTile == null) {
-            if (genome.dependencies.all { d -> d.hasNeeded(tile) })
+            if (genome.dependencies.all { it.hasNeeded(tile) })
                 newTile = tile
             else {
                 newTile = randomTileOnBrink(tileList, SpaceData.data.random) { isAcceptable(it) }

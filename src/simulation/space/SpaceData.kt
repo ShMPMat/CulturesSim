@@ -43,6 +43,7 @@ class Data(
         val additionalTags: List<TagMatcher> = listOf(),
         val xMapLooping: Boolean = false,
         val yMapLooping: Boolean = true,
+        val clearSpan: Double = 0.05,
         val random: Random = Random(0L)
 ) {
     init {

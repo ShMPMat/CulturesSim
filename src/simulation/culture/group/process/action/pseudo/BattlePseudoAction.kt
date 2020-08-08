@@ -14,15 +14,19 @@ class BattlePA(val firstSide: List<WorkerBunch>, val secondSide: List<WorkerBunc
         val firstSideForces = firstSide.getCumulativeForce()
         val secondSideForces = secondSide.getCumulativeForce()
         val drawChance = min(
-                firstSideForces.pow(2) / secondSideForces,
-                secondSideForces.pow(2) / firstSideForces
+                firstSideForces.pow(2) / (secondSideForces + 1),
+                secondSideForces.pow(2) / (firstSideForces + 1)
         ) + 1.0
 
-        return randomElement(
-                listOf(First to firstSideForces, Second to secondSideForces, Draw to drawChance),
-                { (_, n) -> n },
-                Controller.session.random
-        ).first
+        try {
+            return randomElement(
+                    listOf(First to firstSideForces, Second to secondSideForces, Draw to drawChance),
+                    { (_, n) -> n },
+                    Controller.session.random
+            ).first
+        } catch (e: Exception) {
+            return Draw
+        }
     }
 
     private fun List<WorkerBunch>.getCumulativeForce() = this

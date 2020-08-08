@@ -1,5 +1,6 @@
 package simulation.space.tile
 
+import shmp.random.testProbability
 import simulation.DataInitializationError
 import simulation.space.SpaceData
 import simulation.space.SpaceData.data
@@ -175,6 +176,9 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
     fun finishUpdate() {
         windCenter.finishUpdate()
+
+//        if (testProbability(data.clearSpan, data.random))
+//            resourcePack.clearEmpty()
     }
 
     private fun updateTemperature() {

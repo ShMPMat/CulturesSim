@@ -22,6 +22,7 @@ class MapModel : InteractionModel {
         for (group in groups) {
             group.update()
         }
+
         Controller.session.groupTime = System.nanoTime() - Controller.session.groupTime
         Controller.session.othersTime = System.nanoTime()
 
