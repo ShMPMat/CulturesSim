@@ -1,7 +1,6 @@
 package simulation.event
 
 import simulation.Controller
-import java.util.*
 
 
 //Object storing memory about something that happened in the world.
@@ -23,21 +22,8 @@ open class Event(var type: Type, val description: String) {
         Other("")
     }
 
-    private var _attributes: MutableMap<String, Any> = HashMap()
-
-    val turnString = Controller.session.world?.getStringTurn() ?: "Pre-historic"
+    private val turnString = Controller.session.world?.getStringTurn() ?: "Pre-historic"
     val turn = turnString.toIntOrNull()
-
-    constructor(type: Type, description: String, vararg attributes: Any) : this(type, description) {
-        var i = 0
-        while (i < attributes.size) {
-            val name = attributes[i] as String
-            if (name == "")
-                break
-            this._attributes[name] = attributes[i + 1]
-            i += 2
-        }
-    }
 
     override fun toString() = "${type.colourString}$turnString. $description\u001B[37m"
 }

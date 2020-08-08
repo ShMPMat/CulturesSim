@@ -74,21 +74,18 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
             return
         val (first, second) = randomElement(options, session.random)
         aspectCenter.addAspect(first)
-        if (second == null)
-            events.add(Event(
-                    Event.Type.AspectGaining,
-                    "Group " + group.name + " developed aspect " + first.name,
-                    "group", this
-            ))
-        else events.add(Event(
-                Event.Type.AspectGaining, String.format(
-                "Group %s took aspect %s from group %s",
-                group.name,
-                first.name,
-                second.name
-        ),
-                "group", this
-        ))
+
+        events.add(
+                if (second == null)
+                    Event(Event.Type.AspectGaining,
+                            "Group ${group.name} developed aspect ${first.name}"
+                    )
+                else
+                    Event(
+                            Event.Type.AspectGaining,
+                            "Group ${group.name} took aspect ${first.name} from group ${second.name}"
+                    )
+        )
     }
 
     fun finishAspectUpdate(): Set<Aspect> {

@@ -70,7 +70,7 @@ class Group(
         populationCenter.die()
         territoryCenter.die()
         cultureCenter.die()
-        addEvent(Event(Event.Type.Death, "Group $name died", "group", this))
+        addEvent(Event(Event.Type.Death, "Group $name died"))
         for (group in relationCenter.relatedGroups)
             group.cultureCenter.memePool.addMemeCombination(
                     cultureCenter.memePool.getMeme("group")
