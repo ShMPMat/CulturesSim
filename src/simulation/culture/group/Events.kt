@@ -2,9 +2,9 @@ package simulation.culture.group
 
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
-import simulation.culture.group.process.action.pseudo.BattlePA
 import simulation.culture.group.process.action.pseudo.ConflictWinner
 import simulation.event.Event
+import simulation.event.Type
 import simulation.space.tile.Tile
 
 

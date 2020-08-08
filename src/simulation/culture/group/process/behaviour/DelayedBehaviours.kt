@@ -3,9 +3,10 @@ package simulation.culture.group.process.behaviour
 import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.GroupAction
+import simulation.event.Type
 
 
-class DelayedB(val action: GroupAction, val delay: Int): PlanBehaviour() {
+class DelayedB(val action: GroupAction, val delay: Int) : PlanBehaviour() {
     private var timePassed = 0
 
     override fun run(group: Group): List<Event> {
@@ -14,10 +15,7 @@ class DelayedB(val action: GroupAction, val delay: Int): PlanBehaviour() {
 
         val events = mutableListOf<Event>()
         if (timePassed == 0)
-            events.add(Event(
-                    Event.Type.GroupInteraction,
-                    "${group.name} started $action"
-            ))
+            events.add(Event(Type.GroupInteraction, "${group.name} started $action"))
 
         timePassed++
 
@@ -27,10 +25,7 @@ class DelayedB(val action: GroupAction, val delay: Int): PlanBehaviour() {
         action.run()
         isFinished = true
 
-        return events + listOf(Event(
-                Event.Type.GroupInteraction,
-                "${group.name} ended $action after $timePassed"
-        ))
+        return events + listOf(Event(Type.GroupInteraction, "${group.name} ended $action after $timePassed"))
     }
 
     override val internalToString: String

@@ -6,6 +6,7 @@ import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
 import simulation.culture.group.process.action.pseudo.*
 import simulation.event.Event
+import simulation.event.Type
 
 
 class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(initiator, participator) {
@@ -44,7 +45,7 @@ class ActionBattleI(
         val actionInternalEvents = action.run()
 
         val actionEvent = Event(
-                Event.Type.Change,
+                Type.Change,
                 "In the result of battle between ${initiator.name} and ${participator.name}: $action"
         )
         return resultEvents + actionInternalEvents + listOf(actionEvent)

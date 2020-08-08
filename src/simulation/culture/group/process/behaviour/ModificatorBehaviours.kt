@@ -4,6 +4,7 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.event.Event
 import simulation.culture.group.centers.Group
+import kotlin.math.min
 
 class ChanceWrapperB(
         val behaviour: GroupBehaviour,
@@ -48,9 +49,10 @@ class TimesWrapperB(
 
     override fun update(group: Group): TimesWrapperB? {
         return TimesWrapperB(
-                behaviour.update(group) ?: return null,
-                minUpdate(group),
-                maxUpdate(group),
+                behaviour.update(group)
+                        ?: return null,
+                min(minUpdate(group), 10),
+                min(maxUpdate(group), 11),
                 minUpdate,
                 maxUpdate
         )

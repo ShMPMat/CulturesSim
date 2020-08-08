@@ -7,6 +7,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.*
 import simulation.culture.group.request.Request
 import simulation.event.Event
+import simulation.event.Type
 import simulation.space.resource.container.ResourcePromise
 import simulation.space.resource.container.ResourcePromisePack
 import kotlin.math.pow
@@ -74,13 +75,13 @@ class ReceiveGiftI(
             ReceiveGroupWideResourcesA(participator, gift.extract()).run()
 
             listOf(Event(
-                    Event.Type.Cooperation,
+                    Type.Cooperation,
                     "${participator.name} accepted a gift of $giftStr from ${initiator.name}"
             )) +
                     ChangeRelationsI(initiator, participator, -2.0).run()
         } else
             listOf(Event(
-                    Event.Type.Conflict,
+                    Type.Conflict,
                     "${participator.name} rejected a gift of $giftStr from ${initiator.name}"
             )) +
                     ChangeRelationsI(initiator, participator, -2.0).run()

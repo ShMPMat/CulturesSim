@@ -12,6 +12,7 @@ import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.action.ProduceSimpleResourceA
 import simulation.culture.group.process.action.ReceiveGroupWideResourcesA
 import simulation.culture.group.request.resourceToRequest
+import simulation.event.Type
 import simulation.space.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
@@ -34,7 +35,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
         val result = group.populationCenter.executeRequest(resourceToRequest(chosen, group, 1, 5)).pack
 
         val events = if (result.isNotEmpty)
-            listOf(Event(Event.Type.Creation, "${group.name} created artifacts: $result"))
+            listOf(Event(Type.Creation, "${group.name} created artifacts: $result"))
         else emptyList()
 
         ReceiveGroupWideResourcesA(group, result).run()
@@ -72,10 +73,7 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
 
         return if (path.isEmpty) {
             isFinished = true
-            listOf(
-                    event,
-                    Event(Event.Type.Creation, "${group.name} finished a road creation")
-            )
+            listOf(event, Event(Type.Creation, "${group.name} finished a road creation"))
         } else listOf(event)
     }
 

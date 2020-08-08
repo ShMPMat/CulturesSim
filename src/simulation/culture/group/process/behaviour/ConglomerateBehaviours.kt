@@ -8,6 +8,7 @@ import simulation.culture.group.process.action.MakeSplitGroupA
 import simulation.culture.group.process.action.TryDivergeA
 import simulation.culture.group.process.interaction.GroupTransferWithNegotiationI
 import simulation.event.Event
+import simulation.event.Type
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -38,7 +39,7 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
 object TryDivergeB : AbstractGroupBehaviour() {
     override fun run(group: Group) =
             if (TryDivergeA(group).run())
-                listOf(Event(Event.Type.Change, "${group.name} diverged to it's own Conglomerate"))
+                listOf(Event(Type.Change, "${group.name} diverged to it's own Conglomerate"))
             else listOf()
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"
@@ -60,7 +61,7 @@ object SplitGroupB : AbstractGroupBehaviour() {
 
         Add(newGroup).execute(group.parentGroup)
 
-        return listOf(Event(Event.Type.Creation, "${group.name} made a new group ${newGroup.name}"))
+        return listOf(Event(Type.Creation, "${group.name} made a new group ${newGroup.name}"))
     }
 
     override val internalToString = "Try to split Group in two"

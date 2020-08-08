@@ -3,6 +3,7 @@ package simulation.culture.group.process.interaction
 import simulation.event.Event
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.*
+import simulation.event.Type
 import simulation.space.resource.container.ResourcePack
 
 
@@ -35,7 +36,7 @@ class TradeI(
         val got = wantedResources.extract()
         val given = priceInResources.extract()
         val events = mutableListOf(Event(
-                Event.Type.Cooperation,
+                Type.Cooperation,
                 "${initiator.name} and ${participator.name} " +
                         "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
         ))
@@ -73,7 +74,7 @@ class SwapResourcesI(
         ).run()
 
         return listOf(Event(
-                Event.Type.GroupInteraction,
+                Type.GroupInteraction,
                 "${initiator.name} and ${participator.name} begun swapping of $gotPack and $givePack"
         ))
     }

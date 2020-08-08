@@ -13,6 +13,7 @@ import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemePredicate
 import simulation.culture.thinking.meaning.MemeSubject
 import simulation.event.EventLog
+import simulation.event.Type
 import simulation.space.Territory
 import simulation.space.resource.Resource
 import simulation.space.resource.container.ResourcePack
@@ -38,7 +39,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
     fun update() {
         events.addAll(
                 aspectCenter.mutateAspects().map {
-                    Event(Event.Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
+                    Event(Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
                 }
         )
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
@@ -77,12 +78,10 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
 
         events.add(
                 if (second == null)
-                    Event(Event.Type.AspectGaining,
-                            "Group ${group.name} developed aspect ${first.name}"
-                    )
+                    Event(Type.AspectGaining, "Group ${group.name} developed aspect ${first.name}")
                 else
                     Event(
-                            Event.Type.AspectGaining,
+                            Type.AspectGaining,
                             "Group ${group.name} took aspect ${first.name} from group ${second.name}"
                     )
         )

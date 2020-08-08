@@ -6,6 +6,7 @@ import simulation.culture.group.Transfer
 import simulation.culture.group.centers.*
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.event.Event
+import simulation.event.Type
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import java.util.*
@@ -32,8 +33,8 @@ class GroupTransferA(group: Group, private val groupToAdd: Group) : AbstractGrou
         AddGroupA(group, groupToAdd).run()
         ProcessGroupRemovalA(groupToAdd, groupToAdd).run()
 
-        return listOf(simulation.event.Event(
-                simulation.event.Event.Type.GroupInteraction,
+        return listOf(Event(
+                Type.GroupInteraction,
                 "${groupToAdd.name} joined to conglomerate ${group.parentGroup.name}"
         ))
     }

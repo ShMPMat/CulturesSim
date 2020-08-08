@@ -9,6 +9,7 @@ import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.InteractionWrapperPA
 import simulation.culture.group.process.behaviour.WarB
 import simulation.event.Event
+import simulation.event.Type
 import kotlin.math.pow
 
 
@@ -34,7 +35,7 @@ class GroupTransferWithNegotiationI(
                         decreaseRelations
                 ))
                 listOf(Event(
-                        Event.Type.Conflict,
+                        Type.Conflict,
                         "${initiator.name} started a war with ${participator.name}, " +
                                 "because it wants to leave the Conglomerate"
                 ))
@@ -42,7 +43,7 @@ class GroupTransferWithNegotiationI(
             else listOf()
 
             return listOf(Event(
-                    Event.Type.GroupInteraction,
+                    Type.GroupInteraction,
                     "Group ${participator.name} refused to join conglomerate ${initiator.parentGroup.name}"
             )) + conflictEvents
         }

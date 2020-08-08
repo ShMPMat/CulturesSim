@@ -1,26 +1,19 @@
 package simulation.culture.group.centers
 
 import extra.chompToSize
-import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.event.Event
 import simulation.culture.aspect.Aspect
-import simulation.culture.group.Add
-import simulation.culture.group.ConglomerateCommand
 import simulation.culture.group.GroupConglomerate
 import simulation.culture.group.GroupTileTag
 import simulation.culture.group.cultureaspect.CultureAspect
-import simulation.culture.group.process.action.AddGroupA
-import simulation.culture.group.process.action.MakeSplitGroupA
-import simulation.culture.group.process.action.NewConglomerateA
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.MemeSubject
+import simulation.event.Type
 import simulation.space.Territory
-import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import java.util.*
-import kotlin.math.pow
 
 class Group(
         val processCenter: ProcessCenter,
@@ -70,7 +63,7 @@ class Group(
         populationCenter.die()
         territoryCenter.die()
         cultureCenter.die()
-        addEvent(Event(Event.Type.Death, "Group $name died"))
+        addEvent(Event(Type.Death, "Group $name died"))
         for (group in relationCenter.relatedGroups)
             group.cultureCenter.memePool.addMemeCombination(
                     cultureCenter.memePool.getMeme("group")
@@ -81,6 +74,10 @@ class Group(
 
     fun addEvent(event: Event) {
         cultureCenter.events.add(event)
+    }
+
+    fun addEvents(events: List<Event>) {
+        cultureCenter.events.addAll(events)
     }
 
     fun update() {

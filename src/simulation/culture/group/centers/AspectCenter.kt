@@ -10,6 +10,7 @@ import simulation.culture.aspect.dependency.LineDependency
 import simulation.culture.aspect.labeler.ProducedLabeler
 import simulation.culture.group.AspectDependencyCalculator
 import simulation.culture.group.convert
+import simulation.event.Type
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.ResourceLabeler
@@ -215,7 +216,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             )
             if (addAspect(aspect))
                 return listOf(Event(
-                        Event.Type.AspectGaining,
+                        Type.AspectGaining,
                         "${group.name} got ${aspect.name} from ${aspectGroup.name}"
                 ))
         }
@@ -233,7 +234,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             if (_mutableAspectPool.remove(aspect)) {
                 if (aspect !is ConverseWrapper)
                     _converseWrappers.removeIf { it.aspect == aspect }
-                group.addEvent(Event(Event.Type.Change, "${group.name} lost aspect ${aspect.name}"))
+                group.addEvent(Event(Type.Change, "${group.name} lost aspect ${aspect.name}"))
             }
         }
     }

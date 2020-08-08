@@ -2,7 +2,7 @@ package simulation.culture.group.centers
 
 import shmp.random.testProbability
 import simulation.Controller
-import simulation.Controller.*
+import simulation.Controller.session
 import simulation.culture.group.process.behaviour.*
 import kotlin.math.pow
 
@@ -62,6 +62,9 @@ class ProcessCenter(type: AdministrationType) {
         if (testProbability(session.behaviourUpdateProb, session.random))
             updateBehaviours(group)
 
+        if (behaviours.size > 20 )
+            updateBehaviours(group)
+
         runBehaviours(group)
         Controller.session.groupMigrationTime += System.nanoTime() - main
     }
@@ -73,19 +76,20 @@ class ProcessCenter(type: AdministrationType) {
     }
 
     private fun runBehaviours(group: Group) {
-        val events = behaviours.flatMap {
-            it.run(group)
-        }.toMutableList()
+        behaviours.forEach {
+            group.addEvents(it.run(group))
+        }
+
         while (addedBehaviours.isNotEmpty()) {
             val newBehaviours = addedBehaviours.toList()
             addedBehaviours.clear()
 
-            events += newBehaviours.flatMap {
-                it.run(group)
+            newBehaviours.forEach {
+                group.addEvents(it.run(group))
             }
+
             behaviours.addAll(newBehaviours)
         }
-        events.forEach { group.addEvent(it) }
     }
 
     override fun toString() = """

@@ -10,6 +10,7 @@ import simulation.culture.group.process.action.MakeTradeResourcesA
 import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.interaction.ChangeRelationsI
 import simulation.culture.group.process.interaction.TradeI
+import simulation.event.Type
 import kotlin.math.pow
 
 
@@ -37,7 +38,7 @@ class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
         val pack = MakeTradeResourcesA(group, amount).run()
 
         val events = if (pack.isNotEmpty)
-            listOf(Event(Event.Type.Creation, "${group.name} created resources for trade: $pack"))
+            listOf(Event(Type.Creation, "${group.name} created resources for trade: $pack"))
         else emptyList()
 
         group.populationCenter.turnResources.addAll(pack)
@@ -56,7 +57,7 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
         val result = TradeI(group, partner, 1000).run()
 
-        if (result.none { it.type == Event.Type.Cooperation })
+        if (result.none { it.type == Type.Cooperation })
             fails++
         else
             successes++
@@ -95,7 +96,7 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
         if (!CooperateA(chosenPartner, group, 0.1).run())
             return ChangeRelationsI(group, chosenPartner, -1.0).run() +
                     listOf(Event(
-                            Event.Type.Conflict,
+                            Type.Conflict,
                             "${group.name} tried to make a trade agreement with ${chosenPartner.name}, " +
                                     "but got rejected"
                     ))
@@ -103,7 +104,7 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
         group.processCenter.addBehaviour(TradeRelationB(chosenPartner))
 
         return listOf(Event(
-                Event.Type.Cooperation,
+                Type.Cooperation,
                 "${group.name} made a trade agreement with a ${chosenPartner.name}"
         ))
     }

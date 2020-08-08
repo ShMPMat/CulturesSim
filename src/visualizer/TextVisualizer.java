@@ -8,6 +8,7 @@ import simulation.culture.group.GroupTileTagKt;
 import simulation.culture.group.centers.Group;
 import simulation.culture.group.GroupConglomerate;
 import simulation.culture.group.GroupTileTag;
+import simulation.event.Type;
 import simulation.interactionmodel.InteractionModel;
 import simulation.interactionmodel.MapModel;
 import simulation.space.SpaceData;
@@ -264,9 +265,9 @@ public class TextVisualizer implements Visualizer {
     private StringBuilder printedEvents(Collection<Event> events, boolean printAll) {
         StringBuilder main = new StringBuilder();
         for (Event event : events) {
-            if (printAll || event.getType() == Event.Type.Death
-                    || event.getType() == Event.Type.ResourceDeath
-                    || event.getType() == Event.Type.DisbandResources) {
+            if (printAll || event.getType() == Type.Death
+                    || event.getType() == Type.ResourceDeath
+                    || event.getType() == Type.DisbandResources) {
                 main.append(event).append("\n");
             }
         }
