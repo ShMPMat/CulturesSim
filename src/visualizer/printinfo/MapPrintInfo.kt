@@ -1,5 +1,6 @@
 package visualizer.printinfo
 
+import simulation.SimulationError
 import simulation.space.SpaceData.data
 import simulation.space.WorldMap
 import simulation.space.tile.Tile
@@ -13,19 +14,20 @@ class MapPrintInfo(val map: WorldMap) {
         var gapFinish = 0
         var start = -1
         var finish = 0
+
         for (y in 0 until data.mapSizeY) {
             var isLineClear = true
             for (x in 0 until data.mapSizeX) {
-                val tile: Tile = map.get(x, y)
+                val tile = map[x, y]
+                        ?: throw SimulationError("Incoherent map size")
                 if (tile.type != Tile.Type.Water && tile.type != Tile.Type.Ice) {
                     isLineClear = false
                     break
                 }
             }
             if (isLineClear) {
-                if (start == -1) {
+                if (start == -1)
                     start = y
-                }
                 finish = y
             } else if (start != -1) {
                 if (finish - start > gapFinish - gapStart) {
@@ -35,6 +37,7 @@ class MapPrintInfo(val map: WorldMap) {
                 start = -1
             }
         }
+
         cut = (gapStart + gapFinish) / 2
     }
 }

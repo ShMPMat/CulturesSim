@@ -36,6 +36,8 @@ class WindCenter internal constructor() {
     fun middleUpdate(x: Int, y: Int) {
         val map = Controller.session.world.map
         val host = map[x, y]
+                ?: return
+
         host.neighbours.forEach { setWindByTemperature(it, host) }
 
         if (!_newWind.isStill)

@@ -52,18 +52,17 @@ fun fillResources(
 }
 
 private fun setTileNeighbours(map: WorldMap) {
-    val x = map.x
-    val y = map.y
-    for (i in 0 until x) {
-        for (j in 0 until y) {
-            map[i, j].neighbours = arrayOf(
+    val x = map.maxX
+    val y = map.maxY
+
+    for (i in 0 until x)
+        for (j in 0 until y)
+            map[i, j]?.neighbours = arrayOf(
                     map[i, j + 1],
                     map[i, j - 1],
                     map[i + 1, j],
                     map[i - 1, j]
-            ).filter { Objects.nonNull(it) }
-        }
-    }
+            ).filterNotNull()
 }
 
 private fun createTiles(x: Int, y: Int, water: Resource): List<List<Tile>> {
