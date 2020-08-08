@@ -46,16 +46,16 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
             return _effectiveness
         }
 
-    override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
+    override fun useAmount(amount: Int, maxOverhead: Int): StratumPeople {
         if (amount <= 0)
-            return WorkerBunch(0)
+            return StratumPeople(0, this)
 
         usedThisTurn = true
 
         val additional = max(0, min(amount - population, maxOverhead))
         population += additional
         val resultAmount = min(population, amount)
-        return WorkerBunch(resultAmount, effectiveness)
+        return StratumPeople(resultAmount, this, effectiveness)
     }
 
     override fun decreaseAmount(amount: Int) {

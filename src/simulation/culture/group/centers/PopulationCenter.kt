@@ -49,7 +49,7 @@ class PopulationCenter(
     fun getPeopleByAspect(aspect: ConverseWrapper, amount: Int) =
             getStratumPeople(stratumCenter.getByAspect(aspect), amount)
 
-    fun getStratumPeople(stratum: Stratum, amount: Int): WorkerBunch {
+    fun getStratumPeople(stratum: Stratum, amount: Int): StratumPeople {
         if (!stratumCenter.strata.contains(stratum))
             throw GroupError("Stratum does not belong to this Population")
 
@@ -58,7 +58,7 @@ class PopulationCenter(
             actualAmount = min(actualAmount, freePopulation + stratum.freePopulation)
 
         if (actualAmount == 0)
-            return WorkerBunch(0)
+            return StratumPeople(0, stratum)
 
         val bunch = stratum.useAmount(actualAmount, freePopulation)
         if (freePopulation < 0)
@@ -67,7 +67,7 @@ class PopulationCenter(
         return bunch
     }
 
-    fun freeStratumAmountByAspect(aspect: ConverseWrapper, bunch: WorkerBunch) =
+    fun freeStratumAmountByAspect(aspect: ConverseWrapper, bunch: StratumPeople) =
             stratumCenter.getByAspect(aspect).decreaseWorkedAmount(bunch.workers)
 
     fun die() {

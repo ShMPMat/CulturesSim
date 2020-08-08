@@ -1,7 +1,6 @@
 package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
-import simulation.culture.group.cultureaspect.SpecialPlace
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
@@ -14,14 +13,14 @@ class CultStratum(val cultName: String, tile: Tile) : NonAspectStratum(tile, "St
     override val cumulativeWorkAblePopulation: Double
         get() = freePopulation.toDouble()
 
-    override fun useAmount(amount: Int, maxOverhead: Int): WorkerBunch {
+    override fun useAmount(amount: Int, maxOverhead: Int): StratumPeople {
         if (amount <= 0)
-            return WorkerBunch(0)
+            return StratumPeople(0, this)
 
         val additional = max(0, min(amount - population, maxOverhead))
         population += additional
         val resultAmount = min(population, amount)
-        return WorkerBunch(resultAmount)
+        return StratumPeople(resultAmount, this)
     }
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {

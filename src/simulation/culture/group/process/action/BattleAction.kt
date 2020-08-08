@@ -1,15 +1,12 @@
 package simulation.culture.group.process.action
 
 import shmp.random.randomElement
-import shmp.random.testProbability
 import simulation.Controller
-import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.getSubordinates
-import simulation.culture.group.stratum.WorkerBunch
+import simulation.culture.group.stratum.StratumPeople
 import simulation.space.tile.Tile
 import kotlin.math.ceil
-import kotlin.math.pow
 
 
 class EstimateForcesA(group: Group, val toEstimate: Group): AbstractGroupAction(group) {
@@ -36,8 +33,8 @@ class DecideBattleTileA(group: Group, val opponent: Group) : AbstractGroupAction
 
 
 class GatherWarriorsA(group: Group, val ceiling: Double) : AbstractGroupAction(group) {
-    override fun run(): List<WorkerBunch> {
-        val warriors = mutableListOf<WorkerBunch>()
+    override fun run(): List<StratumPeople> {
+        val warriors = mutableListOf<StratumPeople>()
         var neededWarriors = ceiling
 
         warriors.add(group.populationCenter.getStratumPeople(
