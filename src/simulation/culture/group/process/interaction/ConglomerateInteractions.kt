@@ -1,13 +1,8 @@
 package simulation.culture.group.process.interaction
 
-import shmp.random.testProbability
-import simulation.Controller.*
 import simulation.culture.group.centers.Group
-import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.GroupTransferA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
-import simulation.culture.group.process.action.pseudo.InteractionWrapperPA
-import simulation.culture.group.process.behaviour.WarB
 import simulation.event.Event
 import simulation.event.Type
 import kotlin.math.pow
@@ -18,38 +13,24 @@ class GroupTransferWithNegotiationI(
         participator: Group
 ) : AbstractGroupInteraction(initiator, participator) {
     override fun run(): List<Event> {
-        val relation = participator.relationCenter.getNormalizedRelation(initiator)
-        if (!testProbability(relation.pow(2), session.random)) {
-            ChangeRelationsI(initiator, participator, -1.0).run()
+        val strikeWarInteraction = ProbableStrikeWarI(
+                initiator,
+                participator,
+                participator.relationCenter.getNormalizedRelation(initiator).pow(2),
+                "${participator.name} wants to leave the Conglomerate",
+                ActionSequencePA(GroupTransferA(initiator, participator))
+        )
+        val strikeWarResult = strikeWarInteraction.run()
 
-            val conflictEvents = if (DecideWarDeclarationA(participator, initiator).run()) {
-                val decreaseRelations = InteractionWrapperPA(
-                        ChangeRelationsI(initiator, participator, -10.0),
-                        "${initiator.name} and ${participator.name} decreased their relations due to a battle"
-                )
+        val transferResultEvents =
+                if (strikeWarInteraction.warStruck)
+                    listOf(Event(
+                            Type.GroupInteraction,
+                            "Group ${participator.name} objects joining " +
+                                    "the conglomerate ${initiator.parentGroup.name}"
+                    ))
+                else listOf()
 
-                initiator.processCenter.addBehaviour(WarB(
-                        participator,
-                        ActionSequencePA(GroupTransferA(initiator, participator)),
-                        decreaseRelations,
-                        decreaseRelations
-                ))
-                listOf(Event(
-                        Type.Conflict,
-                        "${initiator.name} started a war with ${participator.name}, " +
-                                "because it wants to leave the Conglomerate"
-                ))
-            }
-            else listOf()
-
-            return listOf(Event(
-                    Type.GroupInteraction,
-                    "Group ${participator.name} refused to join conglomerate ${initiator.parentGroup.name}"
-            )) + conflictEvents
-        }
-
-
-
-        return GroupTransferA(initiator, participator).run()
+        return strikeWarResult + transferResultEvents + GroupTransferA(initiator, participator).run()
     }
 }

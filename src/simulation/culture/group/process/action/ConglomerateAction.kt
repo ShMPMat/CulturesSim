@@ -43,7 +43,7 @@ class GroupTransferA(group: Group, private val groupToAdd: Group) : AbstractGrou
 }
 
 
-class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAction(group) {
+class NewConglomerateWithNegotiation(group: Group, val groups: List<Group>) : AbstractGroupAction(group) {
     override fun run() {
         val conglomerate = GroupConglomerate(0, group.territoryCenter.center)
         group.parentGroup.removeGroup(group)
@@ -53,6 +53,8 @@ class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAct
             AddGroupA(group, newGroup).run()
 
         Controller.session.world.addGroupConglomerate(conglomerate)
+
+
     }
 
     override val internalToString =
@@ -67,7 +69,7 @@ class TryDivergeA(group: Group) : AbstractGroupAction(group) {
             return false
 
         if (!checkCoherencyAndDiverge())
-            NewConglomerateA(group, emptyList()).run()
+            NewConglomerateWithNegotiation(group, emptyList()).run()
 
         return true
     }
@@ -90,7 +92,7 @@ class TryDivergeA(group: Group) : AbstractGroupAction(group) {
             return false
 
         cluster.toList().let {
-            NewConglomerateA(it[0], it.drop(1)).run()
+            NewConglomerateWithNegotiation(it[0], it.drop(1)).run()
         }
 
         return true

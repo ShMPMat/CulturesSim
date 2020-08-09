@@ -19,7 +19,7 @@ class ChangeRelationsI(
         val relationFrom = participator.relationCenter.getNormalizedRelation(initiator)
         return listOf(Event(
                 Type.GroupInteraction,
-                "Groups ${initiator.name} and ${participator.name} improved their relations by $delta " +
+                "Groups ${initiator.name} and ${participator.name} changed their relations by $delta " +
                         "to the general of $relationTo and $relationFrom"
         ))
     }
