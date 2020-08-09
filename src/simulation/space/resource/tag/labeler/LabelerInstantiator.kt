@@ -5,12 +5,18 @@ import simulation.space.resource.instantiation.bracketSensitiveSplit
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.material.Material
 
+
 fun makeResourceLabeler(tagString: String): ResourceLabeler {
     val tags = tagString.bracketSensitiveSplit(',')
     val labelers = ArrayList<ResourceLabeler>()
     for (tag in tags)
         labelers.add(getLabel(tag.take(2), tag.drop(2)))
-    return ConcatLabeler(labelers)
+
+    return when {
+        labelers.isEmpty() -> PassingLabeler
+        labelers.size == 1 -> labelers[0]
+        else -> ConcatLabeler(labelers)
+    }
 }
 
 private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {

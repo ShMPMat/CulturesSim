@@ -32,7 +32,11 @@ open class Genome(
 ) {
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
     val parts: MutableList<Resource> = ArrayList()
-    val dependencies = dependencies.toMutableList()
+
+    val dependencies = dependencies.toList()
+    val necessaryDependencies = dependencies.filter { it.isNecessary }
+    val negativeDependencies = dependencies.filter { !it.isPositive }
+
     val tags = tags.toMutableList()
     val secondaryMaterials: List<Material>
 

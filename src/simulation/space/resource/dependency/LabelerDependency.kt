@@ -10,7 +10,7 @@ abstract class LabelerDependency(
         deprivationCoefficient: Double,
         override val isNecessary: Boolean,
         var amount: Double,
-        private val goodResource: ResourceLabeler
+        private val labeler: ResourceLabeler
 ) : CoefficientDependency(deprivationCoefficient) {
     override val isResourceNeeded = true
 
@@ -19,15 +19,14 @@ abstract class LabelerDependency(
     fun isResourceGood(resource: Resource) = isResourceDependency(resource)
 
     open fun isResourceDependency(resource: Resource) =
-            goodResource.isSuitable(resource.genome) && resource.isNotEmpty
+            resource.isNotEmpty && labeler.isSuitable(resource.genome)
 
-    fun oneResourceWorth(resource: Resource) =
-            goodResource.actualMatches(resource.copy(1, resource.ownershipMarker))
+    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.copy(1))
                     .map(Resource::amount)
                     .foldRight(0, Int::plus)
 
     fun partByResource(resource: Resource, amount: Double) = ceil(
-            amount / goodResource.actualMatches(resource.copy(1, resource.ownershipMarker))
+            amount / labeler.actualMatches(resource.copy(1))
             .map(Resource::amount)
             .foldRight(0, Int::plus)
     ).toInt()

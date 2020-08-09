@@ -195,10 +195,10 @@ open class Resource(
     }
 
     fun isAcceptable(tile: Tile) =
-            genome.dependencies.filter { it.isNecessary }.all { it.satisfactionPercent(tile, this) == 1.0 }
+            genome.necessaryDependencies.all { it.satisfactionPercent(tile, this) == 1.0 }
 
     fun isOptimal(tile: Tile) = isAcceptable(tile)
-            && genome.dependencies.filter { !it.isPositive }.all { it.satisfactionPercent(tile, this) >= 0.9 }
+            && genome.negativeDependencies.all { it.satisfactionPercent(tile, this) >= 0.9 }
 
     private fun distribute(tile: Tile) {
         if (amount <= genome.naturalDensity)

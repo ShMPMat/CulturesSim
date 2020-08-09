@@ -5,6 +5,8 @@ import simulation.space.SpaceData.data
 import simulation.space.resource.Resource
 import simulation.space.resource.freeMarker
 import kotlin.math.max
+import kotlin.math.pow
+
 
 class WindCenter internal constructor() {
     var wind = Wind()
@@ -22,7 +24,7 @@ class WindCenter internal constructor() {
                 continue
 
             for ((tile, t) in wind.affectedTiles) {
-                val part = (resource.amount * t * t / wind.sumLevel * getFlyCoefficient(resource)).toInt()
+                val part = (resource.amount * t.pow(2) / wind.sumLevel * getFlyCoefficient(resource)).toInt()
 
                 if (part > 0)
                     tile.addDelayedResource(resource.getCleanPart(part))
