@@ -17,9 +17,17 @@ import kotlin.math.pow
 
 open class Resource(
         internal val core: ResourceCore,
-        open var amount: Int = core.genome.defaultAmount,
+        amount: Int = core.genome.defaultAmount,
         val ownershipMarker: OwnershipMarker = freeMarker
 ): Comparable<Resource> {
+    open var amount = amount
+        set(value) {
+            if (value < 0) {
+                val k = 0
+            }
+            field = value
+        }
+
     // Precomputed hash.
     private var _hash = 0
 
@@ -34,11 +42,7 @@ open class Resource(
     private val events: MutableList<Event> = ArrayList()
 
     val isEmpty: Boolean
-        get() {
-            if (amount < 0)
-                throw SimulationError("Resource amount is below zero: $this")
-            return amount == 0
-        }
+        get() = amount == 0
 
     val isNotEmpty: Boolean
         get() = !isEmpty

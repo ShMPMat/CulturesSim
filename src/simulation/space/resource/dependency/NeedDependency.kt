@@ -18,7 +18,7 @@ class NeedDependency(
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
-        for (list in tile.accessibleResources)
+        loop@for (list in tile.accessibleResources)
             for (res in list) {
                 if (res == resource)
                     continue
@@ -26,7 +26,7 @@ class NeedDependency(
                 if (isResourceDependency(res)) {
                     currentAmount += res.amount * oneResourceWorth(res)
                     if (currentAmount >= actualAmount)
-                        break
+                        break@loop
                 }
             }
 

@@ -24,8 +24,8 @@ class ConsumeDependency(
         val result: Double
         val neededAmount = amount * resource.amount
 
-        if (currentAmount < neededAmount) {
-            for (list in tile.accessibleResources)
+        if (currentAmount < neededAmount)
+            loop@for (list in tile.accessibleResources)
                 for (res in list) {
                     if (res == resource)
                         continue
@@ -39,10 +39,9 @@ class ConsumeDependency(
 
                         part.destroy()
                         if (currentAmount >= neededAmount)
-                            break
+                            break@loop
                     }
                 }
-        }
 
         result = min(currentAmount.toDouble() / neededAmount, 1.0)
 
