@@ -123,8 +123,7 @@ open class Genome(
                 tags.add(tag.copy())
     }
 
-    val baseName: BaseName
-        get() = name + legacyPostfix
+    val baseName: BaseName = name + legacyPostfix
 
     private val legacyPostfix: String
         get() = legacy?.let { "_of_$it" }

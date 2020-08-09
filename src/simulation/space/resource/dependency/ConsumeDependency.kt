@@ -11,8 +11,8 @@ class ConsumeDependency(
         deprivationCoefficient: Double,
         isNecessary: Boolean,
         amount: Double,
-        goodResource: ResourceLabeler?) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResource
-) {
+        goodResource: ResourceLabeler
+) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResource) {
     var lastConsumed: MutableSet<String> = HashSet()
 
     var currentAmount = 0

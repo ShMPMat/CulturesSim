@@ -1,13 +1,12 @@
 package simulation.space.resource.container
 
 import simulation.space.resource.Resource
-import simulation.space.resource.freeMarker
 import simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 
 open class ResourcePack(resources: Collection<Resource> = listOf()) {
-    protected var resourceMap = mutableMapOf<Resource, Resource>()
+    protected var resourceMap = TreeMap<Resource, Resource>()
 
     init {
         resources.forEach { internalAdd(it) }
@@ -16,8 +15,11 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     val resources: List<Resource>
         get() = resourceMap.values.toList()
 
+    val resourcesIterator: Iterator<Resource>
+        get() = resourceMap.navigableKeySet().iterator()
+
     val amount: Int
-        get() = resources
+        get() = resourceMap.navigableKeySet()
                 .map { it.amount }
                 .fold(0, Int::plus)
 
@@ -43,12 +45,15 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
         }
     }
 
-    fun getResources(predicate: (Resource) -> Boolean) = ResourcePack(resources.filter(predicate))
+    fun getResources(predicate: (Resource) -> Boolean) =
+            ResourcePack(resourceMap.navigableKeySet().filter(predicate))
 
-    fun getResources(tag: ResourceTag) = ResourcePack(resources.filter { it.tags.contains(tag) })
+    fun getResources(tag: ResourceTag) =
+            ResourcePack(resourceMap.navigableKeySet().filter { it.tags.contains(tag) })
 
     fun getResource(resource: Resource): ResourcePack {
-        val resourceInMap = resourceMap[resource] ?: return ResourcePack()
+        val resourceInMap = resourceMap[resource]
+                ?: return ResourcePack()
         return ResourcePack(setOf(resourceInMap))
     }
 
@@ -64,16 +69,17 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
             .filter { it.value.amount == 0 }
             .forEach { resourceMap.remove(it.key) }
 
-    fun any(predicate: (Resource) -> Boolean) = resources.any(predicate)
+    fun any(predicate: (Resource) -> Boolean) = resourceMap.navigableKeySet().any(predicate)
 
     fun contains(resource: Resource) = resourceMap[resource] != null
 
-    fun containsAll(resources: Collection<Resource>) = resources.all { contains(it) }
+    fun containsAll(resources: Collection<Resource>) = resourceMap.navigableKeySet().all { contains(it) }
 
-    fun containsAll(pack: ResourcePack) = containsAll(pack.resources)
+    fun containsAll(pack: ResourcePack) = containsAll(pack.resourceMap.navigableKeySet())
 
-    override fun toString() = resources.joinToString("\n") { "${it.fullName} ${it.amount};" }
+    override fun toString() =
+            resourceMap.navigableKeySet().joinToString("\n") { "${it.fullName} ${it.amount};" }
 
     val listResources
-        get() = resources.joinToString { "${it.fullName} ${it.amount};" }
+        get() = resourceMap.navigableKeySet().joinToString { "${it.fullName} ${it.amount};" }
 }

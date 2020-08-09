@@ -19,7 +19,7 @@ open class Resource(
         internal val core: ResourceCore,
         open var amount: Int = core.genome.defaultAmount,
         val ownershipMarker: OwnershipMarker = freeMarker
-) {
+): Comparable<Resource> {
     // Precomputed hash.
     private var _hash = 0
 
@@ -53,16 +53,15 @@ open class Resource(
     val baseName: BaseName
         get() = genome.baseName
 
-    val fullName: String
-        get() = genome.baseName +
-                if (externalFeatures.isNotEmpty())
-                    externalFeatures.joinToString("_", "_") { it.name }
-                else ""
-
     val tags: List<ResourceTag>
         get() = genome.tags
 
     val externalFeatures = core.externalFeatures
+
+    val fullName = genome.baseName +
+                if (externalFeatures.isNotEmpty())
+                    externalFeatures.joinToString("_", "_") { it.name }
+                else ""
 
     init {
         computeHash()
@@ -262,8 +261,8 @@ open class Resource(
     private fun expand(tile: Tile): Boolean {
         val tileList = mutableListOf(tile)
 
-        var newTile = randomTileOnBrink(tileList, SpaceData.data.random) { t ->
-            (isAcceptable(t) && genome.dependencies.all { d -> d.hasNeeded(t) })
+        var newTile = randomTileOnBrink(tileList, SpaceData.data.random) {
+            isAcceptable(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
         }
         if (newTile == null) {
             if (genome.dependencies.all { it.hasNeeded(tile) })
@@ -308,4 +307,12 @@ open class Resource(
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
             "lifespan - ${genome.lifespan}, amount - $amount, ownership - $ownershipMarker, tags: " +
             tags.joinToString(" ") { it.name }
+
+    override fun compareTo(other: Resource): Int {
+        val nameCompare = fullName.compareTo(other.fullName)
+
+        return if (nameCompare == 0)
+            ownershipMarker.compareTo(other.ownershipMarker)
+        else nameCompare
+    }
 }
