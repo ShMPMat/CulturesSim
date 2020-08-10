@@ -4,7 +4,7 @@ import simulation.event.Event
 
 
 interface GroupPseudoAction {
-    fun run(): Any
+    fun run(): Any?
 
     val internalToString: String
 }

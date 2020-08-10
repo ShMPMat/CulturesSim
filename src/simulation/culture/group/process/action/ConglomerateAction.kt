@@ -43,8 +43,8 @@ class GroupTransferA(group: Group, private val groupToAdd: Group) : AbstractGrou
 }
 
 
-class NewConglomerateWithNegotiation(group: Group, val groups: List<Group>) : AbstractGroupAction(group) {
-    override fun run() {
+class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAction(group) {
+    override fun run(): GroupConglomerate {
         val conglomerate = GroupConglomerate(0, group.territoryCenter.center)
         group.parentGroup.removeGroup(group)
         conglomerate.addGroup(group)
@@ -54,7 +54,7 @@ class NewConglomerateWithNegotiation(group: Group, val groups: List<Group>) : Ab
 
         Controller.session.world.addGroupConglomerate(conglomerate)
 
-
+        return conglomerate
     }
 
     override val internalToString =
@@ -62,19 +62,17 @@ class NewConglomerateWithNegotiation(group: Group, val groups: List<Group>) : Ab
 }
 
 class TryDivergeA(group: Group) : AbstractGroupAction(group) {
-    override fun run(): Boolean {
+    override fun run(): GroupConglomerate? {
         if (!Controller.session.groupDiverge)
-            return false
+            return null
         if (group.parentGroup.subgroups.size <= 1)
-            return false
+            return null
 
-        if (!checkCoherencyAndDiverge())
-            NewConglomerateWithNegotiation(group, emptyList()).run()
-
-        return true
+        return checkCoherencyAndDiverge()
+                ?: NewConglomerateA(group, emptyList()).run()
     }
 
-    private fun checkCoherencyAndDiverge(): Boolean {
+    private fun checkCoherencyAndDiverge(): GroupConglomerate? {
         val queue: Queue<Group> = ArrayDeque()
         val cluster = mutableSetOf<Group>()
         queue.add(group)
@@ -89,13 +87,11 @@ class TryDivergeA(group: Group) : AbstractGroupAction(group) {
         }
 
         if (group.parentGroup.subgroups.size == cluster.size)
-            return false
+            return null
 
-        cluster.toList().let {
-            NewConglomerateWithNegotiation(it[0], it.drop(1)).run()
+        return cluster.toList().let {
+            NewConglomerateA(it[0], it.drop(1)).run()
         }
-
-        return true
     }
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"

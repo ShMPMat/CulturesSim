@@ -36,11 +36,13 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
     override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"
 }
 
-object TryDivergeB : AbstractGroupBehaviour() {
-    override fun run(group: Group) =
-            if (TryDivergeA(group).run())
-                listOf(Event(Type.Change, "${group.name} diverged to it's own Conglomerate"))
-            else listOf()
+object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
+    override fun run(group: Group): List<Event> {
+        TODO("WAR")
+        return if (TryDivergeA(group).run() != null)
+            listOf(Event(Type.Change, "${group.name} diverged to it's own Conglomerate"))
+        else listOf()
+    }
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"
 }

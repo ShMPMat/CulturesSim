@@ -27,7 +27,7 @@ class ProcessCenter(type: AdministrationType) {
             SplitGroupB.withProbability(session.defaultGroupDiverge) {
                 session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
             },
-            TryDivergeB.withProbability(session.defaultGroupExiting) {
+            TryDivergeWithNegotiationB.withProbability(session.defaultGroupExiting) {
                 it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
                         session.defaultGroupExiting /
                         it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)

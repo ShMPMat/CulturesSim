@@ -6,7 +6,7 @@ import simulation.culture.group.process.action.pseudo.GroupPseudoAction
 interface GroupAction: GroupPseudoAction {
     val group: Group
 
-    override fun run(): Any
+    override fun run(): Any?
 
     override val internalToString: String
 }
