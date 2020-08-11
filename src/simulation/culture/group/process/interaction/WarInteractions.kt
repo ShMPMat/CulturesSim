@@ -1,7 +1,5 @@
 package simulation.culture.group.process.interaction
 
-import shmp.random.testProbability
-import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
@@ -14,7 +12,6 @@ import simulation.event.Type
 class ProbableStrikeWarI(
         initiator: Group,
         participator: Group,
-        val probability: Double,
         val reason: String,
         val firstAction: EventfulGroupPseudoAction = makeDecreaseRelationsWarResult(initiator, participator),
         val secondAction: EventfulGroupPseudoAction = makeDecreaseRelationsWarResult(initiator, participator),
@@ -23,31 +20,22 @@ class ProbableStrikeWarI(
     var warStruck = false
         private set
 
-    override fun run(): List<Event> {
-        if (testProbability(probability, Controller.session.random))
-            return emptyList()
-
+    override fun run(): List<Event> = if (DecideWarDeclarationA(participator, initiator).run()) {
         val decreaseRelationsEvent = ChangeRelationsI(initiator, participator, -1.0).run()
-
-        val conflictEvents =
-                if (DecideWarDeclarationA(participator, initiator).run()) {
-                    initiator.processCenter.addBehaviour(WarB(
-                            participator,
-                            firstAction,
-                            secondAction,
-                            drawAction
-                    ))
-
-                    listOf(Event(
-                            Type.Conflict,
-                            "${initiator.name} started a war with ${participator.name}, because $reason"
-                    ))
-                } else listOf()
+        initiator.processCenter.addBehaviour(WarB(
+                participator,
+                firstAction,
+                secondAction,
+                drawAction
+        ))
 
         warStruck = true
 
-        return decreaseRelationsEvent + conflictEvents
-    }
+        decreaseRelationsEvent + listOf(Event(
+                Type.Conflict,
+                "${initiator.name} started a war with ${participator.name}, because $reason"
+        ))
+    } else listOf()
 }
 
 fun makeDecreaseRelationsWarResult(initiator: Group, participator: Group) = InteractionWrapperPA(

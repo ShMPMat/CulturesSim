@@ -3,10 +3,14 @@ package simulation.culture.group.process.behaviour
 import shmp.random.randomElement
 import simulation.Controller.session
 import simulation.culture.group.Add
+import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.action.GroupTransferA
 import simulation.culture.group.process.action.MakeSplitGroupA
 import simulation.culture.group.process.action.TryDivergeA
+import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.interaction.GroupTransferWithNegotiationI
+import simulation.culture.group.process.interaction.ProbableStrikeWarI
 import simulation.event.Event
 import simulation.event.Type
 import kotlin.math.pow
@@ -38,10 +42,21 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
 
 object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
     override fun run(group: Group): List<Event> {
-        TODO("WAR")
-        return if (TryDivergeA(group).run() != null)
-            listOf(Event(Type.Change, "${group.name} diverged to it's own Conglomerate"))
-        else listOf()
+        val initialConglomerate = group.parentGroup
+        val conglomerate = TryDivergeA(group).run()
+        return if (conglomerate != null) {
+            val initiator = initialConglomerate.subgroups.firstOrNull { it.processCenter.type == AdministrationType.Main }
+                    ?: initialConglomerate.subgroups[0]
+            val opponent = conglomerate.subgroups.firstOrNull { it.processCenter.type == AdministrationType.Main }
+                    ?: conglomerate.subgroups[0]
+            ProbableStrikeWarI(
+                    initiator,
+                    opponent,
+                    "${initiator.name} objects ${opponent.name} leaving the Conglomerate",
+                    ActionSequencePA(conglomerate.subgroups.map { GroupTransferA(initiator, it) })
+            ).run() +
+                    listOf(Event(Type.Change, "${opponent.name} diverged to it's own Conglomerate"))
+        } else listOf()
     }
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"

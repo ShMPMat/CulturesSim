@@ -16,7 +16,6 @@ class GroupTransferWithNegotiationI(
         val strikeWarInteraction = ProbableStrikeWarI(
                 initiator,
                 participator,
-                participator.relationCenter.getNormalizedRelation(initiator).pow(2),
                 "${participator.name} wants to leave the Conglomerate",
                 ActionSequencePA(GroupTransferA(initiator, participator))
         )

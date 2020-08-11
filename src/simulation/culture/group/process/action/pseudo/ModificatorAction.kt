@@ -4,10 +4,10 @@ import simulation.culture.group.process.interaction.GroupInteraction
 import simulation.event.Event
 
 
-class ActionSequencePA(vararg actions: GroupPseudoAction) : EventfulGroupPseudoAction() {
-    private val _actions = actions
+class ActionSequencePA(private val actions: List<GroupPseudoAction>) : EventfulGroupPseudoAction() {
+    constructor(vararg actions: GroupPseudoAction) : this(actions.toList())
 
-    override fun run(): List<Event> = _actions
+    override fun run(): List<Event> = actions
             .map { it.run() }
             .mapNotNull {
                 when (it) {
@@ -18,8 +18,8 @@ class ActionSequencePA(vararg actions: GroupPseudoAction) : EventfulGroupPseudoA
             }.flatten()
 
     override val internalToString = "Following happened: " +
-            if (_actions.isNotEmpty())
-                _actions.joinToString()
+            if (this.actions.isNotEmpty())
+                this.actions.joinToString()
             else "nothing"
 }
 

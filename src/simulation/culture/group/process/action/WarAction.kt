@@ -12,7 +12,7 @@ class DecideWarDeclarationA(group: Group, val opponent: Group): AbstractGroupAct
         val ownForcesEstimation = EstimateForcesA(group, group).run() + 1
         val opponentForcesEstimation = EstimateForcesA(group, opponent).run() + 1
 
-        val relationCoefficient = (1 - relation).pow(10)
+        val relationCoefficient = 1 - relation.pow(5)
         val forcesCoefficient = ownForcesEstimation.pow(0.5) / opponentForcesEstimation.pow(0.5)
 
         return testProbability(relationCoefficient * forcesCoefficient, Controller.session.random)
