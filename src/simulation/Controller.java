@@ -152,6 +152,11 @@ public class Controller {
     public void turn() {
         interactionModel.turn(world);
         world.incrementTurn();
+
+        if (isTime(100)) {
+            world.clearDeadConglomerates();
+        }
+
         System.out.println(
                 "Overall - " + overallTime + " Groups - " + groupTime + " Others - " + othersTime
               + " Groups to others - " + ((double) groupTime) / ((double) othersTime)

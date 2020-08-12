@@ -153,5 +153,9 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
         millionTurns++
     }
 
+    fun clearDeadConglomerates() {
+        groups.removeIf { it.state == GroupConglomerate.State.Dead }
+    }
+
     override fun toString() = getStringTurn()
 }
