@@ -13,16 +13,16 @@ class EventLog(private val isPurging: Boolean = true, private val isOblivious: B
     private val maxEvents = 10000
 
     fun add(event: Event) {
-//        _newEvents.add(event)
-//        if (!isOblivious)
-//            _lastEvents.add(event)
+        _newEvents.add(event)
+        if (!isOblivious)
+            _lastEvents.add(event)
     }
 
     fun addAll(events: List<Event>) {
-//        _newEvents.addAll(events)
-//
-//        if (!isOblivious)
-//            _lastEvents.addAll(events)
+        _newEvents.addAll(events)
+
+        if (!isOblivious)
+            _lastEvents.addAll(events)
     }
 
     fun clearNewEvents() = _newEvents.clear()
