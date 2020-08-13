@@ -4,13 +4,14 @@ import shmp.random.randomElement
 import simulation.Controller
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.ConflictWinner
 import simulation.culture.group.process.action.pseudo.ConflictWinner.*
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.culture.group.process.action.pseudo.decide
+import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.interaction.BattleI
-import simulation.event.Event
 import kotlin.math.sqrt
 
 
@@ -21,15 +22,16 @@ class WarB(
         private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA(),
         val warFinisher: WarFinisher = ProbabilisticWarFinisher()
 ) : PlanBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         if (isFinished)
-            return emptyList()
+            return emptyProcessResult
 
-        val results = BattleI(group, opponent).run()
-        val battleResults = results.map { it.status }
+        val battle = BattleI(group, opponent)
+        val result = battle.run()
+        val battleResult = battle.status
 
-        val warStatusEvents = when (val warStatus = warFinisher.decide(battleResults)) {
-            Continue -> emptyList()
+        val warStatusEvents = when (val warStatus = warFinisher.decide(listOf(battleResult))) {
+            Continue -> emptyProcessResult
             is Finish -> {
                 val winner = warStatus.winner.decide(group.name, opponent.name, "no one")
                 val action = warStatus.winner.decide(initiatorWinAction, participatorWinAction, drawWinAction)
@@ -37,7 +39,7 @@ class WarB(
 
                 isFinished = true
 
-                actionInternalEvents + listOf(ConflictResultEvent(
+                actionInternalEvents + ProcessResult(ConflictResultEvent(
                         "The war between ${group.name} and ${opponent.name} has ended, " +
                                 "the winner is $winner, the result: $action",
                         warStatus.winner
@@ -45,7 +47,7 @@ class WarB(
             }
         }
 
-        return results + warStatusEvents
+        return result + warStatusEvents
     }
 
     override val internalToString = "Carry on war with ${opponent.name}"

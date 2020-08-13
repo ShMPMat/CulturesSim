@@ -5,9 +5,11 @@ import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.event.Event
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.CooperateA
 import simulation.culture.group.process.action.MakeTradeResourcesA
 import simulation.culture.group.process.action.ProduceExactResourceA
+import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.interaction.ChangeRelationsI
 import simulation.culture.group.process.interaction.TradeI
 import simulation.event.Type
@@ -15,11 +17,11 @@ import kotlin.math.pow
 
 
 object RandomTradeB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
         if (groups.isEmpty())
-            return emptyList()
+            return emptyProcessResult
 
         val tradePartner = randomElement(
                 groups,
@@ -34,12 +36,12 @@ object RandomTradeB : AbstractGroupBehaviour() {
 
 
 class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val pack = MakeTradeResourcesA(group, amount).run()
 
         val events = if (pack.isNotEmpty)
-            listOf(Event(Type.Creation, "${group.name} created resources for trade: $pack"))
-        else emptyList()
+            ProcessResult(Event(Type.Creation, "${group.name} created resources for trade: $pack"))
+        else emptyProcessResult
 
         group.populationCenter.turnResources.addAll(pack)
 
@@ -54,10 +56,10 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
     private var successes = 0.0
     private var fails = 0.0
 
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val result = TradeI(group, partner, 1000).run()
 
-        if (result.none { it.type == Type.Cooperation })
+        if (result.events.none { it.type == Type.Cooperation })
             fails++
         else
             successes++
@@ -78,14 +80,14 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
 
 
 object EstablishTradeRelationsB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val groupsToChances = group.relationCenter.relations
                 .map { it.other to it.normalized }
                 .map { (g, p) -> g to p * g.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation }
                 .filter { (_, p) -> p > 0.0 }
 
         if (groupsToChances.isEmpty())
-            return emptyList()
+            return emptyProcessResult
 
         val chosenPartner = randomElement(
                 groupsToChances,
@@ -95,7 +97,7 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
 
         if (!CooperateA(chosenPartner, group, 0.1).run())
             return ChangeRelationsI(group, chosenPartner, -1.0).run() +
-                    listOf(Event(
+                    ProcessResult(Event(
                             Type.Conflict,
                             "${group.name} tried to make a trade agreement with ${chosenPartner.name}, " +
                                     "but got rejected"
@@ -103,7 +105,7 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
 
         group.processCenter.addBehaviour(TradeRelationB(chosenPartner))
 
-        return listOf(Event(
+        return ProcessResult(Event(
                 Type.Cooperation,
                 "${group.name} made a trade agreement with a ${chosenPartner.name}"
         ))

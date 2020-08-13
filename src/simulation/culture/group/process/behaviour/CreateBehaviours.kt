@@ -8,39 +8,40 @@ import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.RoadCreationEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.action.ProduceSimpleResourceA
 import simulation.culture.group.process.action.ReceiveGroupWideResourcesA
+import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.request.resourceToRequest
 import simulation.event.Type
 import simulation.space.Territory
-import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
 
 
 object RandomArtifactB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         if (group.cultureCenter.memePool.isEmpty) {
-            return emptyList()
+            return emptyProcessResult
         }
 
         val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
                 .filter { it.hasMeaning }
         if (resourcesWithMeaning.isEmpty()) {
-            return emptyList()
+            return emptyProcessResult
         }
 
         val chosen = randomElement(resourcesWithMeaning, session.random)
         val result = group.populationCenter.executeRequest(resourceToRequest(chosen, group, 1, 5)).pack
 
-        val events = if (result.isNotEmpty)
-            listOf(Event(Type.Creation, "${group.name} created artifacts: $result"))
-        else emptyList()
+        val processResult = if (result.isNotEmpty)
+            ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result"))
+        else emptyProcessResult
 
         ReceiveGroupWideResourcesA(group, result).run()
 
-        return events
+        return processResult
     }
 
     override val internalToString = "Make a random Resource with some meaning"
@@ -49,16 +50,17 @@ object RandomArtifactB : AbstractGroupBehaviour() {
 class BuildRoadB(private val path: Territory, val projectName: String) : PlanBehaviour() {
     private var built: Int = 0
 
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         if (path.isEmpty)
-            return emptyList()
+            return emptyProcessResult
 
         val roadExample = session.world.resourcePool.getSimpleName("Road")
         val roadResource = ProduceSimpleResourceA(group, roadExample, 1, 50).run()
-                .resources.getOrNull(0) ?: return emptyList()
+                .resources.getOrNull(0)
+                ?: return emptyProcessResult
 
         if (roadResource.isEmpty)
-            return emptyList()
+            return emptyProcessResult
 
         val tile = path.tiles.last()
         val place = StaticPlace(tile, TileTag(projectName + built, projectName))
@@ -73,8 +75,9 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
 
         return if (path.isEmpty) {
             isFinished = true
-            listOf(event, Event(Type.Creation, "${group.name} finished a road creation"))
-        } else listOf(event)
+
+            ProcessResult(event, Event(Type.Creation, "${group.name} finished a road creation"))
+        } else emptyProcessResult
     }
 
     override val internalToString
@@ -87,7 +90,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
     private val roadPlaces = mutableListOf<StaticPlace>()
     private var roadConstruction: BuildRoadB? = null
 
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         if (roadConstruction?.isFinished != false)
             makeNewProject(group)
 
@@ -99,16 +102,16 @@ class ManageRoadsB : AbstractGroupBehaviour() {
             roadPlace.addResources(lackingPack)
         }
 
-        val events = roadConstruction?.run(group)
-                ?: emptyList()
+        val processResult = roadConstruction?.run(group)
+                ?: emptyProcessResult
 
         roadPlaces.addAll(
-                events
+                processResult.events
                         .filterIsInstance<RoadCreationEvent>()
                         .map { it.place }
         )
 
-        return events
+        return processResult
     }
 
     private fun makeNewProject(group: Group) {

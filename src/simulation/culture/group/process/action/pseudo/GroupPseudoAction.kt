@@ -1,6 +1,6 @@
 package simulation.culture.group.process.action.pseudo
 
-import simulation.event.Event
+import simulation.culture.group.process.ProcessResult
 
 
 interface GroupPseudoAction {
@@ -14,7 +14,7 @@ abstract class AbstractGroupPseudoAction : GroupPseudoAction {
 }
 
 abstract class EventfulGroupPseudoAction : GroupPseudoAction {
-    abstract override fun run(): List<Event>
+    abstract override fun run(): ProcessResult
 
     override fun toString() = internalToString
 }

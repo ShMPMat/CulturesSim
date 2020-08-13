@@ -4,6 +4,9 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.event.Event
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
+import simulation.culture.group.process.emptyProcessResult
+import simulation.culture.group.process.flatMapPR
 import kotlin.math.min
 
 class ChanceWrapperB(
@@ -14,7 +17,7 @@ class ChanceWrapperB(
     override fun run(group: Group) =
             if (testProbability(probability, Controller.session.random))
                 behaviour.run(group)
-            else emptyList()
+            else emptyProcessResult
 
     override fun update(group: Group): ChanceWrapperB? {
         return ChanceWrapperB(
@@ -42,9 +45,9 @@ class TimesWrapperB(
         private val minUpdate: (Group) -> Int = { min },
         private val maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
 ) : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val times = Controller.session.random.nextInt(min, max)
-        return (0 until times).flatMap { behaviour.run(group) }
+        return (0 until times).flatMapPR { behaviour.run(group) }
     }
 
     override fun update(group: Group): TimesWrapperB? {

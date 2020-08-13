@@ -1,10 +1,10 @@
 package simulation.culture.group.process.behaviour
 
-import simulation.event.Event
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 
 interface GroupBehaviour {
-    fun run(group: Group): List<Event>
+    fun run(group: Group): ProcessResult
 
     fun update(group: Group): GroupBehaviour? = this
 

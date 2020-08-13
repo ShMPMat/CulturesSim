@@ -5,10 +5,12 @@ import simulation.Controller.session
 import simulation.culture.group.Add
 import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.GroupTransferA
 import simulation.culture.group.process.action.MakeSplitGroupA
 import simulation.culture.group.process.action.TryDivergeA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
+import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.interaction.GroupTransferWithNegotiationI
 import simulation.culture.group.process.interaction.ProbableStrikeWarI
 import simulation.event.Event
@@ -18,7 +20,7 @@ import kotlin.math.sqrt
 
 
 object RandomGroupSeizureB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val groupValueMapper = { g: Group ->
             val relation = group.relationCenter.getNormalizedRelation(g).pow(3)
             val territoryValue = group.territoryCenter.territoryPotentialMapper(g.territoryCenter.territory).toDouble()
@@ -34,14 +36,14 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
             val target = randomElement(options, { (_, n) -> n }, session.random).first
             return GroupTransferWithNegotiationI(group, target).run()
         }
-        return emptyList()
+        return emptyProcessResult
     }
 
     override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"
 }
 
 object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         val initialConglomerate = group.parentGroup
         val conglomerate = TryDivergeA(group).run()
         return if (conglomerate != null) {
@@ -49,36 +51,37 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
                     ?: initialConglomerate.subgroups[0]
             val opponent = conglomerate.subgroups.firstOrNull { it.processCenter.type == AdministrationType.Main }
                     ?: conglomerate.subgroups[0]
+
             ProbableStrikeWarI(
                     initiator,
                     opponent,
                     "${initiator.name} objects ${opponent.name} leaving the Conglomerate",
                     ActionSequencePA(conglomerate.subgroups.map { GroupTransferA(initiator, it) })
             ).run() +
-                    listOf(Event(Type.Change, "${opponent.name} diverged to it's own Conglomerate"))
-        } else listOf()
+                    ProcessResult(Event(Type.Change, "${opponent.name} diverged to it's own Conglomerate"))
+        } else emptyProcessResult
     }
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"
 }
 
 object SplitGroupB : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         if (!session.groupMultiplication)
-            return emptyList()
+            return emptyProcessResult
 
         val tiles = group.overallTerritory.getOuterBrink {
             group.territoryCenter.canSettleAndNoGroup(it) && group.parentGroup.getClosestInnerGroupDistance(it) > 2
         }
         if (tiles.isEmpty())
-            return emptyList()
+            return emptyProcessResult
 
         val tile = tiles.sortedBy { group.territoryCenter.tilePotentialMapper(it) }[0]
         val newGroup = MakeSplitGroupA(group, tile).run()
 
         Add(newGroup).execute(group.parentGroup)
 
-        return listOf(Event(Type.Creation, "${group.name} made a new group ${newGroup.name}"))
+        return ProcessResult(Event(Type.Creation, "${group.name} made a new group ${newGroup.name}"))
     }
 
     override val internalToString = "Try to split Group in two"

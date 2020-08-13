@@ -2,7 +2,9 @@ package simulation.culture.group.process.interaction
 
 import simulation.event.Event
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.*
+import simulation.culture.group.process.emptyProcessResult
 import simulation.event.Type
 import simulation.space.resource.container.ResourcePack
 
@@ -12,7 +14,7 @@ class TradeI(
         participator: Group,
         val amount: Int
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
+    override fun run(): ProcessResult {
         val wantedResources = ChooseResourcesA(
                 initiator,
                 RequestStockA(participator).run(),
@@ -20,7 +22,7 @@ class TradeI(
         ).run()
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
         if (priceForP == 0)
-            return emptyList()
+            return emptyProcessResult
 
         val priceInResources = ChooseResourcesA(
                 participator,
@@ -31,17 +33,17 @@ class TradeI(
         val priceForI = TradeEvaluateResourcesA(participator, priceInResources.makeCopy()).run()
 
         if (priceForP > priceForI)
-            return emptyList()
+            return emptyProcessResult
 
         val got = wantedResources.extract()
         val given = priceInResources.extract()
-        val events = mutableListOf(Event(
+        var result = ProcessResult(Event(
                 Type.Cooperation,
                 "${initiator.name} and ${participator.name} " +
                         "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
         ))
 
-        events.addAll(SwapResourcesI(initiator, participator, got, given).run())
+        result += SwapResourcesI(initiator, participator, got, given).run()
 
         ChangeRelationsI(initiator, participator, 0.5).run()
         IncStratumImportanceA(
@@ -50,7 +52,7 @@ class TradeI(
                 1
         ).run()
 
-        return events
+        return result
     }
 }
 
@@ -61,7 +63,7 @@ class SwapResourcesI(
         private val gotPack: ResourcePack,
         private val givePack: ResourcePack
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
+    override fun run(): ProcessResult {
         ScheduleActionA(
                 participator,
                 ReceivePopulationResourcesA(initiator, gotPack),
@@ -73,7 +75,7 @@ class SwapResourcesI(
                 ComputeTravelTime(initiator, participator).run()
         ).run()
 
-        return listOf(Event(
+        return ProcessResult(Event(
                 Type.GroupInteraction,
                 "${initiator.name} and ${participator.name} begun swapping of $gotPack and $givePack"
         ))

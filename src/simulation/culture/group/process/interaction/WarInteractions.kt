@@ -1,10 +1,12 @@
 package simulation.culture.group.process.interaction
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.culture.group.process.action.pseudo.InteractionWrapperPA
 import simulation.culture.group.process.behaviour.WarB
+import simulation.culture.group.process.emptyProcessResult
 import simulation.event.Event
 import simulation.event.Type
 
@@ -20,7 +22,7 @@ class ProbableStrikeWarI(
     var warStruck = false
         private set
 
-    override fun run(): List<Event> = if (DecideWarDeclarationA(participator, initiator).run()) {
+    override fun run(): ProcessResult = if (DecideWarDeclarationA(participator, initiator).run()) {
         val decreaseRelationsEvent = ChangeRelationsI(initiator, participator, -1.0).run()
         initiator.processCenter.addBehaviour(WarB(
                 participator,
@@ -31,11 +33,11 @@ class ProbableStrikeWarI(
 
         warStruck = true
 
-        decreaseRelationsEvent + listOf(Event(
+        decreaseRelationsEvent + ProcessResult(Event(
                 Type.Conflict,
                 "${initiator.name} started a war with ${participator.name}, because $reason"
         ))
-    } else listOf()
+    } else emptyProcessResult
 }
 
 fun makeDecreaseRelationsWarResult(initiator: Group, participator: Group) = InteractionWrapperPA(

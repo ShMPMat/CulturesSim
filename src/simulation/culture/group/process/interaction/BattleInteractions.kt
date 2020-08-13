@@ -2,6 +2,7 @@ package simulation.culture.group.process.interaction
 
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
 import simulation.culture.group.process.action.pseudo.*
@@ -10,22 +11,25 @@ import simulation.event.Type
 
 
 class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<ConflictResultEvent> {
+    var status = ConflictWinner.Draw
+        private set
+
+    override fun run(): ProcessResult {
         val tile = DecideBattleTileA(initiator, participator).run().posStr
         val iniEvaluation = evaluateForces(participator)
         val partEvaluation = evaluateForces(initiator)
         val iniWarriors = GatherWarriorsA(initiator, iniEvaluation).run()
         val partWarriors = GatherWarriorsA(participator, partEvaluation).run()
 
-        val result = BattlePA(iniWarriors, partWarriors).run()
+        status = BattlePA(iniWarriors, partWarriors).run()
 
-        val description = when (result) {
+        val description = when (status) {
             ConflictWinner.First -> "${initiator.name} won a battle with ${participator.name} on $tile"
             ConflictWinner.Second -> "${participator.name} won a battle with ${initiator.name} on $tile"
             ConflictWinner.Draw -> "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
         }
 
-        return listOf(ConflictResultEvent(description, result))
+        return ProcessResult(ConflictResultEvent(description, status))
     }
 
     private fun evaluateForces(group: Group) =
@@ -39,15 +43,16 @@ class ActionBattleI(
         private val participatorWinAction: EventfulGroupPseudoAction,
         private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA()
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
-        val resultEvents = BattleI(initiator, participator).run()
-        val action = resultEvents[0].status.decide(initiatorWinAction, participatorWinAction, drawWinAction)
+    override fun run(): ProcessResult {
+        val battle = BattleI(initiator, participator)
+        val resultEvents = battle.run()
+        val action = battle.status.decide(initiatorWinAction, participatorWinAction, drawWinAction)
         val actionInternalEvents = action.run()
 
         val actionEvent = Event(
                 Type.Change,
                 "In the result of battle between ${initiator.name} and ${participator.name}: $action"
         )
-        return resultEvents + actionInternalEvents + listOf(actionEvent)
+        return resultEvents + actionInternalEvents + ProcessResult(actionEvent)
     }
 }

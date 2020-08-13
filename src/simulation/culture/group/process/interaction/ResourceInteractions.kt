@@ -4,7 +4,9 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.HelpEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.*
+import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.request.Request
 import simulation.event.Event
 import simulation.event.Type
@@ -18,9 +20,9 @@ class RequestHelpI(
         participator: Group,
         val request: Request
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
+    override fun run(): ProcessResult {
         if (!CooperateA(participator, initiator, 0.5).run())
-            return emptyList()
+            return emptyProcessResult
 
         val given = ExecuteRequestA(participator, request.reassign(participator)).run()
         val delivery = ScheduleActionA(
@@ -33,12 +35,12 @@ class RequestHelpI(
             delivery.run()
             ChangeRelationsA(initiator, participator, request.evaluator.evaluate(given) / request.ceiling).run()
 
-            listOf(HelpEvent(
+            ProcessResult(HelpEvent(
                     "${initiator.name} got help in $request from ${participator.name}: " +
                             "${given.listResources}, with delay ${delivery.delay}",
                     request.evaluator.evaluate(given)
             ))
-        } else emptyList()
+        } else emptyProcessResult
     }
 }
 
@@ -47,7 +49,7 @@ class GiveGiftI(
         initiator: Group,
         participator: Group
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
+    override fun run(): ProcessResult {
         val relation = initiator.relationCenter.getNormalizedRelation(participator)
 
         val gift = ChooseResourcesA(
@@ -65,7 +67,7 @@ class ReceiveGiftI(
         participator: Group,
         val gift: ResourcePromisePack
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): List<Event> {
+    override fun run(): ProcessResult {
         val giftCopy = gift.makeCopy()
         val giftStr = giftCopy.listResources
         val worth = EvaluateResourcesA(participator, giftCopy).run() + 0.8
@@ -74,13 +76,13 @@ class ReceiveGiftI(
         return if (testProbability(acceptanceChance, Controller.session.random)) {
             ReceiveGroupWideResourcesA(participator, gift.extract()).run()
 
-            listOf(Event(
+            ProcessResult(Event(
                     Type.Cooperation,
                     "${participator.name} accepted a gift of $giftStr from ${initiator.name}"
             )) +
-                    ChangeRelationsI(initiator, participator, -2.0).run()
+                    ChangeRelationsI(initiator, participator, 2.0).run()
         } else
-            listOf(Event(
+            ProcessResult(Event(
                     Type.Conflict,
                     "${participator.name} rejected a gift of $giftStr from ${initiator.name}"
             )) +

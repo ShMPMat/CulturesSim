@@ -77,7 +77,7 @@ class ProcessCenter(type: AdministrationType) {
 
     private fun runBehaviours(group: Group) {
         behaviours.forEach {
-            group.addEvents(it.run(group))
+            group.addEvents(it.run(group).events)
         }
 
         while (addedBehaviours.isNotEmpty()) {
@@ -85,7 +85,7 @@ class ProcessCenter(type: AdministrationType) {
             addedBehaviours.clear()
 
             newBehaviours.forEach {
-                group.addEvents(it.run(group))
+                group.addEvents(it.run(group).events)
             }
 
             behaviours.addAll(newBehaviours)

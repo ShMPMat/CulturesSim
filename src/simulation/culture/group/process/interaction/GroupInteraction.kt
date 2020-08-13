@@ -1,13 +1,13 @@
 package simulation.culture.group.process.interaction
 
-import simulation.event.Event
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
 
 interface GroupInteraction {
     val initiator: Group
     val participator: Group
 
-    fun run(): List<Event>
+    fun run(): ProcessResult
 }
 
 abstract class AbstractGroupInteraction(

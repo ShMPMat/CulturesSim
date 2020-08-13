@@ -4,19 +4,21 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.HelpEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.process.ProcessResult
+import simulation.culture.group.process.emptyProcessResult
+import simulation.culture.group.process.flatMapPR
 import simulation.culture.group.process.interaction.RequestHelpI
 import simulation.culture.group.request.Request
-import simulation.event.Event
 import simulation.space.resource.container.MutableResourcePack
 import kotlin.math.pow
 
 
 class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : AbstractGroupBehaviour() {
-    override fun run(group: Group): List<Event> {
+    override fun run(group: Group): ProcessResult {
         if (request.ceiling <= 0)
-            return emptyList()
+            return emptyProcessResult
 
-        val events = mutableListOf<Event>()
+        var processResult = emptyProcessResult
 
         val amount = request.ceiling
         var amountLeft = amount
@@ -25,19 +27,20 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
                 break
 
             val reducedRequest = request.reducedAmountCopy(amountLeft)
-            val newEvents = RequestHelpI(relation.owner, relation.other, reducedRequest).run()
+            val newProcessResult = RequestHelpI(relation.owner, relation.other, reducedRequest).run()
 
-            amountLeft = amount - newEvents
-                    .filterIsInstance<HelpEvent>()
-                    .map { it.helpValue }
-                    .foldRight(0.0, Double::plus)
+            amountLeft = amount -
+                    newProcessResult.events
+                            .filterIsInstance<HelpEvent>()
+                            .map { it.helpValue }
+                            .foldRight(0.0, Double::plus)
 
-            events.addAll(newEvents)
+            processResult += newProcessResult
             if (amountLeft <= 0)
                 break
         }
 
-        return events
+        return processResult
     }
 
     override val internalToString = "Ask help from all neighbours with $request if needed"
@@ -45,7 +48,7 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
 
 object TurnRequestsHelpB : AbstractGroupBehaviour() {
     override fun run(group: Group) = group.cultureCenter.requestCenter.turnRequests.requests
-            .flatMap { (request, pack) ->
+            .flatMapPR { (request, pack) ->
                 RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack)), pack).run(group)
             }
 
