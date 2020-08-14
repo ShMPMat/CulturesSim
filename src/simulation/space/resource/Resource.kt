@@ -4,7 +4,6 @@ import shmp.random.randomTileOnBrink
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.event.Event
-import simulation.SimulationError
 import simulation.space.SpaceData
 import simulation.space.resource.action.ResourceAction
 import simulation.space.resource.action.ResourceProbabilityAction
@@ -22,9 +21,8 @@ open class Resource(
 ): Comparable<Resource> {
     open var amount = amount
         set(value) {
-            if (value < 0) {
-                val k = 0
-            }
+            if (value < 0)
+                field = Int.MAX_VALUE
             field = value
         }
 
