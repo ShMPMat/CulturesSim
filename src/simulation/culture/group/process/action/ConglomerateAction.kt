@@ -100,7 +100,6 @@ class TryDivergeA(group: Group) : AbstractGroupAction(group) {
 
 class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroupAction(group) {
     override fun run(): Group {
-
         val aspects = group.cultureCenter.aspectCenter.aspectPool.all
                 .map { it.copy(it.dependencies) }
 

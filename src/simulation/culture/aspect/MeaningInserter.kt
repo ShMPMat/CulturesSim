@@ -47,10 +47,13 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
         val unwantedTags: MutableCollection<ResourceTag> = ArrayList()
 
         for (resourceTag in dependencies.map.keys)
-            if (!(resourceTag.isInstrumental || resourceTag.name == "phony"))
+            if (!(resourceTag.isInstrumental || resourceTag.name == "phony"))//TODO why?
                 unwantedTags.add(resourceTag)
 
-        unwantedTags.forEach { dependencies.map.remove(it) }
+        if (unwantedTags.isNotEmpty()) {
+            val k = 0
+        }
+//        unwantedTags.forEach { copy.dependencies.map.remove(it) }
         return copy
     }
 }
