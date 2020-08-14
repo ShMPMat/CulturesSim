@@ -84,3 +84,8 @@
         +Killing:Meat:1:s|0.01,SeaShell:1
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000
+
+-Starfish        0.07    0.08   20          0     30   200        0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,<=0.05;1;1.25;0;CONSUME
+        +Killing:Meat:1:s|0.02
+        #Normal:Mountain:Ice:Woods:Growth
