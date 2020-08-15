@@ -50,9 +50,6 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
             if (!(resourceTag.isInstrumental || resourceTag.name == "phony"))//TODO why?
                 unwantedTags.add(resourceTag)
 
-        if (unwantedTags.isNotEmpty()) {
-            val k = 0
-        }
 //        unwantedTags.forEach { copy.dependencies.map.remove(it) }
         return copy
     }

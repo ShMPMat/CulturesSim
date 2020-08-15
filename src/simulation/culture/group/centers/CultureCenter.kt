@@ -2,7 +2,6 @@ package simulation.culture.group.centers
 
 import shmp.random.randomElement
 import simulation.Controller.session
-import simulation.event.Event
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.GROUP_TAG_TYPE
@@ -12,18 +11,20 @@ import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.MemePredicate
 import simulation.culture.thinking.meaning.MemeSubject
+import simulation.event.Event
 import simulation.event.EventLog
 import simulation.event.Type
 import simulation.space.Territory
 import simulation.space.resource.Resource
-import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import kotlin.math.log
+
 
 class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects: List<Aspect>) {
     val aspectCenter: AspectCenter = AspectCenter(group, aspects)
     val cultureAspectCenter: CultureAspectCenter = CultureAspectCenter(group)
     val requestCenter = RequestCenter()
+    val traitCenter = TraitCenter()
 
     val events = EventLog()
 
@@ -135,8 +136,7 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
         val isCherished = cultureAspectCenter.aspectPool.cherishedResources.any { it.resource == resource }
         val cultureValue = if (isCherished)
             3
-        else
-            0
+        else 0
 
         return (base + 1) * (cultureValue + 1)
     }
@@ -147,9 +147,8 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
                 .filter { it.other.parentGroup != group.parentGroup }
 
         return when {
-            !resource.genome.isDesirable -> {
+            !resource.genome.isDesirable ->
                 return 1
-            }
             !isResourceDesirable(resource) -> 1
             aspectCenter.aspectPool.producedResources.contains(resource) -> 2
             conglomerate.any { it.resourceCenter.pack.contains(resource) } -> 3

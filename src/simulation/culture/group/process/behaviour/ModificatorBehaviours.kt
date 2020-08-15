@@ -2,8 +2,9 @@ package simulation.culture.group.process.behaviour
 
 import shmp.random.testProbability
 import simulation.Controller
-import simulation.event.Event
+import simulation.Controller.*
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.TraitCenter
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.flatMapPR
@@ -15,7 +16,7 @@ class ChanceWrapperB(
         private val probabilityUpdate: (Group) -> Double = { probability }
 ) : AbstractGroupBehaviour() {
     override fun run(group: Group) =
-            if (testProbability(probability, Controller.session.random))
+            if (testProbability(probability, session.random))
                 behaviour.run(group)
             else emptyProcessResult
 
@@ -38,6 +39,24 @@ fun GroupBehaviour.withProbability(probability: Double, probabilityUpdate: (Grou
         ChanceWrapperB(this, probability, probabilityUpdate)
 
 
+class TraitChanceWrapperB(
+        val behaviour: GroupBehaviour,
+        val traitExtractor: (TraitCenter) -> Double,
+        val description: String
+): AbstractGroupBehaviour() {
+    override fun run(group: Group) =
+            if (testProbability(traitExtractor(group.cultureCenter.traitCenter), session.random))
+                behaviour.run(group)
+            else emptyProcessResult
+
+    override val internalToString: String
+        get() = """
+            |Depending on $description, do:
+            |    $behaviour
+            """.trimMargin()
+}
+
+
 class TimesWrapperB(
         val behaviour: GroupBehaviour,
         val min: Int,
@@ -46,7 +65,7 @@ class TimesWrapperB(
         private val maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
 ) : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
-        val times = Controller.session.random.nextInt(min, max)
+        val times = session.random.nextInt(min, max)
         return (0 until times).flatMapPR { behaviour.run(group) }
     }
 
