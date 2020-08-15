@@ -22,6 +22,12 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
     fun normalValue(trait: Trait) = (value(trait) + 1) / 2
 
+    fun change(traitChange: TraitChange) {
+        val (trait, delta) = traitChange
+
+        traitMap.getValue(trait).value += delta
+    }
+
     fun copy() = TraitCenter(traitMap)
 }
 
@@ -40,3 +46,5 @@ class TraitValue(value: Double = 0.0) {
             if (value < -1.0) field = -1.0
         }
 }
+
+data class TraitChange(val trait: Trait, val delta: Double)
