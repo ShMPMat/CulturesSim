@@ -1,11 +1,10 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.testProbability
-import simulation.Controller
-import simulation.Controller.*
+import simulation.Controller.session
 import simulation.culture.group.centers.Group
-import simulation.culture.group.centers.TraitCenter
 import simulation.culture.group.process.ProcessResult
+import simulation.culture.group.process.action.TraitExtractor
 import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.flatMapPR
 import kotlin.math.min
@@ -41,17 +40,16 @@ fun GroupBehaviour.withProbability(probability: Double, probabilityUpdate: (Grou
 
 class TraitChanceWrapperB(
         val behaviour: GroupBehaviour,
-        val traitExtractor: (TraitCenter) -> Double,
-        val description: String
+        val traitExtractor: TraitExtractor
 ): AbstractGroupBehaviour() {
     override fun run(group: Group) =
-            if (testProbability(traitExtractor(group.cultureCenter.traitCenter), session.random))
+            if (testProbability(traitExtractor.extract(group.cultureCenter.traitCenter), session.random))
                 behaviour.run(group)
             else emptyProcessResult
 
     override val internalToString: String
         get() = """
-            |Depending on $description, do:
+            |Depending on $traitExtractor, do:
             |    $behaviour
             """.trimMargin()
 }

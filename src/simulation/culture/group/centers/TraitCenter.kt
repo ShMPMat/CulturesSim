@@ -1,7 +1,6 @@
 package simulation.culture.group.centers
 
 import java.util.*
-import kotlin.math.pow
 
 
 class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
@@ -33,28 +32,9 @@ enum class Trait {
 
 class TraitValue(value: Double = 0.0) {
     var value = value
-    set(value) {
-        field = value
-        if (value > 1.0) field = 1.0
-        if (value < -1.0) field = -1.0
-    }
+        set(value) {
+            field = value
+            if (value > 1.0) field = 1.0
+            if (value < -1.0) field = -1.0
+        }
 }
-
-
-interface TraitExtractor {
-    fun extract(center: TraitCenter): Double
-}
-
-class GetTrait(private val trait: Trait): TraitExtractor {
-    override fun extract(center: TraitCenter) = center.value(trait)
-}
-
-class WrapperExtractor(val action: (TraitCenter) -> Double): TraitExtractor {
-    override fun extract(center: TraitCenter) = action(center)
-}
-
-operator fun TraitExtractor.times(other: TraitExtractor) = WrapperExtractor {center ->
-    extract(center) * other.extract(center)
-}
-
-fun TraitExtractor.pow(t: Double) = WrapperExtractor { center -> extract(center).pow(t) }
