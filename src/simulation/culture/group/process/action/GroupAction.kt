@@ -3,6 +3,7 @@ package simulation.culture.group.process.action
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.action.pseudo.GroupPseudoAction
 
+
 interface GroupAction: GroupPseudoAction {
     val group: Group
 

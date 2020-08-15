@@ -4,7 +4,7 @@ import shmp.random.testProbability
 import simulation.Controller.session
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.ProcessResult
-import simulation.culture.group.process.action.TraitExtractor
+import simulation.culture.group.process.TraitExtractor
 import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.flatMapPR
 import kotlin.math.min
