@@ -248,7 +248,7 @@ public class TextVisualizer implements Visualizer {
 
     private void printGroup(Group group) {
         printMap(t -> TileMapperFunctionsKt.groupMapper(group, t));
-        PrintFunctionsKt.printGroup(group);
+        System.out.println(PrintFunctionsKt.printGroup(group));
     }
 
     private void printResource(Resource resource) {
@@ -315,7 +315,7 @@ public class TextVisualizer implements Visualizer {
                             } else if (group.isPresent()) {
                                 printGroup(group.get());
                             } else {
-                                System.out.println("No such Group exist");
+                                System.out.println("No such Group or Conglomerate exist");
                             }
                             break;
                         }

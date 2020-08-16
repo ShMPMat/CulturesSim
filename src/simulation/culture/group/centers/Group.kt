@@ -166,7 +166,7 @@ class Group(
     override fun hashCode() = Objects.hash(name)
 
     override fun toString() = chompToSize("""
-        |Group $name is $state, population = ${populationCenter.population}
+        |Group $name is $state, population = ${populationCenter.population}, parent - ${parentGroup.name}
         |
         |$cultureCenter
         |

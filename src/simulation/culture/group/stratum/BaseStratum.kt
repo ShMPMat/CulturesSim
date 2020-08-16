@@ -54,5 +54,9 @@ abstract class BaseStratum(tile: Tile, final override val name: String) : Stratu
 
     fun addPlace(place: StaticPlace) = innerPlaces.add(place)
 
-    override fun toString() = "\nEgo resources: ${ego.place.current.owned}"
+    override fun toString() = """
+        |
+        |Ego resources:
+        |${ego.place.current.owned}
+    """.trimMargin()
 }
