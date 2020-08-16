@@ -9,7 +9,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.passingReward
 import simulation.culture.group.request.*
 import simulation.culture.thinking.meaning.Meme
-import simulation.culture.thinking.meaning.constructMeme
+import simulation.culture.thinking.meaning.makeMeme
 import simulation.space.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.tag.ResourceTag
@@ -124,8 +124,8 @@ class AspectStratum(
         val result = aspect.use(controller)
 
         if (result.resources.isNotEmpty) {
-            popularMemes.add(constructMeme(aspect))
-            result.resources.resources.forEach { popularMemes.add(constructMeme(it)) }
+            popularMemes.add(makeMeme(aspect))
+            result.resources.resources.forEach { popularMemes.add(makeMeme(it)) }
         }
         if (result.isFinished)
             resourcePack.addAll(result.resources)

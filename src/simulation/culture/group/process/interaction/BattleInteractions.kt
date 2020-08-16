@@ -6,6 +6,8 @@ import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
 import simulation.culture.group.process.action.pseudo.*
+import simulation.culture.thinking.meaning.flattenMemePair
+import simulation.culture.thinking.meaning.makeStratumMemes
 import simulation.event.Event
 import simulation.event.Type
 
@@ -14,7 +16,7 @@ class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(i
     var status = ConflictWinner.Draw
         private set
 
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         val tile = DecideBattleTileA(initiator, participator).run().posStr
         val iniEvaluation = evaluateForces(participator)
         val partEvaluation = evaluateForces(initiator)
@@ -29,7 +31,10 @@ class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(i
             ConflictWinner.Draw -> "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
         }
 
-        return ProcessResult(ConflictResultEvent(description, status))
+        val warriorMemes = iniWarriors
+                .map { makeStratumMemes(it.stratum) }
+                .flatten()
+        return ProcessResult(ConflictResultEvent(description, status)) + ProcessResult(warriorMemes)
     }
 
     private fun evaluateForces(group: Group) =
@@ -43,7 +48,7 @@ class ActionBattleI(
         private val participatorWinAction: EventfulGroupPseudoAction,
         private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA()
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         val battle = BattleI(initiator, participator)
         val resultEvents = battle.run()
         val action = battle.status.decide(initiatorWinAction, participatorWinAction, drawWinAction)
@@ -53,6 +58,7 @@ class ActionBattleI(
                 Type.Change,
                 "In the result of battle between ${initiator.name} and ${participator.name}: $action"
         )
-        return resultEvents + actionInternalEvents + ProcessResult(actionEvent)
+        return resultEvents + actionInternalEvents +
+                ProcessResult(actionEvent)
     }
 }

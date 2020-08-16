@@ -3,7 +3,10 @@ package simulation.culture.thinking.meaning
 import shmp.random.testProbability
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.ConverseWrapper
+import simulation.culture.group.centers.Group
+import simulation.culture.group.stratum.Stratum
 import simulation.space.resource.Resource
+import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.dependency.ConsumeDependency
 import kotlin.random.Random
 
@@ -29,43 +32,65 @@ fun constructAndAddSimpleMeme(
     return meme
 }
 
-fun constructMeme(resource: Resource) = MemeSubject(resource.fullName)
 
-fun constructMeme(aspect: Aspect) = MemePredicate(aspect.name)
+fun makeMeme(stratum: Stratum) = MemeSubject(stratum.name)
 
-fun constructAspectMemes(aspect: Aspect): Pair<MutableList<Meme>, List<Meme>> {
-    val aspectMemes = Pair<MutableList<Meme>, MutableList<Meme>>(ArrayList(), ArrayList())
-    aspectMemes.first.add(constructMeme(aspect))
+fun makeMeme(group: Group) = MemeSubject(group.name)
+
+fun makeMeme(resource: Resource) = MemeSubject(resource.fullName)
+
+fun makeMeme(aspect: Aspect) = MemePredicate(aspect.name)
+
+
+fun makeResourcePackMemes(pack: ResourcePack) = pack.resources
+        .map { makeResourceMemes(it).flattenMemePair() }
+        .flatten()
+
+fun makeStratumMemes(stratum: Stratum): List<Meme> =
+    stratum.places.flatMap { makeResourcePackMemes(it.owned) } + listOf(makeMeme(stratum))
+
+
+fun makeAspectMemes(aspect: Aspect): Pair<MutableList<Meme>, List<Meme>> {
+    val memes = mutableListOf<Meme>() to mutableListOf<Meme>()
+
+    memes.first.add(makeMeme(aspect))
+
     if (aspect is ConverseWrapper) {
-        val (first, second) = constructResourceMemes(aspect.resource)
-        aspectMemes.first.addAll(first)
-        aspectMemes.second.addAll(second)
+        val (first, second) = makeResourceMemes(aspect.resource)
+        memes.first.addAll(first)
+        memes.second.addAll(second)
         aspect.producedResources
-                .map { constructResourceMemes(it) }
+                .map { makeResourceMemes(it) }
                 .forEach { (first1, second1) ->
-                    aspectMemes.first.addAll(first1)
-                    aspectMemes.second.addAll(second1)
+                    memes.first.addAll(first1)
+                    memes.second.addAll(second1)
                 }
     }
-    return aspectMemes
+
+    return memes
 }
 
-fun constructResourceMemes(resource: Resource): Pair<List<Meme>, List<Meme>> {
-    val resourceMemes: Pair<MutableList<Meme>, List<Meme>> = constructResourceInfoMemes(resource)
-    resourceMemes.first.add(constructMeme(resource))
-    return resourceMemes
+fun makeResourceMemes(resource: Resource): Pair<List<Meme>, List<Meme>> {
+    val memes = makeResourceInfoMemes(resource)
+
+    memes.first.add(makeMeme(resource))
+
+    return memes
 }
 
-fun constructResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, MutableList<Meme>> {
-    val infoMemes = Pair<MutableList<Meme>, MutableList<Meme>>(ArrayList(), ArrayList())
+private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, MutableList<Meme>> {
+    val memes = mutableListOf<Meme>() to mutableListOf<Meme>()
+
     for (resourceDependency in resource.genome.dependencies)
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed) {
                 val subject: Meme = MemeSubject(res.toLowerCase())
-                infoMemes.first.add(subject)
-                val element = constructMeme(resource).addPredicate(MemePredicate("consume"))
+                memes.first.add(subject)
+                val element = makeMeme(resource).addPredicate(MemePredicate("consume"))
                 element.predicates[0].addPredicate(subject)
-                infoMemes.second.add(element)
+                memes.second.add(element)
             }
-    return infoMemes
+    return memes
 }
+
+fun Pair<List<Meme>, List<Meme>>.flattenMemePair() = first + second

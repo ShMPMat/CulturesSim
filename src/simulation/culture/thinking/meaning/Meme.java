@@ -1,9 +1,5 @@
 package simulation.culture.thinking.meaning;
 
-import simulation.Controller;
-import simulation.culture.aspect.Aspect;
-import simulation.space.resource.Resource;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;

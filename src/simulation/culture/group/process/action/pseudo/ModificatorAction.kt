@@ -15,7 +15,7 @@ class ActionSequencePA(private val actions: List<GroupPseudoAction>) : EventfulG
             .mapNotNull {
                 when (it) {
                     is Event -> ProcessResult(it)
-                    is List<*> -> ProcessResult(it.filterIsInstance<Event>())
+                    is List<*> -> ProcessResult(events = it.filterIsInstance<Event>())
                     else -> null
                 }
             }.flattenPR()

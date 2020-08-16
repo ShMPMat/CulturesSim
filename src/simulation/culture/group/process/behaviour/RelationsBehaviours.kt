@@ -13,7 +13,7 @@ import simulation.space.resource.container.MutableResourcePack
 import kotlin.math.pow
 
 
-class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : AbstractGroupBehaviour() {
+class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         if (request.ceiling <= 0)
             return emptyProcessResult
@@ -49,7 +49,7 @@ class RequestHelpB(val request: Request, val targetPack: MutableResourcePack) : 
 object TurnRequestsHelpB : AbstractGroupBehaviour() {
     override fun run(group: Group) = group.cultureCenter.requestCenter.turnRequests.requests
             .flatMapPR { (request, pack) ->
-                RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack)), pack).run(group)
+                RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack))).run(group)
             }
 
     override val internalToString = "Ask help from all neighbours with all base request if needed"

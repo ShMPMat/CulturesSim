@@ -82,11 +82,11 @@ public class GroupMemes extends MemePool {
     }
 
     public void addAspectMemes(Aspect aspect) {
-        addPairMemes(ConstructMemeKt.constructAspectMemes(aspect));
+        addPairMemes(ConstructMemeKt.makeAspectMemes(aspect));
     }
 
     public void addResourceMemes(Resource resource) {
-        addPairMemes(ConstructMemeKt.constructResourceMemes(resource));
+        addPairMemes(ConstructMemeKt.makeResourceMemes(resource));
     }
 
     public void addPairMemes(Pair<List<Meme>, List<Meme>> memes) {

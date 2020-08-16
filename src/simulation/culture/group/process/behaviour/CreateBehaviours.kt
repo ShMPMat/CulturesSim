@@ -13,7 +13,9 @@ import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.action.ProduceSimpleResourceA
 import simulation.culture.group.process.action.ReceiveGroupWideResourcesA
 import simulation.culture.group.process.emptyProcessResult
-import simulation.culture.group.request.resourceToRequest
+import simulation.culture.thinking.meaning.flattenMemePair
+import simulation.culture.thinking.meaning.makeResourceMemes
+import simulation.culture.thinking.meaning.makeResourcePackMemes
 import simulation.event.Type
 import simulation.space.Territory
 import simulation.space.tile.TileTag
@@ -22,21 +24,21 @@ import simulation.space.tile.getDistance
 
 object RandomArtifactB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
-        if (group.cultureCenter.memePool.isEmpty) {
+        if (group.cultureCenter.memePool.isEmpty)
             return emptyProcessResult
-        }
 
         val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
                 .filter { it.hasMeaning }
-        if (resourcesWithMeaning.isEmpty()) {
+
+        if (resourcesWithMeaning.isEmpty())
             return emptyProcessResult
-        }
 
         val chosen = randomElement(resourcesWithMeaning, session.random)
-        val result = group.populationCenter.executeRequest(resourceToRequest(chosen, group, 1, 5)).pack
+        val result = ProduceExactResourceA(group, chosen, 1, 5).run()
 
         val processResult = if (result.isNotEmpty)
-            ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result"))
+            ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result")) +
+                    ProcessResult(makeResourcePackMemes(result))
         else emptyProcessResult
 
         ReceiveGroupWideResourcesA(group, result).run()
@@ -62,6 +64,8 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
         if (roadResource.isEmpty)
             return emptyProcessResult
 
+        val roadMemes = makeResourceMemes(roadResource).flattenMemePair()
+
         val tile = path.tiles.last()
         val place = StaticPlace(tile, TileTag(projectName + built, projectName))
         built++
@@ -73,7 +77,7 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
                 place
         )
 
-        return if (path.isEmpty) {
+        return ProcessResult(roadMemes) + if (path.isEmpty) {
             isFinished = true
 
             ProcessResult(event, Event(Type.Creation, "${group.name} finished a road creation"))

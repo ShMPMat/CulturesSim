@@ -7,6 +7,7 @@ import simulation.culture.group.process.emptyProcessResult
 import simulation.event.Event
 import simulation.event.Type
 
+
 object ManageOwnType : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         if (group.parentGroup.subgroups.none { it.processCenter.type == AdministrationType.Main }) {

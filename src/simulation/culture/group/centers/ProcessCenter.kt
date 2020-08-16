@@ -3,6 +3,7 @@ package simulation.culture.group.centers
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.Controller.session
+import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.behaviour.*
 import kotlin.math.pow
 
@@ -77,7 +78,7 @@ class ProcessCenter(type: AdministrationType) {
 
     private fun runBehaviours(group: Group) {
         behaviours.forEach {
-            group.addEvents(it.run(group).events)
+            consumeProcessResult(group, it.run(group))
         }
 
         while (addedBehaviours.isNotEmpty()) {
@@ -85,11 +86,16 @@ class ProcessCenter(type: AdministrationType) {
             addedBehaviours.clear()
 
             newBehaviours.forEach {
-                group.addEvents(it.run(group).events)
+                consumeProcessResult(group, it.run(group))
             }
 
             behaviours.addAll(newBehaviours)
         }
+    }
+
+    fun consumeProcessResult(group: Group, result: ProcessResult) {
+        group.addEvents(result.events)
+        group.cultureCenter.memePool.addAll(result.memes)
     }
 
     override fun toString() = """

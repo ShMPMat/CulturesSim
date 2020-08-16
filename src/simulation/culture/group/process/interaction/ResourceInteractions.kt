@@ -8,6 +8,9 @@ import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.*
 import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.request.Request
+import simulation.culture.thinking.meaning.flattenMemePair
+import simulation.culture.thinking.meaning.makeResourceMemes
+import simulation.culture.thinking.meaning.makeResourcePackMemes
 import simulation.event.Event
 import simulation.event.Type
 import simulation.space.resource.container.ResourcePromise
@@ -20,7 +23,7 @@ class RequestHelpI(
         participator: Group,
         val request: Request
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         if (!CooperateA(participator, initiator, 0.5).run())
             return emptyProcessResult
 
@@ -39,7 +42,7 @@ class RequestHelpI(
                     "${initiator.name} got help in $request from ${participator.name}: " +
                             "${given.listResources}, with delay ${delivery.delay}",
                     request.evaluator.evaluate(given)
-            ))
+            )) + ProcessResult(makeResourcePackMemes(given))
         } else emptyProcessResult
     }
 }
@@ -49,7 +52,7 @@ class GiveGiftI(
         initiator: Group,
         participator: Group
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         val relation = initiator.relationCenter.getNormalizedRelation(participator)
 
         val gift = ChooseResourcesA(
@@ -67,7 +70,7 @@ class ReceiveGiftI(
         participator: Group,
         val gift: ResourcePromisePack
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         val giftCopy = gift.makeCopy()
         val giftStr = giftCopy.listResources
         val worth = EvaluateResourcesA(participator, giftCopy).run() + 0.8
@@ -79,7 +82,7 @@ class ReceiveGiftI(
             ProcessResult(Event(
                     Type.Cooperation,
                     "${participator.name} accepted a gift of $giftStr from ${initiator.name}"
-            )) +
+            ))  + ProcessResult(makeResourcePackMemes(giftCopy))
                     ChangeRelationsI(initiator, participator, 2.0).run()
         } else
             ProcessResult(Event(

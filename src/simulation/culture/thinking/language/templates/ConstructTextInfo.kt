@@ -70,7 +70,7 @@ fun getResourceInformationTextInfo(resource: Resource): List<TextInfo> {
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed) {
                 infos.add(TextInfo(
-                        constructMeme(resource),
+                        makeMeme(resource),
                         MemePredicate("consume"),
                         MemeSubject(res.toLowerCase()))
                 )

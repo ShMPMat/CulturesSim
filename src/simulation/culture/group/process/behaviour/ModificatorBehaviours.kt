@@ -9,6 +9,7 @@ import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.flatMapPR
 import kotlin.math.min
 
+
 class ChanceWrapperB(
         val behaviour: GroupBehaviour,
         val probability: Double,

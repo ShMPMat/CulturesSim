@@ -5,6 +5,10 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.*
 import simulation.culture.group.process.emptyProcessResult
+import simulation.culture.thinking.meaning.flattenMemePair
+import simulation.culture.thinking.meaning.makeResourceMemes
+import simulation.culture.thinking.meaning.makeResourcePackMemes
+import simulation.culture.thinking.meaning.makeStratumMemes
 import simulation.event.Type
 import simulation.space.resource.container.ResourcePack
 
@@ -14,7 +18,7 @@ class TradeI(
         participator: Group,
         val amount: Int
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         val wantedResources = ChooseResourcesA(
                 initiator,
                 RequestStockA(participator).run(),
@@ -40,7 +44,7 @@ class TradeI(
         var result = ProcessResult(Event(
                 Type.Cooperation,
                 "${initiator.name} and ${participator.name} " +
-                        "traded $got - $priceForP for $given - $priceForI".replace("\n", " ")
+                        "traded ${got.listResources} - $priceForP for ${given.listResources} - $priceForI"
         ))
 
         result += SwapResourcesI(initiator, participator, got, given).run()
@@ -52,7 +56,7 @@ class TradeI(
                 1
         ).run()
 
-        return result
+        return result + ProcessResult(makeStratumMemes(initiator.populationCenter.stratumCenter.traderStratum))
     }
 }
 
@@ -63,7 +67,7 @@ class SwapResourcesI(
         private val gotPack: ResourcePack,
         private val givePack: ResourcePack
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         ScheduleActionA(
                 participator,
                 ReceivePopulationResourcesA(initiator, gotPack),
@@ -78,6 +82,6 @@ class SwapResourcesI(
         return ProcessResult(Event(
                 Type.GroupInteraction,
                 "${initiator.name} and ${participator.name} begun swapping of $gotPack and $givePack"
-        ))
+        )) + ProcessResult(makeResourcePackMemes(gotPack) + makeResourcePackMemes(givePack))
     }
 }

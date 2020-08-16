@@ -13,7 +13,7 @@ import simulation.culture.group.resource_behaviour.getRandom
 import simulation.culture.thinking.language.templates.TemplateBase
 import simulation.culture.thinking.language.templates.constructTextInfo
 import simulation.culture.thinking.meaning.Meme
-import simulation.culture.thinking.meaning.constructAspectMemes
+import simulation.culture.thinking.meaning.makeAspectMemes
 import simulation.space.resource.Resource
 import simulation.space.tile.TileTag
 import kotlin.random.Random
@@ -72,7 +72,7 @@ fun constructBetterAspectUseReasonRitual(
         random: Random
 ): Ritual? {
     val converseWrapper = reason.converseWrapper
-    val (aspectMemes, second) = constructAspectMemes(converseWrapper)
+    val (aspectMemes, second) = makeAspectMemes(converseWrapper)
     aspectMemes.addAll(second)
     aspectMemes.shuffle(random)
     for (meme in aspectMemes) { //TODO maybe depth check

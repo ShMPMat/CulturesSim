@@ -14,7 +14,7 @@ class GroupTransferWithNegotiationI(
         initiator: Group,
         participator: Group
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         val strikeWarInteraction = ProbableStrikeWarI(
                 initiator,
                 participator,

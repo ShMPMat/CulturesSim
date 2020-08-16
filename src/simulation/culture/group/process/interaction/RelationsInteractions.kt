@@ -12,7 +12,7 @@ class ChangeRelationsI(
         participator: Group,
         private val delta: Double
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun run(): ProcessResult {
+    override fun innerRun(): ProcessResult {
         ChangeRelationsA(participator, initiator, delta).run()
         ChangeRelationsA(initiator, participator, delta).run()
 

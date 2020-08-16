@@ -22,7 +22,7 @@ class ProbableStrikeWarI(
     var warStruck = false
         private set
 
-    override fun run(): ProcessResult = if (DecideWarDeclarationA(participator, initiator).run()) {
+    override fun innerRun(): ProcessResult = if (DecideWarDeclarationA(participator, initiator).run()) {
         val decreaseRelationsEvent = ChangeRelationsI(initiator, participator, -1.0).run()
         initiator.processCenter.addBehaviour(WarB(
                 participator,

@@ -1,16 +1,18 @@
 package simulation.culture.group.process
 
+import simulation.culture.thinking.meaning.Meme
 import simulation.event.Event
 
 
-class ProcessResult(val events: List<Event>) {
-    constructor(vararg events: Event) : this(events.toList())
+class ProcessResult constructor(val memes: List<Meme> = listOf(), val events: List<Event> = listOf()) {
+    constructor(vararg events: Event) : this(events = events.toList())
+    constructor(vararg memes: Meme) : this(memes.toList())
 
     operator fun plus(other: ProcessResult) =
-            ProcessResult(events + other.events)
+            ProcessResult(memes + other.memes, events + other.events)
 }
 
-val emptyProcessResult = ProcessResult(listOf())
+val emptyProcessResult = ProcessResult()
 
 
 inline fun <E> Iterable<E>.flatMapPR(transform: (E) -> ProcessResult) = this
