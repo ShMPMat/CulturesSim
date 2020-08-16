@@ -55,6 +55,9 @@ class TraitChanceWrapperB(
             """.trimMargin()
 }
 
+fun GroupBehaviour.withTrait(extractor: TraitExtractor) =
+        TraitChanceWrapperB(this, extractor)
+
 
 class TimesWrapperB(
         val behaviour: GroupBehaviour,

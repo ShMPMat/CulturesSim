@@ -1,6 +1,9 @@
 package simulation.culture.group.process.interaction
 
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.makeNegativeChange
+import simulation.culture.group.centers.makePositiveChange
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
@@ -22,22 +25,25 @@ class ProbableStrikeWarI(
     var warStruck = false
         private set
 
-    override fun innerRun(): ProcessResult = if (DecideWarDeclarationA(participator, initiator).run()) {
-        val decreaseRelationsEvent = ChangeRelationsI(initiator, participator, -1.0).run()
-        initiator.processCenter.addBehaviour(WarB(
-                participator,
-                firstAction,
-                secondAction,
-                drawAction
-        ))
+    override fun innerRun(): ProcessResult =
+            if (DecideWarDeclarationA(participator, initiator).run()) {
+                val decreaseRelationsEvent = ChangeRelationsI(initiator, participator, -1.0).run()
+                initiator.processCenter.addBehaviour(WarB(
+                        participator,
+                        firstAction,
+                        secondAction,
+                        drawAction
+                ))
 
-        warStruck = true
+                warStruck = true
 
-        decreaseRelationsEvent + ProcessResult(Event(
-                Type.Conflict,
-                "${initiator.name} started a war with ${participator.name}, because $reason"
-        ))
-    } else emptyProcessResult
+                decreaseRelationsEvent +
+                        ProcessResult(Event(
+                                Type.Conflict,
+                                "${initiator.name} started a war with ${participator.name}, because $reason"
+                        )) +
+                        ProcessResult(makeNegativeChange(Trait.Peace))
+            } else ProcessResult(makePositiveChange(Trait.Peace))
 }
 
 fun makeDecreaseRelationsWarResult(initiator: Group, participator: Group) = InteractionWrapperPA(

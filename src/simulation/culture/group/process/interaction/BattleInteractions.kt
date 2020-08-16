@@ -2,10 +2,13 @@ package simulation.culture.group.process.interaction
 
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.makeNegativeChange
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
 import simulation.culture.group.process.action.pseudo.*
+import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.thinking.meaning.flattenMemePair
 import simulation.culture.thinking.meaning.makeStratumMemes
 import simulation.event.Event
@@ -25,16 +28,20 @@ class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(i
 
         status = BattlePA(iniWarriors, partWarriors).run()
 
-        val description = when (status) {
-            ConflictWinner.First -> "${initiator.name} won a battle with ${participator.name} on $tile"
-            ConflictWinner.Second -> "${participator.name} won a battle with ${initiator.name} on $tile"
-            ConflictWinner.Draw -> "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
-        }
-
+        val description = status.decide(
+                "${initiator.name} won a battle with ${participator.name} on $tile",
+                "${participator.name} won a battle with ${initiator.name} on $tile",
+                "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
+        )
+        val traitChangeResult = status.decide(
+                ProcessResult(makeNegativeChange(Trait.Peace)),
+                emptyProcessResult,
+                ProcessResult(makeNegativeChange(Trait.Peace))
+        )
         val warriorMemes = iniWarriors
                 .map { makeStratumMemes(it.stratum) }
                 .flatten()
-        return ProcessResult(ConflictResultEvent(description, status)) + ProcessResult(warriorMemes)
+        return ProcessResult(ConflictResultEvent(description, status)) + ProcessResult(warriorMemes) + traitChangeResult
     }
 
     private fun evaluateForces(group: Group) =

@@ -24,6 +24,7 @@ class TradeI(
                 RequestStockA(participator).run(),
                 amount
         ).run()
+
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
         if (priceForP == 0)
             return emptyProcessResult

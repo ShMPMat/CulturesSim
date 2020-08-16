@@ -22,6 +22,7 @@ class Group(
         var name: String,
         val populationCenter: PopulationCenter,
         val relationCenter: RelationCenter,
+        traitCenter: TraitCenter,
         tile: Tile,
         aspects: List<Aspect>,
         memePool: GroupMemes,
@@ -30,7 +31,7 @@ class Group(
 ) {
     var state = State.Live
     val fertility = session.defaultGroupFertility
-    val cultureCenter = CultureCenter(this, memePool, aspects)
+    val cultureCenter = CultureCenter(this, memePool, traitCenter, aspects)
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)
     private var _direNeedTurns = 0
 

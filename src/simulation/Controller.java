@@ -38,7 +38,7 @@ public class Controller {
     public final int defaultGroupReach = defaultGroupTerritoryRadius + 1;
     public final int defaultGroupMinPopulationPerTile = 1;
     public final int defaultGroupFertility = 10;
-    public final double defaultGroupExiting = 0.0002;
+    public final double defaultGroupExiting = 0.02;
     public final double defaultGroupDiverge = 0.01;
     public final double defaultTypeRenewal = 0.05;
     public final double rAspectAcquisition = 1.0;

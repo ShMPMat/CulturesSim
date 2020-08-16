@@ -4,6 +4,8 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.HelpEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.makePositiveChange
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.*
 import simulation.culture.group.process.emptyProcessResult
@@ -42,7 +44,9 @@ class RequestHelpI(
                     "${initiator.name} got help in $request from ${participator.name}: " +
                             "${given.listResources}, with delay ${delivery.delay}",
                     request.evaluator.evaluate(given)
-            )) + ProcessResult(makeResourcePackMemes(given))
+            )) +
+                    ProcessResult(makeResourcePackMemes(given)) +
+                    ProcessResult(makePositiveChange(Trait.Peace) * 3.0)
         } else emptyProcessResult
     }
 }

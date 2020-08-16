@@ -20,11 +20,15 @@ import simulation.space.resource.tag.labeler.ResourceLabeler
 import kotlin.math.log
 
 
-class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects: List<Aspect>) {
+class CultureCenter(
+        private val group: Group,
+        val memePool: GroupMemes,
+        val traitCenter: TraitCenter,
+        aspects: List<Aspect>
+) {
     val aspectCenter: AspectCenter = AspectCenter(group, aspects)
     val cultureAspectCenter: CultureAspectCenter = CultureAspectCenter(group)
     val requestCenter = RequestCenter()
-    val traitCenter = TraitCenter()
 
     val events = EventLog()
 

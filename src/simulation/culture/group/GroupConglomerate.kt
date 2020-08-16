@@ -51,6 +51,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
                         val weakRelationsMultiplier = difference * difference * difference / 10
                         (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
+                    TraitCenter(),
                     center,
                     ArrayList(),
                     GroupMemes(),

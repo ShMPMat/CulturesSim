@@ -4,6 +4,8 @@ import shmp.random.randomElement
 import simulation.Controller
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.makeNegativeChange
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.ConflictWinner
@@ -30,24 +32,30 @@ class WarB(
         val result = battle.run()
         val battleResult = battle.status
 
-        val warStatusEvents = when (val warStatus = warFinisher.decide(listOf(battleResult))) {
+        val warResult = when (val warStatus = warFinisher.decide(listOf(battleResult))) {
             Continue -> emptyProcessResult
             is Finish -> {
+                val traitChange = warStatus.winner.decide(
+                        ProcessResult(makeNegativeChange(Trait.Peace)),
+                        emptyProcessResult,
+                        ProcessResult(makeNegativeChange(Trait.Peace))
+                )
                 val winner = warStatus.winner.decide(group.name, opponent.name, "no one")
                 val action = warStatus.winner.decide(initiatorWinAction, participatorWinAction, drawWinAction)
                 val actionInternalEvents = action.run()
 
                 isFinished = true
 
-                actionInternalEvents + ProcessResult(ConflictResultEvent(
-                        "The war between ${group.name} and ${opponent.name} has ended, " +
-                                "the winner is $winner, the result: $action",
-                        warStatus.winner
-                ))
+                actionInternalEvents + traitChange +
+                        ProcessResult(ConflictResultEvent(
+                                "The war between ${group.name} and ${opponent.name} has ended, " +
+                                        "the winner is $winner, the result: $action",
+                                warStatus.winner
+                        ))
             }
         }
 
-        return result + warStatusEvents
+        return result + warResult
     }
 
     override val internalToString = "Carry on war with ${opponent.name}"
@@ -58,7 +66,7 @@ interface WarFinisher {
     fun decide(results: List<ConflictWinner>): WarStatus
 }
 
-class ProbabilisticWarFinisher(): WarFinisher {
+class ProbabilisticWarFinisher() : WarFinisher {
     private var first = 0.0
     private var second = 0.0
     private var draw = 0.0
@@ -90,5 +98,3 @@ sealed class WarStatus
 
 object Continue : WarStatus()
 class Finish(val winner: ConflictWinner) : WarStatus()
-
-

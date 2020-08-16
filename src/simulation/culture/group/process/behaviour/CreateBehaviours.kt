@@ -7,6 +7,8 @@ import simulation.SimulationError
 import simulation.culture.aspect.hasMeaning
 import simulation.culture.group.RoadCreationEvent
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.makePositiveChange
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.ProduceExactResourceA
@@ -43,7 +45,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
 
         ReceiveGroupWideResourcesA(group, result).run()
 
-        return processResult
+        return processResult + ProcessResult(makePositiveChange(Trait.Creation))
     }
 
     override val internalToString = "Make a random Resource with some meaning"
@@ -77,11 +79,13 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
                 place
         )
 
-        return ProcessResult(roadMemes) + if (path.isEmpty) {
-            isFinished = true
+        return ProcessResult(roadMemes) +
+                ProcessResult(makePositiveChange(Trait.Creation) * 0.05) +
+                if (path.isEmpty) {
+                    isFinished = true
 
-            ProcessResult(event, Event(Type.Creation, "${group.name} finished a road creation"))
-        } else emptyProcessResult
+                    ProcessResult(event, Event(Type.Creation, "${group.name} finished a road creation"))
+                } else emptyProcessResult
     }
 
     override val internalToString

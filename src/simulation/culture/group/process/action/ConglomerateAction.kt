@@ -120,6 +120,7 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
                 name,
                 group.populationCenter.getPart(0.5, startTile),
                 RelationCenter(group.relationCenter.hostilityCalculator),
+                group.cultureCenter.traitCenter.copy(),
                 startTile,
                 aspects,
                 memes,

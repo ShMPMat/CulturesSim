@@ -11,6 +11,12 @@ interface TraitExtractor {
     fun extract(center: TraitCenter): Double
 }
 
+private class ConstExtractor(val t: Double): TraitExtractor {
+    override fun extract(center: TraitCenter) = t
+}
+
+fun Double.toExtractor(): TraitExtractor = ConstExtractor(this)
+
 
 private class WrapperExtractor(private val description: String, val action: (TraitCenter) -> Double) : TraitExtractor {
     override fun extract(center: TraitCenter) = action(center)
@@ -23,9 +29,22 @@ operator fun TraitExtractor.times(other: TraitExtractor): TraitExtractor =
             extract(center) * other.extract(center)
         }
 
+operator fun TraitExtractor.times(t: Double): TraitExtractor = WrapperExtractor("$this * $t") { center ->
+    extract(center) * t
+}
+
 fun TraitExtractor.pow(t: Double): TraitExtractor = WrapperExtractor("$this to the power of $t") { center ->
     extract(center).pow(t)
 }
+
+fun TraitExtractor.reverse(): TraitExtractor = WrapperExtractor("reverse of ($this)") { center ->
+    max(1 - extract(center), 0.0)
+}
+
+fun max(first: TraitExtractor, second: TraitExtractor): TraitExtractor =
+        WrapperExtractor("max of $first and $second") { center ->
+            max(first.extract(center), second.extract(center))
+        }
 
 
 private class GetTrait(private val trait: Trait) : TraitExtractor {
@@ -45,6 +64,6 @@ fun Trait.getNegative(): TraitExtractor = WrapperExtractor("positive of $this") 
 }
 
 
-object PassingExtractor: TraitExtractor {
+object PassingExtractor : TraitExtractor {
     override fun extract(center: TraitCenter) = 1.0
 }

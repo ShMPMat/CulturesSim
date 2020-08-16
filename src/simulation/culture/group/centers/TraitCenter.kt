@@ -22,22 +22,25 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
     fun normalValue(trait: Trait) = (value(trait) + 1) / 2
 
-    fun change(traitChange: TraitChange) {
+    fun changeOn(traitChange: TraitChange) {
         val (trait, delta) = traitChange
 
         traitMap.getValue(trait).value += delta
     }
 
+    fun changeOnAll(traitChanges: List<TraitChange>) = traitChanges.forEach { changeOn(it) }
+
     fun copy() = TraitCenter(traitMap)
 
-    override fun toString() = traitMap.entries.joinToString { (t, v) -> "$t - ${v.value}" }
+    override fun toString() = traitMap.entries.joinToString { (t, v) -> "$t = ${v.value}" }
 }
 
 
 enum class Trait {
     Peace,
     Expansion,
-    Consolidation
+    Consolidation,
+    Creation
 }
 
 class TraitValue(value: Double = 0.0) {
@@ -50,4 +53,9 @@ class TraitValue(value: Double = 0.0) {
 }
 
 
-data class TraitChange(val trait: Trait, val delta: Double)
+data class TraitChange(val trait: Trait, val delta: Double) {
+    operator fun times(t: Double) = TraitChange(trait, delta * t)
+}
+
+fun makePositiveChange(trait: Trait) = TraitChange(trait, 0.001)
+fun makeNegativeChange(trait: Trait) = TraitChange(trait, -0.001)

@@ -5,6 +5,8 @@ import simulation.Controller.session
 import simulation.culture.group.Add
 import simulation.culture.group.centers.AdministrationType
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.makePositiveChange
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.GroupTransferA
 import simulation.culture.group.process.action.MakeSplitGroupA
@@ -34,9 +36,11 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
 
         if (options.isNotEmpty()) {
             val target = randomElement(options, { (_, n) -> n }, session.random).first
-            return GroupTransferWithNegotiationI(group, target).run()
+
+            return GroupTransferWithNegotiationI(group, target).run() +
+                    ProcessResult(makePositiveChange(Trait.Expansion))
         }
-        return emptyProcessResult
+        return ProcessResult(makePositiveChange(Trait.Expansion))
     }
 
     override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"
@@ -46,6 +50,7 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val initialConglomerate = group.parentGroup
         val conglomerate = TryDivergeA(group).run()
+
         return if (conglomerate != null) {
             val initiator = initialConglomerate.subgroups.firstOrNull { it.processCenter.type == AdministrationType.Main }
                     ?: initialConglomerate.subgroups[0]
@@ -59,7 +64,8 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
                     ActionSequencePA(conglomerate.subgroups.map { GroupTransferA(initiator, it) })
             ).run() +
                     ProcessResult(Event(Type.Change, "${opponent.name} diverged to it's own Conglomerate"))
-        } else emptyProcessResult
+        } else
+            ProcessResult(makePositiveChange(Trait.Consolidation))
     }
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"
@@ -81,7 +87,8 @@ object SplitGroupB : AbstractGroupBehaviour() {
 
         Add(newGroup).execute(group.parentGroup)
 
-        return ProcessResult(Event(Type.Creation, "${group.name} made a new group ${newGroup.name}"))
+        return ProcessResult(Event(Type.Creation, "${group.name} made a new group ${newGroup.name}")) +
+                ProcessResult(makePositiveChange(Trait.Expansion))
     }
 
     override val internalToString = "Try to split Group in two"
