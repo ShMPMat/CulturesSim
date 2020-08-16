@@ -174,6 +174,9 @@ class CultureCenter(private val group: Group, val memePool: GroupMemes, aspects:
         |
         |
         |$requestCenter
+        |
+        |
+        |$traitCenter
     """.trimMargin()
 }
 

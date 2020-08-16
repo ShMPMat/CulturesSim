@@ -29,6 +29,8 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
     }
 
     fun copy() = TraitCenter(traitMap)
+
+    override fun toString() = traitMap.entries.joinToString { (t, v) -> "$t - ${v.value}" }
 }
 
 
@@ -46,5 +48,6 @@ class TraitValue(value: Double = 0.0) {
             if (value < -1.0) field = -1.0
         }
 }
+
 
 data class TraitChange(val trait: Trait, val delta: Double)
