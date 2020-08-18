@@ -308,7 +308,7 @@ public class TextVisualizer implements Visualizer {
                             Optional<GroupConglomerate> conglomerate = world.getGroups().stream()
                                     .filter(g -> g.getName().equals(line)).findFirst();
                             Optional<Group> group = world.getGroups().stream()
-                                    .flatMap(c -> c.subgroups.stream())
+                                    .flatMap(c -> c.getSubgroups().stream())
                                     .filter(g -> g.getName().equals(line)).findFirst();
                             if (conglomerate.isPresent()) {
                                 printGroupConglomerate(conglomerate.get());
@@ -324,7 +324,7 @@ public class TextVisualizer implements Visualizer {
                             if (group == null) {
                                 break;
                             }
-                            printMap(t -> TileMapperFunctionsKt.groupReachMapper(group.subgroups.get(0), t));
+                            printMap(t -> TileMapperFunctionsKt.groupReachMapper(group.getSubgroups().get(0), t));
                             break;
                         }
                         case GroupProduced: {
@@ -367,7 +367,7 @@ public class TextVisualizer implements Visualizer {
                             printMap(t -> TileMapperFunctionsKt.hotnessMapper(
                                     Integer.parseInt(splitCommand[2]),
                                     t,
-                                    group.subgroups.get(0).getTerritoryCenter()::tilePotentialMapper,
+                                    group.getSubgroups().get(0).getTerritoryCenter()::tilePotentialMapper,
                                     Integer.parseInt(splitCommand[2])
                             ));
                             break;

@@ -9,7 +9,12 @@ private interface Command {
 sealed class ConglomerateCommand : Command
 
 data class Add(val group: Group) : ConglomerateCommand() {
-    override fun execute(conglomerate: GroupConglomerate) = conglomerate.addGroup(group)
+    override fun execute(conglomerate: GroupConglomerate) {
+        if (group.parentGroup == conglomerate)
+            conglomerate.addGroup(group)
+        else
+            Transfer(group).execute(conglomerate)
+    }
 }
 
 data class Transfer(val group: Group) : ConglomerateCommand() {

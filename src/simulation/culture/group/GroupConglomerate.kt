@@ -17,9 +17,12 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
+
 class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
-    @JvmField
-    var subgroups: MutableList<Group> = ArrayList()
+    private val _subgroups = mutableListOf<Group>()
+    val subgroups: List<Group>
+        get() = _subgroups
+
     private val shuffledSubgroups: List<Group>
         get() = subgroups.shuffled(Controller.session.random)
     var state = State.Live
@@ -113,8 +116,11 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     fun update() {
         if (state == State.Dead)
             return
+        if (subgroups.any { it.parentGroup != this }) {
+            val k = 0
+        }
         val mainTime = System.nanoTime()
-        subgroups.removeIf { it.state == Group.State.Dead }
+        _subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
         Controller.session.groupMainTime += System.nanoTime() - mainTime
         val othersTime = System.nanoTime()
@@ -140,9 +146,9 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     fun claimTile(tile: Tile?) = territory.add(tile)
 
     fun addGroup(group: Group) {
-        subgroups.add(group)
+        _subgroups.add(group)
         computePopulation()
-        group.territoryCenter.territory.tiles.forEach { tile: Tile? -> claimTile(tile) }
+        group.territoryCenter.territory.tiles.forEach { claimTile(it) }
         group.parentGroup = this
     }
 
@@ -153,8 +159,11 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
 
     fun removeGroup(group: Group) {
         population -= group.populationCenter.population
-        if (!subgroups.remove(group))
+        if (!_subgroups.remove(group))
             throw RuntimeException("Trying to remove non-child subgroup ${group.name} from Group $name")
+        if (name == "G43") {
+            val k = 0
+        }
         group.territoryCenter.territory.tiles.forEach { removeTile(it) }
     }
 

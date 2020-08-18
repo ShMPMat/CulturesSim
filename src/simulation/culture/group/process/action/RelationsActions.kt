@@ -3,6 +3,8 @@ package simulation.culture.group.process.action
 import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.group.centers.Group
+import simulation.culture.group.centers.Trait
+import simulation.culture.group.process.get
 import simulation.culture.group.process.interaction.ChangeRelationsI
 
 
@@ -27,7 +29,8 @@ class CooperateA(
 ) : AbstractGroupAction(group) {
     override fun run(): Boolean {
         val probability = (1 - helpAmount) * group.relationCenter.getNormalizedRelation(group)
-        val answer = testProbability(probability, Controller.session.random)
+        val answer = testProbability(probability, Controller.session.random) &&
+                TestTrait(group, Trait.Peace.get()).run()
 
         val relationsChange = 1.0 * if (answer) 1 else -1
         ChangeRelationsI(group, target, relationsChange).run()
