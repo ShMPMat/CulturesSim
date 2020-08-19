@@ -15,6 +15,8 @@ public class Controller {
     public InteractionModel interactionModel;
     public TemplateBase templateBase;
 
+    private int conglomerateCount = -1;
+
     public final int seed = (int) (Math.random() * 10000000);
     public final Random random = RandomKt.Random(8565728 + 4);
 
@@ -80,7 +82,8 @@ public class Controller {
     public long groupInnerOtherTime = 0;
 
     public String getVacantGroupName() {
-        return "G" + world.getGroups().size();
+        conglomerateCount++;
+        return "G" + conglomerateCount;
     }
 
     public Controller(InteractionModel interactionModel) {

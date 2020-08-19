@@ -2,6 +2,7 @@ package simulation.culture.group
 
 import simulation.culture.group.centers.Group
 
+
 private interface Command {
     fun execute(conglomerate: GroupConglomerate)
 }

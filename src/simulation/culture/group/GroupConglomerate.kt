@@ -18,7 +18,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
+class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
     private val _subgroups = mutableListOf<Group>()
     val subgroups: List<Group>
         get() = _subgroups
@@ -36,7 +36,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     init {
         claimTile(root)
         for (i in 0 until numberOfSubGroups) {
-            val name = name + "_" + i
+            val name = name + "_$i"
             addGroup(Group(
                     ProcessCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), center, name),
@@ -198,7 +198,7 @@ class GroupConglomerate(var name: String, var population: Int, numberOfSubGroups
     val newName: String
         get() {
             namesScore++
-            return name + "_" + namesScore
+            return name + "_$namesScore"
         }
 
     enum class State {
