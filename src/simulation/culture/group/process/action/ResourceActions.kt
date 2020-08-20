@@ -110,5 +110,21 @@ class ChooseResourcesA(
     }
 
     override val internalToString =
-            "Let ${group.name} choose Resources from $pack in amount of $amount, excluding ${banned.joinToString()} "
+            "Let ${group.name} choose Resources from $pack in amount of $amount, excluding ${banned.joinToString()}"
+}
+
+
+class ChooseResourcesAndTakeA(
+        group: Group,
+        val pack: ResourcePromisePack,
+        val amount: Int
+) : AbstractGroupAction(group) {
+    override fun run() {
+        val chosenResources = ChooseResourcesA(group, pack, amount).run().extract()
+
+        ReceivePopulationResourcesA(group, chosenResources).run()
+    }
+
+    override val internalToString =
+            "Let ${group.name} choose Resources from $pack in amount of $amount, and take it"
 }

@@ -7,6 +7,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.Trait
 import simulation.culture.group.centers.makeNegativeChange
 import simulation.culture.group.process.ProcessResult
+import simulation.culture.group.process.action.ChooseResourcesAndTakeA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.ConflictWinner
 import simulation.culture.group.process.action.pseudo.ConflictWinner.*
@@ -14,7 +15,52 @@ import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.culture.group.process.action.pseudo.decide
 import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.interaction.BattleI
+import simulation.culture.group.process.interaction.TradeI
+import simulation.event.Event
+import simulation.event.Type
+import simulation.space.resource.container.ResourcePromisePack
+import kotlin.math.pow
 import kotlin.math.sqrt
+
+
+object RandomWarB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
+
+        if (groups.isEmpty())
+            return emptyProcessResult
+
+        val opponent = randomElement(
+                groups,
+                {
+                    val relation = group.relationCenter.getNormalizedRelation(it)
+                    val warpower = it.populationCenter.stratumCenter.warriorStratum.cumulativeWorkAblePopulation
+                    (1 - relation.pow(2)) / (warpower + 1)
+                },
+                Controller.session.random
+        )
+        group.processCenter.addBehaviour(WarB(
+                opponent,
+                ActionSequencePA(ChooseResourcesAndTakeA(
+                        group,
+                        ResourcePromisePack(opponent.populationCenter.turnResources),
+                        1000
+                )),
+                ActionSequencePA(ChooseResourcesAndTakeA(
+                        opponent,
+                        ResourcePromisePack(group.populationCenter.turnResources),
+                        1000
+                ))
+        ))
+
+        return ProcessResult(Event(
+                Type.Conflict,
+                "${group.name} declared war to ${opponent.name}"
+        ))
+    }
+
+    override val internalToString = "Trade with a random neighbour"
+}
 
 
 class WarB(
