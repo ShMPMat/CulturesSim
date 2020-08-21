@@ -1,12 +1,11 @@
 package shmp.random
 
-import simulation.Controller
 import simulation.space.Territory
-import simulation.space.tile.Tile
 import simulation.space.WorldMap
+import simulation.space.tile.Tile
 import kotlin.random.Random
 
-fun randomTile(territory: Territory, random: Random) = randomElement(territory.tiles, random)
+fun randomTile(territory: Territory, random: Random) = randomElement(territory.tiles.toList(), random)
 
 fun randomTile(map: WorldMap, random: Random): Tile = randomElement(randomElement(map.linedTiles, random), random)
 
