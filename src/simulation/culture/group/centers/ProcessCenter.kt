@@ -40,7 +40,8 @@ class ProcessCenter(type: AdministrationType) {
             },
             EstablishTradeRelationsB.withProbability(0.0) {
                 it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
-            }
+            },
+            RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive())
     )
 
     private val addedBehaviours = mutableListOf<GroupBehaviour>()

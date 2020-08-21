@@ -59,7 +59,7 @@ fun Trait.getPositive(): TraitExtractor = WrapperExtractor("positive of $this") 
     max(center.value(this), 0.0)
 }
 
-fun Trait.getNegative(): TraitExtractor = WrapperExtractor("positive of $this") { center ->
+fun Trait.getNegative(): TraitExtractor = WrapperExtractor("negative of $this") { center ->
     -min(center.value(this), 0.0)
 }
 

@@ -24,5 +24,5 @@ object GiveGiftB: AbstractGroupBehaviour() {
         return GiveGiftI(group, receiver).run()
     }
 
-    override val internalToString = "Give a gift t oa random Group"
+    override val internalToString = "Give a gift to a random Group"
 }

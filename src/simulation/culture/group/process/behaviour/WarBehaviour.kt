@@ -5,6 +5,7 @@ import simulation.Controller
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.Trait
+import simulation.culture.group.centers.TraitChange
 import simulation.culture.group.centers.makeNegativeChange
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.ChooseResourcesAndTakeA
@@ -56,10 +57,11 @@ object RandomWarB : AbstractGroupBehaviour() {
         return ProcessResult(Event(
                 Type.Conflict,
                 "${group.name} declared war to ${opponent.name}"
-        ))
+        )) +
+                ProcessResult(makeNegativeChange(Trait.Peace) * 2.0)
     }
 
-    override val internalToString = "Trade with a random neighbour"
+    override val internalToString = "Declare war to a random neighbour"
 }
 
 
@@ -82,7 +84,7 @@ class WarB(
             Continue -> emptyProcessResult
             is Finish -> {
                 val traitChange = warStatus.winner.decide(
-                        ProcessResult(makeNegativeChange(Trait.Peace)),
+                        ProcessResult(makeNegativeChange(Trait.Peace) * 2.0),
                         emptyProcessResult,
                         ProcessResult(makeNegativeChange(Trait.Peace))
                 )
