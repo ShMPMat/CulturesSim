@@ -25,7 +25,7 @@ fun constructAndAddSimpleMeme(
             tests++
         } while (second.hasPart(meme, setOf("and")) && tests <= maxTests)
         meme = meme.copy().addPredicate(
-                groupMemes.getMemeCopy("and").addPredicate(second)
+                groupMemes.getMemeCopy("and")?.addPredicate(second)
         )
         groupMemes.addMemeCombination(meme)
     }

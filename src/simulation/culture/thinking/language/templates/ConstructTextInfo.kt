@@ -36,7 +36,7 @@ fun complicateInfo(
                     templateBase.templateChars.contains(m.observerWord[0]) -> {
                         substitutions[key.toString() + m.observerWord] = randomElement(
                                 templateBase.wordBase[m.observerWord]!!,
-                                { groupMemes.getMeme(it.observerWord).importance.toDouble() },
+                                { groupMemes.getMeme(it.observerWord)?.importance?.toDouble() ?: 0.0 },
                                 random
                         )
                         MemePredicate(key + m.observerWord)

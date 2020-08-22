@@ -20,9 +20,10 @@ class DepictObject(
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
-        if (group.cultureCenter.memePool.getMeme(meme.toString()) == null) return //TODO fix this
+        val memeInstance = group.cultureCenter.memePool.getMeme(meme.toString())
+                ?: return//TODO fix this
         val result = group.populationCenter.executeRequest(MeaningResourceRequest(
-                group.cultureCenter.memePool.getMeme(meme.toString()),
+                memeInstance,
                 resource,
                 RequestCore(
                         group,
@@ -39,14 +40,14 @@ class DepictObject(
         group.cultureCenter.memePool.strengthenMeme(meme)
     }
 
-    override fun adopt(group: Group) =
-            if (group.cultureCenter.memePool.getMeme(meme.toString()) != null)
+    override fun adopt(group: Group) = group.cultureCenter.memePool.getMeme(meme.toString())
+            ?.let {
                 DepictObject(
-                        group.cultureCenter.memePool.getMeme(meme.toString()),
+                        it,
                         resource,
                         resourceBehaviour
                 )
-            else null
+            }
 
     override fun die(group: Group) {}
 

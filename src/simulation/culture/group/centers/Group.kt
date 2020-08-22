@@ -68,8 +68,9 @@ class Group(
         for (group in relationCenter.relatedGroups)
             group.cultureCenter.memePool.addMemeCombination(
                     cultureCenter.memePool.getMeme("group")
-                            .addPredicate(MemeSubject(name))
-                            .addPredicate(cultureCenter.memePool.getMeme("die"))
+                            ?.addPredicate(MemeSubject(name))
+                            ?.addPredicate(cultureCenter.memePool.getMeme("die"))
+                            ?: continue
             )
     }
 

@@ -100,7 +100,7 @@ fun takeOutGod(
     if (worshipsAndCults.isEmpty()) return null
     val chosen = randomElement(worshipsAndCults, random)
     val meme = chosen.worshipObject.name
-    val sphereMemes = group.cultureCenter.memePool.memes
+    val sphereMemes = group.cultureCenter.memePool.all
             .filterIsInstance<MemeSubject>()
             .filter { it.predicates.isEmpty() }
     val sphere = randomElement(sphereMemes, { it.importance * 1.0 / it.toString().length }, random)

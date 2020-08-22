@@ -93,8 +93,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
      */
     val memes: List<Meme>
         get() = subgroups
-                .map { it.cultureCenter.memePool.memes }
-                .foldRight(mutableMapOf()) { x: MutableList<Meme>, y: MutableMap<Meme, Meme> ->
+                .map { it.cultureCenter.memePool.all }
+                .foldRight(mutableMapOf()) { x: List<Meme>, y: MutableMap<Meme, Meme> ->
                     for (meme in x) {
                         if (meme !in y)
                             y[meme] = meme.copy()
