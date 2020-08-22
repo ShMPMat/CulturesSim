@@ -6,6 +6,7 @@ import simulation.culture.thinking.language.templates.TextInfo
 import simulation.culture.thinking.meaning.Meme
 import java.util.*
 
+
 class Tale(internal val template: Meme, val info: TextInfo) : CultureAspect {
     private val meme: Meme = info.substitute(template)
 
@@ -18,17 +19,21 @@ class Tale(internal val template: Meme, val info: TextInfo) : CultureAspect {
 
     override fun adopt(group: Group) = Tale(template, info)
 
+    override fun die(group: Group) {}
 
     override fun toString() = "Tale about $meme"
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
+        if (this === other)
+            return true
+
+        if (other == null || javaClass != other.javaClass)
+            return false
+
         val that = other as Tale
+
         return meme == that.meme
     }
 
     override fun hashCode() = Objects.hash(meme)
-
-    override fun die(group: Group) {}
 }

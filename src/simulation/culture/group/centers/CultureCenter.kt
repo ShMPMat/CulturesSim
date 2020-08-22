@@ -76,8 +76,10 @@ class CultureCenter(
 
     fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
         val options = aspectCenter.findOptions(need.first)
+
         if (options.isEmpty())
             return
+
         val (first, second) = randomElement(options, session.random)
         aspectCenter.addAspect(first)
 

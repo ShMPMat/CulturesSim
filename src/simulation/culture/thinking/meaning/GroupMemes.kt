@@ -5,12 +5,11 @@ import shmp.random.testProbability
 import simulation.Controller
 import simulation.culture.aspect.Aspect
 import simulation.space.resource.Resource
-import java.util.*
 import kotlin.math.pow
 
 
 class GroupMemes : MemePool() {
-    private val memesCombinations = mutableMapOf<String, Meme>()
+    private val memesCombinationsMap = mutableMapOf<String, Meme>()
 
     init {
         addAll(
@@ -31,16 +30,16 @@ class GroupMemes : MemePool() {
     }
 
     override val isEmpty: Boolean
-        get() = super.isEmpty && memesCombinations.isEmpty()
+        get() = super.isEmpty && memesCombinationsMap.isEmpty()
 
     fun addAll(groupMemes: GroupMemes) {
         super.addAll(groupMemes)
 
-        groupMemes.memesCombinations.values
+        groupMemes.memesCombinationsMap.values
                 .forEach { addMemeCombination(it) }
     }
 
-    override val all get() = memes.values.toMutableList() + memesCombinations.values
+    override val all get() = memesMap.values + memesCombinationsMap.values
 
     override fun getMeme(name: String) = super.getMeme(name)
             ?: getMemeCombinationByName(name)
@@ -52,7 +51,7 @@ class GroupMemes : MemePool() {
     }
 
     private fun getMemeCombinationByName(name: String) =
-            memesCombinations[name.toLowerCase()]//TODO doublewut
+            memesCombinationsMap[name.toLowerCase()]//TODO doublewut
 
     val valuableMeme: Meme
         get() = chooseMeme(all)
@@ -62,7 +61,7 @@ class GroupMemes : MemePool() {
             if (testProbability(0.5, Controller.session.random))
                 valuableMeme
             else
-                chooseMeme(ArrayList(memesCombinations.values))
+                chooseMeme(memesCombinationsMap.values.toList())
 
     private fun chooseMeme(memeList: List<Meme>): Meme {
         return randomElement(
@@ -82,8 +81,8 @@ class GroupMemes : MemePool() {
     }
 
     fun addMemeCombination(meme: Meme) {
-        if (!memesCombinations.containsKey(meme.toString()))
-            memesCombinations[meme.toString()] = meme.copy()
+        if (!memesCombinationsMap.containsKey(meme.toString()))
+            memesCombinationsMap[meme.toString()] = meme.copy()
     }
 
     override fun strengthenMeme(meme: Meme)

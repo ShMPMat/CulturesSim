@@ -13,6 +13,7 @@ import simulation.space.resource.Resource
 import java.util.*
 import kotlin.math.pow
 
+
 class CultureAspectCenter(private val group: Group) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
@@ -20,6 +21,7 @@ class CultureAspectCenter(private val group: Group) {
 
     fun addCultureAspect(cultureAspect: CultureAspect?) {
         cultureAspect ?: return
+
         aspectPool.add(cultureAspect)
         if (cultureAspect is CherishedResource)
             aestheticallyPleasingResources.add(cultureAspect.resource)
@@ -30,9 +32,9 @@ class CultureAspectCenter(private val group: Group) {
     fun addRandomCultureAspect(group: Group) {
         if (!testProbability(session.cultureAspectBaseProbability, session.random))
             return
-        var cultureAspect: CultureAspect? = null
-        when (randomElement(AspectRandom.values(), session.random)) {
-            AspectRandom.Depict -> cultureAspect = createDepictObject(
+
+        val cultureAspect = when (randomElement(AspectRandom.values(), session.random)) {
+            AspectRandom.Depict -> createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
                     constructAndAddSimpleMeme(
                             group.cultureCenter.memePool,
@@ -41,7 +43,7 @@ class CultureAspectCenter(private val group: Group) {
                     group,
                     session.random
             )
-            AspectRandom.AestheticallyPleasing -> cultureAspect = createAestheticallyPleasingObject(
+            AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .filter { it.genome.isDesirable }
                             .filter { !aestheticallyPleasingResources.contains(it) }
@@ -49,7 +51,7 @@ class CultureAspectCenter(private val group: Group) {
                     group,
                     session.random
             )
-            AspectRandom.Ritual -> cultureAspect = constructRitual(//TODO recursively go in dependencies;
+            AspectRandom.Ritual -> constructRitual(//TODO recursively go in dependencies;
                     constructBetterAspectUseReason(
                             group,
                             group.cultureCenter.aspectCenter.aspectPool.converseWrappers,
@@ -59,18 +61,20 @@ class CultureAspectCenter(private val group: Group) {
                     group,
                     session.random
             )
-            AspectRandom.Tale -> cultureAspect = createTale(
+            AspectRandom.Tale -> createTale(
                     group,
                     session.templateBase,
                     session.random
             )
         }
+
         addCultureAspect(cultureAspect)
     }
 
     fun mutateCultureAspects(group: Group) {
         if (!testProbability(session.groupCultureAspectCollapse, session.random))
             return
+
         when (randomElement(ChangeRandom.values(), session.random)) {
             ChangeRandom.RitualSystem -> joinSimilarRituals()
             ChangeRandom.TaleSystem -> joinSimilarTalesBy("!actor")
@@ -80,13 +84,17 @@ class CultureAspectCenter(private val group: Group) {
     }
 
     private fun joinSimilarRituals() {
-        val system = takeOutSimilarRituals(aspectPool) ?: return
+        val system = takeOutSimilarRituals(aspectPool)
+                ?: return
+
         addCultureAspect(system)
         reasonsWithSystems.add(system.reason)
     }
 
     private fun makeGod(group: Group) {
-        val cult = takeOutGod(aspectPool, group, session.random) ?: return
+        val cult = takeOutGod(aspectPool, group, session.random)
+                ?: return
+
         addCultureAspect(cult)
     }
 
@@ -104,7 +112,9 @@ class CultureAspectCenter(private val group: Group) {
             neighbourCultureAspects.filter { (f) -> predicate(f) }
 
     fun adoptCultureAspects(group: Group) {
-        if (!session.isTime(session.groupTurnsBetweenAdopts)) return
+        if (!session.isTime(session.groupTurnsBetweenAdopts))
+            return
+
         val cultureAspects = getNeighbourCultureAspects { !aspectPool.contains(it) }
         //TODO mb some more smart check?
         if (cultureAspects.isNotEmpty()) try {
@@ -114,6 +124,7 @@ class CultureAspectCenter(private val group: Group) {
                     session.random
             ).first.adopt(group)
                     ?: return
+
             if (shouldAdopt(aspect))
                 addCultureAspect(aspect)
         } catch (e: NoSuchElementException) {
