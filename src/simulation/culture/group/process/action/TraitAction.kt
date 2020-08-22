@@ -6,7 +6,7 @@ import simulation.culture.group.centers.Group
 import simulation.culture.group.process.TraitExtractor
 
 
-class TestTrait(group: Group, val extractor: TraitExtractor): AbstractGroupAction(group) {
+class TestTraitA(group: Group, val extractor: TraitExtractor): AbstractGroupAction(group) {
     override fun run() = testProbability(
             extractor.extract(group.cultureCenter.traitCenter),
             Controller.session.random

@@ -6,13 +6,13 @@ import simulation.space.tile.Tile
 import java.util.*
 
 open class Territory(tiles: Collection<Tile> = ArrayList()) {
-    private val innerTiles = mutableSetOf<Tile>()
+    private val _tiles = mutableSetOf<Tile>()
     val tiles: Set<Tile>
-        get() = innerTiles
+        get() = _tiles
 
-    private val innerOuterBrink = mutableSetOf<Tile>()
+    private val _outerBrink = mutableSetOf<Tile>()
     val outerBrink: Set<Tile>
-        get() = innerOuterBrink
+        get() = _outerBrink
 
     var center: Tile? = null
 
@@ -22,10 +22,10 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
 
     fun getTiles(predicate: (Tile) -> Boolean) = tiles.filter(predicate)
 
-    fun getOuterBrink(predicate: (Tile) -> Boolean) = innerOuterBrink.filter(predicate)
+    fun getOuterBrink(predicate: (Tile) -> Boolean) = _outerBrink.filter(predicate)
 
     val innerBrink: List<Tile>
-        get() = innerOuterBrink
+        get() = _outerBrink
                 .flatMap { t -> t.getNeighbours { n -> this.contains(n) } }
                 .distinct()
 
@@ -63,12 +63,11 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
     fun addAll(tiles: Collection<Tile>) = tiles.forEach { add(it) }
 
     open fun add(tile: Tile?) {
-        if (tile == null)
-            return
+        tile ?: return
 
-        if (!tiles.contains(tile)) {
-            innerTiles.add(tile)
-            innerOuterBrink.remove(tile)
+        if (!_tiles.contains(tile)) {
+            _tiles.add(tile)
+            _outerBrink.remove(tile)
             tile.neighbours.forEach { addToOuterBrink(it) }
         }
 
@@ -77,15 +76,15 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
     }
 
     private fun addToOuterBrink(tile: Tile) {
-        if (!innerOuterBrink.contains(tile) && !tiles.contains(tile))
-            innerOuterBrink.add(tile)
+        if (!tiles.contains(tile))
+            _outerBrink.add(tile)
     }
 
     fun remove(tile: Tile?) {
         if (tile == null)
             return
 
-        if (!innerTiles.remove(tile))
+        if (!_tiles.remove(tile))
             return
 
         if (tile.getNeighbours { contains(it) }.isNotEmpty())
@@ -93,7 +92,7 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
 
         tile.neighbours.forEach { t: Tile ->
             if (t.neighbours.none { this.contains(it) })
-                innerOuterBrink.remove(t)
+                _outerBrink.remove(t)
         }
     }
 

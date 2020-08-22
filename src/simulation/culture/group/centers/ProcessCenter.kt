@@ -116,6 +116,7 @@ enum class AdministrationType {
 }
 
 fun AdministrationType.getSubordinates(group: Group) = when (this) {
-    AdministrationType.Main -> group.parentGroup.subgroups.filter { it != group }
+    AdministrationType.Main -> group.parentGroup.subgroups
+            .filter { it.processCenter.type == AdministrationType.Subordinate }
     AdministrationType.Subordinate -> listOf()
 }

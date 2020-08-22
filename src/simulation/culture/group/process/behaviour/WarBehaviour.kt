@@ -5,18 +5,20 @@ import simulation.Controller
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.Trait
-import simulation.culture.group.centers.TraitChange
 import simulation.culture.group.centers.makeNegativeChange
 import simulation.culture.group.process.ProcessResult
+import simulation.culture.group.process.action.AddGroupA
 import simulation.culture.group.process.action.ChooseResourcesAndTakeA
+import simulation.culture.group.process.action.TestTraitA
 import simulation.culture.group.process.action.pseudo.ActionSequencePA
 import simulation.culture.group.process.action.pseudo.ConflictWinner
 import simulation.culture.group.process.action.pseudo.ConflictWinner.*
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.culture.group.process.action.pseudo.decide
 import simulation.culture.group.process.emptyProcessResult
+import simulation.culture.group.process.get
 import simulation.culture.group.process.interaction.BattleI
-import simulation.culture.group.process.interaction.TradeI
+import simulation.culture.group.process.pow
 import simulation.event.Event
 import simulation.event.Type
 import simulation.space.resource.container.ResourcePromisePack
@@ -35,18 +37,25 @@ object RandomWarB : AbstractGroupBehaviour() {
                 groups,
                 {
                     val relation = group.relationCenter.getNormalizedRelation(it)
-                    val warpower = it.populationCenter.stratumCenter.warriorStratum.cumulativeWorkAblePopulation
-                    (1 - relation.pow(2)) / (warpower + 1)
+                    val warPower = it.populationCenter.stratumCenter.warriorStratum.cumulativeWorkAblePopulation
+                    (1 - relation.pow(2)) / (warPower + 1)
                 },
                 Controller.session.random
         )
-        group.processCenter.addBehaviour(WarB(
-                opponent,
-                ActionSequencePA(ChooseResourcesAndTakeA(
+
+        val goal =
+                if (opponent.parentGroup != group.parentGroup
+                        && TestTraitA(group, Trait.Expansion.get().pow(2)).run())
+                    AddGroupA(opponent, group)
+                else ChooseResourcesAndTakeA(
                         group,
                         ResourcePromisePack(opponent.populationCenter.turnResources),
                         1000
-                )),
+                )
+
+        group.processCenter.addBehaviour(WarB(
+                opponent,
+                ActionSequencePA(goal),
                 ActionSequencePA(ChooseResourcesAndTakeA(
                         opponent,
                         ResourcePromisePack(group.populationCenter.turnResources),
@@ -83,6 +92,9 @@ class WarB(
         val warResult = when (val warStatus = warFinisher.decide(listOf(battleResult))) {
             Continue -> emptyProcessResult
             is Finish -> {
+                if (opponent.state == Group.State.Dead || group.state == Group.State.Dead)
+                    return emptyProcessResult
+
                 val traitChange = warStatus.winner.decide(
                         ProcessResult(makeNegativeChange(Trait.Peace) * 2.0),
                         emptyProcessResult,

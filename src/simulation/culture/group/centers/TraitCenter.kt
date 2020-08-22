@@ -1,6 +1,7 @@
 package simulation.culture.group.centers
 
 import java.util.*
+import kotlin.math.abs
 
 
 class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
@@ -24,8 +25,9 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
     fun changeOn(traitChange: TraitChange) {
         val (trait, delta) = traitChange
+        val ratio = 1 - abs(traitMap.getValue(trait).value)
 
-        traitMap.getValue(trait).value += delta
+        traitMap.getValue(trait).value += delta * ratio
     }
 
     fun changeOnAll(traitChanges: List<TraitChange>) = traitChanges.forEach { changeOn(it) }
@@ -57,5 +59,5 @@ data class TraitChange(val trait: Trait, val delta: Double) {
     operator fun times(t: Double) = TraitChange(trait, delta * t)
 }
 
-fun makePositiveChange(trait: Trait) = TraitChange(trait, 0.001)
-fun makeNegativeChange(trait: Trait) = TraitChange(trait, -0.001)
+fun makePositiveChange(trait: Trait) = TraitChange(trait, 0.01)
+fun makeNegativeChange(trait: Trait) = TraitChange(trait, -0.01)

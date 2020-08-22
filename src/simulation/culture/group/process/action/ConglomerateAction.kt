@@ -13,10 +13,11 @@ import simulation.space.tile.Tile
 import java.util.*
 
 
-class AddGroupA(group: Group, private val conglomerate: GroupConglomerate) : AbstractGroupAction(group) {
-    override fun run() = Transfer(group).execute(conglomerate)
+class AddGroupA(group: Group, private val newNeighbour: Group) : AbstractGroupAction(group) {
+    override fun run() = Transfer(group).execute(newNeighbour.parentGroup)
 
-    override val internalToString = "Add the group ${group.name} to the ${conglomerate.name}"
+    override val internalToString: String
+        get() = "Add the group ${group.name} to the ${newNeighbour.parentGroup.name}"
 }
 
 class ProcessGroupRemovalA(group: Group, val groupToRemove: Group) : AbstractGroupAction(group) {
@@ -29,7 +30,7 @@ class ProcessGroupRemovalA(group: Group, val groupToRemove: Group) : AbstractGro
 
 class GroupTransferA(group: Group, private val groupToAdd: Group) : AbstractGroupAction(group) {
     override fun run(): ProcessResult {
-        AddGroupA(groupToAdd, group.parentGroup).run()
+        AddGroupA(groupToAdd, group).run()
         ProcessGroupRemovalA(groupToAdd, groupToAdd).run()
 
         return ProcessResult(Event(
@@ -46,9 +47,9 @@ class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAct
     override fun run(): GroupConglomerate {
         val conglomerate = GroupConglomerate(0, group.territoryCenter.center)
 
-        AddGroupA(group, conglomerate).run()
+        Transfer(group).execute(conglomerate)
         for (newGroup in groups)
-            AddGroupA(newGroup, conglomerate).run()
+            AddGroupA(newGroup, group).run()
 
         Controller.session.world.addGroupConglomerate(conglomerate)
 

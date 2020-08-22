@@ -36,6 +36,7 @@ operator fun TraitExtractor.times(t: Double): TraitExtractor = WrapperExtractor(
 fun TraitExtractor.pow(t: Double): TraitExtractor = WrapperExtractor("$this to the power of $t") { center ->
     extract(center).pow(t)
 }
+fun TraitExtractor.pow(n: Int) = this.pow(n.toDouble())
 
 fun TraitExtractor.reverse(): TraitExtractor = WrapperExtractor("reverse of ($this)") { center ->
     max(1 - extract(center), 0.0)

@@ -30,7 +30,7 @@ class CooperateA(
     override fun run(): Boolean {
         val probability = (1 - helpAmount) * group.relationCenter.getNormalizedRelation(group)
         val answer = testProbability(probability, Controller.session.random) &&
-                TestTrait(group, Trait.Peace.get()).run()
+                TestTraitA(group, Trait.Peace.get()).run()
 
         val relationsChange = 1.0 * if (answer) 1 else -1
         ChangeRelationsI(group, target, relationsChange).run()
