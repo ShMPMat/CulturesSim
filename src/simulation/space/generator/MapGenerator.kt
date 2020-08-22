@@ -98,12 +98,14 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
         sw = false
         for (territory in tectonicPlates) {
             val brink = territory.filterOuterBrink { !usedTiles.contains(it) }
-            if (brink.isEmpty()) {
+
+            if (brink.isEmpty())
                 continue
-            }
+
             val tile = randomElement(brink, random)
             territory.add(tile)
             usedTiles.add(tile)
+
             sw = true
         }
     }

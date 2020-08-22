@@ -3,6 +3,7 @@ package simulation.culture.thinking.meaning
 import shmp.random.randomElement
 import shmp.random.testProbability
 import simulation.Controller
+import simulation.Controller.*
 import simulation.culture.aspect.Aspect
 import simulation.space.resource.Resource
 import kotlin.math.pow
@@ -23,7 +24,7 @@ class GroupMemes : MemePool() {
         )
 
         addAll(
-                Controller.session.templateBase.wordBase.values
+                session.templateBase.wordBase.values
                         .flatten()
                         .map { it.copy() }
         )
@@ -54,11 +55,13 @@ class GroupMemes : MemePool() {
             memesCombinationsMap[name.toLowerCase()]//TODO doublewut
 
     val valuableMeme: Meme
-        get() = chooseMeme(all)
+        get() {
+            return chooseMeme(all)
+        }
 
     val memeWithComplexityBias: Meme
         get() =
-            if (testProbability(0.5, Controller.session.random))
+            if (testProbability(0.5, session.random))
                 valuableMeme
             else
                 chooseMeme(memesCombinationsMap.values.toList())
@@ -67,7 +70,7 @@ class GroupMemes : MemePool() {
         return randomElement(
                 memeList,
                 { it.importance.toDouble().pow(2) },
-                Controller.session.random
+                session.random
         )
     }
 

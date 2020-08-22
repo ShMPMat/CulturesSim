@@ -10,6 +10,7 @@ import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.dependency.ConsumeDependency
 import kotlin.random.Random
 
+
 fun constructAndAddSimpleMeme(
         groupMemes: GroupMemes,
         random: Random,

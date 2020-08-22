@@ -36,8 +36,6 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
     val strayPlacesManager = StrayPlacesManager()
 
-    private val memePool = GroupMemes()
-
     var map: WorldMap
 
     var events = EventLog()
