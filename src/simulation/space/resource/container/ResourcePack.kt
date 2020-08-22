@@ -54,7 +54,7 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     fun getResource(resource: Resource): ResourcePack {
         val resourceInMap = resourceMap[resource]
                 ?: return ResourcePack()
-        return ResourcePack(setOf(resourceInMap))
+        return ResourcePack(listOf(resourceInMap))
     }
 
     fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)

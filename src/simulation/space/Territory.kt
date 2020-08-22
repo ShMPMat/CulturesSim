@@ -31,7 +31,7 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
 
     fun getInnerBrink(predicate: (Tile) -> Boolean) = innerBrink.filter(predicate)
 
-    fun getResourcesWithAspectTag(resourceTag: ResourceTag)= differentResources
+    fun getResourcesWithAspectTag(resourceTag: ResourceTag) = differentResources
             .filter { it.tags.contains(resourceTag) }
 
     val differentResources: Collection<Resource>
@@ -53,9 +53,8 @@ open class Territory(tiles: Collection<Tile> = ArrayList()) {
     val isNotEmpty: Boolean
         get() = !isEmpty
 
-    fun getResourceInstances(resource: Resource?) = tiles.flatMap { t ->
-        t.resourcePack.getResources { it == resource }.resources
-    }
+    fun getResourceInstances(resource: Resource) = tiles
+            .flatMap { it.resourcePack.getResource(resource).resources }
 
     operator fun contains(tile: Tile?) = tiles.contains(tile)
 

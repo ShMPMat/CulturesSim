@@ -21,9 +21,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
 
     fun remove(cultureAspect: CultureAspect) = aspectMap.remove(cultureAspect)
 
-    fun removeAll(cultureAspects: List<CultureAspect>) = cultureAspects.forEach {
-        remove(it)
-    }
+    fun removeAll(cultureAspects: List<CultureAspect>) = cultureAspects.mapNotNull { remove(it) }
 
     private fun ritualAdd(ritual: Ritual): Boolean {
         val system = ritualSystems
