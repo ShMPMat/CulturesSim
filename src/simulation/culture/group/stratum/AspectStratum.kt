@@ -10,7 +10,7 @@ import simulation.culture.group.passingReward
 import simulation.culture.group.request.*
 import simulation.culture.thinking.meaning.Meme
 import simulation.culture.thinking.meaning.makeMeme
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.tag.ResourceTag
 import simulation.space.tile.Tile

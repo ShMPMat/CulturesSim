@@ -8,14 +8,15 @@ import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.Meme
 import simulation.event.EventLog
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
+import simulation.space.territory.BrinkInvariantTerritory
+import simulation.space.territory.MutableTerritory
 import simulation.space.tile.Tile
 import simulation.space.tile.getClosest
 import java.util.*
 import kotlin.math.max
-import kotlin.math.min
 
 
 class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
@@ -30,7 +31,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     var events = EventLog()
 
     //Overall Territory under of the child Groups
-    val territory = Territory()
+    val territory: MutableTerritory = BrinkInvariantTerritory()
     private var namesScore = 0
 
     init {
@@ -39,7 +40,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
             val name = name + "_$i"
             addGroup(Group(
                     ProcessCenter(AdministrationType.Main),
-                    ResourceCenter(MutableResourcePack(), center, name),
+                    ResourceCenter(MutableResourcePack(), root, name),
                     this,
                     name,
                     PopulationCenter(
@@ -55,7 +56,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                         (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
                     TraitCenter(),
-                    center,
+                    root,
                     ArrayList(),
                     GroupMemes(),
                     emptyList(),
@@ -104,21 +105,14 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     y
                 }.values.toList()
 
-    private fun overgroupDie() {
+    private fun die() {
         state = State.Dead
         population = 0
     }
 
-    val center: Tile
-        get() = territory.center
-                ?: throw GroupError("Empty territory")
-
     fun update() {
         if (state == State.Dead)
             return
-        if (subgroups.any { it.parentGroup != this }) {
-            val k = 0
-        }
         val mainTime = System.nanoTime()
         _subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
@@ -134,7 +128,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     private fun updatePopulation() {
         computePopulation()
         if (population == 0)
-            overgroupDie()
+            die()
     }
 
     private fun computePopulation() {

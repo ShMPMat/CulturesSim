@@ -1,6 +1,8 @@
 package simulation.space;
 
 import kotlin.Pair;
+import simulation.space.territory.BrinkInvariantTerritory;
+import simulation.space.territory.Territory;
 import simulation.space.tile.Tile;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.stream.Collectors;
 import static shmp.random.RandomProbabilitiesKt.*;
 import static simulation.Controller.session;
 
-public class TectonicPlate extends Territory {
+public class TectonicPlate extends BrinkInvariantTerritory {
     /**
      * Enum with all possible directions in which Plate can move.
      */
@@ -87,7 +89,7 @@ public class TectonicPlate extends Territory {
         if (affectedTiles != null) {
             return affectedTiles;
         }
-        List<Tile> startTiles = getOuterBrink(tile -> {
+        List<Tile> startTiles = filterOuterBrink(tile -> {
             List<Tile> affectedTiles = new ArrayList<>();
             switch (direction) {
                 case U:

@@ -9,7 +9,7 @@ import simulation.culture.group.passingReward
 import simulation.culture.group.request.AspectImprovementRequest
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestCore
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePromise
 import simulation.space.resource.container.ResourcePromisePack

@@ -1,7 +1,8 @@
 package shmp.random
 
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.WorldMap
+import simulation.space.territory.StaticTerritory
 import simulation.space.tile.Tile
 import kotlin.random.Random
 
@@ -15,7 +16,7 @@ fun randomTile(map: WorldMap, random: Random): Tile = randomElement(randomElemen
  * If such Tile does not exists, returns null.
  */
 fun randomTileOnBrink(tiles: Collection<Tile>, random: Random, predicate: (Tile) -> Boolean): Tile? {
-    val brink = Territory(tiles).getOuterBrink(predicate)
+    val brink = StaticTerritory(tiles).filterOuterBrink(predicate)
     return if (brink.isNotEmpty())
         randomElement(brink, random)
     else null

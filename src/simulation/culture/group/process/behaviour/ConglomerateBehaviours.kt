@@ -76,7 +76,7 @@ object SplitGroupB : AbstractGroupBehaviour() {
         if (!session.groupMultiplication)
             return emptyProcessResult
 
-        val tiles = group.overallTerritory.getOuterBrink {
+        val tiles = group.overallTerritory.filterOuterBrink {
             group.territoryCenter.canSettleAndNoGroup(it) && group.parentGroup.getClosestInnerGroupDistance(it) > 2
         }
         if (tiles.isEmpty())

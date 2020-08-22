@@ -6,7 +6,10 @@ import simulation.Controller.session
 import simulation.SimulationError
 import simulation.culture.group.*
 import simulation.culture.group.place.StaticPlace
-import simulation.space.Territory
+import simulation.space.territory.BrinkInvariantTerritory
+import simulation.space.territory.MutableTerritory
+import simulation.space.territory.StaticTerritory
+import simulation.space.territory.Territory
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
@@ -18,7 +21,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     val settled: Boolean
         get() = notMoved >= 50
 
-    val territory = Territory()
+    val territory: MutableTerritory = BrinkInvariantTerritory()
     val center: Tile
         get() = territory.center
                 ?: throw GroupError("Empty Group Territory")
@@ -55,7 +58,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     val accessibleTerritory: Territory
-        get() = Territory(reachableTiles)
+        get() = StaticTerritory(reachableTiles)
 
     fun getAllNearGroups(exception: Group) = territory.outerBrink
             .mapNotNull { getResidingGroup(it) }
@@ -63,7 +66,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             .toSet()
 
     fun update() {//TODO change Water on GoodTiles
-        leaveTiles(territory.getTiles { !canSettle(it) })
+        leaveTiles(territory.filter { !canSettle(it) })
         if (territory.isEmpty) {
             tileTag.group.die()
             return
@@ -86,7 +89,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                 ?: return false
         territory.center = newCenter
         claimTile(newCenter)
-        leaveTiles(territory.getTiles { !isTileReachable(it) })
+        leaveTiles(territory.filter { !isTileReachable(it) })
         return true
     }
 

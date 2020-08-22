@@ -11,7 +11,7 @@ import simulation.culture.group.cultureaspect.CultureAspect
 import simulation.culture.thinking.meaning.GroupMemes
 import simulation.culture.thinking.meaning.MemeSubject
 import simulation.event.Type
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.tile.Tile
 import java.util.*
 

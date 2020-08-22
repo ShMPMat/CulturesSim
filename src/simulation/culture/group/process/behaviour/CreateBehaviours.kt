@@ -19,7 +19,8 @@ import simulation.culture.thinking.meaning.flattenMemePair
 import simulation.culture.thinking.meaning.makeResourceMemes
 import simulation.culture.thinking.meaning.makeResourcePackMemes
 import simulation.event.Type
-import simulation.space.Territory
+import simulation.space.territory.StaticTerritory
+import simulation.space.territory.Territory
 import simulation.space.tile.TileTag
 import simulation.space.tile.getDistance
 
@@ -51,11 +52,12 @@ object RandomArtifactB : AbstractGroupBehaviour() {
     override val internalToString = "Make a random Resource with some meaning"
 }
 
-class BuildRoadB(private val path: Territory, val projectName: String) : PlanBehaviour() {
+class BuildRoadB(path: Territory, val projectName: String) : PlanBehaviour() {
     private var built: Int = 0
+    private val path = path.tiles.toMutableList()
 
     override fun run(group: Group): ProcessResult {
-        if (path.isEmpty)
+        if (path.isEmpty())
             return emptyProcessResult
 
         val roadExample = session.world.resourcePool.getSimpleName("Road")
@@ -68,11 +70,11 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
 
         val roadMemes = makeResourceMemes(roadResource).flattenMemePair()
 
-        val tile = path.tiles.last()
+        val tile = path.last()
         val place = StaticPlace(tile, TileTag(projectName + built, projectName))
         built++
         place.addResource(roadResource)
-        path.remove(tile)
+        path.removeAt(path.lastIndex)
 
         val event = RoadCreationEvent(
                 "${group.name} created a road on a tile ${tile.posStr}",
@@ -81,7 +83,7 @@ class BuildRoadB(private val path: Territory, val projectName: String) : PlanBeh
 
         return ProcessResult(roadMemes) +
                 ProcessResult(makePositiveChange(Trait.Creation) * 0.05) +
-                if (path.isEmpty) {
+                if (path.isEmpty()) {
                     isFinished = true
 
                     ProcessResult(event, Event(Type.Creation, "${group.name} finished a road creation"))
@@ -144,7 +146,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         val path = group.territoryCenter.makePath(start, finish)
                 ?: return
         roadConstruction = BuildRoadB(
-                Territory(path),
+                StaticTerritory(path),
                 "${group.name} road $projectsDone"
         )
         projectsDone++

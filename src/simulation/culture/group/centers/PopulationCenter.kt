@@ -11,7 +11,7 @@ import simulation.culture.group.request.ExecutedRequestResult
 import simulation.culture.group.request.Request
 import simulation.culture.group.request.RequestPool
 import simulation.culture.group.stratum.*
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.resource.container.ResourcePack
 import simulation.space.resource.tag.labeler.ResourceLabeler

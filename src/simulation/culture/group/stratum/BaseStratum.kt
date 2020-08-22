@@ -5,7 +5,7 @@ import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
 import simulation.culture.group.request.resourceToRequest
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.Resource
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
@@ -35,7 +35,7 @@ abstract class BaseStratum(tile: Tile, final override val name: String) : Stratu
 
         if (goodPlaces.isEmpty()) {
             val goodTiles = group.territoryCenter.territory
-                    .getTiles { resource.isAcceptable(it) }
+                    .filter { resource.isAcceptable(it) }
             if (goodTiles.isNotEmpty()) {
                 val tagType = "($name of ${group.name})"
                 place = StaticPlace(

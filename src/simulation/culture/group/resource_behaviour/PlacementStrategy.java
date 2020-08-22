@@ -1,6 +1,6 @@
 package simulation.culture.group.resource_behaviour;
 
-import simulation.space.Territory;
+import simulation.space.territory.Territory;
 import simulation.space.tile.Tile;
 import simulation.space.resource.container.MutableResourcePack;
 
@@ -51,12 +51,12 @@ public class PlacementStrategy {
             case Border:
                 List<Tile> border = controlledTerritory.getInnerBrink();
                 List<Tile> unfinishedBorder = controlledTerritory
-                        .getInnerBrink(t -> !t.getResourcePack().containsAll(resourcePack));
+                        .filterInnerBrink(t -> !t.getResourcePack().containsAll(resourcePack));
                 return unfinishedBorder.isEmpty()
                         ? randomElement(border, session.random)
                         : randomElement(unfinishedBorder, session.random);
             case Homogeneous:
-                tiles = controlledTerritory.getTiles(t -> !t.getResourcePack().containsAll(resourcePack));
+                tiles = controlledTerritory.filter(t -> !t.getResourcePack().containsAll(resourcePack));
                 return tiles.isEmpty()
                         ? randomTile(controlledTerritory, session.random)
                         : randomElement(tiles, session.random);

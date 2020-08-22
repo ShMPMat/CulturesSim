@@ -1,7 +1,7 @@
 package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 

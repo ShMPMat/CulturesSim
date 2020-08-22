@@ -6,7 +6,7 @@ import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.GroupError
 import simulation.culture.group.request.Request
 import simulation.culture.group.stratum.*
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 

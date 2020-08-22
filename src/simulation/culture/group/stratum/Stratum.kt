@@ -2,7 +2,7 @@ package simulation.culture.group.stratum
 
 import simulation.culture.group.centers.Group
 import simulation.culture.group.place.StaticPlace
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import kotlin.math.min
 

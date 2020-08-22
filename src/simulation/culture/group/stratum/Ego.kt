@@ -8,7 +8,7 @@ import simulation.culture.group.centers.RequestConstructController
 import simulation.culture.group.place.MovablePlace
 import simulation.culture.group.request.RequestPool
 import simulation.culture.group.request.resourceToRequest
-import simulation.space.Territory
+import simulation.space.territory.Territory
 import simulation.space.resource.container.MutableResourcePack
 import simulation.space.tile.Tile
 import simulation.space.tile.TileTag

@@ -59,12 +59,12 @@ class RequestCenter {
         _unfinishedRequestMap[constructFoodRequest(controller)] = MutableResourcePack()
     }
 
-    private fun addWarmthRequest(controller: RequestConstructController) {
-        val temp = controller.group.territoryCenter.territory.minTemperature
-                ?: return
-        if (temp < 0)
-            _unfinishedRequestMap[constructWarmthRequest(controller)] = MutableResourcePack()
-    }
+    private fun addWarmthRequest(controller: RequestConstructController) =
+            controller.group.territoryCenter.territory.minTemperature
+                    ?.takeIf { it < 0 }
+                    ?.let {
+                        _unfinishedRequestMap[constructWarmthRequest(controller)] = MutableResourcePack()
+                    }
 
     private fun addClothesRequest(controller: RequestConstructController) {
         val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
