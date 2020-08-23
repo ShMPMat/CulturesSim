@@ -57,6 +57,8 @@ class TraitValue(value: Double = 0.0) {
 
 data class TraitChange(val trait: Trait, val delta: Double) {
     operator fun times(t: Double) = TraitChange(trait, delta * t)
+
+    override fun toString() = "$trait on amount $delta"
 }
 
 fun makePositiveChange(trait: Trait) = TraitChange(trait, 0.01)
