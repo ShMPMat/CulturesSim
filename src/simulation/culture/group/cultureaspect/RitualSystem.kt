@@ -27,7 +27,7 @@ class RitualSystem constructor(rituals: Collection<Ritual>, val reason: Reason) 
         _rituals.forEach { it.use(group) }
         if (!testProbability(session.groupCollapsedAspectUpdate, session.random))
             return
-        val ritual = constructRitual(reason, group, session.random)
+        val ritual = createRitual(reason, group, session.random)
         if (ritual != null)
             _rituals.add(ritual)
     }

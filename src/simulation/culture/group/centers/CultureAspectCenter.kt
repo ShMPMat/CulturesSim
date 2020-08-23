@@ -23,6 +23,7 @@ class CultureAspectCenter(private val group: Group) {
         cultureAspect ?: return
 
         aspectPool.add(cultureAspect)
+
         if (cultureAspect is CherishedResource)
             aestheticallyPleasingResources.add(cultureAspect.resource)
     }
@@ -51,7 +52,7 @@ class CultureAspectCenter(private val group: Group) {
                     group,
                     session.random
             )
-            AspectRandom.Ritual -> constructRitual(//TODO recursively go in dependencies;
+            AspectRandom.Ritual -> createRitual(//TODO recursively go in dependencies;
                     constructBetterAspectUseReason(
                             group,
                             group.cultureCenter.aspectCenter.aspectPool.converseWrappers,
@@ -64,6 +65,10 @@ class CultureAspectCenter(private val group: Group) {
             AspectRandom.Tale -> createTale(
                     group,
                     session.templateBase,
+                    session.random
+            )
+            AspectRandom.Concept -> createSimpleConcept(
+                    group,
                     session.random
             )
         }
@@ -83,24 +88,17 @@ class CultureAspectCenter(private val group: Group) {
         }
     }
 
-    private fun joinSimilarRituals() {
-        val system = takeOutSimilarRituals(aspectPool)
-                ?: return
-
+    private fun joinSimilarRituals() = takeOutSimilarRituals(aspectPool)?.let { system ->
         addCultureAspect(system)
         reasonsWithSystems.add(system.reason)
     }
 
-    private fun makeGod(group: Group) {
-        val cult = takeOutGod(aspectPool, group, session.random)
-                ?: return
-
+    private fun makeGod(group: Group) = takeOutGod(aspectPool, group, session.random)?.let { cult ->
         addCultureAspect(cult)
     }
 
-    private fun joinSimilarTalesBy(infoTag: String) {
-        val system = takeOutSimilarTalesByTag(infoTag, aspectPool)
-        system?.let { addCultureAspect(it) }
+    private fun joinSimilarTalesBy(infoTag: String) = takeOutSimilarTalesBy(infoTag, aspectPool)?.let { system ->
+        addCultureAspect(system)
     }
 
     private val neighbourCultureAspects: List<Pair<CultureAspect, Group>>
@@ -151,10 +149,11 @@ class CultureAspectCenter(private val group: Group) {
 }
 
 private enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
+    Tale(3.0),
     Depict(1.0),
     AestheticallyPleasing(1.0),
     Ritual(1.0),
-    Tale(3.0)
+    Concept(1.0)
 }
 
 private enum class ChangeRandom(override val probability: Double) : SampleSpaceObject {

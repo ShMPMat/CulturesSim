@@ -26,7 +26,7 @@ fun takeOutSimilarRituals(
     return null
 }
 
-fun takeOutSimilarTalesByTag(
+fun takeOutSimilarTalesBy(
         infoTag: String,
         aspectPool: MutableCultureAspectPool,
         bound: Int = 3
