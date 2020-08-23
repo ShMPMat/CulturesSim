@@ -12,6 +12,12 @@ import kotlin.math.pow
 class GroupMemes : MemePool() {
     private val memesCombinationsMap = mutableMapOf<String, Meme>()
 
+    private var popularMemes = listOf<Meme>()
+
+    private fun updatePopular() {
+        popularMemes = all.sortedByDescending { it.importance }.take(50)
+    }
+
     init {
         addAll(
                 listOf("group", "time", "space", "life", "death", "sun", "luck", "misfortune")
@@ -28,6 +34,8 @@ class GroupMemes : MemePool() {
                         .flatten()
                         .map { it.copy() }
         )
+
+        updatePopular()
     }
 
     override val isEmpty: Boolean
@@ -56,6 +64,11 @@ class GroupMemes : MemePool() {
 
     val valuableMeme: Meme
         get() {
+            if (testProbability(0.9, session.random))
+                return chooseMeme(popularMemes)
+
+            updatePopular()
+
             return chooseMeme(all)
         }
 
