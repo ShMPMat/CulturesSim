@@ -99,7 +99,7 @@ class ProcessCenter(type: AdministrationType) {
     fun consumeProcessResult(group: Group, result: ProcessResult) {
         group.addEvents(result.events)
         group.cultureCenter.memePool.addAll(result.memes)
-        group.cultureCenter.traitCenter.changeOnAll(result.traitChanges)
+        group.cultureCenter.consumeAllTraitChanges(result.traitChanges)
     }
 
     override fun toString() = """

@@ -15,6 +15,7 @@ import simulation.space.territory.Territory
 import simulation.space.tile.Tile
 import java.util.*
 
+
 class Group(
         val processCenter: ProcessCenter,
         val resourceCenter: ResourceCenter,
@@ -64,7 +65,9 @@ class Group(
         populationCenter.die()
         territoryCenter.die()
         cultureCenter.die()
+
         addEvent(Event(Type.Death, "Group $name died"))
+
         for (group in relationCenter.relatedGroups)
             group.cultureCenter.memePool.addMemeCombination(
                     cultureCenter.memePool.getMeme("group")
@@ -74,13 +77,9 @@ class Group(
             )
     }
 
-    fun addEvent(event: Event) {
-        cultureCenter.events.add(event)
-    }
+    fun addEvent(event: Event) = cultureCenter.events.add(event)
 
-    fun addEvents(events: List<Event>) {
-        cultureCenter.events.addAll(events)
-    }
+    fun addEvents(events: List<Event>) = cultureCenter.events.addAll(events)
 
     fun update() {
         val others = System.nanoTime()
@@ -88,8 +87,10 @@ class Group(
         cultureCenter.requestCenter.updateRequests(this)
         populationCenter.executeRequests(cultureCenter.requestCenter.turnRequests)
         territoryCenter.update()
+
         if (state == State.Dead)
             return
+
         move()
         if (populationCenter.isMinPassed(territoryCenter.territory))
             territoryCenter.expand()
@@ -113,7 +114,9 @@ class Group(
     }
 
     private fun checkNeeds() {
-        val need = resourceCenter.direNeed ?: return
+        val need = resourceCenter.direNeed
+                ?: return
+
         cultureCenter.addNeedAspect(need)
         populationCenter.wakeNeedStrata(need)
     }
@@ -154,19 +157,20 @@ class Group(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
+        if (this === other)
             return true
-        }
-        if (other == null || javaClass != other.javaClass) {
+
+        if (other == null || javaClass != other.javaClass)
             return false
-        }
+
         val group = other as Group
         return name == group.name
     }
 
     override fun hashCode() = Objects.hash(name)
 
-    override fun toString() = chompToSize("""
+    override fun toString() = chompToSize(
+            """
         |Group $name is $state, population = ${populationCenter.population}, parent - ${parentGroup.name}
         |
         |$cultureCenter
@@ -181,7 +185,9 @@ class Group(
         |$relationCenter
         |
         |$processCenter
-    """.trimMargin(), 70).toString()
+            """.trimMargin(),
+            70
+    ).toString()
 
     enum class State {
         Live, Dead

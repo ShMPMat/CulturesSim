@@ -22,7 +22,7 @@ class Concept private constructor(
         if (appliedTimes >= applyTimes)
             return
 
-        group.cultureCenter.traitCenter.changeOnAll(
+        group.cultureCenter.consumeAllTraitChanges(
                 traitChanges.map { it.copy(delta = it.delta / applyTimes) }
         )
 

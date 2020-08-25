@@ -1,5 +1,7 @@
 package simulation.culture.group.centers
 
+import simulation.culture.thinking.meaning.Meme
+import simulation.culture.thinking.meaning.MemeSubject
 import java.util.*
 import kotlin.math.abs
 
@@ -23,14 +25,14 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
     fun normalValue(trait: Trait) = (value(trait) + 1) / 2
 
-    fun changeOn(traitChange: TraitChange) {
+    internal fun changeOn(traitChange: TraitChange) {
         val (trait, delta) = traitChange
         val ratio = 1 - abs(traitMap.getValue(trait).value)
 
         traitMap.getValue(trait).value += delta * ratio
     }
 
-    fun changeOnAll(traitChanges: List<TraitChange>) = traitChanges.forEach { changeOn(it) }
+    internal fun changeOnAll(traitChanges: List<TraitChange>) = traitChanges.forEach { changeOn(it) }
 
     fun copy() = TraitCenter(traitMap)
 
@@ -38,11 +40,11 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 }
 
 
-enum class Trait {
-    Peace,
-    Expansion,
-    Consolidation,
-    Creation
+enum class Trait(val positiveMeme: Meme, val negativeMeme: Meme) {
+    Peace(MemeSubject("Peace"), MemeSubject("War")),
+    Expansion(MemeSubject("Expansion"), MemeSubject("Content")),
+    Consolidation(MemeSubject("Consolidation"), MemeSubject("Freedom")),
+    Creation(MemeSubject("Creation"), MemeSubject("Destruction"))
 }
 
 class TraitValue(value: Double = 0.0) {

@@ -17,6 +17,8 @@ import simulation.event.Type
 import simulation.space.territory.Territory
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.labeler.ResourceLabeler
+import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.log
 
 
@@ -105,8 +107,18 @@ class CultureCenter(
         return aspects
     }
 
-    fun pushAspects() {
-        aspectCenter.pushAspects()
+    fun consumeAllTraitChanges(changes: List<TraitChange>) {
+        traitCenter.changeOnAll(changes)
+
+        for (change in changes.filter { it.delta != 0.0 }) {
+            val meme =
+                    if (change.delta > 0.0)
+                        change.trait.positiveMeme
+                    else
+                        change.trait.negativeMeme
+
+            memePool.strengthenMeme(meme, ceil(abs(change.delta / 0.001)).toInt())
+        }
     }
 
     fun die() = cultureAspectCenter.die(group)
