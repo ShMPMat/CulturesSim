@@ -101,8 +101,9 @@ class GroupMemes : MemePool() {
             memesCombinationsMap[meme.toString()] = meme.copy()
     }
 
-    override fun strengthenMeme(meme: Meme)
-            = strengthenMeme(meme, 1)
+    override fun strengthenMeme(meme: Meme) = strengthenMeme(meme, 1)
+
+    fun strengthenMemes(memes: List<Meme>) = memes.forEach { strengthenMeme(it, it.importance) }
 
     override fun strengthenMeme(meme: Meme, delta: Int): Boolean {
         if (super.strengthenMeme(meme, delta))
@@ -114,12 +115,11 @@ class GroupMemes : MemePool() {
                     return true
                 }
 
-        if (meme.isSimple) {
+        if (meme.isSimple)
             add(meme.copy())
-            return true
-        }
+        else
+            addMemeCombination(meme.copy())
 
-        addMemeCombination(meme.copy())
         return true
     }
 }

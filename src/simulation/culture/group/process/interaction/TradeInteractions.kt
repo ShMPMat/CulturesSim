@@ -18,7 +18,7 @@ class TradeI(
         participator: Group,
         val amount: Int
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         val wantedResources = ChooseResourcesA(
                 initiator,
                 RequestStockA(participator).run(),
@@ -27,7 +27,7 @@ class TradeI(
 
         val priceForP = TradeEvaluateResourcesA(participator, wantedResources.makeCopy()).run()
         if (priceForP == 0)
-            return emptyProcessResult
+            return emptyProcessResult to emptyProcessResult
 
         val priceInResources = ChooseResourcesA(
                 participator,
@@ -38,7 +38,7 @@ class TradeI(
         val priceForI = TradeEvaluateResourcesA(participator, priceInResources.makeCopy()).run()
 
         if (priceForP > priceForI)
-            return emptyProcessResult
+            return emptyProcessResult to emptyProcessResult
 
         val got = wantedResources.extract()
         val given = priceInResources.extract()
@@ -57,7 +57,8 @@ class TradeI(
                 1
         ).run()
 
-        return result + ProcessResult(makeStratumMemes(initiator.populationCenter.stratumCenter.traderStratum))
+        return result + ProcessResult(makeStratumMemes(initiator.populationCenter.stratumCenter.traderStratum)) to
+                ProcessResult(makeStratumMemes(participator.populationCenter.stratumCenter.traderStratum))
     }
 }
 
@@ -68,7 +69,7 @@ class SwapResourcesI(
         private val gotPack: ResourcePack,
         private val givePack: ResourcePack
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         ScheduleActionA(
                 participator,
                 ReceivePopulationResourcesA(initiator, gotPack),
@@ -83,6 +84,8 @@ class SwapResourcesI(
         return ProcessResult(Event(
                 Type.GroupInteraction,
                 "${initiator.name} and ${participator.name} begun swapping of $gotPack and $givePack"
-        )) + ProcessResult(makeResourcePackMemes(gotPack) + makeResourcePackMemes(givePack))
+        )) +
+                ProcessResult(makeResourcePackMemes(gotPack) + makeResourcePackMemes(givePack)) to
+                ProcessResult(makeResourcePackMemes(gotPack) + makeResourcePackMemes(givePack))
     }
 }

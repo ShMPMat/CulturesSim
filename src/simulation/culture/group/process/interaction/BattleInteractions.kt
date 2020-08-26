@@ -9,17 +9,16 @@ import simulation.culture.group.process.action.DecideBattleTileA
 import simulation.culture.group.process.action.GatherWarriorsA
 import simulation.culture.group.process.action.pseudo.*
 import simulation.culture.group.process.emptyProcessResult
-import simulation.culture.thinking.meaning.flattenMemePair
 import simulation.culture.thinking.meaning.makeStratumMemes
 import simulation.event.Event
 import simulation.event.Type
 
 
-class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(initiator, participator) {
+class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(initiator, participator) {
     var status = ConflictWinner.Draw
         private set
 
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         val tile = DecideBattleTileA(initiator, participator).run().posStr
         val iniEvaluation = evaluateForces(participator)
         val partEvaluation = evaluateForces(initiator)
@@ -33,15 +32,27 @@ class BattleI(initiator: Group, participator: Group): AbstractGroupInteraction(i
                 "${participator.name} won a battle with ${initiator.name} on $tile",
                 "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
         )
-        val traitChangeResult = status.decide(
+        val traitChangeIniResult = status.decide(
                 ProcessResult(makeNegativeChange(Trait.Peace)),
                 emptyProcessResult,
                 ProcessResult(makeNegativeChange(Trait.Peace))
         )
-        val warriorMemes = iniWarriors
+        val traitChangePartResult = status.decide(
+                emptyProcessResult,
+                ProcessResult(makeNegativeChange(Trait.Peace)),
+                ProcessResult(makeNegativeChange(Trait.Peace))
+        )
+        val warriorIniMemes = iniWarriors
                 .map { makeStratumMemes(it.stratum) }
                 .flatten()
-        return ProcessResult(ConflictResultEvent(description, status)) + ProcessResult(warriorMemes) + traitChangeResult
+        val warriorPartMemes = partWarriors
+                .map { makeStratumMemes(it.stratum) }
+                .flatten()
+        return ProcessResult(ConflictResultEvent(description, status)) +
+                ProcessResult(warriorIniMemes) +
+                traitChangeIniResult to
+                ProcessResult(warriorPartMemes) +
+                traitChangePartResult
     }
 
     private fun evaluateForces(group: Group) =
@@ -55,9 +66,9 @@ class ActionBattleI(
         private val participatorWinAction: EventfulGroupPseudoAction,
         private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA()
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         val battle = BattleI(initiator, participator)
-        val resultEvents = battle.run()
+        val resultIni = battle.run()
         val action = battle.status.decide(initiatorWinAction, participatorWinAction, drawWinAction)
         val actionInternalEvents = action.run()
 
@@ -65,7 +76,7 @@ class ActionBattleI(
                 Type.Change,
                 "In the result of battle between ${initiator.name} and ${participator.name}: $action"
         )
-        return resultEvents + actionInternalEvents +
-                ProcessResult(actionEvent)
+        return resultIni + actionInternalEvents + ProcessResult(actionEvent) to
+                emptyProcessResult
     }
 }

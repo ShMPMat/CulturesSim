@@ -123,9 +123,7 @@ class CultureCenter(
 
     fun die() = cultureAspectCenter.die(group)
 
-    fun finishUpdate() {
-        requestCenter.finishUpdate()
-    }
+    fun finishUpdate() = requestCenter.finishUpdate()
 
     fun evaluateResource(resource: Resource): Int {
         val entry = evaluatedMap[resource]

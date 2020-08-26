@@ -25,9 +25,9 @@ class RequestHelpI(
         participator: Group,
         val request: Request
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         if (!CooperateA(participator, initiator, 0.5).run())
-            return emptyProcessResult
+            return emptyProcessResult to emptyProcessResult
 
         val given = ExecuteRequestA(participator, request.reassign(participator)).run()
         val delivery = ScheduleActionA(
@@ -46,8 +46,10 @@ class RequestHelpI(
                     request.evaluator.evaluate(given)
             )) +
                     ProcessResult(makeResourcePackMemes(given)) +
-                    ProcessResult(makePositiveChange(Trait.Peace) * 3.0)
-        } else emptyProcessResult
+                    ProcessResult(makePositiveChange(Trait.Peace) * 3.0) to
+                    ProcessResult(makeResourcePackMemes(given)) +
+                    ProcessResult(makePositiveChange(Trait.Peace) * 5.0)
+        } else emptyProcessResult to emptyProcessResult
     }
 }
 
@@ -56,7 +58,7 @@ class GiveGiftI(
         initiator: Group,
         participator: Group
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         val relation = initiator.relationCenter.getNormalizedRelation(participator)
 
         val gift = ChooseResourcesA(
@@ -65,7 +67,7 @@ class GiveGiftI(
                 (1000 * (1 - relation) + 1).toInt()
         ).run()
 
-        return ReceiveGiftI(initiator, participator, gift).run()
+        return ReceiveGiftI(initiator, participator, gift).run() to emptyProcessResult
     }
 }
 
@@ -74,7 +76,7 @@ class ReceiveGiftI(
         participator: Group,
         val gift: ResourcePromisePack
 ) : AbstractGroupInteraction(initiator, participator) {
-    override fun innerRun(): ProcessResult {
+    override fun innerRun(): InteractionResult {
         val giftCopy = gift.makeCopy()
         val giftStr = giftCopy.listResources
         val worth = EvaluateResourcesA(participator, giftCopy).run() + 0.8
@@ -87,12 +89,14 @@ class ReceiveGiftI(
                     Type.Cooperation,
                     "${participator.name} accepted a gift of $giftStr from ${initiator.name}"
             ))  + ProcessResult(makeResourcePackMemes(giftCopy))
-                    ChangeRelationsI(initiator, participator, 2.0).run()
+                    ChangeRelationsI(initiator, participator, 2.0).run() to
+                            ProcessResult(makeResourcePackMemes(giftCopy))
         } else
             ProcessResult(Event(
                     Type.Conflict,
                     "${participator.name} rejected a gift of $giftStr from ${initiator.name}"
             )) +
-                    ChangeRelationsI(initiator, participator, -2.0).run()
+                    ChangeRelationsI(initiator, participator, -2.0).run() to
+                    emptyProcessResult
     }
 }

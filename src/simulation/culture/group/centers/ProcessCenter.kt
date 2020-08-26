@@ -98,7 +98,7 @@ class ProcessCenter(type: AdministrationType) {
 
     fun consumeProcessResult(group: Group, result: ProcessResult) {
         group.addEvents(result.events)
-        group.cultureCenter.memePool.addAll(result.memes)
+        group.cultureCenter.memePool.strengthenMemes(result.memes)
         group.cultureCenter.consumeAllTraitChanges(result.traitChanges)
     }
 
