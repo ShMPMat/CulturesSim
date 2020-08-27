@@ -14,10 +14,18 @@ class ChangeRelationsA(
         private val delta: Double
 ) : AbstractGroupAction(group) {
     override fun run() {
-        val targetRelation = group.relationCenter.relations.firstOrNull { it.other == target }
-        if (targetRelation != null)
-            targetRelation.positiveInteractions += delta
+        changeRelationsOneGroup(group, delta)
+
+        if (target.parentGroup != group.parentGroup)
+            group.parentGroup.subgroups
+                    .filter { it != group }
+                    .forEach { changeRelationsOneGroup(it, delta / 3) }
     }
+
+    private fun changeRelationsOneGroup(currentGroup: Group, currentDelta: Double) =
+        group.relationCenter.getRelation(target)?.let {
+            it.positiveInteractions += delta
+        }
 
     override val internalToString = "Change relations of ${group.name} and ${target.name} on $delta"
 }

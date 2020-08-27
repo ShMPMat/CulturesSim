@@ -27,7 +27,8 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
                 getConglomerateGroups(conglomerate).map { it.normalized }.average(),
                 0.0000001
         )
-        return if (result.isNaN()) 1.0 else result
+        return if (result.isNaN()) 1.0
+        else result
     }
 
     fun getMinConglomerateRelation(conglomerate: GroupConglomerate) =
@@ -38,11 +39,13 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
 
     fun getNormalizedRelation(group: Group) = relationsMap[group]?.normalized ?: 0.5
 
+    fun getRelation(group: Group) = relationsMap[group]
+
     fun evaluateTile(tile: Tile) = relations.map {
         (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.center)).toInt()
     }.fold(0, Int::plus)
 
-    fun updateRelations(groups: Collection<Group>, owner: Group) {
+    internal fun updateRelations(groups: Collection<Group>, owner: Group) {
         updateNewConnections(groups, owner)
         updateRelations()
     }

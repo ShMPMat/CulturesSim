@@ -30,5 +30,4 @@ abstract class AbstractGroupInteraction(
     }
 }
 
-//data class InteractionResult(val initiatorResult: ProcessResult, val participatorResult: ProcessResult)
 typealias InteractionResult = Pair<ProcessResult, ProcessResult>
