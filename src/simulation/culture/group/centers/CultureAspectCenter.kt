@@ -2,6 +2,7 @@ package simulation.culture.group.centers
 
 import shmp.random.SampleSpaceObject
 import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.culture.group.cultureaspect.*
@@ -113,20 +114,15 @@ class CultureAspectCenter(private val group: Group) {
         if (!session.isTime(session.groupTurnsBetweenAdopts))
             return
 
-        val cultureAspects = getNeighbourCultureAspects { !aspectPool.contains(it) }
-        //TODO mb some more smart check?
-        if (cultureAspects.isNotEmpty()) try {
-            val aspect = randomElement(
-                    cultureAspects,
-                    { (_, g) -> group.relationCenter.getNormalizedRelation(g) },
-                    session.random
-            ).first.adopt(group)
-                    ?: return
+        val aspect = randomElementOrNull(
+                getNeighbourCultureAspects { !aspectPool.contains(it) },
+                { (_, g) -> group.relationCenter.getNormalizedRelation(g) },
+                session.random
+        )?.first?.adopt(group)
+                ?: return
 
-            if (shouldAdopt(aspect))
-                addCultureAspect(aspect)
-        } catch (e: NoSuchElementException) {
-        }
+        if (shouldAdopt(aspect))
+            addCultureAspect(aspect)
     }
 
     private fun shouldAdopt(aspect: CultureAspect): Boolean {
@@ -147,6 +143,7 @@ class CultureAspectCenter(private val group: Group) {
         |${aspectPool.all.joinToString()}
     """.trimMargin()
 }
+
 
 private enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
     Tale(3.0),

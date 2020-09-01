@@ -1,7 +1,6 @@
 package simulation.culture.group.stratum
 
-import shmp.random.randomElement
-import shmp.random.testProbability
+import shmp.random.*
 import simulation.Controller.session
 import simulation.culture.group.centers.Group
 import simulation.culture.group.centers.RequestConstructController
@@ -43,12 +42,14 @@ class Ego(tile: Tile, name: String) {
                 .sortedBy { it.first }
                 .take(1).toList()
         place.current.addResources(best.map { it.second })
-        val allGoodProduced = group.cultureCenter.aspectCenter.aspectPool.producedResources.asSequence()
-                .map { group.cultureCenter.evaluateResource(it).toDouble() to it }
-                .filter { (n) -> n > 3 }.toList()
-        if (allGoodProduced.isNotEmpty()) {
-            val chosen = randomElement(allGoodProduced, { it.first }, session.random)
-            val request = resourceToRequest(chosen.second, group, 1, 50)
+        val allGoodProduced = group.cultureCenter.aspectCenter.aspectPool.producedResources
+                .asSequence()
+                .map { it.toSampleSpaceObject(group.cultureCenter.evaluateResource(it).toDouble()) }
+                .filter { it.probability > 3.0 }
+                .toList()
+
+        randomUnwrappedElementOrNull(allGoodProduced, session.random)?.let { chosen ->
+            val request = resourceToRequest(chosen, group, 1, 50)
             val result = group.populationCenter.executeRequest(request).pack
             place.current.addResources(result)
         }

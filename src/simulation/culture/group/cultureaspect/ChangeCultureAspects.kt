@@ -1,6 +1,7 @@
 package simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import simulation.culture.group.centers.Group
 import simulation.culture.group.cultureaspect.worship.GodWorship
 import simulation.culture.group.cultureaspect.worship.MemeWorship
@@ -57,8 +58,9 @@ fun takeOutWorship(
             .map { it as TaleSystem }
             .filter { it.groupingMeme is MemeSubject }
             .filter { it.groupingMeme !in existing }
-    if (systems.isEmpty()) return null
-    val system = randomElement(systems, random)
+    val system = randomElementOrNull(systems, random)
+            ?: return null
+
     aspectPool.remove(system)
     val depictSystem = takeOutDepictionSystem(
             aspectPool,

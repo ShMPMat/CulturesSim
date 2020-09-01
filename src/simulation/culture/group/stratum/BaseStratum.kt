@@ -36,6 +36,8 @@ abstract class BaseStratum(tile: Tile, final override val name: String) : Stratu
         if (goodPlaces.isEmpty()) {
             val goodTiles = group.territoryCenter.territory
                     .filter { resource.isAcceptable(it) }
+
+
             if (goodTiles.isNotEmpty()) {
                 val tagType = "($name of ${group.name})"
                 place = StaticPlace(
@@ -45,9 +47,10 @@ abstract class BaseStratum(tile: Tile, final override val name: String) : Stratu
                 addPlace(place)
             }
         } else
-            place = randomElement(innerPlaces, Controller.session.random)
+            place = randomElement(goodPlaces, Controller.session.random)
 
-        if (place == null) return
+        if (place == null)
+            return
 
         place.addResource(resource)
     }

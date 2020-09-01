@@ -7,7 +7,7 @@ import simulation.space.resource.container.MutableResourcePack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static shmp.random.RandomCollectionsKt.*;
+import static shmp.random.RandomElementKt.*;
 import static shmp.random.RandomSpaceKt.randomTile;
 import static simulation.Controller.*;
 

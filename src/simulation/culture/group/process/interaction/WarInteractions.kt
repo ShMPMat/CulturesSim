@@ -9,7 +9,6 @@ import simulation.culture.group.process.action.DecideWarDeclarationA
 import simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import simulation.culture.group.process.action.pseudo.InteractionWrapperPA
 import simulation.culture.group.process.behaviour.WarB
-import simulation.culture.group.process.emptyProcessResult
 import simulation.event.Event
 import simulation.event.Type
 
@@ -18,9 +17,9 @@ class ProbableStrikeWarI(
         initiator: Group,
         participator: Group,
         val reason: String,
-        val firstAction: EventfulGroupPseudoAction = makeDecreaseRelationsWarResult(initiator, participator),
-        val secondAction: EventfulGroupPseudoAction = makeDecreaseRelationsWarResult(initiator, participator),
-        val drawAction: EventfulGroupPseudoAction = makeDecreaseRelationsWarResult(initiator, participator)
+        val firstAction: EventfulGroupPseudoAction = makeDecreaseRelationsResult(initiator, participator),
+        val secondAction: EventfulGroupPseudoAction = makeDecreaseRelationsResult(initiator, participator),
+        val drawAction: EventfulGroupPseudoAction = makeDecreaseRelationsResult(initiator, participator)
 ) : AbstractGroupInteraction(initiator, participator) {
     var warStruck = false
         private set
@@ -48,7 +47,7 @@ class ProbableStrikeWarI(
                     ProcessResult(makePositiveChange(Trait.Peace))
 }
 
-fun makeDecreaseRelationsWarResult(initiator: Group, participator: Group) = InteractionWrapperPA(
+fun makeDecreaseRelationsResult(initiator: Group, participator: Group) = InteractionWrapperPA(
         ChangeRelationsI(initiator, participator, -10.0),
         "${initiator.name} and ${participator.name} decreased their relations due to a war"
 )

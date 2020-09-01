@@ -7,7 +7,8 @@ import simulation.culture.thinking.meaning.MemePredicate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static shmp.random.RandomCollectionsKt.*;
+import static shmp.random.RandomElementKt.*;
+
 
 public class TemplateBase {
     public static TemplateBase sessionBase;

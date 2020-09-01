@@ -35,10 +35,12 @@ class ResourceCenter(
     val mostImportantNeed: Pair<ResourceLabeler, ResourceNeed>?
         get() {
             neededResources.forEach { it.value.normalize() }
+
             val max = neededResources.entries
                     .maxBy { it.value.importance }
                     ?.value?.importance
                     ?: return null
+
             return randomElement(neededResources.filter { it.value.importance == max }.toList(), session.random)
         }
 

@@ -1,17 +1,18 @@
 package simulation.culture.group.process.behaviour
 
-import shmp.random.randomElement
+import shmp.random.randomElementOrNull
+import shmp.random.randomUnwrappedElementOrNull
 import shmp.random.testProbability
-import simulation.Controller.*
-import simulation.event.Event
+import shmp.random.toSampleSpaceObject
+import simulation.Controller.session
 import simulation.culture.group.centers.Group
 import simulation.culture.group.process.ProcessResult
 import simulation.culture.group.process.action.CooperateA
 import simulation.culture.group.process.action.MakeTradeResourcesA
-import simulation.culture.group.process.action.ProduceExactResourceA
 import simulation.culture.group.process.emptyProcessResult
 import simulation.culture.group.process.interaction.ChangeRelationsI
 import simulation.culture.group.process.interaction.TradeI
+import simulation.event.Event
 import simulation.event.Type
 import kotlin.math.pow
 
@@ -20,14 +21,12 @@ object RandomTradeB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        if (groups.isEmpty())
-            return emptyProcessResult
-
-        val tradePartner = randomElement(
+        val tradePartner = randomElementOrNull(
                 groups,
                 { group.relationCenter.getNormalizedRelation(it).pow(2) },
                 session.random
-        )
+        ) ?: return emptyProcessResult
+
         return TradeI(group, tradePartner, 1000).run()
     }
 
@@ -82,18 +81,19 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
 object EstablishTradeRelationsB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val groupsToChances = group.relationCenter.relations
-                .map { it.other to it.normalized }
-                .map { (g, p) -> g to p * g.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation }
-                .filter { (_, p) -> p > 0.0 }
+                .map {
+                    it.other.toSampleSpaceObject(
+                            it.normalized *
+                                    it.other.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation
+                    )
+                }
+                .filter { it.probability > 0.0 }
 
-        if (groupsToChances.isEmpty())
-            return emptyProcessResult
 
-        val chosenPartner = randomElement(
+        val chosenPartner = randomUnwrappedElementOrNull(
                 groupsToChances,
-                { (_, p) -> p },
                 session.random
-        ).first
+        ) ?: return emptyProcessResult
 
         if (!CooperateA(chosenPartner, group, 0.1).run())
             return ChangeRelationsI(group, chosenPartner, -1.0).run() +

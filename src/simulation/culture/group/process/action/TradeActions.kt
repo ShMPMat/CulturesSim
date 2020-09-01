@@ -1,6 +1,6 @@
 package simulation.culture.group.process.action
 
-import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import simulation.Controller
 import simulation.culture.group.centers.Group
 import simulation.space.resource.container.ResourcePack
@@ -22,11 +22,10 @@ class TradeEvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGr
 class MakeTradeResourcesA(group: Group, val amount: Int) : AbstractGroupAction(group) {
     override fun run(): ResourcePack {
         val resources = group.cultureCenter.aspectCenter.aspectPool.producedResources
+        //TODO maybe mapper?
+        val chosenResource = randomElementOrNull(resources, Controller.session.random)
+                ?: return ResourcePack()
 
-        if (resources.isEmpty())
-            return ResourcePack()
-
-        val chosenResource = randomElement(resources, Controller.session.random)//TODO maybe mapper?
         return ProduceExactResourceA(group, chosenResource, amount, 20).run()
     }
 

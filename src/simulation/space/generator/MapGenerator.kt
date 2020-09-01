@@ -89,6 +89,7 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
         )
         val tectonicPlate = TectonicPlate(direction, type)
         val tile = randomTile(map, random)
+
         tectonicPlate.add(tile)
         tectonicPlates.add(tectonicPlate)
         usedTiles.add(tile)
@@ -131,18 +132,20 @@ private fun fill(map: WorldMap) {
 private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
     val attempts = 1000
     val goodTiles = map.getTiles { resource.isOptimal(it) }//TODO something wrong, it optimal and acceptable works inside-out
+
     for (i in 0 until n) {
         var tile: Tile
         if (goodTiles.isEmpty()) {
             tile = randomTile(map, random)
             var j = 0
+
             while (j < attempts && !resource.isAcceptable(tile)) {
                 tile = randomTile(map, random)
                 j++
             }
-        } else {
+        } else
             tile = randomElement(goodTiles, random)
-        }
+
         tile.addDelayedResource(resource.copy())
         addDependencies(listOf(), resource, tile, resourcePool)
     }

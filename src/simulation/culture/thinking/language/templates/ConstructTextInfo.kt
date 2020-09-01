@@ -1,6 +1,7 @@
 package simulation.culture.thinking.language.templates
 
 import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.ConverseWrapper
 import simulation.culture.group.centers.CultureCenter
@@ -13,12 +14,15 @@ import kotlin.random.Random
 fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase, random: Random): TextInfo? { //TODO too slow
     val textInfos: List<TextInfo> = cultureCenter.aspectCenter.aspectPool.converseWrappers
             .flatMap { getAspectTextInfo(it) }
-    return if (textInfos.isEmpty()) null else complicateInfo(
-            randomElement(textInfos, random),
-            templateBase,
-            cultureCenter.memePool,
-            random
-    )
+
+    return randomElementOrNull(textInfos, random)?.let {
+        complicateInfo(
+                it,
+                templateBase,
+                cultureCenter.memePool,
+                random
+        )
+    }
 }
 
 fun complicateInfo(

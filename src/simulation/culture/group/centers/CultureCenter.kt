@@ -1,6 +1,6 @@
 package simulation.culture.group.centers
 
-import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import simulation.Controller.session
 import simulation.culture.aspect.Aspect
 import simulation.culture.aspect.hasMeaning
@@ -14,9 +14,9 @@ import simulation.culture.thinking.meaning.MemeSubject
 import simulation.event.Event
 import simulation.event.EventLog
 import simulation.event.Type
-import simulation.space.territory.Territory
 import simulation.space.resource.Resource
 import simulation.space.resource.tag.labeler.ResourceLabeler
+import simulation.space.territory.Territory
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.log
@@ -78,11 +78,9 @@ class CultureCenter(
 
     fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
         val options = aspectCenter.findOptions(need.first)
+        val (first, second) = randomElementOrNull(options, session.random)
+                ?: return
 
-        if (options.isEmpty())
-            return
-
-        val (first, second) = randomElement(options, session.random)
         aspectCenter.addAspect(first)
 
         events.add(
@@ -195,6 +193,7 @@ class CultureCenter(
         |$traitCenter
     """.trimMargin()
 }
+
 
 private data class ValueEntry(val value: Int) {
     val creationTime = session.world.getTurn()

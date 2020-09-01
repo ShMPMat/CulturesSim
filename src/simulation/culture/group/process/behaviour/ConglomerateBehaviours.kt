@@ -1,6 +1,7 @@
 package simulation.culture.group.process.behaviour
 
-import shmp.random.randomElement
+import shmp.random.randomUnwrappedElementOrNull
+import shmp.random.toSampleSpaceObject
 import simulation.Controller.session
 import simulation.culture.group.Add
 import simulation.culture.group.centers.AdministrationType
@@ -31,16 +32,14 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
 
         val options = group.territoryCenter.getAllNearGroups(group)
                 .filter { it.parentGroup !== group.parentGroup }
-                .map { it to groupValueMapper(it) }
-                .filter { (_, n) -> n > 0 }
+                .map { it.toSampleSpaceObject(groupValueMapper(it)) }
+                .filter { it.probability > 0 }
 
-        if (options.isNotEmpty()) {
-            val target = randomElement(options, { (_, n) -> n }, session.random).first
-
-            return GroupTransferWithNegotiationI(group, target).run() +
-                    ProcessResult(makePositiveChange(Trait.Expansion))
-        }
-        return ProcessResult(makePositiveChange(Trait.Expansion))
+        return randomUnwrappedElementOrNull(options, session.random)
+                ?.let { target ->
+                    GroupTransferWithNegotiationI(group, target).run() +
+                            ProcessResult(makePositiveChange(Trait.Expansion))
+                } ?: ProcessResult(makePositiveChange(Trait.Expansion))
     }
 
     override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"

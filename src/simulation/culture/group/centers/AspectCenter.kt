@@ -1,6 +1,7 @@
 package simulation.culture.group.centers
 
 import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import shmp.random.testProbability
 import simulation.Controller.*
 import simulation.event.Event
@@ -16,6 +17,7 @@ import simulation.space.resource.tag.ResourceTag
 import simulation.space.resource.tag.labeler.ResourceLabeler
 import java.util.*
 import kotlin.math.max
+
 
 class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     private val _mutableAspectPool = MutableAspectPool(HashSet())
@@ -100,8 +102,8 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
                 options.addAll(session.world.aspectPool.all)
                 options.addAll(allPossibleConverseWrappers)
             }
-            if (options.isNotEmpty()) {
-                val aspect = randomElement(options, session.random)
+
+            randomElementOrNull(options, session.random)?.let { aspect ->
                 if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
                     return listOf()
 
@@ -227,19 +229,21 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         val unimportantAspects = aspectPool.all
                 .filter { it.usefulness < session.aspectFalloff }
                 .filter { it !in crucialAspects }
-        if (unimportantAspects.isEmpty()) return
+        if (unimportantAspects.isEmpty())
+            return
 
-        val aspect = randomElement(unimportantAspects, session.random)
-        if (aspect !in aspectPool.converseWrappers.map { it.aspect }) {
-            if (_mutableAspectPool.remove(aspect)) {
-                if (aspect !is ConverseWrapper)
-                    _converseWrappers.removeIf { it.aspect == aspect }
-                group.addEvent(Event(Type.Change, "${group.name} lost aspect ${aspect.name}"))
-            }
-        }
+        randomElementOrNull(unimportantAspects, session.random)
+                ?.takeIf { aspect -> aspect !in aspectPool.converseWrappers.map { it.aspect } }
+                ?.let { aspect ->
+                    if (_mutableAspectPool.remove(aspect)) {
+                        if (aspect !is ConverseWrapper)
+                            _converseWrappers.removeIf { it.aspect == aspect }
+                        group.addEvent(Event(Type.Change, "${group.name} lost aspect ${aspect.name}"))
+                    }
+                }
     }
 
-    override fun toString()= """
+    override fun toString() = """
         |Aspects:
         |${aspectPool.all.joinToString("\n\n")}
     """.trimMargin()

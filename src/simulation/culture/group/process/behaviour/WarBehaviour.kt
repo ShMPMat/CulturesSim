@@ -1,6 +1,7 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import simulation.Controller
 import simulation.culture.group.ConflictResultEvent
 import simulation.culture.group.centers.Group
@@ -30,10 +31,7 @@ object RandomWarB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        if (groups.isEmpty())
-            return emptyProcessResult
-
-        val opponent = randomElement(
+        val opponent = randomElementOrNull(
                 groups,
                 {
                     val relation = group.relationCenter.getNormalizedRelation(it)
@@ -41,7 +39,7 @@ object RandomWarB : AbstractGroupBehaviour() {
                     (1 - relation.pow(2)) / (warPower + 1)
                 },
                 Controller.session.random
-        )
+        ) ?: return emptyProcessResult
 
         val goal =
                 if (opponent.parentGroup != group.parentGroup

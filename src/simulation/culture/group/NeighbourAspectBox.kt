@@ -4,6 +4,7 @@ import shmp.random.SampleSpaceObject
 import simulation.culture.aspect.Aspect
 import simulation.culture.group.centers.Group
 
+
 data class NeighbourAspectBox(
         val aspect: Aspect,
         val group: Group,

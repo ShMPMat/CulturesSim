@@ -1,6 +1,7 @@
 package simulation.culture.group.process.behaviour
 
 import shmp.random.randomElement
+import shmp.random.randomElementOrNull
 import simulation.Controller.session
 import simulation.event.Event
 import simulation.SimulationError
@@ -32,17 +33,15 @@ object RandomArtifactB : AbstractGroupBehaviour() {
 
         val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
                 .filter { it.hasMeaning }
+        val chosen = randomElementOrNull(resourcesWithMeaning, session.random)
+                ?: return emptyProcessResult
 
-        if (resourcesWithMeaning.isEmpty())
-            return emptyProcessResult
-
-        val chosen = randomElement(resourcesWithMeaning, session.random)
         val result = ProduceExactResourceA(group, chosen, 1, 5).run()
-
-        val processResult = if (result.isNotEmpty)
-            ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result")) +
-                    ProcessResult(makeResourcePackMemes(result))
-        else emptyProcessResult
+        val processResult =
+                if (result.isNotEmpty)
+                    ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result")) +
+                            ProcessResult(makeResourcePackMemes(result))
+                else emptyProcessResult
 
         ReceiveGroupWideResourcesA(group, result).run()
 
