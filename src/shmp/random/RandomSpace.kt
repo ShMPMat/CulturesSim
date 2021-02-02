@@ -1,9 +1,9 @@
 package shmp.random
 
-import simulation.space.territory.Territory
-import simulation.space.WorldMap
-import simulation.space.territory.StaticTerritory
-import simulation.space.tile.Tile
+import shmp.simulation.space.territory.Territory
+import shmp.simulation.space.WorldMap
+import shmp.simulation.space.territory.StaticTerritory
+import shmp.simulation.space.tile.Tile
 import kotlin.random.Random
 
 
