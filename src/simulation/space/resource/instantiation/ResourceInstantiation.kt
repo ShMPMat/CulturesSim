@@ -10,7 +10,6 @@ import simulation.space.resource.container.ResourcePool
 import simulation.space.resource.material.MaterialPool
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.streams.toList
 
 class ResourceInstantiation(
         private val folderPath: String,
@@ -25,6 +24,7 @@ class ResourceInstantiation(
 
     fun createPool(): ResourcePool {
         val resourceFolders = Files.walk(Paths.get(folderPath))
+                .toArray()
                 .toList()
                 .drop(1)
         var line: String?

@@ -1,0 +1,19 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+}
+apply plugin: 'idea'
+apply plugin: 'java'
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/'
+    main.java.srcDirs += 'src/'
+}
+
+dependencies {
+    compile 'com.github.ShMPMat:Random:master-SNAPSHOT'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
