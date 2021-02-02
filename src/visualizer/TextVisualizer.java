@@ -281,6 +281,14 @@ public class TextVisualizer implements Visualizer {
                 : null;
     }
 
+    private void stopTurner() throws InterruptedException {
+        currentTurner.isAskedToStop.set(true);
+        System.out.println("Turner is asked to stop");
+        turnerThread.join();
+        currentTurner = null;
+        System.out.println("Turner has stopped");
+    }
+
     /**
      * Runs interface for the simulation control.
      */
@@ -295,11 +303,7 @@ public class TextVisualizer implements Visualizer {
                 if (line != null) {
                     final String[] splitCommand = line.split(" ");
                     if (currentTurner != null) {
-                        currentTurner.isAskedToStop.set(true);
-                        System.out.println("Turner is asked to stop");
-                        turnerThread.join();
-                        currentTurner = null;
-                        System.out.println("Turner has stopped");
+                        stopTurner();
                         print();
                         continue;
                     }
