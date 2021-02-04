@@ -1,13 +1,18 @@
 package shmp.visualizer.text
 
+import shmp.simulation.World
 import shmp.simulation.culture.aspect.hasMeaning
+import shmp.simulation.culture.group.GROUP_TAG_TYPE
 import shmp.simulation.culture.group.GroupConglomerate
+import shmp.simulation.culture.group.GroupTileTag
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.getResidingGroup
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.TectonicPlate
+import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.ResourceType
 import shmp.simulation.space.tile.Tile
+import shmp.visualizer.printinfo.ConglomeratePrintInfo
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -187,3 +192,29 @@ fun groupMapper(group: Group, tile: Tile) =
                 else -> MARK
             }
         else NOTHING
+
+fun ecosystemTypeMapper(world: World, resourceSymbols: Map<Resource, String>, tile: Tile) = when (tile.type) {
+    Tile.Type.Water, Tile.Type.Ice, Tile.Type.Woods, Tile.Type.Growth, Tile.Type.Normal -> {
+        val actual = tile.resourcePack.getResources { r ->
+            r.genome.type !== ResourceType.Plant && r.isNotEmpty && r.simpleName != "Vapour"
+        }.resources
+        if ( /*actual.size() > 0*/false) {
+            "\u001b[30m" + if (resourceSymbols[actual[0]] == null) "Ё" else resourceSymbols[actual[0]]
+        } else {
+            " "
+        }
+    }
+    Tile.Type.Mountain -> (if (tile.level > 130) "\u001b[43m" else "") +
+            (if (tile.resourcePack.contains(world.resourcePool.getBaseName("Snow"))) "\u001b[30m" else "\u001b[93m") + "^"
+    else -> " "
+}
+
+fun cultureTileMapper(lastClaimedTiles: Map<Group, Set<Tile>>, groupInfo: ConglomeratePrintInfo, tile: Tile) =
+        if (tile.tagPool.getByType(GROUP_TAG_TYPE).isNotEmpty()) {
+            val group = (tile.tagPool.getByType("Group")[0] as GroupTileTag).group
+            val start = lastClaimedTiles[group]?.let {
+                if (it.contains(tile)) "\u001b[31m"
+                else "\u001b[96m\u001b[1m"
+            } ?: "\u001b[96m\u001b[1m"
+            start + groupInfo.getConglomerateSymbol(group.parentGroup)
+        } else ""

@@ -3,8 +3,6 @@ package shmp.visualizer.text;
 import org.jetbrains.annotations.NotNull;
 import shmp.simulation.Controller;
 import shmp.simulation.World;
-import shmp.simulation.culture.group.GroupTileTag;
-import shmp.simulation.culture.group.GroupTileTagKt;
 import shmp.simulation.culture.group.centers.Group;
 import shmp.simulation.event.Event;
 import shmp.simulation.event.Type;
@@ -13,7 +11,6 @@ import shmp.simulation.interactionmodel.MapModel;
 import shmp.simulation.space.SpaceData;
 import shmp.simulation.space.WorldMap;
 import shmp.simulation.space.resource.Resource;
-import shmp.simulation.space.resource.ResourceType;
 import shmp.simulation.space.tile.Tile;
 import shmp.visualizer.EventConverterFunctionsKt;
 import shmp.visualizer.StringFunctionsKt;
@@ -34,6 +31,8 @@ import static shmp.utils.OutputFunKt.addToRight;
 import static shmp.utils.OutputFunKt.chompToLines;
 import static shmp.visualizer.command.CultureCommandKt.registerCultureCommands;
 import static shmp.visualizer.command.EnviromentalCommandKt.registerEnvironmentalCommands;
+import static shmp.visualizer.text.TileMapperFunctionsKt.cultureTileMapper;
+import static shmp.visualizer.text.TileMapperFunctionsKt.ecosystemTypeMapper;
 
 /**
  * Main class, running and visualizing shmp.simulation.
@@ -60,6 +59,8 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
     private Thread turnerThread;
     private CommandManager<TextVisualizer> commandManager = new CommandManager<>(TextPassHandler.INSTANCE);
 
+    private List<TileMapper> tileMappers = new ArrayList<>();
+
     /**
      * Base constructor.
      */
@@ -81,6 +82,9 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
     private void initialize() {
         registerEnvironmentalCommands(commandManager, TextEnvironmentalHandler.INSTANCE);
         registerCultureCommands(commandManager, TextCultureHandler.INSTANCE);
+
+        addTileMapper(new TileMapper(t -> ecosystemTypeMapper(world, resourceSymbols, t), 10));
+        addTileMapper(new TileMapper(t -> cultureTileMapper(lastClaimedTiles, groupInfo, t), 5));
 
         print();
         controller.initializeFirst();
@@ -155,11 +159,11 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
     }
 
     /**
-     * @param condition function which adds an extra layer of information
+     * @param mapper function which adds an extra layer of information
      *                  above default map. If function returns non-empty string
      *                  for a tile, output of the function will be drawn above the tile.
      */
-    private StringBuilder printedMap(Function<Tile, String> condition) {
+    private StringBuilder printedMap(Function<Tile, String> mapper) {
         StringBuilder main = new StringBuilder();
         WorldMap worldMap = controller.world.getMap();
         main.append("  ");
@@ -181,7 +185,7 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
             map.append((i < 10 ? " " + i : i));
             for (int j = 0; j < SpaceData.INSTANCE.getData().getMapSizeY(); j++) {
                 Tile tile = worldMap.get(i, j + mapPrintInfo.getCut());
-                token = condition.apply(tile);
+                token = mapper.apply(tile);
                 if (token.equals("")) {
                     switch (tile.getType()) {
                         case Ice:
@@ -197,41 +201,7 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
                             token = "\033[103m";
                             break;
                     }
-                    if (tile.getTagPool().getByType(GroupTileTagKt.GROUP_TAG_TYPE).isEmpty()) {
-                        switch (tile.getType()) {
-                            case Water:
-                            case Ice:
-                            case Woods:
-                            case Growth:
-                            case Normal:
-                                List<Resource> actual = tile.getResourcePack().getResources(r ->
-                                        r.getGenome().getType() != ResourceType.Plant && r.isNotEmpty() &&
-                                                !r.getSimpleName().equals("Vapour")).getResources();
-                                if (/*actual.size() > 0*/ false) {
-                                    token += "\033[30m" + (resourceSymbols.get(actual.get(0)) == null ? "Ё" :
-                                            resourceSymbols.get(actual.get(0)));
-                                } else {
-                                    token += " ";
-                                }
-                                break;
-                            case Mountain:
-                                token = (tile.getLevel() > 130 ? "\033[43m" : "") +
-                                        (tile.getResourcePack().contains(world.getResourcePool().getBaseName("Snow")) ? "\033[30m" : "\033[93m") + "^";
-                                break;
-                            default:
-                                token += " ";
-                        }
-                    } else {
-                        Group group = ((GroupTileTag) tile.getTagPool().getByType("Group").get(0)).getGroup();
-                        if (lastClaimedTiles.get(group) != null) {
-                            token += lastClaimedTiles.get(group).contains(tile)
-                                    ? "\033[31m"
-                                    : "\033[96m\033[1m";
-                        } else {
-                            token += "\033[96m\033[1m";
-                        }
-                        token += groupInfo.getConglomerateSymbol(group.getParentGroup());
-                    }
+                    token += applyMappers(tile);
                 }
                 map.append(token).append("\033[0m");
             }
@@ -309,5 +279,19 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
     @Override
     public CommandManager<TextVisualizer> getCommandManager() {
         return commandManager;
+    }
+
+    protected void addTileMapper(TileMapper mapper) {
+        tileMappers.add(mapper);
+        tileMappers.sort(Comparator.comparingInt(TileMapper::getOrder));
+    }
+    private String applyMappers(Tile tile) {
+        for (TileMapper mapper : tileMappers) {
+            String result = mapper.getMapper().invoke(tile);
+            if (!result.equals("")) {
+                return result;
+            }
+        }
+        return " ";
     }
 }
