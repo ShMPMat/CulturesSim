@@ -1,9 +1,11 @@
-package shmp.visualizer
+package shmp.visualizer.text
 
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.Tile
+import shmp.visualizer.outputGroup
+import shmp.visualizer.outputResource
 
 
 fun TextVisualizer.printGroupConglomerate(groupConglomerate: GroupConglomerate) {

@@ -1,4 +1,4 @@
-package shmp.visualizer
+package shmp.visualizer.text
 
 import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.GroupConglomerate

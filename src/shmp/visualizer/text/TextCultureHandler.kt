@@ -1,7 +1,8 @@
-package shmp.visualizer
+package shmp.visualizer.text
 
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.utils.chompToSize
+import shmp.visualizer.*
 import shmp.visualizer.command.Command
 import shmp.visualizer.command.CommandHandler
 import shmp.visualizer.command.CultureCommand.*
@@ -50,7 +51,7 @@ object TextCultureHandler: CommandHandler<TextVisualizer> {
                 GroupPotentials -> {
                     val group = getConglomerate(splitCommand[0]) ?: return true
                     printMap { t ->
-                        
+
                         hotnessMapper(
                                 splitCommand[2].toInt(),
                                 t,

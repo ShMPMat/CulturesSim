@@ -1,13 +1,12 @@
-package shmp.visualizer;
+package shmp.visualizer.text;
 
-import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import shmp.simulation.Controller;
-import shmp.simulation.event.Event;
 import shmp.simulation.World;
+import shmp.simulation.culture.group.GroupTileTag;
 import shmp.simulation.culture.group.GroupTileTagKt;
 import shmp.simulation.culture.group.centers.Group;
-import shmp.simulation.culture.group.GroupTileTag;
+import shmp.simulation.event.Event;
 import shmp.simulation.event.Type;
 import shmp.simulation.interactionmodel.InteractionModel;
 import shmp.simulation.interactionmodel.MapModel;
@@ -16,6 +15,10 @@ import shmp.simulation.space.WorldMap;
 import shmp.simulation.space.resource.Resource;
 import shmp.simulation.space.resource.ResourceType;
 import shmp.simulation.space.tile.Tile;
+import shmp.visualizer.EventConverterFunctionsKt;
+import shmp.visualizer.StringFunctionsKt;
+import shmp.visualizer.Turner;
+import shmp.visualizer.Visualizer;
 import shmp.visualizer.command.CommandManager;
 import shmp.visualizer.printinfo.ConglomeratePrintInfo;
 import shmp.visualizer.printinfo.MapPrintInfo;
@@ -27,7 +30,8 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
 
-import static shmp.utils.OutputFunKt.*;
+import static shmp.utils.OutputFunKt.addToRight;
+import static shmp.utils.OutputFunKt.chompToLines;
 import static shmp.visualizer.command.CultureCommandKt.registerCultureCommands;
 import static shmp.visualizer.command.EnviromentalCommandKt.registerEnvironmentalCommands;
 
@@ -77,7 +81,6 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
     private void initialize() {
         registerEnvironmentalCommands(commandManager, TextEnvironmentalHandler.INSTANCE);
         registerCultureCommands(commandManager, TextCultureHandler.INSTANCE);
-
 
         print();
         controller.initializeFirst();
@@ -258,18 +261,18 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
         return main;
     }
 
+    public void launchTurner(int turnAmount) {
+        currentTurner = new Turner(turnAmount, controller);
+        turnerThread = new Thread(currentTurner);
+        turnerThread.start();
+    }
+
     private void stopTurner() throws InterruptedException {
         currentTurner.isAskedToStop.set(true);
         System.out.println("Turner is asked to stop");
         turnerThread.join();
         currentTurner = null;
         System.out.println("Turner has stopped");
-    }
-
-    public void launchTurner(int turnAmount) {
-        currentTurner = new Turner(turnAmount, controller);
-        turnerThread = new Thread(currentTurner);
-        turnerThread.start();
     }
 
     /**

@@ -4,8 +4,9 @@ import shmp.simulation.Controller;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 public class Turner implements Runnable {
-    volatile AtomicBoolean isAskedToStop = new AtomicBoolean(false);
+    public volatile AtomicBoolean isAskedToStop = new AtomicBoolean(false);
     private int turns;
     private Controller controller;
     private int printTurnDelta = 50;

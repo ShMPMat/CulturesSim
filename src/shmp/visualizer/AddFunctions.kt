@@ -10,6 +10,7 @@ import shmp.simulation.space.resource.container.ResourcePool
 import shmp.simulation.space.tile.Tile
 import java.util.*
 
+
 fun addResourceOnTile(tile: Tile?, resourceName: String, resourcePool: ResourcePool) {
     if (tile == null) {
         System.err.println("No such Tile")
@@ -77,11 +78,10 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
         }
         try {
             val a: Aspect = aspectPool.getValue(aspectName.split("On".toRegex()).toTypedArray()[0])
-            if (a.canApplyMeaning()) {
+            if (a.canApplyMeaning())
                 MeaningInserter(a, accessibleResource)
-            } else {
+            else
                 ConverseWrapper(a, accessibleResource)
-            }
         } catch (e: NoSuchElementException) {
             System.err.println("No such Aspect")
             return

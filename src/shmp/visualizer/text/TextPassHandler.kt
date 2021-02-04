@@ -1,4 +1,4 @@
-package shmp.visualizer
+package shmp.visualizer.text
 
 import shmp.visualizer.command.Command
 import shmp.visualizer.command.CommandHandler
