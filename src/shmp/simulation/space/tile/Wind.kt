@@ -13,7 +13,7 @@ class Wind {
     val maxLevel: Double
         get() = affectedTiles
                 .map { (_, t) -> t }
-                .max()
+                .maxOrNull()
                 ?: 0.0
 
     val sumLevel: Double

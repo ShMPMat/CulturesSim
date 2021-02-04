@@ -1,6 +1,7 @@
 package shmp.visualizer;
 
 import kotlin.Pair;
+import org.jetbrains.annotations.NotNull;
 import shmp.simulation.Controller;
 import shmp.simulation.event.Event;
 import shmp.simulation.World;
@@ -27,13 +28,12 @@ import java.util.*;
 import java.util.function.Function;
 
 import static shmp.utils.OutputFunKt.*;
-import static shmp.visualizer.TextEnvironmentalCommandKt.runCommand;
-import static shmp.visualizer.command.CommandKt.getCommand;
+import static shmp.visualizer.command.EnviromentalCommandKt.registerEnvironmentalCommands;
 
 /**
  * Main class, running and visualizing shmp.simulation.
  */
-public class TextVisualizer implements Visualizer {
+public class TextVisualizer implements Visualizer<TextVisualizer> {
     private ConglomeratePrintInfo groupInfo = new ConglomeratePrintInfo(new ArrayList<>());
     /**
      * Symbols for representation of resource on the Map.
@@ -53,6 +53,7 @@ public class TextVisualizer implements Visualizer {
     private Scanner s;
     private Turner currentTurner;
     private Thread turnerThread;
+    private CommandManager<TextVisualizer> commandManager = new CommandManager<>(TextPassHandler.INSTANCE);
 
     /**
      * Base constructor.
@@ -73,6 +74,8 @@ public class TextVisualizer implements Visualizer {
     }
 
     private void initialize() {
+        registerEnvironmentalCommands(commandManager, TextEnvironmentalHandler.INSTANCE);
+
         print();
         controller.initializeFirst();
         print();
@@ -283,7 +286,7 @@ public class TextVisualizer implements Visualizer {
                         print();
                         continue;
                     }
-                    runCommand(new Pair<>(line, CommandManager.INSTANCE.getCommand(line)), this);
+                    commandManager.handleCommand(line, this);
                 } else {
                     break;
                 }
@@ -294,5 +297,11 @@ public class TextVisualizer implements Visualizer {
                 System.err.println(stackTraceElement);
             }
         }
+    }
+
+    @NotNull
+    @Override
+    public CommandManager<TextVisualizer> getCommandManager() {
+        return commandManager;
     }
 }

@@ -15,7 +15,7 @@ fun addToRight(left: String, right: String, guarantiedLength: Boolean): StringBu
         return StringBuilder(right)
 
     val stringBuilder = StringBuilder()
-    val lineLength: Int = (left.lines().map { it.length }.max() ?: 0) + 4
+    val lineLength: Int = (left.lines().map { it.length }.maxOrNull() ?: 0) + 4
     val linesAmount = max(left.lines().count(), right.lines().count())
     val list1 = left.lines() + ((0 until linesAmount - left.lines().size).map { "" })
     val list2 = right.lines() + ((0 until linesAmount - right.lines().size).map { "" })

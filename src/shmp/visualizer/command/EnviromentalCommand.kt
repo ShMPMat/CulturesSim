@@ -1,5 +1,8 @@
 package shmp.visualizer.command
 
+import shmp.visualizer.TextEnvironmentalHandler
+import shmp.visualizer.Visualizer
+
 
 enum class EnvironmentCommand(command: String) : Command {
     Conglomerate("^G\\d+_?\\d*"),
@@ -37,7 +40,8 @@ enum class EnvironmentCommand(command: String) : Command {
     override val pattern = Regex(command)
 }
 
-fun registerEnvironmentalCommands() {
-    CommandManager.registerCommands(EnvironmentCommand.values().toList())
-    CommandManager.defaultCommand = EnvironmentCommand.Turn
+fun <E: Visualizer<E>> registerEnvironmentalCommands(commandManager: CommandManager<E>, handler: CommandHandler<E>) {
+    commandManager.registerCommands(EnvironmentCommand.values().toList())
+    commandManager.registerHandler(handler)
+    commandManager.defaultCommand = EnvironmentCommand.Turn
 }
