@@ -1,13 +1,11 @@
-package shmp.visualizer
+package shmp.visualizer.command
 
 
-//Commands which can be given to shmp.visualizer.
-enum class Command(command: String) {
+enum class EnvironmentCommand(command: String) : Command {
     Conglomerate("^G\\d+_?\\d*"),
     GroupTileReach("^G\\d+ r"),
     GroupProduced("^G\\d+ p"),
-    GroupRelations("^G\\d+ G\\d+"),
-    Tile("\\d+ \\d+"),
+    GroupRelations("^G\\d+ G\\d+"), Tile("\\d+ \\d+"),
     Plates("plates"),
     TileTag("tt \\w+"),
     Temperature("temperature"),
@@ -27,7 +25,7 @@ enum class Command(command: String) {
     Aspects("a \\w+"),
     Strata("s \\w+"),
     Events("(\\d+ )?e ?.*"),
-    Map("[mM]"),
+    ShowMap("[mM]"),
     Exit("EXIT"),
     AddAspect("^G\\d+ \\w+"),
     AddWant("^want G\\d+ \\w+"),
@@ -36,12 +34,10 @@ enum class Command(command: String) {
     Turn(""),
     Turner("\\d+");
 
-    var pattern = Regex(command)
+    override val pattern = Regex(command)
 }
 
-
-fun getCommand(line: String): Command {
-    for (command in Command.values())
-        if (command.pattern.matches(line)) return command
-    return Command.Turn
+fun registerEnvironmentalCommands() {
+    CommandManager.registerCommands(EnvironmentCommand.values().toList())
+    CommandManager.defaultCommand = EnvironmentCommand.Turn
 }

@@ -1,12 +1,11 @@
 package shmp.visualizer;
 
+import kotlin.Pair;
 import shmp.simulation.Controller;
 import shmp.simulation.event.Event;
 import shmp.simulation.World;
-import shmp.simulation.culture.aspect.Aspect;
 import shmp.simulation.culture.group.GroupTileTagKt;
 import shmp.simulation.culture.group.centers.Group;
-import shmp.simulation.culture.group.GroupConglomerate;
 import shmp.simulation.culture.group.GroupTileTag;
 import shmp.simulation.event.Type;
 import shmp.simulation.interactionmodel.InteractionModel;
@@ -16,6 +15,7 @@ import shmp.simulation.space.WorldMap;
 import shmp.simulation.space.resource.Resource;
 import shmp.simulation.space.resource.ResourceType;
 import shmp.simulation.space.tile.Tile;
+import shmp.visualizer.command.CommandManager;
 import shmp.visualizer.printinfo.ConglomeratePrintInfo;
 import shmp.visualizer.printinfo.MapPrintInfo;
 
@@ -27,8 +27,8 @@ import java.util.*;
 import java.util.function.Function;
 
 import static shmp.utils.OutputFunKt.*;
-import static shmp.visualizer.PrintFunctionsKt.*;
-import static shmp.visualizer.TextCommandsKt.getCommand;
+import static shmp.visualizer.TextEnvironmentalCommandKt.runCommand;
+import static shmp.visualizer.command.CommandKt.getCommand;
 
 /**
  * Main class, running and visualizing shmp.simulation.
@@ -38,14 +38,14 @@ public class TextVisualizer implements Visualizer {
     /**
      * Symbols for representation of resource on the Map.
      */
-    private Map<Resource, String> resourceSymbols = new HashMap<>();
+    public Map<Resource, String> resourceSymbols = new HashMap<>();
     private Map<Group, Set<Tile>> lastClaimedTiles;
     private Integer lastClaimedTilesPrintTurn = 0;
-    private MapPrintInfo mapPrintInfo;
+    public MapPrintInfo mapPrintInfo;
     /**
      * Main controller of the shmp.simulation
      */
-    private Controller controller;
+    public Controller controller;
 
     private World world;
     private WorldMap map;
@@ -100,7 +100,7 @@ public class TextVisualizer implements Visualizer {
         }
         s = new Scanner(new FileReader("SupplementFiles/Symbols/SymbolsLibrary"));
         List<String> l = new ArrayList<>();
-        while (s.hasNextLine()){
+        while (s.hasNextLine()) {
             l.add(s.nextLine());
         }
         groupInfo = new ConglomeratePrintInfo(l);
@@ -117,7 +117,7 @@ public class TextVisualizer implements Visualizer {
                 lastClaimedTilesPrintTurn
         );
         lastClaimedTilesPrintTurn = world.getTurn();
-        System.out.println(PrintFunctionsKt.printedConglomerates(world.getGroups(), groupInfo));
+        System.out.println(StringFunctionsKt.printedConglomerates(world.getGroups(), groupInfo));
         System.out.print(main.append(addToRight(
                 printedMap(tile -> ""),
                 addToRight(
@@ -137,7 +137,7 @@ public class TextVisualizer implements Visualizer {
      *                  above default map. If function returns non-empty string
      *                  for a tile, output of the function will be drawn above the tile.
      */
-    private void printMap(Function<Tile, String> condition) {
+    public void printMap(Function<Tile, String> condition) {
         System.out.print(addToRight(
                 printedMap(condition),
                 chompToLines(printedResources(), map.getLinedTiles().size() + 2),
@@ -240,27 +240,6 @@ public class TextVisualizer implements Visualizer {
         return resources;
     }
 
-    private void printGroupConglomerate(GroupConglomerate groupConglomerate) {
-        printMap(t -> TileMapperFunctionsKt.groupConglomerateMapper(groupConglomerate, t));
-        System.out.println(groupConglomerate);
-    }
-
-    private void printGroup(Group group) {
-        printMap(t -> TileMapperFunctionsKt.groupMapper(group, t));
-        System.out.println(PrintFunctionsKt.printGroup(group));
-    }
-
-    private void printResource(Resource resource) {
-        printMap(tile -> (tile.getResourcePack().any(r -> r.getSimpleName().equals(resource.getSimpleName())
-                && r.isNotEmpty()) ? "\033[30m\033[41m" + tile.getResourcePack().getAmount(resource) % 10 : ""));
-        System.out.println(PrintFunctionsKt.printResource(resource));
-    }
-
-    private void printTile(Tile tile) {
-        printMap(t -> (t.equals(tile) ? "\033[31m\033[41mX" : ""));
-        System.out.println(tile);
-    }
-
     private StringBuilder printedEvents(Collection<Event> events, boolean printAll) {
         StringBuilder main = new StringBuilder();
         for (Event event : events) {
@@ -273,19 +252,18 @@ public class TextVisualizer implements Visualizer {
         return main;
     }
 
-    private GroupConglomerate getConglomerate(String string) {
-        int index = Integer.parseInt(string.substring(1));
-        return index < world.getGroups().size()
-                ? world.getGroups().get(index)
-                : null;
-    }
-
     private void stopTurner() throws InterruptedException {
         currentTurner.isAskedToStop.set(true);
         System.out.println("Turner is asked to stop");
         turnerThread.join();
         currentTurner = null;
         System.out.println("Turner has stopped");
+    }
+
+    public void launchTurner(int turnAmount) {
+        currentTurner = new Turner(turnAmount, controller);
+        turnerThread = new Thread(currentTurner);
+        turnerThread.start();
     }
 
     /**
@@ -300,219 +278,12 @@ public class TextVisualizer implements Visualizer {
                 String line = isFirstTurn ? "10000" : br.readLine();
                 isFirstTurn = false;
                 if (line != null) {
-                    final String[] splitCommand = line.split(" ");
                     if (currentTurner != null) {
                         stopTurner();
                         print();
                         continue;
                     }
-                    switch (getCommand(line)) {
-                        case Conglomerate: {
-                            Optional<GroupConglomerate> conglomerate = world.getGroups().stream()
-                                    .filter(g -> g.getName().equals(line)).findFirst();
-                            Optional<Group> group = world.getGroups().stream()
-                                    .flatMap(c -> c.getSubgroups().stream())
-                                    .filter(g -> g.getName().equals(line)).findFirst();
-                            if (conglomerate.isPresent()) {
-                                printGroupConglomerate(conglomerate.get());
-                            } else if (group.isPresent()) {
-                                printGroup(group.get());
-                            } else {
-                                System.out.println("No such Group or Conglomerate exist");
-                            }
-                            break;
-                        }
-                        case GroupTileReach: {
-                            GroupConglomerate group = getConglomerate(splitCommand[0]);
-                            if (group == null) {
-                                break;
-                            }
-                            printMap(t -> TileMapperFunctionsKt.groupReachMapper(group.getSubgroups().get(0), t));
-                            break;
-                        }
-                        case GroupProduced: {
-                            GroupConglomerate group = getConglomerate(splitCommand[0]);
-                            if (group == null) {
-                                break;
-                            }
-                            System.out.println(chompToSize(PrintFunctionsKt.printProduced(group), 150));
-                            break;
-                        }
-                        case GroupRelations: {
-                            GroupConglomerate c1 = getConglomerate(splitCommand[0]);
-                            GroupConglomerate c2 = getConglomerate(splitCommand[1]);
-                            if (c1 == null || c2 == null) {
-                                System.out.println("No such Conglomerates exist");
-                                break;
-                            }
-                            System.out.println(printConglomerateRelations(c1, c2));
-                            break;
-                        }
-                        case Tile:
-                            printTile(
-                                    map.get(
-                                            Integer.parseInt(splitCommand[0]),
-                                            Integer.parseInt(splitCommand[1]) + mapPrintInfo.getCut()
-                                    )
-                            );
-                            break;
-                        case Plates:
-                            printMap(t -> TileMapperFunctionsKt.platesMapper(map.getTectonicPlates(), t));
-                            break;
-                        case Temperature:
-                            printMap(TileMapperFunctionsKt::temperatureMapper);
-                            break;
-                        case GroupPotentials: {
-                            GroupConglomerate group = getConglomerate(splitCommand[0]);
-                            if (group == null) {
-                                break;
-                            }
-                            printMap(t -> TileMapperFunctionsKt.hotnessMapper(
-                                    Integer.parseInt(splitCommand[2]),
-                                    t,
-                                    group.getSubgroups().get(0).getTerritoryCenter()::tilePotentialMapper,
-                                    Integer.parseInt(splitCommand[2])
-                            ));
-                            break;
-                        }
-                        case Wind:
-                            printMap(TileMapperFunctionsKt::windMapper);
-                            break;
-                        case TerrainLevel:
-                            printMap(TileMapperFunctionsKt::levelMapper);
-                            break;
-                        case Vapour:
-                            printMap(TileMapperFunctionsKt::vapourMapper);
-                            break;
-                        case MeaningfulResources:
-                            printMap(TileMapperFunctionsKt::meaningfulResourcesMapper);
-                            break;
-                        case ArtificialResources:
-                            printMap(TileMapperFunctionsKt::artificialResourcesMapper);
-                            break;
-                        case TileTag:
-                            printMap(t -> TileMapperFunctionsKt.tileTagMapper(splitCommand[1], t));
-                            break;
-                        case Resource:
-                            try {
-                                Resource resource = world.getResourcePool().getBaseName(line.substring(2));
-                                printResource(resource);
-                            } catch (NoSuchElementException e) {
-                                Optional<Resource> _oo = resourceSymbols.entrySet().stream()
-                                        .filter(entry -> entry.getValue().equals(line.substring(2)))
-                                        .map(Map.Entry::getKey).findFirst();
-                                _oo.ifPresent(this::printResource);
-                            }
-                            break;
-                        case ResourceSubstring:
-                            printMap(t -> TileMapperFunctionsKt.resourceSubstringMapper(splitCommand[1], t));
-                            System.out.println(briefPrintResourcesWithSubstring(map, splitCommand[1]));
-                            break;
-                        case ResourceSubstringOnTile:
-                            System.out.println(printResourcesOnTile(
-                                    map.get(
-                                            Integer.parseInt(splitCommand[0]),
-                                            Integer.parseInt(splitCommand[1]) + mapPrintInfo.getCut()
-                                    ),
-                                    splitCommand[3]
-                            ));
-                            break;
-                        case ResourceType:
-                            if (Arrays.stream(ResourceType.values()).anyMatch(t -> t.toString().equals(splitCommand[1]))) {
-                                ResourceType type = ResourceType.valueOf(splitCommand[1]);
-                                printMap(t -> TileMapperFunctionsKt.resourceTypeMapper(type, t));
-                            } else {
-                                System.out.println("Unknown type - " + splitCommand[1]);
-                            }
-                            break;
-                        case ResourceOwner:
-                            printMap(t -> TileMapperFunctionsKt.resourceOwnerMapper(splitCommand[1], t));
-                            break;
-                        case AllResources: {
-                            System.out.println(PrintFunctionsKt.resourcesCounter(world));
-                            break;
-                        }
-                        case ResourceDensity: {
-                            printMap(t ->
-                                    TileMapperFunctionsKt.resourceDensityMapper(
-                                            SpaceData.INSTANCE.getData().getTileResourceCapacity(),
-                                            t
-                                    )
-                            );
-                            break;
-                        }
-                        case Events: {
-                            int amount = 100;
-                            int drop = splitCommand[0].length() + 1;
-                            if (splitCommand[0].charAt(0) != 'e') {
-                                amount = Integer.parseInt(splitCommand[0]);
-                                drop += splitCommand[1].length() + 1;
-                            }
-                            String regexp = line.substring(drop);
-                            System.out.println(printRegexEvents(
-                                    controller.interactionModel.getEventLog().getLastEvents(),
-                                    amount,
-                                    regexp
-                            ));
-                            break;
-                        } case Aspects: {
-                            printMap(t -> TileMapperFunctionsKt.aspectMapper(splitCommand[1], t));
-                            Aspect aspect = world.getAspectPool().get(splitCommand[1]);
-                            if (aspect != null) {
-                                System.out.println(printApplicableResources(
-                                        aspect,
-                                        world.getResourcePool().getAll()
-                                ));
-                            }
-                            break;
-                        } case Strata: {
-                            printMap(t -> TileMapperFunctionsKt.strataMapper(splitCommand[1], t));
-                            break;
-                        } case Map:
-                            printMap(tile -> "");
-                            break;
-                        case Exit:
-                            return;
-                        case AddAspect: {
-                            AddFunctionsKt.addGroupConglomerateAspect(
-                                    getConglomerate(splitCommand[0]),
-                                    splitCommand[1],
-                                    world.getAspectPool()
-                            );
-                            break;
-                        }
-                        case AddWant: {
-                            AddFunctionsKt.addGroupConglomerateWant(
-                                    getConglomerate(splitCommand[1]),
-                                    splitCommand[2],
-                                    world.getResourcePool()
-                            );
-                            break;
-                        }
-                        case AddResource:
-                            AddFunctionsKt.addResourceOnTile(
-                                    map.get(Integer.parseInt(splitCommand[0]), Integer.parseInt(splitCommand[1])),
-                                    splitCommand[2],
-                                    world.getResourcePool()
-                            );
-                            break;
-                        case GeologicalTurn:
-                            controller.geologicTurn();
-                            print();
-                            break;
-                        case Turner:
-                            try {
-                                currentTurner = new Turner(Integer.parseInt(line), controller);
-                                turnerThread = new Thread(currentTurner);
-                                turnerThread.start();
-                            } catch (NumberFormatException e) {
-                                System.out.println("Wrong number format for amount of turns");
-                            }
-                            break;
-                        default:
-                            controller.turn();
-                            print();
-                    }
+                    runCommand(new Pair<>(line, CommandManager.INSTANCE.getCommand(line)), this);
                 } else {
                     break;
                 }
