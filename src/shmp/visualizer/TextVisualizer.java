@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static shmp.utils.OutputFunKt.*;
+import static shmp.visualizer.command.CultureCommandKt.registerCultureCommands;
 import static shmp.visualizer.command.EnviromentalCommandKt.registerEnvironmentalCommands;
 
 /**
@@ -75,6 +76,8 @@ public class TextVisualizer implements Visualizer<TextVisualizer> {
 
     private void initialize() {
         registerEnvironmentalCommands(commandManager, TextEnvironmentalHandler.INSTANCE);
+        registerCultureCommands(commandManager, TextCultureHandler.INSTANCE);
+
 
         print();
         controller.initializeFirst();
