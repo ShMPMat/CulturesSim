@@ -8,8 +8,8 @@ import shmp.visualizer.command.CommandHandler
 import shmp.visualizer.command.CultureCommand.*
 
 
-object TextCultureHandler: CommandHandler<TextVisualizer> {
-    override fun tryRun(line: String, command: Command, visualizer: TextVisualizer): Boolean {
+object TextCultureHandler: CommandHandler<TextEcosystemVisualizer> {
+    override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer): Boolean {
         val splitCommand = line.split(" ")
 
         visualizer.apply {
@@ -87,7 +87,7 @@ object TextCultureHandler: CommandHandler<TextVisualizer> {
         return true
     }
 
-    private fun TextVisualizer.getConglomerate(string: String): GroupConglomerate? {
+    private fun TextEcosystemVisualizer.getConglomerate(string: String): GroupConglomerate? {
         val index = string.substring(1).toInt()
         val world = controller.world
 

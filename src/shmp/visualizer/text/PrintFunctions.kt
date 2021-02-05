@@ -8,23 +8,23 @@ import shmp.visualizer.outputGroup
 import shmp.visualizer.outputResource
 
 
-fun TextVisualizer.printGroupConglomerate(groupConglomerate: GroupConglomerate) {
+fun TextEcosystemVisualizer.printGroupConglomerate(groupConglomerate: GroupConglomerate) {
     printMap { groupConglomerateMapper(groupConglomerate, it) }
     println(groupConglomerate)
 }
 
-fun TextVisualizer.printTile(tile: Tile) {
+fun TextEcosystemVisualizer.printTile(tile: Tile) {
     printMap { if (it == tile) "\u001b[31m\u001b[41mX" else "" }
     println(tile)
 }
 
 
-fun TextVisualizer.printGroup(group: Group) {
+fun TextEcosystemVisualizer.printGroup(group: Group) {
     printMap { groupMapper(group, it) }
     println(outputGroup(group))
 }
 
-fun TextVisualizer.printResource(resource: Resource) {
+fun TextEcosystemVisualizer.printResource(resource: Resource) {
     printMap { tile: Tile ->
         if (tile.resourcePack.any { it.simpleName == resource.simpleName && it.isNotEmpty })
             "\u001b[30m\u001b[41m" + tile.resourcePack.getAmount(resource) % 10
