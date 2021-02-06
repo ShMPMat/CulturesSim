@@ -2,8 +2,8 @@ package shmp.simulation.culture.group.process.interaction
 
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makeNegativeChange
-import shmp.simulation.culture.group.centers.makePositiveChange
+import shmp.simulation.culture.group.centers.toNegativeChange
+import shmp.simulation.culture.group.centers.toPositiveChange
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.GroupTransferA
 import shmp.simulation.culture.group.process.action.pseudo.ActionSequencePA
@@ -31,10 +31,10 @@ class GroupTransferWithNegotiationI(
                             "Group ${participator.name} objects joining " +
                                     "the conglomerate ${initiator.parentGroup.name}"
                     )) +
-                            ProcessResult(makeNegativeChange(Trait.Peace)) to
-                            ProcessResult(makeNegativeChange(Trait.Peace))
-                else ProcessResult(makePositiveChange(Trait.Peace)) to
-                        ProcessResult(makePositiveChange(Trait.Peace))
+                            ProcessResult(Trait.Peace.toNegativeChange()) to
+                            ProcessResult(Trait.Peace.toNegativeChange())
+                else ProcessResult(Trait.Peace.toPositiveChange()) to
+                        ProcessResult(Trait.Peace.toPositiveChange())
 
         return strikeWarResult + transferResultIni + GroupTransferA(initiator, participator).run() to
                 transferResultPart

@@ -5,7 +5,7 @@ import shmp.simulation.Controller
 import shmp.simulation.culture.group.HelpEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makePositiveChange
+import shmp.simulation.culture.group.centers.toPositiveChange
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.*
 import shmp.simulation.culture.group.process.emptyProcessResult
@@ -44,9 +44,9 @@ class RequestHelpI(
                     request.evaluator.evaluate(given)
             )) +
                     ProcessResult(makeResourcePackMemes(given)) +
-                    ProcessResult(makePositiveChange(Trait.Peace) * 3.0) to
+                    ProcessResult(Trait.Peace.toPositiveChange() * 3.0) to
                     ProcessResult(makeResourcePackMemes(given)) +
-                    ProcessResult(makePositiveChange(Trait.Peace) * 5.0)
+                    ProcessResult(Trait.Peace.toPositiveChange() * 5.0)
         } else emptyProcessResult to emptyProcessResult
     }
 }

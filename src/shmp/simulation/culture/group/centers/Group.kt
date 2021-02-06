@@ -8,6 +8,7 @@ import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.GroupTileTag
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.event.Type
@@ -26,13 +27,14 @@ class Group(
         traitCenter: TraitCenter,
         tile: Tile,
         aspects: List<Aspect>,
+        reasonField: ReasonField,
         memePool: GroupMemes,
         cultureAspects: Collection<CultureAspect>,
         spreadAbility: Double
 ) {
     var state = State.Live
     val fertility = session.defaultGroupFertility
-    val cultureCenter = CultureCenter(this, memePool, traitCenter, aspects)
+    val cultureCenter = CultureCenter(this, memePool, traitCenter, aspects, reasonField)
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)
     private var _direNeedTurns = 0
 
@@ -42,7 +44,7 @@ class Group(
     }
 
     private fun copyCA(aspects: Collection<CultureAspect>) {
-        val retry: MutableList<CultureAspect> = ArrayList()
+        val retry = mutableListOf<CultureAspect>()
         for (aspect in aspects) {
             val copy = aspect.adopt(this)
             if (copy == null)

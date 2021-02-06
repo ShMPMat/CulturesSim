@@ -1,9 +1,15 @@
 package shmp.simulation.culture.group.centers
 
+import shmp.simulation.culture.group.GroupError
+import shmp.simulation.culture.group.cultureaspect.reasoning.DeterminedConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.ObjectConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonConclusion
+import shmp.simulation.culture.group.cultureaspect.reasoning.toConclusion
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.culture.thinking.meaning.MemeSubject
+import shmp.utils.SoftValue
 import java.util.*
-import kotlin.math.abs
 
 
 class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
@@ -27,9 +33,8 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
     internal fun changeOn(traitChange: TraitChange) {
         val (trait, delta) = traitChange
-        val ratio = 1 - abs(traitMap.getValue(trait).value)
 
-        traitMap.getValue(trait).value += delta * ratio
+        traitMap[trait] = traitMap.getValue(trait) + TraitValue(delta)
     }
 
     internal fun changeOnAll(traitChanges: List<TraitChange>) = traitChanges.forEach { changeOn(it) }
@@ -47,15 +52,7 @@ enum class Trait(val positiveMeme: Meme, val negativeMeme: Meme) {
     Creation(MemeSubject("Creation"), MemeSubject("Destruction"))
 }
 
-class TraitValue(value: Double = 0.0) {
-    var value = value
-        set(value) {
-            field = value
-            if (value > 1.0) field = 1.0
-            if (value < -1.0) field = -1.0
-        }
-}
-
+typealias TraitValue = SoftValue
 
 data class TraitChange(val trait: Trait, val delta: Double) {
     operator fun times(t: Double) = TraitChange(trait, delta * t)
@@ -63,5 +60,32 @@ data class TraitChange(val trait: Trait, val delta: Double) {
     override fun toString() = "$trait on amount $delta"
 }
 
-fun makePositiveChange(trait: Trait) = TraitChange(trait, 0.01)
-fun makeNegativeChange(trait: Trait) = TraitChange(trait, -0.01)
+fun Trait.toPositiveChange() = TraitChange(this, 0.01)
+fun Trait.toNegativeChange() = TraitChange(this, -0.01)
+fun Trait.toChange(value: Double) = TraitChange(this, value)
+fun Trait.toChange(value: SoftValue) = toChange(value.actualValue)
+
+
+fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when(concept) {
+    is ArbitraryObject, World, AllLife,
+    Self, Good, Bad, NoEvaluation, Uncertainty,
+    Hardship, Comfort,
+    Importance, Unimportance,
+    Change, Permanence,
+    Life, Death,
+    Uniqueness, Commonness -> listOf()
+
+    is Peace -> listOf(Trait.Peace.toChange(value))
+    is War -> listOf(Trait.Peace.toChange(-value))
+    is Expansion -> listOf(Trait.Expansion.toChange(value))
+    is Content -> listOf(Trait.Expansion.toChange(-value))
+    is Consolidation -> listOf(Trait.Consolidation.toChange(value))
+    is Freedom -> listOf(Trait.Consolidation.toChange(-value))
+    is Creation -> listOf(Trait.Creation.toChange(value))
+    is Destruction -> listOf(Trait.Creation.toChange(-value))
+
+    is DeterminedConcept -> concept.objectConcept.toConclusion(value).toTraitChanges() +
+            concept.ideationalConcept.toConclusion(value).toTraitChanges()
+
+    else -> throw GroupError("No trait conversion for a concept $this")
+}

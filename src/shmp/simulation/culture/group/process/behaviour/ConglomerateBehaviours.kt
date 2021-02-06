@@ -7,7 +7,7 @@ import shmp.simulation.culture.group.Add
 import shmp.simulation.culture.group.centers.AdministrationType
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makePositiveChange
+import shmp.simulation.culture.group.centers.toPositiveChange
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.GroupTransferA
 import shmp.simulation.culture.group.process.action.MakeSplitGroupA
@@ -38,8 +38,8 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
         return randomUnwrappedElementOrNull(options, session.random)
                 ?.let { target ->
                     GroupTransferWithNegotiationI(group, target).run() +
-                            ProcessResult(makePositiveChange(Trait.Expansion))
-                } ?: ProcessResult(makePositiveChange(Trait.Expansion))
+                            ProcessResult(Trait.Expansion.toPositiveChange())
+                } ?: ProcessResult(Trait.Expansion.toPositiveChange())
     }
 
     override val internalToString = "Choose a random Neighbour and add it to the Conglomerate"
@@ -64,7 +64,7 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
             ).run() +
                     ProcessResult(Event(Type.Change, "${opponent.name} diverged to it's own Conglomerate"))
         } else
-            ProcessResult(makePositiveChange(Trait.Consolidation))
+            ProcessResult(Trait.Consolidation.toPositiveChange())
     }
 
     override val internalToString = "Try to diverge and make Group's own Conglomerate"
@@ -87,7 +87,7 @@ object SplitGroupB : AbstractGroupBehaviour() {
         Add(newGroup).execute(group.parentGroup)
 
         return ProcessResult(Event(Type.Creation, "${group.name} made a new group ${newGroup.name}")) +
-                ProcessResult(makePositiveChange(Trait.Expansion))
+                ProcessResult(Trait.Expansion.toPositiveChange())
     }
 
     override val internalToString = "Try to split Group in two"

@@ -121,6 +121,7 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
                 group.cultureCenter.traitCenter.copy(),
                 startTile,
                 aspects,
+                group.cultureCenter.cultureAspectCenter.reasonField.fullCopy(),
                 memes,
                 group.cultureCenter.cultureAspectCenter.aspectPool.all,
                 group.territoryCenter.spreadAbility

@@ -5,6 +5,7 @@ import shmp.simulation.Controller
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.centers.*
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.event.EventLog
@@ -57,6 +58,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     TraitCenter(),
                     root,
                     ArrayList(),
+                    ReasonField(),
                     GroupMemes(),
                     emptyList(),
                     Controller.session.defaultGroupSpreadability

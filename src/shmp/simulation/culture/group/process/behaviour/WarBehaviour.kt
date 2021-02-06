@@ -6,7 +6,7 @@ import shmp.simulation.Controller
 import shmp.simulation.culture.group.ConflictResultEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makeNegativeChange
+import shmp.simulation.culture.group.centers.toNegativeChange
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.AddGroupA
 import shmp.simulation.culture.group.process.action.ChooseResourcesAndTakeA
@@ -65,7 +65,7 @@ object RandomWarB : AbstractGroupBehaviour() {
                 Type.Conflict,
                 "${group.name} declared war to ${opponent.name}"
         )) +
-                ProcessResult(makeNegativeChange(Trait.Peace) * 2.0)
+                ProcessResult(Trait.Peace.toNegativeChange() * 2.0)
     }
 
     override val internalToString = "Declare war to a random neighbour"
@@ -94,9 +94,9 @@ class WarB(
                     return emptyProcessResult
 
                 val traitChange = warStatus.winner.decide(
-                        ProcessResult(makeNegativeChange(Trait.Peace) * 2.0),
+                        ProcessResult(Trait.Peace.toNegativeChange() * 2.0),
                         emptyProcessResult,
-                        ProcessResult(makeNegativeChange(Trait.Peace))
+                        ProcessResult(Trait.Peace.toNegativeChange())
                 )
                 val winner = warStatus.winner.decide(group.name, opponent.name, "no one")
                 val action = warStatus.winner.decide(initiatorWinAction, participatorWinAction, drawWinAction)

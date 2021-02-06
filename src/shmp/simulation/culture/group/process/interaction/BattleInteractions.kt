@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.process.interaction
 import shmp.simulation.culture.group.ConflictResultEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makeNegativeChange
+import shmp.simulation.culture.group.centers.toNegativeChange
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.DecideBattleTileA
 import shmp.simulation.culture.group.process.action.GatherWarriorsA
@@ -33,14 +33,14 @@ class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(
                 "Not ${initiator.name} nor ${participator.name} won in a battle on $tile"
         )
         val traitChangeIniResult = status.decide(
-                ProcessResult(makeNegativeChange(Trait.Peace)),
+                ProcessResult(Trait.Peace.toNegativeChange()),
                 emptyProcessResult,
-                ProcessResult(makeNegativeChange(Trait.Peace))
+                ProcessResult(Trait.Peace.toNegativeChange())
         )
         val traitChangePartResult = status.decide(
                 emptyProcessResult,
-                ProcessResult(makeNegativeChange(Trait.Peace)),
-                ProcessResult(makeNegativeChange(Trait.Peace))
+                ProcessResult(Trait.Peace.toNegativeChange()),
+                ProcessResult(Trait.Peace.toNegativeChange())
         )
         val warriorIniMemes = iniWarriors
                 .map { makeStratumMemes(it.stratum) }

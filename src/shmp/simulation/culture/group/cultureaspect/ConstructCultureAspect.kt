@@ -7,8 +7,8 @@ import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.place.StaticPlace
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makeNegativeChange
-import shmp.simulation.culture.group.centers.makePositiveChange
+import shmp.simulation.culture.group.centers.toNegativeChange
+import shmp.simulation.culture.group.centers.toPositiveChange
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.BetterAspectUseReason
 import shmp.simulation.culture.group.reason.Reason
@@ -68,9 +68,9 @@ fun createSimpleConcept(group: Group, random: Random): Concept? {
     val agitateFor = testProbability(agitateForChance, random)
 
     return if (agitateFor)
-        Concept(MemeSubject("$trait is good"), listOf(makePositiveChange(trait) * magnitude))
+        Concept(MemeSubject("$trait is good"), listOf(trait.toPositiveChange() * magnitude))
     else
-        Concept(MemeSubject("$trait is bad"), listOf(makeNegativeChange(trait) * magnitude))
+        Concept(MemeSubject("$trait is bad"), listOf(trait.toNegativeChange() * magnitude))
 }
 
 fun createRitual(reason: Reason?, group: Group, random: Random): Ritual? {

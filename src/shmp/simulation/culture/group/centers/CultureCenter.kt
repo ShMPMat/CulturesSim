@@ -6,6 +6,7 @@ import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.GROUP_TAG_TYPE
 import shmp.simulation.culture.group.cultureaspect.CherishedResource
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.Meme
@@ -26,10 +27,11 @@ class CultureCenter(
         private val group: Group,
         val memePool: GroupMemes,
         val traitCenter: TraitCenter,
-        aspects: List<Aspect>
+        aspects: List<Aspect>,
+        reasonField: ReasonField
 ) {
-    val aspectCenter: AspectCenter = AspectCenter(group, aspects)
-    val cultureAspectCenter: CultureAspectCenter = CultureAspectCenter(group)
+    val aspectCenter = AspectCenter(group, aspects)
+    val cultureAspectCenter = CultureAspectCenter(group, reasonField)
     val requestCenter = RequestCenter()
 
     val events = EventLog()
@@ -44,15 +46,12 @@ class CultureCenter(
     ))
 
     fun update() {
-        events.addAll(
-                aspectCenter.mutateAspects().map {
-                    Event(Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
-                }
-        )
+        val aspectEvents = aspectCenter.mutateAspects().map {
+            Event(Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
+        }
+        events.addAll(aspectEvents)
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
-        cultureAspectCenter.useCultureAspects()
-        cultureAspectCenter.addRandomCultureAspect(group)
-        cultureAspectCenter.mutateCultureAspects(group)
+        cultureAspectCenter.update(group)
         lookOnTerritory(group.territoryCenter.accessibleTerritory)
     }
 
@@ -109,11 +108,10 @@ class CultureCenter(
         traitCenter.changeOnAll(changes)
 
         for (change in changes.filter { it.delta != 0.0 }) {
-            val meme =
-                    if (change.delta > 0.0)
-                        change.trait.positiveMeme
-                    else
-                        change.trait.negativeMeme
+            val meme = if (change.delta > 0.0)
+                change.trait.positiveMeme
+            else
+                change.trait.negativeMeme
 
             memePool.strengthenMeme(meme, ceil(abs(change.delta / 0.001)).toInt())
         }
@@ -148,8 +146,7 @@ class CultureCenter(
         val base = group.resourceCenter.needLevel(resource)
 
         val isCherished = cultureAspectCenter.aspectPool.cherishedResources.any { it.resource == resource }
-        val cultureValue = if (isCherished)
-            3
+        val cultureValue = if (isCherished) 3
         else 0
 
         return (base + 1) * (cultureValue + 1)
@@ -161,8 +158,7 @@ class CultureCenter(
                 .filter { it.other.parentGroup != group.parentGroup }
 
         return when {
-            !resource.genome.isDesirable ->
-                return 1
+            !resource.genome.isDesirable -> return 1
             !isResourceDesirable(resource) -> 1
             aspectCenter.aspectPool.producedResources.contains(resource) -> 2
             conglomerate.any { it.resourceCenter.pack.contains(resource) } -> 3

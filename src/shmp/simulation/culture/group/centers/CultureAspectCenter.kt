@@ -6,19 +6,43 @@ import shmp.random.randomElementOrNull
 import shmp.random.testProbability
 import shmp.simulation.Controller.*
 import shmp.simulation.culture.group.cultureaspect.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
+import shmp.simulation.culture.group.cultureaspect.reasoning.generateBaseReasoning
+import shmp.simulation.culture.group.cultureaspect.reasoning.generateNewReasonings
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
+import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.culture.thinking.meaning.constructAndAddSimpleMeme
 import shmp.simulation.space.resource.Resource
 import java.util.*
 import kotlin.math.pow
 
 
-class CultureAspectCenter(private val group: Group) {
+class CultureAspectCenter(private val group: Group, val reasonField: ReasonField) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
+
+    internal fun update(group: Group) {
+        useCultureAspects(group)
+        addRandomCultureAspect(group)
+        mutateCultureAspects(group)
+        updateReasonings(group)
+    }
+
+    private fun updateReasonings(group: Group) {
+        reasonField.reasonComplexes.forEach {
+            if (!testProbability(session.reasoningUpdate, session.random))
+                return@forEach
+
+            val newReasonings = if (it.isEmpty)
+                listOf(generateBaseReasoning(listOf(MemeSubject(group.name)), session.random))
+            else
+                generateNewReasonings(reasonField, it)
+            it.addReasonings(newReasonings)
+        }
+    }
 
     fun addCultureAspect(cultureAspect: CultureAspect?) {
         cultureAspect ?: return
@@ -29,7 +53,7 @@ class CultureAspectCenter(private val group: Group) {
             aestheticallyPleasingResources.add(cultureAspect.resource)
     }
 
-    fun useCultureAspects() = aspectPool.all.forEach { it.use(group) }
+    private fun useCultureAspects(group: Group) = aspectPool.all.forEach { it.use(group) }
 
     fun addRandomCultureAspect(group: Group) {
         if (!testProbability(session.cultureAspectBaseProbability, session.random))
@@ -141,6 +165,9 @@ class CultureAspectCenter(private val group: Group) {
     override fun toString() = """
         |Culture Aspects:
         |${aspectPool.all.joinToString()}
+        |
+        |Reasons:
+        |$reasonField
     """.trimMargin()
 }
 

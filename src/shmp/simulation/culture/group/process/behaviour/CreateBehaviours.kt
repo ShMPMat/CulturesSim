@@ -9,7 +9,7 @@ import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.RoadCreationEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
-import shmp.simulation.culture.group.centers.makePositiveChange
+import shmp.simulation.culture.group.centers.toPositiveChange
 import shmp.simulation.culture.group.place.StaticPlace
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.ProduceExactResourceA
@@ -45,7 +45,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
 
         ReceiveGroupWideResourcesA(group, result).run()
 
-        return processResult + ProcessResult(makePositiveChange(Trait.Creation))
+        return processResult + ProcessResult(Trait.Creation.toPositiveChange())
     }
 
     override val internalToString = "Make a random Resource with some meaning"
@@ -81,7 +81,7 @@ class BuildRoadB(path: Territory, val projectName: String) : PlanBehaviour() {
         )
 
         return ProcessResult(roadMemes) +
-                ProcessResult(makePositiveChange(Trait.Creation) * 0.05) +
+                ProcessResult(Trait.Creation.toPositiveChange() * 0.05) +
                 if (path.isEmpty()) {
                     isFinished = true
 
