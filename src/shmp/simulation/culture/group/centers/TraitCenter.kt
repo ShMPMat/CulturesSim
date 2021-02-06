@@ -57,7 +57,7 @@ typealias TraitValue = SoftValue
 data class TraitChange(val trait: Trait, val delta: Double) {
     operator fun times(t: Double) = TraitChange(trait, delta * t)
 
-    override fun toString() = "$trait on amount $delta"
+    override fun toString() = "$trait on amount  %.3f".format(delta)
 }
 
 fun Trait.toPositiveChange() = TraitChange(this, 0.01)
