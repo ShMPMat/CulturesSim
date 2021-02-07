@@ -27,6 +27,7 @@ open class TextCultureVisualizer(controller: Controller) : TextEcosystemVisualiz
         lastClaimedTiles = interactionModel.eventLog.lastClaimedTiles(lastClaimedTilesPrintTurn)
         lastClaimedTilesPrintTurn = world.getTurn()
         println(printedConglomerates(world.groups, groupInfo))
+        println("Conglomerates overall: ${world.groups.size}")
         super.print()
     }
 

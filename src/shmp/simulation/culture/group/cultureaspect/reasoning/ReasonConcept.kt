@@ -11,7 +11,7 @@ interface ReasonConcept {
     val correspondingConcepts: List<ReasonConcept>
 }
 
-abstract class AbstractReasonConcept: ReasonConcept {
+abstract class AbstractReasonConcept : ReasonConcept {
     override fun toString() = meme.toString()
 }
 
@@ -19,7 +19,7 @@ sealed class IdeationalConcept(
         override val meme: Meme,
         override val oppositeConcepts: List<ReasonConcept>,
         override val correspondingConcepts: List<ReasonConcept>
-): AbstractReasonConcept() {
+) : AbstractReasonConcept() {
     object Good : IdeationalConcept(MemeSubject("Good"), listOf(Bad), listOf())
     object Bad : IdeationalConcept(MemeSubject("Bad"), listOf(Good), listOf())
     object NoEvaluation : IdeationalConcept(MemeSubject("NoEvaluation"), listOf(Good, Bad), listOf())
@@ -51,14 +51,17 @@ sealed class IdeationalConcept(
 
     object Uniqueness : IdeationalConcept(MemeSubject("Uniqueness"), listOf(Commonness), listOf())
     object Commonness : IdeationalConcept(MemeSubject("Commonness"), listOf(Uniqueness), listOf())
+
+    object Simpleness : IdeationalConcept(MemeSubject("Simpleness"), listOf(Complexity), listOf())
+    object Complexity : IdeationalConcept(MemeSubject("Complexity"), listOf(Simpleness), listOf())
 }
 
 sealed class ObjectConcept(
         override val meme: Meme,
         override val oppositeConcepts: List<ReasonConcept>,
         override val correspondingConcepts: List<ReasonConcept>
-): AbstractReasonConcept() {
-    class ArbitraryObject(val objectMeme: Meme): ObjectConcept(objectMeme, listOf(), listOf()) {
+) : AbstractReasonConcept() {
+    class ArbitraryObject(val objectMeme: Meme) : ObjectConcept(objectMeme, listOf(), listOf()) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ArbitraryObject) return false
@@ -73,12 +76,12 @@ sealed class ObjectConcept(
         }
     }
 
-    object World: ObjectConcept(MemeSubject("World"), listOf(), listOf())
-    object AllLife: ObjectConcept(MemeSubject("AllLife"), listOf(), listOf())
-    object Self: ObjectConcept(MemeSubject("Self"), listOf(), listOf())
+    object World : ObjectConcept(MemeSubject("World"), listOf(), listOf())
+    object AllLife : ObjectConcept(MemeSubject("AllLife"), listOf(), listOf())
+    object Self : ObjectConcept(MemeSubject("Self"), listOf(), listOf())
 }
 
-class DeterminedConcept(val objectConcept: ObjectConcept, val ideationalConcept: IdeationalConcept): ReasonConcept {
+class DeterminedConcept(val objectConcept: ObjectConcept, val ideationalConcept: IdeationalConcept) : ReasonConcept {
     override val meme = MemeSubject("$objectConcept\'s $ideationalConcept")
     override val oppositeConcepts = objectConcept.oppositeConcepts + ideationalConcept.oppositeConcepts
     override val correspondingConcepts = objectConcept.correspondingConcepts + ideationalConcept.correspondingConcepts

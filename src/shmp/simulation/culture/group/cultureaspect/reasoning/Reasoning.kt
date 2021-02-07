@@ -40,7 +40,13 @@ class ReasonComplex(val name: String, startReasonings: List<Reasoning> = listOf(
     val isEmpty: Boolean
         get() = reasonings.isEmpty()
 
-    fun addReasonings(reasonings: List<Reasoning>) = internalReasonings.addAll(reasonings)
+    /***
+     * returns: List of accepted Reasonings
+     */
+    fun addReasonings(reasonings: List<Reasoning>): List<Reasoning> {
+        internalReasonings.addAll(reasonings)
+        return reasonings
+    }
 
     override fun toString() = """
         |$name
