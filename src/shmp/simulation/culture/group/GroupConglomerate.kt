@@ -59,6 +59,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     root,
                     ArrayList(),
                     ReasonField(),
+                    MemoryCenter(),
                     GroupMemes(),
                     emptyList(),
                     Controller.session.defaultGroupSpreadability

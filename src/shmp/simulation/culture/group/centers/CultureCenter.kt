@@ -27,6 +27,7 @@ class CultureCenter(
         private val group: Group,
         val memePool: GroupMemes,
         val traitCenter: TraitCenter,
+        val memoryCenter: MemoryCenter,
         aspects: List<Aspect>,
         reasonField: ReasonField
 ) {
@@ -119,7 +120,10 @@ class CultureCenter(
 
     fun die() = cultureAspectCenter.die(group)
 
-    fun finishUpdate() = requestCenter.finishUpdate()
+    fun finishUpdate() {
+        requestCenter.finishUpdate()
+        memoryCenter.turnRequests = requestCenter.turnRequests
+    }
 
     fun evaluateResource(resource: Resource): Int {
         val entry = evaluatedMap[resource]

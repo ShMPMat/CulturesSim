@@ -56,7 +56,7 @@ fun complicateInfo(
 
 
 fun getAspectTextInfo(aspect: Aspect): List<TextInfo> {
-    val infos: MutableList<TextInfo> = ArrayList()
+    val infos = mutableListOf<TextInfo>()
     if (aspect is ConverseWrapper) {
         infos.addAll(getResourceTextInfo(aspect.resource))
         aspect.producedResources.forEach {

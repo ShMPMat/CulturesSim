@@ -28,13 +28,14 @@ class Group(
         tile: Tile,
         aspects: List<Aspect>,
         reasonField: ReasonField,
+        memoryCenter: MemoryCenter,
         memePool: GroupMemes,
         cultureAspects: Collection<CultureAspect>,
         spreadAbility: Double
 ) {
     var state = State.Live
     val fertility = session.defaultGroupFertility
-    val cultureCenter = CultureCenter(this, memePool, traitCenter, aspects, reasonField)
+    val cultureCenter = CultureCenter(this, memePool, traitCenter, memoryCenter, aspects, reasonField)
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)
     private var _direNeedTurns = 0
 

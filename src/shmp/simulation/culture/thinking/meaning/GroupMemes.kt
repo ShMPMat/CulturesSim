@@ -18,21 +18,15 @@ class GroupMemes : MemePool() {
     }
 
     init {
-        addAll(
-                listOf("group", "time", "space", "life", "death", "sun", "luck", "misfortune")
-                        .map { MemeSubject(it) }
-        )
-
-        addAll(
-                listOf("die", "acquireAspect", "consume", "exist", "and")
-                        .map { MemePredicate(it) }
-        )
-
-        addAll(
-                session.templateBase.wordBase.values
-                        .flatten()
-                        .map { it.copy() }
-        )
+        val startMemes: MutableList<Meme> = listOf("group", "time", "space", "life", "death", "sun", "luck", "misfortune")
+                .map { MemeSubject(it) }
+                .toMutableList()
+        startMemes += listOf("die", "acquireAspect", "consume", "exist", "and")
+                .map { MemePredicate(it) }
+        startMemes += session.templateBase.wordBase.values
+                .flatten()
+                .map { it.copy() }
+        addAll(startMemes)
 
         updatePopular()
     }

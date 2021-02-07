@@ -5,10 +5,10 @@ import shmp.random.randomElement
 import shmp.random.randomElementOrNull
 import shmp.random.testProbability
 import shmp.simulation.Controller.*
+import shmp.simulation.culture.group.centers.util.takeOutCommonReasonings
+import shmp.simulation.culture.group.centers.util.toConcept
 import shmp.simulation.culture.group.cultureaspect.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
-import shmp.simulation.culture.group.cultureaspect.reasoning.generateBaseReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.generateNewReasonings
+import shmp.simulation.culture.group.cultureaspect.reasoning.*
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
@@ -32,18 +32,26 @@ class CultureAspectCenter(private val group: Group, val reasonField: ReasonField
     }
 
     private fun updateReasonings(group: Group) {
-        reasonField.reasonComplexes.forEach {
+        reasonField.reasonComplexes.forEach { complex ->
             if (!testProbability(session.reasoningUpdate, session.random))
                 return@forEach
 
-            val newReasonings = if (it.isEmpty)
+            val newReasonings = if (complex.isEmpty)
                 listOf(generateBaseReasoning(listOf(MemeSubject(group.name)), session.random))
             else
-                generateNewReasonings(reasonField, it)
-            val acceptedReasonings = it.addReasonings(newReasonings)
-
-            acceptedReasonings.forEach { r -> addCultureAspect(r.toConcept()) }
+                generateNewReasonings(reasonField, complex)
+            addReasonings(complex, newReasonings)
         }
+
+        if (testProbability(session.reasoningUpdate, session.random)) {
+            val newCommonReasonings = takeOutCommonReasonings(group.cultureCenter.memoryCenter)
+            addReasonings(reasonField.commonReasonings, newCommonReasonings)
+        }
+    }
+
+    private fun addReasonings(complex: ReasonComplex, reasonings: List<Reasoning>) {
+        val acceptedReasonings = complex.addReasonings(reasonings)
+        acceptedReasonings.forEach { addCultureAspect(it.toConcept()) }
     }
 
     fun addCultureAspect(cultureAspect: CultureAspect?) {
@@ -75,7 +83,7 @@ class CultureAspectCenter(private val group: Group, val reasonField: ReasonField
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .filter { it.genome.isDesirable }
                             .filter { !aestheticallyPleasingResources.contains(it) }
-                            .maxBy { it.genome.baseDesirability },
+                            .maxByOrNull { it.genome.baseDesirability },
                     group,
                     session.random
             )

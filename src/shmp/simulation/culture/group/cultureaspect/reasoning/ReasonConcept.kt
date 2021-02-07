@@ -61,7 +61,7 @@ sealed class ObjectConcept(
         override val oppositeConcepts: List<ReasonConcept>,
         override val correspondingConcepts: List<ReasonConcept>
 ) : AbstractReasonConcept() {
-    class ArbitraryObject(val objectMeme: Meme) : ObjectConcept(objectMeme, listOf(), listOf()) {
+    open class ArbitraryObject(val objectMeme: Meme) : ObjectConcept(objectMeme, listOf(), listOf()) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ArbitraryObject) return false

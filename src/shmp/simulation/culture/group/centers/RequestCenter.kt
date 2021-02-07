@@ -9,10 +9,11 @@ import shmp.simulation.space.resource.tag.labeler.TagLabeler
 import java.util.*
 import kotlin.math.max
 
+
 class RequestCenter {
     private var _unfinishedRequestMap = mutableMapOf<Request, MutableResourcePack>()
 
-    var turnRequests = RequestPool(HashMap())
+    var turnRequests = RequestPool(mapOf())
         private set
 
     private val nerfCoefficients = mutableMapOf<Request, Int>()

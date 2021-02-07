@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.utils.SoftValue
 
 
@@ -57,10 +58,12 @@ class ReasonComplex(val name: String, startReasonings: List<Reasoning> = listOf(
 const val COMMON_REASONS = "Common reasons"
 
 class ReasonField(
-        startReasonComplexes: List<ReasonComplex> = listOf(ReasonComplex(COMMON_REASONS)),
+        startReasonComplexes: List<ReasonComplex> = listOf(),
         startSpecialConcepts: List<ReasonConcept> = listOf()
 ) {
-    private val internalReasoningComplexes = startReasonComplexes.toMutableList()
+    val commonReasonings = ReasonComplex(COMMON_REASONS)
+
+    private val internalReasoningComplexes = startReasonComplexes.toMutableList() + listOf(commonReasonings)
     val reasonComplexes: List<ReasonComplex> = internalReasoningComplexes
 
     private val internalSpecialConcepts = startSpecialConcepts.toMutableList()
@@ -81,11 +84,17 @@ class ReasonField(
 }
 
 
-class BaseReasoning(
+open class BaseReasoning(
         override val meme: Meme,
         override val additionalMemes: List<Meme>,
         override val conclusions: List<ReasonConclusion>
 ) : AbstractReasoning()
+
+class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept): BaseReasoning(
+        MemeSubject("$objectConcept represents $subjectConcept"),
+        listOf(objectConcept.meme, subjectConcept.meme),
+        listOf()
+)
 
 class ConceptBoxReasoning(val concept: ReasonConcept) : AbstractReasoning() {
     override val meme = concept.meme
