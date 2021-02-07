@@ -37,5 +37,7 @@ fun conceptToAdjectiveString(concept: ReasonConcept) = when (concept) {
     Unimportance -> "unimportant"
     Uniqueness -> "unique"
     Commonness -> "common"
+    Simpleness -> "simple"
+    Complexity -> "complex"
     else -> throw ReasoningError("No adjective for $concept")
 }

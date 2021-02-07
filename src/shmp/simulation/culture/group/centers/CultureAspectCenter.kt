@@ -40,7 +40,9 @@ class CultureAspectCenter(private val group: Group, val reasonField: ReasonField
                 listOf(generateBaseReasoning(listOf(MemeSubject(group.name)), session.random))
             else
                 generateNewReasonings(reasonField, it)
-            it.addReasonings(newReasonings)
+            val acceptedReasonings = it.addReasonings(newReasonings)
+
+            acceptedReasonings.forEach { r -> addCultureAspect(r.toConcept()) }
         }
     }
 

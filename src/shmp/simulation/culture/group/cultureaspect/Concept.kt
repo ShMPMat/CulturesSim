@@ -33,7 +33,9 @@ class Concept private constructor(
 
     override fun die(group: Group) {}
 
-    override fun toString() = "Concept '$meme' affecting " + traitChanges.joinToString()
+    override fun toString() = "Concept '$meme' affecting " +
+            if (traitChanges.isEmpty()) "nothing"
+            else traitChanges.joinToString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other)
