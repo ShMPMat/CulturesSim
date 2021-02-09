@@ -41,7 +41,8 @@ class Cult(val name: String) : WorshipFeature {
                             1.0,
                             passingReward,
                             passingReward,
-                            75
+                            75,
+                            setOf()
                     )
             )
             val result = group.populationCenter.executeRequest(request)

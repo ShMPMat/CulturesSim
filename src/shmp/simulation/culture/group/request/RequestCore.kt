@@ -9,5 +9,6 @@ data class RequestCore(
         var ceiling: Double,
         var penalty: (Pair<Group, MutableResourcePack>, Double) -> Unit,
         var reward: (Pair<Group, MutableResourcePack>, Double) -> Unit,
-        val need: Int
+        val need: Int,
+        val requestTypes: Set<RequestType>
 )

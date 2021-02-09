@@ -2,10 +2,7 @@ package shmp.simulation.culture.group.process.action
 
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
-import shmp.simulation.culture.group.request.Request
-import shmp.simulation.culture.group.request.RequestCore
-import shmp.simulation.culture.group.request.SimpleResourceRequest
-import shmp.simulation.culture.group.request.resourceToRequest
+import shmp.simulation.culture.group.request.*
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.container.ResourcePromise
@@ -50,10 +47,11 @@ class ProduceExactResourceA(
         group: Group,
         val resource: Resource,
         val amount: Int,
-        val need: Int
+        val need: Int,
+        val requestTypes: Set<RequestType>
 ) : AbstractGroupAction(group) {
     override fun run() =
-            group.populationCenter.executeRequest(resourceToRequest(resource, group, amount, need)).pack
+            group.populationCenter.executeRequest(resourceToRequest(resource, group, amount, need, requestTypes)).pack
 
     override val internalToString = "Get ${resource.fullName} in amount of $amount from ${group.name}, need is $need"
 }
@@ -76,7 +74,7 @@ class ProduceSimpleResourceA(
     override fun run() =
             group.populationCenter.executeRequest(SimpleResourceRequest(
                     resource,
-                    RequestCore(group, amount.toDouble(), amount.toDouble(), passingReward, passingReward, need)
+                    RequestCore(group, amount.toDouble(), amount.toDouble(), passingReward, passingReward, need, setOf())
             )).pack
 
     override val internalToString =

@@ -16,6 +16,7 @@ import shmp.simulation.culture.group.process.action.ProduceExactResourceA
 import shmp.simulation.culture.group.process.action.ProduceSimpleResourceA
 import shmp.simulation.culture.group.process.action.ReceiveGroupWideResourcesA
 import shmp.simulation.culture.group.process.emptyProcessResult
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.thinking.meaning.flattenMemePair
 import shmp.simulation.culture.thinking.meaning.makeResourceMemes
 import shmp.simulation.culture.thinking.meaning.makeResourcePackMemes
@@ -36,7 +37,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
         val chosen = randomElementOrNull(resourcesWithMeaning, session.random)
                 ?: return emptyProcessResult
 
-        val result = ProduceExactResourceA(group, chosen, 1, 5).run()
+        val result = ProduceExactResourceA(group, chosen, 1, 5, setOf(RequestType.Luxury)).run()
         val processResult =
                 if (result.isNotEmpty)
                     ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result")) +
@@ -106,7 +107,8 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         for (roadPlace in roadPlaces) {
             val needed = roadPlace.getLacking().lastOrNull()
                     ?: continue
-            val lackingPack = ProduceExactResourceA(group, needed, needed.amount, 75).run()
+            val types = setOf(RequestType.Improvement)
+            val lackingPack = ProduceExactResourceA(group, needed, needed.amount, 75, types).run()
 
             roadPlace.addResources(lackingPack)
         }

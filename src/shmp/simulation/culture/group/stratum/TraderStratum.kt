@@ -9,6 +9,7 @@ import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.AspectImprovementRequest
 import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.group.request.RequestCore
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePromise
@@ -97,7 +98,8 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
                         0.5,
                         passingReward,
                         passingReward,
-                        30
+                        30,
+                        setOf(RequestType.Improvement)
                 )
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)

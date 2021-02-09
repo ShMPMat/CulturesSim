@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.centers.util
 
+import shmp.random.randomElement
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.MemoryCenter
@@ -11,6 +12,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.ObjectConcept.*
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.Resource
+import kotlin.random.Random
 
 
 class ArbitraryResource(objectMeme: Meme, val resource: Resource) : ArbitraryObject(objectMeme)
@@ -46,8 +48,13 @@ fun Reasoning.toConcept() = Concept(
         this.conclusions.flatMap { it.toTraitChanges() }
 )
 
-fun takeOutCommonReasonings(memoryCenter: MemoryCenter): List<Reasoning> {
-
+fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): List<Reasoning> {
+    val (request, result) = randomElement(
+            memoryCenter.turnRequests.resultStatus.entries.sortedBy { it.key.need },
+            { it.key.need.toDouble() },
+            random
+    )
+//    request.evaluator.labeler.
 
     return emptyList()
 }

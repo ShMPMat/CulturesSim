@@ -3,6 +3,7 @@ package shmp.simulation.culture.group.process.action
 import shmp.random.randomElementOrNull
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.container.ResourcePromisePack
 import kotlin.math.log
@@ -26,7 +27,7 @@ class MakeTradeResourcesA(group: Group, val amount: Int) : AbstractGroupAction(g
         val chosenResource = randomElementOrNull(resources, Controller.session.random)
                 ?: return ResourcePack()
 
-        return ProduceExactResourceA(group, chosenResource, amount, 20).run()
+        return ProduceExactResourceA(group, chosenResource, amount, 20, setOf(RequestType.Trade)).run()
     }
 
     override val internalToString = "Let ${group.name} to try make Resources for Trade"

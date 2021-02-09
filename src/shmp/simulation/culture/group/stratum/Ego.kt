@@ -6,6 +6,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.RequestConstructController
 import shmp.simulation.culture.group.place.MovablePlace
 import shmp.simulation.culture.group.request.RequestPool
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.resourceToRequest
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.container.MutableResourcePack
@@ -49,7 +50,7 @@ class Ego(tile: Tile, name: String) {
                 .toList()
 
         randomUnwrappedElementOrNull(allGoodProduced, session.random)?.let { chosen ->
-            val request = resourceToRequest(chosen, group, 1, 50)
+            val request = resourceToRequest(chosen, group, 1, 50, setOf(RequestType.Luxury))
             val result = group.populationCenter.executeRequest(request).pack
             place.current.addResources(result)
         }

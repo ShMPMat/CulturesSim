@@ -23,7 +23,7 @@ abstract class BaseStratum(tile: Tile, final override val name: String) : Stratu
         places.forEach { place ->
             val lacking = place.getLacking()
             val gotResources = lacking
-                    .map { resourceToRequest(it, group, it.amount, 50) }
+                    .map { resourceToRequest(it, group, it.amount, 50, setOf()) }
                     .flatMap { group.populationCenter.executeRequest(it).pack.resources }
             place.addResources(gotResources)
         }

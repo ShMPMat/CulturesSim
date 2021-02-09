@@ -16,7 +16,7 @@ class SpecialPlace(
         if (testProbability(0.1, session.random)) {
             val lacking = staticPlace.getLacking()
             val gotResources = lacking
-                    .map { resourceToRequest(it, group, it.amount, 75) }
+                    .map { resourceToRequest(it, group, it.amount, 75,  setOf()) }
                     .flatMap { group.populationCenter.executeRequest(it).pack.resources }
             staticPlace.addResources(gotResources)
         }

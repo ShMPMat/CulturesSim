@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.simulation.culture.group.*
 import shmp.simulation.culture.group.request.*
+import shmp.simulation.culture.group.request.RequestType.*
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -70,19 +71,21 @@ class RequestCenter {
     private fun addClothesRequest(controller: RequestConstructController) {
         val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
         val neededClothes = controller.population.toDouble() - clothesEvaluator.evaluate(controller.accessibleResources)
-        if (neededClothes > 0) {
-            _unfinishedRequestMap[constructTagRequest(controller, ResourceTag("clothes"), neededClothes)] =
-                    MutableResourcePack()
-        }
+        if (neededClothes <= 0)
+            return
+        val types = setOf(Clothes, Comfort)
+        val request = constructTagRequest(controller, ResourceTag("clothes"), neededClothes, types)
+        _unfinishedRequestMap[request] = MutableResourcePack()
     }
 
     private fun addShelterRequest(controller: RequestConstructController) {
         val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
         val neededShelter = controller.population.toDouble() - shelterEvaluator.evaluate(controller.accessibleResources)
-        if (neededShelter > 0) {
-            _unfinishedRequestMap[constructTagRequest(controller, ResourceTag("shelter"), neededShelter)] =
-                    MutableResourcePack()
-        }
+        if (neededShelter <= 0)
+            return
+        val types = setOf(Shelter, Comfort)
+        val request = constructTagRequest(controller, ResourceTag("shelter"), neededShelter, types)
+        _unfinishedRequestMap[request] = MutableResourcePack()
     }
 
     private fun constructFoodRequest(controller: RequestConstructController): Request {
@@ -95,7 +98,8 @@ class RequestCenter {
                         foodFloor + controller.population / 100 + 1,
                         if (controller.isClearEffects) passingReward else foodPenalty,
                         if (controller.isClearEffects) passingReward else foodReward,
-                        100
+                        100,
+                        setOf(Food, Vital)
                 )
         )
     }
@@ -108,13 +112,20 @@ class RequestCenter {
                     controller.population.toDouble(),
                     if (controller.isClearEffects) passingReward else warmthPenalty,
                     passingReward,
-                    90
+                    90,
+                    setOf(Warmth, Vital)
             )
     )
 
-    private fun constructTagRequest(controller: RequestConstructController, tag: ResourceTag, amount: Double): TagRequest {
-        val notFinal = TagRequest(tag, RequestCore(controller.group, amount, amount, put(), put(), 90))
-        val nerfed = getRequestNerfCoefficient(notFinal, amount)
+    private fun constructTagRequest(
+            controller: RequestConstructController,
+            tag: ResourceTag,
+            amount: Double,
+            requestTypes: Set<RequestType>
+    ): TagRequest {
+        val temporaryCore = RequestCore(controller.group, amount, amount, put(), put(), 90, requestTypes)
+        val temporaryRequest = TagRequest(tag, temporaryCore)
+        val nerfed = getRequestNerfCoefficient(temporaryRequest, amount)
         return TagRequest(
                 tag,
                 RequestCore(
@@ -123,7 +134,8 @@ class RequestCenter {
                         nerfed,
                         if (controller.isClearEffects) passingReward else unite(listOf(addNeed(TagLabeler(tag)), put())),
                         if (controller.isClearEffects) passingReward else put(),
-                        90
+                        90,
+                        requestTypes
                 )
         )
     }

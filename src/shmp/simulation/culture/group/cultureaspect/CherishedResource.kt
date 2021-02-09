@@ -3,6 +3,7 @@ package shmp.simulation.culture.group.cultureaspect
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.group.request.RequestCore
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.ResourceRequest
 import shmp.simulation.culture.group.resource_behaviour.ResourceBehaviour
 import shmp.simulation.space.resource.Resource
@@ -27,7 +28,8 @@ class CherishedResource(
                             g.resourceCenter.addAll(p)
                             resourceBehaviour.proceedResources(p)
                         },
-                        40
+                        40,
+                        setOf(RequestType.Luxury)
                 )
         )
     }
