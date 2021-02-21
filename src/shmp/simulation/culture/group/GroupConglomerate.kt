@@ -157,9 +157,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         population -= group.populationCenter.population
         if (!_subgroups.remove(group))
             throw RuntimeException("Trying to remove non-child subgroup ${group.name} from Group $name")
-        if (name == "G43") {
-            val k = 0
-        }
+
         group.territoryCenter.territory.tiles.forEach { removeTile(it) }
     }
 

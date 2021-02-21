@@ -13,6 +13,19 @@ interface Reasoning {
 }
 
 abstract class AbstractReasoning : Reasoning {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AbstractReasoning) return false
+
+        if (meme != other.meme) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return meme.hashCode()
+    }
+
     override fun toString() = meme.toString()
 }
 
@@ -23,9 +36,9 @@ fun ReasonConcept.toConclusion(value: Double) = ReasonConclusion(this, SoftValue
 fun ReasonConcept.toConclusion(value: SoftValue) = toConclusion(value.actualValue)
 
 
-class ReasonComplex(val name: String, startReasonings: List<Reasoning> = listOf()) {
-    private val internalReasonings = startReasonings.toMutableList()
-    val reasonings: List<Reasoning> = internalReasonings
+class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf()) {
+    private val _reasonings = startReasonings.toMutableSet()
+    val reasonings: Set<Reasoning> = _reasonings
 
     val condensedConclusions: List<ReasonConclusion>
         get() = reasonings
@@ -45,7 +58,7 @@ class ReasonComplex(val name: String, startReasonings: List<Reasoning> = listOf(
      * returns: List of accepted Reasonings
      */
     fun addReasonings(reasonings: List<Reasoning>): List<Reasoning> {
-        internalReasonings.addAll(reasonings)
+        _reasonings.addAll(reasonings)
         return reasonings
     }
 
@@ -58,21 +71,31 @@ class ReasonComplex(val name: String, startReasonings: List<Reasoning> = listOf(
 const val COMMON_REASONS = "Common reasons"
 
 class ReasonField(
-        startReasonComplexes: Set<ReasonComplex> = setOf(),
+        startReasonComplexes: List<ReasonComplex> = listOf(),
         startSpecialConcepts: Set<ReasonConcept> = setOf()
 ) {
-    val commonReasonings = ReasonComplex(COMMON_REASONS)
+    var commonReasonings = ReasonComplex(COMMON_REASONS)
+        private set
 
-    private val internalReasoningComplexes = startReasonComplexes.toMutableSet() + setOf(commonReasonings)
-    val reasonComplexes: Set<ReasonComplex> = internalReasoningComplexes
+    private val _reasoningComplexes = startReasonComplexes.toMutableList()
+    val reasonComplexes: List<ReasonComplex> = _reasoningComplexes
 
-    private val internalSpecialConcepts = startSpecialConcepts.toMutableSet()
-    val specialConcepts: Set<ReasonConcept> = internalSpecialConcepts
+    private val _specialConcepts = startSpecialConcepts.toMutableSet()
+    val specialConcepts: Set<ReasonConcept> = _specialConcepts
 
-    fun addConcepts(concepts: List<ReasonConcept>) = internalSpecialConcepts.addAll(concepts)
+    init {
+        _reasoningComplexes.find { it.name == COMMON_REASONS }
+                ?.let {
+                    commonReasonings = it
+                } ?: run {
+            _reasoningComplexes.add(commonReasonings)
+        }
+    }
+
+    fun addConcepts(concepts: List<ReasonConcept>) = _specialConcepts.addAll(concepts)
 
     fun fullCopy() = ReasonField(
-            reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toList()) }.toSet(),
+            reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toSet()) },
             specialConcepts
     )
 
@@ -92,7 +115,7 @@ open class BaseReasoning(
         override val conclusions: List<ReasonConclusion>
 ) : AbstractReasoning()
 
-class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept): BaseReasoning(
+class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
         MemeSubject("$objectConcept represents $subjectConcept"),
         listOf(objectConcept.meme, subjectConcept.meme),
         listOf()
