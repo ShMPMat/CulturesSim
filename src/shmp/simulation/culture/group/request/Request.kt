@@ -25,6 +25,8 @@ abstract class Request(val core: RequestCore) {
         get() = core.reward
     val need
         get() = core.need
+    val types: Set<RequestType>
+        get() = core.requestTypes
 
     abstract fun reducedAmountCopy(amount: Double): Request
 

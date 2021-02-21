@@ -40,6 +40,9 @@ sealed class IdeationalConcept(
     object Hardship : IdeationalConcept(MemeSubject("Hardship"), listOf(Comfort), listOf())
     object Comfort : IdeationalConcept(MemeSubject("Comfort"), listOf(Hardship), listOf())
 
+    object Simpleness : IdeationalConcept(MemeSubject("Simpleness"), listOf(Hardness), listOf())
+    object Hardness : IdeationalConcept(MemeSubject("Hardness"), listOf(Simpleness), listOf())
+
     object Importance : IdeationalConcept(MemeSubject("Importance"), listOf(Unimportance), listOf())
     object Unimportance : IdeationalConcept(MemeSubject("Unimportance"), listOf(Importance), listOf())
 
@@ -52,8 +55,8 @@ sealed class IdeationalConcept(
     object Uniqueness : IdeationalConcept(MemeSubject("Uniqueness"), listOf(Commonness), listOf())
     object Commonness : IdeationalConcept(MemeSubject("Commonness"), listOf(Uniqueness), listOf())
 
-    object Simpleness : IdeationalConcept(MemeSubject("Simpleness"), listOf(Complexity), listOf())
-    object Complexity : IdeationalConcept(MemeSubject("Complexity"), listOf(Simpleness), listOf())
+    object Simplicity : IdeationalConcept(MemeSubject("Simplicity"), listOf(Complexity), listOf())
+    object Complexity : IdeationalConcept(MemeSubject("Complexity"), listOf(Simplicity), listOf())
 }
 
 sealed class ObjectConcept(

@@ -44,8 +44,9 @@ class CultureAspectCenter(private val group: Group, val reasonField: ReasonField
         }
 
         if (testProbability(session.reasoningUpdate, session.random)) {
-            val newCommonReasonings = takeOutCommonReasonings(group.cultureCenter.memoryCenter, session.random)
-            addReasonings(reasonField.commonReasonings, newCommonReasonings)
+            val (newReasonings, newConcepts) = takeOutCommonReasonings(group.cultureCenter.memoryCenter, session.random)
+            addReasonings(reasonField.commonReasonings, newReasonings)
+            reasonField.addConcepts(newConcepts)
         }
     }
 

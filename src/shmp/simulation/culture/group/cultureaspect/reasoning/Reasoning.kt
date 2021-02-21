@@ -58,19 +58,21 @@ class ReasonComplex(val name: String, startReasonings: List<Reasoning> = listOf(
 const val COMMON_REASONS = "Common reasons"
 
 class ReasonField(
-        startReasonComplexes: List<ReasonComplex> = listOf(),
-        startSpecialConcepts: List<ReasonConcept> = listOf()
+        startReasonComplexes: Set<ReasonComplex> = setOf(),
+        startSpecialConcepts: Set<ReasonConcept> = setOf()
 ) {
     val commonReasonings = ReasonComplex(COMMON_REASONS)
 
-    private val internalReasoningComplexes = startReasonComplexes.toMutableList() + listOf(commonReasonings)
-    val reasonComplexes: List<ReasonComplex> = internalReasoningComplexes
+    private val internalReasoningComplexes = startReasonComplexes.toMutableSet() + setOf(commonReasonings)
+    val reasonComplexes: Set<ReasonComplex> = internalReasoningComplexes
 
-    private val internalSpecialConcepts = startSpecialConcepts.toMutableList()
-    val specialConcepts: List<ReasonConcept> = internalSpecialConcepts
+    private val internalSpecialConcepts = startSpecialConcepts.toMutableSet()
+    val specialConcepts: Set<ReasonConcept> = internalSpecialConcepts
+
+    fun addConcepts(concepts: List<ReasonConcept>) = internalSpecialConcepts.addAll(concepts)
 
     fun fullCopy() = ReasonField(
-            reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toList()) },
+            reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toList()) }.toSet(),
             specialConcepts
     )
 
