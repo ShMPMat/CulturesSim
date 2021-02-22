@@ -1,19 +1,8 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning
+package shmp.simulation.culture.group.cultureaspect.concept
 
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 
-
-interface ReasonConcept {
-    val meme: Meme
-
-    val oppositeConcepts: List<ReasonConcept>
-    val correspondingConcepts: List<ReasonConcept>
-}
-
-abstract class AbstractReasonConcept : ReasonConcept {
-    override fun toString() = meme.toString()
-}
 
 sealed class IdeationalConcept(
         override val meme: Meme,
@@ -57,35 +46,7 @@ sealed class IdeationalConcept(
 
     object Simplicity : IdeationalConcept(MemeSubject("Simplicity"), listOf(Complexity), listOf())
     object Complexity : IdeationalConcept(MemeSubject("Complexity"), listOf(Simplicity), listOf())
-}
 
-sealed class ObjectConcept(
-        override val meme: Meme,
-        override val oppositeConcepts: List<ReasonConcept>,
-        override val correspondingConcepts: List<ReasonConcept>
-) : AbstractReasonConcept() {
-    open class ArbitraryObject(val objectMeme: Meme) : ObjectConcept(objectMeme, listOf(), listOf()) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is ArbitraryObject) return false
-
-            if (objectMeme != other.objectMeme) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return objectMeme.hashCode()
-        }
-    }
-
-    object World : ObjectConcept(MemeSubject("World"), listOf(), listOf())
-    object AllLife : ObjectConcept(MemeSubject("AllLife"), listOf(), listOf())
-    object Self : ObjectConcept(MemeSubject("Self"), listOf(), listOf())
-}
-
-class DeterminedConcept(val objectConcept: ObjectConcept, val ideationalConcept: IdeationalConcept) : ReasonConcept {
-    override val meme = MemeSubject("$objectConcept\'s $ideationalConcept")
-    override val oppositeConcepts = objectConcept.oppositeConcepts + ideationalConcept.oppositeConcepts
-    override val correspondingConcepts = objectConcept.correspondingConcepts + ideationalConcept.correspondingConcepts
+    object Defence : IdeationalConcept(MemeSubject("Defence"), listOf(Abandonment), listOf())
+    object Abandonment : IdeationalConcept(MemeSubject("Negligence"), listOf(Defence), listOf())
 }

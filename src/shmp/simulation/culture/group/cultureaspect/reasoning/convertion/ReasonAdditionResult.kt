@@ -1,6 +1,6 @@
-package shmp.simulation.culture.group.centers.util
+package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
 
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonConcept
+import shmp.simulation.culture.group.cultureaspect.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
 
 data class ReasonAdditionResult(val reasonings: MutableList<Reasoning>, val concepts: MutableList<ReasonConcept>) {

@@ -2,7 +2,10 @@ package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.random.randomElement
 import shmp.random.randomElementOrNull
-import shmp.simulation.culture.group.cultureaspect.reasoning.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.concept.DeterminedConcept
+import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept
+import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.concept.ObjectConcept
 import shmp.simulation.culture.thinking.meaning.Meme
 import kotlin.random.Random
 

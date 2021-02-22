@@ -9,9 +9,13 @@ import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.TraitChange
 import shmp.simulation.culture.group.centers.toChange
 import shmp.simulation.culture.group.cultureaspect.Concept
+import shmp.simulation.culture.group.cultureaspect.concept.DeterminedConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.ObjectConcept.*
+import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.concept.ObjectConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonAdditionResult
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonAdditionResult
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.singletonReasonAdditionResult
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.Result
 import shmp.simulation.culture.group.request.ResultStatus
