@@ -27,4 +27,8 @@ sealed class ObjectConcept(
     object World : ObjectConcept(MemeSubject("World"), listOf(), listOf())
     object AllLife : ObjectConcept(MemeSubject("AllLife"), listOf(), listOf())
     object Self : ObjectConcept(MemeSubject("Self"), listOf(), listOf())
+
+    object Home : ObjectConcept(MemeSubject("Home"), listOf(Foreign), listOf())
+    object Foreign : ObjectConcept(MemeSubject("Foreign"), listOf(Home), listOf())
+
 }

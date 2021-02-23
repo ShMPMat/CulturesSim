@@ -41,15 +41,14 @@ sealed class IdeationalConcept(
     object Life : IdeationalConcept(MemeSubject("Life"), listOf(Death), listOf())
     object Death : IdeationalConcept(MemeSubject("Death"), listOf(Life), listOf())
 
-    object Uniqueness : IdeationalConcept(MemeSubject("Uniqueness"), listOf(Commonness), listOf())
-    object Commonness : IdeationalConcept(MemeSubject("Commonness"), listOf(Uniqueness), listOf())
-
     object Simplicity : IdeationalConcept(MemeSubject("Simplicity"), listOf(Complexity), listOf())
     object Complexity : IdeationalConcept(MemeSubject("Complexity"), listOf(Simplicity), listOf())
 
     object Defence : IdeationalConcept(MemeSubject("Defence"), listOf(Abandonment), listOf())
     object Abandonment : IdeationalConcept(MemeSubject("Negligence"), listOf(Defence), listOf())
 
-    object Usual : IdeationalConcept(MemeSubject("Usual"), listOf(Unusual), listOf())
-    object Unusual : IdeationalConcept(MemeSubject("Unusual"), listOf(Usual), listOf())
+
+    object Commonness : IdeationalConcept(MemeSubject("Commonness"), listOf(Uniqueness, Rareness), listOf())
+    object Uniqueness : IdeationalConcept(MemeSubject("Uniqueness"), listOf(Commonness), listOf())
+    object Rareness : IdeationalConcept(MemeSubject("Rareness"), listOf(Commonness), listOf())
 }

@@ -13,7 +13,7 @@ class MemoryCenter {
     var turnRequests = RequestPool(mapOf())
         internal set
 
-    val _resourceTraction = mutableMapOf<Resource, MovingAverage>()
+    private val _resourceTraction = mutableMapOf<Resource, MovingAverage>()
     val resourceTraction: Map<Resource, MovingAverage>
         get() = _resourceTraction
 
