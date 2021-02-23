@@ -100,7 +100,7 @@ class Group(
         else
             territoryCenter.shrink()
         checkNeeds()
-        cultureCenter.update()
+        cultureCenter.update(this)
         processCenter.update(this)
 
         if (populationCenter.population == 0)

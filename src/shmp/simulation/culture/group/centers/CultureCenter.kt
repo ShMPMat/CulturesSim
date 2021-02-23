@@ -46,14 +46,15 @@ class CultureCenter(
             getRandom(group, session.random)
     ))
 
-    fun update() {
-        val aspectEvents = aspectCenter.mutateAspects().map {
+    fun update(group: Group) {
+        val aspectEvents = aspectCenter.mutateAspects(group).map {
             Event(Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
         }
         events.addAll(aspectEvents)
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
         cultureAspectCenter.update(group)
         lookOnTerritory(group.territoryCenter.accessibleTerritory)
+        memoryCenter.update(group)
     }
 
     private fun lookOnTerritory(accessibleTerritory: Territory) {
@@ -77,7 +78,7 @@ class CultureCenter(
         get() = memePool.valuableMeme
 
     fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
-        val options = aspectCenter.findOptions(need.first)
+        val options = aspectCenter.findOptions(need.first, group)
         val (first, second) = randomElementOrNull(options, session.random)
                 ?: return
 
@@ -191,6 +192,9 @@ class CultureCenter(
         |
         |
         |$traitCenter
+        |
+        |
+        |$memoryCenter        |
     """.trimMargin()
 }
 

@@ -49,4 +49,7 @@ sealed class IdeationalConcept(
 
     object Defence : IdeationalConcept(MemeSubject("Defence"), listOf(Abandonment), listOf())
     object Abandonment : IdeationalConcept(MemeSubject("Negligence"), listOf(Defence), listOf())
+
+    object Usual : IdeationalConcept(MemeSubject("Usual"), listOf(Unusual), listOf())
+    object Unusual : IdeationalConcept(MemeSubject("Unusual"), listOf(Usual), listOf())
 }

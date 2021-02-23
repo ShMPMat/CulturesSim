@@ -11,4 +11,7 @@ data class SoftValue(val actualValue: Double = 0.0) {
 
     operator fun plus(softValue: SoftValue) = SoftValue(actualValue + softValue.actualValue)
     operator fun unaryMinus() = SoftValue(-actualValue)
+    operator fun times(double: Double) = SoftValue(actualValue * double)
 }
+
+operator fun Double.times(softValue: SoftValue) = softValue * this

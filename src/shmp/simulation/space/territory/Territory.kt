@@ -1,6 +1,7 @@
 package shmp.simulation.space.territory
 
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.tile.Tile
 
 
@@ -19,10 +20,14 @@ interface Territory {
     val isNotEmpty: Boolean
         get() = !isEmpty
 
+    val allResources: Collection<Resource>
+        get() = tiles.flatMap { it.resourcePack.resources }
+
+    val allResourcesPack: ResourcePack
+        get() = ResourcePack(allResources)
+
     val differentResources: Collection<Resource>
-        get() = tiles
-                .flatMap { it.resourcePack.resources }
-                .distinct()
+        get() = allResources.distinct()
 
     val minTemperature: Int?
         get() = tiles
