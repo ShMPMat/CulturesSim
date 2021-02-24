@@ -2,10 +2,10 @@ package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.random.randomElement
 import shmp.random.randomElementOrNull
-import shmp.simulation.culture.group.cultureaspect.concept.DeterminedConcept
-import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept
-import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.concept.ObjectConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.DeterminedConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.thinking.meaning.Meme
 import kotlin.random.Random
 
@@ -16,8 +16,8 @@ fun generateBaseReasoning(reasonerMemes: List<Meme>, random: Random): Reasoning 
 
     val reasonerPredicates = randomElementOrNull(reasonerMemes, random)?.let {
         listOf<Reasoning>(
-                makeAdjectiveReasoning(ObjectConcept.ArbitraryObject(it), positiveConcepts, true, random),
-                makeAdjectiveReasoning(ObjectConcept.ArbitraryObject(it), negativeConcepts, false, random)
+                makeAdjectiveReasoning(ObjectConcept.ArbitraryObjectConcept(it), positiveConcepts, true, random),
+                makeAdjectiveReasoning(ObjectConcept.ArbitraryObjectConcept(it), negativeConcepts, false, random)
         )
     } ?: listOf()
 
@@ -52,7 +52,7 @@ private fun generateDeterminedConceptFromMemes(
         random: Random
 ) = randomElement(listOf<Meme?>(null) + determinerMemes, random)?.let {
     DeterminedConcept(
-            ObjectConcept.ArbitraryObject(it),
+            ObjectConcept.ArbitraryObjectConcept(it),
             randomElement(ideationalConcepts, random)
     )
 } ?: randomElement(ideationalConcepts, random)

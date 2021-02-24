@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
-import shmp.simulation.culture.group.cultureaspect.concept.ReasonConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.utils.SoftValue
 

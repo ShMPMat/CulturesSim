@@ -5,10 +5,12 @@ import shmp.random.randomElement
 import shmp.random.randomElementOrNull
 import shmp.random.testProbability
 import shmp.simulation.Controller.*
+import shmp.simulation.culture.group.centers.util.MemoryConversion
 import shmp.simulation.culture.group.centers.util.takeOutCommonReasonings
 import shmp.simulation.culture.group.centers.util.toConcept
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
@@ -19,10 +21,11 @@ import java.util.*
 import kotlin.math.pow
 
 
-class CultureAspectCenter(private val group: Group, val reasonField: ReasonField) {
+class CultureAspectCenter(val reasonField: ReasonField, private val reasonConversions: List<ReasonConversion>) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
+
 
     internal fun update(group: Group) {
         useCultureAspects(group)
@@ -44,9 +47,9 @@ class CultureAspectCenter(private val group: Group, val reasonField: ReasonField
         }
 
         if (testProbability(session.reasoningUpdate, session.random)) {
-            val (newReasonings, newConcepts) = takeOutCommonReasonings(group.cultureCenter.memoryCenter, session.random)
-            addReasonings(reasonField.commonReasonings, newReasonings)
-            reasonField.addConcepts(newConcepts)
+            val conversion = randomElement(reasonConversions, session.random)
+
+            conversion.enrichComplex(reasonField.commonReasonings, reasonField, session.random)
         }
     }
 
@@ -137,20 +140,20 @@ class CultureAspectCenter(private val group: Group, val reasonField: ReasonField
         addCultureAspect(system)
     }
 
-    private val neighbourCultureAspects: List<Pair<CultureAspect, Group>>
-        get() = group.relationCenter.relatedGroups.flatMap { n ->
-            n.cultureCenter.cultureAspectCenter.aspectPool.all.map { a -> Pair(a, n) }
-        }
+    private fun getNeighbourCultureAspects(group: Group) =
+            group.relationCenter.relatedGroups.flatMap { n ->
+                n.cultureCenter.cultureAspectCenter.aspectPool.all.map { a -> a to n }
+            }
 
-    private fun getNeighbourCultureAspects(predicate: (CultureAspect) -> Boolean): List<Pair<CultureAspect, Group>> =
-            neighbourCultureAspects.filter { (f) -> predicate(f) }
+    private fun getNeighbourCultureAspects(group: Group, predicate: (CultureAspect) -> Boolean) =
+            getNeighbourCultureAspects(group).filter { (f) -> predicate(f) }
 
     fun adoptCultureAspects(group: Group) {
         if (!session.isTime(session.groupTurnsBetweenAdopts))
             return
 
         val aspect = randomElementOrNull(
-                getNeighbourCultureAspects { !aspectPool.contains(it) },
+                getNeighbourCultureAspects(group) { !aspectPool.contains(it) },
                 { (_, g) -> group.relationCenter.getNormalizedRelation(g) },
                 session.random
         )?.first?.adopt(group)

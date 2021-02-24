@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
-import shmp.simulation.culture.group.cultureaspect.concept.ReasonConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 
 class ReasonField(
         startReasonComplexes: List<ReasonComplex> = listOf(),

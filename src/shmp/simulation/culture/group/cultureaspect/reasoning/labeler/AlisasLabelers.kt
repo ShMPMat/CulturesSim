@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning.labeler
 
-import shmp.simulation.culture.group.cultureaspect.concept.ReasonConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.utils.labeler.ConcatLabeler
 import shmp.utils.labeler.DisjunctionLabeler
 import shmp.utils.labeler.EqualityLabeler

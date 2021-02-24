@@ -1,8 +1,8 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.random.randomElement
-import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.concept.ReasonConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 import kotlin.random.Random
 

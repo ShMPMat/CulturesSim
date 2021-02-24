@@ -5,8 +5,8 @@ import shmp.random.randomElementOrNull
 import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
-import shmp.simulation.culture.group.cultureaspect.concept.IdeationalConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonAdditionResult
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonAdditionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.singletonReasonAdditionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.equals
@@ -21,7 +21,7 @@ import kotlin.math.pow
 import kotlin.random.Random
 
 
-fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): ReasonAdditionResult {
+fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): ReasonConversionResult {
     return if (testProbability(0.5, Controller.session.random)) {
         takeOutRequest(memoryCenter.turnRequests, random)
     } else {
@@ -29,7 +29,7 @@ fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): ReasonA
     }
 }
 
-fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>, random: Random?): ReasonAdditionResult {
+fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>, random: Random?): ReasonConversionResult {
     return if (testProbability(0.5, Controller.session.random)) {
         val commonResource = randomElementOrNull(resourceTraction.entries, { it.value.value.value }, Controller.session.random)
                 ?.key
@@ -47,7 +47,7 @@ fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>, rand
     }
 }
 
-fun takeOutRequest(turnRequests: RequestPool, random: Random): ReasonAdditionResult {
+fun takeOutRequest(turnRequests: RequestPool, random: Random): ReasonConversionResult {
     val reasonResult = emptyReasonAdditionResult()
 
     val (request, result) = randomElementOrNull(
@@ -117,7 +117,7 @@ fun takeOutRequest(turnRequests: RequestPool, random: Random): ReasonAdditionRes
     return reasonResult
 }
 
-private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result, random: Random): ReasonAdditionResult {
+private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result, random: Random): ReasonConversionResult {
     if (testProbability(0.5, random))
         return singletonReasonAdditionResult(type equals IdeationalConcept.Hardness, type)
 

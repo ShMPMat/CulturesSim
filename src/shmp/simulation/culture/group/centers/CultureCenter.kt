@@ -28,11 +28,10 @@ class CultureCenter(
         val memePool: GroupMemes,
         val traitCenter: TraitCenter,
         val memoryCenter: MemoryCenter,
+        val cultureAspectCenter: CultureAspectCenter,
         aspects: List<Aspect>,
-        reasonField: ReasonField
 ) {
     val aspectCenter = AspectCenter(group, aspects)
-    val cultureAspectCenter = CultureAspectCenter(group, reasonField)
     val requestCenter = RequestCenter()
 
     val events = EventLog()

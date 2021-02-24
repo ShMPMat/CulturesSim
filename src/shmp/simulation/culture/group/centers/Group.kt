@@ -7,8 +7,11 @@ import shmp.simulation.event.Event
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.GroupTileTag
+import shmp.simulation.culture.group.centers.util.MemoryConversion
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.CorrespondingConversion
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.OppositionConversion
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.event.Type
@@ -35,7 +38,17 @@ class Group(
 ) {
     var state = State.Live
     val fertility = session.defaultGroupFertility
-    val cultureCenter = CultureCenter(this, memePool, traitCenter, memoryCenter, aspects, reasonField)
+    val cultureCenter = CultureCenter(
+            this,
+            memePool,
+            traitCenter,
+            memoryCenter,
+            CultureAspectCenter(
+                    reasonField,
+                    listOf(MemoryConversion(memoryCenter), CorrespondingConversion, OppositionConversion)
+            ),
+            aspects
+    )
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)
     private var _direNeedTurns = 0
 

@@ -1,4 +1,4 @@
-package shmp.simulation.culture.group.cultureaspect.concept
+package shmp.simulation.culture.group.cultureaspect.reasoning.concept
 
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 
