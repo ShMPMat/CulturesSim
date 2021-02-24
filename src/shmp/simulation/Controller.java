@@ -2,6 +2,7 @@ package shmp.simulation;
 
 import kotlin.random.Random;
 import kotlin.random.RandomKt;
+import shmp.random.singleton.RandomSingleton;
 import shmp.simulation.culture.thinking.language.templates.TemplateBase;
 import shmp.simulation.interactionmodel.InteractionModel;
 import shmp.simulation.space.LandscapeChangesKt;
@@ -91,6 +92,8 @@ public class Controller {
 
     public Controller(InteractionModel interactionModel) {
         session = this;
+        RandomSingleton.INSTANCE.setSafeRandom(random);
+
         templateBase = new TemplateBase();
         world = new World(proportionCoefficient, random, "SupplementFiles");
         this.interactionModel = interactionModel;

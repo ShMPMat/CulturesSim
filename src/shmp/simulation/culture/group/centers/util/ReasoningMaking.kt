@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.centers.util
 
 import shmp.random.randomElement
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.testProbability
 import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
@@ -22,7 +23,7 @@ import kotlin.random.Random
 
 
 fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): ReasonConversionResult {
-    return if (testProbability(0.5, Controller.session.random)) {
+    return if (0.5.testProbability()) {
         takeOutRequest(memoryCenter.turnRequests, random)
     } else {
         takeOutResourceTraction(memoryCenter.resourceTraction, Controller.session.random)
@@ -30,15 +31,15 @@ fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): ReasonC
 }
 
 fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>, random: Random?): ReasonConversionResult {
-    return if (testProbability(0.5, Controller.session.random)) {
-        val commonResource = randomElementOrNull(resourceTraction.entries, { it.value.value.value }, Controller.session.random)
+    return if (0.5.testProbability()) {
+        val commonResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonAdditionResult()
         val resourceConcept = ArbitraryResource(MemeSubject(commonResource.baseName), commonResource)
 
         singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Commonness, resourceConcept)
     } else {
-        val rareResource = randomElementOrNull(resourceTraction.entries, { 1 - it.value.value.value }, Controller.session.random)
+        val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonAdditionResult()
         val resourceConcept = ArbitraryResource(MemeSubject(rareResource.baseName), rareResource)

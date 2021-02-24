@@ -8,7 +8,7 @@ import kotlin.random.Random
 
 fun constructBetterAspectUseReason(
         group: Group,
-        converseWrappers: Collection<ConverseWrapper>,
+        converseWrappers: List<ConverseWrapper>,
         exceptions: Collection<Reason>,
         random: Random,
         tries: Int = 5
