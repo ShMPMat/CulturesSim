@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.centers.util
 
-import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.centers.Trait
@@ -56,5 +55,5 @@ fun Reasoning.toConcept() = Concept(
 
 class MemoryConversion(private val memoryCenter: MemoryCenter) : ReasonConversion {
     override fun makeConversion(complex: ReasonComplex, random: Random) =
-            takeOutCommonReasonings(memoryCenter, session.random)
+            takeOutCommonReasonings(memoryCenter)
 }

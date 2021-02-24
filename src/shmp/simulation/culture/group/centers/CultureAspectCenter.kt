@@ -3,6 +3,8 @@ package shmp.simulation.culture.group.centers
 import shmp.random.SampleSpaceObject
 import shmp.random.randomElement
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.testProbability
 import shmp.random.testProbability
 import shmp.simulation.Controller.*
 import shmp.simulation.culture.group.centers.util.MemoryConversion
@@ -36,7 +38,7 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
 
     private fun updateReasonings(group: Group) {
         reasonField.reasonComplexes.forEach { complex ->
-            if (!testProbability(session.reasoningUpdate, session.random))
+            if (!session.reasoningUpdate.testProbability())
                 return@forEach
 
             val newReasonings = if (complex.isEmpty)
@@ -46,10 +48,10 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
             addReasonings(complex, newReasonings)
         }
 
-        if (testProbability(session.reasoningUpdate, session.random)) {
-            val conversion = randomElement(reasonConversions, session.random)
+        if (session.reasoningUpdate.testProbability()) {
+            val conversion = reasonConversions.randomElement()
 
-            conversion.enrichComplex(reasonField.commonReasonings, reasonField, session.random)
+            conversion.enrichComplex(reasonField.commonReasonings, reasonField)
         }
     }
 
@@ -70,10 +72,10 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
     private fun useCultureAspects(group: Group) = aspectPool.all.forEach { it.use(group) }
 
     fun addRandomCultureAspect(group: Group) {
-        if (!testProbability(session.cultureAspectBaseProbability, session.random))
+        if (!session.cultureAspectBaseProbability.testProbability())
             return
 
-        val cultureAspect = when (randomElement(AspectRandom.values(), session.random)) {
+        val cultureAspect = when (AspectRandom.values().randomElement()) {
             AspectRandom.Depict -> createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
                     constructAndAddSimpleMeme(
@@ -116,10 +118,10 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
     }
 
     fun mutateCultureAspects(group: Group) {
-        if (!testProbability(session.groupCultureAspectCollapse, session.random))
+        if (!session.groupCultureAspectCollapse.testProbability())
             return
 
-        when (randomElement(ChangeRandom.values(), session.random)) {
+        when (ChangeRandom.values().randomElement()) {
             ChangeRandom.RitualSystem -> joinSimilarRituals()
             ChangeRandom.TaleSystem -> joinSimilarTalesBy("!actor")
             ChangeRandom.Worship -> addCultureAspect(takeOutWorship(aspectPool, session.random))
@@ -169,7 +171,7 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
                 w.worshipObject.memes.any { it in aspect.worshipObject.memes }
             }
             val probability = 1.0 / (similarGodsAmount + 1)
-            return testProbability(probability.pow(2), session.random)
+            return probability.pow(2).testProbability()
         }
         return true
     }

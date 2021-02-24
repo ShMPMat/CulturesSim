@@ -1,15 +1,13 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
 
-import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.opposes
-import kotlin.random.Random
 
 
 object OppositionConversion : ReasonConversion {
-    override fun makeConversion(complex: ReasonComplex, random: Random): ReasonConversionResult {
+    override fun makeConversion(complex: ReasonComplex): ReasonConversionResult {
         val opposingConversions = complex.reasonings
                 .filterIsInstance<EqualityReasoning>()
                 .flatMap {
@@ -18,7 +16,7 @@ object OppositionConversion : ReasonConversion {
                     }
                 }
 
-        return randomElementOrNull(opposingConversions, random)?.let {
+        return opposingConversions.randomElementOrNull()?.let {
             ReasonConversionResult(mutableListOf(it), mutableListOf())
         } ?: emptyReasonAdditionResult()
     }

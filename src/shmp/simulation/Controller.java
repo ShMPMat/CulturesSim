@@ -10,6 +10,7 @@ import shmp.simulation.space.resource.Resource;
 import shmp.simulation.space.tile.Tile;
 import shmp.visualizer.Visualizer;
 
+
 public class Controller {
     public static Controller session;
     public World world;

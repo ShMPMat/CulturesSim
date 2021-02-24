@@ -170,7 +170,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         getAllPossibleConverseWrappers(group)
                 .filter { aspectLabeler.isSuitable(it) }
                 .forEach { options.add(Pair<Aspect, Group?>(it, null)) }
-        val aspects = convert(newNeighbourAspects)
+        val aspects = convert(getNewNeighbourAspects(group))
         for (box in aspects) {
             var aspect = box.aspect
             val aspectGroup = box.group
@@ -185,30 +185,29 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         return options
     }
 
-    private val neighbourAspects: List<Pair<Aspect, Group>>
-        get() {
-            val allExistingAspects: MutableList<Pair<Aspect, Group>> = ArrayList()
-            for (neighbour in group.relationCenter.relatedGroups) {
-                allExistingAspects.addAll(
-                        neighbour.cultureCenter.aspectCenter._mutableAspectPool.all
-                                .filter { (it !is ConverseWrapper || _mutableAspectPool.contains(it.aspect)) }
-                                .map { Pair(it, neighbour) }
-                )
-            }
-            return allExistingAspects
+    private fun getNeighbourAspects(group: Group): List<Pair<Aspect, Group>> {
+        val allExistingAspects: MutableList<Pair<Aspect, Group>> = ArrayList()
+        for (neighbour in group.relationCenter.relatedGroups) {
+            allExistingAspects.addAll(
+                    neighbour.cultureCenter.aspectCenter._mutableAspectPool.all
+                            .filter { (it !is ConverseWrapper || _mutableAspectPool.contains(it.aspect)) }
+                            .map { Pair(it, neighbour) }
+            )
         }
+        return allExistingAspects
+    }
 
-    private val newNeighbourAspects: List<Pair<Aspect, Group>>
-        get() = neighbourAspects.filter { (a) -> !_mutableAspectPool.contains(a) }
+    private fun getNewNeighbourAspects(group: Group): List<Pair<Aspect, Group>> = getNeighbourAspects(group)
+            .filter { (a) -> !_mutableAspectPool.contains(a) }
 
-    private fun getNeighbourAspects(predicate: (Aspect) -> Boolean) = neighbourAspects
+    private fun getNeighbourAspects(group: Group, predicate: (Aspect) -> Boolean) = getNeighbourAspects(group)
             .filter { (a) -> predicate(a) }
 
     fun adoptAspects(group: Group): List<Event> {
         if (!session.isTime(session.groupTurnsBetweenAdopts))
             return emptyList()
 
-        val allExistingAspects = getNeighbourAspects { !changedAspectPool.contains(it) }
+        val allExistingAspects = getNeighbourAspects(group) { !changedAspectPool.contains(it) }
         if (allExistingAspects.isNotEmpty()) {
             val (aspect, aspectGroup) = randomElement(
                     allExistingAspects,

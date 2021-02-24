@@ -1,9 +1,9 @@
 package shmp.simulation.culture.group.centers.util
 
-import shmp.random.randomElement
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.randomElementOrNull
 import shmp.random.singleton.testProbability
-import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
@@ -19,18 +19,16 @@ import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.space.resource.Resource
 import shmp.utils.MovingAverage
 import kotlin.math.pow
-import kotlin.random.Random
 
 
-fun takeOutCommonReasonings(memoryCenter: MemoryCenter, random: Random): ReasonConversionResult {
-    return if (0.5.testProbability()) {
-        takeOutRequest(memoryCenter.turnRequests, random)
-    } else {
-        takeOutResourceTraction(memoryCenter.resourceTraction, Controller.session.random)
-    }
+fun takeOutCommonReasonings(memoryCenter: MemoryCenter): ReasonConversionResult {
+    return if (0.5.testProbability())
+        takeOutRequest(memoryCenter.turnRequests)
+    else
+        takeOutResourceTraction(memoryCenter.resourceTraction)
 }
 
-fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>, random: Random?): ReasonConversionResult {
+fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): ReasonConversionResult {
     return if (0.5.testProbability()) {
         val commonResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { it.value.value.value }, Controller.session.random)
                 ?.key
@@ -48,21 +46,20 @@ fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>, rand
     }
 }
 
-fun takeOutRequest(turnRequests: RequestPool, random: Random): ReasonConversionResult {
+fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
     val reasonResult = emptyReasonAdditionResult()
 
-    val (request, result) = randomElementOrNull(
-            turnRequests.resultStatus.entries.sortedBy { it.key.need },
-            { it.key.need.toDouble() },
-            random
-    ) ?: return reasonResult
+    val (request, result) = turnRequests.resultStatus.entries
+            .sortedBy { it.key.need }
+            .randomElementOrNull { it.key.need.toDouble() }
+            ?: return reasonResult
     for (type in request.types) {
-        if (result.status == ResultStatus.NotSatisfied && testProbability(0.5, random)) {
-            reasonResult += makeNotSatisfiedRequestReasoning(type, result, random)
+        if (result.status == ResultStatus.NotSatisfied && 0.5.testProbability()) {
+            reasonResult += makeNotSatisfiedRequestReasoning(type, result)
             continue
         }
 
-        val resource = randomElementOrNull(result.pack.resources, { it.amount.toDouble().pow(2) }, random)
+        val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
                 ?: continue
         val resourceConcept = ArbitraryResource(MemeSubject(resource.baseName), resource)
         reasonResult.concepts.add(resourceConcept)
@@ -70,63 +67,57 @@ fun takeOutRequest(turnRequests: RequestPool, random: Random): ReasonConversionR
             is RequestType.Food -> {}
             is RequestType.Warmth -> {}
             is RequestType.Clothes -> {}
-            is RequestType.Shelter -> reasonResult.reasonings.add(randomElement(
+            is RequestType.Shelter -> reasonResult.reasonings.add(
                     listOf(
                             resourceConcept equals IdeationalConcept.Life
-                    ),
-                    random
-            ))
-            is RequestType.Vital -> reasonResult.reasonings.add(randomElement(
+                    ).randomElement()
+            )
+            is RequestType.Vital -> reasonResult.reasonings.add(
                     listOf(
                             resourceConcept equals IdeationalConcept.Life,
                             resourceConcept equals IdeationalConcept.Good
-                    ),
-                    random
-            ))
-            is RequestType.Comfort -> reasonResult.reasonings.add(randomElement(
+                    ).randomElement()
+            )
+            is RequestType.Comfort -> reasonResult.reasonings.add(
                     listOf(
                             resourceConcept equals IdeationalConcept.Comfort,
                             resourceConcept equals IdeationalConcept.Good
-                    ),
-                    random
-            ))
-            is RequestType.Improvement -> reasonResult.reasonings.add(randomElement(
+                    ).randomElement()
+            )
+            is RequestType.Improvement -> reasonResult.reasonings.add(
                     listOf(
                             resourceConcept equals IdeationalConcept.Comfort,
                             resourceConcept equals IdeationalConcept.Good,
                             resourceConcept equals IdeationalConcept.Life,
                             resourceConcept equals IdeationalConcept.Change,
                             resourceConcept equals IdeationalConcept.Creation,
-                    ),
-                    random
-            ))
-            is RequestType.Trade -> reasonResult.reasonings.add(randomElement(
+                    ).randomElement()
+            )
+            is RequestType.Trade -> reasonResult.reasonings.add(
                     listOf(
                             resourceConcept equals IdeationalConcept.Change
-                    ),
-                    random
-            ))
-            is RequestType.Luxury -> reasonResult.reasonings.add(randomElement(
+                    ).randomElement()
+            )
+            is RequestType.Luxury -> reasonResult.reasonings.add(
                     listOf(
                             resourceConcept equals IdeationalConcept.Comfort
-                    ),
-                    random
-            ))
+                    ).randomElement()
+            )
         }
     }
 
     return reasonResult
 }
 
-private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result, random: Random): ReasonConversionResult {
-    if (testProbability(0.5, random))
+private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result): ReasonConversionResult {
+    if (0.5.testProbability())
         return singletonReasonAdditionResult(type equals IdeationalConcept.Hardness, type)
 
-    val resource = randomElementOrNull(result.pack.resources, { it.amount.toDouble().pow(2) }, random)
+    val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
             ?: return emptyReasonAdditionResult()
     val resourceConcept = ArbitraryResource(MemeSubject(resource.baseName), resource)
 
-    if (testProbability(0.5, random))
+    if (0.5.testProbability())
         return singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Hardness, resourceConcept)
 
     return when(type) {

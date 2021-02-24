@@ -50,4 +50,7 @@ sealed class IdeationalConcept(
     object Commonness : IdeationalConcept(MemeSubject("Commonness"), { listOf(Uniqueness, Rareness) }, { listOf() })
     object Uniqueness : IdeationalConcept(MemeSubject("Uniqueness"), { listOf(Commonness) }, { listOf() })
     object Rareness : IdeationalConcept(MemeSubject("Rareness"), { listOf(Commonness) }, { listOf() })
+
+    object Beauty : IdeationalConcept(MemeSubject("Beauty"), { listOf(Ugliness) }, { listOf() })
+    object Ugliness : IdeationalConcept(MemeSubject("Ugliness"), { listOf(Beauty) }, { listOf() })
 }
