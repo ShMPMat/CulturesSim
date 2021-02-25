@@ -17,7 +17,6 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonCo
 import shmp.simulation.culture.group.cultureaspect.reasoning.toConclusion
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.Resource
-import kotlin.random.Random
 
 
 class ArbitraryResource(objectMeme: Meme, val resource: Resource) : ArbitraryObjectConcept(objectMeme)
@@ -54,6 +53,6 @@ fun Reasoning.toConcept() = Concept(
 )
 
 class MemoryConversion(private val memoryCenter: MemoryCenter) : ReasonConversion {
-    override fun makeConversion(complex: ReasonComplex, random: Random) =
+    override fun makeConversion(complex: ReasonComplex) =
             takeOutCommonReasonings(memoryCenter)
 }

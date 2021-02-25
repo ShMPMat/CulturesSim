@@ -8,7 +8,7 @@ import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonAdditionResult
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.singletonReasonAdditionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.equals
 import shmp.simulation.culture.group.request.RequestPool
@@ -32,14 +32,14 @@ fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): Rea
     return if (0.5.testProbability()) {
         val commonResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { it.value.value.value }, Controller.session.random)
                 ?.key
-                ?: return emptyReasonAdditionResult()
+                ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(MemeSubject(commonResource.baseName), commonResource)
 
         singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Commonness, resourceConcept)
     } else {
         val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key
-                ?: return emptyReasonAdditionResult()
+                ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(MemeSubject(rareResource.baseName), rareResource)
 
         singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Rareness, resourceConcept)
@@ -47,7 +47,7 @@ fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): Rea
 }
 
 fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
-    val reasonResult = emptyReasonAdditionResult()
+    val reasonResult = emptyReasonConversionResult()
 
     val (request, result) = turnRequests.resultStatus.entries
             .sortedBy { it.key.need }
@@ -114,21 +114,21 @@ private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result):
         return singletonReasonAdditionResult(type equals IdeationalConcept.Hardness, type)
 
     val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
-            ?: return emptyReasonAdditionResult()
+            ?: return emptyReasonConversionResult()
     val resourceConcept = ArbitraryResource(MemeSubject(resource.baseName), resource)
 
     if (0.5.testProbability())
         return singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Hardness, resourceConcept)
 
     return when(type) {
-        RequestType.Food -> emptyReasonAdditionResult()
-        RequestType.Warmth -> emptyReasonAdditionResult()
-        RequestType.Clothes -> emptyReasonAdditionResult()
-        RequestType.Shelter -> emptyReasonAdditionResult()
-        RequestType.Vital -> emptyReasonAdditionResult()
-        RequestType.Comfort -> emptyReasonAdditionResult()
-        RequestType.Improvement -> emptyReasonAdditionResult()
-        RequestType.Trade -> emptyReasonAdditionResult()
-        RequestType.Luxury -> emptyReasonAdditionResult()
+        RequestType.Food -> emptyReasonConversionResult()
+        RequestType.Warmth -> emptyReasonConversionResult()
+        RequestType.Clothes -> emptyReasonConversionResult()
+        RequestType.Shelter -> emptyReasonConversionResult()
+        RequestType.Vital -> emptyReasonConversionResult()
+        RequestType.Comfort -> emptyReasonConversionResult()
+        RequestType.Improvement -> emptyReasonConversionResult()
+        RequestType.Trade -> emptyReasonConversionResult()
+        RequestType.Luxury -> emptyReasonConversionResult()
     }
 }

@@ -68,7 +68,7 @@ class CultureCenter(
         }
     }
 
-    fun intergroupUpdate() {
+    fun intergroupUpdate(group: Group) {
         events.addAll(aspectCenter.adoptAspects(group))
         cultureAspectCenter.adoptCultureAspects(group)
     }
@@ -118,7 +118,7 @@ class CultureCenter(
         }
     }
 
-    fun die() = cultureAspectCenter.die(group)
+    fun die(group: Group) = cultureAspectCenter.die(group)
 
     fun finishUpdate() {
         requestCenter.finishUpdate()

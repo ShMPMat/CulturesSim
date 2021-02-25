@@ -10,14 +10,16 @@ object OppositionConversion : ReasonConversion {
     override fun makeConversion(complex: ReasonComplex): ReasonConversionResult {
         val opposingConversions = complex.reasonings
                 .filterIsInstance<EqualityReasoning>()
-                .flatMap {
-                    it.subjectConcept.oppositeConcepts.map { o ->
-                        it.objectConcept opposes o
+                .flatMap { e ->
+                    e.subjectConcept.oppositeConcepts.map { o ->
+                        e.objectConcept opposes o
+                    } + e.objectConcept.correspondingConcepts.map { c ->
+                        c opposes e.subjectConcept
                     }
                 }
 
         return opposingConversions.randomElementOrNull()?.let {
-            ReasonConversionResult(mutableListOf(it), mutableListOf())
-        } ?: emptyReasonAdditionResult()
+            ReasonConversionResult(listOf(it))
+        } ?: emptyReasonConversionResult()
     }
 }

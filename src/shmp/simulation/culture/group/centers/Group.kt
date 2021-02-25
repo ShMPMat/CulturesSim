@@ -11,6 +11,7 @@ import shmp.simulation.culture.group.centers.util.MemoryConversion
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.CorrespondingConversion
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.EqualitySubjectCorrelationConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.OppositionConversion
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.MemeSubject
@@ -45,7 +46,12 @@ class Group(
             memoryCenter,
             CultureAspectCenter(
                     reasonField,
-                    listOf(MemoryConversion(memoryCenter), CorrespondingConversion, OppositionConversion)
+                    listOf(
+                            MemoryConversion(memoryCenter),
+                            CorrespondingConversion,
+                            OppositionConversion,
+                            EqualitySubjectCorrelationConversion
+                    )
             ),
             aspects
     )
@@ -80,7 +86,7 @@ class Group(
         resourceCenter.die()
         populationCenter.die()
         territoryCenter.die()
-        cultureCenter.die()
+        cultureCenter.die(this)
 
         addEvent(Event(Type.Death, "Group $name died"))
 
@@ -161,7 +167,7 @@ class Group(
             toUpdate.remove(this)
             relationCenter.updateRelations(toUpdate, this)
         }
-        cultureCenter.intergroupUpdate()
+        cultureCenter.intergroupUpdate(this)
     }
 
     fun finishUpdate() {
