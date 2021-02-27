@@ -11,6 +11,7 @@ enum class CultureCommand(command: String) : Command {
     GroupPotentials("^G\\d+ p \\d+"),
     MeaningfulResources("meaning"),
     ArtificialResources("artificial"),
+    GroupStatistics("gstat"),
     Aspects("a \\w+"),
     Strata("s \\w+"),
     AddAspect("^G\\d+ \\w+"),

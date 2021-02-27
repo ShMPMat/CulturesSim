@@ -62,6 +62,7 @@ object TextCultureHandler: CommandHandler<TextEcosystemVisualizer> {
                 }
                 MeaningfulResources -> printMap { meaningfulResourcesMapper(it) }
                 ArtificialResources -> printMap { artificialResourcesMapper(it) }
+                GroupStatistics -> println(printGroupStatistics(world))
                 Aspects -> {
                     printMap { aspectMapper(splitCommand[1], it) }
                     world.aspectPool.get(splitCommand[1])?.let { aspect ->

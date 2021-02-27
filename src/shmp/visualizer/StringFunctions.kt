@@ -4,6 +4,7 @@ import shmp.simulation.World
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.event.Event
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
@@ -139,3 +140,24 @@ fun printRegexEvents(events: List<Event>, amount: Int, regexString: String) = pr
         false
     }
 }
+
+fun printGroupStatistics(world: World): String {
+    val conglomerates = world.groups.filter { it.state == GroupConglomerate.State.Live }
+
+    return """Largest population: ${conglomerates.maxByOrNull { it.population }?.let { g -> "${g.name} - ${g.population}" }}
+             |Largest territory:  ${conglomerates.maxByOrNull { it.territory.size }?.let { g -> "${g.name} - ${g.territory.size}" }}
+             |Most groups:        ${conglomerates.maxByOrNull { it.subgroups.size }?.let { g -> "${g.name} - ${g.subgroups.size}" }}
+             |
+             |${printGroupCharacterStatistics(conglomerates)}
+             |""".trimMargin()
+}
+
+fun printGroupCharacterStatistics(conglomerates: List<GroupConglomerate>) =
+        Trait.values().joinToString("\n\n") { trait ->
+            val avgTraits = conglomerates.map { c -> c to c.subgroups.map { it.cultureCenter.traitCenter.value(trait) }.average() }
+
+            val maxStr = avgTraits.maxByOrNull { it.second }?.let { (g, a) -> "Max $trait:   ${g.name} - $a" } ?: ""
+            val minStr = avgTraits.minByOrNull { it.second }?.let { (g, a) -> "Min $trait:   ${g.name} - $a" } ?: ""
+
+            maxStr + "\n" + minStr
+        }

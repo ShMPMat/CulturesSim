@@ -38,6 +38,9 @@ sealed class IdeationalConcept(
     object Change : IdeationalConcept(MemeSubject("Change"), { listOf(Permanence) }, { listOf() })
     object Permanence : IdeationalConcept(MemeSubject("Permanence"), { listOf(Change) }, { listOf() })
 
+    object Improvement : IdeationalConcept(MemeSubject("Improvement"), { listOf(Degradation) }, { listOf() })
+    object Degradation : IdeationalConcept(MemeSubject("Degradation"), { listOf(Improvement) }, { listOf() })
+
     object Life : IdeationalConcept(MemeSubject("Life"), { listOf(Death) }, { listOf() })
     object Death : IdeationalConcept(MemeSubject("Death"), { listOf(Life) }, { listOf() })
 

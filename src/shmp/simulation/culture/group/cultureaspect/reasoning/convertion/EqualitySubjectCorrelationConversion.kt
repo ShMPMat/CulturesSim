@@ -12,7 +12,6 @@ object EqualitySubjectCorrelationConversion : ReasonConversion {
         val opposingConversions = complex.reasonings
                 .filterIsInstance<EqualityReasoning>()
                 .groupBy { it.objectConcept }
-//                .apply { println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV $this") }
                 .filter { it.value.size > 1 }
                 .map { it.value }
                 .randomElementOrNull()

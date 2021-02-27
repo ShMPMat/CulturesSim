@@ -6,6 +6,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
 
 data class ReasonConversionResult(val reasonings: MutableList<Reasoning>, val concepts: MutableList<ReasonConcept>) {
     constructor(reasonings: List<Reasoning>): this(reasonings.toMutableList(), mutableListOf())
+    constructor(reasoning: Reasoning): this(mutableListOf(reasoning), mutableListOf())
 
     fun isEmpty() = reasonings.isEmpty() && concepts.isEmpty()
     fun isNotEmpty() = !isEmpty()

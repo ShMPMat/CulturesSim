@@ -1,10 +1,12 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 
 class ReasonField(
         startReasonComplexes: List<ReasonComplex> = listOf(),
-        startSpecialConcepts: Set<ReasonConcept> = setOf()
+        startSpecialConcepts: Set<ReasonConcept> = setOf(),
+        startSpecialConversions: Set<ReasonConversion> = setOf()
 ) {
     var commonReasonings = ReasonComplex(COMMON_REASONS)
         private set
@@ -14,6 +16,9 @@ class ReasonField(
 
     private val _specialConcepts = startSpecialConcepts.toMutableSet()
     val specialConcepts: Set<ReasonConcept> = _specialConcepts
+
+    private val _specialConversions = startSpecialConversions.toMutableSet()
+    val specialConversions: Set<ReasonConversion> = _specialConversions
 
     init {
         _reasoningComplexes.find { it.name == COMMON_REASONS }
@@ -26,9 +31,10 @@ class ReasonField(
 
     fun addConcepts(concepts: List<ReasonConcept>) = _specialConcepts.addAll(concepts)
 
-    fun fullCopy() = ReasonField(
+    fun copy() = ReasonField(
             reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toSet()) },
-            specialConcepts
+            specialConcepts,
+            specialConversions
     )
 
     override fun toString() = """
