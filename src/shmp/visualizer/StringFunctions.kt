@@ -144,11 +144,22 @@ fun printRegexEvents(events: List<Event>, amount: Int, regexString: String) = pr
 fun printGroupStatistics(world: World): String {
     val conglomerates = world.groups.filter { it.state == GroupConglomerate.State.Live }
 
-    return """Largest population: ${conglomerates.maxByOrNull { it.population }?.let { g -> "${g.name} - ${g.population}" }}
+    return """CONGLOMERATES:
+             |
+             |Largest population: ${conglomerates.maxByOrNull { it.population }?.let { g -> "${g.name} - ${g.population}" }}
              |Largest territory:  ${conglomerates.maxByOrNull { it.territory.size }?.let { g -> "${g.name} - ${g.territory.size}" }}
              |Most groups:        ${conglomerates.maxByOrNull { it.subgroups.size }?.let { g -> "${g.name} - ${g.subgroups.size}" }}
              |
              |${printGroupCharacterStatistics(conglomerates)}
+             |
+             |GROUPS:
+             |
+             |Richest common sense:
+             |${
+        conglomerates.flatMap { it.subgroups }
+                .maxByOrNull { it.cultureCenter.cultureAspectCenter.reasonField.commonReasonings.reasonings.size }
+                ?.let { g -> "${g.name} - ${g.cultureCenter.cultureAspectCenter.reasonField.commonReasonings}" }
+    }
              |""".trimMargin()
 }
 

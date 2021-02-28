@@ -56,4 +56,7 @@ sealed class IdeationalConcept(
 
     object Beauty : IdeationalConcept(MemeSubject("Beauty"), { listOf(Ugliness) }, { listOf() })
     object Ugliness : IdeationalConcept(MemeSubject("Ugliness"), { listOf(Beauty) }, { listOf() })
+
+    object Work : IdeationalConcept(MemeSubject("Work"), { listOf(Rest) }, { listOf() })
+    object Rest : IdeationalConcept(MemeSubject("Rest"), { listOf(Work) }, { listOf() })
 }

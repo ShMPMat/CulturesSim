@@ -57,6 +57,19 @@ abstract class BaseStratum(tile: Tile, final override val name: String) : Stratu
 
     fun addPlace(place: StaticPlace) = innerPlaces.add(place)
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BaseStratum) return false
+
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
     override fun toString() = """
         |
         |Ego resources:

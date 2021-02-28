@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.centers.util
 
+import shmp.simulation.culture.aspect.AspectCore
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.centers.Trait
@@ -9,17 +10,23 @@ import shmp.simulation.culture.group.cultureaspect.Concept
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonConclusion
 import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.ArbitraryObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.DeterminedConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.toConclusion
+import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.space.resource.Resource
 
 
-class ArbitraryResource(objectMeme: Meme, val resource: Resource) : ArbitraryObjectConcept(objectMeme)
+class ArbitraryResource(val resource: Resource) : ArbitraryObjectConcept(MemeSubject(resource.baseName))
+class ArbitraryAspect(val aspectCore: AspectCore) : ArbitraryActionConcept(MemeSubject(aspectCore.name))
+class ArbitraryStratum(val stratum: Stratum) : ArbitraryObjectConcept(MemeSubject(stratum.name))
 
 
 fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {
@@ -51,8 +58,3 @@ fun Reasoning.toConcept() = Concept(
         this.meme,
         this.conclusions.flatMap { it.toTraitChanges() }
 )
-
-class MemoryConversion(private val memoryCenter: MemoryCenter) : ReasonConversion {
-    override fun makeConversion(complex: ReasonComplex) =
-            takeOutCommonReasonings(memoryCenter)
-}

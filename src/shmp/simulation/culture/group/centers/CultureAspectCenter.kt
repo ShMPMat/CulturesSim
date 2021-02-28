@@ -1,14 +1,10 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.SampleSpaceObject
-import shmp.random.randomElement
 import shmp.random.randomElementOrNull
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.testProbability
-import shmp.random.testProbability
-import shmp.simulation.Controller.*
-import shmp.simulation.culture.group.centers.util.MemoryConversion
-import shmp.simulation.culture.group.centers.util.takeOutCommonReasonings
+import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.centers.util.toConcept
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.*

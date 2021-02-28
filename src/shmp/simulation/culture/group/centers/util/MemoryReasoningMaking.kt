@@ -1,12 +1,15 @@
 package shmp.simulation.culture.group.centers.util
 
+import shmp.random.SampleSpaceObject
 import shmp.random.randomElementOrNull
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.random.singleton.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.singletonReasonAdditionResult
@@ -15,38 +18,47 @@ import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.Result
 import shmp.simulation.culture.group.request.ResultStatus
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.space.resource.Resource
 import shmp.utils.MovingAverage
 import kotlin.math.pow
 
 
-fun takeOutCommonReasonings(memoryCenter: MemoryCenter): ReasonConversionResult {
-    return if (0.5.testProbability())
-        takeOutRequest(memoryCenter.turnRequests)
-    else
-        takeOutResourceTraction(memoryCenter.resourceTraction)
+class MemoryConversion(private val memoryCenter: MemoryCenter) : ReasonConversion {
+    override fun makeConversion(complex: ReasonComplex) =
+            takeOutCommonReasonings(memoryCenter)
 }
 
-fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): ReasonConversionResult {
+
+private enum class ReasoningRandom(override val probability: Double) : SampleSpaceObject {
+    Requests(1.0),
+    MemoryResources(1.0)
+}
+
+private fun takeOutCommonReasonings(memoryCenter: MemoryCenter): ReasonConversionResult =
+        when (ReasoningRandom.values().randomElement()) {
+            ReasoningRandom.Requests -> takeOutRequest(memoryCenter.turnRequests)
+            ReasoningRandom.MemoryResources -> takeOutResourceTraction(memoryCenter.resourceTraction)
+        }
+
+private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): ReasonConversionResult {
     return if (0.5.testProbability()) {
         val commonResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonConversionResult()
-        val resourceConcept = ArbitraryResource(MemeSubject(commonResource.baseName), commonResource)
+        val resourceConcept = ArbitraryResource(commonResource)
 
         singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Commonness, resourceConcept)
     } else {
         val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonConversionResult()
-        val resourceConcept = ArbitraryResource(MemeSubject(rareResource.baseName), rareResource)
+        val resourceConcept = ArbitraryResource(rareResource)
 
         singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Rareness, resourceConcept)
     }
 }
 
-fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
+private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
     val reasonResult = emptyReasonConversionResult()
 
     val (request, result) = turnRequests.resultStatus.entries
@@ -61,7 +73,7 @@ fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
 
         val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
                 ?: continue
-        val resourceConcept = ArbitraryResource(MemeSubject(resource.baseName), resource)
+        val resourceConcept = ArbitraryResource(resource)
         reasonResult.concepts.add(resourceConcept)
         when(type) {
             is RequestType.Food -> {}
@@ -115,7 +127,7 @@ private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result):
 
     val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
             ?: return emptyReasonConversionResult()
-    val resourceConcept = ArbitraryResource(MemeSubject(resource.baseName), resource)
+    val resourceConcept = ArbitraryResource(resource)
 
     if (0.5.testProbability())
         return singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Hardness, resourceConcept)
