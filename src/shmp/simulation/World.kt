@@ -103,7 +103,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
 
         for (aspectName in compulsoryAspects) {
             groups.forEach { c ->
-                c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue(aspectName)) }
+                c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue(aspectName), it) }
             }
         }
 

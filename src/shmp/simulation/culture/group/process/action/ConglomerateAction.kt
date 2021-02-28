@@ -110,6 +110,7 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
         }
 
         val name = group.parentGroup.newName
+        val memoryCenter = group.cultureCenter.memoryCenter.fullCopy()
 
         return Group(
                 ProcessCenter(AdministrationType.Subordinate),
@@ -118,11 +119,14 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
                 name,
                 group.populationCenter.getPart(0.5, startTile),
                 RelationCenter(group.relationCenter.hostilityCalculator),
+                CultureAspectCenter(
+                        group.cultureCenter.cultureAspectCenter.reasonField.copy(),
+                        baseConversions(memoryCenter)
+                ),
                 group.cultureCenter.traitCenter.copy(),
                 startTile,
-                aspects,
-                group.cultureCenter.cultureAspectCenter.reasonField.copy(),
-                group.cultureCenter.memoryCenter.fullCopy(),
+                AspectCenter(aspects),
+                memoryCenter,
                 memes,
                 group.cultureCenter.cultureAspectCenter.aspectPool.all,
                 group.territoryCenter.spreadAbility

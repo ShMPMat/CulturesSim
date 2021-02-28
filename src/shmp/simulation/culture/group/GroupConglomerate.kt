@@ -38,6 +38,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         claimTile(root)
         for (i in 0 until numberOfSubGroups) {
             val name = name + "_$i"
+            val memoryCenter = MemoryCenter()
             addGroup(Group(
                     ProcessCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), root, name),
@@ -55,11 +56,11 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                         val weakRelationsMultiplier = difference * difference * difference / 10
                         (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
+                    CultureAspectCenter(ReasonField(), baseConversions(memoryCenter)),
                     TraitCenter(),
                     root,
-                    ArrayList(),
-                    ReasonField(),
-                    MemoryCenter(),
+                    AspectCenter(emptyList()),
+                    memoryCenter,
                     GroupMemes(),
                     emptyList(),
                     Controller.session.defaultGroupSpreadability

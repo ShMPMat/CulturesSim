@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.math.max
 
 
-class AspectCenter(private val group: Group, aspects: List<Aspect>) {
+class AspectCenter(aspects: List<Aspect>) {
     private val _mutableAspectPool = MutableAspectPool(HashSet())
 
     //    Aspects added on the current turn
@@ -35,20 +35,20 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
     val aspectPool: AspectPool
         get() = _mutableAspectPool
 
-    fun addAspect(aspect: Aspect): Boolean {
+    fun addAspect(aspect: Aspect, group: Group): Boolean {
         var currentAspect = aspect
         if (!currentAspect.isValid)
             return false
         if (_mutableAspectPool.contains(currentAspect))
             currentAspect = _mutableAspectPool.getValue(currentAspect.name)
-        val dependencies = calculateDependencies(currentAspect)
+        val dependencies = calculateDependencies(currentAspect, group)
         if (!currentAspect.isDependenciesOk(dependencies))
             return false
-        addAspectNow(currentAspect, dependencies)
+        addAspectNow(currentAspect, dependencies, group)
         return true
     }
 
-    private fun addAspectNow(aspect: Aspect, dependencies: AspectDependencies) {
+    private fun addAspectNow(aspect: Aspect, dependencies: AspectDependencies, group: Group) {
         val currentAspect: Aspect
         if (_mutableAspectPool.contains(aspect)) {
             currentAspect = _mutableAspectPool.getValue(aspect) //TODO why one, add a l l
@@ -70,7 +70,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         _mutableAspectPool.add(aspect)
     }
 
-    private fun calculateDependencies(aspect: Aspect): AspectDependencies {
+    private fun calculateDependencies(aspect: Aspect, group: Group): AspectDependencies {
         val calculator = AspectDependencyCalculator(
                 _mutableAspectPool,
                 group.territoryCenter.territory
@@ -107,7 +107,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
                 if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
                     return listOf()
 
-                if (addAspect(aspect))
+                if (addAspect(aspect, group))
                     return listOf(aspect)
             }
         }
@@ -163,7 +163,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
         val options: MutableList<Pair<Aspect, Group?>> = ArrayList()
         val aspectLabeler = ProducedLabeler(labeler)
         for (aspect in session.world.aspectPool.all.filter { aspectLabeler.isSuitable(it) }) {
-            val dependencies = calculateDependencies(aspect)
+            val dependencies = calculateDependencies(aspect, group)
             if (aspect.isDependenciesOk(dependencies))
                 options.add(Pair<Aspect, Group?>(aspect.copy(dependencies), null))
         }
@@ -175,7 +175,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
             var aspect = box.aspect
             val aspectGroup = box.group
             if (aspectLabeler.isSuitable(aspect)) {
-                val dependencies = calculateDependencies(aspect)
+                val dependencies = calculateDependencies(aspect, group)
                 if (aspect.isDependenciesOk(dependencies)) {
                     aspect = aspect.copy(dependencies)
                     options.add(Pair(aspect, aspectGroup))
@@ -214,7 +214,7 @@ class AspectCenter(private val group: Group, aspects: List<Aspect>) {
                     { (a, g) -> max(a.usefulness * group.relationCenter.getNormalizedRelation(g), 0.0) + 1.0 },
                     session.random
             )
-            if (addAspect(aspect))
+            if (addAspect(aspect, group))
                 return listOf(Event(
                         Type.AspectGaining,
                         "${group.name} got ${aspect.name} from ${aspectGroup.name}"

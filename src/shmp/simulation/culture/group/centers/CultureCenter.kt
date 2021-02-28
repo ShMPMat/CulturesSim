@@ -6,7 +6,6 @@ import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.GROUP_TAG_TYPE
 import shmp.simulation.culture.group.cultureaspect.CherishedResource
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.Meme
@@ -29,9 +28,9 @@ class CultureCenter(
         val traitCenter: TraitCenter,
         val memoryCenter: MemoryCenter,
         val cultureAspectCenter: CultureAspectCenter,
-        aspects: List<Aspect>,
+        val aspectCenter: AspectCenter
 ) {
-    val aspectCenter = AspectCenter(group, aspects)
+
     val requestCenter = RequestCenter()
 
     val events = EventLog()
@@ -81,7 +80,7 @@ class CultureCenter(
         val (first, second) = randomElementOrNull(options, session.random)
                 ?: return
 
-        aspectCenter.addAspect(first)
+        aspectCenter.addAspect(first, group)
 
         events.add(
                 if (second == null)

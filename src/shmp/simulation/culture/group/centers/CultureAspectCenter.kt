@@ -5,9 +5,13 @@ import shmp.random.randomElementOrNull
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.testProbability
 import shmp.simulation.Controller.session
+import shmp.simulation.culture.group.centers.util.MemoryConversion
 import shmp.simulation.culture.group.centers.util.toConcept
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.CorrespondingConversion
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.EqualitySubjectCorrelationConversion
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.OppositionConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
@@ -198,3 +202,11 @@ private enum class ChangeRandom(override val probability: Double) : SampleSpaceO
     Worship(2.0),
     God(1.0),
 }
+
+
+fun baseConversions(memoryCenter: MemoryCenter) = listOf(
+        MemoryConversion(memoryCenter),
+        CorrespondingConversion,
+        OppositionConversion,
+        EqualitySubjectCorrelationConversion
+)

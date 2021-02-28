@@ -28,10 +28,10 @@ class Group(
         var name: String,
         val populationCenter: PopulationCenter,
         val relationCenter: RelationCenter,
+        cultureAspectCenter: CultureAspectCenter,
         traitCenter: TraitCenter,
         tile: Tile,
-        aspects: List<Aspect>,
-        reasonField: ReasonField,
+        aspectCenter: AspectCenter,
         memoryCenter: MemoryCenter,
         memePool: GroupMemes,
         cultureAspects: Collection<CultureAspect>,
@@ -44,16 +44,17 @@ class Group(
             memePool,
             traitCenter,
             memoryCenter,
-            CultureAspectCenter(
-                    reasonField,
-                    listOf(
-                            MemoryConversion(memoryCenter),
-                            CorrespondingConversion,
-                            OppositionConversion,
-                            EqualitySubjectCorrelationConversion
-                    )
-            ),
-            aspects
+            cultureAspectCenter,
+//            CultureAspectCenter(
+//                    reasonField,
+//                    listOf(
+//                            MemoryConversion(memoryCenter),
+//                            CorrespondingConversion,
+//                            OppositionConversion,
+//                            EqualitySubjectCorrelationConversion
+//                    )
+//            ),
+            aspectCenter
     )
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)
     private var _direNeedTurns = 0
