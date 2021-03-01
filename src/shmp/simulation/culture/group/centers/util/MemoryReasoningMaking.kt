@@ -12,7 +12,6 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalC
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.singletonReasonAdditionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.equals
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.culture.group.request.RequestType
@@ -47,14 +46,14 @@ private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverag
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(commonResource)
 
-        singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Commonness, resourceConcept)
+        ReasonConversionResult(resourceConcept equals IdeationalConcept.Commonness, resourceConcept)
     } else {
         val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(rareResource)
 
-        singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Rareness, resourceConcept)
+        ReasonConversionResult(resourceConcept equals IdeationalConcept.Rareness, resourceConcept)
     }
 }
 
@@ -123,14 +122,14 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
 
 private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result): ReasonConversionResult {
     if (0.5.testProbability())
-        return singletonReasonAdditionResult(type equals IdeationalConcept.Hardness, type)
+        return ReasonConversionResult(type equals IdeationalConcept.Hardness, type)
 
     val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
             ?: return emptyReasonConversionResult()
     val resourceConcept = ArbitraryResource(resource)
 
     if (0.5.testProbability())
-        return singletonReasonAdditionResult(resourceConcept equals IdeationalConcept.Hardness, resourceConcept)
+        return ReasonConversionResult(resourceConcept equals IdeationalConcept.Hardness, resourceConcept)
 
     return when(type) {
         RequestType.Food -> emptyReasonConversionResult()

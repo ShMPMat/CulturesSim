@@ -39,6 +39,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         for (i in 0 until numberOfSubGroups) {
             val name = name + "_$i"
             val memoryCenter = MemoryCenter()
+            val aspectCenter = AspectCenter(emptyList())
             addGroup(Group(
                     ProcessCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), root, name),
@@ -56,10 +57,10 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                         val weakRelationsMultiplier = difference * difference * difference / 10
                         (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
-                    CultureAspectCenter(ReasonField(), baseConversions(memoryCenter)),
+                    CultureAspectCenter(ReasonField(), baseConversions(memoryCenter, aspectCenter)),
                     TraitCenter(),
                     root,
-                    AspectCenter(emptyList()),
+                    aspectCenter,
                     memoryCenter,
                     GroupMemes(),
                     emptyList(),

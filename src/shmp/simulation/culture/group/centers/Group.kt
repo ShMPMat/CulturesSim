@@ -45,15 +45,6 @@ class Group(
             traitCenter,
             memoryCenter,
             cultureAspectCenter,
-//            CultureAspectCenter(
-//                    reasonField,
-//                    listOf(
-//                            MemoryConversion(memoryCenter),
-//                            CorrespondingConversion,
-//                            OppositionConversion,
-//                            EqualitySubjectCorrelationConversion
-//                    )
-//            ),
             aspectCenter
     )
     val territoryCenter = TerritoryCenter(this, spreadAbility, tile)

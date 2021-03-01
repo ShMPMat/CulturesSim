@@ -5,6 +5,7 @@ import shmp.random.randomElementOrNull
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.testProbability
 import shmp.simulation.Controller.session
+import shmp.simulation.culture.group.centers.util.AspectConversion
 import shmp.simulation.culture.group.centers.util.MemoryConversion
 import shmp.simulation.culture.group.centers.util.toConcept
 import shmp.simulation.culture.group.cultureaspect.*
@@ -204,8 +205,9 @@ private enum class ChangeRandom(override val probability: Double) : SampleSpaceO
 }
 
 
-fun baseConversions(memoryCenter: MemoryCenter) = listOf(
+fun baseConversions(memoryCenter: MemoryCenter, aspectCenter: AspectCenter) = listOf(
         MemoryConversion(memoryCenter),
+        AspectConversion(aspectCenter),
         CorrespondingConversion,
         OppositionConversion,
         EqualitySubjectCorrelationConversion
