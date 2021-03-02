@@ -18,7 +18,7 @@ import shmp.simulation.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
 
-class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders") {
+class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "") {
     private val tradeAspect = session.world.aspectPool.get("Trade")
             ?: throw SimulationError("No aspect Trade exists for the $name")
 

@@ -12,7 +12,8 @@ import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
 
 
-abstract class BaseStratum(tile: Tile, final override val name: String) : Stratum {
+abstract class BaseStratum(tile: Tile, final override val baseName: String, postfix: String) : Stratum {
+    final override val name = baseName + postfix
     override val ego = Ego(tile, name)
 
     protected val innerPlaces = mutableListOf<StaticPlace>()

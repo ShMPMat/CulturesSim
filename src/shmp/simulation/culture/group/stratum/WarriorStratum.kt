@@ -5,7 +5,7 @@ import shmp.simulation.space.tile.Tile
 import kotlin.math.ceil
 import kotlin.math.min
 
-class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors") {
+class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors", "") {
     var _effectiveness = 1.0
         private set
 

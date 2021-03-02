@@ -112,17 +112,18 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
         val name = group.parentGroup.newName
         val memoryCenter = group.cultureCenter.memoryCenter.fullCopy()
         val aspectCenter = AspectCenter(aspects)
+        val populationCenter = group.populationCenter.getPart(0.5, startTile)
 
         return Group(
                 ProcessCenter(AdministrationType.Subordinate),
                 ResourceCenter(pack, startTile, name),
                 group.parentGroup,
                 name,
-                group.populationCenter.getPart(0.5, startTile),
+                populationCenter,
                 RelationCenter(group.relationCenter.hostilityCalculator),
                 CultureAspectCenter(
                         group.cultureCenter.cultureAspectCenter.reasonField.copy(),
-                        baseConversions(memoryCenter, aspectCenter)
+                        baseConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
                 ),
                 group.cultureCenter.traitCenter.copy(),
                 startTile,

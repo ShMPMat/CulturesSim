@@ -8,6 +8,7 @@ import kotlin.math.min
 
 
 interface Stratum {
+    val baseName: String
     val name: String
 
     val population: Int

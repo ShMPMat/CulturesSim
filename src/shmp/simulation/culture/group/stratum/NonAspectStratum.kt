@@ -6,7 +6,7 @@ import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.tile.Tile
 
 
-abstract class NonAspectStratum(tile: Tile, name: String) : BaseStratum(tile, name) {
+abstract class NonAspectStratum(tile: Tile, baseName: String, postfix: String) : BaseStratum(tile, baseName, postfix) {
     override var population: Int = 0
         internal set
 

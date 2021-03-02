@@ -40,24 +40,29 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
             val name = name + "_$i"
             val memoryCenter = MemoryCenter()
             val aspectCenter = AspectCenter(emptyList())
+            val populationCenter = PopulationCenter(
+                    population / numberOfSubGroups,
+                    Controller.session.defaultGroupMaxPopulation,
+                    Controller.session.defaultGroupMinPopulationPerTile,
+                    root,
+                    ResourcePack()
+            )
+
             addGroup(Group(
                     ProcessCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), root, name),
                     this,
                     name,
-                    PopulationCenter(
-                            population / numberOfSubGroups,
-                            Controller.session.defaultGroupMaxPopulation,
-                            Controller.session.defaultGroupMinPopulationPerTile,
-                            root,
-                            ResourcePack()
-                    ),
+                    populationCenter,
                     RelationCenter {
                         val difference = getGroupsDifference(it.owner, it.other)
                         val weakRelationsMultiplier = difference * difference * difference / 10
                         (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
-                    CultureAspectCenter(ReasonField(), baseConversions(memoryCenter, aspectCenter)),
+                    CultureAspectCenter(
+                            ReasonField(),
+                            baseConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
+                    ),
                     TraitCenter(),
                     root,
                     aspectCenter,

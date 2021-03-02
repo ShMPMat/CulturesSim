@@ -22,7 +22,7 @@ class AspectStratum(
         override var population: Int,
         val aspect: ConverseWrapper,
         tile: Tile
-) : BaseStratum(tile, "Stratum of aspect ${aspect.name}") {
+) : BaseStratum(tile, "Stratum of aspect ${aspect.name}", "") {
     private var _effectiveness = -1.0
 
     private var workedAmount = 0

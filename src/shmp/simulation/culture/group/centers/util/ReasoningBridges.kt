@@ -26,7 +26,7 @@ import shmp.simulation.space.resource.Resource
 
 class ArbitraryResource(val resource: Resource) : ArbitraryObjectConcept(MemeSubject(resource.baseName))
 class ArbitraryAspect(val aspectCore: AspectCore) : ArbitraryActionConcept(MemeSubject(aspectCore.name))
-class ArbitraryStratum(val stratum: Stratum) : ArbitraryObjectConcept(MemeSubject(stratum.name))
+class ArbitraryStratum(val stratum: Stratum) : ArbitraryObjectConcept(MemeSubject(stratum.baseName))
 
 
 fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {

@@ -7,7 +7,7 @@ import shmp.simulation.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
 
-class CultStratum(val cultName: String, tile: Tile) : NonAspectStratum(tile, "Stratum for $cultName") {
+class CultStratum(val cultName: String, tile: Tile) : NonAspectStratum(tile, "Stratum for cult ", cultName) {
     override val freePopulation: Int
         get() = population
     override val cumulativeWorkAblePopulation: Double
