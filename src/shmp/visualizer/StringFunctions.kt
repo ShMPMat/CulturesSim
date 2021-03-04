@@ -160,6 +160,18 @@ fun printGroupStatistics(world: World): String {
                 .maxByOrNull { it.cultureCenter.cultureAspectCenter.reasonField.commonReasonings.reasonings.size }
                 ?.let { g -> "${g.name} - ${g.cultureCenter.cultureAspectCenter.reasonField.commonReasonings}" }
     }
+             |
+             |Most additional conversions:
+             |${
+        conglomerates.flatMap { it.subgroups }
+                .maxByOrNull { it.cultureCenter.cultureAspectCenter.reasonField.specialConversions.size }
+                ?.let { g -> 
+                    "${g.name} - ${
+                        g.cultureCenter.cultureAspectCenter.reasonField.specialConversions.joinToString("\n")
+                    }" 
+                }
+    }
+             |
              |""".trimMargin()
 }
 

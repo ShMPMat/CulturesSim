@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.utils.SoftValue
 
+
 class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf()) {
     private val _reasonings = startReasonings.toMutableSet()
     val reasonings: Set<Reasoning> = _reasonings
@@ -24,8 +25,9 @@ class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf())
      * returns: List of accepted Reasonings
      */
     fun addReasonings(reasonings: List<Reasoning>): List<Reasoning> {
-        _reasonings.addAll(reasonings)
-        return reasonings
+        val toAccept = reasonings.filter { it !in _reasonings }
+        _reasonings.addAll(toAccept)
+        return toAccept
     }
 
     override fun toString() = """

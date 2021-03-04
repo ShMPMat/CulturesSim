@@ -16,7 +16,14 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
         MemeSubject("$objectConcept represents $subjectConcept"),
         listOf(objectConcept.meme, subjectConcept.meme),
         listOf()
-)
+) {
+    val isOppositions = any { it in subjectConcept.oppositeConcepts || it in objectConcept.oppositeConcepts }
+
+    fun toList() = listOf(objectConcept, subjectConcept)
+
+    fun any(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) || predicate(subjectConcept)
+    fun all(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) && predicate(subjectConcept)
+}
 
 class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
         MemeSubject("$objectConcept opposes $subjectConcept"),

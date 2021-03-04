@@ -8,7 +8,7 @@ import shmp.random.singleton.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
@@ -46,14 +46,14 @@ private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverag
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(commonResource)
 
-        ReasonConversionResult(resourceConcept equals IdeationalConcept.Commonness, resourceConcept)
+        ReasonConversionResult(resourceConcept equals Commonness, resourceConcept)
     } else {
         val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(rareResource)
 
-        ReasonConversionResult(resourceConcept equals IdeationalConcept.Rareness, resourceConcept)
+        ReasonConversionResult(resourceConcept equals Rareness, resourceConcept)
     }
 }
 
@@ -65,13 +65,21 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
             .randomElementOrNull { it.key.need.toDouble() }
             ?: return reasonResult
     for (type in request.types) {
-        if (result.status == ResultStatus.NotSatisfied && 0.5.testProbability()) {
-            reasonResult += makeNotSatisfiedRequestReasoning(type, result)
+        val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
+
+        if (0.5.testProbability()) {
+            when (result.status) {
+                ResultStatus.NotSatisfied -> {
+                    reasonResult += makeNotSatisfiedRequestReasoning(type, result, resource)
+                }
+                ResultStatus.Satisfied -> {}
+                ResultStatus.Excellent -> {}
+            }
             continue
         }
 
-        val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
-                ?: continue
+        resource ?: continue
+
         val resourceConcept = ArbitraryResource(resource)
         reasonResult.concepts.add(resourceConcept)
         when(type) {
@@ -79,39 +87,39 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
             is RequestType.Warmth -> {}
             is RequestType.Clothes -> {}
             is RequestType.Shelter -> reasonResult.reasonings.add(
-                    listOf(
-                            resourceConcept equals IdeationalConcept.Life
+                    resourceConcept equals listOf(
+                            Life
                     ).randomElement()
             )
             is RequestType.Vital -> reasonResult.reasonings.add(
-                    listOf(
-                            resourceConcept equals IdeationalConcept.Life,
-                            resourceConcept equals IdeationalConcept.Good
+                    resourceConcept equals listOf(
+                            Life,
+                            Good
                     ).randomElement()
             )
             is RequestType.Comfort -> reasonResult.reasonings.add(
-                    listOf(
-                            resourceConcept equals IdeationalConcept.Comfort,
-                            resourceConcept equals IdeationalConcept.Good
+                    resourceConcept equals listOf(
+                            Comfort,
+                            Good
                     ).randomElement()
             )
             is RequestType.Improvement -> reasonResult.reasonings.add(
-                    listOf(
-                            resourceConcept equals IdeationalConcept.Comfort,
-                            resourceConcept equals IdeationalConcept.Good,
-                            resourceConcept equals IdeationalConcept.Life,
-                            resourceConcept equals IdeationalConcept.Change,
-                            resourceConcept equals IdeationalConcept.Creation,
+                    resourceConcept equals listOf(
+                            Comfort,
+                            Good,
+                            Life,
+                            Change,
+                            Creation,
                     ).randomElement()
             )
             is RequestType.Trade -> reasonResult.reasonings.add(
-                    listOf(
-                            resourceConcept equals IdeationalConcept.Change
+                    resourceConcept equals listOf(
+                            Change
                     ).randomElement()
             )
             is RequestType.Luxury -> reasonResult.reasonings.add(
                     listOf(
-                            resourceConcept equals IdeationalConcept.Comfort
+                            resourceConcept equals Comfort
                     ).randomElement()
             )
         }
@@ -120,16 +128,19 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
     return reasonResult
 }
 
-private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result): ReasonConversionResult {
+private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result, resource: Resource?): ReasonConversionResult {
     if (0.5.testProbability())
-        return ReasonConversionResult(type equals IdeationalConcept.Hardness, type)
+        return ReasonConversionResult(type equals listOf(Hardness, Hardship).randomElement(), type)
 
-    val resource = result.pack.resources.randomElementOrNull { it.amount.toDouble().pow(2) }
-            ?: return emptyReasonConversionResult()
+    resource ?: return emptyReasonConversionResult()
+
     val resourceConcept = ArbitraryResource(resource)
 
     if (0.5.testProbability())
-        return ReasonConversionResult(resourceConcept equals IdeationalConcept.Hardness, resourceConcept)
+        return ReasonConversionResult(
+                resourceConcept equals listOf(Hardness, Hardship).randomElement(),
+                resourceConcept
+        )
 
     return when(type) {
         RequestType.Food -> emptyReasonConversionResult()

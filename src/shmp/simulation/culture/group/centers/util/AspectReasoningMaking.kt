@@ -11,7 +11,8 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConce
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.equal
+import shmp.simulation.culture.group.cultureaspect.reasoning.allEqualsAll
+import shmp.simulation.culture.group.cultureaspect.reasoning.equalsAll
 
 
 class AspectConversion(private val aspectCenter: AspectCenter) : ReasonConversion {
@@ -39,7 +40,7 @@ class AspectConversion(private val aspectCenter: AspectCenter) : ReasonConversio
                 ?: return emptyReasonConversionResult()
 
         val concept = ArbitraryAspect(aspect.core)
-        val reasoning = (listOf(concept) equal appropriateConcepts).randomElement()
+        val reasoning = (concept equalsAll appropriateConcepts).randomElement()
 
         return ReasonConversionResult(reasoning, concept)
     }

@@ -3,8 +3,6 @@ package shmp.simulation.culture.group.centers.util
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.random.singleton.testProbability
-import shmp.simulation.culture.aspect.Aspect
-import shmp.simulation.culture.group.centers.AspectCenter
 import shmp.simulation.culture.group.centers.StratumCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
@@ -12,7 +10,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConce
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.equal
+import shmp.simulation.culture.group.cultureaspect.reasoning.equalsAll
 import shmp.simulation.culture.group.stratum.Stratum
 
 
@@ -40,7 +38,7 @@ class StratumConversion(private val stratumCenter: StratumCenter) : ReasonConver
                 ?: return emptyReasonConversionResult()
 
         val concept = ArbitraryStratum(stratum)
-        val reasoning = (listOf(concept) equal appropriateConcepts).randomElement()
+        val reasoning = (concept equalsAll appropriateConcepts).randomElement()
 
         return ReasonConversionResult(reasoning, concept)
     }
