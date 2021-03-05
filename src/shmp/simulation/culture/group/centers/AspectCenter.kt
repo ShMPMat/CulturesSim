@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.randomElement
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.testProbability
 import shmp.random.testProbability
 import shmp.simulation.Controller.*
 import shmp.simulation.event.Event
@@ -94,7 +95,7 @@ class AspectCenter(aspects: List<Aspect>) {
             val options = mutableListOf<Aspect>()
 
             if (session.independentCvSimpleAspectAdding) {
-                if (testProbability(0.1, session.random))
+                if (0.1.testProbability())
                     options.addAll(session.world.aspectPool.all)
                 else
                     options.addAll(getAllPossibleConverseWrappers(group))

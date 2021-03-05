@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.centers.util
 
 import shmp.random.SampleSpaceObject
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.random.singleton.testProbability
@@ -15,7 +16,6 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyRea
 import shmp.simulation.culture.group.cultureaspect.reasoning.equals
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.culture.group.request.RequestType
-import shmp.simulation.culture.group.request.Result
 import shmp.simulation.culture.group.request.ResultStatus
 import shmp.simulation.space.resource.Resource
 import shmp.utils.MovingAverage
@@ -70,7 +70,7 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
         if (0.5.testProbability()) {
             when (result.status) {
                 ResultStatus.NotSatisfied -> {
-                    reasonResult += makeNotSatisfiedRequestReasoning(type, result, resource)
+                    reasonResult += makeNotSatisfiedRequestReasoning(type, resource)
                 }
                 ResultStatus.Satisfied -> {}
                 ResultStatus.Excellent -> {}
@@ -128,19 +128,22 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
     return reasonResult
 }
 
-private fun makeNotSatisfiedRequestReasoning(type: RequestType, result: Result, resource: Resource?): ReasonConversionResult {
-    if (0.5.testProbability())
+
+private fun makeNotSatisfiedRequestReasoning(type: RequestType, resource: Resource?): ReasonConversionResult {
+    0.5.chanceOf {
         return ReasonConversionResult(type equals listOf(Hardness, Hardship).randomElement(), type)
+    }
 
     resource ?: return emptyReasonConversionResult()
 
     val resourceConcept = ArbitraryResource(resource)
 
-    if (0.5.testProbability())
+    0.5.chanceOf {
         return ReasonConversionResult(
                 resourceConcept equals listOf(Hardness, Hardship).randomElement(),
                 resourceConcept
         )
+    }
 
     return when(type) {
         RequestType.Food -> emptyReasonConversionResult()

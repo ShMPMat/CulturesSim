@@ -2,6 +2,8 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.SampleSpaceObject
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.chanceOfNot
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.testProbability
 import shmp.simulation.Controller.session
@@ -40,8 +42,9 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
 
     private fun updateReasonings(group: Group) {
         reasonField.reasonComplexes.forEach { complex ->
-            if (!session.reasoningUpdate.testProbability())
+            session.reasoningUpdate.chanceOfNot {
                 return@forEach
+            }
 
             val newReasonings = if (complex.isEmpty)
                 listOf(generateBaseReasoning(listOf(MemeSubject(group.name)), session.random))
@@ -50,7 +53,7 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
             addReasonings(complex, newReasonings)
         }
 
-        if (session.reasoningUpdate.testProbability()) {
+        session.reasoningUpdate.chanceOf {
             val conversion = reasonConversions.randomElement()
 
             conversion.enrichComplex(reasonField.commonReasonings, reasonField)
@@ -74,8 +77,9 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
     private fun useCultureAspects(group: Group) = aspectPool.all.forEach { it.use(group) }
 
     fun addRandomCultureAspect(group: Group) {
-        if (!session.cultureAspectBaseProbability.testProbability())
+        session.cultureAspectBaseProbability.chanceOfNot {
             return
+        }
 
         val cultureAspect = when (AspectRandom.values().randomElement()) {
             AspectRandom.Depict -> createDepictObject(
@@ -120,8 +124,9 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
     }
 
     fun mutateCultureAspects(group: Group) {
-        if (!session.groupCultureAspectCollapse.testProbability())
+        session.groupCultureAspectCollapse.chanceOfNot {
             return
+        }
 
         when (ChangeRandom.values().randomElement()) {
             ChangeRandom.RitualSystem -> joinSimilarRituals()
