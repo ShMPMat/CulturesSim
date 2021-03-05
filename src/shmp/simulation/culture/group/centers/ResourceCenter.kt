@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.utils.addLinePrefix
 import shmp.random.randomElement
+import shmp.random.singleton.randomElement
 import shmp.simulation.Controller.*
 import shmp.simulation.culture.group.place.MovablePlace
 import shmp.simulation.space.resource.container.MutableResourcePack
@@ -37,11 +38,11 @@ class ResourceCenter(
             neededResources.forEach { it.value.normalize() }
 
             val max = neededResources.entries
-                    .maxBy { it.value.importance }
+                    .maxByOrNull { it.value.importance }
                     ?.value?.importance
                     ?: return null
 
-            return randomElement(neededResources.filter { it.value.importance == max }.toList(), session.random)
+            return neededResources.filter { it.value.importance == max }.toList().randomElement()
         }
 
     val direNeed: Pair<ResourceLabeler, ResourceNeed>?

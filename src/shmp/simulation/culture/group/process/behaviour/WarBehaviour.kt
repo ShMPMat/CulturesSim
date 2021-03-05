@@ -1,8 +1,7 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.randomElement
-import shmp.random.randomElementOrNull
-import shmp.simulation.Controller
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.group.ConflictResultEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
@@ -31,15 +30,11 @@ object RandomWarB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        val opponent = randomElementOrNull(
-                groups,
-                {
-                    val relation = group.relationCenter.getNormalizedRelation(it)
-                    val warPower = it.populationCenter.stratumCenter.warriorStratum.cumulativeWorkAblePopulation
-                    (1 - relation.pow(2)) / (warPower + 1)
-                },
-                Controller.session.random
-        ) ?: return emptyProcessResult
+        val opponent = groups.randomElementOrNull {
+            val relation = group.relationCenter.getNormalizedRelation(it)
+            val warPower = it.populationCenter.stratumCenter.warriorStratum.cumulativeWorkAblePopulation
+            (1 - relation.pow(2)) / (warPower + 1)
+        } ?: return emptyProcessResult
 
         val goal =
                 if (opponent.parentGroup != group.parentGroup
@@ -138,16 +133,12 @@ class ProbabilisticWarFinisher() : WarFinisher {
             it.decide(this::incF, this::incS, this::incD)()
         }
 
-        return randomElement(
-                listOf(
-                        Finish(First) to first,
-                        Finish(Second) to second,
-                        Finish(Draw) to draw,
-                        Continue to sqrt(first + second + draw + 1)
-                ),
-                { (_, n) -> n },
-                Controller.session.random
-        ).first
+        return listOf(
+                Finish(First) to first,
+                Finish(Second) to second,
+                Finish(Draw) to draw,
+                Continue to sqrt(first + second + draw + 1)
+        ).randomElement { (_, n) -> n }.first
     }
 }
 

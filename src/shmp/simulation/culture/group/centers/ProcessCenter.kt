@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.centers
 
+import shmp.random.singleton.chanceOf
 import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.Controller.session
@@ -63,8 +64,9 @@ class ProcessCenter(type: AdministrationType) {
 
     fun update(group: Group) {
         val main = System.nanoTime()
-        if (testProbability(session.behaviourUpdateProb, session.random))
+        session.behaviourUpdateProb.chanceOf {
             updateBehaviours(group)
+        }
 
         if (behaviours.size > 20)
             updateBehaviours(group)

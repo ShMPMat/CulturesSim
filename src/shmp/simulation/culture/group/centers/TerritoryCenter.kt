@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.randomTile
-import shmp.random.testProbability
+import shmp.random.singleton.chanceOfNot
 import shmp.simulation.Controller.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.*
@@ -150,8 +150,10 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     fun expand(): Boolean {
-        if (!testProbability(spreadAbility, session.random))
+        spreadAbility.chanceOfNot {
             return false
+        }
+
         claimTile(territory.getMostUsefulTileOnOuterBrink(
                 { canSettleAndNoGroup(it) && isTileReachable(it) },
                 this::tilePotentialMapper

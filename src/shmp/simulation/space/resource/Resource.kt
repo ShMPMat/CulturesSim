@@ -1,6 +1,8 @@
 package shmp.simulation.space.resource
 
 import shmp.random.randomTileOnBrink
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.otherwise
 import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.event.Event
@@ -166,8 +168,9 @@ open class Resource(
         if (amount <= 0)
             ResourceUpdateResult(false, result)
         deathTurn++
-        if (testProbability(core.genome.spreadProbability, SpaceData.data.random))
+        core.genome.spreadProbability.chanceOf {
             expand(tile)
+        }
 
         if (simpleName == "Vapour") {
             if (tile.temperature < 0) {
@@ -185,9 +188,9 @@ open class Resource(
         val expectedValue = amount * action.probability
         val part =
                 if (expectedValue < 1.0)
-                    if (testProbability(expectedValue, Controller.session.random))
+                    expectedValue.chanceOf<Int> {
                         1
-                    else 0
+                    } ?: 0
                 else expectedValue.toInt()
 
         return if (action.isWasting)

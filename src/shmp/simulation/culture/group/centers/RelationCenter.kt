@@ -9,6 +9,7 @@ import shmp.simulation.space.tile.getDistance
 import java.util.*
 import kotlin.math.max
 
+
 class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     private val relationsMap: MutableMap<Group, Relation> = HashMap()
     private val evaluationFactor = 10_000

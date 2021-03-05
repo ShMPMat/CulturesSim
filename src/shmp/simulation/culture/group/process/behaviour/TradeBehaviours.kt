@@ -1,10 +1,9 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.randomElementOrNull
-import shmp.random.randomUnwrappedElementOrNull
-import shmp.random.testProbability
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.randomElementOrNull
+import shmp.random.singleton.randomUnwrappedElementOrNull
 import shmp.random.toSampleSpaceObject
-import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.CooperateA
@@ -21,11 +20,9 @@ object RandomTradeB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
-        val tradePartner = randomElementOrNull(
-                groups,
-                { group.relationCenter.getNormalizedRelation(it).pow(2) },
-                session.random
-        ) ?: return emptyProcessResult
+        val tradePartner = groups.randomElementOrNull {
+            group.relationCenter.getNormalizedRelation(it).pow(2)
+        } ?: return emptyProcessResult
 
         return TradeI(group, tradePartner, 1000).run()
     }
@@ -71,9 +68,7 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
     override fun update(group: Group): TradeRelationB? {
         val continuationChance = (successes + 1.0) / (successes + fails + 1.0)
 
-        return if (testProbability(continuationChance, session.random))
-            this
-        else null
+        return continuationChance.chanceOf<TradeRelationB> { this }
     }
 }
 
@@ -90,10 +85,8 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
                 .filter { it.probability > 0.0 }
 
 
-        val chosenPartner = randomUnwrappedElementOrNull(
-                groupsToChances,
-                session.random
-        ) ?: return emptyProcessResult
+        val chosenPartner = groupsToChances.randomUnwrappedElementOrNull()
+                ?: return emptyProcessResult
 
         if (!CooperateA(chosenPartner, group, 0.1).run())
             return ChangeRelationsI(group, chosenPartner, -1.0).run() +

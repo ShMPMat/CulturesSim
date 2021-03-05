@@ -1,17 +1,18 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.random.randomElement
 import shmp.random.randomElementOrNull
-import shmp.random.singleton.testProbability
-import shmp.random.testProbability
-import shmp.simulation.Controller.*
-import shmp.simulation.event.Event
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.chanceOfNot
+import shmp.random.singleton.otherwise
+import shmp.random.singleton.randomElement
+import shmp.simulation.Controller.session
 import shmp.simulation.culture.aspect.*
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.aspect.dependency.LineDependency
 import shmp.simulation.culture.aspect.labeler.ProducedLabeler
 import shmp.simulation.culture.group.AspectDependencyCalculator
 import shmp.simulation.culture.group.convert
+import shmp.simulation.event.Event
 import shmp.simulation.event.Type
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -81,52 +82,56 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun addConverseWrapper(aspect: Aspect, resource: Resource) { //TODO I'm adding a lot of garbage
-        val wrapper = (if (aspect.canApplyMeaning())
+        val wrapper = if (aspect.canApplyMeaning())
             MeaningInserter(aspect, resource)
         else
-            ConverseWrapper(aspect, resource))
+            ConverseWrapper(aspect, resource)
+
         if (!wrapper.isValid)
             return
         _converseWrappers.add(wrapper)
     }
 
     fun mutateAspects(group: Group): List<Aspect> { //TODO separate adding of new aspects and updating old
-        if (testProbability(session.rAspectAcquisition / (aspectPool.all.size + 1), session.random)) {
-            val options = mutableListOf<Aspect>()
+        (session.rAspectAcquisition / (aspectPool.all.size + 1)).chanceOfNot {
+            return listOf()
+        }
 
-            if (session.independentCvSimpleAspectAdding) {
-                if (0.1.testProbability())
-                    options.addAll(session.world.aspectPool.all)
-                else
-                    options.addAll(getAllPossibleConverseWrappers(group))
-            } else {
+        val options = mutableListOf<Aspect>()
+
+        if (session.independentCvSimpleAspectAdding) {
+            0.1.chanceOf {
                 options.addAll(session.world.aspectPool.all)
+            } otherwise {
                 options.addAll(getAllPossibleConverseWrappers(group))
             }
+        } else {
+            options.addAll(session.world.aspectPool.all)
+            options.addAll(getAllPossibleConverseWrappers(group))
+        }
 
-            randomElementOrNull(options, session.random)?.let { aspect ->
-                if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
-                    return listOf()
+        randomElementOrNull(options, session.random)?.let { aspect ->
+            if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
+                return listOf()
 
-                if (addAspect(aspect, group))
-                    return listOf(aspect)
-            }
+            if (addAspect(aspect, group))
+                return listOf(aspect)
         }
         return listOf()
     }
 
     private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
-            val options: List<ConverseWrapper> = ArrayList(_converseWrappers) //TODO maybe do it after the middle part?
-            val newResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
-            newResources.addAll(_mutableAspectPool.producedResources)
-            newResources.removeAll(_lastResourcesForCw)
-            for (aspect in _mutableAspectPool.filter { it !is ConverseWrapper })
-                for (resource in newResources)
-                    addConverseWrapper(aspect, resource)
-            _lastResourcesForCw.addAll(newResources)
-            newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
-            return options
-        }
+        val options: List<ConverseWrapper> = ArrayList(_converseWrappers) //TODO maybe do it after the middle part?
+        val newResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
+        newResources.addAll(_mutableAspectPool.producedResources)
+        newResources.removeAll(_lastResourcesForCw)
+        for (aspect in _mutableAspectPool.filter { it !is ConverseWrapper })
+            for (resource in newResources)
+                addConverseWrapper(aspect, resource)
+        _lastResourcesForCw.addAll(newResources)
+        newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
+        return options
+    }
 
     fun finishUpdate(): Set<Aspect> {
         _mutableAspectPool.all.forEach { it.finishUpdate() }
@@ -161,16 +166,16 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     fun findOptions(labeler: ResourceLabeler, group: Group): List<Pair<Aspect, Group?>> {
-        val options: MutableList<Pair<Aspect, Group?>> = ArrayList()
+        val options = mutableListOf<Pair<Aspect, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
         for (aspect in session.world.aspectPool.all.filter { aspectLabeler.isSuitable(it) }) {
             val dependencies = calculateDependencies(aspect, group)
             if (aspect.isDependenciesOk(dependencies))
-                options.add(Pair<Aspect, Group?>(aspect.copy(dependencies), null))
+                options.add(aspect.copy(dependencies) to null)
         }
         getAllPossibleConverseWrappers(group)
                 .filter { aspectLabeler.isSuitable(it) }
-                .forEach { options.add(Pair<Aspect, Group?>(it, null)) }
+                .forEach { options.add(it to null) }
         val aspects = convert(getNewNeighbourAspects(group))
         for (box in aspects) {
             var aspect = box.aspect
@@ -179,7 +184,7 @@ class AspectCenter(aspects: List<Aspect>) {
                 val dependencies = calculateDependencies(aspect, group)
                 if (aspect.isDependenciesOk(dependencies)) {
                     aspect = aspect.copy(dependencies)
-                    options.add(Pair(aspect, aspectGroup))
+                    options.add(aspect to aspectGroup)
                 }
             }
         }
@@ -187,12 +192,12 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun getNeighbourAspects(group: Group): List<Pair<Aspect, Group>> {
-        val allExistingAspects: MutableList<Pair<Aspect, Group>> = ArrayList()
+        val allExistingAspects = mutableListOf<Pair<Aspect, Group>>()
         for (neighbour in group.relationCenter.relatedGroups) {
             allExistingAspects.addAll(
                     neighbour.cultureCenter.aspectCenter._mutableAspectPool.all
                             .filter { (it !is ConverseWrapper || _mutableAspectPool.contains(it.aspect)) }
-                            .map { Pair(it, neighbour) }
+                            .map { it to neighbour }
             )
         }
         return allExistingAspects
@@ -210,11 +215,10 @@ class AspectCenter(aspects: List<Aspect>) {
 
         val allExistingAspects = getNeighbourAspects(group) { !changedAspectPool.contains(it) }
         if (allExistingAspects.isNotEmpty()) {
-            val (aspect, aspectGroup) = randomElement(
-                    allExistingAspects,
-                    { (a, g) -> max(a.usefulness * group.relationCenter.getNormalizedRelation(g), 0.0) + 1.0 },
-                    session.random
-            )
+            val (aspect, aspectGroup) = allExistingAspects.randomElement { (a, g) ->
+                max(a.usefulness * group.relationCenter.getNormalizedRelation(g), 0.0) + 1.0
+            }
+
             if (addAspect(aspect, group))
                 return listOf(Event(
                         Type.AspectGaining,

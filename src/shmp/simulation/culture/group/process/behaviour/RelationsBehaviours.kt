@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.testProbability
-import shmp.simulation.Controller
+import shmp.random.singleton.testProbability
 import shmp.simulation.culture.group.HelpEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.process.ProcessResult
@@ -22,7 +21,7 @@ class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
         val amount = request.ceiling
         var amountLeft = amount
         for (relation in group.relationCenter.relations.sortedByDescending { it.positive }) {
-            if (!testProbability(relation.normalized.pow(2), Controller.session.random))
+            if (!relation.normalized.pow(2).testProbability())
                 break
 
             val reducedRequest = request.reducedAmountCopy(amountLeft)

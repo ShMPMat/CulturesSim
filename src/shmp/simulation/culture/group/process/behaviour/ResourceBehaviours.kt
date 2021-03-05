@@ -1,8 +1,7 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.randomUnwrappedElementOrNull
+import shmp.random.singleton.randomUnwrappedElementOrNull
 import shmp.random.toSampleSpaceObject
-import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.emptyProcessResult
@@ -15,7 +14,7 @@ object GiveGiftB: AbstractGroupBehaviour() {
                 .map { it.toSampleSpaceObject(group.relationCenter.getNormalizedRelation(group)) }
                 .filter { it.probability > 0 }
 
-        val receiver = randomUnwrappedElementOrNull(relatedGroups, Controller.session.random)
+        val receiver = relatedGroups.randomUnwrappedElementOrNull()
                 ?: return emptyProcessResult
 
         return GiveGiftI(group, receiver).run()

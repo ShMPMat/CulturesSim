@@ -2,10 +2,7 @@ package shmp.simulation.culture.group.centers.util
 
 import shmp.random.SampleSpaceObject
 import shmp.random.randomElementOrNull
-import shmp.random.singleton.chanceOf
-import shmp.random.singleton.randomElement
-import shmp.random.singleton.randomElementOrNull
-import shmp.random.singleton.testProbability
+import shmp.random.singleton.*
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
@@ -40,14 +37,16 @@ private fun takeOutCommonReasonings(memoryCenter: MemoryCenter): ReasonConversio
         }
 
 private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): ReasonConversionResult {
-    return if (0.5.testProbability()) {
-        val commonResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { it.value.value.value }, Controller.session.random)
+    return 0.5.chanceOf<ReasonConversionResult> {
+        val commonResource = resourceTraction.entries
+                .sortedBy { it.value }
+                .randomElementOrNull { it.value.value.value }
                 ?.key
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(commonResource)
 
         ReasonConversionResult(resourceConcept equals Commonness, resourceConcept)
-    } else {
+    } ?: run {
         val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key
                 ?: return emptyReasonConversionResult()

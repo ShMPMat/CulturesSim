@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.centers
 
+import shmp.random.singleton.chanceOf
 import shmp.utils.chompToSize
 import shmp.random.testProbability
 import shmp.simulation.Controller.session
@@ -136,8 +137,9 @@ class Group(
     }
 
     private fun shouldMigrate(): Boolean {
-        if (testProbability(0.9, session.random))
+        0.9.chanceOf {
             return false
+        }
         if (resourceCenter.hasDireNeed())
             _direNeedTurns++
         else

@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.hasMeaning
@@ -77,7 +78,7 @@ class CultureCenter(
 
     fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
         val options = aspectCenter.findOptions(need.first, group)
-        val (first, second) = randomElementOrNull(options, session.random)
+        val (first, second) = options.randomElementOrNull()
                 ?: return
 
         aspectCenter.addAspect(first, group)

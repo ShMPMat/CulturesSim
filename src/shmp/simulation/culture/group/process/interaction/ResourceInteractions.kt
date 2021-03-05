@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.process.interaction
 
-import shmp.random.testProbability
-import shmp.simulation.Controller
+import shmp.random.singleton.chanceOf
 import shmp.simulation.culture.group.HelpEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
@@ -80,21 +79,20 @@ class ReceiveGiftI(
         val worth = EvaluateResourcesA(participator, giftCopy).run() + 0.8
         val acceptanceChance = participator.relationCenter.getNormalizedRelation(initiator) * worth.pow(2)
 
-        return if (testProbability(acceptanceChance, Controller.session.random)) {
+        return acceptanceChance.chanceOf<InteractionResult> {
             ReceiveGroupWideResourcesA(participator, gift.extract()).run()
 
             ProcessResult(Event(
                     Type.Cooperation,
                     "${participator.name} accepted a gift of $giftStr from ${initiator.name}"
-            ))  + ProcessResult(makeResourcePackMemes(giftCopy))
-                    ChangeRelationsI(initiator, participator, 2.0).run() to
-                            ProcessResult(makeResourcePackMemes(giftCopy))
-        } else
-            ProcessResult(Event(
-                    Type.Conflict,
-                    "${participator.name} rejected a gift of $giftStr from ${initiator.name}"
-            )) +
-                    ChangeRelationsI(initiator, participator, -2.0).run() to
-                    emptyProcessResult
+            )) + ProcessResult(makeResourcePackMemes(giftCopy))
+            ChangeRelationsI(initiator, participator, 2.0).run() to
+                    ProcessResult(makeResourcePackMemes(giftCopy))
+        } ?: ProcessResult(Event(
+                Type.Conflict,
+                "${participator.name} rejected a gift of $giftStr from ${initiator.name}"
+        )) +
+        ChangeRelationsI(initiator, participator, -2.0).run() to
+        emptyProcessResult
     }
 }

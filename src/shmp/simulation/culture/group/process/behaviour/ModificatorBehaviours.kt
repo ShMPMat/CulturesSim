@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.testProbability
-import shmp.simulation.Controller.session
+import shmp.random.singleton.RandomSingleton
+import shmp.random.singleton.chanceOf
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.TraitExtractor
@@ -16,9 +16,9 @@ class ChanceWrapperB(
         private val probabilityUpdate: (Group) -> Double = { probability }
 ) : AbstractGroupBehaviour() {
     override fun run(group: Group) =
-            if (testProbability(probability, session.random))
+            probability.chanceOf<ProcessResult> {
                 behaviour.run(group)
-            else emptyProcessResult
+            } ?: emptyProcessResult
 
     override fun update(group: Group): ChanceWrapperB? {
         return ChanceWrapperB(
@@ -44,9 +44,9 @@ class TraitChanceWrapperB(
         val traitExtractor: TraitExtractor
 ): AbstractGroupBehaviour() {
     override fun run(group: Group) =
-            if (testProbability(traitExtractor.extract(group.cultureCenter.traitCenter), session.random))
+            traitExtractor.extract(group.cultureCenter.traitCenter).chanceOf<ProcessResult> {
                 behaviour.run(group)
-            else emptyProcessResult
+            } ?: emptyProcessResult
 
     override val internalToString: String
         get() = """
@@ -67,7 +67,7 @@ class TimesWrapperB(
         private val maxUpdate: (Group) -> Int = { if (max != min + 1) max else minUpdate(it) + 1 }
 ) : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
-        val times = session.random.nextInt(min, max)
+        val times = RandomSingleton.random.nextInt(min, max)
         return (0 until times).flatMapPR { behaviour.run(group) }
     }
 
