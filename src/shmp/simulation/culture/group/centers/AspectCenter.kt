@@ -239,6 +239,7 @@ class AspectCenter(aspects: List<Aspect>) {
                 ?.takeIf { aspect -> aspect !in aspectPool.converseWrappers.map { it.aspect } }
                 ?.let { aspect ->
                     if (_mutableAspectPool.remove(aspect)) {
+                        changedAspectPool.deleteDependencyOnAspect(aspect)
                         if (aspect !is ConverseWrapper)
                             _converseWrappers.removeIf { it.aspect == aspect }
                         group.addEvent(Event(Type.Change, "${group.name} lost aspect ${aspect.name}"))

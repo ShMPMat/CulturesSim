@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.randomUnwrappedElementOrNull
+import shmp.random.singleton.randomUnwrappedElementOrNull
 import shmp.random.toSampleSpaceObject
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.Add
@@ -35,7 +35,7 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
                 .map { it.toSampleSpaceObject(groupValueMapper(it)) }
                 .filter { it.probability > 0 }
 
-        return randomUnwrappedElementOrNull(options, session.random)
+        return options.randomUnwrappedElementOrNull()
                 ?.let { target ->
                     GroupTransferWithNegotiationI(group, target).run() +
                             ProcessResult(Trait.Expansion.toPositiveChange())

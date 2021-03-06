@@ -1,9 +1,8 @@
 package shmp.simulation.culture.group.process.behaviour
 
-import shmp.random.randomElement
-import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.Controller.session
-import shmp.simulation.event.Event
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.RoadCreationEvent
@@ -20,6 +19,7 @@ import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.thinking.meaning.flattenMemePair
 import shmp.simulation.culture.thinking.meaning.makeResourceMemes
 import shmp.simulation.culture.thinking.meaning.makeResourcePackMemes
+import shmp.simulation.event.Event
 import shmp.simulation.event.Type
 import shmp.simulation.space.territory.StaticTerritory
 import shmp.simulation.space.territory.Territory
@@ -34,7 +34,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
 
         val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
                 .filter { it.hasMeaning }
-        val chosen = randomElementOrNull(resourcesWithMeaning, session.random)
+        val chosen = resourcesWithMeaning.randomElementOrNull()
                 ?: return emptyProcessResult
 
         val result = ProduceExactResourceA(group, chosen, 1, 5, setOf(RequestType.Luxury)).run()
@@ -134,7 +134,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         if (connected.size + disconnected.size <= 1 || disconnected.isEmpty())
             return
 
-        val finish = randomElement(disconnected, session.random).tile
+        val finish = disconnected.randomElement().tile
 
         val startPlace = roadPlaces
                 .minBy { getDistance(it.tile, finish) }

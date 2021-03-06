@@ -50,11 +50,15 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
                 _cwRequirements[innerAspect.resource] =
                         _cwRequirements.getValue(innerAspect.resource) - 1
         }
-        aspects.forEach {a ->
-            a.dependencies.removeIf { it is LineDependency && it.converseWrapper == innerAspect
-                    || it is AspectDependency && it.aspect == innerAspect}
-        }
+        deleteDependencyOnAspect(innerAspect)
         return true
+    }
+
+    fun deleteDependencyOnAspect(aspect: Aspect) {
+        aspects.forEach {a ->
+            a.dependencies.removeIf { it is LineDependency && it.converseWrapper == aspect
+                    || it is AspectDependency && it.aspect == aspect}
+        }
     }
 
     fun getMeaningAspects() = aspects
