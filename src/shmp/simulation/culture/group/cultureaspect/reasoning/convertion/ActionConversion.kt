@@ -22,7 +22,7 @@ sealed class ActionConversion(
         val concept = complex.reasonings
                 .filterIsInstance<EqualityReasoning>()
                 .filter { it.subjectConcept in ideationalConcepts }
-                .map { it.subjectConcept }
+                .map { it.objectConcept }
                 .randomOrNull()
                 ?: return emptyReasonConversionResult()
 
