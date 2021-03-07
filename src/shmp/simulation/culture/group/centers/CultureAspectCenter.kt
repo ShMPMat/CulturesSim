@@ -13,10 +13,7 @@ import shmp.simulation.culture.group.centers.util.StratumConversion
 import shmp.simulation.culture.group.centers.util.toConcept
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.CorrespondingConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.EqualitySubjectCorrelationConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.OppositionConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
+import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.*
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
@@ -221,5 +218,6 @@ fun baseConversions(
         StratumConversion(stratumCenter),
         CorrespondingConversion,
         OppositionConversion,
-        EqualitySubjectCorrelationConversion
-)
+        EqualitySubjectCorrelationConversion,
+        ActionConversion.PositiveDriveConversion
+) + allCorrespondingIdealActionConversions

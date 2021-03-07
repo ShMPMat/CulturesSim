@@ -31,4 +31,7 @@ sealed class ActionConcept(
 
     object Cherish: ActionConcept(MemeSubject("Cherish"), { listOf(Ignore) }, { listOf() }, Importance)
     object Ignore: ActionConcept(MemeSubject("Ignore"), { listOf(Cherish) }, { listOf() }, Unimportance)
+
+    object Fear: ActionConcept(MemeSubject("Fear"), { listOf(Face) }, { listOf() }, IdeationalConcept.Fear)
+    object Face: ActionConcept(MemeSubject("Face"), { listOf(Fear) }, { listOf() }, Courage)
 }

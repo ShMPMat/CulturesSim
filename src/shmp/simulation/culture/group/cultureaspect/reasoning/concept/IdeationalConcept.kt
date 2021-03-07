@@ -59,4 +59,7 @@ sealed class IdeationalConcept(
 
     object Work : IdeationalConcept(MemeSubject("Work"), { listOf(Rest) }, { listOf() })
     object Rest : IdeationalConcept(MemeSubject("Rest"), { listOf(Work) }, { listOf() })
+
+    object Fear : IdeationalConcept(MemeSubject("Fear"), { listOf(Courage) }, { listOf() })
+    object Courage : IdeationalConcept(MemeSubject("Courage"), { listOf(Fear) }, { listOf() })
 }
