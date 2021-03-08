@@ -238,6 +238,9 @@ class AspectCenter(aspects: List<Aspect>) {
         randomElementOrNull(unimportantAspects, session.random)
                 ?.takeIf { aspect -> aspect !in aspectPool.converseWrappers.map { it.aspect } }
                 ?.let { aspect ->
+                    if (aspect in changedAspectPool.converseWrappers.map { it.aspect })
+                        return@let
+
                     if (_mutableAspectPool.remove(aspect)) {
                         changedAspectPool.deleteDependencyOnAspect(aspect)
                         if (aspect !is ConverseWrapper)
