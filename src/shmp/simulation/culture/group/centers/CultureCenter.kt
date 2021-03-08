@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.random.randomElementOrNull
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.aspect.Aspect
@@ -42,7 +41,7 @@ class CultureCenter(
 
     fun addResourceWant(resource: Resource) = cultureAspectCenter.addCultureAspect(CherishedResource(
             resource,
-            getRandom(group, session.random)
+            getRandom()
     ))
 
     fun update(group: Group) {

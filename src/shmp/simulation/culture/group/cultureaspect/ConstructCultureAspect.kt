@@ -36,13 +36,13 @@ fun createDepictObject(
             DepictObject(
                     meme,
                     randomElement(meaningAspects.flatMap { it.producedResources }, random),
-                    getRandom(group, random)
+                    getRandom()
             )
         else null
 
 fun createAestheticallyPleasingObject(resource: Resource?, group: Group, random: Random): CherishedResource? =
         resource?.let {
-            CherishedResource(resource, getRandom(group, random))
+            CherishedResource(resource, getRandom())
         }
 
 fun createTale(group: Group, templateBase: TemplateBase, random: Random): Tale? {
@@ -107,13 +107,13 @@ fun createBetterAspectUseReasonRitual(
             val myAspect = aspectPool.getValue(meme.observerWord)
 
             if (myAspect is ConverseWrapper)
-                return AspectRitual(myAspect, getRandom(group, random), reason)
+                return AspectRitual(myAspect, getRandom(), reason)
         } else {
             val options: List<ConverseWrapper> = aspectPool.converseWrappers
                     .filter { meme.observerWord in it.producedResources.map { r -> r.baseName } }
 
             return if (options.isNotEmpty())
-                AspectRitual(randomElement(options, random), getRandom(group, random), reason)
+                AspectRitual(randomElement(options, random), getRandom(), reason)
             else {
                 val meaningAspects = aspectPool.getMeaningAspects()
                 val aspect = createDepictObject(

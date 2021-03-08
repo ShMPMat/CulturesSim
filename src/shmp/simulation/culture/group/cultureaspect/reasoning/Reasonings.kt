@@ -31,7 +31,7 @@ class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: 
         listOf()
 )
 
-class NeedReasoning(val objectConcept: ReasonConcept, val actionConcept: ActionConcept) : BaseReasoning(
+class ActionReasoning(val objectConcept: ReasonConcept, val actionConcept: ActionConcept) : BaseReasoning(
         MemeSubject("$objectConcept needs $actionConcept"),
         listOf(objectConcept.meme, actionConcept.meme),
         listOf()

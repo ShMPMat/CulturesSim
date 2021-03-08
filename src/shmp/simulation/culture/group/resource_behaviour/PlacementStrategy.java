@@ -17,36 +17,36 @@ public class PlacementStrategy {
         OneTile,
         Border,
         Homogeneous,
-        Sprinkle,
-        Clumps//TODO large clumps; nets
+        Sprinkle
     }
     private Strategy strategy;
-    private Territory controlledTerritory;
     private List<Tile> specialTiles;
 
-    PlacementStrategy(Territory controlledTerritory) {
-        this.controlledTerritory = controlledTerritory;
+    PlacementStrategy() {
         this.specialTiles = new ArrayList<>();
     }
 
-    PlacementStrategy(Territory controlledTerritory, Strategy strategy) {
-        this(controlledTerritory);
+    PlacementStrategy(Strategy strategy) {
+        this();
         switch (strategy) {
             case Sprinkle:
             case OneTile:
-            case Clumps:
-                specialTiles.add(randomTile(controlledTerritory, session.random));
-                break;
         }
         this.strategy = strategy;
     }
 
-    private Tile getTileForPlacement(MutableResourcePack resourcePack) {
+    private Tile getTileForPlacement(MutableResourcePack resourcePack, Territory controlledTerritory) {
         List<Tile> tiles;
         switch (strategy) {
             case DoNothing:
                 return null;
             case OneTile:
+                if (specialTiles.isEmpty()) {
+                    chooseSpecialTile(controlledTerritory);
+                }
+                if (specialTiles.isEmpty()) {
+                    return null;
+                }
                 return specialTiles.get(0);
             case Border:
                 List<Tile> border = controlledTerritory.getInnerBrink();
@@ -61,17 +61,12 @@ public class PlacementStrategy {
                         ? randomTile(controlledTerritory, session.random)
                         : randomElement(tiles, session.random);
             case Sprinkle:
-                return chooseSpecialTile();
-            case Clumps:
-                Tile tile = chooseSpecialTile();
-                tiles = tile.getNeighbours();
-                tiles.add(tile);
-                return randomElement(tiles, session.random);
+                return chooseSpecialTile(controlledTerritory);
         }
         return null;
     }
 
-    private Tile chooseSpecialTile() {
+    private Tile chooseSpecialTile(Territory controlledTerritory) {
         int index = session.random.nextInt(specialTiles.size() + 1);
         if (index < specialTiles.size()) {
             return specialTiles.get(index);
@@ -87,11 +82,11 @@ public class PlacementStrategy {
                 int b = 0;
             }
         }
-        return randomElement(specialTiles, session.random);
+        return randomElementOrNull(specialTiles, session.random);
     }
 
-    public void place(MutableResourcePack resourcePack) {
-        Tile tile = getTileForPlacement(resourcePack);
+    public void place(MutableResourcePack resourcePack, Territory territory) {
+        Tile tile = getTileForPlacement(resourcePack, territory);
         if (tile != null) {
             tile.addDelayedResources(resourcePack);
         }

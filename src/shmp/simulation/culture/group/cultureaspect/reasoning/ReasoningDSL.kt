@@ -13,4 +13,4 @@ infix fun ReasonConcept.opposes(other: ReasonConcept) = OppositionReasoning(this
 infix fun Collection<ReasonConcept>.oppose(other: Collection<ReasonConcept>) =
         this.flatMap { t -> other.map { o -> OppositionReasoning(t, o) } }
 
-infix fun ReasonConcept.needs(other: ActionConcept) = NeedReasoning(this, other)
+infix fun ReasonConcept.needs(other: ActionConcept) = ActionReasoning(this, other)

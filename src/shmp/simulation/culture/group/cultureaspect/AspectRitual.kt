@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.cultureaspect
 
-import shmp.simulation.Controller
 import shmp.simulation.culture.aspect.AspectController
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.Group
@@ -33,7 +32,7 @@ class AspectRitual(
         result.pushNeeds(group)
         if (result.isFinished) {
             group.resourceCenter.addAll(result.resources)
-            resourceBehaviour.proceedResources(result.resources)
+            resourceBehaviour.proceedResources(result.resources, group.territoryCenter.territory)
         }
     }
 
@@ -41,7 +40,7 @@ class AspectRitual(
         if (!group.cultureCenter.aspectCenter.aspectPool.contains(converseWrapper)) return null
         return AspectRitual(
                 group.cultureCenter.aspectCenter.aspectPool.getValue(converseWrapper) as ConverseWrapper,
-                getRandom(group, Controller.session.random),
+                getRandom(),
                 reason
         )
     }

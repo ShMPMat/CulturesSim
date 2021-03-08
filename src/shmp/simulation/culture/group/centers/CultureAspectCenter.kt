@@ -7,10 +7,7 @@ import shmp.random.singleton.chanceOfNot
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.testProbability
 import shmp.simulation.Controller.session
-import shmp.simulation.culture.group.centers.util.AspectConversion
-import shmp.simulation.culture.group.centers.util.MemoryConversion
-import shmp.simulation.culture.group.centers.util.StratumConversion
-import shmp.simulation.culture.group.centers.util.toConcept
+import shmp.simulation.culture.group.centers.util.*
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.*
@@ -59,7 +56,9 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
 
     private fun addReasonings(complex: ReasonComplex, reasonings: List<Reasoning>) {
         val acceptedReasonings = complex.addReasonings(reasonings)
+
         acceptedReasonings.forEach { addCultureAspect(it.toConcept()) }
+        acceptedReasonings.forEach { addCultureAspect(it.toCherishedResource()) }
     }
 
     fun addCultureAspect(cultureAspect: CultureAspect?) {

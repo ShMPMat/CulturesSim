@@ -22,11 +22,11 @@ class CherishedResource(
                         10.0,
                         { (g, p), _: Double ->
                             g.resourceCenter.addAll(p)
-                            resourceBehaviour.proceedResources(p)
+                            resourceBehaviour.proceedResources(p, group.territoryCenter.territory)
                         },
                         { (g, p), _: Double ->
                             g.resourceCenter.addAll(p)
-                            resourceBehaviour.proceedResources(p)
+                            resourceBehaviour.proceedResources(p, group.territoryCenter.territory)
                         },
                         40,
                         setOf(RequestType.Luxury)

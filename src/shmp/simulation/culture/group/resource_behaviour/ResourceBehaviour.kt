@@ -1,22 +1,18 @@
 package shmp.simulation.culture.group.resource_behaviour
 
-import shmp.random.randomElement
-import shmp.simulation.culture.group.centers.Group
+import shmp.random.singleton.randomElement
 import shmp.simulation.space.resource.container.MutableResourcePack
-import kotlin.random.Random
+import shmp.simulation.space.territory.Territory
+
 
 class ResourceBehaviour constructor(private val placementStrategy: PlacementStrategy) {
-    fun proceedResources(resourcePack: MutableResourcePack) {
-        placementStrategy.place(resourcePack)
+    fun proceedResources(resourcePack: MutableResourcePack, territory: Territory) {
+        placementStrategy.place(resourcePack, territory)
     }
 
     override fun toString() = placementStrategy.toString()
 }
 
-fun getRandom(group: Group, random: Random): ResourceBehaviour = ResourceBehaviour(PlacementStrategy(
-        group.territoryCenter.territory,
-        randomElement(
-                PlacementStrategy.Strategy.values().toList(),
-                random
-        )
+fun getRandom(): ResourceBehaviour = ResourceBehaviour(PlacementStrategy(
+        PlacementStrategy.Strategy.values().toList().randomElement()
 ))

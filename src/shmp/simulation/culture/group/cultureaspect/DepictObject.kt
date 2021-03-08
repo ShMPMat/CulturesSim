@@ -37,7 +37,7 @@ class DepictObject(
         ))//TODO do needs need pushing (they do)?
         val meaningful = MutableResourcePack(result.pack.resources)
         group.resourceCenter.addAll(meaningful)
-        resourceBehaviour.proceedResources(meaningful)//TODO does it work?
+        resourceBehaviour.proceedResources(meaningful, group.territoryCenter.territory)//TODO does it work?
         group.cultureCenter.memePool.strengthenMeme(meme)
     }
 
