@@ -7,6 +7,7 @@ import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
@@ -81,47 +82,18 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
 
         val resourceConcept = ArbitraryResource(resource)
         reasonResult.concepts.add(resourceConcept)
-        when(type) {
-            is RequestType.Food -> {}
-            is RequestType.Warmth -> {}
-            is RequestType.Clothes -> {}
-            is RequestType.Shelter -> reasonResult.reasonings.add(
-                    resourceConcept equals listOf(
-                            Life
-                    ).randomElement()
-            )
-            is RequestType.Vital -> reasonResult.reasonings.add(
-                    resourceConcept equals listOf(
-                            Life,
-                            Good
-                    ).randomElement()
-            )
-            is RequestType.Comfort -> reasonResult.reasonings.add(
-                    resourceConcept equals listOf(
-                            Comfort,
-                            Good
-                    ).randomElement()
-            )
-            is RequestType.Improvement -> reasonResult.reasonings.add(
-                    resourceConcept equals listOf(
-                            Comfort,
-                            Good,
-                            Life,
-                            Change,
-                            Creation,
-                    ).randomElement()
-            )
-            is RequestType.Trade -> reasonResult.reasonings.add(
-                    resourceConcept equals listOf(
-                            Change
-                    ).randomElement()
-            )
-            is RequestType.Luxury -> reasonResult.reasonings.add(
-                    listOf(
-                            resourceConcept equals Comfort
-                    ).randomElement()
-            )
-        }
+        val concepts = when(type) {
+            is RequestType.Food, is RequestType.Warmth, is RequestType.Clothes -> listOf<ReasonConcept>()
+            is RequestType.Shelter -> listOf(Life)
+            is RequestType.Vital -> listOf(Life, Good)
+            is RequestType.Comfort -> listOf(Comfort, Good)
+            is RequestType.Improvement -> listOf(Comfort, Good, Life, Change, Creation)
+            is RequestType.Trade -> listOf(Change)
+            is RequestType.Luxury -> listOf(Comfort)
+        }.toMutableList()
+        concepts += listOf(type)
+
+        reasonResult.reasonings.add(resourceConcept equals concepts.randomElement())
     }
 
     return reasonResult
