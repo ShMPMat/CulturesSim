@@ -203,5 +203,7 @@ fun baseConversions(
         CorrespondingConversion,
         OppositionConversion,
         EqualitySubjectCorrelationConversion,
-        ActionConversion.PositiveDriveConversion
+        ActionConversion.PositiveDriveConversion,
+        AspectResourcesConversion,
+        StratumResourcesConversion
 ) + allCorrespondingIdealActionConversions

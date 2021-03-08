@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.centers.util
 
+import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.AspectCore
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Trait
@@ -20,7 +21,7 @@ import shmp.simulation.space.resource.Resource
 
 
 class ArbitraryResource(val resource: Resource) : ArbitraryObjectConcept(MemeSubject(resource.baseName))
-class ArbitraryAspect(val aspectCore: AspectCore) : ArbitraryActionConcept(MemeSubject(aspectCore.name))
+class ArbitraryAspect(val aspect: Aspect) : ArbitraryActionConcept(MemeSubject(aspect.name))
 class ArbitraryStratum(val stratum: Stratum) : ArbitraryObjectConcept(MemeSubject(stratum.baseName))
 
 
@@ -59,8 +60,7 @@ fun Reasoning.toCherishedResource(): CherishedResource? {
         return null
 
     return when (objectConcept) {
-        is ArbitraryResource ->
-            CherishedResource(this.objectConcept.resource, getRandom())
+        is ArbitraryResource -> CherishedResource(this.objectConcept.resource, getRandom())
         else -> null
     }
 }

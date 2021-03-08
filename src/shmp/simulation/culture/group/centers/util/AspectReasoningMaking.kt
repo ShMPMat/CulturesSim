@@ -39,7 +39,7 @@ class AspectConversion(private val aspectCenter: AspectCenter) : ReasonConversio
                 .randomElementOrNull(probability)
                 ?: return emptyReasonConversionResult()
 
-        val concept = ArbitraryAspect(aspect.core)
+        val concept = ArbitraryAspect(aspect)
         val reasoning = (concept equalsAll appropriateConcepts).randomElement()
 
         return ReasonConversionResult(reasoning, concept)

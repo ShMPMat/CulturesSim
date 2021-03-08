@@ -12,6 +12,7 @@ import shmp.simulation.culture.group.process.emptyProcessResult
 import shmp.simulation.culture.thinking.meaning.makeStratumMemes
 import shmp.simulation.event.Event
 import shmp.simulation.event.Type
+import kotlin.math.pow
 
 
 class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(initiator, participator) {
@@ -20,8 +21,8 @@ class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(
 
     override fun innerRun(): InteractionResult {
         val tile = DecideBattleTileA(initiator, participator).run().posStr
-        val iniEvaluation = evaluateForces(participator)
-        val partEvaluation = evaluateForces(initiator)
+        val iniEvaluation = evaluateForces(participator) * (1 - initiator.cultureCenter.traitCenter.processedValue(Trait.Peace)).pow(3)
+        val partEvaluation = evaluateForces(initiator) * (1 - initiator.cultureCenter.traitCenter.processedValue(Trait.Peace)).pow(3)
         val iniWarriors = GatherWarriorsA(initiator, iniEvaluation).run()
         val partWarriors = GatherWarriorsA(participator, partEvaluation).run()
 
