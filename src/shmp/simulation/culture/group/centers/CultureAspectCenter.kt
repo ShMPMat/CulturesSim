@@ -35,30 +35,15 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
     }
 
     private fun updateReasonings(group: Group) {
-        reasonField.reasonComplexes.forEach { complex ->
-            session.reasoningUpdate.chanceOfNot {
-                return@forEach
-            }
-
-            val newReasonings = if (complex.isEmpty)
-                listOf(generateBaseReasoning(listOf(MemeSubject(group.name)), session.random))
-            else
-                generateNewReasonings(reasonField, complex)
-            addReasonings(complex, newReasonings)
-        }
-
         session.reasoningUpdate.chanceOf {
-            val conversion = reasonConversions.randomElement()
-
-            conversion.enrichComplex(reasonField.commonReasonings, reasonField)
+            val newReasonings = reasonField.update(listOf(MemeSubject(group.name)), reasonConversions)
+            processReasonings(newReasonings)
         }
     }
 
-    private fun addReasonings(complex: ReasonComplex, reasonings: List<Reasoning>) {
-        val acceptedReasonings = complex.addReasonings(reasonings)
-
-        acceptedReasonings.forEach { addCultureAspect(it.toConcept()) }
-        acceptedReasonings.forEach { addCultureAspect(it.toCherishedResource()) }
+    private fun processReasonings(reasonings: List<Reasoning>) {
+        reasonings.forEach { addCultureAspect(it.toConcept()) }
+        reasonings.forEach { addCultureAspect(it.toCherishedResource()) }
     }
 
     fun addCultureAspect(cultureAspect: CultureAspect?) {

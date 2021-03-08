@@ -59,7 +59,8 @@ fun Reasoning.toCherishedResource(): CherishedResource? {
         return null
 
     return when (objectConcept) {
-        is ArbitraryResource -> CherishedResource(this.objectConcept.resource, getRandom())
+        is ArbitraryResource ->
+            CherishedResource(this.objectConcept.resource, getRandom())
         else -> null
     }
 }

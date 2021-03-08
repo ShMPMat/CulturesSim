@@ -1,14 +1,21 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.chanceOfNot
+import shmp.random.singleton.randomElement
+import shmp.simulation.Controller
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.IdeaConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
+import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.simulation.culture.thinking.meaning.MemeSubject
+
 
 class ReasonField(
         startReasonComplexes: List<ReasonComplex> = listOf(),
         startSpecialConcepts: Set<ReasonConcept> = setOf(),
-        startSpecialConversions: Set<ReasonConversion> = setOf()
+        startSpecialConversions: List<ReasonConversion> = listOf()
 ) {
     var commonReasonings = ReasonComplex(COMMON_REASONS)
         private set
@@ -19,8 +26,8 @@ class ReasonField(
     private val _specialConcepts = startSpecialConcepts.toMutableSet()
     val specialConcepts: Set<ReasonConcept> = _specialConcepts
 
-    private val _specialConversions = startSpecialConversions.toMutableSet()
-    val specialConversions: Set<ReasonConversion> = _specialConversions
+    private val _specialConversions = startSpecialConversions.toMutableList()
+    val specialConversions: List<ReasonConversion> = _specialConversions
 
     init {
         _reasoningComplexes.find { it.name == COMMON_REASONS }
@@ -55,6 +62,24 @@ class ReasonField(
 
             _specialConversions.add(IdeaConversion(newEquivalents.toList()))
         }
+    }
+
+    fun update(reasonerMemes: List<Meme>, conversions: List<ReasonConversion>): List<Reasoning> {
+        val resultReasonings = mutableListOf<Reasoning>()
+
+        reasonComplexes.forEach { complex ->
+            val newReasonings = if (complex.isEmpty)
+                listOf(generateBaseReasoning(reasonerMemes))
+            else
+                generateNewReasonings(this, complex)
+            resultReasonings += complex.addReasonings(newReasonings)
+        }
+
+        val conversion = conversions.randomElement()
+
+        resultReasonings += conversion.enrichComplex(commonReasonings, this)
+
+        return resultReasonings
     }
 
     fun copy() = ReasonField(
