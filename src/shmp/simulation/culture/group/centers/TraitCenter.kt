@@ -21,9 +21,11 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
         }
     }
 
-    fun value(trait: Trait): Double = traitMap.getValue(trait).value
+    fun value(trait: Trait) = traitMap.getValue(trait)
 
-    fun normalValue(trait: Trait) = (value(trait) + 1) / 2
+    fun processedValue(trait: Trait): Double = value(trait).value
+
+    fun normalValue(trait: Trait) = value(trait).norm
 
     internal fun changeOn(traitChange: TraitChange) {
         val (trait, delta) = traitChange

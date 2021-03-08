@@ -58,6 +58,9 @@ object TextEnvironmentalHandler: CommandHandler<TextEcosystemVisualizer> {
                         amount = splitCommand[0].toInt()
                         drop += splitCommand[1].length + 1
                     }
+                    if (drop >= line.length) {
+                        return true
+                    }
                     val regexp = line.substring(drop)
                     println(printRegexEvents(
                             controller.interactionModel.eventLog.lastEvents,

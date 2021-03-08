@@ -1,8 +1,8 @@
 package shmp.simulation.culture.group
 
 import shmp.simulation.culture.group.centers.Group
-import shmp.simulation.culture.group.centers.freeze
-import shmp.simulation.culture.group.centers.starve
+import shmp.simulation.culture.group.centers.util.freeze
+import shmp.simulation.culture.group.centers.util.starve
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler

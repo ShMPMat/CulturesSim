@@ -33,6 +33,10 @@ operator fun TraitExtractor.times(t: Double): TraitExtractor = WrapperExtractor(
     extract(center) * t
 }
 
+operator fun TraitExtractor.div(t: Double): TraitExtractor = WrapperExtractor("$this * $t") { center ->
+    extract(center) / t
+}
+
 fun TraitExtractor.pow(t: Double): TraitExtractor = WrapperExtractor("$this to the power of $t") { center ->
     extract(center).pow(t)
 }
@@ -57,11 +61,11 @@ private class GetTrait(private val trait: Trait) : TraitExtractor {
 fun Trait.get(): TraitExtractor = GetTrait(this)
 
 fun Trait.getPositive(): TraitExtractor = WrapperExtractor("positive of $this") { center ->
-    max(center.value(this), 0.0)
+    max(center.processedValue(this), 0.0)
 }
 
 fun Trait.getNegative(): TraitExtractor = WrapperExtractor("negative of $this") { center ->
-    -min(center.value(this), 0.0)
+    -min(center.processedValue(this), 0.0)
 }
 
 

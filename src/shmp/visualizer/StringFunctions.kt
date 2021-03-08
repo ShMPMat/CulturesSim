@@ -73,8 +73,9 @@ fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.til
 fun outputGroup(group: Group) = "$group"
 
 fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: ConglomeratePrintInfo): String {
+    val conglomeratesToPrint = 5
     val main = StringBuilder()
-    for (group in conglomerates.takeLast(15)) {
+    for (group in conglomerates.takeLast(conglomeratesToPrint)) {
         val stringBuilder = StringBuilder()
         if (group.state === GroupConglomerate.State.Dead)
             continue
@@ -177,7 +178,7 @@ fun printGroupStatistics(world: World): String {
 
 fun printGroupCharacterStatistics(conglomerates: List<GroupConglomerate>) =
         Trait.values().joinToString("\n\n") { trait ->
-            val avgTraits = conglomerates.map { c -> c to c.subgroups.map { it.cultureCenter.traitCenter.value(trait) }.average() }
+            val avgTraits = conglomerates.map { c -> c to c.subgroups.map { it.cultureCenter.traitCenter.processedValue(trait) }.average() }
 
             val maxStr = avgTraits.maxByOrNull { it.second }?.let { (g, a) -> "Max $trait:   ${g.name} - $a" } ?: ""
             val minStr = avgTraits.minByOrNull { it.second }?.let { (g, a) -> "Min $trait:   ${g.name} - $a" } ?: ""
