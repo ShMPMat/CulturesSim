@@ -25,7 +25,7 @@ open class Genome(
         val defaultAmount: Int,
         val legacy: BaseName?,
         dependencies: List<ResourceDependency>,
-        tags: List<ResourceTag>,
+        tags: Set<ResourceTag>,
         var primaryMaterial: Material?,
         secondaryMaterials: List<Material>,
         var conversionCore: ConversionCore
@@ -37,7 +37,7 @@ open class Genome(
     val necessaryDependencies = dependencies.filter { it.isNecessary }
     val negativeDependencies = dependencies.filter { !it.isPositive }
 
-    val tags = tags.toMutableList()
+    val tags = tags.toMutableSet()
     val secondaryMaterials: List<Material>
 
     init {
@@ -64,7 +64,7 @@ open class Genome(
             defaultAmount: Int = this.defaultAmount,
             legacy: BaseName? = this.legacy,
             dependencies: List<ResourceDependency> = this.dependencies,
-            tags: List<ResourceTag> = this.tags,
+            tags: Set<ResourceTag> = this.tags,
             primaryMaterial: Material? = this.primaryMaterial,
             secondaryMaterials: List<Material> = this.secondaryMaterials,
             conversionCore: ConversionCore = this.conversionCore.copy(),

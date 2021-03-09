@@ -56,7 +56,7 @@ open class Resource private constructor(
     inline val baseName: BaseName
         get() = genome.baseName
 
-    inline val tags: List<ResourceTag>
+    inline val tags: Set<ResourceTag>
         get() = genome.tags
 
     val externalFeatures: List<ExternalResourceFeature>

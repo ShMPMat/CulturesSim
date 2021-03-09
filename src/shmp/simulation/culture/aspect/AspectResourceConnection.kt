@@ -22,7 +22,7 @@ class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTag
 
 fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() * tags.getAspectImprovement(aspect)
 
-private fun List<ResourceTag>.getAspectImprovement(aspect: Aspect) = this
+private fun Set<ResourceTag>.getAspectImprovement(aspect: Aspect) = this
         .filterIsInstance<AspectImprovementTag>()
         .filter { it.labeler.isSuitable(aspect) }
         .map { it.improvement }

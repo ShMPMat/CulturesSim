@@ -28,7 +28,7 @@ class ResourceTemplateCreator(
         var isDesirable = true
         var minTempDeprivation = 2.0
         var maxTempDeprivation = 2.0
-        val resourceTags: MutableList<ResourceTag> = ArrayList()
+        val resourceTags = mutableSetOf<ResourceTag>()
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
