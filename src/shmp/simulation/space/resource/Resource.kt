@@ -16,11 +16,13 @@ import kotlin.math.min
 import kotlin.math.pow
 
 
-open class Resource(
+open class Resource private constructor(
         internal val core: ResourceCore,
         amount: Int = core.genome.defaultAmount,
-        val ownershipMarker: OwnershipMarker = freeMarker
+        hash: Int?
 ): Comparable<Resource> {
+    constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount): this(core, amount, null)
+
     open var amount = amount
         set(value) {
             if (value < 0)
@@ -39,28 +41,26 @@ open class Resource(
 
     //What part of this Resource will be destroyed on the next death.
     private var deathPart = 1.0
-    private val events: MutableList<Event> = ArrayList()
 
-    val isEmpty: Boolean
+    inline val isEmpty: Boolean
         get() = amount == 0
 
-    val isNotEmpty: Boolean
+    inline val isNotEmpty: Boolean
         get() = !isEmpty
 
-    fun computeHash() {
-        _hash = Objects.hash(fullName, core.hashCode(), ownershipMarker)
-    }
+    private fun computeHash() = Objects.hash(fullName, core.hashCode())
 
-    val simpleName: String
+    inline val simpleName: String
         get() = genome.name
 
-    val baseName: BaseName
+    inline val baseName: BaseName
         get() = genome.baseName
 
-    val tags: List<ResourceTag>
+    inline val tags: List<ResourceTag>
         get() = genome.tags
 
-    val externalFeatures = core.externalFeatures
+    val externalFeatures: List<ExternalResourceFeature>
+        get() = core.externalFeatures
 
     val fullName = genome.baseName +
                 if (externalFeatures.isNotEmpty())
@@ -68,8 +68,7 @@ open class Resource(
                 else ""
 
     init {
-        computeHash()
-//        events.add(Event(Event.Type.Creation, "Resource was created", "name", fullName))
+        _hash = hash ?: computeHash()
     }
 
     fun getTagPresence(tag: ResourceTag) =
@@ -117,24 +116,34 @@ open class Resource(
         return this
     }
 
-    fun exactCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) = copy(amount, ownershipMarker)
+    fun exactCopy() = copy(amount)
 
-    fun exactCopyAndDestroy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
-            copyAndDestroy(amount, ownershipMarker)
+    fun swapOwnership(ownershipMarker: OwnershipMarker): Resource {
+        val core = core.copy(ownershipMarker = ownershipMarker)
+        val currentAmount = amount
 
-    fun copy(amount: Int = genome.defaultAmount, ownershipMarker: OwnershipMarker = this.ownershipMarker) =
-            Resource(core, amount, ownershipMarker)
+        destroy()
+
+        return Resource(core, currentAmount)
+    }
+
+    fun copyWithOwnership(ownershipMarker: OwnershipMarker): Resource {
+        val core = core.copy(ownershipMarker = ownershipMarker)
+        return Resource(core, amount)
+    }
+
+    fun copy(amount: Int = genome.defaultAmount) =
+            Resource(core, amount, _hash)
 
     fun copyAndDestroy(
-            amount: Int = genome.defaultAmount,
-            ownershipMarker: OwnershipMarker = this.ownershipMarker
+            amount: Int = genome.defaultAmount
     ): Resource {
-        val result = Resource(core, amount, ownershipMarker)
+        val result = Resource(core, amount, _hash)
         destroy()
         return result
     }
 
-    fun fullCopy() = core.fullCopy(ownershipMarker)
+    fun fullCopy() = core.fullCopy()
 
     fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): Resource {
         val resource = Resource(core.copyWithNewExternalFeatures(features), amount)
@@ -142,7 +151,8 @@ open class Resource(
         return resource
     }
 
-    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = copyWithExternalFeatures(externalFeatures + features)
+    fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) =
+            copyWithExternalFeatures(externalFeatures + features)
 
     open fun update(tile: Tile): ResourceUpdateResult {
         val result = mutableListOf<Resource>()
@@ -255,10 +265,8 @@ open class Resource(
 
     open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean): List<Resource> {
         val resourcePart =
-                if (isClean)
-                    getCleanPart(part)
-                else
-                    getPart(part)
+                if (isClean) getCleanPart(part)
+                else getPart(part)
 
         return resourcePart.applyAction(action, resourcePart.amount)
     }
@@ -278,8 +286,7 @@ open class Resource(
                     newTile = tile
             }
         }
-        val resource = copy()
-        resource.amount = min(core.genome.defaultAmount, amount)
+        val resource = copy(amount = min(core.genome.defaultAmount, amount))
         newTile.addDelayedResource(resource)
         return true
     }
@@ -303,21 +310,21 @@ open class Resource(
         return if (_hash != resource._hash)
             false
         else
-            fullName == resource.fullName && ownershipMarker == resource.ownershipMarker
+            fullName == resource.fullName && core.ownershipMarker == resource.core.ownershipMarker
     }
 
     override fun hashCode() = _hash
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.lifespan}, amount - $amount, ownership - $ownershipMarker, tags: " +
+            "lifespan - ${genome.lifespan}, amount - $amount, ownership - $core.ownershipMarker, tags: " +
             tags.joinToString(" ") { it.name }
 
     override fun compareTo(other: Resource): Int {
         val nameCompare = fullName.compareTo(other.fullName)
 
         return if (nameCompare == 0)
-            ownershipMarker.compareTo(other.ownershipMarker)
+            core.ownershipMarker.compareTo(other.core.ownershipMarker)
         else nameCompare
     }
 }

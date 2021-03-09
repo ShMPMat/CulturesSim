@@ -29,10 +29,10 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     fun addResource(resource: Resource) {
         if (resource.isEmpty)
             return
-        if (_owned.any { it.ownershipMarker != ownershipMarker }) {
+        if (_owned.any { it.core.ownershipMarker != ownershipMarker }) {
             val j = 0//TODO remove someday
         }
-        val ownedResource = resource.exactCopyAndDestroy(ownershipMarker = ownershipMarker)
+        val ownedResource = resource.swapOwnership(ownershipMarker)
         _owned.add(ownedResource)
         maxAmounts[ownedResource] = max(maxAmounts[ownedResource] ?: 0, _owned.getResource(ownedResource).amount)
         tile.addDelayedResource(_owned.getUnpackedResource(ownedResource))
@@ -50,7 +50,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun takeResource(resource: Resource, amount: Int): ResourcePack {
-        val remapedResource = resource.copy(ownershipMarker = ownershipMarker)
+        val remapedResource = resource.copyWithOwnership(ownershipMarker)
         val result = _owned.getResourcePartAndRemove(remapedResource, amount)
 
         if (result.contains(remapedResource))
@@ -62,7 +62,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     fun getResourcesAndRemove(predicate: (Resource) -> Boolean) =
             ResourcePack(_owned.getResourcesAndRemove { predicate(freeCopy(it)) }.resources.map { free(it) })
 
-    fun contains(resource: Resource) = _owned.contains(resource.copy(ownershipMarker = ownershipMarker))
+    fun contains(resource: Resource) = _owned.contains(resource.copyWithOwnership(ownershipMarker))
 
     override fun toString() = "Place on ${tile.posStr}, ${tileTag.name}, resources:" +
             _owned.resources.joinToString { it.fullName + ":" + it.amount }

@@ -146,7 +146,7 @@ private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resourc
         } else
             tile = randomElement(goodTiles, random)
 
-        tile.addDelayedResource(resource.copy())
+        tile.addDelayedResource(resource)
         addDependencies(listOf(), resource, tile, resourcePool)
     }
 }

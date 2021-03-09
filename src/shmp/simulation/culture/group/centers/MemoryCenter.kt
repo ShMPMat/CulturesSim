@@ -36,7 +36,7 @@ class MemoryCenter {
             average.change(oldResources.getAmount(resource))
         }
         for (resource in newResources.resourcesIterator) {
-            _resourceTraction[resource.copy()] = MovingAverage(resource.amount, session.memoryStrengthCoefficient)
+            _resourceTraction[resource] = MovingAverage(resource.amount, session.memoryStrengthCoefficient)
         }
     }
 

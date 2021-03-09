@@ -28,7 +28,7 @@ object StratumResourcesConversion : ReasonConversion {
                 val resource: Resource = (stratum.aspect.producedResources + listOf(stratum.aspect.resource))
                         .randomElementOrNull()
                         ?: return emptyReasonConversionResult()
-                val resourceConcept = ArbitraryResource(resource.copy())
+                val resourceConcept = ArbitraryResource(resource)
 
                 ReasonConversionResult(resourceConcept equals subjectConcept, resourceConcept)
             } ?: emptyReasonConversionResult()

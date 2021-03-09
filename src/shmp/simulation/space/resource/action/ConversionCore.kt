@@ -3,6 +3,7 @@ package shmp.simulation.space.resource.action
 import shmp.simulation.SimulationError
 import shmp.simulation.space.resource.Resource
 
+
 class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Pair<Resource?, Int>>>) {
     val actionConversion = mutableMapOf<ResourceAction, MutableList<Pair<Resource?, Int>>>()
     internal val probabilityActions = mutableListOf<ResourceProbabilityAction>()

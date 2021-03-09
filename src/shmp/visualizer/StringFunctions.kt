@@ -68,7 +68,7 @@ fun printResourcesOnTile(tile: Tile, substring: String) =
 fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
         .flatMap { t -> t.resourcesWithMoved.map { r -> r to t } }
         .filter { it.first.fullName.contains(substring) }
-        .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
+        .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.core.ownershipMarker}" }
 
 fun outputGroup(group: Group) = "$group"
 

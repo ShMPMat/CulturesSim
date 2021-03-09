@@ -47,8 +47,8 @@ data class AspectController(
 
     fun pickCeilingPart(
             resources: Collection<Resource>,
-            onePortionGetter: (Resource) -> Collection<Resource>,
-            partGetter: (Resource, Int) -> Collection<Resource>
+            onePortionGetter: (Resource) -> List<Resource>,
+            partGetter: (Resource, Int) -> List<Resource>
     ) = evaluator.pick(
             ceiling,
             resources,

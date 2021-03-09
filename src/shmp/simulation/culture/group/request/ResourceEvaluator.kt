@@ -19,7 +19,7 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
         return result
     }
 
-    fun evaluate(resources: Collection<Resource>) = resources
+    fun evaluate(resources: List<Resource>) = resources
             .map { evaluator(it) }
             .foldRight(0.0, Double::plus)
 
@@ -27,7 +27,7 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
 
     fun evaluate(resource: Resource) = evaluator(resource)
 
-    fun getSatisfiableAmount(part: Double, resources: Collection<Resource>): Double {
+    fun getSatisfiableAmount(part: Double, resources: List<Resource>): Double {
         val oneResourceWorth = evaluate(resources)
         return if (oneResourceWorth != 0.0)
             part / oneResourceWorth
@@ -38,8 +38,8 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
     fun pick(
             part: Double,
             resources: Collection<Resource>,
-            onePortionGetter: (Resource) -> Collection<Resource>,
-            partGetter: (Resource, Int) -> Collection<Resource>
+            onePortionGetter: (Resource) -> List<Resource>,
+            partGetter: (Resource, Int) -> List<Resource>
     ): MutableResourcePack {
         val resultPack = MutableResourcePack()
         if (part == 0.0)

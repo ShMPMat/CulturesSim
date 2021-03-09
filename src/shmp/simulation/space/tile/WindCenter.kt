@@ -33,7 +33,7 @@ class WindCenter internal constructor() {
     }
 
     private fun getFlyCoefficient(resource: Resource) = 0.0001 / resource.genome.mass /
-            if (resource.ownershipMarker == freeMarker) 1 else 10
+            if (resource.core.ownershipMarker == freeMarker) 1 else 10
 
     fun middleUpdate(x: Int, y: Int) {
         val map = Controller.session.world.map

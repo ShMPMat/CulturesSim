@@ -15,7 +15,7 @@ import static shmp.simulation.space.resource.OwnershipMarkerKt.getFreeMarker;
  */
 public class ResourceIdeal extends Resource {
     public ResourceIdeal(Genome genome) {
-        super(new ResourceCore(genome, new ArrayList<>()), 1, getFreeMarker());
+        super(new ResourceCore(genome, new ArrayList<>(), getFreeMarker()), 1);
     }
 
     @Override

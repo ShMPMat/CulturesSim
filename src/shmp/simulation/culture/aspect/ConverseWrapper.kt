@@ -23,7 +23,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
         ),
         AspectDependencies(mutableMapOf())
 ) {
-    var resource: Resource = resource.copy()
+    val resource = resource
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         super.swapDependencies(aspectCenter)

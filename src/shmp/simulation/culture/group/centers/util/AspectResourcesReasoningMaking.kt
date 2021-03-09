@@ -22,7 +22,7 @@ object AspectResourcesConversion : ReasonConversion {
             ?.let { (aspect, subjectConcept) ->
                 val resource = aspect.producedResources.randomElementOrNull()
                         ?: return emptyReasonConversionResult()
-                val resourceConcept = ArbitraryResource(resource.copy())
+                val resourceConcept = ArbitraryResource(resource)
 
                 ReasonConversionResult(resourceConcept equals subjectConcept, resourceConcept)
             } ?: emptyReasonConversionResult()
