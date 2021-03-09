@@ -1,15 +1,11 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
-import shmp.random.singleton.chanceOf
-import shmp.random.singleton.chanceOfNot
 import shmp.random.singleton.randomElement
-import shmp.simulation.Controller
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.IdeaConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 
 
 class ReasonField(
@@ -33,9 +29,10 @@ class ReasonField(
         _reasoningComplexes.find { it.name == COMMON_REASONS }
                 ?.let {
                     commonReasonings = it
-                } ?: run {
-            _reasoningComplexes.add(commonReasonings)
-        }
+                }
+                ?: run {
+                    _reasoningComplexes.add(commonReasonings)
+                }
     }
 
     fun addConcepts(concepts: List<ReasonConcept>) = _specialConcepts.addAll(concepts)

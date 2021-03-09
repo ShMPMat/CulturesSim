@@ -10,7 +10,7 @@ import shmp.visualizer.command.EnvironmentCommand.Turner
 import java.util.*
 
 
-object TextEnvironmentalHandler: CommandHandler<TextEcosystemVisualizer> {
+object TextEnvironmentalHandler : CommandHandler<TextEcosystemVisualizer> {
     override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer): Boolean {
         val splitCommand = line.split(" ")
 
@@ -49,7 +49,11 @@ object TextEnvironmentalHandler: CommandHandler<TextEcosystemVisualizer> {
                 } else
                     println("Unknown type - " + splitCommand[1])
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
-                AllResources -> println(resourcesCounter(world))
+                AllBasicResources -> println(basicResourcesCounter(world))
+                AllResources -> println(allResourcesCounter(
+                        world,
+                        splitCommand.size > 1 && splitCommand[1] == "f"
+                ))
                 ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
                 Events -> {
                     var amount = 100

@@ -25,9 +25,10 @@ open class Resource private constructor(
 
     open var amount = amount
         set(value) {
-            if (value < 0)
-                field = Int.MAX_VALUE
-            field = value
+            field = if (value < 0)
+                Int.MAX_VALUE
+            else
+                value
         }
 
     // Precomputed hash.

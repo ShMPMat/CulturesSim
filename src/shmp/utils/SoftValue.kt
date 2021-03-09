@@ -10,6 +10,7 @@ import kotlin.math.tanh
 data class SoftValue(val actualValue: Double = 0.0) : Comparable<SoftValue> {
     val value = tanh(actualValue)
     val norm = (value + 1) / 2
+    val reverseNorm = 1 - norm
     val positive = max(0.0, value)
     val negative = min(0.0, value)
 

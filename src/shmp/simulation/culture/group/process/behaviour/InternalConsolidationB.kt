@@ -11,7 +11,7 @@ import shmp.utils.without
 import kotlin.math.pow
 
 
-object ConsolidationB : AbstractGroupBehaviour() {
+object InternalConsolidationB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val result = emptyProcessResult
         val traitCenter = group.cultureCenter.traitCenter

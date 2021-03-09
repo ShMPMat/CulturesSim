@@ -56,11 +56,11 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
         if (result.contains(remapedResource))
             maxAmounts[remapedResource] = max(0, (maxAmounts[remapedResource] ?: 0) - result.amount)
 
-        return ResourcePack(result.resources.map { free(it) })
+        return ResourcePack(result.resources.map { it.free() })
     }
 
     fun getResourcesAndRemove(predicate: (Resource) -> Boolean) =
-            ResourcePack(_owned.getResourcesAndRemove { predicate(freeCopy(it)) }.resources.map { free(it) })
+            ResourcePack(_owned.getResourcesAndRemove { predicate(it.freeCopy()) }.resources.map { it.free() })
 
     fun contains(resource: Resource) = _owned.contains(resource.copyWithOwnership(ownershipMarker))
 

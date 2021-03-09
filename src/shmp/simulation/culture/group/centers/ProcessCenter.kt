@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOf
-import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.process.*
@@ -30,7 +29,7 @@ class ProcessCenter(type: AdministrationType) {
                 session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
             },
             TryDivergeWithNegotiationB
-                    .withTrait(Trait.Consolidation.get().reverse())
+                    .withTrait(Trait.Consolidation.get().reverse() * 2.0)
                     .withProbability(session.defaultGroupExiting) {
                         it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
                                 session.defaultGroupExiting /
@@ -43,7 +42,7 @@ class ProcessCenter(type: AdministrationType) {
                 it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
             },
             RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive()),
-            ConsolidationB.withTrait(Trait.Consolidation.getPositive())
+            InternalConsolidationB.withTrait(Trait.Consolidation.getPositive())
     )
 
     private val addedBehaviours = mutableListOf<GroupBehaviour>()

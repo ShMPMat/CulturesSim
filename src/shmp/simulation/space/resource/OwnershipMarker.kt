@@ -11,6 +11,6 @@ data class OwnershipMarker(val name: String): Comparable<OwnershipMarker> {
 val freeMarker = OwnershipMarker("free")
 
 
-fun free(resource: Resource) = resource.swapOwnership(freeMarker)
+fun Resource.free() = swapOwnership(freeMarker)
 
-fun freeCopy(resource: Resource) = resource.copyWithOwnership(freeMarker)
+fun Resource.freeCopy() = copyWithOwnership(freeMarker)

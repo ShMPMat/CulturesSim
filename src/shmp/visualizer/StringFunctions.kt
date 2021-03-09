@@ -9,13 +9,15 @@ import shmp.simulation.event.Event
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.ResourceType
+import shmp.simulation.space.resource.container.ResourcePack
+import shmp.simulation.space.resource.free
 import shmp.simulation.space.tile.Tile
 import shmp.utils.chompToSize
 import shmp.visualizer.printinfo.ConglomeratePrintInfo
 import java.util.regex.PatternSyntaxException
 
 
-fun resourcesCounter(world: World): String {
+fun basicResourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
             .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
             .map { it to ResourceCount() }
@@ -31,6 +33,18 @@ fun resourcesCounter(world: World): String {
         (if (it.value.amount == 0) "\u001b[31m" else "\u001b[30m") +
                 "${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}"
     }
+}
+
+fun allResourcesCounter(world: World, shouldFree: Boolean): String {
+    val allResources = world.map.tiles
+            .flatMap { t -> t.resourcePack.resources.map { it.exactCopy() } }
+            .map { if (shouldFree) it.free() else it }
+
+    val pack = ResourcePack(allResources)
+
+    return pack.resources
+            .sortedBy { it.amount }
+            .joinToString("\n") { "${it.fullName}, ${it.core.ownershipMarker} ${it.amount};" }
 }
 
 data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
