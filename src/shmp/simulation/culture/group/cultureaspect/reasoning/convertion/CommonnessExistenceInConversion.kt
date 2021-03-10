@@ -13,8 +13,7 @@ object CommonnessExistenceInConversion : ReasonConversion {
                 complex.reasonings
                         .filterIsInstance<ExistenceInReasoning>()
                         .randomElementOrNull()
-                        ?.toConversionResult()
-                        ?: emptyReasonConversionResult()
+                        .toConversionResult()
             } ?: run {
                 complex.reasonings
                         .filterIsInstance<EqualityReasoning>()
@@ -24,7 +23,6 @@ object CommonnessExistenceInConversion : ReasonConversion {
                             else null
                         }
                         .randomElementOrNull()
-                        ?.toConversionResult()
-                        ?: emptyReasonConversionResult()
+                        .toConversionResult()
             }
 }
