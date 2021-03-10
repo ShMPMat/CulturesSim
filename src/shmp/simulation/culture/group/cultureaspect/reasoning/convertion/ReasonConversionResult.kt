@@ -18,5 +18,6 @@ data class ReasonConversionResult(val reasonings: MutableList<Reasoning>, val co
     }
 }
 
+fun Reasoning.toConversionResult() = ReasonConversionResult(this)
 
 fun emptyReasonConversionResult() = ReasonConversionResult(mutableListOf(), mutableListOf())

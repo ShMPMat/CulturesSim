@@ -203,6 +203,7 @@ fun baseConversions(
         CorrespondingConversion,
         OppositionConversion,
         EqualitySubjectCorrelationConversion,
+        CommonnessExistenceInConversion,
         ActionConversion.PositiveDriveConversion,
         AspectResourcesConversion,
         StratumResourcesConversion
