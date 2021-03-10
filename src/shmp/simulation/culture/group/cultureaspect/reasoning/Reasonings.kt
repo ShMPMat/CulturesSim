@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.culture.thinking.meaning.MemeSubject
@@ -34,6 +35,12 @@ class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: 
 class ActionReasoning(val objectConcept: ReasonConcept, val actionConcept: ActionConcept) : BaseReasoning(
         MemeSubject("$objectConcept needs $actionConcept"),
         listOf(objectConcept.meme, actionConcept.meme),
+        listOf()
+)
+
+class ExistenceInReasoning(val subjectConcept: ObjectConcept, val surroundingConcept: ReasonConcept) : BaseReasoning(
+        MemeSubject("$subjectConcept live in $surroundingConcept"),
+        listOf(subjectConcept.meme, surroundingConcept.meme),
         listOf()
 )
 

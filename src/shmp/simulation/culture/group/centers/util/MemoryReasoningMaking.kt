@@ -7,11 +7,13 @@ import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.equals
+import shmp.simulation.culture.group.cultureaspect.reasoning.livesIn
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.ResultStatus
@@ -46,7 +48,9 @@ private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverag
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(commonResource)
 
-        ReasonConversionResult(resourceConcept equals Commonness, resourceConcept)
+        0.5.chanceOf<ReasonConversionResult> {
+            ReasonConversionResult(resourceConcept equals Commonness, resourceConcept)
+        } ?: ReasonConversionResult(ObjectConcept.We livesIn resourceConcept, resourceConcept)
     } ?: run {
         val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
                 ?.key

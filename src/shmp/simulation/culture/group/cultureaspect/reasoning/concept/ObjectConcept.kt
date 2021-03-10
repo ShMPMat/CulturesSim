@@ -26,6 +26,7 @@ sealed class ObjectConcept(
 
     object World : ObjectConcept(MemeSubject("World"), { listOf() }, { listOf() })
     object AllLife : ObjectConcept(MemeSubject("AllLife"), { listOf() }, { listOf() })
+    object We : ObjectConcept(MemeSubject("We"), { listOf() }, { listOf() })
     object Self : ObjectConcept(MemeSubject("Self"), { listOf() }, { listOf() })
 
     object Home : ObjectConcept(MemeSubject("Home"), { listOf(Foreign) }, { listOf() })
