@@ -1,16 +1,14 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.SampleSpaceObject
-import shmp.random.randomElementOrNull
-import shmp.random.singleton.chanceOf
-import shmp.random.singleton.chanceOfNot
-import shmp.random.singleton.randomElement
-import shmp.random.singleton.testProbability
+import shmp.random.singleton.*
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.centers.util.*
 import shmp.simulation.culture.group.cultureaspect.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
+import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.*
+import shmp.simulation.culture.group.cultureaspect.util.*
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
@@ -138,11 +136,10 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
         if (!session.isTime(session.groupTurnsBetweenAdopts))
             return
 
-        val aspect = randomElementOrNull(
-                getNeighbourCultureAspects(group) { !aspectPool.contains(it) },
-                { (_, g) -> group.relationCenter.getNormalizedRelation(g) },
-                session.random
-        )?.first?.adopt(group)
+        val aspect = getNeighbourCultureAspects(group) { !aspectPool.contains(it) }
+                .randomElementOrNull { (_, g) -> group.relationCenter.getNormalizedRelation(g) }
+                ?.first
+                ?.adopt(group)
                 ?: return
 
         if (shouldAdopt(aspect))

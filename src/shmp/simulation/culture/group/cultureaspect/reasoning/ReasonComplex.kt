@@ -41,6 +41,8 @@ class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf())
         return ReasonComplex(name, conceptReasonings.toSet())
     }
 
+    fun copy(name: String = this.name) = ReasonComplex(name, _reasonings.toSet())
+
     override fun toString() = """
         |$name
         |${reasonings.joinToString("\n")}

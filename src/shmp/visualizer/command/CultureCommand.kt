@@ -7,7 +7,7 @@ enum class CultureCommand(command: String) : Command {
     Conglomerate("^G\\d+_?\\d*"),
     GroupTileReach("^G\\d+ r"),
     GroupProduced("^G\\d+ p"),
-    GroupRelations("^G\\d+ G\\d+"), Tile("\\d+ \\d+"),
+    GroupRelations("^G\\d+ G\\d+"),
     GroupPotentials("^G\\d+ p \\d+"),
     MeaningfulResources("meaning"),
     ArtificialResources("artificial"),

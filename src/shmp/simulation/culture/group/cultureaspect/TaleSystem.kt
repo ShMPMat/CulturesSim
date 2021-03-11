@@ -4,6 +4,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.worship.ConceptObjectWorship
+import shmp.simulation.culture.group.cultureaspect.worship.GodWorship
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObject
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObjectDependent
 import shmp.simulation.culture.group.request.Request
@@ -35,14 +36,21 @@ class TaleSystem(
     override fun die(group: Group) {}
 
     override fun swapWorship(worshipObject: WorshipObject) =
-            if (worshipObject is ConceptObjectWorship && groupingConcept is ObjectConcept)
-            TaleSystem(
-            tales.map {
-                Tale(it.template.copy(), it.info.changedInfo(groupingConcept))
-            },
-            groupingConcept
-            )
-            else null
+            when (worshipObject) {
+                is ConceptObjectWorship -> TaleSystem(
+                        tales.map {
+                            Tale(it.template.copy(), it.info.changedInfo(worshipObject.objectConcept))
+                        },
+                        worshipObject.objectConcept
+                )
+                is GodWorship -> TaleSystem(
+                        tales.map {
+                            Tale(it.template.copy(), it.info.changedInfo(worshipObject))
+                        },
+                        worshipObject
+                )
+                else -> null
+            }
 
 
     override fun toString(): String {

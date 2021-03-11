@@ -54,6 +54,9 @@ object TextEnvironmentalHandler : CommandHandler<TextEcosystemVisualizer> {
                         world,
                         splitCommand.size > 1 && splitCommand[1] == "f"
                 ))
+                Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]?.let {
+                    printTile(it)
+                } ?: print("No such Tile")
                 ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
                 Events -> {
                     var amount = 100

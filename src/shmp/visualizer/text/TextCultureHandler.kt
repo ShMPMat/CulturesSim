@@ -45,9 +45,6 @@ object TextCultureHandler: CommandHandler<TextEcosystemVisualizer> {
                     }
                     println(printConglomerateRelations(c1, c2))
                 }
-                Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]?.let {
-                    printTile(it)
-                } ?: print("No such Tile")
                 GroupPotentials -> {
                     val group = getConglomerate(splitCommand[0]) ?: return true
                     printMap { t ->

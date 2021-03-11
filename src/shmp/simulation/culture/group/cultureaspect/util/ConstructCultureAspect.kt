@@ -1,4 +1,4 @@
-package shmp.simulation.culture.group.cultureaspect
+package shmp.simulation.culture.group.cultureaspect.util
 
 import shmp.random.randomElement
 import shmp.random.singleton.randomElement
@@ -11,6 +11,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.toNegativeChange
 import shmp.simulation.culture.group.centers.toPositiveChange
+import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.BetterAspectUseReason

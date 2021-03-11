@@ -6,6 +6,7 @@ import shmp.visualizer.Visualizer
 enum class EnvironmentCommand(command: String) : Command {
     Plates("plates"),
     TileTag("tt \\w+"),
+    Tile("\\d+ \\d+"),
     Temperature("temperature"),
     Wind("wind"),
     TerrainLevel("level"),

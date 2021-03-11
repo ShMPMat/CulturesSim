@@ -1,8 +1,8 @@
-package shmp.simulation.culture.group.cultureaspect
+package shmp.simulation.culture.group.cultureaspect.util
 
-import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
@@ -10,7 +10,7 @@ import shmp.simulation.culture.group.cultureaspect.worship.ConceptObjectWorship
 import shmp.simulation.culture.group.cultureaspect.worship.GodWorship
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
+
 
 fun takeOutSimilarRituals(
         aspectPool: MutableCultureAspectPool,
@@ -76,13 +76,14 @@ private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableC
             .filterIsInstance<DepictObject>()
             .filter { it.objectConcept == concept}
     aspectPool.removeAll(depictions)
-    val depictSystem =DepictSystem(depictions, concept.meme, concept)
+    val depictSystem = DepictSystem(depictions, concept.meme, concept)
 
     return Worship(
             ConceptObjectWorship(concept),
             taleSystem,
             depictSystem,
             PlaceSystem(mutableSetOf()),
+            reasonField.commonReasonings.extractComplexFor(concept, "Worship of $concept"),
             mutableListOf()
     )
 }
@@ -105,17 +106,18 @@ fun takeOutDepictionSystem(
 
 fun takeOutGod(aspectPool: MutableCultureAspectPool, group: Group): CultureAspect? {
     val chosen = aspectPool.worships
-            .filter { it.worshipObject !is GodWorship }
+            .filter { it.worshipObject is ConceptObjectWorship }
             .randomElementOrNull()
             ?: return null
 
     val meme = chosen.worshipObject.name
 
-    val sphereMemes = group.cultureCenter.memePool.all
-            .filterIsInstance<MemeSubject>()
-            .filter { it.predicates.isEmpty() }
+    val sphere = chosen.reasonComplex.reasonings
+            .filterIsInstance<EqualityReasoning>()
+            .randomElementOrNull()
+            ?.subjectConcept
+            ?: return null
 
-    val sphere = sphereMemes.randomElement { it.importance * 1.0 / it.toString().length }
     val god = GodWorship(meme, sphere)
 
     aspectPool.remove(chosen)
