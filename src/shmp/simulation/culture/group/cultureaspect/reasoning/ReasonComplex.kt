@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning
 
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.utils.SoftValue
 
 
@@ -28,6 +29,16 @@ class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf())
         val toAccept = reasonings.filter { it !in _reasonings }
         _reasonings.addAll(toAccept)
         return toAccept
+    }
+
+    fun extractComplexFor(concept: ReasonConcept, name: String): ReasonComplex {
+        val conceptReasonings = reasonings.filter { r ->
+            r is EqualityReasoning && r.any { it == concept }
+                    || r is ActionReasoning && (r.objectConcept == concept || r.actionConcept == concept)
+                    || r is ExistenceInReasoning && (r.subjectConcept == concept || r.surroundingConcept == concept)
+        }
+
+        return ReasonComplex(name, conceptReasonings.toSet())
     }
 
     override fun toString() = """

@@ -1,10 +1,12 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
+import shmp.random.singleton.chanceOf
 import shmp.random.testProbability
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.request.Request
 
 open class Worship(
@@ -15,9 +17,9 @@ open class Worship(
         val features: MutableList<WorshipFeature>
 ) : CultureAspect, WorshipObjectDependent {
     init {
-        if (worshipObject.name != taleSystem.groupingMeme || worshipObject.name != depictSystem.groupingMeme)
+        if (worshipObject.name != taleSystem.groupingConcept.meme || worshipObject.name != depictSystem.groupingMeme)
             throw GroupError("Inconsistent Worship: worship object's name is ${worshipObject.name}" +
-                    " but TaleSystem's meme is ${taleSystem.groupingMeme}")
+                    " but TaleSystem's meme is ${taleSystem.groupingConcept}")
     }
 
     override fun getRequest(group: Group): Request? = null
@@ -26,20 +28,18 @@ open class Worship(
         taleSystem.use(group)
         depictSystem.use(group)
         placeSystem.use(group)
-        if (testProbability(0.05 / (depictSystem.depictions.size + 1), session.random)) {
+        (0.05 / (depictSystem.depictions.size + 1)).chanceOf {
             val depiction = createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
-                    taleSystem.groupingMeme,
-                    group,
-                    session.random
+                    taleSystem.groupingConcept.meme,
+                    taleSystem.groupingConcept.takeIf { it is ObjectConcept } as ObjectConcept
             ) ?: return
             depictSystem.addDepiction(depiction)
         }
-        if (testProbability(0.05 / (taleSystem.tales.size + 1), session.random)) {
+        (0.05 / (taleSystem.tales.size + 1)).chanceOf {
             val tale = createTale(
                     group,
-                    session.templateBase,
-                    session.random
+                    session.templateBase
             ) ?: return
             taleSystem.addTale(tale)
         }
@@ -56,7 +56,7 @@ open class Worship(
         if (!testProbability(session.worshipPlaceProb / (1 + placeSystem.places.size), session.random))
             return
 
-        placeSystem.addPlace(createSpecialPlaceForWorship(this, group, session.random) ?: return)
+        placeSystem.addPlace(createSpecialPlaceForWorship(this, group) ?: return)
     }
 
     override fun adopt(group: Group): Worship? {
@@ -78,16 +78,17 @@ open class Worship(
         placeSystem.die(group)
     }
 
-    override fun swapWorship(worshipObject: WorshipObject) =
-            Worship(
-                    worshipObject,
-                    taleSystem.swapWorship(worshipObject),
-                    depictSystem.swapWorship(worshipObject),
-                    PlaceSystem(mutableSetOf()),
-                    features.map { it.swapWorship(worshipObject) }.toMutableList()
-            )
+    override fun swapWorship(worshipObject: WorshipObject): Worship? {
+        return Worship(
+                worshipObject,
+                taleSystem.swapWorship(worshipObject) ?: return null,
+                depictSystem.swapWorship(worshipObject),
+                PlaceSystem(mutableSetOf()),
+                features.map { it.swapWorship(worshipObject) }.toMutableList()
+        )
+    }
 
-    val simpleName = "Worship of ${taleSystem.groupingMeme}"
+    val simpleName = "Worship of ${taleSystem.groupingConcept}"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -69,16 +69,13 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
                             group.cultureCenter.memePool,
                             session.random
                     ),
-                    group,
-                    session.random
+                    null
             )
             AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .filter { it.genome.isDesirable }
                             .filter { !aestheticallyPleasingResources.contains(it) }
-                            .maxByOrNull { it.genome.baseDesirability },
-                    group,
-                    session.random
+                            .maxByOrNull { it.genome.baseDesirability }
             )
             AspectRandom.Ritual -> createRitual(//TODO recursively go in dependencies;
                     constructBetterAspectUseReason(
@@ -92,8 +89,7 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
             )
             AspectRandom.Tale -> createTale(
                     group,
-                    session.templateBase,
-                    session.random
+                    session.templateBase
             )
             AspectRandom.Concept -> createSimpleConcept(
                     group,
@@ -111,8 +107,8 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
 
         when (ChangeRandom.values().randomElement()) {
             ChangeRandom.RitualSystem -> joinSimilarRituals()
-            ChangeRandom.TaleSystem -> joinSimilarTalesBy("!actor")
-            ChangeRandom.Worship -> addCultureAspect(takeOutWorship(aspectPool, session.random))
+            ChangeRandom.TaleSystem -> joinSimilarTales()
+            ChangeRandom.Worship -> addCultureAspect(takeOutWorship(reasonField, aspectPool))
             ChangeRandom.God -> makeGod(group)
         }
     }
@@ -122,11 +118,11 @@ class CultureAspectCenter(val reasonField: ReasonField, private val reasonConver
         reasonsWithSystems.add(system.reason)
     }
 
-    private fun makeGod(group: Group) = takeOutGod(aspectPool, group, session.random)?.let { cult ->
+    private fun makeGod(group: Group) = takeOutGod(aspectPool, group)?.let { cult ->
         addCultureAspect(cult)
     }
 
-    private fun joinSimilarTalesBy(infoTag: String) = takeOutSimilarTalesBy(infoTag, aspectPool)?.let { system ->
+    private fun joinSimilarTales() = takeOutSimilarTales(aspectPool)?.let { system ->
         addCultureAspect(system)
     }
 

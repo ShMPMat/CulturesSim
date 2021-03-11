@@ -1,19 +1,22 @@
 package shmp.simulation.culture.thinking.language.templates
 
 import shmp.simulation.Controller
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.thinking.meaning.Meme
+import java.lang.UnsupportedOperationException
 
-class TextInfo(val map: MutableMap<InfoKey, Meme>) {
-    constructor(actor: Meme, verb: Meme, receiver: Meme) : this(mutableMapOf()) {
-        map["!actor"] = actor
+
+class TextInfo(val map: MutableMap<InfoKey, Meme>, val actorConcept: ObjectConcept) {
+    constructor(actorConcept: ObjectConcept, verb: Meme, receiver: Meme) : this(mutableMapOf(), actorConcept) {
+        map["!actor"] = actorConcept.meme
         map["@verb"] = verb
         map["!receiver"] = receiver
     }
 
-    fun changedInfo(key: String, newMeme: Meme): TextInfo {
+    fun changedInfo(newActorConcept: ObjectConcept): TextInfo {
         val changedMap = map.toMutableMap()
-        changedMap[key] = newMeme
-        return TextInfo(changedMap)
+        changedMap["!actor"] = newActorConcept.meme
+        return TextInfo(changedMap, actorConcept)
     }
 
     fun getMainPart(key: InfoKey) = getSubstituted(key).topMemeCopy()

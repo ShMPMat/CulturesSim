@@ -1,6 +1,8 @@
 package shmp.simulation.culture.group.cultureaspect
 
 import shmp.random.randomElement
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.testProbability
 import shmp.random.testProbability
 import shmp.simulation.culture.aspect.AspectPool
 import shmp.simulation.culture.aspect.ConverseWrapper
@@ -9,6 +11,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.toNegativeChange
 import shmp.simulation.culture.group.centers.toPositiveChange
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.BetterAspectUseReason
 import shmp.simulation.culture.group.reason.Reason
@@ -29,31 +32,28 @@ import kotlin.random.Random
 fun createDepictObject(
         meaningAspects: Collection<ConverseWrapper>,
         meme: Meme?,
-        group: Group,
-        random: Random
+        objectConcept: ObjectConcept?
 ): DepictObject? =
         if (meaningAspects.isNotEmpty() && meme != null)
             DepictObject(
                     meme,
-                    randomElement(meaningAspects.flatMap { it.producedResources }, random),
+                    objectConcept,
+                    meaningAspects.flatMap { it.producedResources }.randomElement(),
                     getRandom()
             )
         else null
 
-fun createAestheticallyPleasingObject(resource: Resource?, group: Group, random: Random): CherishedResource? =
+fun createAestheticallyPleasingObject(resource: Resource?): CherishedResource? =
         resource?.let {
             CherishedResource(resource, getRandom())
         }
 
-fun createTale(group: Group, templateBase: TemplateBase, random: Random): Tale? {
+fun createTale(group: Group, templateBase: TemplateBase): Tale? {
     val template = templateBase.randomSentenceTemplate
             ?: return null
 
-    val info = constructTextInfo(
-            group.cultureCenter,
-            templateBase,
-            random
-    ) ?: return null
+    val info = constructTextInfo(group.cultureCenter, templateBase)
+            ?: return null
 
     return Tale(template, info)
 }
@@ -79,7 +79,6 @@ fun createRitual(reason: Reason?, group: Group, random: Random): Ritual? {
             createBetterAspectUseReasonRitual(
                     reason,
                     group.cultureCenter.aspectCenter.aspectPool,
-                    group,
                     random
             )
         }
@@ -90,7 +89,6 @@ fun createRitual(reason: Reason?, group: Group, random: Random): Ritual? {
 fun createBetterAspectUseReasonRitual(
         reason: BetterAspectUseReason,
         aspectPool: AspectPool,
-        group: Group,
         random: Random
 ): Ritual? {
     val converseWrapper = reason.converseWrapper
@@ -118,9 +116,8 @@ fun createBetterAspectUseReasonRitual(
                 val meaningAspects = aspectPool.getMeaningAspects()
                 val aspect = createDepictObject(
                         meaningAspects,
-                        randomElement(aspectMemes, random),
-                        group,
-                        random
+                        aspectMemes.randomElement(),
+                        null
                 ) ?: continue
 
                 CultureAspectRitual(aspect, reason) //TODO make complex tales;
@@ -131,7 +128,7 @@ fun createBetterAspectUseReasonRitual(
     return null
 }
 
-fun createSpecialPlaceForWorship(worship: Worship, group: Group, random: Random): SpecialPlace? {
+fun createSpecialPlaceForWorship(worship: Worship, group: Group): SpecialPlace? {
     val tag = worship.toString().replace(' ', '_')
     val tilesWithoutPlaces = group.territoryCenter.territory.tiles.filter { t ->
         t.getTilesInRadius(2).all { it.tagPool.getByType(tag).isEmpty() }
@@ -142,9 +139,9 @@ fun createSpecialPlaceForWorship(worship: Worship, group: Group, random: Random)
     val number = group.territoryCenter.territory.size - tilesWithoutPlaces.size
     val existsInCenter = !tilesWithoutPlaces.contains(group.territoryCenter.territory.center)
     val tile =
-            if (!existsInCenter && testProbability(0.5, random))
+            if (!existsInCenter && 0.5.testProbability())
                 group.territoryCenter.center
-            else randomElement(tilesWithoutPlaces, random)
+            else tilesWithoutPlaces.randomElement()
 
     return SpecialPlace(StaticPlace(tile, TileTag(tag + number, tag)))
 }

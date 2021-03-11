@@ -1,14 +1,16 @@
 package shmp.simulation.culture.group.cultureaspect
 
-import shmp.random.randomElement
-import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.simulation.culture.group.cultureaspect.worship.ConceptObjectWorship
 import shmp.simulation.culture.group.cultureaspect.worship.GodWorship
-import shmp.simulation.culture.group.cultureaspect.worship.MemeWorship
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.culture.thinking.meaning.MemeSubject
-import kotlin.random.Random
 
 fun takeOutSimilarRituals(
         aspectPool: MutableCultureAspectPool,
@@ -18,7 +20,7 @@ fun takeOutSimilarRituals(
             .filter { it is Ritual }
             .map { it as Ritual }
             .groupBy { it.reason }
-            .maxBy { it.value.size }
+            .maxByOrNull { it.value.size }
             ?: return null
     if (popularRituals.size >= bound) {
         aspectPool.removeAll(popularRituals)
@@ -27,49 +29,58 @@ fun takeOutSimilarRituals(
     return null
 }
 
-fun takeOutSimilarTalesBy(
-        infoTag: String,
+fun takeOutSimilarTales(
         aspectPool: MutableCultureAspectPool,
         bound: Int = 3
 ): TaleSystem? {
-    val (popularMeme, popularTales) = aspectPool
+    val (popularConcept, popularTales) = aspectPool
             .filter { it is Tale }
             .map { it as Tale }
-            .groupBy { it.info.getMainPart(infoTag) }
-            .maxBy { it.value.size }
+            .groupBy { it.info.actorConcept }
+            .maxByOrNull { it.value.size }
             ?: return null
-    popularMeme ?: return null
+
     if (popularTales.size >= bound) {
         aspectPool.removeAll(popularTales)
-        return TaleSystem(popularTales, popularMeme, infoTag);
+        return TaleSystem(popularTales, popularConcept);
     }
     return null
 }
 
-fun takeOutWorship(
-        aspectPool: MutableCultureAspectPool,
-        random: Random
-): Worship? {
+fun takeOutWorship(reasonField: ReasonField, aspectPool: MutableCultureAspectPool): Worship? {
+    return takeOutConceptWorship(reasonField, aspectPool)
+}
+
+private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableCultureAspectPool): Worship? {
+    val reasoning = reasonField.commonReasonings.reasonings
+            .filterIsInstance<EqualityReasoning>()
+            .filter { it.objectConcept is ObjectConcept }
+            .randomElementOrNull()
+            ?: return null
+    val concept: ObjectConcept = reasoning.objectConcept as ObjectConcept
+
     val existing = aspectPool.worships
-            .map { it.worshipObject.name }
+            .filterIsInstance<ConceptObjectWorship>()
+            .map { it.objectConcept }
             .toSet()
-    val systems = aspectPool
+
+    val taleSystem = aspectPool
             .filter { it is TaleSystem }
             .map { it as TaleSystem }
-            .filter { it.groupingMeme is MemeSubject }
-            .filter { it.groupingMeme !in existing }
-    val system = randomElementOrNull(systems, random)
+            .filter { it.groupingConcept !in existing }
+            .filter { it.groupingConcept == concept }
+            .randomElementOrNull()
             ?: return null
 
-    aspectPool.remove(system)
-    val depictSystem = takeOutDepictionSystem(
-            aspectPool,
-            system.groupingMeme,
-            bound = 0
-    ) ?: DepictSystem(setOf(), system.groupingMeme)
+    val depictions = aspectPool.all
+            .filterIsInstance<DepictObject>()
+            .filter { it.objectConcept == concept}
+    aspectPool.removeAll(depictions)
+    val depictSystem =DepictSystem(depictions, concept.meme, concept)
+
     return Worship(
-            MemeWorship(system.groupingMeme.copy()),
-            system,
+            ConceptObjectWorship(concept),
+            taleSystem,
             depictSystem,
             PlaceSystem(mutableSetOf()),
             mutableListOf()
@@ -87,30 +98,24 @@ fun takeOutDepictionSystem(
             .filter { d -> d.meme.anyMatch { it.topMemeCopy() == groupingMeme } }
     if (depictions.size >= bound) {
         aspectPool.removeAll(depictions)
-        return DepictSystem(depictions, groupingMeme)
+        return DepictSystem(depictions, groupingMeme, null)
     }
     return null
 }
 
-fun takeOutGod(
-        aspectPool: MutableCultureAspectPool,
-        group: Group,
-        random: Random
-): CultureAspect? {
-    val worshipsAndCults = aspectPool.worships
-            .filter { it.worshipObject is MemeWorship }
+fun takeOutGod(aspectPool: MutableCultureAspectPool, group: Group): CultureAspect? {
+    val chosen = aspectPool.worships
+            .filter { it.worshipObject !is GodWorship }
+            .randomElementOrNull()
+            ?: return null
 
-    if (worshipsAndCults.isEmpty())
-        return null
-
-    val chosen = randomElement(worshipsAndCults, random)
     val meme = chosen.worshipObject.name
 
     val sphereMemes = group.cultureCenter.memePool.all
             .filterIsInstance<MemeSubject>()
             .filter { it.predicates.isEmpty() }
 
-    val sphere = randomElement(sphereMemes, { it.importance * 1.0 / it.toString().length }, random)
+    val sphere = sphereMemes.randomElement { it.importance * 1.0 / it.toString().length }
     val god = GodWorship(meme, sphere)
 
     aspectPool.remove(chosen)

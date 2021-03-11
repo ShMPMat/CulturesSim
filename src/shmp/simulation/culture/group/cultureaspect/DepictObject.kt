@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect
 
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObject
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObjectDependent
 import shmp.simulation.culture.group.passingReward
@@ -14,6 +15,7 @@ import shmp.simulation.space.resource.Resource
 
 class DepictObject(
         val meme: Meme,
+        val objectConcept: ObjectConcept?,
         private val resource: Resource,
         private val resourceBehaviour: ResourceBehaviour
 ) : CultureAspect, WorshipObjectDependent {
@@ -45,6 +47,7 @@ class DepictObject(
             ?.let {
                 DepictObject(
                         it,
+                        objectConcept,
                         resource,
                         resourceBehaviour
                 )
@@ -52,7 +55,8 @@ class DepictObject(
 
     override fun die(group: Group) {}
 
-    override fun swapWorship(worshipObject: WorshipObject) = DepictObject(worshipObject.name, resource, resourceBehaviour)
+    override fun swapWorship(worshipObject: WorshipObject) =
+            DepictObject(worshipObject.name, objectConcept, resource, resourceBehaviour)
 
     override fun toString() = "Depict $meme on ${resource.fullName}, $resourceBehaviour"
 

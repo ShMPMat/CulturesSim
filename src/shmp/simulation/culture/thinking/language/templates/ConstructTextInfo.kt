@@ -1,48 +1,41 @@
 package shmp.simulation.culture.thinking.language.templates
 
-import shmp.random.randomElement
-import shmp.random.randomElementOrNull
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.CultureCenter
+import shmp.simulation.culture.group.centers.util.ArbitraryResource
 import shmp.simulation.culture.thinking.meaning.*
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.dependency.ConsumeDependency
 import java.util.*
-import kotlin.random.Random
 
-fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase, random: Random): TextInfo? { //TODO too slow
+
+fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase): TextInfo? { //TODO too slow
     val textInfos: List<TextInfo> = cultureCenter.aspectCenter.aspectPool.converseWrappers
             .flatMap { getAspectTextInfo(it) }
 
-    return randomElementOrNull(textInfos, random)?.let {
+    return textInfos.randomElementOrNull()?.let {
         complicateInfo(
                 it,
                 templateBase,
-                cultureCenter.memePool,
-                random
+                cultureCenter.memePool
         )
     }
 }
 
-fun complicateInfo(
-        info: TextInfo,
-        templateBase: TemplateBase,
-        groupMemes: GroupMemes,
-        random: Random
-): TextInfo {
+fun complicateInfo(info: TextInfo, templateBase: TemplateBase, groupMemes: GroupMemes): TextInfo {
     val substitutions: MutableMap<String, Meme> = HashMap()
     for ((key, value) in info.map) {
         if (key[0] == '!') {
-            substitutions[key] = randomElement(templateBase.nounClauseBase, random).refactor { m: Meme ->
+            substitutions[key] = templateBase.nounClauseBase.randomElement().refactor { m: Meme ->
                 when {
                     m.observerWord == "!n!" -> value.topMemeCopy()
                     templateBase.templateChars.contains(m.observerWord[0]) -> {
-                        substitutions[key.toString() + m.observerWord] = randomElement(
-                                templateBase.wordBase[m.observerWord]!!,
-                                { groupMemes.getMeme(it.observerWord)?.importance?.toDouble() ?: 0.0 },
-                                random
-                        )
+                        substitutions[key + m.observerWord] = templateBase.wordBase[m.observerWord]!!.randomElement {
+                            groupMemes.getMeme(it.observerWord)?.importance?.toDouble() ?: 0.0
+                        }
                         MemePredicate(key + m.observerWord)
                     }
                     else -> m.topMemeCopy()
@@ -74,7 +67,7 @@ fun getResourceInformationTextInfo(resource: Resource): List<TextInfo> {
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed) {
                 infos.add(TextInfo(
-                        makeMeme(resource),
+                        ArbitraryResource(resource),
                         MemePredicate("consume"),
                         MemeSubject(res.toLowerCase()))
                 )
