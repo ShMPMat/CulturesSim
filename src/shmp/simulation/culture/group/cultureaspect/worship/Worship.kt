@@ -2,6 +2,8 @@ package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.chanceOfNot
+import shmp.random.singleton.otherwise
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
@@ -12,6 +14,7 @@ import shmp.simulation.culture.group.cultureaspect.util.createDepictObject
 import shmp.simulation.culture.group.cultureaspect.util.createSpecialPlaceForWorship
 import shmp.simulation.culture.group.cultureaspect.util.createTale
 import shmp.simulation.culture.group.request.Request
+import kotlin.math.pow
 
 
 open class Worship(
@@ -60,14 +63,20 @@ open class Worship(
                 features.add(Cult(simpleName))
             }
 
-        (session.worshipPlaceProb / (1 + placeSystem.places.size)).chanceOfNot {
-            return
+        session.reasoningUpdate.pow(0.5).chanceOf {
+            group.cultureCenter.cultureAspectCenter.reasonConversions
+                    .randomElementOrNull()
+                    ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
         }
 
-        placeSystem.addPlace(
-                createSpecialPlaceForWorship(this, group)
-                        ?: return
-        )
+        (session.worshipPlaceProb / (1 + placeSystem.places.size)).chanceOfNot {
+            return
+        } otherwise {
+            placeSystem.addPlace(
+                    createSpecialPlaceForWorship(this, group)
+                            ?: return
+            )
+        }
     }
 
     override fun adopt(group: Group): Worship? {

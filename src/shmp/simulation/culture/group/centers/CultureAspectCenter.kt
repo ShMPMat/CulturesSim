@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.math.pow
 
 
-class CultureAspectCenter(val reasonField: ReasonField, private val reasonConversions: List<ReasonConversion>) {
+class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: List<ReasonConversion>) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
