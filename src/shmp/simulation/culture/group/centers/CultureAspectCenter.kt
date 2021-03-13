@@ -195,6 +195,7 @@ fun baseConversions(
         StratumConversion(stratumCenter),
         CorrespondingConversion,
         OppositionConversion,
+        CombinatorsConversion,
         EqualitySubjectCorrelationConversion,
         CommonnessExistenceInConversion,
         ActionConversion.PositiveDriveConversion,

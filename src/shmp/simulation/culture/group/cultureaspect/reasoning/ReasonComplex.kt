@@ -8,6 +8,9 @@ class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf())
     private val _reasonings = startReasonings.toMutableSet()
     val reasonings: Set<Reasoning> = _reasonings
 
+    val equalityReasonings: List<EqualityReasoning>
+        get() = _reasonings.filterIsInstance<EqualityReasoning>()
+
     val condensedConclusions: List<ReasonConclusion>
         get() = reasonings
                 .flatMap { it.conclusions }
