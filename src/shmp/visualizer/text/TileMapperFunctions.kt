@@ -84,6 +84,7 @@ fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1):
         result < start + 5 * step -> "\u001b[43m"
         else -> "\u001b[41m"
     }
+
     return if (result >= start)
         "\u001b[90m" + colour + abs(((result - start) % step) / (ceil(step.toDouble() / 10).toInt()))
     else NOTHING

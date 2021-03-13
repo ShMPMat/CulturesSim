@@ -185,7 +185,7 @@ private enum class ChangeRandom(override val probability: Double) : SampleSpaceO
 }
 
 
-fun baseConversions(
+fun cultureConversions(
         memoryCenter: MemoryCenter,
         aspectCenter: AspectCenter,
         stratumCenter: StratumCenter
@@ -193,6 +193,9 @@ fun baseConversions(
         MemoryConversion(memoryCenter),
         AspectConversion(aspectCenter),
         StratumConversion(stratumCenter),
+) + allCorrespondingIdealActionConversions + baseConversions()
+
+fun baseConversions() = listOf(
         CorrespondingConversion,
         OppositionConversion,
         CombinatorsConversion,
@@ -201,4 +204,4 @@ fun baseConversions(
         ActionConversion.PositiveDriveConversion,
         AspectResourcesConversion,
         StratumResourcesConversion
-) + allCorrespondingIdealActionConversions
+)

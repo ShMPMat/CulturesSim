@@ -61,7 +61,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     },
                     CultureAspectCenter(
                             ReasonField(),
-                            baseConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
+                            cultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
                     ),
                     TraitCenter(),
                     root,

@@ -123,7 +123,7 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
                 RelationCenter(group.relationCenter.hostilityCalculator),
                 CultureAspectCenter(
                         group.cultureCenter.cultureAspectCenter.reasonField.copy(),
-                        baseConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
+                        cultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
                 ),
                 group.cultureCenter.traitCenter.copy(),
                 startTile,

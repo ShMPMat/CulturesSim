@@ -7,6 +7,7 @@ import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.centers.baseConversions
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
@@ -64,8 +65,7 @@ open class Worship(
             }
 
         session.reasoningUpdate.pow(0.5).chanceOf {
-            group.cultureCenter.cultureAspectCenter.reasonConversions
-                    .randomElementOrNull()
+            baseConversions().randomElementOrNull()
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
         }
 
