@@ -6,7 +6,7 @@ import shmp.simulation.culture.group.ConflictResultEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.toNegativeChange
-import shmp.simulation.culture.group.process.ProcessResult
+import shmp.simulation.culture.group.process.*
 import shmp.simulation.culture.group.process.action.AddGroupA
 import shmp.simulation.culture.group.process.action.ChooseResourcesAndTakeA
 import shmp.simulation.culture.group.process.action.TestTraitA
@@ -15,10 +15,7 @@ import shmp.simulation.culture.group.process.action.pseudo.ConflictWinner
 import shmp.simulation.culture.group.process.action.pseudo.ConflictWinner.*
 import shmp.simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import shmp.simulation.culture.group.process.action.pseudo.decide
-import shmp.simulation.culture.group.process.emptyProcessResult
-import shmp.simulation.culture.group.process.get
 import shmp.simulation.culture.group.process.interaction.BattleI
-import shmp.simulation.culture.group.process.pow
 import shmp.simulation.event.Event
 import shmp.simulation.event.Type
 import shmp.simulation.space.resource.container.ResourcePromisePack
@@ -37,8 +34,8 @@ object RandomWarB : AbstractGroupBehaviour() {
         } ?: return emptyProcessResult
 
         val goal =
-                if (opponent.parentGroup != group.parentGroup
-                        && TestTraitA(group, Trait.Expansion.get().pow(2)).run())
+                if (opponent.parentGroup != group.parentGroup &&
+                        TestTraitA(group, Trait.Expansion.getPositive().pow(0.5)).run())
                     AddGroupA(opponent, group)
                 else ChooseResourcesAndTakeA(
                         group,
@@ -119,7 +116,7 @@ interface WarFinisher {
     fun decide(results: List<ConflictWinner>): WarStatus
 }
 
-class ProbabilisticWarFinisher() : WarFinisher {
+class ProbabilisticWarFinisher : WarFinisher {
     private var first = 0.0
     private var second = 0.0
     private var draw = 0.0
