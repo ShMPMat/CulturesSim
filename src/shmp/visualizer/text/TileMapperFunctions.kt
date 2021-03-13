@@ -84,7 +84,9 @@ fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1):
         result < start + 5 * step -> "\u001b[43m"
         else -> "\u001b[41m"
     }
-    return if (result < start) "" else "\u001b[90m" + colour + abs(((result - start) % step) / (step / 10))
+    return if (result >= start)
+        "\u001b[90m" + colour + abs(((result - start) % step) / (ceil(step.toDouble() / 10).toInt()))
+    else NOTHING
 }
 
 fun temperatureMapper(tile: Tile) = hotnessMapper(10, tile, Tile::temperature, start = -30)
@@ -149,6 +151,18 @@ fun aspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
             val group: Group = getResidingGroup(it)
                     ?: return@hotnessMapper 0
             group.cultureCenter.aspectCenter.aspectPool.get(aspectName)?.usefulness ?: 0
+        }
+)
+
+fun cultureAspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
+        1,
+        tile,
+        { t ->
+            val group: Group = getResidingGroup(t)
+                    ?: return@hotnessMapper 0
+            group.cultureCenter.cultureAspectCenter.aspectPool.all
+                    .filter { it.toString().contains(aspectName) }
+                    .size
         }
 )
 

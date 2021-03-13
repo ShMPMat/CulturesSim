@@ -13,6 +13,7 @@ enum class CultureCommand(command: String) : Command {
     ArtificialResources("artificial"),
     GroupStatistics("gstat"),
     Aspects("a \\w+"),
+    CultureAspects("ca \\w+"),
     Strata("s \\w+"),
     AddAspect("^G\\d+ \\w+"),
     AddWant("^want G\\d+ \\w+");

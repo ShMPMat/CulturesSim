@@ -14,7 +14,7 @@ object TextCultureHandler: CommandHandler<TextEcosystemVisualizer> {
 
         visualizer.apply {
             val world = controller.world
-            val map = world.map
+
             when (command) {
                 Conglomerate -> {
                     val conglomerate = world.groups
@@ -66,9 +66,14 @@ object TextCultureHandler: CommandHandler<TextEcosystemVisualizer> {
                         println(printApplicableResources(aspect, world.resourcePool.all))
                     }
                 }
-                Strata -> {
-                    printMap { strataMapper(splitCommand[1], it) }
+                CultureAspects -> {
+                    printMap { cultureAspectMapper(splitCommand[1], it) }
+                    world.groups.flatMap { it.subgroups }
+                            .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.all }
+                            .filter { it.toString().contains(splitCommand[1]) }
+                            .forEach { println(it) }
                 }
+                Strata -> printMap { strataMapper(splitCommand[1], it) }
                 AddAspect -> addGroupConglomerateAspect(
                         getConglomerate(splitCommand[0]),
                         splitCommand[1],
