@@ -26,7 +26,7 @@ class Group(
         val processCenter: ProcessCenter,
         val resourceCenter: ResourceCenter,
         var parentGroup: GroupConglomerate,
-        var name: String,
+        val name: String,
         val populationCenter: PopulationCenter,
         val relationCenter: RelationCenter,
         cultureAspectCenter: CultureAspectCenter,

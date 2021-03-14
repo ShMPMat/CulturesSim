@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.process.action.pseudo
 
-import shmp.random.randomElement
-import shmp.simulation.Controller
+import shmp.random.singleton.RandomSingleton
+import shmp.random.singleton.randomElement
 import shmp.simulation.culture.group.process.action.pseudo.ConflictWinner.*
 import shmp.simulation.culture.group.stratum.StratumPeople
 import kotlin.math.min
@@ -17,11 +17,9 @@ class BattlePA(val firstSide: List<StratumPeople>, val secondSide: List<StratumP
                 secondSideForces.pow(2) / (firstSideForces + 1)
         ) + 1.0
 
-        val result = randomElement(
-                listOf(First to firstSideForces, Second to secondSideForces, Draw to drawChance),
-                { (_, n) -> n },
-                Controller.session.random
-        ).first
+        val result = listOf(First to firstSideForces, Second to secondSideForces, Draw to drawChance)
+                .randomElement { (_, n) -> n }
+                .first
 
         result.decide(
                 {
@@ -47,10 +45,10 @@ class BattlePA(val firstSide: List<StratumPeople>, val secondSide: List<StratumP
             .toDouble()
 
     private fun mildLoss(stratumPeoples: List<StratumPeople>) =
-            loss(stratumPeoples, Controller.session.random.nextDouble() / 2)
+            loss(stratumPeoples, RandomSingleton.random.nextDouble() / 2)
 
     private fun bigLoss(stratumPeoples: List<StratumPeople>) =
-            loss(stratumPeoples, Controller.session.random.nextDouble())
+            loss(stratumPeoples, RandomSingleton.random.nextDouble())
 
     private fun loss(stratumPeoples: List<StratumPeople>, part: Double) = stratumPeoples.forEach {
         it.decreaseAmount((it.workers * part).toInt())

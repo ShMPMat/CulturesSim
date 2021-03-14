@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.random.randomTile
 import shmp.random.singleton.chanceOfNot
+import shmp.random.singleton.randomTile
 import shmp.simulation.Controller.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.*
@@ -72,7 +72,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             return
         }
         if (!territory.contains(territory.center)) {
-            territory.center = randomTile(territory, session.random)
+            territory.center = territory.randomTile()
             territory.add(center)
         }
         notMoved++
@@ -224,7 +224,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                     .filter { isTileReachableInTraverse(it.tile to 0) }
                     .flatMap { it.tile.neighbours.map { n -> TileAndPrev(n, it) } }.asSequence()
                     .groupBy { it.tile }
-                    .map { it.value.minBy { p -> p.length } ?: throw SimulationError("IMPOSSIBLE") }
+                    .map { it.value.minByOrNull { p -> p.length } ?: throw SimulationError("IMPOSSIBLE") }
                     .filter { !checked.contains(it.tile) }.toList()
 
             val maybeFinish = currentTiles.firstOrNull { it.tile == finish }

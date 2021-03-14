@@ -1,10 +1,6 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.random.randomElementOrNull
-import shmp.random.singleton.chanceOf
-import shmp.random.singleton.chanceOfNot
-import shmp.random.singleton.otherwise
-import shmp.random.singleton.randomElement
+import shmp.random.singleton.*
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.aspect.*
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
@@ -110,7 +106,7 @@ class AspectCenter(aspects: List<Aspect>) {
             options.addAll(getAllPossibleConverseWrappers(group))
         }
 
-        randomElementOrNull(options, session.random)?.let { aspect ->
+        options.randomElementOrNull()?.let { aspect ->
             if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
                 return listOf()
 
@@ -235,7 +231,7 @@ class AspectCenter(aspects: List<Aspect>) {
         if (unimportantAspects.isEmpty())
             return
 
-        randomElementOrNull(unimportantAspects, session.random)
+        unimportantAspects.randomElementOrNull()
                 ?.takeIf { aspect -> aspect !in aspectPool.converseWrappers.map { it.aspect } }
                 ?.let { aspect ->
                     if (aspect in changedAspectPool.converseWrappers.map { it.aspect })

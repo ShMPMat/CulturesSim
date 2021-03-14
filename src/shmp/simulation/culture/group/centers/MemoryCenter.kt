@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.random.testProbability
+import shmp.random.singleton.chanceOf
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.space.resource.Resource
@@ -18,8 +18,9 @@ class MemoryCenter {
         get() = _resourceTraction
 
     fun update(group: Group) {
-        if (testProbability(session.memoryUpdateProb, session.random))
+        session.memoryUpdateProb.chanceOf {
             updateResourceTraction(group.territoryCenter.territory.allResourcesPack)
+        }
     }
 
     fun updateResourceTraction(resourcePack: ResourcePack) {

@@ -44,10 +44,9 @@ fun createDepictObject(
             )
         else null
 
-fun createAestheticallyPleasingObject(resource: Resource?): CherishedResource? =
-        resource?.let {
-            CherishedResource(resource, getRandom())
-        }
+fun createAestheticallyPleasingObject(resource: Resource?): CherishedResource? = resource?.let {
+    CherishedResource(resource, getRandom())
+}
 
 fun createTale(group: Group, templateBase: TemplateBase): Tale? {
     val template = templateBase.randomSentenceTemplate

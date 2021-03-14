@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.process.action
 
-import shmp.random.randomElement
-import shmp.simulation.Controller
+import shmp.random.singleton.randomElement
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.getSubordinates
 import shmp.simulation.culture.group.stratum.StratumPeople
@@ -25,7 +24,7 @@ class DecideBattleTileA(group: Group, val opponent: Group) : AbstractGroupAction
         val path = group.territoryCenter.makePath(group.territoryCenter.center, opponent.territoryCenter.center)
                 ?: return opponent.territoryCenter.center
 
-        return randomElement(path, Controller.session.random)
+        return path.randomElement()
     }
 
     override val internalToString = "Let ${group.name} decide where to battle with ${opponent.name}"

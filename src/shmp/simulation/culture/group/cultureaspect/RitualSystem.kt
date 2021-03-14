@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect
 
+import shmp.random.singleton.chanceOfNot
 import shmp.random.testProbability
 import shmp.simulation.Controller.*
 import shmp.simulation.culture.group.centers.Group
@@ -7,6 +8,7 @@ import shmp.simulation.culture.group.cultureaspect.util.createRitual
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.request.Request
 import java.util.*
+
 
 class RitualSystem constructor(rituals: Collection<Ritual>, val reason: Reason) : CultureAspect {
     private val _rituals: MutableSet<Ritual>
@@ -26,11 +28,12 @@ class RitualSystem constructor(rituals: Collection<Ritual>, val reason: Reason) 
 
     override fun use(group: Group) {
         _rituals.forEach { it.use(group) }
-        if (!testProbability(session.groupCollapsedAspectUpdate, session.random))
+        session.groupCollapsedAspectUpdate.chanceOfNot {
             return
+        }
         val ritual = createRitual(reason, group, session.random)
-        if (ritual != null)
-            _rituals.add(ritual)
+                ?: return
+        _rituals.add(ritual)
     }
 
     override fun adopt(group: Group): RitualSystem? {

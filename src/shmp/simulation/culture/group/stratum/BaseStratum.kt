@@ -1,13 +1,12 @@
 package shmp.simulation.culture.group.stratum
 
-import shmp.random.randomElement
-import shmp.simulation.Controller
+import shmp.random.singleton.randomElement
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.place.StaticPlace
 import shmp.simulation.culture.group.request.resourceToRequest
-import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.container.MutableResourcePack
+import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
 
@@ -42,13 +41,13 @@ abstract class BaseStratum(tile: Tile, final override val baseName: String, post
             if (goodTiles.isNotEmpty()) {
                 val tagType = "($name of ${group.name})"
                 place = StaticPlace(
-                        randomElement(goodTiles, Controller.session.random),
+                        goodTiles.randomElement(),
                         TileTag(tagType + "_" + innerPlaces.size, tagType)
                 )
                 addPlace(place)
             }
         } else
-            place = randomElement(goodPlaces, Controller.session.random)
+            place = goodPlaces.randomElement()
 
         if (place == null)
             return

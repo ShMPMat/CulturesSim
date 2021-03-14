@@ -1,7 +1,8 @@
 package shmp.simulation
 
 import shmp.utils.InputDatabase
-import shmp.random.randomTile
+import shmp.random.singleton.RandomSingleton
+import shmp.random.singleton.randomTile
 import shmp.simulation.Controller.session
 import shmp.simulation.culture.aspect.AspectInstantiation
 import shmp.simulation.culture.aspect.AspectResourceTagParser
@@ -22,15 +23,14 @@ import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.createTagMatchers
 import shmp.simulation.space.tile.Tile
 import java.util.*
-import kotlin.random.Random
 
 
 //Stores all entities in the shmp.simulation.
-class World(proportionCoefficient: Int, random: Random, path: String) {
+class World(proportionCoefficient: Int, path: String) {
     var groups: MutableList<GroupConglomerate> = ArrayList()
 
     val shuffledGroups: List<GroupConglomerate>
-        get() = groups.shuffled(session.random)
+        get() = groups.shuffled(RandomSingleton.random)
 
     val strayPlacesManager = StrayPlacesManager()
 
@@ -60,8 +60,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
         instantiateSpaceData(
                 proportionCoefficient,
                 tagMatchers,
-                materialPool,
-                random
+                materialPool
         )
         val initialResourcePool = ResourceInstantiation(
                 "$path/Resources",
@@ -113,7 +112,7 @@ class World(proportionCoefficient: Int, random: Random, path: String) {
     private val tileForGroup: Tile
         get() {
             while (true) {
-                val tile = randomTile(map, session.random)
+                val tile = map.randomTile()
                 if (tile.tagPool.getByType(GROUP_TAG_TYPE).isEmpty()
                         && tile.type != Tile.Type.Water && tile.type != Tile.Type.Mountain) {
                     return tile

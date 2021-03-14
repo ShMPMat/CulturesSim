@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.process.action
 
-import shmp.random.randomElementOrNull
-import shmp.simulation.Controller
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.space.resource.container.ResourcePack
@@ -24,7 +23,7 @@ class MakeTradeResourcesA(group: Group, val amount: Int) : AbstractGroupAction(g
     override fun run(): ResourcePack {
         val resources = group.cultureCenter.aspectCenter.aspectPool.producedResources
         //TODO maybe mapper?
-        val chosenResource = randomElementOrNull(resources, Controller.session.random)
+        val chosenResource = resources.randomElementOrNull()
                 ?: return ResourcePack()
 
         return ProduceExactResourceA(group, chosenResource, amount, 20, setOf(RequestType.Trade)).run()

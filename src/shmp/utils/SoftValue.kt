@@ -14,12 +14,6 @@ data class SoftValue(val actualValue: Double = 0.0) : Comparable<SoftValue> {
     val positive = max(0.0, value)
     val negative = min(0.0, value)
 
-    init {
-        if (value.isNaN()) {
-            val k = 0
-        }
-    }
-
     operator fun plus(softValue: SoftValue) = SoftValue(actualValue + softValue.actualValue)
     operator fun minus(softValue: SoftValue) = SoftValue(actualValue - softValue.actualValue)
     operator fun unaryMinus() = SoftValue(-actualValue)

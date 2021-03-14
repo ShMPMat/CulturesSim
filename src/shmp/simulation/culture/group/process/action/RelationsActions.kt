@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.process.action
 
-import shmp.random.testProbability
-import shmp.simulation.Controller
+import shmp.random.singleton.testProbability
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.process.get
@@ -37,7 +36,7 @@ class CooperateA(
 ) : AbstractGroupAction(group) {
     override fun run(): Boolean {
         val probability = (1 - helpAmount) * group.relationCenter.getNormalizedRelation(group)
-        val answer = testProbability(probability, Controller.session.random) &&
+        val answer = probability.testProbability() &&
                 TestTraitA(group, Trait.Peace.get()).run()
 
         val relationsChange = 1.0 * if (answer) 1 else -1

@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.process.action
 
-import shmp.random.testProbability
-import shmp.simulation.Controller
+import shmp.random.singleton.testProbability
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.process.get
@@ -18,7 +17,7 @@ class DecideWarDeclarationA(group: Group, val opponent: Group): AbstractGroupAct
         val forcesCoefficient = ownForcesEstimation.pow(0.5) / opponentForcesEstimation.pow(0.5)
         val warlike = 1 - Trait.Peace.get().extract(group.cultureCenter.traitCenter)
 
-        return testProbability(warlike * relationCoefficient * forcesCoefficient, Controller.session.random)
+        return (warlike * relationCoefficient * forcesCoefficient).testProbability()
     }
 
     override val internalToString = "Let ${group.name} decide, whether to declare a war to ${opponent.name}"

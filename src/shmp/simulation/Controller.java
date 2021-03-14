@@ -19,8 +19,7 @@ public class Controller {
 
     private int conglomerateCount = -1;
 
-    public final int seed = (int) (Math.random() * 10000000);
-    public final Random random = RandomKt.Random(8565728 + 4);
+    public final Random random = RandomKt.Random(8565728 + 7);
 
     public final int proportionCoefficient = 1;
     public final int resourceProportionCoefficient = 100;
@@ -96,7 +95,7 @@ public class Controller {
         RandomSingleton.INSTANCE.setSafeRandom(random);
 
         templateBase = new TemplateBase();
-        world = new World(proportionCoefficient, random, "SupplementFiles");
+        world = new World(proportionCoefficient, "SupplementFiles");
         this.interactionModel = interactionModel;
     }
 

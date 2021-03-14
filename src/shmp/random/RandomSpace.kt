@@ -21,3 +21,5 @@ fun randomTileOnBrink(tiles: Collection<Tile>, random: Random, predicate: (Tile)
                 StaticTerritory(tiles).filterOuterBrink(predicate),
                 random
         )
+
+

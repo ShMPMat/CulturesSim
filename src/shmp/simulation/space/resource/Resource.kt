@@ -1,8 +1,10 @@
 package shmp.simulation.space.resource
 
 import shmp.random.randomTileOnBrink
+import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.otherwise
+import shmp.random.singleton.randomTileOnBrink
 import shmp.random.testProbability
 import shmp.simulation.Controller
 import shmp.simulation.event.Event
@@ -83,7 +85,7 @@ open class Resource private constructor(
      * Exact amount depends on current amount of this Resource.
      */
     open fun getPart(part: Int): Resource {
-        val prob = SpaceData.data.random.nextDouble() * 0.5
+        val prob = RandomSingleton.random.nextDouble() * 0.5
         val result = when {
             part <= amount * prob -> min(amount, part)
             amount * prob + 1 < amount -> (amount * prob).toInt() + 1
@@ -275,14 +277,14 @@ open class Resource private constructor(
     private fun expand(tile: Tile): Boolean {
         val tileList = mutableListOf(tile)
 
-        var newTile = randomTileOnBrink(tileList, SpaceData.data.random) {
+        var newTile = tileList.randomTileOnBrink {
             isAcceptable(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
         }
         if (newTile == null) {
             if (genome.dependencies.all { it.hasNeeded(tile) })
                 newTile = tile
             else {
-                newTile = randomTileOnBrink(tileList, SpaceData.data.random) { isAcceptable(it) }
+                newTile = tileList.randomTileOnBrink { isAcceptable(it) }
                 if (newTile == null)
                     newTile = tile
             }

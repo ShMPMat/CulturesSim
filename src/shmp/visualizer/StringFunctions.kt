@@ -192,7 +192,9 @@ fun printGroupStatistics(world: World): String {
 
 fun printGroupCharacterStatistics(conglomerates: List<GroupConglomerate>) =
         Trait.values().joinToString("\n\n") { trait ->
-            val avgTraits = conglomerates.map { c -> c to c.subgroups.map { it.cultureCenter.traitCenter.processedValue(trait) }.average() }
+            val avgTraits = conglomerates
+                    .filter { it.subgroups.isNotEmpty() }
+                    .map { c -> c to c.subgroups.map { it.cultureCenter.traitCenter.processedValue(trait) }.average() }
 
             val maxStr = avgTraits.maxByOrNull { it.second }?.let { (g, a) -> "Max $trait:   ${g.name} - $a" } ?: ""
             val minStr = avgTraits.minByOrNull { it.second }?.let { (g, a) -> "Min $trait:   ${g.name} - $a" } ?: ""
