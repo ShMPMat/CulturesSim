@@ -21,10 +21,18 @@ class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(
 
     override fun innerRun(): InteractionResult {
         val tile = DecideBattleTileA(initiator, participator).run().posStr
-        val iniEvaluation = evaluateForces(participator) * (1 - initiator.cultureCenter.traitCenter.processedValue(Trait.Peace)).pow(3)
-        val partEvaluation = evaluateForces(initiator) * (1 - initiator.cultureCenter.traitCenter.processedValue(Trait.Peace)).pow(3)
+        val iniEvaluation = evaluateForces(participator) *
+                (1 - initiator.cultureCenter.traitCenter.processedValue(Trait.Peace)).pow(3) *
+                initiator.populationCenter.stratumCenter.warriorStratum.effectiveness
+        val partEvaluation = evaluateForces(initiator) *
+                (1 - initiator.cultureCenter.traitCenter.processedValue(Trait.Peace)).pow(3) *
+                participator.populationCenter.stratumCenter.warriorStratum.effectiveness
         val iniWarriors = GatherWarriorsA(initiator, iniEvaluation).run()
         val partWarriors = GatherWarriorsA(participator, partEvaluation).run()
+
+        if (initiator.populationCenter.stratumCenter.warriorStratum.effectiveness > 1 || participator.populationCenter.stratumCenter.warriorStratum.effectiveness > 1) {
+            val g = 7
+        }
 
         status = BattlePA(iniWarriors, partWarriors).run()
 

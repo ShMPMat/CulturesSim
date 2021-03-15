@@ -61,7 +61,11 @@
     Shard
     C3.0
 -MakeSpear                             $weapon
-    &t:hard--t:sturdy-->=1--<=2.5--!!t:composite--#Spear:1
+    &t:hard--t:sturdy-->=1--<=4.5--!!t:composite--#Spear:1
+    Shard
+    C3.0
+-MakeShield
+    &t:hard--t:sturdy-->=0.4--<=2--!!t:composite--#Shield:1
     Shard
     C3.0
 -MakeHandPlough                        $instrument

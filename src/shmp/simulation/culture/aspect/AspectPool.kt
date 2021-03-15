@@ -26,6 +26,10 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     val converseWrappers: Set<ConverseWrapper> get() = _cws
 
     protected fun innerAdd(aspect: Aspect) {
+        if (aspect.name.contains("MakeSpearOn")){
+            val k = 0
+        }
+
         if (!aspectMap.containsKey(aspect.name) && aspect is ConverseWrapper) {
             _cws.add(aspect)
             _cwRequirements[aspect.resource] = (_cwRequirements[aspect.resource] ?: 0) + 1

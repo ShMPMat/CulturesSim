@@ -19,7 +19,7 @@ public class Controller {
 
     private int conglomerateCount = -1;
 
-    public final Random random = RandomKt.Random(8565728 + 7);
+    public final Random random = RandomKt.Random(8565728 + 8);
 
     public final int proportionCoefficient = 1;
     public final int resourceProportionCoefficient = 100;

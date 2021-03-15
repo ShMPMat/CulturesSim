@@ -53,8 +53,8 @@ public class PlacementStrategy {
                 List<Tile> unfinishedBorder = controlledTerritory
                         .filterInnerBrink(t -> !t.getResourcePack().containsAll(resourcePack));
                 return unfinishedBorder.isEmpty()
-                        ? randomElement(border, session.random)
-                        : randomElement(unfinishedBorder, session.random);
+                        ? randomElementOrNull(border, session.random)
+                        : randomElementOrNull(unfinishedBorder, session.random);
             case Homogeneous:
                 tiles = controlledTerritory.filter(t -> !t.getResourcePack().containsAll(resourcePack));
                 return tiles.isEmpty()

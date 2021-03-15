@@ -1,12 +1,25 @@
 package shmp.simulation.culture.group.stratum
 
+import shmp.simulation.Controller
+import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.passingReward
+import shmp.simulation.culture.group.request.AspectImprovementRequest
+import shmp.simulation.culture.group.request.Request
+import shmp.simulation.culture.group.request.RequestCore
+import shmp.simulation.culture.group.request.RequestType
+import shmp.simulation.space.resource.container.MutableResourcePack
+import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 
 class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors", "") {
-    var _effectiveness = 1.0
+    private val warAspect = Controller.session.world.aspectPool.get("Killing")
+            ?: throw SimulationError("No aspect Killing exists for the $name")
+
+    private var _effectiveness = 1.0
         private set
 
     private var workedPopulation = 0
@@ -15,7 +28,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
     override val cumulativeWorkAblePopulation: Double
         get() = freePopulation * effectiveness
 
-    private val effectiveness: Double
+    val effectiveness: Double
         get() {
             if (_effectiveness == -1.0) _effectiveness = 1.0
             return _effectiveness
@@ -35,6 +48,37 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
             workedPopulation = population
         }
         return StratumPeople(actualAmount, this, effectiveness)
+    }
+
+    override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
+        super.update(accessibleResources, accessibleTerritory, group)
+        if (!Controller.session.isTime(Controller.session.stratumTurnsBeforeInstrumentRenewal))
+            return
+
+        if (!group.territoryCenter.settled)
+            return
+
+        val request = AspectImprovementRequest(
+                warAspect,
+                RequestCore(
+                        group,
+                        0.5,
+                        0.5,
+                        passingReward,
+                        passingReward,
+                        30 + max(1, importance),
+                        setOf(RequestType.Improvement)
+                )
+        )
+        val (pack, usedAspects) = group.populationCenter.executeRequest(request)
+        if (pack.isNotEmpty) {
+            val k = 0
+        }
+
+        usedAspects.forEach {
+            it.gainUsefulness(Controller.session.stratumTurnsBeforeInstrumentRenewal * 2)
+        }
+        pack.resources.forEach { addEnhancement(it, group) }
     }
 
     override fun decreaseAmount(amount: Int) {

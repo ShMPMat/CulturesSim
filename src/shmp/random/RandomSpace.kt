@@ -7,7 +7,7 @@ import shmp.simulation.space.tile.Tile
 import kotlin.random.Random
 
 
-fun randomTile(territory: Territory, random: Random) = randomElement(territory.tiles.toList(), random)
+fun randomTile(territory: Territory, random: Random) = randomElementOrNull(territory.tiles.toList(), random)
 
 fun randomTile(map: WorldMap, random: Random): Tile = randomElement(randomElement(map.linedTiles, random), random)
 

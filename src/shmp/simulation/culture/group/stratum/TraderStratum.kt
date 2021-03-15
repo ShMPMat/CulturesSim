@@ -1,19 +1,18 @@
 package shmp.simulation.culture.group.stratum
 
-import shmp.random.testProbability
-import shmp.simulation.Controller.*
+import shmp.random.singleton.chanceOf
+import shmp.simulation.Controller.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.getAspectImprovement
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.AspectImprovementRequest
-import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.request.RequestType
-import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePromise
 import shmp.simulation.space.resource.container.ResourcePromisePack
+import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
@@ -68,8 +67,9 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
         super.update(accessibleResources, accessibleTerritory, group)
 
-        if (testProbability(session.tradeStockUpdateProb, session.random))
+        session.tradeStockUpdateProb.chanceOf {
             tradeStockUpdate(group)
+        }
 
         updatePlaces(group)
     }
@@ -90,7 +90,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
         if (!group.territoryCenter.settled)
             return
 
-        val request: Request = AspectImprovementRequest(
+        val request = AspectImprovementRequest(
                 tradeAspect,
                 RequestCore(
                         group,
@@ -98,7 +98,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
                         0.5,
                         passingReward,
                         passingReward,
-                        30,
+                        30 + max(1, importance),
                         setOf(RequestType.Improvement)
                 )
         )

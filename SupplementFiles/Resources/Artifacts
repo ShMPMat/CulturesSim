@@ -16,7 +16,9 @@
         $composite:1
 
 -StoneAxe        0       0.1    10000      -500   500  100000000  0             1 1  Ignore    Artifact     @Stone
+        $composite:1
         $weapon:3
+        &a(Killing)-0.1
 
 -HandPlough      0       0.5    10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
         $composite:1
@@ -70,6 +72,11 @@
 
 -Spear           0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $composite:1
+        &a(Killing)-0.3
+
+-Shield          0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1
+        &a(Killing)-0.2
 
 -Dye             0       0.05   10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $colour:3
