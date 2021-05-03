@@ -29,7 +29,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     fun addResource(resource: Resource) {
         if (resource.isEmpty)
             return
-        if (_owned.any { it.core.ownershipMarker != ownershipMarker }) {
+        if (_owned.any { it.ownershipMarker != ownershipMarker }) {
             val j = 0//TODO remove someday
         }
         val ownedResource = resource.swapOwnership(ownershipMarker)

@@ -44,7 +44,7 @@ fun allResourcesCounter(world: World, shouldFree: Boolean): String {
 
     return pack.resources
             .sortedBy { it.amount }
-            .joinToString("\n") { "${it.fullName}, ${it.core.ownershipMarker} ${it.amount};" }
+            .joinToString("\n") { "${it.fullName}, ${it.ownershipMarker} ${it.amount};" }
 }
 
 data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
@@ -82,7 +82,7 @@ fun printResourcesOnTile(tile: Tile, substring: String) =
 fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.tiles
         .flatMap { t -> t.resourcesWithMoved.map { r -> r to t } }
         .filter { it.first.fullName.contains(substring) }
-        .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.core.ownershipMarker}" }
+        .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
 
 fun outputGroup(group: Group) = "$group"
 

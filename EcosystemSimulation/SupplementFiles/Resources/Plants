@@ -1,0 +1,86 @@
+/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
+-AppleTree       0.15    2      10         0       30  150        0             0 0  Cut       Plant        @PlantFibre
+        ~r:Vapour;0.00025;2;0;CONSUME
+        ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple ^SoftRoot:5
+        #Water
+
+-PeachTree       0.15    2.5    10         10      30  100        0             0 0  Cut       Plant        @PlantFibre
+        ~r:Vapour;0.00025;2;0;CONSUME
+        ^Trunk:1:s|2.5 ^SoftBranch:15 ^Leaf:100 ^Drupe:5 ^SoftRoot:5
+        #Water
+
+-ColdPlant       0.1     1      15         -30     0   50         0             0 0  Cut       Plant        @PlantFibre
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.02    ^Seed:2 ^SoftRoot:5
+        #Water
+
+-ColdBerry       0.1     1      15         -30     0   50         0             0 0  Cut       Plant        @PlantFibre
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^Trunk:1:s|1  ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.01 ^SoftRoot:5
+        #Water
+
+-FlowerBush      0.15    1      10         0       30  150        0             0 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.00025;1.25;0;CONSUME
+        ~r:Bee;0.01;100;0;EXIST
+        ^SoftBranch:15 ^Leaf:100 ^Flower:10   ^Seed:2 ^SoftRoot:5
+        #Water
+
+-DwarfBirch      0.1     1      15         -30     20  40         0             0 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^Trunk:1:s|1 ^SoftBranch:15 ^Leaf:30:s|0.02              ^Seed:2 ^SoftRoot:5
+        #Water
+        $Tree:1
+
+-Spruce          0.05    5      40         -15     15  100        0             0 0 Cut        Plant        @Wood
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^Trunk:1       ^PineNeedle:300 ^Branch:30  ^ConiferCone:10 ^Root:5
+        #Water
+        $Tree:1
+
+-Cactus          0.2     1      15         10     50   50         0             0 0 Cut        Plant        @PlantFibre
+        ~A(m:PlantFibre),>=5;1;100;0;AVOID
+        ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
+        #Water
+
+-Oak             0.05    5      40         0      30   100        0             0 0 Cut        Plant        @Wood
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
+        #Water
+        $Tree:1
+
+-Filbert         0.05    5      40         0      30   10         0             0 0 Cut        Plant        @Wood
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
+        #Water
+        $Tree:1
+
+-JungleTree      0.05    5      40         20     40   150        0             0 0 Cut        Plant        @Wood
+        ~r:Vapour;0.1;2;0;CONSUME
+        ^Trunk:1:s|5       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
+        #Water
+        $Tree:1
+
+-Reed            0.25    1      5          5      30   50         0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.01;2;0;CONSUME
+        ^SoftBranch:1:s|1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
+        #Water
+
+-Grass           0.25    0.1    5          5      30   1000       0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.0000001;2;0;CONSUME
+        ^Leaf:3:s|0.2
+        #Water
+
+-FlowerPlant     0.25    0.1    5          5      30   100        0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.0000001;1.25;0;CONSUME
+        ~r:Bee;0.01;100;0;EXIST
+        ^Leaf:3   ^Flower:1
+        #Water
+
+-Moss            0.06    0.05   20         -10    30   100        0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.0001;2;0;CONSUME
+        ^PlantFibre:1
+        #Water
+
+-Seaweed         0.25    0.1    5          0      30   2000       0             1 0 Cut        Plant        @PlantFibre
+        ^Leaf:7:s|0.2
+        #Normal:Mountain:Ice:Woods:Growth

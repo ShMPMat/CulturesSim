@@ -142,7 +142,7 @@ fun resourceSubstringMapper(substring: String, tile: Tile) =
         else NOTHING
 
 fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =
-        if (tile.resourcePack.any { it.core.ownershipMarker.name.contains(ownerSubstring) }) MARK
+        if (tile.resourcePack.any { it.ownershipMarker.name.contains(ownerSubstring) }) MARK
         else NOTHING
 
 fun aspectMapper(aspectName: String, tile: Tile) = hotnessMapper(

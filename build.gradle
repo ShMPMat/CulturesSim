@@ -15,6 +15,7 @@ sourceSets {
 dependencies {
     implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
     runtimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.4.31'
+    compile project(':EcosystemSimulation')
 }
 
 repositories {
