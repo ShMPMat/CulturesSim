@@ -1,5 +1,6 @@
 package shmp.simulation.event
 
+
 class EventLog(private val isPurging: Boolean = true, private val isOblivious: Boolean = true) {
     //Stores some last events, it is not guarantied, how many of them are stored.
     private var _lastEvents = mutableListOf<Event>()

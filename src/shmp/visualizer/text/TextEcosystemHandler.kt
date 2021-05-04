@@ -10,7 +10,7 @@ import shmp.visualizer.command.EnvironmentCommand.Turner
 import java.util.*
 
 
-object TextEnvironmentalHandler : CommandHandler<TextEcosystemVisualizer> {
+object TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
     override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer): Boolean {
         val splitCommand = line.split(" ")
 

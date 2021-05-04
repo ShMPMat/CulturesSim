@@ -25,7 +25,7 @@ import java.util.function.Function;
 import static shmp.utils.OutputFunKt.addToRight;
 import static shmp.utils.OutputFunKt.chompToLines;
 import static shmp.visualizer.command.EnviromentalCommandKt.registerEnvironmentalCommands;
-import static shmp.visualizer.text.TileMapperFunctionsKt.ecosystemTypeMapper;
+import static shmp.visualizer.text.EcosystemTileMappersKt.ecosystemTypeMapper;
 
 /**
  * Main class, running and visualizing shmp.simulation.
@@ -63,8 +63,8 @@ public class TextEcosystemVisualizer implements Visualizer<TextEcosystemVisualiz
     }
 
     void initialize() {
-        registerEnvironmentalCommands(commandManager, TextEnvironmentalHandler.INSTANCE);
-        addTileMapper(new TileMapper(t -> ecosystemTypeMapper(world, resourceSymbols, t), 10));
+        registerEnvironmentalCommands(commandManager, TextEcosystemHandler.INSTANCE);
+        addTileMapper(new TileMapper(t -> ecosystemTypeMapper(resourceSymbols, t), 10));
 
         print();
         controller.initializeFirst();

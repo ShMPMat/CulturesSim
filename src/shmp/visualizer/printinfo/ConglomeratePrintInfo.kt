@@ -2,6 +2,7 @@ package shmp.visualizer.printinfo
 
 import shmp.simulation.culture.group.GroupConglomerate
 
+
 class ConglomeratePrintInfo(private val symbolsPool: List<String>) {
     val populations = mutableMapOf<GroupConglomerate, Int>()
 

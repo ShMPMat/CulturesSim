@@ -6,6 +6,7 @@ import shmp.simulation.space.resource.material.MaterialPool
 import shmp.simulation.space.resource.tag.TagMatcher
 import kotlin.math.roundToInt
 
+
 fun instantiateSpaceData(
         proportionFactor: Int,
         resourceTagMatchers: List<TagMatcher>,
@@ -18,6 +19,6 @@ fun instantiateSpaceData(
             mapSizeY = defaultData.mapSizeY * proportionFactor,
             platesAmount = defaultData.platesAmount * proportionFactor,
             additionalTags = resourceTagMatchers,
-            tectonicRange = defaultData.tectonicRange * (proportionFactor.toDouble() * 0.75 ).roundToInt(),
+            tectonicRange = defaultData.tectonicRange * (proportionFactor.toDouble() * 0.75).roundToInt(),
     )
 }

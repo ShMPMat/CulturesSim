@@ -3,6 +3,7 @@ package shmp.simulation.interactionmodel
 import shmp.simulation.World
 import shmp.simulation.event.EventLog
 
+
 /**
  * Represents general model by which World changes.
  */

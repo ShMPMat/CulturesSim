@@ -56,7 +56,7 @@ class World(proportionCoefficient: Int, path: String) {
 
     init {
         val materialPool = MaterialInstantiation(tags, aspectPool.all.map { it.core.resourceAction })
-            .createPool("$path/Materials")
+                .createPool("$path/Materials")
         instantiateSpaceData(
                 proportionCoefficient,
                 tagMatchers,
@@ -77,7 +77,7 @@ class World(proportionCoefficient: Int, path: String) {
                 data.mapSizeY,
                 data.platesAmount,
                 initialResourcePool,
-                session.random
+                RandomSingleton.random
         )
     }
 
@@ -92,19 +92,17 @@ class World(proportionCoefficient: Int, path: String) {
             map,
             resourcePool,
             MapGeneratorSupplement(IntRange(session.startResourceAmountMin, session.startResourceAmountMax)),
-            session.random
+            RandomSingleton.random
     )
 
     fun initializeFirst() {
-        for (i in 0 until session.startGroupAmount) {
+        for (i in 0 until session.startGroupAmount)
             groups.add(GroupConglomerate(1, tileForGroup))
-        }
 
-        for (aspectName in compulsoryAspects) {
+        for (aspectName in compulsoryAspects)
             groups.forEach { c ->
                 c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue(aspectName), it) }
             }
-        }
 
         groups.forEach { it.finishUpdate() }
     }

@@ -5,6 +5,7 @@ import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.tile.Tile
 
+
 class MapPrintInfo(val map: WorldMap) {
     var cut = 0
 
