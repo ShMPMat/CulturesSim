@@ -1,6 +1,6 @@
 package shmp.visualizer.text
 
-import shmp.simulation.CulturesWorld
+import shmp.simulation.World
 import shmp.simulation.event.Event
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
@@ -11,7 +11,7 @@ import shmp.simulation.space.tile.Tile
 import java.util.regex.PatternSyntaxException
 
 
-fun basicResourcesCounter(world: CulturesWorld): String {
+fun basicResourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
             .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
             .map { it to ResourceCount() }
@@ -29,7 +29,7 @@ fun basicResourcesCounter(world: CulturesWorld): String {
     }
 }
 
-fun allResourcesCounter(world: CulturesWorld, shouldFree: Boolean): String {
+fun allResourcesCounter(world: World, shouldFree: Boolean): String {
     val allResources = world.map.tiles
             .flatMap { t -> t.resourcePack.resources.map { it.exactCopy() } }
             .map { if (shouldFree) it.free() else it }

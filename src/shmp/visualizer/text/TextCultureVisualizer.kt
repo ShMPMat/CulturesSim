@@ -1,6 +1,7 @@
 package shmp.visualizer.text
 
 import shmp.simulation.CulturesController
+import shmp.simulation.CulturesWorld
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.tile.Tile
 import shmp.visualizer.command.CommandManager
@@ -11,16 +12,21 @@ import java.io.FileReader
 import java.util.*
 
 
-open class TextCultureVisualizer(controller: CulturesController) : TextEcosystemVisualizer(controller) {
+open class TextCultureVisualizer(override val controller: CulturesController) : TextEcosystemVisualizer(controller) {
     private var groupInfo = ConglomeratePrintInfo(mutableListOf())
     private var lastClaimedTiles: Map<Group, Set<Tile>> = mutableMapOf()
     private var lastClaimedTilesPrintTurn = 0
 
-    internal override fun initialize() {
+    private val world
+        get() = controller.world
+
+    override fun initialize() {
         registerCultureCommands(CommandManager(TextPassHandler()), TextCultureHandler)
         addTileMapper(TileMapper({ cultureTileMapper(lastClaimedTiles, groupInfo, it) }, 5))
 
         super.initialize()
+
+        controller.initializeThird()
     }
 
     override fun print() {
@@ -31,7 +37,7 @@ open class TextCultureVisualizer(controller: CulturesController) : TextEcosystem
         super.print()
     }
 
-    internal override fun run() {
+    override fun run() {
         readSymbols()
         super.run()
     }

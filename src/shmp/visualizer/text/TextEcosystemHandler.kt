@@ -1,5 +1,6 @@
 package shmp.visualizer.text
 
+import shmp.simulation.World
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.ResourceType
 import shmp.visualizer.*
@@ -10,7 +11,7 @@ import shmp.visualizer.command.EnvironmentCommand.Turner
 import java.util.*
 
 
-object TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
+class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
     override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer): Boolean {
         val splitCommand = line.split(" ")
 

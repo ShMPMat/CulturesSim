@@ -32,6 +32,8 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
         return linedTiles[curX][curY]
     }
 
+    fun getValue(_x: Int, _y: Int) = get(_x, _y)!!
+
     private fun cutCoordinate(coordinate: Int, max: Int): Int {
         var curCoordinate = coordinate
 

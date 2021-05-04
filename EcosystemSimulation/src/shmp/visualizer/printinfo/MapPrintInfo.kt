@@ -6,10 +6,10 @@ import shmp.simulation.space.WorldMap
 import shmp.simulation.space.tile.Tile
 
 
-class MapPrintInfo(val map: WorldMap) {
+class MapPrintInfo {
     var cut = 0
 
-    fun computeCut() {
+    fun computeCut(map: WorldMap) {
         if (!data.yMapLooping) return
         var gapStart = 0
         var gapFinish = 0

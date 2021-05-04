@@ -90,7 +90,7 @@ object TextCultureHandler: CommandHandler<TextCultureVisualizer> {
         return true
     }
 
-    private fun TextEcosystemVisualizer.getConglomerate(string: String): GroupConglomerate? {
+    private fun TextCultureVisualizer.getConglomerate(string: String): GroupConglomerate? {
         val index = string.substring(1).toInt()
         val world = controller.world
 
