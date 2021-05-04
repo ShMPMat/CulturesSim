@@ -2,18 +2,11 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOf
 import shmp.utils.chompToSize
-import shmp.random.testProbability
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.event.Event
-import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.GroupTileTag
-import shmp.simulation.culture.group.centers.util.MemoryConversion
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.CorrespondingConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.EqualitySubjectCorrelationConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.OppositionConversion
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.event.Type

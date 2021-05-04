@@ -1,9 +1,8 @@
 package shmp.simulation.culture.thinking.language.templates
 
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.thinking.meaning.Meme
-import java.lang.UnsupportedOperationException
 
 
 class TextInfo(val map: MutableMap<InfoKey, Meme>, val actorConcept: ObjectConcept) {
@@ -25,7 +24,7 @@ class TextInfo(val map: MutableMap<InfoKey, Meme>, val actorConcept: ObjectConce
 
     fun substitute(meme: Meme): Meme {
         return meme.refactor {
-            if (Controller.session.templateBase.templateChars.contains(it.observerWord[0])) {
+            if (CulturesController.session.templateBase.templateChars.contains(it.observerWord[0])) {
                 val substitution = map[it.observerWord] ?: throw RuntimeException()
                 return@refactor substitution.copy()
             } else {

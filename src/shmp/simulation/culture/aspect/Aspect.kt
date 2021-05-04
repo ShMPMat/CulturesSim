@@ -1,7 +1,7 @@
 package shmp.simulation.culture.aspect
 
 import shmp.random.testProbability
-import shmp.simulation.Controller.*
+import shmp.simulation.CulturesController.*
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.AspectResult.ResultNode
 import shmp.simulation.culture.aspect.dependency.AspectDependencies

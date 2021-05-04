@@ -9,7 +9,7 @@ import java.util.List;
 
 import static shmp.random.RandomElementKt.*;
 import static shmp.random.RandomSpaceKt.randomTile;
-import static shmp.simulation.Controller.*;
+import static shmp.simulation.CulturesController.*;
 
 public class PlacementStrategy {
     public enum Strategy {

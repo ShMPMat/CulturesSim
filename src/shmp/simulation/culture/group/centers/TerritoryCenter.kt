@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOfNot
 import shmp.random.singleton.randomTile
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.*
 import shmp.simulation.culture.group.place.StaticPlace

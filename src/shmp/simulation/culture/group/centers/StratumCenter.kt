@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.testProbability
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.request.Request
@@ -76,7 +76,7 @@ class StratumCenter(initTile: Tile) {
     }
 
     internal fun update(accessibleTerritory: Territory, group: Group, turnResources: MutableResourcePack) {
-        if (testProbability(Controller.session.egoRenewalProb, Controller.session.random)) {
+        if (testProbability(CulturesController.session.egoRenewalProb, CulturesController.session.random)) {
             val mostImportantStratum = strata
                     .filter { it.population > 0 }
                     .maxBy { it.importance }

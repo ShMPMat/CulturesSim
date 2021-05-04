@@ -1,18 +1,17 @@
 package shmp.visualizer.text
 
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.tile.Tile
 import shmp.visualizer.command.CommandManager
 import shmp.visualizer.command.registerCultureCommands
 import shmp.visualizer.lastClaimedTiles
-import shmp.visualizer.printedConglomerates
 import shmp.visualizer.printinfo.ConglomeratePrintInfo
 import java.io.FileReader
 import java.util.*
 
 
-open class TextCultureVisualizer(controller: Controller) : TextEcosystemVisualizer(controller) {
+open class TextCultureVisualizer(controller: CulturesController) : TextEcosystemVisualizer(controller) {
     private var groupInfo = ConglomeratePrintInfo(mutableListOf())
     private var lastClaimedTiles: Map<Group, Set<Tile>> = mutableMapOf()
     private var lastClaimedTilesPrintTurn = 0

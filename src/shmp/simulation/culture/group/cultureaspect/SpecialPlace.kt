@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect
 
 import shmp.random.testProbability
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.place.StaticPlace
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.Request

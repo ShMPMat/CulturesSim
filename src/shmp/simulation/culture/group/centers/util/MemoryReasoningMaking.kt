@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.centers.util
 import shmp.random.SampleSpaceObject
 import shmp.random.randomElementOrNull
 import shmp.random.singleton.*
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
@@ -52,7 +52,7 @@ private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverag
             ReasonConversionResult(resourceConcept equals Commonness, resourceConcept)
         } ?: ReasonConversionResult(ObjectConcept.We livesIn resourceConcept, resourceConcept)
     } ?: run {
-        val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, Controller.session.random)
+        val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, CulturesController.session.random)
                 ?.key
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(rareResource)

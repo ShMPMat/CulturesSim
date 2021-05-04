@@ -1,9 +1,8 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.utils.addLinePrefix
-import shmp.random.randomElement
 import shmp.random.singleton.randomElement
-import shmp.simulation.Controller.*
+import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.group.place.MovablePlace
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource

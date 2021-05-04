@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.stratum
 
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.AspectController
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.aspect.dependency.Dependency

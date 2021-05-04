@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.GROUP_TAG_TYPE

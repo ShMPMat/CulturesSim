@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group
 
 import shmp.utils.addToRight
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.centers.*
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
@@ -25,7 +25,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         get() = _subgroups
 
     private val shuffledSubgroups: List<Group>
-        get() = subgroups.shuffled(Controller.session.random)
+        get() = subgroups.shuffled(CulturesController.session.random)
     var state = State.Live
 
     var events = EventLog()
@@ -42,8 +42,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
             val aspectCenter = AspectCenter(emptyList())
             val populationCenter = PopulationCenter(
                     population / numberOfSubGroups,
-                    Controller.session.defaultGroupMaxPopulation,
-                    Controller.session.defaultGroupMinPopulationPerTile,
+                    CulturesController.session.defaultGroupMaxPopulation,
+                    CulturesController.session.defaultGroupMinPopulationPerTile,
                     root,
                     ResourcePack()
             )
@@ -69,14 +69,14 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     memoryCenter,
                     GroupMemes(),
                     emptyList(),
-                    Controller.session.defaultGroupSpreadability
+                    CulturesController.session.defaultGroupSpreadability
             ))
         }
     }
 
     constructor(numberOfSubgroups: Int, root: Tile) : this(
-            Controller.session.vacantGroupName,
-            100 + Controller.session.random.nextInt(100),
+            CulturesController.session.vacantGroupName,
+            100 + CulturesController.session.random.nextInt(100),
             numberOfSubgroups,
             root
     )
@@ -125,13 +125,13 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         val mainTime = System.nanoTime()
         _subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
-        Controller.session.groupMainTime += System.nanoTime() - mainTime
+        CulturesController.session.groupMainTime += System.nanoTime() - mainTime
         val othersTime = System.nanoTime()
         updatePopulation()
         if (state == State.Dead)
             return
         shuffledSubgroups.forEach { it.intergroupUpdate() }
-        Controller.session.groupOthersTime += System.nanoTime() - othersTime
+        CulturesController.session.groupOthersTime += System.nanoTime() - othersTime
     }
 
     private fun updatePopulation() {

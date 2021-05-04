@@ -4,7 +4,7 @@ import shmp.random.singleton.chanceOf
 import shmp.random.singleton.chanceOfNot
 import shmp.random.singleton.otherwise
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.baseConversions

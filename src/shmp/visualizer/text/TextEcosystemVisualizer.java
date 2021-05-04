@@ -1,8 +1,7 @@
 package shmp.visualizer.text;
 
-import org.jetbrains.annotations.NotNull;
-import shmp.simulation.Controller;
-import shmp.simulation.World;
+import shmp.simulation.CulturesController;
+import shmp.simulation.CulturesWorld;
 import shmp.simulation.event.Event;
 import shmp.simulation.event.Type;
 import shmp.simulation.interactionmodel.InteractionModel;
@@ -37,9 +36,9 @@ public class TextEcosystemVisualizer implements Visualizer {
     /**
      * Main controller of the shmp.simulation
      */
-    public Controller controller;
+    public CulturesController controller;
 
-    protected World world;
+    protected CulturesWorld world;
     protected InteractionModel interactionModel;
     private WorldMap map;
     private Turner currentTurner;
@@ -51,9 +50,9 @@ public class TextEcosystemVisualizer implements Visualizer {
     /**
      * Base constructor.
      */
-    public TextEcosystemVisualizer(Controller controller) {
+    public TextEcosystemVisualizer(CulturesController controller) {
         this.controller = controller;
-        Controller.visualizer = this;
+        CulturesController.visualizer = this;
         world = controller.world;
         map = world.getMap();
         interactionModel = controller.interactionModel;

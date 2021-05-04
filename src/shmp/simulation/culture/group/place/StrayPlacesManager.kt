@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.place
 
 import shmp.random.testProbability
-import shmp.simulation.Controller.*
+import shmp.simulation.CulturesController.*
 
 class StrayPlacesManager() {
     private val places = mutableSetOf<StaticPlace>()

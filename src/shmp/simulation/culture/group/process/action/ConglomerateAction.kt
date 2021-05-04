@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.process.action
 
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.Transfer
 import shmp.simulation.culture.group.centers.*
@@ -51,7 +51,7 @@ class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAct
         for (newGroup in groups)
             AddGroupA(newGroup, group).run()
 
-        Controller.session.world.addGroupConglomerate(conglomerate)
+        CulturesController.session.world.addGroupConglomerate(conglomerate)
 
         return conglomerate
     }
@@ -62,7 +62,7 @@ class NewConglomerateA(group: Group, val groups: List<Group>) : AbstractGroupAct
 
 class TryDivergeA(group: Group) : AbstractGroupAction(group) {
     override fun run(): GroupConglomerate? {
-        if (!Controller.session.groupDiverge)
+        if (!CulturesController.session.groupDiverge)
             return null
         if (group.parentGroup.subgroups.size <= 1)
             return null

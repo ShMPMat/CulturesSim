@@ -7,12 +7,10 @@ import shmp.simulation.space.resource.tag.TagMatcher
 import kotlin.math.roundToInt
 
 
-fun instantiateSpaceData(
-        proportionFactor: Int,
-        resourceTagMatchers: List<TagMatcher>,
-        materialPool: MaterialPool
-) {
+fun instantiateSpaceData(proportionFactor: Int, resourceTagMatchers: List<TagMatcher>, materialPool: MaterialPool) {
+    val startResourceAmountMin = 40 * proportionFactor * proportionFactor
     val defaultData = Data()
+
     SpaceData.data = Data(
             materialPool = materialPool,
             mapSizeX = defaultData.mapSizeX * proportionFactor,
@@ -20,5 +18,7 @@ fun instantiateSpaceData(
             platesAmount = defaultData.platesAmount * proportionFactor,
             additionalTags = resourceTagMatchers,
             tectonicRange = defaultData.tectonicRange * (proportionFactor.toDouble() * 0.75).roundToInt(),
+            startResourceAmountMin = startResourceAmountMin,
+            startResourceAmountMax = startResourceAmountMin + 30 * proportionFactor * proportionFactor
     )
 }

@@ -7,8 +7,8 @@ import shmp.simulation.event.EventLog
 /**
  * Represents general model by which World changes.
  */
-interface InteractionModel {
-    fun turn(world: World)
-    fun geologicTurn(world: World)
+interface InteractionModel<E : World> {
+    fun turn(world: E)
+    fun geologicTurn(world: E)
     val eventLog: EventLog
 }

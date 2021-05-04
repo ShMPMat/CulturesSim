@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.stratum
 
 import shmp.random.*
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.RequestConstructController
 import shmp.simulation.culture.group.place.MovablePlace

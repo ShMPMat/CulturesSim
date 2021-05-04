@@ -1,11 +1,11 @@
 package shmp.visualizer.text
 
-import shmp.simulation.Controller
-import shmp.simulation.interactionmodel.MapModel
+import shmp.simulation.CulturesController
+import shmp.simulation.interactionmodel.CulturesMapModel
 
 
 fun main() {
-    val textCultureVisualizer = TextCultureVisualizer(Controller(MapModel()))
+    val textCultureVisualizer = TextCultureVisualizer(CulturesController(CulturesMapModel()))
     textCultureVisualizer.initialize()
     textCultureVisualizer.run()
 }

@@ -1,8 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.chanceOf
-import shmp.random.testProbability
-import shmp.simulation.Controller.*
+import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.aspect.MadeByResourceFeature
 import shmp.simulation.culture.aspect.MeaningResourceFeature
 import shmp.simulation.culture.group.stratum.CultStratum

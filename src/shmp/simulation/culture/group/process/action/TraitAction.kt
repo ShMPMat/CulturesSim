@@ -1,8 +1,6 @@
 package shmp.simulation.culture.group.process.action
 
 import shmp.random.singleton.testProbability
-import shmp.random.testProbability
-import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.process.TraitExtractor
 

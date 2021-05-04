@@ -2,7 +2,7 @@ package shmp.simulation.culture.thinking.meaning
 
 import shmp.random.randomElement
 import shmp.random.testProbability
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.space.resource.Resource
 import kotlin.math.pow

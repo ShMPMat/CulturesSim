@@ -1,11 +1,10 @@
 package shmp.simulation.culture.group.stratum
 
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.AspectImprovementRequest
-import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.space.resource.container.MutableResourcePack
@@ -16,7 +15,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors", "") {
-    private val warAspect = Controller.session.world.aspectPool.get("Killing")
+    private val warAspect = CulturesController.session.world.aspectPool.get("Killing")
             ?: throw SimulationError("No aspect Killing exists for the $name")
 
     private var _effectiveness = 1.0
@@ -52,7 +51,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
         super.update(accessibleResources, accessibleTerritory, group)
-        if (!Controller.session.isTime(Controller.session.stratumTurnsBeforeInstrumentRenewal))
+        if (!CulturesController.session.isTime(CulturesController.session.stratumTurnsBeforeInstrumentRenewal))
             return
 
         if (!group.territoryCenter.settled)
@@ -76,7 +75,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
         }
 
         usedAspects.forEach {
-            it.gainUsefulness(Controller.session.stratumTurnsBeforeInstrumentRenewal * 2)
+            it.gainUsefulness(CulturesController.session.stratumTurnsBeforeInstrumentRenewal * 2)
         }
         pack.resources.forEach { addEnhancement(it, group) }
     }

@@ -1,23 +1,8 @@
 package shmp.visualizer.text
 
-import shmp.simulation.culture.group.GroupConglomerate
-import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.Tile
-import shmp.visualizer.outputGroup
-import shmp.visualizer.outputResource
 
-
-fun TextCultureVisualizer.printGroupConglomerate(groupConglomerate: GroupConglomerate) {
-    printMap { groupConglomerateMapper(groupConglomerate, it) }
-    println(groupConglomerate)
-}
-
-
-fun TextCultureVisualizer.printGroup(group: Group) {
-    printMap { groupMapper(group, it) }
-    println(outputGroup(group))
-}
 
 fun TextEcosystemVisualizer.printTile(tile: Tile) {
     printMap { if (it == tile) "\u001b[31m\u001b[41mX" else "" }

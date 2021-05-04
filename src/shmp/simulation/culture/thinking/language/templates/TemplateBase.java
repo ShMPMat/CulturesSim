@@ -1,6 +1,6 @@
 package shmp.simulation.culture.thinking.language.templates;
 
-import shmp.simulation.Controller;
+import shmp.simulation.CulturesController;
 import shmp.simulation.culture.thinking.meaning.Meme;
 import shmp.simulation.culture.thinking.meaning.MemePredicate;
 
@@ -51,6 +51,6 @@ public class TemplateBase {
     }
 
     public Meme getRandomSentenceTemplate() {
-        return randomElement(sentenceBase, Controller.session.random);
+        return randomElement(sentenceBase, CulturesController.session.random);
     }
 }

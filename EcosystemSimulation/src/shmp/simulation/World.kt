@@ -1,0 +1,97 @@
+package shmp.simulation
+
+import shmp.random.singleton.RandomSingleton
+import shmp.simulation.event.EventLog
+import shmp.simulation.space.SpaceData.data
+import shmp.simulation.space.WorldMap
+import shmp.simulation.space.generator.MapGeneratorSupplement
+import shmp.simulation.space.generator.fillResources
+import shmp.simulation.space.generator.generateMap
+import shmp.simulation.space.resource.action.ActionTag
+import shmp.simulation.space.resource.action.ResourceAction
+import shmp.simulation.space.resource.instantiation.ResourceInstantiation
+import shmp.simulation.space.resource.instantiation.TagParser
+import shmp.simulation.space.resource.material.MaterialInstantiation
+import shmp.simulation.space.resource.tag.ResourceTag
+import shmp.simulation.space.resource.tag.createTagMatchers
+import shmp.utils.InputDatabase
+
+
+//Stores all entities in the shmp.simulation
+open class World(private val path: String) {
+    lateinit var map: WorldMap
+
+    var events = EventLog()
+
+    val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
+
+    protected val tags = InputDatabase("$path/ResourceTags")
+            .readLines()
+            .map { ResourceTag(it) }
+            .union(tagMatchers.map { it.tag })
+
+    protected val actionTags = InputDatabase("$path/ActionTags")
+            .readLines()
+            .map { ActionTag(it) }
+
+    val resourcePool
+        get() = data.resourcePool
+
+    fun initializeMap(actions: List<ResourceAction>, tagParser: TagParser, proportionCoefficient: Int) {
+        val materialPool = MaterialInstantiation(tags, actions)
+                .createPool("$path/Materials")
+
+        instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
+
+        val initialResourcePool = ResourceInstantiation(
+                "$path/Resources",
+                actions,
+                materialPool,
+                data.resourceProportionCoefficient,
+                tagParser
+        ).createPool()
+
+        data.resourcePool = initialResourcePool
+
+        map = generateMap(data.mapSizeX, data.mapSizeY, data.platesAmount, initialResourcePool, RandomSingleton.random)
+    }
+
+
+    //How many turns passed from the beginning of the shmp.simulation.
+    var lesserTurnNumber = 0
+        private set
+    private var thousandTurns = 0
+    private var millionTurns = 0
+
+    fun fillResources() = fillResources(
+            map,
+            resourcePool,
+            MapGeneratorSupplement(IntRange(data.startResourceAmountMin, data.startResourceAmountMax)),
+            RandomSingleton.random
+    )
+
+    fun getStringTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
+    fun getTurn() = lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000
+
+    fun incrementTurn() {
+        lesserTurnNumber++
+        if (lesserTurnNumber == 1000) {
+            lesserTurnNumber = 0
+            incrementTurnEvolution()
+        }
+    }
+
+    fun incrementTurnEvolution() {
+        thousandTurns++
+        if (thousandTurns == 1000) {
+            thousandTurns = 0
+            incrementTurnGeology()
+        }
+    }
+
+    fun incrementTurnGeology() {
+        millionTurns++
+    }
+
+    override fun toString() = getStringTurn()
+}

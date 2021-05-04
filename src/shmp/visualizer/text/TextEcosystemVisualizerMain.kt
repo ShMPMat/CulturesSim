@@ -1,11 +1,11 @@
 package shmp.visualizer.text
 
-import shmp.simulation.Controller
-import shmp.simulation.interactionmodel.MapModel
+import shmp.simulation.CulturesController
+import shmp.simulation.interactionmodel.CulturesMapModel
 
 
 fun main() {
-    val textEcosystemVisualizer = TextEcosystemVisualizer(Controller(MapModel()))
+    val textEcosystemVisualizer = TextEcosystemVisualizer(CulturesController(CulturesMapModel()))
     textEcosystemVisualizer.initialize()
     textEcosystemVisualizer.run()
 }

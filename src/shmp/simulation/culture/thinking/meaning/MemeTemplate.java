@@ -1,6 +1,6 @@
 package shmp.simulation.culture.thinking.meaning;
 
-import shmp.simulation.Controller;
+import shmp.simulation.CulturesController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class MemeTemplate extends Meme {
     MemeTemplate(String observerWord, List<Meme> predicates) {
         super(observerWord, predicates);
-        if (!Controller.session.templateBase.templateChars.contains(observerWord.charAt(0))) {
+        if (!CulturesController.session.templateBase.templateChars.contains(observerWord.charAt(0))) {
             throw new RuntimeException("Wrong template observerWord");
         }
     }

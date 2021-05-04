@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.utils.addLinePrefix
-import shmp.simulation.Controller
+import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.aspect.labeler.AspectLabeler
@@ -101,7 +101,7 @@ class PopulationCenter(
     fun update(accessibleTerritory: Territory, group: Group) {
         stratumCenter.update(accessibleTerritory, group, turnResources)
 
-        if (Controller.session.isTime(500))
+        if (CulturesController.session.isTime(500))
             turnResources.clearEmpty()
     }
 

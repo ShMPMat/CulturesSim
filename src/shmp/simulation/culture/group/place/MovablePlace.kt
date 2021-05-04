@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.place
 
-import shmp.simulation.Controller.session
+import shmp.simulation.CulturesController.session
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
 
