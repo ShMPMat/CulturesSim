@@ -3,6 +3,7 @@ package shmp.visualizer.text
 import shmp.simulation.Controller
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.tile.Tile
+import shmp.visualizer.command.CommandManager
 import shmp.visualizer.command.registerCultureCommands
 import shmp.visualizer.lastClaimedTiles
 import shmp.visualizer.printedConglomerates
@@ -17,7 +18,7 @@ open class TextCultureVisualizer(controller: Controller) : TextEcosystemVisualiz
     private var lastClaimedTilesPrintTurn = 0
 
     internal override fun initialize() {
-        registerCultureCommands(commandManager, TextCultureHandler)
+        registerCultureCommands(CommandManager(TextPassHandler()), TextCultureHandler)
         addTileMapper(TileMapper({ cultureTileMapper(lastClaimedTiles, groupInfo, it) }, 5))
 
         super.initialize()

@@ -27,10 +27,8 @@ import static shmp.utils.OutputFunKt.chompToLines;
 import static shmp.visualizer.command.EnviromentalCommandKt.registerEnvironmentalCommands;
 import static shmp.visualizer.text.EcosystemTileMappersKt.ecosystemTypeMapper;
 
-/**
- * Main class, running and visualizing shmp.simulation.
- */
-public class TextEcosystemVisualizer implements Visualizer<TextEcosystemVisualizer> {
+
+public class TextEcosystemVisualizer implements Visualizer {
     /**
      * Symbols for representation of resource on the Map.
      */
@@ -46,7 +44,7 @@ public class TextEcosystemVisualizer implements Visualizer<TextEcosystemVisualiz
     private WorldMap map;
     private Turner currentTurner;
     private Thread turnerThread;
-    private CommandManager<TextEcosystemVisualizer> commandManager = new CommandManager<>(TextPassHandler.INSTANCE);
+    private CommandManager<TextEcosystemVisualizer> commandManager = new CommandManager<>(new TextPassHandler<>());
 
     private List<TileMapper> tileMappers = new ArrayList<>();
 
@@ -243,8 +241,6 @@ public class TextEcosystemVisualizer implements Visualizer<TextEcosystemVisualiz
         }
     }
 
-    @NotNull
-    @Override
     public CommandManager<TextEcosystemVisualizer> getCommandManager() {
         return commandManager;
     }

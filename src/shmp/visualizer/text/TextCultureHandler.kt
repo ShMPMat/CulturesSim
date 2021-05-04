@@ -8,8 +8,8 @@ import shmp.visualizer.command.CommandHandler
 import shmp.visualizer.command.CultureCommand.*
 
 
-object TextCultureHandler: CommandHandler<TextEcosystemVisualizer> {
-    override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer): Boolean {
+object TextCultureHandler: CommandHandler<TextCultureVisualizer> {
+    override fun tryRun(line: String, command: Command, visualizer: TextCultureVisualizer): Boolean {
         val splitCommand = line.split(" ")
 
         visualizer.apply {

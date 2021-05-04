@@ -21,7 +21,7 @@ enum class CultureCommand(command: String) : Command {
     override val pattern = Regex(command)
 }
 
-fun <E: Visualizer<E>> registerCultureCommands(commandManager: CommandManager<E>, handler: CommandHandler<E>) {
+fun <E: Visualizer> registerCultureCommands(commandManager: CommandManager<E>, handler: CommandHandler<E>) {
     commandManager.registerCommands(CultureCommand.values().toList())
     commandManager.registerHandler(handler)
 }

@@ -8,20 +8,20 @@ import shmp.visualizer.outputGroup
 import shmp.visualizer.outputResource
 
 
-fun TextEcosystemVisualizer.printGroupConglomerate(groupConglomerate: GroupConglomerate) {
+fun TextCultureVisualizer.printGroupConglomerate(groupConglomerate: GroupConglomerate) {
     printMap { groupConglomerateMapper(groupConglomerate, it) }
     println(groupConglomerate)
+}
+
+
+fun TextCultureVisualizer.printGroup(group: Group) {
+    printMap { groupMapper(group, it) }
+    println(outputGroup(group))
 }
 
 fun TextEcosystemVisualizer.printTile(tile: Tile) {
     printMap { if (it == tile) "\u001b[31m\u001b[41mX" else "" }
     println(tile)
-}
-
-
-fun TextEcosystemVisualizer.printGroup(group: Group) {
-    printMap { groupMapper(group, it) }
-    println(outputGroup(group))
 }
 
 fun TextEcosystemVisualizer.printResource(resource: Resource) {
