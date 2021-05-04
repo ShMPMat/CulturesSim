@@ -31,7 +31,7 @@ fun createRiver(
         currentTile.tagPool.add(nameTag)
         val minLevel = min(
                 currentTile.level,
-                currentTile.getNeighbours(goodTilePredicate).minBy { it.level }?.level ?: -1
+                currentTile.getNeighbours(goodTilePredicate).minByOrNull { it.level }?.level ?: -1
         )
         val tiles = currentTile.getNeighbours { it.level == minLevel }
         if (minLevel == currentTile.level && tiles.size >= 3) {

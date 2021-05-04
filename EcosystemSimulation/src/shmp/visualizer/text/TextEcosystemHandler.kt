@@ -1,13 +1,11 @@
 package shmp.visualizer.text
 
-import shmp.simulation.World
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.ResourceType
-import shmp.visualizer.*
+import shmp.visualizer.addResourceOnTile
 import shmp.visualizer.command.Command
 import shmp.visualizer.command.CommandHandler
 import shmp.visualizer.command.EnvironmentCommand.*
-import shmp.visualizer.command.EnvironmentCommand.Turner
 import java.util.*
 
 

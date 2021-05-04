@@ -73,7 +73,7 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
 
     fun contains(resource: Resource) = resourceMap[resource] != null
 
-    fun containsAll(resources: Collection<Resource>) = resourceMap.navigableKeySet().all { contains(it) }
+    fun containsAll(resources: Collection<Resource>) = resources.all { contains(it) }
 
     fun containsAll(pack: ResourcePack) = containsAll(pack.resourceMap.navigableKeySet())
 

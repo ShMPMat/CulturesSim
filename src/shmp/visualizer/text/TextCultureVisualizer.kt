@@ -1,7 +1,6 @@
 package shmp.visualizer.text
 
 import shmp.simulation.CulturesController
-import shmp.simulation.CulturesWorld
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.tile.Tile
 import shmp.visualizer.command.CommandManager

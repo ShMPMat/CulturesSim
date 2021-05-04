@@ -4,25 +4,10 @@ import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.AspectPool
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.aspect.MeaningInserter
-import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.GroupConglomerate
+import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.resource.container.ResourcePool
-import shmp.simulation.space.tile.Tile
 import java.util.*
-
-
-fun addResourceOnTile(tile: Tile?, resourceName: String, resourcePool: ResourcePool) {
-    if (tile == null) {
-        System.err.println("No such Tile")
-        return
-    }
-    try {
-        val resource = resourcePool.getBaseName(resourceName)
-        tile.addDelayedResource(resource.copy())
-    } catch (e: NoSuchElementException) {
-        System.err.println("No such Resource")
-    }
-}
 
 
 fun addGroupWant(group: Group?, wantName: String, resourcePool: ResourcePool) {
