@@ -52,7 +52,7 @@ open class TextEcosystemVisualizer(open val controller: Controller<out World>) :
 
     open fun initialize() {
         registerEnvironmentalCommands(commandManager, TextEcosystemHandler())
-        addTileMapper(TileMapper({ t: Tile? -> ecosystemTypeMapper(resourceSymbols, t!!) }, 10))
+        addTileMapper(TileMapper({ ecosystemTypeMapper(resourceSymbols, it) }, 10))
         print()
         controller.initializeFirst()
         print()
@@ -116,7 +116,7 @@ open class TextEcosystemVisualizer(open val controller: Controller<out World>) :
      */
     private fun printedMap(mapper: Function<Tile, String>): StringBuilder {
         val main = StringBuilder()
-        val worldMap = controller.world!!.map
+        val worldMap = map
         main.append("  ")
         for (i in worldMap.linedTiles[0].indices) {
             main.append(if (i < 100) " " else i / 100 % 100)

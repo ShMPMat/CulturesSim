@@ -24,10 +24,15 @@ class ResourceInstantiation(
     private val resourceStringTemplates = ArrayList<ResourceStringTemplate>()
 
     fun createPool(): ResourcePool {
-        val resourceFolders = Files.walk(Paths.get(folderPath))
-                .toArray()
-                .toList()
-                .drop(1)
+        val urls = this::class.java.classLoader.getResources(folderPath).toList()
+
+        val resourceFolders = urls.flatMap {
+            Files.walk(Paths.get(it.toURI()))
+                    .toArray()
+                    .toList()
+                    .drop(1)
+        }
+
         var line: String?
         var tags: Array<String>
         for (path in resourceFolders) {

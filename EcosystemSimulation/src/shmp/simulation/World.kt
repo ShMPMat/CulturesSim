@@ -25,7 +25,7 @@ open class World(private val path: String) {
 
     val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
 
-    protected val tags = InputDatabase("$path/ResourceTags")
+    val tags = InputDatabase("$path/ResourceTags")
             .readLines()
             .map { ResourceTag(it) }
             .union(tagMatchers.map { it.tag })
@@ -44,7 +44,7 @@ open class World(private val path: String) {
         instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
 
         val initialResourcePool = ResourceInstantiation(
-                "$path/Resources",
+                "Resources/",
                 actions,
                 materialPool,
                 data.resourceProportionCoefficient,

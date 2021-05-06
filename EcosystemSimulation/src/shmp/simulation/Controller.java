@@ -30,14 +30,6 @@ public class Controller<E extends World> {
     public static Visualizer visualizer;
     public static final boolean doPrint = false;
 
-    public long overallTime = 0;
-    public long groupTime = 0;
-    public long othersTime = 0;
-    public long groupMainTime = 0;
-    public long groupOthersTime = 0;
-    public long groupMigrationTime = 0;
-    public long groupInnerOtherTime = 0;
-
     public Controller(InteractionModel<E> interactionModel) {
         session = this;
         RandomSingleton.INSTANCE.setSafeRandom(random);

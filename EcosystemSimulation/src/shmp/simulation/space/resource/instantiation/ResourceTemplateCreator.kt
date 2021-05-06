@@ -38,50 +38,54 @@ class ResourceTemplateCreator(
         for (i in 12..tags.lastIndex) {
             val key = tags[i][0]
             val tag = tags[i].drop(1)
-            when (key) {
-                '+' -> {
-                    val (action, result) = parseConversion(tag, actions)
-                    actionConversion[action] = result
-                }
-                '@' -> if (tag == "TEMPLATE")
-                    isTemplate = true
-                else {
-                    val material = materialPool.get(tag)
-                    if (primaryMaterial == null)
-                        primaryMaterial = material
-                    else
-                        secondaryMaterials.add(material)
-                }
-                '^' -> parts.add(tag)
-                'l' -> resourceDependencies.add(LevelRestrictions(
-                        tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
-                ))
-                '~' -> {
-                    val rDependency = dependencyParser.parse(tag)
-                            ?: throw DataInitializationError("Unknown dependency with tags: $tag")
-                    resourceDependencies.add(rDependency)
-                }
-                '#' -> resourceDependencies.add(AvoidTiles(
-                        tag.split(":".toRegex()).toTypedArray()
-                                .map { Tile.Type.valueOf(it) }
-                                .toSet()
-                ))
-                'R' -> willResist = true
-                'U' -> isDesirable = false
-                'T' -> {
-                    val tempBound = tag.take(3)
-                    val coefficient = tag.drop(3).toDouble()
-                    when (tempBound) {
-                        "min" -> minTempDeprivation = coefficient
-                        "max" -> maxTempDeprivation = coefficient
-                        else -> throw DataInitializationError("Unknown temperature command - $tag")
+            try {
+                when (key) {
+                    '+' -> {
+                        val (action, result) = parseConversion(tag, actions)
+                        actionConversion[action] = result
+                    }
+                    '@' -> if (tag == "TEMPLATE")
+                        isTemplate = true
+                    else {
+                        val material = materialPool.get(tag)
+                        if (primaryMaterial == null)
+                            primaryMaterial = material
+                        else
+                            secondaryMaterials.add(material)
+                    }
+                    '^' -> parts.add(tag)
+                    'l' -> resourceDependencies.add(LevelRestrictions(
+                            tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
+                    ))
+                    '~' -> {
+                        val rDependency = dependencyParser.parse(tag)
+                                ?: throw DataInitializationError("Unknown dependency with tags: $tag")
+                        resourceDependencies.add(rDependency)
+                    }
+                    '#' -> resourceDependencies.add(AvoidTiles(
+                            tag.split(":".toRegex()).toTypedArray()
+                                    .map { Tile.Type.valueOf(it) }
+                                    .toSet()
+                    ))
+                    'R' -> willResist = true
+                    'U' -> isDesirable = false
+                    'T' -> {
+                        val tempBound = tag.take(3)
+                        val coefficient = tag.drop(3).toDouble()
+                        when (tempBound) {
+                            "min" -> minTempDeprivation = coefficient
+                            "max" -> maxTempDeprivation = coefficient
+                            else -> throw DataInitializationError("Unknown temperature command - $tag")
+                        }
+                    }
+                    else -> {
+                        val rTag = tagParser.parse(key, tag)
+                                ?: throw DataInitializationError("Unknown resource description command - $key")
+                        resourceTags.add(rTag)
                     }
                 }
-                else -> {
-                    val rTag = tagParser.parse(key, tag)
-                            ?: throw DataInitializationError("Unknown resource description command - $key")
-                    resourceTags.add(rTag)
-                }
+            } catch (e: NoSuchElementException) {
+                println(e.message)
             }
         }
 

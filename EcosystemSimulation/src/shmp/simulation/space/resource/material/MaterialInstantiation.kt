@@ -5,6 +5,7 @@ import shmp.simulation.DataInitializationError
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.tag.ResourceTag
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.collections.ArrayList
 
 
@@ -33,18 +34,22 @@ class MaterialInstantiation(
         for (i in 2 until tags.size) {
             val key = tags[i][0]
             val tag = tags[i].substring(1)
-            when (key) {
-                '+' -> aspectConversion[actions.first { a -> a.name == tag.takeWhile { it != ':' } }] =
-                        tag.substring(tag.indexOf(':') + 1)
-                '-' -> {
-                    val resourceTag = ResourceTag(
-                            tag.takeWhile { it != ':' },
-                            tag.substring(tag.indexOf(':') + 1).toInt()
-                    )
-                    if (!allowedTags.contains(resourceTag))
-                        throw DataInitializationError("Tag $resourceTag doesnt exist")
-                    materialTags.add(resourceTag)
+            try {
+                when (key) {
+                    '+' -> aspectConversion[actions.first { a -> a.name == tag.takeWhile { it != ':' } }] =
+                            tag.substring(tag.indexOf(':') + 1)
+                    '-' -> {
+                        val resourceTag = ResourceTag(
+                                tag.takeWhile { it != ':' },
+                                tag.substring(tag.indexOf(':') + 1).toInt()
+                        )
+                        if (!allowedTags.contains(resourceTag))
+                            throw DataInitializationError("Tag $resourceTag doesnt exist")
+                        materialTags.add(resourceTag)
+                    }
                 }
+            } catch (e: NoSuchElementException) {
+                println(e.message)
             }
         }
         return MaterialTemplate(
