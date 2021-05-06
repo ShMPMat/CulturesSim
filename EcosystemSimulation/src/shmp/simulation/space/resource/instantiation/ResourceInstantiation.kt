@@ -26,23 +26,22 @@ class ResourceInstantiation(
     fun createPool(): ResourcePool {
         val urls = this::class.java.classLoader.getResources(folderPath).toList()
 
-        val resourceFolders = urls.flatMap {
+        val resourceFilePaths = urls.flatMap {
             Files.walk(Paths.get(it.toURI()))
                     .toArray()
                     .toList()
                     .drop(1)
+                    .map(Any::toString)
         }
 
         var line: String?
         var tags: Array<String>
-        for (path in resourceFolders) {
-            val inputDatabase = InputDatabase(path.toString())
-            while (true) {
-                line = inputDatabase.readLine()
-                        ?: break
-                tags = line.split("\\s+".toRegex()).toTypedArray()
-                resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
-            }
+        val inputDatabase = InputDatabase(resourceFilePaths)
+        while (true) {
+            line = inputDatabase.readLine()
+                    ?: break
+            tags = line.split("\\s+".toRegex()).toTypedArray()
+            resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
         }
         SpaceData.data.resourcePool = ResourcePool(filteredFinalResources)
         resourceStringTemplates.forEach { actualizeLinks(it) }

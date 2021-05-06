@@ -25,7 +25,7 @@ open class World(private val path: String) {
 
     val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
 
-    val tags = InputDatabase("$path/ResourceTags")
+    val tags = InputDatabase(this::class.java.classLoader.getResources("ResourceTags"))
             .readLines()
             .map { ResourceTag(it) }
             .union(tagMatchers.map { it.tag })
@@ -38,8 +38,7 @@ open class World(private val path: String) {
         get() = data.resourcePool
 
     fun initializeMap(actions: List<ResourceAction>, tagParser: TagParser, proportionCoefficient: Int) {
-        val materialPool = MaterialInstantiation(tags, actions)
-                .createPool("$path/Materials")
+        val materialPool = MaterialInstantiation(tags, actions).createPool()
 
         instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
 

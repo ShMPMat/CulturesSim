@@ -1,25 +1,3 @@
-/Base properties
--soft
--hard
--springy
--burns
-
--flexible
--sturdy
--malleable
--fragile
--warmth
--powder
-
--thin
--wide
-
--solid
--mass
--liquid
--gas
-
-
 /Group-important properties
 -food
 -seeds
@@ -32,6 +10,3 @@
 /Special conversion markers
 -_can_be_ignited
 -_has_colour
-
-/Resource classes
--Tree

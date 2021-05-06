@@ -13,9 +13,9 @@ class MaterialInstantiation(
         private val allowedTags: Collection<ResourceTag>,
         private val actions: List<ResourceAction>
 ) {
-    fun createPool(path: String): MaterialPool {
-        val materials: MutableList<MaterialTemplate> = ArrayList()
-        val inputDatabase = InputDatabase(path)
+    fun createPool(): MaterialPool {
+        val materials = mutableListOf<MaterialTemplate>()
+        val inputDatabase = InputDatabase(this::class.java.classLoader.getResources("Materials"))
         while (true) {
             val line = inputDatabase.readLine() ?: break
             val tags = line.split("\\s+".toRegex()).toTypedArray()
