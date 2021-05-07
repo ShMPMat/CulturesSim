@@ -19,5 +19,7 @@
 -liquid
 -gas
 
+-canBeIgnited
+
 /Resource classes
 -Tree

@@ -32,5 +32,11 @@ private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {
     "!!" -> NegateLabeler(getLabel(value.take(2), value.drop(2)))
     "P(" -> AnyPartLabeler(getLabel(value.take(2), value.drop(2).dropLast(1)))
     "A(" -> AnyPartOrSelfLabeler(getLabel(value.take(2), value.drop(2).dropLast(1)))
+    "D(" -> {
+        val tags = value.dropLast(1).split("||")
+                .map { getLabel(it.take(2), it.drop(2)) }
+
+        DisjointLabeler(tags)
+    }
     else -> throw RuntimeException("Wrong tag for a labeler")
 }

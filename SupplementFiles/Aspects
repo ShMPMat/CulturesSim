@@ -8,7 +8,7 @@
 -MountainLiving
 
 -Incinerate
-    &t:_can_be_ignited--#Fire:1--#Ash:1
+    &t:canBeIgnited--#Fire:1--#Ash:1
 -Bake                                  $fire_use                             /burns
 -Roast                                 $fire_use                             /burns
 
@@ -73,7 +73,7 @@
     C3.0
     Shard
 -MakeDye
-    &t:_has_colour--#Dye:1
+    &t:hasColour--#Dye:1
     C10.0
 
 -Killing                                                                     #weapon
