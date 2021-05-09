@@ -7,6 +7,7 @@ import shmp.simulation.culture.aspect.dependency.*
 import shmp.simulation.culture.group.request.tagEvaluator
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.tag.ResourceTag
+import shmp.simulation.space.resource.tag.phony
 import java.util.*
 
 class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Territory) {
@@ -33,7 +34,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
                             converseWrapper.aspect,
                             converseWrapper.resource
                     )),
-                    ResourceTag.phony()
+                    phony
             )
     }
 
@@ -42,7 +43,7 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
                     .filter { converseWrapper.resource in it.producedResources }
                     .map { LineDependency(true, converseWrapper, it) }
                     .filter { !it.isCycleDependency(converseWrapper) },
-                    ResourceTag.phony())
+                    phony)
 
     private fun addNonPhony(aspect: Aspect) {
         for (requirement in aspect.requirements) {

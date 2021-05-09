@@ -11,8 +11,8 @@ import shmp.simulation.culture.group.convert
 import shmp.simulation.event.Event
 import shmp.simulation.event.Type
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
+import shmp.simulation.space.resource.tag.phony
 import java.util.*
 import kotlin.math.max
 
@@ -153,7 +153,7 @@ class AspectCenter(aspects: List<Aspect>) {
                                 newAspect
                         ))
                 if (newAspect.producedResources.any { converseWrapper.resource == it })
-                    converseWrapper.dependencies.map[ResourceTag.phony()]!!.add(LineDependency(
+                    converseWrapper.dependencies.map[phony]!!.add(LineDependency(
                             true,
                             converseWrapper,
                             newAspect

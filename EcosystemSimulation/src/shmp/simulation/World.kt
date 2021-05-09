@@ -23,7 +23,7 @@ open class World(private val path: String) {
 
     var events = EventLog()
 
-    val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
+    private val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
 
     val tags = InputDatabase(this::class.java.classLoader.getResources("ResourceTags"))
             .readLines()

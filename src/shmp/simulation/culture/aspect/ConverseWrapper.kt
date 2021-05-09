@@ -7,6 +7,7 @@ import shmp.simulation.culture.group.centers.AspectCenter
 import shmp.simulation.space.resource.ExternalResourceFeature
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.ResourceTag
+import shmp.simulation.space.resource.tag.phony
 import java.util.*
 
 /**
@@ -55,7 +56,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
     private fun toFeatures(node: AspectResult.ResultNode): List<ExternalResourceFeature> =
             if (node.resourceUsed.isNotEmpty())
                 node.resourceUsed.entries
-                    .filter { it.key.name != ResourceTag.phony().name && !it.key.isInstrumental }
+                    .filter { it.key.name != phony.name && !it.key.isInstrumental }
                     .flatMap { p -> p.value.resources.map { it.fullName } }
                     .distinct()
                     .mapIndexed { i, n -> ElementResourceFeature(n, 1000 + i) }
@@ -81,7 +82,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
         )
         copy.initDependencies(dependencies)
         return try {
-            copy.canInsertMeaning = dependencies.map.getValue(ResourceTag.phony()).any {
+            copy.canInsertMeaning = dependencies.map.getValue(phony).any {
                 it is LineDependency && it.converseWrapper.canInsertMeaning
             }
             copy

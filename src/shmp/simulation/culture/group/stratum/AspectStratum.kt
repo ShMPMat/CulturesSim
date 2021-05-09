@@ -44,7 +44,7 @@ class AspectStratum(
 
     init {
         aspect.dependencies.map.keys.forEach { tag: ResourceTag ->
-            if (tag.isInstrumental() && tag.name != "phony")
+            if (tag.isInstrumental && tag.name != "phony")
                 dependencies[tag.copy()] = MutableResourcePack()
         }
     }
@@ -147,7 +147,7 @@ class AspectStratum(
             var currentAmount = value.amount
             if (currentAmount >= population)
                 continue
-            if (!key.isInstrumental())
+            if (!key.isInstrumental)
                 continue
 
             val evaluator = tagEvaluator(key)
