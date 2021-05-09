@@ -21,7 +21,6 @@ import java.io.FileReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
-import java.util.function.Function//TODO remove
 
 
 open class TextEcosystemVisualizer(
@@ -32,7 +31,7 @@ open class TextEcosystemVisualizer(
     /**
      * Symbols for representation of resources on the Map.
      */
-    var resourceSymbols: MutableMap<Resource, String> = HashMap()
+    var resourceSymbols: MutableMap<Resource, String> = mutableMapOf()
     var mapPrintInfo: MapPrintInfo
     private val world
         get() = controller.world
@@ -45,8 +44,7 @@ open class TextEcosystemVisualizer(
 
     private var currentTurner: Turner? = null
     private var turnerThread: Thread? = null
-    private val tileMappers: MutableList<TileMapper> = ArrayList()
-
+    private val tileMappers: MutableList<TileMapper> = mutableListOf()
 
     init {
         Controller.visualizer = this
@@ -70,7 +68,7 @@ open class TextEcosystemVisualizer(
      * @throws IOException when files with symbols isn't found.
      */
     private fun readSymbols() {
-        val s = Scanner(FileReader("SupplementFiles/Symbols/SymbolsResourceLibrary"))
+        val s = Scanner(FileReader(this::class.java.classLoader.getResource("Symbols/SymbolsResourceLibrary")!!.path))
         val symbols = mutableListOf<String>()
 
         while (s.hasNextLine())
@@ -104,20 +102,18 @@ open class TextEcosystemVisualizer(
      * above default map. If function returns non-empty string
      * for a tile, output of the function will be drawn above the tile.
      */
-    fun printMap(condition: Function<Tile, String>) {
-        print(addToRight(
-                printedMap(condition),
-                chompToLines(printedResources(), map.linedTiles.size + 2),
-                true
-        ))
-    }
+    fun printMap(condition: (Tile) -> String) = print(addToRight(
+            printedMap(condition),
+            chompToLines(printedResources(), map.linedTiles.size + 2),
+            true
+    ))
 
     /**
      * @param mapper function which adds an extra layer of information
      * above default map. If function returns non-empty string
      * for a tile, output of the function will be drawn above the tile.
      */
-    private fun printedMap(mapper: Function<Tile, String>): StringBuilder {
+    private fun printedMap(mapper: (Tile) -> String): StringBuilder {
         val main = StringBuilder()
         val worldMap = map
         main.append("  ")
@@ -136,7 +132,7 @@ open class TextEcosystemVisualizer(
             map.append(if (i < 10) " $i" else i)
             for (j in 0 until data.mapSizeY) {
                 val tile = worldMap.getValue(i, j + mapPrintInfo.cut)
-                token = mapper.apply(tile)
+                token = mapper(tile)
                 if (token == "") {
                     when (tile.type) {
                         Tile.Type.Ice -> token = "\u001b[47m"

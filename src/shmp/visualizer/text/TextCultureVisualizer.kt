@@ -50,7 +50,7 @@ open class TextCultureVisualizer(
     }
 
     private fun readSymbols() {
-        val s = Scanner(FileReader("SupplementFiles/Symbols/SymbolsLibrary"))
+        val s = Scanner(FileReader(this::class.java.classLoader.getResource("Symbols/SymbolsLibrary")!!.path))
         val l = mutableListOf<String>()
         while (s.hasNextLine())
             l.add(s.nextLine())
