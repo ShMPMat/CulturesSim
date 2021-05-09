@@ -1,6 +1,9 @@
 package shmp.visualizer.command
 
 import shmp.visualizer.Visualizer
+import shmp.visualizer.text.TextCultureHandler
+import shmp.visualizer.text.TextCultureVisualizer
+import shmp.visualizer.text.TextEcosystemVisualizer
 
 
 enum class CultureCommand(command: String) : Command {
@@ -21,7 +24,7 @@ enum class CultureCommand(command: String) : Command {
     override val pattern = Regex(command)
 }
 
-fun <E: Visualizer> registerCultureCommands(commandManager: CommandManager<E>, handler: CommandHandler<E>) {
+fun registerCultureCommands(commandManager: CommandManager<out TextCultureVisualizer>, handler: CommandHandler<TextCultureVisualizer>) {
     commandManager.registerCommands(CultureCommand.values().toList())
     commandManager.registerHandler(handler)
 }

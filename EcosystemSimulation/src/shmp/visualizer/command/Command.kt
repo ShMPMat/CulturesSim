@@ -7,7 +7,7 @@ interface Command {
     val pattern: Regex
 }
 
-interface CommandHandler<E : Visualizer> {
+interface CommandHandler<in E : Visualizer> {
     fun tryRun(line: String, command: Command, visualizer: E): Boolean
 }
 
@@ -17,7 +17,7 @@ object Pass : Command {
 }
 
 
-class CommandManager<E : Visualizer>(val defaultHandler: CommandHandler<E>)  {
+class CommandManager<E : Visualizer>(private val defaultHandler: CommandHandler<E>)  {
     private val commands: MutableList<Command> = mutableListOf()
     var defaultCommand: Command = Pass
 
@@ -32,7 +32,7 @@ class CommandManager<E : Visualizer>(val defaultHandler: CommandHandler<E>)  {
         return defaultCommand
     }
 
-    fun handleCommand(line: String, visualizer: E) {
+    fun <T: E> handleCommand(line: String, visualizer: T) {
         val command = getCommand(line)
         for (handler in handlers)
             if (handler.tryRun(line, command, visualizer))

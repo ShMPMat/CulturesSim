@@ -29,11 +29,13 @@ object TextCultureHandler: CommandHandler<TextCultureVisualizer> {
                     }
                 }
                 GroupTileReach -> {
-                    val group = getConglomerate(splitCommand[0]) ?: return true
+                    val group = getConglomerate(splitCommand[0])
+                            ?: return true
                     printMap { groupReachMapper(group.subgroups[0], it) }
                 }
                 GroupProduced -> {
-                    val group = getConglomerate(splitCommand[0]) ?: return true
+                    val group = getConglomerate(splitCommand[0])
+                            ?: return true
                     println(chompToSize(printProduced(group), 150))
                 }
                 GroupRelations -> {
@@ -46,9 +48,9 @@ object TextCultureHandler: CommandHandler<TextCultureVisualizer> {
                     println(printConglomerateRelations(c1, c2))
                 }
                 GroupPotentials -> {
-                    val group = getConglomerate(splitCommand[0]) ?: return true
+                    val group = getConglomerate(splitCommand[0])
+                            ?: return true
                     printMap { t ->
-
                         hotnessMapper(
                                 splitCommand[2].toInt(),
                                 t,

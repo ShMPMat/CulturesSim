@@ -21,12 +21,16 @@ import java.io.FileReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
-import java.util.function.Function
+import java.util.function.Function//TODO remove
 
 
-open class TextEcosystemVisualizer(open val controller: Controller<out World>) : Visualizer {
+open class TextEcosystemVisualizer(
+        open val controller: Controller<out World>,
+        private val defaultManager: CommandManager<TextEcosystemVisualizer> = CommandManager(TextPassHandler()),
+        private val commandManager: CommandManager<out TextEcosystemVisualizer> = defaultManager
+) : Visualizer {
     /**
-     * Symbols for representation of resource on the Map.
+     * Symbols for representation of resources on the Map.
      */
     var resourceSymbols: MutableMap<Resource, String> = HashMap()
     var mapPrintInfo: MapPrintInfo
@@ -41,7 +45,6 @@ open class TextEcosystemVisualizer(open val controller: Controller<out World>) :
 
     private var currentTurner: Turner? = null
     private var turnerThread: Thread? = null
-    val commandManager = CommandManager(TextPassHandler<TextEcosystemVisualizer>())
     private val tileMappers: MutableList<TileMapper> = ArrayList()
 
 
@@ -118,17 +121,14 @@ open class TextEcosystemVisualizer(open val controller: Controller<out World>) :
         val main = StringBuilder()
         val worldMap = map
         main.append("  ")
-        for (i in worldMap.linedTiles[0].indices) {
+        for (i in worldMap.linedTiles[0].indices)
             main.append(if (i < 100) " " else i / 100 % 100)
-        }
         main.append("\n").append("  ")
-        for (i in worldMap.linedTiles[0].indices) {
+        for (i in worldMap.linedTiles[0].indices)
             main.append(if (i < 10) " " else i / 10 % 10)
-        }
         main.append("\n").append("  ")
-        for (i in worldMap.linedTiles[0].indices) {
+        for (i in worldMap.linedTiles[0].indices)
             main.append(i % 10)
-        }
         main.append("\n")
         val map = StringBuilder()
         for (i in 0 until data.mapSizeX) {
@@ -206,10 +206,8 @@ open class TextEcosystemVisualizer(open val controller: Controller<out World>) :
                             print()
                             continue
                         }
-                        commandManager.handleCommand(line, this)
-                    } else {
-                        break
-                    }
+                        handleCommand(line)
+                    } else break
                 }
             }
         } catch (t: Throwable) {
@@ -218,6 +216,10 @@ open class TextEcosystemVisualizer(open val controller: Controller<out World>) :
                 System.err.println(stackTraceElement)
             }
         }
+    }
+
+    open fun handleCommand(line: String) {
+        defaultManager.handleCommand(line, this)
     }
 
     protected fun addTileMapper(mapper: TileMapper) {

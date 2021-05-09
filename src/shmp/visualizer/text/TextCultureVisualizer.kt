@@ -11,7 +11,11 @@ import java.io.FileReader
 import java.util.*
 
 
-open class TextCultureVisualizer(override val controller: CulturesController) : TextEcosystemVisualizer(controller) {
+open class TextCultureVisualizer(
+        override val controller: CulturesController,
+        private val defaultManager: CommandManager<TextCultureVisualizer> = CommandManager(TextPassHandler()),
+        private val commandManager: CommandManager<out TextCultureVisualizer> = defaultManager
+) : TextEcosystemVisualizer(controller, CommandManager(TextPassHandler()), commandManager) {
     private var groupInfo = ConglomeratePrintInfo(mutableListOf())
     private var lastClaimedTiles: Map<Group, Set<Tile>> = mutableMapOf()
     private var lastClaimedTilesPrintTurn = 0
@@ -20,7 +24,7 @@ open class TextCultureVisualizer(override val controller: CulturesController) : 
         get() = controller.world
 
     override fun initialize() {
-        registerCultureCommands(CommandManager(TextPassHandler()), TextCultureHandler)
+        registerCultureCommands(commandManager, TextCultureHandler)
         addTileMapper(TileMapper({ cultureTileMapper(lastClaimedTiles, groupInfo, it) }, 5))
 
         super.initialize()
@@ -39,6 +43,10 @@ open class TextCultureVisualizer(override val controller: CulturesController) : 
     override fun run() {
         readSymbols()
         super.run()
+    }
+
+    override fun handleCommand(line: String) {
+        defaultManager.handleCommand(line, this)
     }
 
     private fun readSymbols() {

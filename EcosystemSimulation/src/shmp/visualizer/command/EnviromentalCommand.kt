@@ -1,6 +1,7 @@
 package shmp.visualizer.command
 
 import shmp.visualizer.Visualizer
+import shmp.visualizer.text.TextEcosystemVisualizer
 
 
 enum class EnvironmentCommand(command: String) : Command {
@@ -30,7 +31,7 @@ enum class EnvironmentCommand(command: String) : Command {
     override val pattern = Regex(command)
 }
 
-fun <E: Visualizer> registerEnvironmentalCommands(commandManager: CommandManager<E>, handler: CommandHandler<E>) {
+fun registerEnvironmentalCommands(commandManager: CommandManager<out TextEcosystemVisualizer>, handler: CommandHandler<TextEcosystemVisualizer>) {
     commandManager.registerCommands(EnvironmentCommand.values().toList())
     commandManager.registerHandler(handler)
     commandManager.defaultCommand = EnvironmentCommand.Turn
