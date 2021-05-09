@@ -10,8 +10,16 @@ fun createTagMatchers(path: String): List<TagMatcher> {
     while (true) {
         val line = inputDatabase.readLine() ?: break
         val tags = line.split("\\s+".toRegex())
+
+        var name = tags[0]
+        var level = 1
+        if (name.contains(':')) {
+            level = name.split(':')[1].toInt()
+            name = name.split(':')[0]
+        }
+
         matchers.add(TagMatcher(
-                ResourceTag(tags[0]),
+                ResourceTag(name, level),
                 makeResourceLabeler(tags.drop(1).joinToString(","))
         ))
     }

@@ -28,3 +28,11 @@
 
 -hasColour
     D(m:Blood||m:Pulp)
+
+
+-food:1 m:Meat
+-food:2 m:Fungus
+-food:3 m:Nut
+-food:4 m:Pulp
+
+-food:6 m:RoastedMeat

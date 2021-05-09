@@ -54,11 +54,11 @@ class AspectInstantiation(
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '/' -> requirements.add(ResourceTag(tag, false))
+                '/' -> requirements.add(ResourceTag(tag, isInstrumental = false))
                 '#' -> if (tag == "MEANING") {
                     applyMeaning = true
                 } else {
-                    requirements.add(ResourceTag(tag, true))
+                    requirements.add(ResourceTag(tag, isInstrumental = true))
                 }
                 '&' -> {
                     val matcherTags = tag.split("-+".toRegex()).toTypedArray()

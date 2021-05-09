@@ -123,10 +123,12 @@ class ResourceTemplateCreator(
         )
         if (isTemplate)
             genome = GenomeTemplate(genome)
-        specialActions.values.forEach {
-            if (!actionConversion.containsKey(it))
-                actionConversion[it] = listOf()
-        }
+        specialActions.values
+                .filter { it.name[0] == '_' }
+                .forEach {
+                    if (!actionConversion.containsKey(it))
+                        actionConversion[it] = listOf()
+                }
 
         return ResourceStringTemplate(ResourceIdeal(genome), actionConversion, parts)
     }

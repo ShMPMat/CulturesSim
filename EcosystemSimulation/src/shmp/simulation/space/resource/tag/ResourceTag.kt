@@ -3,14 +3,12 @@ package shmp.simulation.space.resource.tag
 import java.util.*
 
 
-open class ResourceTag(
+open class ResourceTag constructor(
         var name: String,
-        var isInstrumental: Boolean = false, // Whether Resource doesn't waste on use.
-        var level: Int = 1
+        var level: Int = 1,
+        var isInstrumental: Boolean = false // Whether Resource doesn't waste on use.
 ) {
-    constructor(name: String, level: Int) : this(name, false, level)
-
-    fun copy() = ResourceTag(name, isInstrumental, level)
+    fun copy() = ResourceTag(name, level, isInstrumental)
 
     override fun toString() = name
 

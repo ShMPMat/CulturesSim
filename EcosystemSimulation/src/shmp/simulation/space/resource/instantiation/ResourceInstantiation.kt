@@ -8,6 +8,7 @@ import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.container.ResourcePool
 import shmp.simulation.space.resource.material.MaterialPool
+import shmp.simulation.space.resource.specialActions
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -131,16 +132,15 @@ class ResourceInstantiation(
     }
 
     private fun addTakeApartAction(template: ResourceStringTemplate) {
+        val takeApart = specialActions.getValue("TakeApart")
+
         val (resource, actionConversion, _) = template
         if (resource.genome.parts.isNotEmpty()
-                && !actionConversion.containsKey(actions.first { it.name == "TakeApart" })) {//TODO TakeApart shouldn't be here I recon
+                && !actionConversion.containsKey(takeApart)) {//TODO TakeApart shouldn't be here I recon
             val resourceList = mutableListOf<Pair<Resource?, Int>>()
             for (partResource in resource.genome.parts) {
                 resourceList.add(Pair(partResource, partResource.amount))
-                resource.genome.conversionCore.addActionConversion(
-                        actions.first { it.name == "TakeApart" },
-                        resourceList
-                )
+                resource.genome.conversionCore.addActionConversion(takeApart, resourceList)
             }
         }
     }
