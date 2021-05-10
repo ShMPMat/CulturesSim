@@ -143,7 +143,7 @@ public class TectonicPlate extends BrinkInvariantTerritory {
     /**
      * Moves plate in its direction and changes landscape.
      */
-    public void move() {//TODO volcanoes
+    public void move() {
         if (testProbability(0.7, RandomSingleton.INSTANCE.getRandom()) && isMoved) {
             return;
         }

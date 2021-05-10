@@ -4,6 +4,7 @@ import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomTileOnBrink
 import shmp.simulation.space.SpaceData
+import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.action.ResourceProbabilityAction
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -73,7 +74,7 @@ open class Resource private constructor(
     }
 
     fun getTagPresence(tag: ResourceTag) =
-            (amount * getTagLevel(tag)).toDouble() * genome.size.pow(SpaceData.data.resourceSizeEffect)
+            (amount * getTagLevel(tag)).toDouble() * genome.size.pow(data.resourceSizeEffect)
 
     fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
 
@@ -185,7 +186,7 @@ open class Resource private constructor(
 
         if (simpleName == "Vapour") {
             if (tile.temperature < 0) {
-                tile.addDelayedResource(SpaceData.data.resourcePool.getBaseName("Snow").copy(amount / 2))
+                tile.addDelayedResource(data.resourcePool.getBaseName("Snow").copy(amount / 2))
                 amount -= amount / 2
             }
         }

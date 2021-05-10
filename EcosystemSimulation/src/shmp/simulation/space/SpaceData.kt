@@ -43,7 +43,7 @@ class Data(
         val platesAmount: Int = 10,
         val defaultWaterLevel: Int = 98,
         val seabedLevel: Int = 85,
-        val resourceSizeEffect: Double = 0.0,//TODO back to 1.0
+        val resourceSizeEffect: Double = 1.0,
         val additionalTags: List<TagMatcher> = listOf(),
         val xMapLooping: Boolean = false,
         val yMapLooping: Boolean = true,
