@@ -14,7 +14,7 @@ import shmp.simulation.space.tile.Tile
 import java.util.*
 
 
-class CulturesWorld(private val path: String): World(path) {
+class CulturesWorld : World() {
     var groups: MutableList<GroupConglomerate> = ArrayList()
 
     val shuffledGroups: List<GroupConglomerate>
@@ -25,7 +25,8 @@ class CulturesWorld(private val path: String): World(path) {
     lateinit var aspectPool: AspectPool
 
     fun initializeMap(proportionCoefficient: Int) {
-        aspectPool = AspectInstantiation(tags, actionTags).createPool("$path/Aspects")
+        val aspectUrls = this::class.java.classLoader.getResources("Aspects")
+        aspectPool = AspectInstantiation(tags, actionTags).createPool(aspectUrls)
 
         val actions = aspectPool.all.map { it.core.resourceAction }
 

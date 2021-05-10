@@ -11,6 +11,9 @@ import shmp.simulation.space.resource.action.ActionTag
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.makeResourceLabeler
+import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AspectInstantiation(
@@ -19,7 +22,7 @@ class AspectInstantiation(
 ) {
     private val aspects = mutableListOf<Aspect>()
 
-    fun createPool(path: String): AspectPool {
+    fun createPool(path: Enumeration<URL>): AspectPool {
         val inputDatabase = InputDatabase(path)
 
         while (true) {

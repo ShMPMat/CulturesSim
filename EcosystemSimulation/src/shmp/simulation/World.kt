@@ -18,19 +18,19 @@ import shmp.utils.InputDatabase
 
 
 //Stores all entities in the shmp.simulation
-open class World(private val path: String) {
+open class World {
     lateinit var map: WorldMap
 
     var events = EventLog()
 
-    private val tagMatchers = createTagMatchers("$path/ResourceTagLabelers")
+    private val tagMatchers = createTagMatchers(this::class.java.classLoader.getResources("ResourceTagLabelers"))
 
     val tags = InputDatabase(this::class.java.classLoader.getResources("ResourceTags"))
             .readLines()
             .map { ResourceTag(it) }
             .union(tagMatchers.map { it.tag })
 
-    protected val actionTags = InputDatabase("$path/ActionTags")
+    protected val actionTags = InputDatabase(this::class.java.classLoader.getResources("ActionTags"))
             .readLines()
             .map { ActionTag(it) }
 
@@ -42,7 +42,7 @@ open class World(private val path: String) {
 
         instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
 
-        val initialResourcePool = ResourceInstantiation(
+        val initialResources = ResourceInstantiation(
                 "Resources/",
                 actions,
                 materialPool,
@@ -50,9 +50,9 @@ open class World(private val path: String) {
                 tagParser
         ).createPool()
 
-        data.resourcePool = initialResourcePool
+        data.resourcePool = initialResources
 
-        map = generateMap(data.mapSizeX, data.mapSizeY, data.platesAmount, initialResourcePool, RandomSingleton.random)
+        map = generateMap(data.mapSizeX, data.mapSizeY, data.platesAmount, initialResources, RandomSingleton.random)
     }
 
 

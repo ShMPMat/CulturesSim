@@ -74,7 +74,7 @@ public class CulturesController extends Controller<CulturesWorld> {
         super(interactionModel);
         session = this;
 
-        initializeWorld(new CulturesWorld("SupplementFiles"));
+        initializeWorld(new CulturesWorld());
 
         world.initializeMap(proportionCoefficient);
 

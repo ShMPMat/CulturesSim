@@ -9,13 +9,17 @@ import java.util.*
 
 class InputDatabase(private val paths: List<String>) {
     private var readerIndex = 0
-    private var bufferedReader = BufferedReader(FileReader(paths[readerIndex]))
+    private lateinit var bufferedReader: BufferedReader
     private var lastLine: String? = null
 
     init {
-        lastLine = bufferedReader.readLine()
-        while ((lastLine != null || nextReader()) && doSkipLine(lastLine!!))
+        if (paths.isNotEmpty()) {
+            bufferedReader = BufferedReader(FileReader(paths[readerIndex]))
+
             lastLine = bufferedReader.readLine()
+            while ((lastLine != null || nextReader()) && doSkipLine(lastLine!!))
+                lastLine = bufferedReader.readLine()
+        }
     }
 
     constructor(path: String) : this(listOf(path))
