@@ -3,6 +3,7 @@ package shmp.simulation.culture.group.stratum
 import shmp.random.singleton.chanceOfNot
 import shmp.simulation.CulturesController.session
 import shmp.simulation.SimulationError
+import shmp.simulation.culture.aspect.getAspectImprovement
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.AspectImprovementRequest
@@ -30,7 +31,10 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
 
     val effectiveness: Double
         get() {
-            if (_effectiveness == -1.0) _effectiveness = 1.0
+            if (_effectiveness == -1.0) _effectiveness = 1.0 + places
+                    .flatMap { it.owned.resources }
+                    .map { it.getAspectImprovement(warAspect) }
+                    .foldRight(0.0, Double::plus)
             return _effectiveness
         }
 
@@ -68,7 +72,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
                 RequestCore(
                         group,
                         0.5,
-                        0.5,
+                        0.5 * max(1, importance),
                         passingReward,
                         passingReward,
                         30 + max(1, importance),
@@ -76,9 +80,6 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
                 )
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
-        if (pack.isNotEmpty) {
-            val k = 0
-        }
 
         usedAspects.forEach {
             it.gainUsefulness((2 / session.stratumInstrumentRenewalProb).toInt())

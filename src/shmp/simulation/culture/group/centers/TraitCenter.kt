@@ -1,5 +1,8 @@
 package shmp.simulation.culture.group.centers
 
+import shmp.random.singleton.RandomSingleton
+import shmp.simulation.CulturesController
+import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.utils.SoftValue
@@ -17,7 +20,8 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
     constructor() : this(EnumMap(Trait::class.java)) {
         Trait.values().forEach {
-            traitMap[it] = TraitValue()
+            val traitSeed = RandomSingleton.random.nextDouble(-1.0, 1.0)
+            traitMap[it] = TraitValue(traitSeed * session.defaultGroupTraitSpread)
         }
     }
 

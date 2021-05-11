@@ -98,7 +98,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
                 RequestCore(
                         group,
                         0.5,
-                        0.5,
+                        0.5 * max(1, importance),
                         passingReward,
                         passingReward,
                         30 + max(1, importance),

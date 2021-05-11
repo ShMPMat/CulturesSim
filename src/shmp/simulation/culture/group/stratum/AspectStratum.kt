@@ -17,6 +17,7 @@ import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 
 class AspectStratum(
@@ -193,7 +194,7 @@ class AspectStratum(
                 RequestCore(
                         group,
                         0.5,
-                        0.5,
+                        0.5 * max(1, importance),
                         passingReward,
                         passingReward,
                         30,

@@ -30,10 +30,6 @@ class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(
         val iniWarriors = GatherWarriorsA(initiator, iniEvaluation).run()
         val partWarriors = GatherWarriorsA(participator, partEvaluation).run()
 
-        if (initiator.populationCenter.stratumCenter.warriorStratum.effectiveness > 1 || participator.populationCenter.stratumCenter.warriorStratum.effectiveness > 1) {
-            val g = 7
-        }
-
         status = BattlePA(iniWarriors, partWarriors).run()
 
         val description = status.decide(
