@@ -76,8 +76,8 @@ class CultureCenter(
         get() = memePool.valuableMeme
 
     fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
-        val options = aspectCenter.findOptions(need.first, group)
-        val (first, second) = options.randomElementOrNull()
+        val (first, second) = aspectCenter.findOptions(need.first, group)
+                .randomElementOrNull()
                 ?: return
 
         aspectCenter.addAspect(first, group)

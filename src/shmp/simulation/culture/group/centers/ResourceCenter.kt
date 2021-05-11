@@ -97,7 +97,7 @@ class ResourceCenter(
     fun needLevel(resource: Resource) = neededResources
             .filter { it.key.isSuitable(resource.genome) }
             .map { it.value.importance }
-            .max()
+            .maxOrNull()
             ?: 0
 
     override fun toString() = """

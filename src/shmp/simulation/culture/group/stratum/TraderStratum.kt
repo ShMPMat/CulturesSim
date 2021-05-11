@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.stratum
 
 import shmp.random.singleton.chanceOf
+import shmp.random.singleton.chanceOfNot
 import shmp.simulation.CulturesController.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.getAspectImprovement
@@ -16,6 +17,7 @@ import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
+
 
 class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "") {
     private val tradeAspect = session.world.aspectPool.get("Trade")
@@ -84,10 +86,11 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
 
 
     private fun updatePlaces(group: Group) {
-        if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal))
+        session.stratumInstrumentRenewalProb.chanceOfNot {
             return
+        }
 
-        if (!group.territoryCenter.settled)
+        if (!group.territoryCenter.settled || population == 0)
             return
 
         val request = AspectImprovementRequest(
@@ -103,12 +106,9 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
                 )
         )
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
-        if (pack.isNotEmpty) {
-            val k = 0
-        }
 
         usedAspects.forEach {
-            it.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2)
+            it.gainUsefulness((2 / session.stratumInstrumentRenewalProb).toInt())
         }
         pack.resources.forEach { addEnhancement(it, group) }
     }

@@ -102,7 +102,7 @@ class AspectInstantiation(
     private fun checkAspectsCoherency() {
         val maxSimilarAspects = aspects
                 .groupBy { it.name }
-                .maxBy { it.value.size }
+                .maxByOrNull { it.value.size }
                 ?: return
         if (maxSimilarAspects.value.size > 1)
             throw DataInitializationError("Similar Aspects with a name ${maxSimilarAspects.key}")

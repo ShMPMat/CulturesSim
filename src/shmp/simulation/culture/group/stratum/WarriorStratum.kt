@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.stratum
 
-import shmp.simulation.CulturesController
+import shmp.random.singleton.chanceOfNot
+import shmp.simulation.CulturesController.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
@@ -14,12 +15,12 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
+
 class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors", "") {
-    private val warAspect = CulturesController.session.world.aspectPool.get("Killing")
+    private val warAspect = session.world.aspectPool.get("Killing")
             ?: throw SimulationError("No aspect Killing exists for the $name")
 
     private var _effectiveness = 1.0
-        private set
 
     private var workedPopulation = 0
     override val freePopulation: Int
@@ -51,11 +52,16 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
         super.update(accessibleResources, accessibleTerritory, group)
-        if (!CulturesController.session.isTime(CulturesController.session.stratumTurnsBeforeInstrumentRenewal))
+        session.stratumInstrumentRenewalProb.chanceOfNot {
+            return
+        }
+
+        if (!group.territoryCenter.settled || population == 0)
             return
 
-        if (!group.territoryCenter.settled)
-            return
+        if (30 + max(1, importance) > 100) {
+            val k = 9
+        }
 
         val request = AspectImprovementRequest(
                 warAspect,
@@ -75,7 +81,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
         }
 
         usedAspects.forEach {
-            it.gainUsefulness(CulturesController.session.stratumTurnsBeforeInstrumentRenewal * 2)
+            it.gainUsefulness((2 / session.stratumInstrumentRenewalProb).toInt())
         }
         pack.resources.forEach { addEnhancement(it, group) }
     }

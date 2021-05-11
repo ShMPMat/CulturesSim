@@ -7,6 +7,7 @@ import shmp.simulation.space.resource.instantiation.DefaultTagParser
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 
+
 class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTagParser(allowedTags) {
     override fun parse(key: Char, tag: String) = super.parse(key, tag) ?: when (key) {
         '&' -> {

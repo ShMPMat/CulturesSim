@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.stratum
 
+import shmp.random.singleton.chanceOfNot
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.AspectController
 import shmp.simulation.culture.aspect.ConverseWrapper
@@ -135,7 +136,11 @@ class AspectStratum(
     }
 
     private fun updateInfrastructure(accessibleTerritory: Territory, group: Group) {
-        if (!session.isTime(session.stratumTurnsBeforeInstrumentRenewal))
+        session.stratumInstrumentRenewalProb.chanceOfNot {
+            return
+        }
+
+        if (population == 0)
             return
 
         updateTools(accessibleTerritory, group)
@@ -198,7 +203,7 @@ class AspectStratum(
         val (pack, usedAspects) = group.populationCenter.executeRequest(request)
 
         usedAspects.forEach {
-            it.gainUsefulness(session.stratumTurnsBeforeInstrumentRenewal * 2)
+            it.gainUsefulness((2 / session.stratumInstrumentRenewalProb).toInt())
         }
         pack.resources.forEach { addEnhancement(it, group) }
     }

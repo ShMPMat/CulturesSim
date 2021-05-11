@@ -42,8 +42,8 @@ public class CulturesController extends Controller<CulturesWorld> {
     public final double tradeStockUpdateProb = 0.1;
     public final double resourceValueRefreshTime = 12;
     public final double memoryStrengthCoefficient = 0.9;
+    public final double stratumInstrumentRenewalProb = 0.03;
 
-    public final int stratumTurnsBeforeInstrumentRenewal = 30;
     public final int groupTurnsBetweenBorderCheck = 10;
     public final int groupTurnsBetweenAdopts = 10;
     public final int maxGroupDependencyDepth = 5;

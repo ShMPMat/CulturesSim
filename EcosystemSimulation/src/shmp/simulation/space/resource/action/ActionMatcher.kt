@@ -2,6 +2,7 @@ package shmp.simulation.space.resource.action
 
 import shmp.simulation.DataInitializationError
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.container.ResourcePool
 import shmp.simulation.space.resource.instantiation.ResourceStringTemplate
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 
@@ -13,6 +14,11 @@ class ActionMatcher(
 ) {
     init {
         if (results.isEmpty()) throw DataInitializationError("Action matcher does nothing")
+    }
+
+    fun constructResults(pool: ResourcePool) = results.flatMap { (n, a) ->
+        pool.getAll { it.simpleName == n }
+                .map { it.copy(a) }
     }
 
     fun match(resource: Resource) =

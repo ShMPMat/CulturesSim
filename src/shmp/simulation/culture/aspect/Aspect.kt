@@ -63,6 +63,8 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open val isValid = true
 
+    open val producedResources: List<Resource> = emptyList()
+
     fun canApplyMeaning() = core.applyMeaning
 
     fun canReturnMeaning() = this is ConverseWrapper && this.canInsertMeaning
@@ -86,8 +88,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     }
 
     open fun copy(dependencies: AspectDependencies) = core.makeAspect(dependencies)
-
-    open val producedResources: List<Resource> = emptyList()
 
     fun calculateNeededWorkers(evaluator: ResourceEvaluator, amount: Double) = ceil(max(
             evaluator.getSatisfiableAmount(amount, producedResources) * core.standardComplexity,

@@ -5,6 +5,7 @@ import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.*
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.aspect.dependency.LineDependency
+import shmp.simulation.culture.aspect.labeler.PotentialProducedLabeler
 import shmp.simulation.culture.aspect.labeler.ProducedLabeler
 import shmp.simulation.culture.group.AspectDependencyCalculator
 import shmp.simulation.culture.group.convert
@@ -117,16 +118,17 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
-        val options: List<ConverseWrapper> = ArrayList(_converseWrappers) //TODO maybe do it after the middle part?
-        val newResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
+        val newResources: MutableSet<Resource> = group.overallTerritory.differentResources.toMutableSet()
         newResources.addAll(_mutableAspectPool.producedResources)
         newResources.removeAll(_lastResourcesForCw)
+
         for (aspect in _mutableAspectPool.filter { it !is ConverseWrapper })
             for (resource in newResources)
                 addConverseWrapper(aspect, resource)
         _lastResourcesForCw.addAll(newResources)
         newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
-        return options
+
+        return _converseWrappers.toList()
     }
 
     fun finishUpdate(): Set<Aspect> {
@@ -164,14 +166,26 @@ class AspectCenter(aspects: List<Aspect>) {
     fun findOptions(labeler: ResourceLabeler, group: Group): List<Pair<Aspect, Group?>> {
         val options = mutableListOf<Pair<Aspect, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
-        for (aspect in session.world.aspectPool.all.filter { aspectLabeler.isSuitable(it) }) {
-            val dependencies = calculateDependencies(aspect, group)
-            if (aspect.isDependenciesOk(dependencies))
-                options.add(aspect.copy(dependencies) to null)
+        if (labeler.toString().contains("Aspect Killing")) {
+            val k = 0
         }
+        0.05.chanceOf {
+            if (labeler.toString().contains("Aspect Killing")) {
+                val k = 0
+            }
+            val aspectPotentialLabeler = PotentialProducedLabeler(labeler, session.world.resourcePool)
+//            val aspectPotentialLabeler = aspectLabeler
+            for (aspect in session.world.aspectPool.all.filter { aspectPotentialLabeler.isSuitable(it) }) {
+                val dependencies = calculateDependencies(aspect, group)
+                if (aspect.isDependenciesOk(dependencies))
+                    options.add(aspect.copy(dependencies) to null)
+            }
+        }
+
         getAllPossibleConverseWrappers(group)
                 .filter { aspectLabeler.isSuitable(it) }
                 .forEach { options.add(it to null) }
+
         val aspects = convert(getNewNeighbourAspects(group))
         for (box in aspects) {
             var aspect = box.aspect
