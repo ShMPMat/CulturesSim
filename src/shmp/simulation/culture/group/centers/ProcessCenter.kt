@@ -29,7 +29,7 @@ class ProcessCenter(type: AdministrationType) {
                 session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
             },
             TryDivergeWithNegotiationB
-                    .withTrait(Trait.Consolidation.get().reverse() * 2.0)
+                    .withTrait(Trait.Consolidation.getNegative() * 2.0)
                     .withProbability(session.defaultGroupExiting) {
                         it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
                                 session.defaultGroupExiting /
