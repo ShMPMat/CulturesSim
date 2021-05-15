@@ -166,15 +166,8 @@ class AspectCenter(aspects: List<Aspect>) {
     fun findOptions(labeler: ResourceLabeler, group: Group): List<Pair<Aspect, Group?>> {
         val options = mutableListOf<Pair<Aspect, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
-        if (labeler.toString().contains("Aspect Killing")) {
-            val k = 0
-        }
         0.05.chanceOf {
-            if (labeler.toString().contains("Aspect Killing")) {
-                val k = 0
-            }
             val aspectPotentialLabeler = PotentialProducedLabeler(labeler, session.world.resourcePool)
-//            val aspectPotentialLabeler = aspectLabeler
             for (aspect in session.world.aspectPool.all.filter { aspectPotentialLabeler.isSuitable(it) }) {
                 val dependencies = calculateDependencies(aspect, group)
                 if (aspect.isDependenciesOk(dependencies))
@@ -187,15 +180,11 @@ class AspectCenter(aspects: List<Aspect>) {
                 .forEach { options.add(it to null) }
 
         val aspects = convert(getNewNeighbourAspects(group))
-        for (box in aspects) {
-            var aspect = box.aspect
-            val aspectGroup = box.group
+        for ((aspect, aspectGroup) in aspects) {
             if (aspectLabeler.isSuitable(aspect)) {
                 val dependencies = calculateDependencies(aspect, group)
-                if (aspect.isDependenciesOk(dependencies)) {
-                    aspect = aspect.copy(dependencies)
-                    options.add(aspect to aspectGroup)
-                }
+                if (aspect.isDependenciesOk(dependencies))
+                    options.add(aspect.copy(dependencies) to aspectGroup)
             }
         }
         return options
