@@ -8,7 +8,7 @@ import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.GroupTileTag
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.thinking.meaning.GroupMemes
-import shmp.simulation.culture.thinking.meaning.MemeSubject
+import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.event.Type
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
@@ -79,8 +79,8 @@ class Group(
         for (group in relationCenter.relatedGroups)
             group.cultureCenter.memePool.addMemeCombination(
                     cultureCenter.memePool.getMeme("group")
-                            ?.addPredicate(MemeSubject(name))
-                            ?.addPredicate(cultureCenter.memePool.getMeme("die"))
+                            ?.addPredicate(Meme(name))
+                            ?.addPredicate(cultureCenter.memePool.getMeme("die")!!)
                             ?: continue
             )
     }

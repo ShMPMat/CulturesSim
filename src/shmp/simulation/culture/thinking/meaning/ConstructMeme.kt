@@ -25,22 +25,24 @@ fun constructAndAddSimpleMeme(
             second = groupMemes.memeWithComplexityBias.copy()
             tests++
         } while (second.hasPart(meme, setOf("and")) && tests <= maxTests)
-        meme = meme.copy().addPredicate(
-                groupMemes.getMemeCopy("and")?.addPredicate(second)
-        )
+        meme = meme.copy().apply {
+            groupMemes.getMemeCopy("and")
+                    ?.addPredicate(second)
+                    ?.let { addPredicate(it) }
+        }
         groupMemes.addMemeCombination(meme)
     }
     return meme
 }
 
 
-fun makeMeme(stratum: Stratum) = MemeSubject(stratum.name)
+fun makeMeme(stratum: Stratum) = Meme(stratum.name)
 
-fun makeMeme(group: Group) = MemeSubject(group.name)
+fun makeMeme(group: Group) = Meme(group.name)
 
-fun makeMeme(resource: Resource) = MemeSubject(resource.fullName)
+fun makeMeme(resource: Resource) = Meme(resource.fullName)
 
-fun makeMeme(aspect: Aspect) = MemePredicate(aspect.name)
+fun makeMeme(aspect: Aspect) = Meme(aspect.name)
 
 
 fun makeResourcePackMemes(pack: ResourcePack) = pack.resources
@@ -85,9 +87,9 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
     for (resourceDependency in resource.genome.dependencies)
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed) {
-                val subject: Meme = MemeSubject(res.toLowerCase())
+                val subject: Meme = Meme(res.toLowerCase())
                 memes.first.add(subject)
-                val element = makeMeme(resource).addPredicate(MemePredicate("consume"))
+                val element = makeMeme(resource).addPredicate(Meme("consume"))
                 element.predicates[0].addPredicate(subject)
                 memes.second.add(element)
             }

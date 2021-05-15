@@ -3,7 +3,6 @@ package shmp.simulation.culture.aspect
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.space.resource.ExternalResourceFeature
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -70,7 +69,7 @@ class MadeByResourceFeature(group: Group) : ExternalResourceFeature {
 }
 
 
-private val phonyMeaningFeature = MeaningResourceFeature(MemeSubject(""))
+private val phonyMeaningFeature = MeaningResourceFeature(Meme(""))
 
 val Resource.hasMeaning: Boolean
     get() = externalFeatures.any { it is MeaningResourceFeature }

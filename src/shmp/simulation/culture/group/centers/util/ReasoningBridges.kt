@@ -16,13 +16,13 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalC
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.*
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.group.stratum.Stratum
-import shmp.simulation.culture.thinking.meaning.MemeSubject
+import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.Resource
 
 
-class ArbitraryResource(val resource: Resource) : ArbitraryObjectConcept(MemeSubject(resource.baseName))
-class ArbitraryAspect(val aspect: Aspect) : ArbitraryActionConcept(MemeSubject(aspect.name))
-class ArbitraryStratum(val stratum: Stratum) : ArbitraryObjectConcept(MemeSubject(stratum.baseName))
+class ArbitraryResource(val resource: Resource) : ArbitraryObjectConcept(Meme(resource.baseName))
+class ArbitraryAspect(val aspect: Aspect) : ArbitraryActionConcept(Meme(aspect.name))
+class ArbitraryStratum(val stratum: Stratum) : ArbitraryObjectConcept(Meme(stratum.baseName))
 
 
 fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {

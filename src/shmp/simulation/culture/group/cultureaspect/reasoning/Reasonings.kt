@@ -4,7 +4,6 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConce
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 
 
 open class BaseReasoning(
@@ -14,7 +13,7 @@ open class BaseReasoning(
 ) : AbstractReasoning()
 
 class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
-        MemeSubject("$objectConcept represents $subjectConcept"),
+        Meme("$objectConcept represents $subjectConcept"),
         listOf(objectConcept.meme, subjectConcept.meme),
         listOf()
 ) {
@@ -31,19 +30,19 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
 }
 
 class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
-        MemeSubject("$objectConcept opposes $subjectConcept"),
+        Meme("$objectConcept opposes $subjectConcept"),
         listOf(objectConcept.meme, subjectConcept.meme),
         listOf()
 )
 
 class ActionReasoning(val objectConcept: ReasonConcept, val actionConcept: ActionConcept) : BaseReasoning(
-        MemeSubject("$objectConcept needs $actionConcept"),
+        Meme("$objectConcept needs $actionConcept"),
         listOf(objectConcept.meme, actionConcept.meme),
         listOf()
 )
 
 class ExistenceInReasoning(val subjectConcept: ObjectConcept, val surroundingConcept: ReasonConcept) : BaseReasoning(
-        MemeSubject("$subjectConcept live in $surroundingConcept"),
+        Meme("$subjectConcept live in $surroundingConcept"),
         listOf(subjectConcept.meme, surroundingConcept.meme),
         listOf()
 )

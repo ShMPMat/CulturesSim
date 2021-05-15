@@ -20,7 +20,6 @@ import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.thinking.language.templates.TemplateBase
 import shmp.simulation.culture.thinking.language.templates.constructTextInfo
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.culture.thinking.meaning.makeAspectMemes
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.TileTag
@@ -68,9 +67,9 @@ fun createSimpleConcept(group: Group, random: Random): Concept? {
     val agitateFor = testProbability(agitateForChance, random)
 
     return if (agitateFor)
-        Concept(MemeSubject("$trait is good"), listOf(trait.toPositiveChange() * magnitude))
+        Concept(Meme("$trait is good"), listOf(trait.toPositiveChange() * magnitude))
     else
-        Concept(MemeSubject("$trait is bad"), listOf(trait.toNegativeChange() * magnitude))
+        Concept(Meme("$trait is bad"), listOf(trait.toNegativeChange() * magnitude))
 }
 
 fun createRitual(reason: Reason?, group: Group, random: Random): Ritual? {

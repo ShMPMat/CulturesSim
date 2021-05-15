@@ -2,12 +2,12 @@ package shmp.simulation.culture.thinking.language.templates;
 
 import shmp.simulation.CulturesController;
 import shmp.simulation.culture.thinking.meaning.Meme;
-import shmp.simulation.culture.thinking.meaning.MemePredicate;
+import shmp.simulation.culture.thinking.meaning.Meme;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static shmp.random.RandomElementKt.*;
+import static shmp.random.RandomElementKt.randomElement;
 
 
 public class TemplateBase {
@@ -28,9 +28,9 @@ public class TemplateBase {
         String[] simpleSentences = {"!actor @verb", "!actor @verb !receiver", "!actor exist"};
         for (String sentence: simpleSentences) {
             String[] splitted = sentence.split(" ");
-            Meme head = new MemePredicate(splitted[splitted.length - 1]);
+            Meme head = new Meme(splitted[splitted.length - 1], new ArrayList<>(), 1);
             for (int i = splitted.length - 2; i >= 0; i--) {
-                head = (new MemePredicate(splitted[i])).addPredicate(head);
+                head = (new Meme(splitted[i], new ArrayList<>(), 1)).addPredicate(head);
             }
             sentenceBase.add(head);
         }
@@ -38,15 +38,18 @@ public class TemplateBase {
         String[] simpleNounClauses = {"!n! @adjective", "!n!"};
         for (String sentence: simpleNounClauses) {
             String[] splitted = sentence.split(" ");
-            Meme head = new MemePredicate(splitted[splitted.length - 1]);
+            Meme head = new Meme(splitted[splitted.length - 1], new ArrayList<>(), 1);
             for (int i = splitted.length - 2; i >= 0; i--) {
-                head = (new MemePredicate(splitted[i])).addPredicate(head);
+                head = (new Meme(splitted[i], new ArrayList<>(), 1)).addPredicate(head);
             }
             nounClauseBase.add(head);
         }
 
         String[] adjectives = {"big", "small", "old", "young"};
-        wordBase.put("@adjective", Arrays.stream(adjectives).map(MemePredicate::new).collect(Collectors.toList()));
+        wordBase.put(
+                "@adjective",
+                Arrays.stream(adjectives).map((a) -> new Meme(a, new ArrayList<>(), 1)).collect(Collectors.toList())
+        );
         sessionBase = this;
     }
 

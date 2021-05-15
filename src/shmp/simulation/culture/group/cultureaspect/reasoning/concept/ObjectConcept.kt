@@ -1,7 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning.concept
 
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 
 
 sealed class ObjectConcept(
@@ -24,11 +23,11 @@ sealed class ObjectConcept(
         }
     }
 
-    object World : ObjectConcept(MemeSubject("World"), { listOf() }, { listOf() })
-    object AllLife : ObjectConcept(MemeSubject("AllLife"), { listOf() }, { listOf() })
-    object We : ObjectConcept(MemeSubject("We"), { listOf() }, { listOf() })
-    object Self : ObjectConcept(MemeSubject("Self"), { listOf() }, { listOf() })
+    object World : ObjectConcept(Meme("World"), { listOf() }, { listOf() })
+    object AllLife : ObjectConcept(Meme("AllLife"), { listOf() }, { listOf() })
+    object We : ObjectConcept(Meme("We"), { listOf() }, { listOf() })
+    object Self : ObjectConcept(Meme("Self"), { listOf() }, { listOf() })
 
-    object Home : ObjectConcept(MemeSubject("Home"), { listOf(Foreign) }, { listOf() })
-    object Foreign : ObjectConcept(MemeSubject("Foreign"), { listOf(Home) }, { listOf() })
+    object Home : ObjectConcept(Meme("Home"), { listOf(Foreign) }, { listOf() })
+    object Foreign : ObjectConcept(Meme("Foreign"), { listOf(Home) }, { listOf() })
 }

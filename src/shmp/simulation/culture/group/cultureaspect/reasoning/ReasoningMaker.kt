@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.cultureaspect.reasoning
 import shmp.random.randomElement
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.thinking.meaning.MemeSubject
+import shmp.simulation.culture.thinking.meaning.Meme
 import kotlin.random.Random
 
 
@@ -19,7 +19,7 @@ fun makeAdjectiveReasoning(
         random.nextDouble(-1.0, 0.0)
     val adjectiveConceptChange = random.nextDouble(0.0, 0.1)
     return BaseReasoning(
-            MemeSubject("${concept.meme} is ${conceptToAdjectiveString(adjectiveConcept)}"),
+            Meme("${concept.meme} is ${conceptToAdjectiveString(adjectiveConcept)}"),
             listOf(concept.meme, adjectiveConcept.meme),
             listOf(concept.toConclusion(conceptChange), adjectiveConcept.toConclusion(adjectiveConceptChange))
     )

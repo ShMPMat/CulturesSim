@@ -5,8 +5,6 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConce
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemePredicate
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 
 
 interface WorshipObject {
@@ -17,7 +15,7 @@ interface WorshipObject {
 }
 
 class GodWorship(val godName: Meme, val sphere: ReasonConcept): WorshipObject, ArbitraryObjectConcept(godName) {
-    override val name = MemeSubject("god $godName of $sphere")
+    override val name = Meme("god $godName of $sphere")
 
     override val memes = listOf(name, godName, sphere.meme)
     override val meme = name

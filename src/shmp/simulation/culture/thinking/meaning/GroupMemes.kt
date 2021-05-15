@@ -19,10 +19,10 @@ class GroupMemes : MemePool() {
 
     init {
         val startMemes: MutableList<Meme> = listOf("group", "time", "space", "life", "death", "sun", "luck", "misfortune")
-                .map { MemeSubject(it) }
+                .map { Meme(it) }
                 .toMutableList()
         startMemes += listOf("die", "acquireAspect", "consume", "exist", "and")
-                .map { MemePredicate(it) }
+                .map { Meme(it) }
         startMemes += session.templateBase.wordBase.values
                 .flatten()
                 .map { it.copy() }
@@ -91,7 +91,7 @@ class GroupMemes : MemePool() {
 
     fun addMemeCombination(meme: Meme) {
         if (!memesCombinationsMap.containsKey(meme.toString()))
-            memesCombinationsMap[meme.toString().toLowerCase()] = meme.copy()
+            memesCombinationsMap[meme.toString()] = meme.copy()
     }
 
     override fun strengthenMeme(meme: Meme) = strengthenMeme(meme, 1)

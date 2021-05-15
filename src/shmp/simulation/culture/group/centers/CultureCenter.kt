@@ -9,8 +9,6 @@ import shmp.simulation.culture.group.cultureaspect.CherishedResource
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemePredicate
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.simulation.event.Event
 import shmp.simulation.event.EventLog
 import shmp.simulation.event.Type
@@ -62,8 +60,8 @@ class CultureCenter(
             if (tag.type == GROUP_TAG_TYPE)
                 continue
 
-            memePool.add(MemeSubject(tag.name))
-            memePool.strengthenMeme(MemeSubject(tag.name))
+            memePool.add(Meme(tag.name))
+            memePool.strengthenMeme(Meme(tag.name))
         }
     }
 
@@ -97,8 +95,8 @@ class CultureCenter(
         val aspects = aspectCenter.finishUpdate()
         aspects.forEach {
             memePool.addAspectMemes(it)
-            memePool.addMemeCombination(MemeSubject(group.name).addPredicate(
-                    MemePredicate("acquireAspect").addPredicate(MemeSubject(it.name))
+            memePool.addMemeCombination(Meme(group.name).addPredicate(
+                    Meme("acquireAspect").addPredicate(Meme(it.name))
             ))
         }
         return aspects

@@ -2,11 +2,11 @@ package shmp.simulation.culture.group.request
 
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.AbstractReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.thinking.meaning.MemeSubject
+import shmp.simulation.culture.thinking.meaning.Meme
 
 
 sealed class RequestType: AbstractReasonConcept() {
-    override val meme = MemeSubject(this::class.simpleName)
+    override val meme = Meme(this::class.simpleName!!)
     override val correspondingConcepts: List<ReasonConcept> = emptyList()
     override val oppositeConcepts: List<ReasonConcept> = emptyList()
 

@@ -4,7 +4,6 @@ import shmp.random.singleton.RandomSingleton
 import shmp.simulation.CulturesController
 import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 import shmp.utils.SoftValue
 import java.util.*
 
@@ -46,10 +45,10 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
 
 
 enum class Trait(val positiveMeme: Meme, val negativeMeme: Meme) {
-    Peace(MemeSubject("Peace"), MemeSubject("War")),
-    Expansion(MemeSubject("Expansion"), MemeSubject("Content")),
-    Consolidation(MemeSubject("Consolidation"), MemeSubject("Freedom")),
-    Creation(MemeSubject("Creation"), MemeSubject("Destruction"))
+    Peace(Meme("Peace"), Meme("War")),
+    Expansion(Meme("Expansion"), Meme("Content")),
+    Consolidation(Meme("Consolidation"), Meme("Freedom")),
+    Creation(Meme("Creation"), Meme("Destruction"))
 }
 
 typealias TraitValue = SoftValue

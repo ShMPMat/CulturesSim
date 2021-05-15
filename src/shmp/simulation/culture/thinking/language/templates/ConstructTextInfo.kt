@@ -36,7 +36,7 @@ fun complicateInfo(info: TextInfo, templateBase: TemplateBase, groupMemes: Group
                         substitutions[key + m.observerWord] = templateBase.wordBase[m.observerWord]!!.randomElement {
                             groupMemes.getMeme(it.observerWord)?.importance?.toDouble() ?: 0.0
                         }
-                        MemePredicate(key + m.observerWord)
+                        Meme(key + m.observerWord)
                     }
                     else -> m.topMemeCopy()
                 }
@@ -68,8 +68,8 @@ fun getResourceInformationTextInfo(resource: Resource): List<TextInfo> {
             for (res in resourceDependency.lastConsumed) {
                 infos.add(TextInfo(
                         ArbitraryResource(resource),
-                        MemePredicate("consume"),
-                        MemeSubject(res.toLowerCase()))
+                        Meme("consume"),
+                        Meme(res.toLowerCase()))
                 )
             }
     return infos

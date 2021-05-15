@@ -2,7 +2,6 @@ package shmp.simulation.culture.group.cultureaspect.reasoning.concept
 
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.thinking.meaning.Meme
-import shmp.simulation.culture.thinking.meaning.MemeSubject
 
 
 sealed class ActionConcept(
@@ -26,12 +25,12 @@ sealed class ActionConcept(
         }
     }
 
-    object Protect: ActionConcept(MemeSubject("Protect"), { listOf(Abandon) }, { listOf() }, Defence)
-    object Abandon: ActionConcept(MemeSubject("Abandon"), { listOf(Protect) }, { listOf() }, Abandonment)
+    object Protect: ActionConcept(Meme("Protect"), { listOf(Abandon) }, { listOf() }, Defence)
+    object Abandon: ActionConcept(Meme("Abandon"), { listOf(Protect) }, { listOf() }, Abandonment)
 
-    object Cherish: ActionConcept(MemeSubject("Cherish"), { listOf(Ignore) }, { listOf() }, Importance)
-    object Ignore: ActionConcept(MemeSubject("Ignore"), { listOf(Cherish) }, { listOf() }, Unimportance)
+    object Cherish: ActionConcept(Meme("Cherish"), { listOf(Ignore) }, { listOf() }, Importance)
+    object Ignore: ActionConcept(Meme("Ignore"), { listOf(Cherish) }, { listOf() }, Unimportance)
 
-    object Fear: ActionConcept(MemeSubject("Fear"), { listOf(Face) }, { listOf() }, IdeationalConcept.Fear)
-    object Face: ActionConcept(MemeSubject("Face"), { listOf(Fear) }, { listOf() }, Courage)
+    object Fear: ActionConcept(Meme("Fear"), { listOf(Face) }, { listOf() }, IdeationalConcept.Fear)
+    object Face: ActionConcept(Meme("Face"), { listOf(Fear) }, { listOf() }, Courage)
 }

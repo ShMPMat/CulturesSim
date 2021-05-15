@@ -19,7 +19,7 @@ open class MemePool private constructor(memes: Collection<Meme>) {
         if (memesMap.containsKey(meme.toString()))
             return false
 
-        memesMap[meme.toString().toLowerCase()] = meme.copy()
+        memesMap[meme.toString()] = meme.copy()
 
         return true
     }
@@ -36,7 +36,7 @@ open class MemePool private constructor(memes: Collection<Meme>) {
 
     open fun strengthenMeme(meme: Meme) = strengthenMeme(meme, 1)
 
-    open fun strengthenMeme(meme: Meme, delta: Int) = memesMap[meme.toString().toLowerCase()]
+    open fun strengthenMeme(meme: Meme, delta: Int) = memesMap[meme.toString()]
             ?.let {
                 it.increaseImportance(delta)
                 return true

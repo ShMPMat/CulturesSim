@@ -11,7 +11,7 @@ import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.request.SimpleResourceRequest
 import shmp.simulation.culture.group.stratum.Stratum
-import shmp.simulation.culture.thinking.meaning.MemeSubject
+import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 
 
@@ -55,7 +55,7 @@ class Cult(val name: String) : WorshipFeature {
                 val temple = request.evaluator.pickAndRemove(pack).resources
                         .map {
                             it.copyWithNewExternalFeatures(listOf(
-                                    MeaningResourceFeature(MemeSubject(name)),
+                                    MeaningResourceFeature(Meme(name)),
                                     MadeByResourceFeature(group)
                             ))
                         }
