@@ -12,7 +12,7 @@ import shmp.simulation.space.resource.dependency.ConsumeDependency
 import java.util.*
 
 
-fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase): TextInfo? { //TODO too slow
+fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase): TextInfo? {
     val textInfos: List<TextInfo> = cultureCenter.aspectCenter.aspectPool.converseWrappers
             .flatMap { getAspectTextInfo(it) }
 

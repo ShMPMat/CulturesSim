@@ -53,7 +53,7 @@ class GroupMemes : MemePool() {
     }
 
     private fun getMemeCombinationByName(name: String) =
-            memesCombinationsMap[name.toLowerCase()]//TODO doublewut
+            memesCombinationsMap[name.toLowerCase()]
 
     val valuableMeme: Meme
         get() {
@@ -91,7 +91,7 @@ class GroupMemes : MemePool() {
 
     fun addMemeCombination(meme: Meme) {
         if (!memesCombinationsMap.containsKey(meme.toString()))
-            memesCombinationsMap[meme.toString()] = meme.copy()
+            memesCombinationsMap[meme.toString().toLowerCase()] = meme.copy()
     }
 
     override fun strengthenMeme(meme: Meme) = strengthenMeme(meme, 1)
