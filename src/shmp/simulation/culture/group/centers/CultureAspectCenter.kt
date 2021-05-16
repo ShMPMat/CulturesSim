@@ -64,8 +64,7 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
             AspectRandom.Depict -> createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
                     constructAndAddSimpleMeme(
-                            group.cultureCenter.memePool,
-                            session.random
+                            group.cultureCenter.memePool
                     ),
                     null
             )

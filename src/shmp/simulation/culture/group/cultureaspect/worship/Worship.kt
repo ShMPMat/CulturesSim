@@ -129,4 +129,3 @@ open class Worship(
             "reasons: ${reasonComplex.reasonings.joinToString()} " +
             "features - ${features.joinToString()}"
 }
-

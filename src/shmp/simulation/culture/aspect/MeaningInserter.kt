@@ -36,7 +36,7 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
     }
 
     private fun makePostfix(result: AspectResult, meaning: Meme) =
-            "representing_${meaning}_with_${result.node.aspect.name}"
+            "representing_${meaning}_with_${result.node?.aspect?.name}"
 
     override fun shouldPassMeaningNeed(isMeaningNeeded: Boolean) = false
 

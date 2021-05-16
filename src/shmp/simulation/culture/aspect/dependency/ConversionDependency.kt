@@ -24,13 +24,13 @@ class ConversionDependency(
 
     override fun useDependency(controller: AspectController): AspectResult {
         if (controller.ceiling <= 0)
-            return AspectResult(MutableResourcePack(), null)
+            return AspectResult()
         val gatheredPack = controller.pickCeilingPart(
                 controller.territory.getResourceInstances(resource),
                 { it.applyAction(aspect.core.resourceAction) },
                 { r, n -> r.getPart(n).applyActionAndConsume(aspect.core.resourceAction, n, false) }
         )
-        return AspectResult(gatheredPack, null)
+        return AspectResult(gatheredPack)
     }
 
     override fun copy() = ConversionDependency(isPhony, aspect, resource)

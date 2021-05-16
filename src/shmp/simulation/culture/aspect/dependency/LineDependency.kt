@@ -10,6 +10,7 @@ import shmp.simulation.space.resource.container.MutableResourcePack
 import java.util.*
 import kotlin.math.ceil
 
+
 class LineDependency(
         isPhony: Boolean,
         private var parentConverseWrapper: ConverseWrapper,
@@ -34,7 +35,7 @@ class LineDependency(
         return try {
             val resourcePack = MutableResourcePack()
             if (isAlreadyUsed || controller.ceiling <= 0 || !goodForInsertMeaning() && controller.isMeaningNeeded) {
-                return AspectResult(resourcePack, null)
+                return AspectResult(resourcePack)
             }
             isAlreadyUsed = true
             val _p = converseWrapper.use(controller.copy(
@@ -49,7 +50,7 @@ class LineDependency(
                     })
             resourcePack.addAll(_p.resources)
             isAlreadyUsed = false
-            AspectResult(_p.isFinished, emptyList(), resourcePack, null)
+            AspectResult(resourcePack, null, _p.isFinished)
         } catch (e: NullPointerException) {
             isAlreadyUsed = false
             throw RuntimeException("No such aspect in Group")
@@ -77,5 +78,4 @@ class LineDependency(
     override fun hashCode(): Int {
         return Objects.hash(super.hashCode(), parentConverseWrapper, converseWrapper)
     }
-
 }

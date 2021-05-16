@@ -36,7 +36,7 @@ class AspectDependency(
 
     override fun useDependency(controller: AspectController): AspectResult {
         if (isAlreadyUsed || controller.ceiling <= 0)//TODO mb unnecessary
-            return AspectResult(MutableResourcePack(), null)
+            return AspectResult()
         isAlreadyUsed = true
         val result = aspect.use(controller.copy(
                 evaluator = evaluator,

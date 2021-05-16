@@ -53,8 +53,8 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
         throw GroupError("Error in using Converse Wrapper $name")
     }
 
-    private fun toFeatures(node: AspectResult.ResultNode): List<ExternalResourceFeature> =
-            if (node.resourceUsed.isNotEmpty())
+    private fun toFeatures(node: ResultNode?): List<ExternalResourceFeature> =
+            if (node?.resourceUsed?.isNotEmpty() == true)
                 node.resourceUsed.entries
                     .filter { it.key.name != phony.name && !it.key.isInstrumental }
                     .flatMap { p -> p.value.resources.map { it.fullName } }

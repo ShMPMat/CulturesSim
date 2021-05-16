@@ -1,6 +1,6 @@
 package shmp.simulation.culture.thinking.meaning
 
-import shmp.random.testProbability
+import shmp.random.singleton.chanceOf
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.Group
@@ -8,17 +8,11 @@ import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.dependency.ConsumeDependency
-import kotlin.random.Random
 
 
-fun constructAndAddSimpleMeme(
-        groupMemes: GroupMemes,
-        random: Random,
-        complicateProbability: Double = 0.5,
-        maxTests: Int = 10
-): Meme? {
+fun constructAndAddSimpleMeme(groupMemes: GroupMemes, complicateProbability: Double = 0.5, maxTests: Int = 10): Meme? {
     var meme: Meme = groupMemes.memeWithComplexityBias.copy()
-    if (testProbability(complicateProbability, random)) {
+    complicateProbability.chanceOf {
         var second: Meme
         var tests = 0
         do {
@@ -87,7 +81,7 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
     for (resourceDependency in resource.genome.dependencies)
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed) {
-                val subject: Meme = Meme(res.toLowerCase())
+                val subject = Meme(res.toLowerCase())
                 memes.first.add(subject)
                 val element = makeMeme(resource).addPredicate(Meme("consume"))
                 element.predicates[0].addPredicate(subject)

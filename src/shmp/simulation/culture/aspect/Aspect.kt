@@ -3,7 +3,7 @@ package shmp.simulation.culture.aspect
 import shmp.random.testProbability
 import shmp.simulation.CulturesController.*
 import shmp.simulation.SimulationError
-import shmp.simulation.culture.aspect.AspectResult.ResultNode
+import shmp.simulation.culture.aspect.ResultNode
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.aspect.dependency.Dependency
 import shmp.simulation.culture.group.centers.AspectCenter
@@ -108,12 +108,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     protected fun _use(controller: AspectController): AspectResult {
         //TODO put dependency resources only in node; otherwise they may merge with phony
-        if (checkTermination(controller)) return AspectResult(
-                false,
-                ArrayList(),
-                MutableResourcePack(),
-                ResultNode(this)
-        )
+        if (checkTermination(controller)) return AspectResult(isFinished = false, node = ResultNode(this))
 
         this as ConverseWrapper
         timesUsedInTurn++
@@ -159,7 +154,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         }
         used = false
 
-        return AspectResult(isFinished, neededResources, meaningfulPack, node)
+        return AspectResult(meaningfulPack, node, isFinished, neededResources)
     }
 
     private fun satisfyPhonyDependency(
