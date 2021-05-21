@@ -15,7 +15,7 @@ public class Controller<E extends World> {
     public E world;
     public InteractionModel<E> interactionModel;
 
-    public final Random random = RandomKt.Random(8565728 + 9);
+    public final Random random = RandomKt.Random(8565728 + 11);
 
     public final boolean doTurns = true;
 

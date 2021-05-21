@@ -3,7 +3,6 @@ package shmp.simulation.space.resource
 import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomTileOnBrink
-import shmp.simulation.space.SpaceData
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.action.ResourceProbabilityAction
@@ -18,8 +17,8 @@ open class Resource private constructor(
         internal val core: ResourceCore,
         amount: Int = core.genome.defaultAmount,
         hash: Int?
-): Comparable<Resource> {
-    constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount): this(core, amount, null)
+) : Comparable<Resource> {
+    constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount) : this(core, amount, null)
 
     open var amount = amount
         set(value) {
@@ -62,9 +61,9 @@ open class Resource private constructor(
         get() = core.externalFeatures
 
     val fullName = genome.baseName +
-                if (externalFeatures.isNotEmpty())
-                    externalFeatures.joinToString("_", "_") { it.name }
-                else ""
+            if (externalFeatures.isNotEmpty())
+                externalFeatures.joinToString("_", "_") { it.name }
+            else ""
 
     val ownershipMarker: OwnershipMarker
         get() = core.ownershipMarker
@@ -211,11 +210,12 @@ open class Resource private constructor(
             applyAction(action, part)
     }
 
-    fun isAcceptable(tile: Tile) =
+    fun isIdeal(tile: Tile) =
             genome.necessaryDependencies.all { it.satisfactionPercent(tile, this) == 1.0 }
 
-    fun isOptimal(tile: Tile) = isAcceptable(tile)
-            && genome.negativeDependencies.all { it.satisfactionPercent(tile, this) >= 0.9 }
+    fun isAcceptable(tile: Tile) =
+            genome.negativeDependencies.all { it.satisfactionPercent(tile, this) >= 0.8 }
+                    && genome.positiveDependencies.all { it.satisfactionPercent(tile, this) >= 0.8 }
 
     private fun distribute(tile: Tile) {
         if (amount <= genome.naturalDensity)
@@ -223,7 +223,7 @@ open class Resource private constructor(
 
         when (genome.overflowType) {
             OverflowType.Migrate -> {
-                val tiles = tile.getNeighbours { isAcceptable(it) }
+                val tiles = tile.getNeighbours { isIdeal(it) }
                         .sortedBy { it.resourcePack.getAmount(this) }
 
                 for (neighbour in tiles) {
@@ -277,13 +277,13 @@ open class Resource private constructor(
         val tileList = mutableListOf(tile)
 
         var newTile = tileList.randomTileOnBrink {
-            isAcceptable(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
+            isIdeal(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
         }
         if (newTile == null) {
             if (genome.dependencies.all { it.hasNeeded(tile) })
                 newTile = tile
             else {
-                newTile = tileList.randomTileOnBrink { isAcceptable(it) }
+                newTile = tileList.randomTileOnBrink { isIdeal(it) }
                 if (newTile == null)
                     newTile = tile
             }

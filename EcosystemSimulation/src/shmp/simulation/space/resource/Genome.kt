@@ -37,6 +37,7 @@ open class Genome(
     val dependencies = dependencies.toList()
     val necessaryDependencies = dependencies.filter { it.isNecessary }
     val negativeDependencies = dependencies.filter { !it.isPositive }
+    val positiveDependencies = dependencies.filter { it.isPositive }
 
     val tags = tags.toMutableSet()
     val secondaryMaterials: List<Material>

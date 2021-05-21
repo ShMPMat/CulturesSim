@@ -2,6 +2,8 @@ package shmp.simulation.space.generator
 
 import shmp.random.randomElement
 import shmp.random.randomTile
+import shmp.random.singleton.randomElement
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.space.TectonicPlate
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
@@ -130,23 +132,15 @@ private fun fill(map: WorldMap) {
 }
 
 private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
-    val attempts = 1000
-    val goodTiles = map.getTiles { resource.isOptimal(it) }//TODO something wrong, it optimal and acceptable works inside-out
+    val idealTiles = map.getTiles { resource.isIdeal(it) }
+    val goodTiles = map.getTiles { resource.isAcceptable(it) }
 
     for (i in 0 until n) {
-        var tile: Tile
-        if (goodTiles.isEmpty()) {
-            tile = randomTile(map, random)
-            var j = 0
+        val tile: Tile = idealTiles.randomElementOrNull()
+                ?: goodTiles.randomElementOrNull()
+                        ?: randomTile(map, random)
 
-            while (j < attempts && !resource.isAcceptable(tile)) {
-                tile = randomTile(map, random)
-                j++
-            }
-        } else
-            tile = randomElement(goodTiles, random)
-
-        tile.addDelayedResource(resource)
+        tile.addDelayedResource(resource.copy())
         addDependencies(listOf(), resource, tile, resourcePool)
     }
 }
@@ -161,7 +155,7 @@ private fun addDependencies(resourceStack: List<Resource>, resource: Resource, t
                     .getAll { dependency.isResourceDependency(it) }
                     .filter { filterDependencyResources(it, newStack) }
             for (dependencyResource in suitableResources) {
-                if (dependencyResource.isAcceptable(tile)) {
+                if (dependencyResource.isIdeal(tile)) {
                     tile.addDelayedResource(dependencyResource)
                     addDependencies(newStack, dependencyResource, tile, resourcePool)
                 }
