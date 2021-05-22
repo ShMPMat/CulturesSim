@@ -9,7 +9,8 @@ data class ResourceUpdateResult(val isAlive: Boolean, val produced: List<Resourc
 
 val specialActions = mapOf(
         "_OnDeath_" to ResourceAction("_OnDeath_", listOf(), listOf()),
-        "TakeApart" to ResourceAction("TakeApart", listOf(), listOf())
+        "TakeApart" to ResourceAction("TakeApart", listOf(), listOf()),
+        "Killing" to ResourceAction("Killing", listOf(), listOf()),
 )
 
 

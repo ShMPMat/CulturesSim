@@ -50,8 +50,8 @@ data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
 
 fun outputResource(resource: Resource): String = resource.toString() + "\n" +
         resource.genome.conversionCore.actionConversion.entries.joinToString("\n") { (a, v) ->
-            a.name + ": " + v.joinToString { it.first?.fullName ?: "LEGEND" }
-        } + "\n\n" +
+            a.name + ": " + v.joinToString { (it.first?.fullName ?: "LEGEND") + ":" + it.second }
+        } + "\n\nParts:\n" +
         resource.genome.parts.joinToString("\n") { p ->
             outputResource(p).lines().joinToString("\n") { "--$it" }
         }

@@ -13,7 +13,7 @@ data class ResourceLink(val resourceName: String, val transformer: ResourceTrans
 
 fun parseLink(tag: String, actions: List<ResourceAction>): ResourceLink {
     val nameAndTrans = tag.split(":")
-    val amount = tag[1].toInt()
+    val amount = nameAndTrans[1].toInt()
 
     val name = nameAndTrans[0]
     val transformer =

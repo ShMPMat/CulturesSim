@@ -34,6 +34,7 @@ class ResourceTemplateCreator(
         val secondaryMaterials: MutableList<Material> = ArrayList()
         val actionConversion = mutableMapOf<ResourceAction, List<ResourceLink>>()
         val parts = mutableListOf<String>()
+        var colour: ResourceColour? = null
 
         for (i in 12..tags.lastIndex) {
             val key = tags[i][0]
@@ -69,6 +70,7 @@ class ResourceTemplateCreator(
                     ))
                     'R' -> willResist = true
                     'U' -> isDesirable = false
+                    'c' -> colour = ResourceColour.valueOf(tag)
                     'T' -> {
                         val tempBound = tag.take(3)
                         val coefficient = tag.drop(3).toDouble()
@@ -106,10 +108,10 @@ class ResourceTemplateCreator(
                 size = tags[2].toDouble(),
                 spreadProbability = tags[1].toDouble(),
                 baseDesirability = tags[7].toInt(),
-                overflowType = OverflowType.valueOf(tags[10]),
                 isMutable = false,
                 isMovable = tags[8] == "1",
-                isResisting = willResist,
+                behaviour = Behaviour(willResist, OverflowType.valueOf(tags[10])),
+                appearance = Appearance(colour),
                 isDesirable = isDesirable,
                 hasLegacy = tags[9] == "1",
                 lifespan = lifespan,

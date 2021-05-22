@@ -1,9 +1,12 @@
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
 -Meat            0       0.1    5          -500   500  100000000  0             1 1  Ignore    None         @Meat
+        cRed
 
 -Fat             0       0.1    5          -500   500  100000000  0             1 1  Ignore    None         @Fat
+        cWhite
 
 -Bone            0       0.1    1000       -500   500  100000000  0             1 1  Ignore    None         @Bone
+        cWhite
 
 -SeaShell        0       0.03   1000       -500   500  100000000  0             1 1  Ignore    None         @SeaShell
 
@@ -15,6 +18,7 @@
 -Feather         0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Feather
 
 -Blood           0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Blood
+        cRed
 
 -Leather         0       1.0    50         -500   500  100000000  0             1 1  Ignore    None         @Leather
         +MakeClothes:LeatherClothes:1

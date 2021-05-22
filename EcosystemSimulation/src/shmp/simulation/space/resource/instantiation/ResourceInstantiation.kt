@@ -9,6 +9,7 @@ import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.container.ResourcePool
 import shmp.simulation.space.resource.material.MaterialPool
 import shmp.simulation.space.resource.specialActions
+import shmp.simulation.space.resource.transformer.ColourTransformer
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -69,6 +70,7 @@ class ResourceInstantiation(
             resource.genome.conversionCore.addActionConversion(
                     a,
                     l.map { readConversion(template, it) }
+                            .map { it.first?.let { r -> injectParentColour(r, resource) } to it.second }
             )
         }
         if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
@@ -121,14 +123,35 @@ class ResourceInstantiation(
     }
 
     private fun actualizeParts(template: ResourceStringTemplate) {
-        val (resource, _, parts) = template
+        val (resource, actionConversion, parts) = template
         for (part in parts) {
             val link = parseLink(part, actions)
             val partTemplate = getTemplateWithName(link.resourceName)
-            val partResource = link.transform(partTemplate.resource)
+            var partResource = link.transform(partTemplate.resource)
+
+            partResource = injectParentColour(partResource, resource)
+
             resource.genome.addPart(partResource)
         }
+
+        val killingAspect = specialActions.getValue("Killing")
+        if (actionConversion.containsKey(killingAspect)) {
+            resource.genome.conversionCore.actionConversion.getValue(killingAspect).forEach { (r, n) ->
+                r?.let {
+                    resource.genome.addPart(r.copy(n))
+                }
+            }
+        }
+
         addTakeApartAction(template)
+    }
+
+    private fun injectParentColour(partResource: Resource, resource: Resource): Resource {
+        if (partResource.genome.appearance.colour == null)
+            resource.genome.appearance.colour?.let {
+                return ColourTransformer(it).transform(partResource)
+            }
+        return partResource
     }
 
     private fun addTakeApartAction(template: ResourceStringTemplate) {
@@ -190,7 +213,7 @@ class ResourceInstantiation(
 data class ResourceStringTemplate(
         val resource: ResourceIdeal,
         val actionConversion: TemplateConversions,
-        val parts: List<String>
+        val parts: MutableList<String>
 )
 
 typealias TemplateConversions = Map<ResourceAction, List<ResourceLink>>

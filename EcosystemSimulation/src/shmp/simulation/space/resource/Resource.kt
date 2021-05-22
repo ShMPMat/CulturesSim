@@ -221,7 +221,7 @@ open class Resource private constructor(
         if (amount <= genome.naturalDensity)
             return
 
-        when (genome.overflowType) {
+        when (genome.behaviour.overflowType) {
             OverflowType.Migrate -> {
                 val tiles = tile.getNeighbours { isIdeal(it) }
                         .sortedBy { it.resourcePack.getAmount(this) }
@@ -319,7 +319,8 @@ open class Resource private constructor(
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.lifespan}, amount - $amount, ownership - $core.ownershipMarker, tags: " +
+            "lifespan - ${genome.lifespan}, amount - $amount, colour - ${genome.appearance.colour}, " +
+            "ownership - $core.ownershipMarker, tags: " +
             tags.joinToString(" ") { it.name }
 
     override fun compareTo(other: Resource): Int {
