@@ -19,12 +19,15 @@
 -Fibre           0       0.5    100        -500   500  100000000  1             1 1  Ignore    None         @Fibre
         +Weaving:Cloth:1
 -Fire            0       0.5    2          -500   500  100000000  0             1 0  Migrate   None         @Flame
+        cRed
 
 -Ash             0       0.5    50         -500   500  100000000  0             1 0  Ignore    None         @Ash
+        cGrey
 
 -Vapour          0       0.0001 inf        -1000  1000 50         0             1 0  Migrate   None         @Water
 
 -Snow            0       0.1    inf        -1000  0    100000000  0             1 0  Migrate   None         @Water
+        cWhite
 
 -Water           0       10     inf        -1000  1000 100000000  0             1 0  Migrate   None         @Water
         +_evaporate_prob_1.0_false:Vapour:2500
@@ -34,3 +37,4 @@
 /        +_evaporate_prob_0.01_true:Vapour:50
 
 -Pearl           0       0.01   100000     -500   500  100000000  0             1 0  Migrate   None         @Pearl
+        cWhite
