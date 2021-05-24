@@ -18,8 +18,10 @@ import kotlin.math.min
 
 
 class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors", "") {
-    private val warAspect = session.world.aspectPool.get("Killing")
-            ?: throw SimulationError("No aspect Killing exists for the $name")
+    init {
+        aspect = session.world.aspectPool.get("Killing")
+                ?: throw SimulationError("No aspect Killing exists for the $name")
+    }
 
     private var _effectiveness = 1.0
 
@@ -33,7 +35,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
         get() {
             if (_effectiveness == -1.0) _effectiveness = 1.0 + places
                     .flatMap { it.owned.resources }
-                    .map { it.getAspectImprovement(warAspect) }
+                    .map { it.getAspectImprovement(aspect!!) }
                     .foldRight(0.0, Double::plus)
             return _effectiveness
         }
@@ -68,7 +70,7 @@ class WarriorStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of warriors",
         }
 
         val request = AspectImprovementRequest(
-                warAspect,
+                aspect!!,
                 RequestCore(
                         group,
                         0.5,

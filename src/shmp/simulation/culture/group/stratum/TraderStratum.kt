@@ -20,8 +20,10 @@ import kotlin.math.min
 
 
 class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "") {
-    private val tradeAspect = session.world.aspectPool.get("Trade")
-            ?: throw SimulationError("No aspect Trade exists for the $name")
+    init {
+        aspect = session.world.aspectPool.get("Trade")
+                ?: throw SimulationError("No aspect Trade exists for the $name")
+    }
 
     private var _effectiveness = 1.0
         private set
@@ -40,7 +42,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
             if (_effectiveness == -1.0)
                 _effectiveness = 1.0 + places
                         .flatMap { it.owned.resources }
-                        .map { it.getAspectImprovement(tradeAspect) }
+                        .map { it.getAspectImprovement(aspect!!) }
                         .foldRight(0.0, Double::plus)
             if (_effectiveness > 1.0) {
                 val k = 0
@@ -94,7 +96,7 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
             return
 
         val request = AspectImprovementRequest(
-                tradeAspect,
+                aspect!!,
                 RequestCore(
                         group,
                         0.5,

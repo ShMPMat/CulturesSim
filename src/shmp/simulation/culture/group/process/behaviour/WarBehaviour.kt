@@ -94,6 +94,9 @@ class WarB(
                 val action = warStatus.winner.decide(initiatorWinAction, participatorWinAction, drawWinAction)
                 val actionInternalEvents = action.run()
 
+                warStatus.winner.decide(group, opponent, null)?.populationCenter?.stratumCenter?.warriorStratum
+                        ?.let { it.importance += 10 }
+
                 isFinished = true
 
                 actionInternalEvents + traitChange +
