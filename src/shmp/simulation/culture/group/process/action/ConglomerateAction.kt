@@ -8,6 +8,7 @@ import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.event.Event
 import shmp.simulation.event.Type
+import shmp.simulation.space.resource.OwnershipMarker
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.tile.Tile
 import java.util.*
@@ -106,13 +107,13 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
 
         val pack = MutableResourcePack()
         group.resourceCenter.pack.resources.forEach {
-            pack.addAll(group.resourceCenter.takeResource(it, it.amount / 2))
+            pack.addAll(group.resourceCenter.takeResource(it, it.amount / 2, group.populationCenter.taker))
         }
 
         val name = group.parentGroup.newName
         val memoryCenter = group.cultureCenter.memoryCenter.fullCopy()
         val aspectCenter = AspectCenter(aspects)
-        val populationCenter = group.populationCenter.getPart(0.5, startTile)
+        val populationCenter = group.populationCenter.getPart(0.5, startTile, OwnershipMarker(name))
 
         return Group(
                 ProcessCenter(AdministrationType.Subordinate),
@@ -137,4 +138,3 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
 
     override val internalToString = "Make a new Group from ${group.name}"
 }
-

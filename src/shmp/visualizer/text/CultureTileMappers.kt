@@ -28,7 +28,9 @@ fun aspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
         {
             val group: Group = getResidingGroup(it)
                     ?: return@hotnessMapper 0
-            group.cultureCenter.aspectCenter.aspectPool.get(aspectName)?.usefulness ?: 0
+            group.cultureCenter.aspectCenter.aspectPool.all.firstOrNull { a -> a.name.contains(aspectName) }
+                    ?.usefulness
+                    ?: 0
         }
 )
 

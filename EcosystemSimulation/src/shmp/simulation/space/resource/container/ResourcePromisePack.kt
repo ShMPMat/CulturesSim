@@ -1,10 +1,12 @@
 package shmp.simulation.space.resource.container
 
+import shmp.simulation.space.resource.Taker
+
 
 data class ResourcePromisePack(val resources: List<ResourcePromise> = listOf()) {
     constructor(pack: ResourcePack): this(pack.resources.map { ResourcePromise(it) })
 
-    fun extract() = ResourcePack(resources.map { it.extract() })
+    fun extract(taker: Taker) = ResourcePack(resources.map { it.extract(taker) })
 
     fun makeCopy() = ResourcePack(resources.map { it.makeCopy() })
 

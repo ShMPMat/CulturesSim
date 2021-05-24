@@ -10,6 +10,7 @@ import shmp.simulation.culture.group.request.ResourceEvaluator
 import shmp.simulation.culture.group.request.resourceEvaluator
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.BaseNameLabeler
@@ -186,7 +187,14 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         return controller.pickCeilingPart(
                 pack.resources,
                 { it.applyAction(aspect.core.resourceAction) }
-        ) { r, n -> r.applyActionAndConsume(aspect.core.resourceAction, n, true) }
+        ) { r, n ->
+            r.applyActionAndConsume(
+                    aspect.core.resourceAction,
+                    n,
+                    true,
+                    controller.populationCenter.taker
+            )
+        }
     }
 
     private fun satisfyRegularDependency(
@@ -203,7 +211,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                 controller.populationCenter.stratumCenter.getByAspect(this as ConverseWrapper)
                         .getInstrumentByTag(requirementTag).resources,
                 { listOf(it.copy(1)) }
-        ) { r, n -> listOf(r.getCleanPart(n)) })
+        ) { r, n -> listOf(r.getCleanPart(n, controller.populationCenter.taker)) })
         val usedForDependency = MutableResourcePack()
         for (dependency in dependencies) {
             val newDelta = _rp.getAmount(requirementTag)

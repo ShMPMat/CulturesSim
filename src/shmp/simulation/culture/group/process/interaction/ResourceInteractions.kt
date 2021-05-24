@@ -80,7 +80,7 @@ class ReceiveGiftI(
         val acceptanceChance = participator.relationCenter.getNormalizedRelation(initiator) * worth.pow(2)
 
         return acceptanceChance.chanceOf<InteractionResult> {
-            ReceiveGroupWideResourcesA(participator, gift.extract()).run()
+            ReceiveGroupWideResourcesA(participator, gift.extract(participator.populationCenter.taker)).run()
 
             ProcessResult(Event(
                     Type.Cooperation,

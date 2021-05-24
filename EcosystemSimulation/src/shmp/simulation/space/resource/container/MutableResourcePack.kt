@@ -1,6 +1,7 @@
 package shmp.simulation.space.resource.container
 
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
 import java.util.*
@@ -16,7 +17,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         return innerResource
     }
 
-    fun getResourcePartAndRemove(resource: Resource, amount: Int): ResourcePack {
+    fun getResourcePartAndRemove(resource: Resource, amount: Int, taker: Taker): ResourcePack {
         val innerResource = getResource(resource)
         val result = MutableResourcePack()
         var resultAmount = 0
@@ -28,7 +29,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
                 remove(res)
                 result.add(res)
             } else
-                result.add(resource.getCleanPart(resAmount))
+                result.add(resource.getCleanPart(resAmount, taker))
         }
         return result
     }

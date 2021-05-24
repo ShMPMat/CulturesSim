@@ -1,6 +1,7 @@
 package shmp.simulation.space.resource.dependency
 
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
 import java.util.*
@@ -31,7 +32,10 @@ class ConsumeDependency(
                         continue
 
                     if (isResourceDependency(res)) {
-                        val part = res.getPart(partByResource(res, neededAmount - currentAmount))
+                        val part = res.getPart(
+                                partByResource(res, neededAmount - currentAmount),
+                                resource
+                        )
                         if (part.isNotEmpty) {
                             lastConsumed.add(part.fullName)
                             currentAmount += part.amount * oneResourceWorth(res)

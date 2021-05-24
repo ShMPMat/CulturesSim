@@ -9,6 +9,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.event.EventLog
+import shmp.simulation.space.resource.OwnershipMarker
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.territory.BrinkInvariantTerritory
@@ -37,13 +38,14 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     init {
         claimTile(root)
         for (i in 0 until numberOfSubGroups) {
-            val name = name + "_$i"
+            val name = newName
             val memoryCenter = MemoryCenter()
             val aspectCenter = AspectCenter(emptyList())
             val populationCenter = PopulationCenter(
                     population / numberOfSubGroups,
                     CulturesController.session.defaultGroupMaxPopulation,
                     CulturesController.session.defaultGroupMinPopulationPerTile,
+                    OwnershipMarker(name),
                     root,
                     ResourcePack()
             )

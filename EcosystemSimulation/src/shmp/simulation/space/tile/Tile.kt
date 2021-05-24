@@ -156,12 +156,22 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     fun addDelayedResource(resource: Resource) {
         if (resource.isEmpty)
             return
+
+        if (resource.simpleName == "Person") {
+            val a = 0
+        }
+
         _delayedResources.add(resource)
     }
 
     fun addDelayedResources(resources: Collection<Resource>) = resources.forEach { addDelayedResource(it) }
 
     fun addDelayedResources(pack: ResourcePack) = addDelayedResources(pack.resources)
+
+    fun removeResource(resource: Resource) {
+        _resourcePack.remove(resource)
+        _delayedResources.remove(resource)
+    }
 
     fun startUpdate() { //TODO wind blows on 2 neighbour tiles
         updateResources()
@@ -180,6 +190,7 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     fun finishUpdate() {
         windCenter.finishUpdate()
 
+        resourcePack.resources.forEach { it.takers.clear() }
 //        if (testProbability(data.clearSpan, data.random))
 //            resourcePack.clearEmpty()
     }
@@ -202,12 +213,14 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
     private fun updateResources() {
         val deletedResources: MutableList<Resource> = ArrayList()
+
         for (resource in _resourcePack.resources) {
             val result = resource.update(this)
             if (!result.isAlive)
                 deletedResources.add(resource)
             addDelayedResources(result.produced)
         }
+
         _resourcePack.removeAll(deletedResources)
     }
 

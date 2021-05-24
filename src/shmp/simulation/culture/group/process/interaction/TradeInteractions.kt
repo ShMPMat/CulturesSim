@@ -38,8 +38,8 @@ class TradeI(
         if (priceForP > priceForI)
             return emptyProcessResult to emptyProcessResult
 
-        val got = wantedResources.extract()
-        val given = priceInResources.extract()
+        val got = wantedResources.extract(initiator.populationCenter.taker)
+        val given = priceInResources.extract(participator.populationCenter.taker)
         var result = ProcessResult(Event(
                 Type.Cooperation,
                 "${initiator.name} and ${participator.name} " +

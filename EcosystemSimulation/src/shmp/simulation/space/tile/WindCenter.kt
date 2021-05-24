@@ -3,6 +3,7 @@ package shmp.simulation.space.tile
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.freeMarker
 import kotlin.math.max
 import kotlin.math.pow
@@ -27,7 +28,7 @@ class WindCenter internal constructor() {
                 val part = (resource.amount * t.pow(2) / wind.sumLevel * getFlyCoefficient(resource)).toInt()
 
                 if (part > 0)
-                    tile.addDelayedResource(resource.getCleanPart(part))
+                    tile.addDelayedResource(resource.getCleanPart(part, Taker.WindTaker))
             }
         }
     }

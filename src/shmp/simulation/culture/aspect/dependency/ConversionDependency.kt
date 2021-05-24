@@ -7,6 +7,7 @@ import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.AspectCenter
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import java.util.*
 
 class ConversionDependency(
@@ -25,10 +26,15 @@ class ConversionDependency(
     override fun useDependency(controller: AspectController): AspectResult {
         if (controller.ceiling <= 0)
             return AspectResult()
+
+        val taker = Taker.ResourceTaker(controller.populationCenter.actualPopulation)
+
         val gatheredPack = controller.pickCeilingPart(
                 controller.territory.getResourceInstances(resource),
                 { it.applyAction(aspect.core.resourceAction) },
-                { r, n -> r.getPart(n).applyActionAndConsume(aspect.core.resourceAction, n, false) }
+                { r, n ->
+                    r.getPart(n, taker).applyActionAndConsume(aspect.core.resourceAction, n, false, taker)
+                }
         )
         return AspectResult(gatheredPack)
     }

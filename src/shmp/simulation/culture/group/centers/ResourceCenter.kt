@@ -6,6 +6,7 @@ import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.group.place.MovablePlace
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
@@ -53,7 +54,8 @@ class ResourceCenter(
 
     private val _resourcesToAdd = mutableListOf<Resource>()
 
-    fun takeResource(resource: Resource, amount: Int) = place.current.takeResource(resource, amount)
+    fun takeResource(resource: Resource, amount: Int, taker: Taker) =
+            place.current.takeResource(resource, amount, taker)
 
     fun die() {
         session.world.strayPlacesManager.addPlace(place.current)

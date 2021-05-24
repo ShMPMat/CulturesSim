@@ -7,6 +7,7 @@ import shmp.simulation.culture.group.stratum.AspectStratum
 import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
 import kotlin.math.max
 
@@ -49,7 +50,7 @@ abstract class Request(val core: RequestCore) {
                 core.ceiling,
                 resourcePack.resources,
                 { listOf(it.copy(1)) },
-                { r, n -> listOf(r.getCleanPart(n)) }
+                { r, n -> listOf(r.getCleanPart(n, group.populationCenter.taker)) }
         )
         val amount = evaluator.evaluate(partPack)
         val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.exactCopy() })

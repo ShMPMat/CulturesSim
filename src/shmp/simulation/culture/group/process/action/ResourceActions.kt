@@ -118,7 +118,7 @@ class ChooseResourcesAndTakeA(
         val amount: Int
 ) : AbstractGroupAction(group) {
     override fun run() {
-        val chosenResources = ChooseResourcesA(group, pack, amount).run().extract()
+        val chosenResources = ChooseResourcesA(group, pack, amount).run().extract(group.populationCenter.taker)
 
         ReceivePopulationResourcesA(group, chosenResources).run()
     }

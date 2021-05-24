@@ -6,6 +6,7 @@ import shmp.simulation.culture.aspect.AspectResult
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.AspectCenter
 import shmp.simulation.culture.group.request.resourceEvaluator
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.MutableResourcePack
 import java.util.*
 import kotlin.math.ceil
@@ -45,7 +46,8 @@ class LineDependency(
                         it.applyActionAndConsume(
                                 parentConverseWrapper.aspect.core.resourceAction,
                                 ceil(controller.ceiling).toInt(),
-                                true
+                                true,
+                                Taker.ResourceTaker(controller.populationCenter.actualPopulation)
                         )
                     })
             resourcePack.addAll(_p.resources)

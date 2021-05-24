@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.utils.addLinePrefix
 import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper
@@ -10,23 +9,53 @@ import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.request.ExecutedRequestResult
 import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.group.request.RequestPool
-import shmp.simulation.culture.group.stratum.*
-import shmp.simulation.space.territory.Territory
+import shmp.simulation.culture.group.stratum.AspectStratum
+import shmp.simulation.culture.group.stratum.Person
+import shmp.simulation.culture.group.stratum.Stratum
+import shmp.simulation.culture.group.stratum.StratumPeople
+import shmp.simulation.space.resource.OwnershipMarker
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
+import shmp.simulation.space.resource.tag.labeler.BaseNameLabeler
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
+import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
+import shmp.utils.addLinePrefix
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.min
 
+
 class PopulationCenter(
-        var population: Int,
+        population: Int,
         private val maxPopulation: Int,
         private val minPopulation: Int,
+        val ownershipMarker: OwnershipMarker,
         initTile: Tile,
         initResources: ResourcePack
 ) {
+    var population = population
+        set(value) {
+            if (value != actualPopulation.amount) {
+                val diff = value - field
+
+                if (diff > 0)
+                    actualPopulation.addAmount(diff)
+                else if (diff < 0)
+                    actualPopulation.getCleanPart(-diff, Taker.SelfTaker)
+            }
+
+            field = value
+        }
+
+    val actualPopulation = Person(ownershipMarker).copy(population) //TODO smth meaningful please
+    val taker = Taker.ResourceTaker(actualPopulation)
+
+    init {
+        initTile.addDelayedResource(actualPopulation)
+    }
+
     val stratumCenter = StratumCenter(initTile)
 
     val turnResources = MutableResourcePack(initResources)
@@ -99,6 +128,21 @@ class PopulationCenter(
     }
 
     fun update(accessibleTerritory: Territory, group: Group) {
+        if (actualPopulation.amount < population) {
+            val decrease = population - actualPopulation.amount
+            decreasePopulation(decrease)
+
+            actualPopulation.takers.map { it.first }
+                    .filterIsInstance<Taker.ResourceTaker>()
+                    .forEach {
+                val hostileResource = it.resource
+
+                hostileResource.genome.parts.firstOrNull()?.let { part ->
+                    group.resourceCenter.addNeeded(BaseNameLabeler(part.baseName), decrease * 100)
+                }
+            }
+        }
+
         stratumCenter.update(accessibleTerritory, group, turnResources)
 
         if (CulturesController.session.isTime(500))
@@ -120,7 +164,7 @@ class PopulationCenter(
                         request.ceiling,
                         turnResources.resources,
                         { listOf(it.copy(1)) }
-                ) { r, p -> listOf(r.getCleanPart(p)) }
+                ) { r, p -> listOf(r.getCleanPart(p, taker)) }
 
         for (stratum in strataForRequest) {
             val amount = evaluator.evaluate(pack)
@@ -156,16 +200,16 @@ class PopulationCenter(
         stratumCenter.movePopulation(tile)
     }
 
-    fun getPart(fraction: Double, newTile: Tile): PopulationCenter {
+    fun getPart(fraction: Double, newTile: Tile, ownershipMarker: OwnershipMarker): PopulationCenter {
         val populationPart = (fraction * population).toInt()
         decreasePopulation(populationPart)
 
         val pack = MutableResourcePack()
         turnResources.resources.forEach {
-            pack.addAll(turnResources.getResourcePartAndRemove(it, it.amount / 2))
+            pack.addAll(turnResources.getResourcePartAndRemove(it, it.amount / 2, taker))
         }
 
-        return PopulationCenter(populationPart, maxPopulation, minPopulation, newTile, pack)
+        return PopulationCenter(populationPart, maxPopulation, minPopulation, ownershipMarker, newTile, pack)
     }
 
     fun wakeNeedStrata(need: Pair<ResourceLabeler, ResourceNeed>) {

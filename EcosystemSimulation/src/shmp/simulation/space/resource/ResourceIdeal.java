@@ -19,9 +19,9 @@ public class ResourceIdeal extends Resource {
     }
 
     @Override
-    public Resource getPart(int part) {
+    public Resource getPart(int part, Taker taker) {
         System.err.println("Ideal is changing");
-        return super.getPart(part);
+        return super.getPart(part, taker);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class ResourceIdeal extends Resource {
     }
 
     @Override
-    public List<Resource> applyActionAndConsume(ResourceAction action, int part, boolean isClean) {
+    public List<Resource> applyActionAndConsume(ResourceAction action, int part, boolean isClean, Taker taker) {
         System.err.println("Ideal is changing");
-        return super.applyActionAndConsume(action, part, isClean);
+        return super.applyActionAndConsume(action, part, isClean, taker);
     }
 }

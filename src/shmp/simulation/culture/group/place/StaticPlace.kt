@@ -1,11 +1,8 @@
 package shmp.simulation.culture.group.place
 
-import shmp.simulation.space.resource.OwnershipMarker
-import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.*
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
-import shmp.simulation.space.resource.free
-import shmp.simulation.space.resource.freeCopy
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
 import kotlin.math.max
@@ -49,9 +46,9 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
                 .map { (r, a) -> r.copy(a) }
     }
 
-    fun takeResource(resource: Resource, amount: Int): ResourcePack {
+    fun takeResource(resource: Resource, amount: Int, taker: Taker): ResourcePack {
         val remapedResource = resource.copyWithOwnership(ownershipMarker)
-        val result = _owned.getResourcePartAndRemove(remapedResource, amount)
+        val result = _owned.getResourcePartAndRemove(remapedResource, amount, taker)
 
         if (result.contains(remapedResource))
             maxAmounts[remapedResource] = max(0, (maxAmounts[remapedResource] ?: 0) - result.amount)

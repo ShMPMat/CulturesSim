@@ -87,6 +87,11 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     fun migrate(): Boolean {
         val newCenter = migrationTile
                 ?: return false
+
+        val population = tileTag.group.populationCenter.actualPopulation
+        territory.center?.removeResource(population)
+        territory.center?.addDelayedResource(population)
+
         territory.center = newCenter
         claimTile(newCenter)
         leaveTiles(territory.filter { !isTileReachable(it) })
@@ -96,7 +101,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     private val migrationTile: Tile?
         get() = reachableTiles
                 .filter { canSettleAndNoGroupExcept(it) }
-                .maxBy { tilePotentialMapper(it) }
+                .maxByOrNull { tilePotentialMapper(it) }
 
     private val reachableTiles: Collection<Tile>
         get() {

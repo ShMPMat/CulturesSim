@@ -4,6 +4,7 @@ import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomTileOnBrink
 import shmp.simulation.space.SpaceData.data
+import shmp.simulation.space.resource.Taker.*
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.action.ResourceProbabilityAction
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -21,7 +22,7 @@ open class Resource private constructor(
     constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount) : this(core, amount, null)
 
     open var amount = amount
-        set(value) {
+        protected set(value) {
             field = if (value < 0)
                 Int.MAX_VALUE
             else
@@ -68,6 +69,8 @@ open class Resource private constructor(
     val ownershipMarker: OwnershipMarker
         get() = core.ownershipMarker
 
+    val takers = mutableListOf<Pair<Taker, Int>>()
+
     init {
         _hash = hash ?: computeHash()
     }
@@ -82,7 +85,7 @@ open class Resource private constructor(
      * @return Copy of this Resource with amount equal or less than requested.
      * Exact amount depends on current amount of this Resource.
      */
-    open fun getPart(part: Int): Resource {
+    open fun getPart(part: Int, taker: Taker): Resource {
         val prob = RandomSingleton.random.nextDouble() * 0.5
         val result = when {
             part <= amount * prob -> min(amount, part)
@@ -91,12 +94,19 @@ open class Resource private constructor(
         }
         amount -= result
 
+        takers.add(taker to result)
+
         return copy(result)
     }
 
-    fun getCleanPart(part: Int): Resource {
+    fun getPart(part: Int, resource: Resource) = getPart(part, ResourceTaker(resource))
+
+    fun getCleanPart(part: Int, taker: Taker): Resource {
         val result = min(amount, part)
         amount -= result
+
+        takers.add(taker to result)
+
         return copy(result)
     }
 
@@ -104,11 +114,9 @@ open class Resource private constructor(
         get() = core.genome
 
     open fun merge(resource: Resource): Resource {
-        if (resource.baseName != baseName) throw RuntimeException(String.format(
-                "Different resource tried to merge - %s and %s",
-                fullName,
-                resource.fullName
-        ))
+        if (resource.baseName != baseName)
+            throw RuntimeException("Different resource tried to merge - $fullName and ${resource.fullName}")
+
         if (this === resource)
             return this
 
@@ -169,11 +177,12 @@ open class Resource private constructor(
 
         if (deathTurn + deathOverhead >= core.genome.lifespan) {
             val deadAmount = (deathPart * amount).toInt()
+            takers.add(DeathTaker to deadAmount)
             amount -= deadAmount
             deathTurn = 0
             deathOverhead = 0
             deathPart = 1.0
-            result.addAll(applyAction(specialActions.getValue("_OnDeath_"), deadAmount))
+            result.addAll(applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount))
         }
 
         if (amount <= 0)
@@ -205,7 +214,7 @@ open class Resource private constructor(
                 else expectedValue.toInt()
 
         return if (action.isWasting)
-            applyActionAndConsume(action, part, true)
+            applyActionAndConsume(action, part, true, SelfTaker)
         else
             applyAction(action, part)
     }
@@ -238,7 +247,7 @@ open class Resource private constructor(
                         (amount - genome.naturalDensity / 2) / tiles.size
                     else part
 
-                    neighbour.addDelayedResource(getCleanPart(part))
+                    neighbour.addDelayedResource(getCleanPart(part, SeparationTaker))
                 }
             }
             OverflowType.Cut -> amount = genome.naturalDensity
@@ -259,16 +268,26 @@ open class Resource private constructor(
         return result
     }
 
+    fun applyActionOrEmpty(action: ResourceAction, part: Int = 1): List<Resource> {
+        val result = genome.conversionCore.applyAction(action) ?: listOf()
+        result.forEach { it.amount *= part }
+        return result
+    }
+
     fun hasApplicationForAction(action: ResourceAction) = genome.conversionCore.hasApplication(action)
 
     fun destroy() {
+        if (simpleName == "Person") {
+            val v = 0
+        }
+        takers.add(DeathTaker to amount)
         amount = 0
     }
 
-    open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean): List<Resource> {
+    open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): List<Resource> {
         val resourcePart =
-                if (isClean) getCleanPart(part)
-                else getPart(part)
+                if (isClean) getCleanPart(part, taker)
+                else getPart(part, taker)
 
         return resourcePart.applyAction(action, resourcePart.amount)
     }
@@ -320,7 +339,7 @@ open class Resource private constructor(
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
             "lifespan - ${genome.lifespan}, amount - $amount, colour - ${genome.appearance.colour}, " +
-            "ownership - $core.ownershipMarker, tags: " +
+            "ownership - ${core.ownershipMarker}, tags: " +
             tags.joinToString(" ") { it.name }
 
     override fun compareTo(other: Resource): Int {
