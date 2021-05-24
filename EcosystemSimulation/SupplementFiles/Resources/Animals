@@ -5,20 +5,20 @@
 
 -Cow             0.08    1      20         0      25   25         0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5:s|0.5,Fur:3,Blood:10,Leather:1:s|2
+        ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|2
         #Water
         cWhite
 
 -Deer            0.09    1.2    22         -10     5   15         0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre;0.05;2;0;CONSUME
-        +Killing:Meat:12,Fat:7,Bone:7:s|0.5,Fur:5,Blood:10,Leather:2:s|2.5
+        ^Meat:12 ^Fat:7 ^Bone:7:s|0.5 ^Fur:5 ^Blood:10 ^Leather:2:s|2.5
         #Water
         cBrown
         R
 
 -MountainGoat    0.08    0.8    20         -10    30   25         0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre;0.2;2;0;CONSUME
-        +Killing:Meat:8,Fat:4,Bone:5:s|0.3,Fur:2,Blood:8,Leather:1:s|1
+        ^Meat:8 ^Fat:4 ^Bone:5:s|0.3 ^Fur:2 ^Blood:8 ^Leather:1:s|1
         #Water
         l110;1000
         cWhite
@@ -26,28 +26,28 @@
 
 -Mouse           0.25    0.05   5          -5     35   100        0             1 0  Migrate   Animal       @Meat
         ~A(r:Seed);0.05;2;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1:s|0.03,Fur:1,Blood:2
+        ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:2
         #Water
         cWhite
         R
 
 -Squirrel        0.25    0.05   5          -5     35   10         0             1 0  Migrate   Animal       @Meat
         ~A(r:Nut);1;1.25;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1:s|0.04,Fur:1,Blood:2
+        ^Meat:1 ^Fat:1 ^Bone:1:s|0.04 ^Fur:1 ^Blood:2
         #Water
         cOrange
         R
 
 -Wolf           0.08    1      20         0      20   5          0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=1;0.1;1.25;0;CONSUME
-        +Killing:Meat:10,Fat:5,Bone:5:s|0.5,Fur:3,Blood:10,Leather:1:s|1.3
+        ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|1.3
         #Water
         cGrey
         R
 
 -Sparrow        0.15    0.1    10         0      30   40         0             1 0  Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1:s|0.04,Feather:10,Blood:3
+        ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cBrown
         R
@@ -55,41 +55,41 @@
 -Heron           0.15   0.5    10         0      30   10         0             1 0  Migrate   Animal       @Meat
         ~m:Meat,<=0.12;0.1;2;1;CONSUME
         ~m:Water;1000;20;1;EXIST
-        +Killing:Meat:4,Fat:1,Bone:2:s|0.04,Feather:10,Blood:3
+        ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite
         R
 
 -PredatorBird    0.15    0.1    10         0      30   5          0             1 0  Migrate   Animal       @Meat
         ~m:Meat,<=0.05;1;1.25;0;CONSUME
-        +Killing:Meat:2,Fat:1,Bone:1:s|0.5,Feather:10,Blood:3
+        ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
         #Water
         cBrown
         R
 
 -Insect          0.25    0.02   5          0      30   500        0             1 0  Migrate   Animal       @Chitin
         ~m:PlantFibre;0.01;100;0;CONSUME
-        +Killing:Chitin:1:s|0.01,Meat:1:s|0.01
+        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cGreen
 
 -Bee             0.4     0.01   5          10     30   200        0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
-        +Killing:Chitin:1:s|0.01,Meat:1:s|0.01
+        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cYellow
         R
 
 -BumbleBee       0.25    0.02   5          10     30   50         0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
-        +Killing:Chitin:1:s|0.015,Meat:1:s|0.015
+        ^Chitin:1:s|0.015 ^Meat:1:s|0.015
         #Water
         cYellow
         R
 
 -Fish            0.15    0.1    10         -20    30   100        0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre;0.1;10;0;CONSUME
-        +Killing:Meat:2,Fat:1,Bone:5:s|0.03,Blood:3
+        ^Meat:2 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
         R
@@ -97,14 +97,14 @@
 -CoralFish       0.3    0.04    6         0       30   150        0             1 0  Migrate   Animal       @Meat
         ~m:Coral;1;200;0;EXIST
         ~m:PlantFibre;0.1;10;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:1:s|0.03,Blood:1
+        ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Blood:1
         #Normal:Mountain:Ice:Woods:Growth
         cOrange
         R
 
 -PredatorFish    0.15    0.3    10         -20    30   10         0             1 0  Migrate   Animal       @Meat
         ~m:Meat;0.025;1.25;0;CONSUME
-        +Killing:Meat:1,Fat:1,Bone:5:s|0.03,Blood:3
+        ^Meat:1 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cBrown
         R
@@ -112,7 +112,7 @@
 -Frog            0.25    0.07   7          5      30   100        0             1 0  Migrate   Animal       @Meat
         ~m:Water;8000;200;0;EXIST
         ~m:Chitin;0.5;2;0;CONSUME
-        +Killing:Meat:1:s|0.07
+        ^Meat:1:s|0.07
         cGreen
         R
 
@@ -120,13 +120,13 @@
 -ShelledMollusk  0.15    0.03   10          10    30   600        0             1 0  Migrate   Animal       @Meat
         +_OnDeath_:SeaShell:1
         +_makePearl_prob_0.00001_false:Pearl:1
-        +Killing:Meat:1:s|0.01,SeaShell:1
+        ^Meat:1:s|0.01 ^SeaShell:1
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000
         cBlack
 
 -Starfish        0.07    0.08   20          0     30   200        0             1 0  Migrate   Animal       @Meat
         ~m:Meat,<=0.05;1;1.25;0;CONSUME
-        +Killing:Meat:1:s|0.02
+        ^Meat:1:s|0.02
         #Normal:Mountain:Ice:Woods:Growth
         cOrange

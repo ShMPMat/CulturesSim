@@ -134,15 +134,6 @@ class ResourceInstantiation(
             resource.genome.addPart(partResource)
         }
 
-        val killingAspect = specialActions.getValue("Killing")
-        if (actionConversion.containsKey(killingAspect)) {
-            resource.genome.conversionCore.actionConversion.getValue(killingAspect).forEach { (r, n) ->
-                r?.let {
-                    resource.genome.addPart(r.copy(n))
-                }
-            }
-        }
-
         addTakeApartAction(template)
     }
 
@@ -156,15 +147,16 @@ class ResourceInstantiation(
 
     private fun addTakeApartAction(template: ResourceStringTemplate) {
         val takeApart = specialActions.getValue("TakeApart")
-
+        val killing = specialActions.getValue("Killing")
         val (resource, actionConversion, _) = template
-        if (resource.genome.parts.isNotEmpty()
-                && !actionConversion.containsKey(takeApart)) {//TODO TakeApart shouldn't be here I recon
-            val resourceList = mutableListOf<Pair<Resource?, Int>>()
-            for (partResource in resource.genome.parts) {
-                resourceList.add(Pair(partResource, partResource.amount))
-                resource.genome.conversionCore.addActionConversion(takeApart, resourceList)
-            }
+
+        if (resource.genome.parts.isNotEmpty()) {
+            val result = resource.genome.parts.map { it to it.amount }
+
+            if (!actionConversion.containsKey(takeApart) && !resource.genome.behaviour.isResisting)
+                resource.genome.conversionCore.addActionConversion(takeApart, result)
+            else if (!actionConversion.containsKey(killing) && resource.genome.behaviour.isResisting)
+                resource.genome.conversionCore.addActionConversion(killing, result)
         }
     }
 
