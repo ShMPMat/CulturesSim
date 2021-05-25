@@ -25,10 +25,17 @@
 
 -FlowerBush      0.15    1      10         0       30  150        0             0 0 Cut        Plant        @PlantFibre
         ~r:Vapour;0.00025;1.25;0;CONSUME
-        ~r:Bee;0.01;100;0;EXIST
+        ~t:Pollinator;0.01;100;0;EXIST
         ^SoftBranch:15 ^Leaf:100 ^Flower:10   ^Seed:2 ^SoftRoot:5
         #Water
         cGreen
+
+-Dandelion       0.2     0.1    7          5      30   500        0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.000001;2;0;CONSUME
+        ~t:Pollinator;0.01;100;0;EXIST
+        ^Leaf:3:s|0.2 ^Flower:1
+        #Water
+        cWhite
 
 -DwarfBirch      0.1     1      15         -30     20  40         0             0 0 Cut        Plant        @PlantFibre
         ~r:Vapour;0.0001;2;0;CONSUME
@@ -85,7 +92,7 @@
 
 -FlowerPlant     0.25    0.1    5          5      30   100        0             1 0 Cut        Plant        @PlantFibre
         ~r:Vapour;0.0000001;1.25;0;CONSUME
-        ~r:Bee;0.01;100;0;EXIST
+        ~t:Pollinator;0.01;100;0;EXIST
         ^Leaf:3   ^Flower:1
         #Water
         cGreen

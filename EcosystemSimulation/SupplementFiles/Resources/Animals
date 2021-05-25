@@ -10,7 +10,7 @@
         cWhite
 
 -Deer            0.09    1.2    22         -10     5   15         0             1 0  Migrate   Animal       @Meat
-        ~m:PlantFibre;0.05;2;0;CONSUME
+        ~D(m:PlantFibre||m:Fungus);0.05;2;0;CONSUME
         ^Meat:12 ^Fat:7 ^Bone:7:s|0.5 ^Fur:5 ^Blood:10 ^Leather:2:s|2.5
         #Water
         cBrown
@@ -25,14 +25,14 @@
         R
 
 -Mouse           0.25    0.05   5          -5     35   100        0             1 0  Migrate   Animal       @Meat
-        ~A(r:Seed);0.05;2;0;CONSUME
+        ~D(A(r:Seed)||m:Fungus);0.05;2;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:2
         #Water
         cWhite
         R
 
 -Squirrel        0.25    0.05   5          -5     35   10         0             1 0  Migrate   Animal       @Meat
-        ~A(r:Nut);1;1.25;0;CONSUME
+        ~D(A(r:Nut)||m:Fungus);1;1.25;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.04 ^Fur:1 ^Blood:2
         #Water
         cOrange
@@ -74,7 +74,7 @@
         cGreen
         C0.2
 
--Mosquito        0.25    0.02   5          10      30   500        0             1 0  Migrate   Animal       @Chitin
+-Mosquito        0.25    0.01   5          10      30   500        0             1 0  Migrate   Animal       @Chitin
         ~m:Meat,>=0.2;0.01;100;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
@@ -83,6 +83,7 @@
 -Bee             0.4     0.01   5          10     30   200        0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
+        $Pollinator:1
         #Water
         cYellow
         R
@@ -90,6 +91,7 @@
 -BumbleBee       0.25    0.02   5          10     30   50         0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
         ^Chitin:1:s|0.015 ^Meat:1:s|0.015
+        $Pollinator:1
         #Water
         cYellow
         R
