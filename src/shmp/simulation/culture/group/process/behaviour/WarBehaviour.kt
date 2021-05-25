@@ -96,6 +96,8 @@ class WarB(
 
                 warStatus.winner.decide(group, opponent, null)?.populationCenter?.stratumCenter?.warriorStratum
                         ?.let { it.importance += 10 }
+                warStatus.winner.decide(opponent, group, null)?.populationCenter?.stratumCenter?.warriorStratum
+                        ?.let { it.importance += 3 }
 
                 isFinished = true
 

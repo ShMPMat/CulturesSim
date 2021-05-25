@@ -10,6 +10,7 @@ import shmp.simulation.space.resource.action.ResourceProbabilityAction
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
 import java.util.*
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -81,22 +82,29 @@ open class Resource private constructor(
     fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
 
     /**
-     * Returns part of this resource and subtracts its amount from this resource amount;
      * @return Copy of this Resource with amount equal or less than requested.
-     * Exact amount depends on current amount of this Resource.
+     * Subtracts returned amount from the resource amount;
      */
     open fun getPart(part: Int, taker: Taker): Resource {
-        val prob = RandomSingleton.random.nextDouble() * 0.5
+        val accessiblePart = amount * calculateAccessiblePart(taker)
         val result = when {
-            part <= amount * prob -> min(amount, part)
-            amount * prob + 1 < amount -> (amount * prob).toInt() + 1
+            part <= accessiblePart -> min(amount, part)
+            accessiblePart + 1 < amount -> accessiblePart.toInt() + 1
             else -> amount
         }
-        amount -= result
 
+        amount -= result
         takers.add(taker to result)
 
         return copy(result)
+    }
+
+    private fun calculateAccessiblePart(taker: Taker): Double {
+        var prob = RandomSingleton.random.nextDouble() * 0.9
+
+        prob -= genome.behaviour.camouflage
+
+        return max(min(prob, 1.0), 0.0)
     }
 
     fun getPart(part: Int, resource: Resource) = getPart(part, ResourceTaker(resource))

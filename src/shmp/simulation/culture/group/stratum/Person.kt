@@ -15,7 +15,7 @@ class Person(ownershipMarker: OwnershipMarker): Resource(
                         0,
                         false,
                         true,
-                        Behaviour(true, OverflowType.Ignore),
+                        Behaviour(true, 0.3, OverflowType.Ignore),
                         Appearance(null),
                         false,
                         false,

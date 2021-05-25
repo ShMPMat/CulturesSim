@@ -60,18 +60,25 @@
         cWhite
         R
 
--PredatorBird    0.15    0.1    10         0      30   5          0             1 0  Migrate   Animal       @Meat
+-Hawk            0.15    0.1    10         0      30   5          0             1 0  Migrate   Animal       @Meat
         ~m:Meat,<=0.05;1;1.25;0;CONSUME
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
         #Water
         cBrown
         R
 
--Insect          0.25    0.02   5          0      30   500        0             1 0  Migrate   Animal       @Chitin
+-Beetle          0.25    0.02   5          0      30   500        0             1 0  Migrate   Animal       @Chitin
         ~m:PlantFibre;0.01;100;0;CONSUME
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cGreen
+        C0.2
+
+-Mosquito        0.25    0.02   5          10      30   500        0             1 0  Migrate   Animal       @Chitin
+        ~m:Meat,>=0.2;0.01;100;0;EXIST
+        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
+        #Water
+        cBrown
 
 -Bee             0.4     0.01   5          10     30   200        0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;2;0;EXIST
@@ -101,12 +108,20 @@
         #Normal:Mountain:Ice:Woods:Growth
         cOrange
         R
+        C0.7
 
--PredatorFish    0.15    0.3    10         -20    30   10         0             1 0  Migrate   Animal       @Meat
-        ~m:Meat;0.025;1.25;0;CONSUME
+-PredatorFish    0.15    2      10         -20    30   10         0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,<=0.5;0.025;1.25;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cBrown
+        R
+
+-Shark          0.1     0.3    15          0      40   5          0             1 0  Migrate   Animal       @Meat
+        ~m:Meat;1;1.25;0;CONSUME
+        ^Meat:5 ^Fat:5 ^Bone:7:s|0.3 ^Blood:10
+        #Normal:Mountain:Ice:Woods:Growth
+        cWhite
         R
 
 -Frog            0.25    0.07   7          5      30   100        0             1 0  Migrate   Animal       @Meat
@@ -115,9 +130,10 @@
         ^Meat:1:s|0.07
         cGreen
         R
+        C0.1
 
 
--ShelledMollusk  0.15    0.03   10          10    30   600        0             1 0  Migrate   Animal       @Meat
+-ShelledMollusk  0.15    0.03   10          10    30   500        0             1 0  Migrate   Animal       @Meat
         +_OnDeath_:SeaShell:1
         +_makePearl_prob_0.00001_false:Pearl:1
         ^Meat:1:s|0.01 ^SeaShell:1
@@ -130,3 +146,4 @@
         ^Meat:1:s|0.02
         #Normal:Mountain:Ice:Woods:Growth
         cOrange
+        C0.8
