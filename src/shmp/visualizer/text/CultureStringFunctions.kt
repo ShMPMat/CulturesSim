@@ -85,9 +85,13 @@ fun printGroupStatistics(world: CulturesWorld): String {
 
     return """CONGLOMERATES:
              |
-             |Largest population: ${conglomerates.maxByOrNull { it.population }?.let { g -> "${g.name} - ${g.population}" }}
-             |Largest territory:  ${conglomerates.maxByOrNull { it.territory.size }?.let { g -> "${g.name} - ${g.territory.size}" }}
-             |Most groups:        ${conglomerates.maxByOrNull { it.subgroups.size }?.let { g -> "${g.name} - ${g.subgroups.size}" }}
+             |Largest population:  ${conglomerates.maxByOrNull { it.population }?.let { g -> "${g.name} - ${g.population}" }}
+             |Largest territory:   ${conglomerates.maxByOrNull { it.territory.size }?.let { g -> "${g.name} - ${g.territory.size}" }}
+             |Most groups:         ${conglomerates.maxByOrNull { it.subgroups.size }?.let { g -> "${g.name} - ${g.subgroups.size}" }}
+             |Max free population: ${
+        conglomerates.map { it to it.subgroups.sumBy { g -> g.populationCenter.freePopulation } }
+                .maxByOrNull { it.second }?.let { (g, n) -> "$g - $n" }
+    }
              |
              |${printGroupCharacterStatistics(conglomerates)}
              |
@@ -104,10 +108,10 @@ fun printGroupStatistics(world: CulturesWorld): String {
              |${
         conglomerates.flatMap { it.subgroups }
                 .maxByOrNull { it.cultureCenter.cultureAspectCenter.reasonField.specialConversions.size }
-                ?.let { g -> 
+                ?.let { g ->
                     "${g.name} - ${
                         g.cultureCenter.cultureAspectCenter.reasonField.specialConversions.joinToString("\n")
-                    }" 
+                    }"
                 }
     }
              |

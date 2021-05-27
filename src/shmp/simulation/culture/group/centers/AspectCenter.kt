@@ -166,7 +166,7 @@ class AspectCenter(aspects: List<Aspect>) {
     fun findOptions(labeler: ResourceLabeler, group: Group): List<Pair<Aspect, Group?>> {
         val options = mutableListOf<Pair<Aspect, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
-        0.05.chanceOf {
+        0.5.chanceOf {
             val aspectPotentialLabeler = PotentialProducedLabeler(labeler, session.world.resourcePool)
             for (aspect in session.world.aspectPool.all.filter { aspectPotentialLabeler.isSuitable(it) }) {
                 val dependencies = calculateDependencies(aspect, group)

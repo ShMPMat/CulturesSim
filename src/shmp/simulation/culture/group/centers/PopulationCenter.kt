@@ -31,7 +31,7 @@ class PopulationCenter(
         population: Int,
         private val maxPopulation: Int,
         private val minPopulation: Int,
-        val ownershipMarker: OwnershipMarker,
+        ownershipMarker: OwnershipMarker,
         initTile: Tile,
         initResources: ResourcePack
 ) {
@@ -49,7 +49,7 @@ class PopulationCenter(
             field = value
         }
 
-    val actualPopulation = Person(ownershipMarker).copy(population) //TODO smth meaningful please
+    val actualPopulation = Person(ownershipMarker).copy(population)
     val taker = Taker.ResourceTaker(actualPopulation)
 
     init {
@@ -105,7 +105,7 @@ class PopulationCenter(
     }
 
     fun goodConditionsGrow(fraction: Double, territory: Territory) {
-        population += (fraction * population).toInt() / 10 + 1
+        population += (fraction * population).toInt() / 5 + 1
         if (isMaxReached(territory))
             decreasePopulation(population - getMaxPopulation(territory))
     }

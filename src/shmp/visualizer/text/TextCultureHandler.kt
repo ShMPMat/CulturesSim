@@ -8,7 +8,7 @@ import shmp.visualizer.command.CommandHandler
 import shmp.visualizer.command.CultureCommand.*
 
 
-object TextCultureHandler: CommandHandler<TextCultureVisualizer> {
+object TextCultureHandler : CommandHandler<TextCultureVisualizer> {
     override fun tryRun(line: String, command: Command, visualizer: TextCultureVisualizer): Boolean {
         val splitCommand = line.split(" ")
 
@@ -64,9 +64,14 @@ object TextCultureHandler: CommandHandler<TextCultureVisualizer> {
                 GroupStatistics -> println(printGroupStatistics(world))
                 Aspects -> {
                     printMap { aspectMapper(splitCommand[1], it) }
-                    world.aspectPool.get(splitCommand[1])?.let { aspect ->
-                        println(printApplicableResources(aspect, world.resourcePool.all))
-                    }
+                    world.groups.flatMap { it.aspects }
+                            .filter { it.name.contains(splitCommand[1]) }
+                            .distinct()
+                            .forEach { aspect ->
+                                println(aspect.name)
+                                println(printApplicableResources(aspect, world.resourcePool.all))
+                                println()
+                            }
                 }
                 CultureAspects -> {
                     printMap { cultureAspectMapper(splitCommand[1], it) }

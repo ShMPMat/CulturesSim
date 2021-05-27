@@ -34,13 +34,13 @@ open class Resource private constructor(
     private var _hash = 0
 
     //How many turns has this Resource been existing.
-    private var deathTurn = 0
+    protected var deathTurn = 0
 
     //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death.
-    private var deathOverhead = 0
+    protected var deathOverhead = 0
 
     //What part of this Resource will be destroyed on the next death.
-    private var deathPart = 1.0
+    protected var deathPart = 1.0
 
     inline val isEmpty: Boolean
         get() = amount == 0
@@ -178,25 +178,17 @@ open class Resource private constructor(
 
         result.addAll(genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) })
 
-        for (dependency in core.genome.dependencies) {
+        for (dependency in genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)
-            deathOverhead += ((1 - part) * core.genome.lifespan).toInt()
+            deathOverhead += ((1 - part) * genome.lifespan).toInt()
         }
 
-        if (deathTurn + deathOverhead >= core.genome.lifespan) {
-            val deadAmount = (deathPart * amount).toInt()
-            takers.add(DeathTaker to deadAmount)
-            amount -= deadAmount
-            deathTurn = 0
-            deathOverhead = 0
-            deathPart = 1.0
-            result.addAll(applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount))
-        }
+        result.addAll(naturalDeath())
 
         if (amount <= 0)
             ResourceUpdateResult(false, result)
         deathTurn++
-        core.genome.spreadProbability.chanceOf {
+        genome.spreadProbability.chanceOf {
             expand(tile)
         }
 
@@ -210,6 +202,19 @@ open class Resource private constructor(
         distribute(tile)
 
         return ResourceUpdateResult(true, result)
+    }
+
+    protected open fun naturalDeath(): List<Resource> {
+        if (deathTurn + deathOverhead < genome.lifespan)
+            return emptyList()
+
+        val deadAmount = (deathPart * amount).toInt()
+        takers.add(DeathTaker to deadAmount)
+        amount -= deadAmount
+        deathTurn = 0
+        deathOverhead = 0
+        deathPart = 1.0
+        return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
     }
 
     private fun applyProbabilityAction(action: ResourceProbabilityAction): List<Resource> {
@@ -315,7 +320,7 @@ open class Resource private constructor(
                     newTile = tile
             }
         }
-        val resource = copy(amount = min(core.genome.defaultAmount, amount))
+        val resource = copy(amount = min(genome.defaultAmount, amount))
         newTile.addDelayedResource(resource)
         return true
     }

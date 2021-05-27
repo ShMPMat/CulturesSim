@@ -5,7 +5,7 @@ import shmp.simulation.space.resource.*
 import shmp.simulation.space.resource.action.ConversionCore
 
 
-class Person(ownershipMarker: OwnershipMarker): Resource(
+class Person(ownershipMarker: OwnershipMarker) : Resource(
         ResourceCore(
                 Genome(
                         "Person",
@@ -30,4 +30,26 @@ class Person(ownershipMarker: OwnershipMarker): Resource(
                 ),
                 ownershipMarker = ownershipMarker
         )
-)
+) {
+    private var toDie = 0
+
+    override fun naturalDeath(): List<Resource> {
+        if (toDie > 0) {
+            val deadAmount = (toDie / genome.lifespan).toInt() + 1
+            toDie -= deadAmount
+
+            takers.add(Taker.DeathTaker to deadAmount)
+            amount -= deadAmount
+            deathTurn = 0
+            deathOverhead = 0
+            deathPart = 1.0
+            return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
+        }
+
+        if (deathTurn + deathOverhead < genome.lifespan)
+            return emptyList()
+
+        toDie = (deathPart * amount).toInt()
+        return if (toDie != 0) naturalDeath() else emptyList()
+    }
+}
