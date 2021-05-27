@@ -90,7 +90,7 @@ fun printGroupStatistics(world: CulturesWorld): String {
              |Most groups:         ${conglomerates.maxByOrNull { it.subgroups.size }?.let { g -> "${g.name} - ${g.subgroups.size}" }}
              |Max free population: ${
         conglomerates.map { it to it.subgroups.sumBy { g -> g.populationCenter.freePopulation } }
-                .maxByOrNull { it.second }?.let { (g, n) -> "$g - $n" }
+                .maxByOrNull { it.second }?.let { (g, n) -> "${g.name} - $n" }
     }
              |
              |${printGroupCharacterStatistics(conglomerates)}
