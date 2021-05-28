@@ -51,7 +51,7 @@
         ^Meat:20 ^Fat:15 ^Bone:7:s|0.5 ^Fur:6 ^Blood:15 ^Leather:1:s|2.3
         #Water
         cWhite
-        R0.9
+        D0.9
         C0.1
 
 -Sparrow        0.15    0.1    10         0      30   40         0             1 0  Migrate   Animal       @Meat
