@@ -61,6 +61,10 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
 
     fun getAmount(tag: ResourceTag) = getResources(tag).amount
 
+    fun getTagPresence(tag: ResourceTag) = getResources(tag).resources
+            .map { it.getTagPresence(tag) }
+            .sum()
+
     fun getAmount(resource: Resource) = getUnpackedResource(resource).amount
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResources(predicate).amount

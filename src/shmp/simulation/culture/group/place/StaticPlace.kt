@@ -26,9 +26,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     fun addResource(resource: Resource) {
         if (resource.isEmpty)
             return
-        if (_owned.any { it.ownershipMarker != ownershipMarker }) {
-            val j = 0//TODO remove someday
-        }
+
         val ownedResource = resource.swapOwnership(ownershipMarker)
         _owned.add(ownedResource)
         maxAmounts[ownedResource] = max(maxAmounts[ownedResource] ?: 0, _owned.getResource(ownedResource).amount)

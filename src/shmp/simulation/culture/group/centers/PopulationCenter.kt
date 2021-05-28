@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.centers
 
+import shmp.simulation.Controller
 import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper
@@ -13,12 +14,15 @@ import shmp.simulation.culture.group.stratum.AspectStratum
 import shmp.simulation.culture.group.stratum.Person
 import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.culture.group.stratum.StratumPeople
+import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.OwnershipMarker
 import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
+import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.BaseNameLabeler
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
+import shmp.simulation.space.resource.tag.labeler.TagLabeler
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import shmp.utils.addLinePrefix
@@ -139,6 +143,8 @@ class PopulationCenter(
 
                 hostileResource.genome.parts.firstOrNull()?.let { part ->
                     group.resourceCenter.addNeeded(BaseNameLabeler(part.baseName), decrease * 100)
+                    group.resourceCenter.addNeeded(TagLabeler(ResourceTag("weapon")), decrease * 100)
+                    group.resourceCenter.addNeeded(TagLabeler(ResourceTag("defence")), decrease * 100)
                 }
             }
         }
@@ -147,6 +153,14 @@ class PopulationCenter(
 
         if (CulturesController.session.isTime(500))
             turnResources.clearEmpty()
+
+        val additionalDanger = group.resourceCenter.pack.getTagPresence(ResourceTag("weapon")) / 1000
+        val additionalResistance = group.resourceCenter.pack.getTagPresence(ResourceTag("defence")) / 1000
+        actualPopulation.genome.behaviour.danger = 0.05 + additionalDanger
+        actualPopulation.genome.behaviour.resistance = 0.1 + additionalResistance
+        if (additionalDanger + additionalResistance > 0) {
+            val y = 0
+        }
     }
 
     fun executeRequests(requests: RequestPool) {

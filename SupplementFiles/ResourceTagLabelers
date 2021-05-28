@@ -10,6 +10,7 @@
 
 -weapon                  t:hard       t:sturdy
     >=0.05
+    <=3
     mv
 
 -goodForEngraving        t:hard       t:sturdy

@@ -1,16 +1,16 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.utils.addLinePrefix
 import shmp.random.singleton.randomElement
-import shmp.simulation.CulturesController.*
+import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.place.MovablePlace
-import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.Taker
+import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
+import shmp.utils.addLinePrefix
 
 
 class ResourceCenter(
