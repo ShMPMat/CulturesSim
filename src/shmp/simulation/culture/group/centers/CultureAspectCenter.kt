@@ -24,7 +24,6 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
 
-
     internal fun update(group: Group) {
         useCultureAspects(group)
         addRandomCultureAspect(group)

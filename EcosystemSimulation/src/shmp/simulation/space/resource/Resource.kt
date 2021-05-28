@@ -105,7 +105,9 @@ open class Resource private constructor(
     private fun calculateAccessiblePart(taker: Taker): Double {
         var prob = RandomSingleton.random.nextDouble() * 0.9
 
-        prob -= genome.behaviour.camouflage
+        prob -= genome.behaviour.camouflage + genome.behaviour.resistance
+        if (taker is ResourceTaker)
+            prob += taker.resource.genome.behaviour.danger
 
         return max(min(prob, 1.0), 0.0)
     }
@@ -114,7 +116,7 @@ open class Resource private constructor(
         if (taker !is ResourceTaker)
             return
 
-        val strength = genome.behaviour.resistance / taker.resource.genome.behaviour.resistance
+        val strength = genome.behaviour.danger / taker.resource.genome.behaviour.resistance
         val hurtPart = amount * strength
 
         taker.resource.getCleanPart(hurtPart.toInt(), ResourceTaker(this)).destroy()
