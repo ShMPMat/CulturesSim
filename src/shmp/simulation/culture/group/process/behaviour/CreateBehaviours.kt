@@ -9,6 +9,7 @@ import shmp.simulation.culture.group.RoadCreationEvent
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.toPositiveChange
+import shmp.simulation.culture.group.cultureaspect.util.createDepictObject
 import shmp.simulation.culture.group.place.StaticPlace
 import shmp.simulation.culture.group.process.ProcessResult
 import shmp.simulation.culture.group.process.action.ProduceExactResourceA
@@ -16,6 +17,7 @@ import shmp.simulation.culture.group.process.action.ProduceSimpleResourceA
 import shmp.simulation.culture.group.process.action.ReceiveGroupWideResourcesA
 import shmp.simulation.culture.group.process.emptyProcessResult
 import shmp.simulation.culture.group.request.RequestType
+import shmp.simulation.culture.thinking.meaning.constructAndAddSimpleMeme
 import shmp.simulation.culture.thinking.meaning.flattenMemePair
 import shmp.simulation.culture.thinking.meaning.makeResourceMemes
 import shmp.simulation.culture.thinking.meaning.makeResourcePackMemes
@@ -47,6 +49,29 @@ object RandomArtifactB : AbstractGroupBehaviour() {
         ReceiveGroupWideResourcesA(group, result).run()
 
         return processResult + ProcessResult(Trait.Creation.toPositiveChange())
+    }
+
+    override val internalToString = "Make a random Resource with some meaning"
+}
+
+object RandomDepictCaB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        if (group.cultureCenter.memePool.isEmpty)
+            return emptyProcessResult
+
+        val depict = createDepictObject(
+                group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
+                constructAndAddSimpleMeme(group.cultureCenter.memePool),
+                null
+        )
+
+        group.cultureCenter.cultureAspectCenter.addCultureAspect(depict)
+
+        val processResult =
+                if (depict == null) emptyProcessResult
+                else ProcessResult(Event(Type.Creation, "${group.name} now has: $depict"))
+
+        return processResult + ProcessResult(Trait.Creation.toPositiveChange() * 10)
     }
 
     override val internalToString = "Make a random Resource with some meaning"

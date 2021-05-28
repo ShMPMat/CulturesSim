@@ -33,8 +33,16 @@ operator fun TraitExtractor.times(t: Double): TraitExtractor = WrapperExtractor(
     extract(center) * t
 }
 
+operator fun TraitExtractor.times(n: Int): TraitExtractor = WrapperExtractor("$this * $n") { center ->
+    extract(center) * n
+}
+
 operator fun TraitExtractor.div(t: Double): TraitExtractor = WrapperExtractor("$this * $t") { center ->
     extract(center) / t
+}
+
+operator fun TraitExtractor.div(n: Int): TraitExtractor = WrapperExtractor("$this * $n") { center ->
+    extract(center) / n
 }
 
 fun TraitExtractor.pow(t: Double): TraitExtractor = WrapperExtractor("$this to the power of $t") { center ->

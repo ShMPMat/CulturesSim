@@ -61,13 +61,6 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
         }
 
         val cultureAspect = when (AspectRandom.values().randomElement()) {
-            AspectRandom.Depict -> createDepictObject(
-                    group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
-                    constructAndAddSimpleMeme(
-                            group.cultureCenter.memePool
-                    ),
-                    null
-            )
             AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .filter { it.genome.isDesirable }
@@ -170,7 +163,6 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
 
 private enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
     Tale(3.0),
-    Depict(1.0),
     AestheticallyPleasing(1.0),
     Ritual(1.0),
     Concept(1.0)

@@ -3,6 +3,7 @@ package shmp.simulation.culture.group.centers
 import shmp.random.singleton.chanceOf
 import shmp.simulation.CulturesController
 import shmp.simulation.CulturesController.session
+import shmp.simulation.culture.group.cultureaspect.DepictObject
 import shmp.simulation.culture.group.process.*
 import shmp.simulation.culture.group.process.behaviour.*
 import kotlin.math.pow
@@ -16,6 +17,9 @@ class ProcessCenter(type: AdministrationType) {
 
     private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
             RandomArtifactB.withTrait(Trait.Creation.get().pow(0.25)),
+            RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
+                1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
+            },
             RandomTradeB.times(1, 3),
             RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),
             MakeTradeResourceB(5).times(
@@ -29,7 +33,7 @@ class ProcessCenter(type: AdministrationType) {
                 session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
             },
             TryDivergeWithNegotiationB
-                    .withTrait(Trait.Consolidation.getNegative() * 2.0)
+                    .withTrait(Trait.Consolidation.getNegative() * 2)
                     .withProbability(session.defaultGroupExiting) {
                         it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
                                 session.defaultGroupExiting /

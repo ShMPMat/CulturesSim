@@ -10,7 +10,7 @@ import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.dependency.ConsumeDependency
 
 
-fun constructAndAddSimpleMeme(groupMemes: GroupMemes, complicateProbability: Double = 0.5, maxTests: Int = 10): Meme? {
+fun constructAndAddSimpleMeme(groupMemes: GroupMemes, complicateProbability: Double = 0.1, maxTests: Int = 10): Meme? {
     var meme: Meme = groupMemes.memeWithComplexityBias.copy()
     complicateProbability.chanceOf {
         var second: Meme
