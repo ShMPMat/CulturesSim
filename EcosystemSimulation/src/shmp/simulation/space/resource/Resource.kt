@@ -9,6 +9,7 @@ import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.action.ResourceProbabilityAction
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
+import shmp.utils.SoftValue
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -96,6 +97,8 @@ open class Resource private constructor(
         amount -= result
         takers.add(taker to result)
 
+        hurtTaker(result, taker)
+
         return copy(result)
     }
 
@@ -106,6 +109,17 @@ open class Resource private constructor(
 
         return max(min(prob, 1.0), 0.0)
     }
+
+    private fun hurtTaker(amount: Int, taker: Taker) {
+        if (taker !is ResourceTaker)
+            return
+
+        val strength = genome.behaviour.resistance / taker.resource.genome.behaviour.resistance
+        val hurtPart = amount * strength
+
+        taker.resource.getCleanPart(hurtPart.toInt(), ResourceTaker(this)).destroy()
+    }
+
 
     fun getPart(part: Int, resource: Resource) = getPart(part, ResourceTaker(resource))
 

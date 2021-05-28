@@ -23,7 +23,7 @@ class ResourceTemplateCreator(
     fun createResource(tags: Array<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
                 ?: throw DataInitializationError("Tags for Resource are empty")
-        var willResist = false
+        var resistance = 0.0
         var isTemplate = false
         var isDesirable = true
         var minTempDeprivation = 2.0
@@ -69,7 +69,7 @@ class ResourceTemplateCreator(
                                     .map { Tile.Type.valueOf(it) }
                                     .toSet()
                     ))
-                    'R' -> willResist = true
+                    'R' -> resistance = tag.toDouble()
                     'U' -> isDesirable = false
                     'c' -> colour = ResourceColour.valueOf(tag)
                     'C' -> camouflage = tag.toDouble()
@@ -112,7 +112,7 @@ class ResourceTemplateCreator(
                 baseDesirability = tags[7].toInt(),
                 isMutable = false,
                 isMovable = tags[8] == "1",
-                behaviour = Behaviour(willResist, camouflage, OverflowType.valueOf(tags[10])),
+                behaviour = Behaviour(resistance, camouflage, OverflowType.valueOf(tags[10])),
                 appearance = Appearance(colour),
                 isDesirable = isDesirable,
                 hasLegacy = tags[9] == "1",
