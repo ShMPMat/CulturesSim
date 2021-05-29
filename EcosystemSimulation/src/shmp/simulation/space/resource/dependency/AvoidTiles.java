@@ -7,7 +7,7 @@ import java.util.Set;
 
 
 public class AvoidTiles implements ResourceDependency {
-    private Set<Tile.Type> badTypes;
+    public Set<Tile.Type> badTypes;
 
     public AvoidTiles(Set<Tile.Type> badTypes) {
         this.badTypes = badTypes;

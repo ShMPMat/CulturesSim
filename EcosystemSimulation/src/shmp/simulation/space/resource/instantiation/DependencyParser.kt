@@ -19,7 +19,8 @@ open class DefaultDependencyParser : DependencyParser {
                     elements[2].toDouble(),
                     elements[3] == "1",
                     elements[1].toDouble(),
-                    makeResourceLabeler(elements[0])
+                    makeResourceLabeler(elements[0]),
+                    elements.getOrNull(5)?.toInt() ?: 1
             )
             "AVOID" -> AvoidDependency(
                     elements[1].toDouble(),

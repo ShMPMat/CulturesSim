@@ -4,6 +4,7 @@ import shmp.simulation.space.resource.ResourceType
 import shmp.simulation.space.resource.instantiation.bracketSensitiveSplit
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.material.Material
+import shmp.simulation.space.tile.Tile
 
 
 fun makeResourceLabeler(tagString: String): ResourceLabeler {
@@ -24,6 +25,7 @@ private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {
     "T:" -> TypeLabeler(ResourceType.valueOf(value))
     "m:" -> PrimaryMaterialLabeler(Material(value, 0.0, listOf()))
     "r:" -> SimpleNameLabeler(value)
+    "h:" -> HabitatLabeler(Tile.Type.valueOf(value))
     "<=" -> SmallerSizeLabeler(value.toDouble())
     ">=" -> BiggerSizeLabeler(value.toDouble())
     "<D" -> SmallerDensityLabeler(value.toDouble())

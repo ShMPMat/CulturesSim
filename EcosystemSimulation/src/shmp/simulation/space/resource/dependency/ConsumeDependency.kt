@@ -12,7 +12,8 @@ class ConsumeDependency(
         deprivationCoefficient: Double,
         isNecessary: Boolean,
         amount: Double,
-        goodResource: ResourceLabeler
+        goodResource: ResourceLabeler,
+        val radius: Int
 ) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResource) {
     var lastConsumed: MutableSet<String> = HashSet()
 
@@ -26,7 +27,7 @@ class ConsumeDependency(
         val neededAmount = amount * resource.amount
 
         if (currentAmount < neededAmount)
-            loop@for (list in tile.accessibleResources)
+            loop@for (list in tile.getAccessibleResources(radius))
                 for (res in list) {
                     if (res == resource)
                         continue

@@ -54,6 +54,15 @@
         D0.9
         C0.1
 
+-Seal           0.06    1.1    25         -30    0    10          0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,>=0.05,<=0.5,h:Water;0.1;1.25;0;CONSUME;6
+        ^Meat:10 ^Fat:11 ^Bone:4:s|0.5 ^Fur:6 ^Blood:10 ^Leather:1:s|1.3
+        #Water
+        cWhite
+        D0.2
+        R0.1
+        C0.3
+
 -Sparrow        0.15    0.1    10         0      30   40         0             1 0  Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
@@ -106,6 +115,13 @@
         R0.1
 
 -Fish            0.15    0.1    10         -20    30   100        0             1 0  Migrate   Animal       @Meat
+        ~m:PlantFibre;0.1;10;0;CONSUME
+        ^Meat:2 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
+        #Normal:Mountain:Ice:Woods:Growth
+        cGreen
+        D0.02
+
+-ArcticFish      0.15    0.1    10         -30    -10   50        0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre;0.1;10;0;CONSUME
         ^Meat:2 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth

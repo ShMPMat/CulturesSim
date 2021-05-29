@@ -65,15 +65,12 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
             return resources
         }
 
+    fun getAccessibleResources(radius: Int = 1): List<Iterator<Resource>> {
+        val accessibleResources = listOf(_resourcePack.resourcesIterator)
+        val neighbours = getTilesInRadius(radius)
 
-//    val accessibleResources: List<Iterator<Resource>>
-//        get() = listOf(_resourcePack.resourcesIterator) + neighbours.map { it._resourcePack.resourcesIterator }
-
-    val accessibleResources: List<Iterator<Resource>>
-        get() {
-            val accessibleResources = listOf(_resourcePack.resourcesIterator)
-            return accessibleResources + neighbours.map { it._resourcePack.resourcesIterator }
-        }
+        return accessibleResources + neighbours.map { it._resourcePack.resourcesIterator }
+    }
 
     fun getNeighbours(predicate: (Tile) -> Boolean) = neighbours.filter(predicate)
 

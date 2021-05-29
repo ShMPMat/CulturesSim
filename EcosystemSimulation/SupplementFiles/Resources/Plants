@@ -103,7 +103,7 @@
         #Water
         cGreen
 
--Seaweed         0.25    0.1    5          0      30   2000       0             1 0 Cut        Plant        @PlantFibre
+-Seaweed         0.25    0.1    5          -10    30   2000       0             1 0 Cut        Plant        @PlantFibre
         ^Leaf:7:s|0.2
         #Normal:Mountain:Ice:Woods:Growth
         cGreen

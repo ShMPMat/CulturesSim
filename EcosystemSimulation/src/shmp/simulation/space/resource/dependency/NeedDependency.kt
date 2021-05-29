@@ -18,7 +18,7 @@ class NeedDependency(
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
-        loop@for (list in tile.accessibleResources)
+        loop@for (list in tile.getAccessibleResources())
             for (res in list) {
                 if (res == resource)
                     continue
@@ -34,7 +34,7 @@ class NeedDependency(
     }
 
     override fun hasNeeded(tile: Tile) =
-            tile.accessibleResources.any { it.asSequence().any { r -> isResourceDependency(r) } }
+            tile.getAccessibleResources().any { it.asSequence().any { r -> isResourceDependency(r) } }
 
     override val isPositive = true
 }

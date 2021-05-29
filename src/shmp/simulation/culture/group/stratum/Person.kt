@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.stratum
 
-import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.*
 import shmp.simulation.space.resource.action.ConversionCore
