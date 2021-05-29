@@ -2,7 +2,9 @@ package shmp.simulation.culture.group.cultureaspect
 
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.cultureaspect.worship.MultigroupWorshipWrapper
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
+
 
 open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
     protected val aspectMap = initialAspects.zip(initialAspects).toMap().toMutableMap()
@@ -16,18 +18,12 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
     val depictSystems
         get() = aspects
                 .filterIsInstance<DepictSystem>()
-                .union(aspects
-                        .filterIsInstance<Worship>()
-                        .map { it.depictSystem }
-                )
+                .union(worships.map { it.depictSystem })
 
     val taleSystems
         get() = aspects
                 .filterIsInstance<TaleSystem>()
-                .union(aspects
-                        .filterIsInstance<Worship>()
-                        .map { it.taleSystem }
-                )
+                .union(worships.map { it.taleSystem })
 
     val cwDependencies: Set<ConverseWrapper>
         get() = ritualSystems
@@ -41,7 +37,8 @@ open class CultureAspectPool(initialAspects: MutableSet<CultureAspect>) {
                 .filterIsInstance<CherishedResource>()
 
     val worships: Set<Worship>
-        get() = aspects.filterIsInstance<Worship>().toSet()
+        get() = aspects.filterIsInstance<Worship>().toSet() +
+                aspects.filterIsInstance<MultigroupWorshipWrapper>().map { it.worship }.toSet()
 
     fun isEmpty() = aspectMap.isEmpty()
 

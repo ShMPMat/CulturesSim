@@ -32,9 +32,13 @@ open class Worship(
                     " but TaleSystem's concept is ${taleSystem.groupingConcept}")
     }
 
+    private val usingGroups = mutableSetOf<Group>()
+
     override fun getRequest(group: Group): Request? = null
 
     override fun use(group: Group) {
+        usingGroups.add(group)
+
         taleSystem.use(group)
         depictSystem.use(group)
         placeSystem.use(group)
@@ -93,6 +97,11 @@ open class Worship(
     }
 
     override fun die(group: Group) {
+        usingGroups.remove(group)
+
+        if (usingGroups.isNotEmpty())
+            return
+
         features.forEach { it.die(group, this) }
         taleSystem.die(group)
         depictSystem.die(group)
@@ -114,9 +123,7 @@ open class Worship(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Worship
+        if (other !is Worship) return false
 
         if (worshipObject.name != other.worshipObject.name) return false
 

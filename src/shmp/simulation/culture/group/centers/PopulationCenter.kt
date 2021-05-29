@@ -158,9 +158,6 @@ class PopulationCenter(
         val additionalResistance = group.resourceCenter.pack.getTagPresence(ResourceTag("defence")) / 1000
         actualPopulation.genome.behaviour.danger = 0.05 + additionalDanger
         actualPopulation.genome.behaviour.resistance = 0.1 + additionalResistance
-        if (additionalDanger + additionalResistance > 0) {
-            val y = 0
-        }
     }
 
     fun executeRequests(requests: RequestPool) {

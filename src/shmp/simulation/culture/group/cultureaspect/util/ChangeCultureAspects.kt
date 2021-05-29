@@ -8,6 +8,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.ConceptObjectWorship
 import shmp.simulation.culture.group.cultureaspect.worship.GodWorship
+import shmp.simulation.culture.group.cultureaspect.worship.MultigroupWorshipWrapper
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.thinking.meaning.Meme
 
@@ -78,14 +79,14 @@ private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableC
     aspectPool.removeAll(depictions)
     val depictSystem = DepictSystem(depictions, concept.meme, concept)
 
-    return Worship(
+    return MultigroupWorshipWrapper(Worship(
             ConceptObjectWorship(concept),
             taleSystem,
             depictSystem,
             PlaceSystem(mutableSetOf()),
             reasonField.commonReasonings.extractComplexFor(concept, "Worship of $concept"),
             mutableListOf()
-    )
+    ))
 }
 
 fun takeOutDepictionSystem(

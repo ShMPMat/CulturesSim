@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect
 
+import shmp.simulation.culture.group.cultureaspect.worship.MultigroupWorshipWrapper
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 
 class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : CultureAspectPool(initialAspects) {
@@ -12,6 +13,7 @@ class MutableCultureAspectPool(initialAspects: MutableSet<CultureAspect>) : Cult
                     is DepictObject -> depictObjectAdd(aspect)
                     is DepictSystem -> depictSystemAdd(aspect)
                     is Worship -> worshipAdd(aspect)
+                    is MultigroupWorshipWrapper -> worshipAdd(aspect.worship)
                     else -> false
                 }) return
         aspectMap[aspect] = aspect
