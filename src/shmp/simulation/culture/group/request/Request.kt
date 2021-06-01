@@ -1,14 +1,13 @@
 package shmp.simulation.culture.group.request
 
-import shmp.utils.addLinePrefix
 import shmp.simulation.culture.aspect.AspectController
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.stratum.AspectStratum
 import shmp.simulation.culture.group.stratum.Stratum
-import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.Taker
+import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
+import shmp.utils.addLinePrefix
 import kotlin.math.max
 
 

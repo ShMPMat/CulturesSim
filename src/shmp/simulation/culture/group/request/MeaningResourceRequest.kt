@@ -40,11 +40,5 @@ class MeaningResourceRequest(
             meme
     )
 
-    override fun finalFilter(pack: MutableResourcePack): ResourcePack {
-        val result = pack.getResources { evaluator.evaluate(it) > 0 && it.hasMeaning }
-        pack.removeAll(result)
-        return result
-    }
-
     override fun toString() = "want resource ${resource.fullName} with meaning $meme"
 }

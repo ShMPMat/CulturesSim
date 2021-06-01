@@ -3,6 +3,7 @@ package shmp.simulation.culture.group.request
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.AspectImprovementLabeler
 import shmp.simulation.culture.aspect.getAspectImprovement
+import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.BaseNameLabeler
@@ -14,17 +15,11 @@ val passingEvaluator: ResourceEvaluator = ResourceEvaluator(PassingLabeler) { it
 
 fun resourceEvaluator(resource: Resource) =
         ResourceEvaluator(BaseNameLabeler(resource.baseName)) {
-            if (it.baseName == resource.baseName)
+            if (it.baseName == resource.baseName && (!resource.hasMeaning || it.hasMeaning))
                 it.amount.toDouble()
             else 0.0
         }
 
-fun fullResourceEvaluator(resource: Resource) =
-        ResourceEvaluator(BaseNameLabeler(resource.baseName)) {
-            if (it.baseName == resource.baseName)
-                it.amount.toDouble()
-            else 0.0
-        }
 
 fun simpleResourceEvaluator(resource: Resource) =
         ResourceEvaluator(SimpleNameLabeler(resource.simpleName)) {

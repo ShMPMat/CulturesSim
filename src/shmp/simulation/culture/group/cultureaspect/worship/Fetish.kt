@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
+import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.resourceToRequest
@@ -21,10 +22,6 @@ class Fetish(val resource: Resource) : WorshipFeature {
 
             val gotten = result.pack
             diff -= gotten.amount
-
-            if (gotten.amount > 0) {
-                val w = 0
-            }
 
             if (diff > 0)
                 group.resourceCenter.addNeeded(request.evaluator.labeler, diff * 5)
