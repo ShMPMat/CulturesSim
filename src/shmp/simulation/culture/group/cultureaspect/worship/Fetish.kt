@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
-import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.resourceToRequest

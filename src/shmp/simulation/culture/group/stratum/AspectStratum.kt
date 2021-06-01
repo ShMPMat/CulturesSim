@@ -181,7 +181,9 @@ class AspectStratum(
                             ))
                     if (result.isFinished) {
                         currentAmount += (evaluator.evaluate(result.resources)).toInt()
-                        value.addAll(evaluator.pick(result.resources)) //TODO disband
+                        value.addAll(evaluator.pickAndRemove(result.resources))
+                        group.populationCenter.turnResources.addAll(result.resources)
+
                         if (currentAmount >= population)
                             break
                     }

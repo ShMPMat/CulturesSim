@@ -107,6 +107,13 @@ class Cult(val name: String, type: CultType = Shaman) : WorshipFeature {
 
 
 sealed class CultType {
-    object Shaman : CultType()
-    class Institution(var peopleNeeded: Int) : CultType()
+    object Shaman : CultType() {
+        override fun toString() = "Shaman"
+    }
+
+    class Institution(var peopleNeeded: Int) : CultType() {
+        override fun toString(): String {
+            return "Institution of size $peopleNeeded"
+        }
+    }
 }
