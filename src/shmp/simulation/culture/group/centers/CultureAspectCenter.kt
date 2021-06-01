@@ -68,7 +68,6 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
             )
             AspectRandom.Ritual -> createRitual(//TODO recursively go in dependencies;
                     constructBetterAspectUseReason(
-                            group,
                             group.cultureCenter.aspectCenter.aspectPool.converseWrappers.sortedBy { it.name },
                             reasonsWithSystems,
                             session.random

@@ -5,11 +5,12 @@ import shmp.simulation.culture.group.centers.Group;
 
 import java.util.Objects;
 
+
 public class BetterAspectUseReason extends AbstractReason {
     ConverseWrapper converseWrapper;
 
-    public BetterAspectUseReason(Group group, ConverseWrapper converseWrapper) {
-        super(group);
+    public BetterAspectUseReason(ConverseWrapper converseWrapper) {
+        super();
         this.converseWrapper = converseWrapper;
     }
 

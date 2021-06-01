@@ -58,7 +58,7 @@ public class PlacementStrategy {
             case Homogeneous:
                 tiles = controlledTerritory.filter(t -> !t.getResourcePack().containsAll(resourcePack));
                 return tiles.isEmpty()
-                        ? randomTile(controlledTerritory, session.random)
+                        ? randomTile(controlledTerritory)
                         : randomElement(tiles, session.random);
             case Sprinkle:
                 return chooseSpecialTile(controlledTerritory);
@@ -73,7 +73,7 @@ public class PlacementStrategy {
         }
         for (int i = 0; i < 5; i++) {
             try {
-                Tile tile = randomTile(controlledTerritory, session.random);
+                Tile tile = randomTile(controlledTerritory);
                 if (!controlledTerritory.contains(tile)) {
                     specialTiles.add(tile);
                     return tile;

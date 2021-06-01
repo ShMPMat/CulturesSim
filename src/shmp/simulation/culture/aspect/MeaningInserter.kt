@@ -1,5 +1,6 @@
 package shmp.simulation.culture.aspect
 
+import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.thinking.meaning.Meme
@@ -24,13 +25,16 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
                 .getResourceAndRemove(resource)
                 .resources.toMutableList()
         targetResources.removeIf { it.isEmpty }
-        result.resources.addAll(targetResources.map {
+
+        val resultResources = targetResources.map { r ->
             val name = makePostfix(result, controller.meaning)
-            it.copyWithNewExternalFeatures(listOf(
+
+            r.copyWithNewExternalFeatures(listOf(
                     MeaningResourceFeature(controller.meaning, name),
                     MadeByResourceFeature(controller.group)
             ))
-        })
+        }
+        result.resources.addAll(resultResources)
 
         return result
     }
@@ -71,5 +75,9 @@ class MadeByResourceFeature(group: Group) : ExternalResourceFeature {
 
 private val phonyMeaningFeature = MeaningResourceFeature(Meme(""))
 
-val Resource.hasMeaning: Boolean
+val Resource.hasMeaning
     get() = externalFeatures.any { it is MeaningResourceFeature }
+
+
+val Resource.getMeaning
+    get() = externalFeatures.filterIsInstance<MeaningResourceFeature>().randomElementOrNull()

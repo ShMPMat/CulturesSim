@@ -7,9 +7,9 @@ import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 
 
-fun Territory.randomTile() = randomTile(this, RandomSingleton.random)
+fun Territory.randomTile() = randomTile(this)
 
-fun WorldMap.randomTile(): Tile = randomTile(this, RandomSingleton.random)
+fun WorldMap.randomTile(): Tile = randomTile(this)
 
 fun Collection<Tile>.randomTileOnBrink(predicate: (Tile) -> Boolean) =
-        randomTileOnBrink(this, RandomSingleton.random, predicate)
+        randomTileOnBrink(this, predicate)

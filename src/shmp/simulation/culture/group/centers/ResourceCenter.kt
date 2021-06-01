@@ -57,6 +57,8 @@ class ResourceCenter(
     fun takeResource(resource: Resource, amount: Int, taker: Taker) =
             place.current.takeResource(resource, amount, taker)
 
+    fun getResource(resource: Resource) = place.current.getResource(resource)
+
     fun die() {
         session.world.strayPlacesManager.addPlace(place.current)
     }

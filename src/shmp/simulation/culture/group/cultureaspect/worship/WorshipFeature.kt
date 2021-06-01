@@ -8,4 +8,6 @@ interface WorshipFeature: WorshipObjectDependent {
     fun adopt(group: Group): WorshipFeature?
     fun die(group: Group, parent: Worship)
     override fun swapWorship(worshipObject: WorshipObject) : WorshipFeature
+
+    val isFunctioning: Boolean
 }

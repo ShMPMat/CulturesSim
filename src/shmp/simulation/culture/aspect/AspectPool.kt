@@ -68,7 +68,7 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
     fun getMeaningAspects() = aspects
             .filterIsInstance<ConverseWrapper>()
             .filter { it.canReturnMeaning() }
-            .toSet()
+            .distinct()
 
     fun get(name: String) = aspects.firstOrNull { it.name == name }
 

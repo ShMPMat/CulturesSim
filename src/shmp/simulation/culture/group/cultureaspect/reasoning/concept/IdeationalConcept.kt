@@ -62,6 +62,11 @@ sealed class IdeationalConcept(
     object Fear : IdeationalConcept(Meme("Fear"), { listOf(Courage) }, { listOf() })
     object Courage : IdeationalConcept(Meme("Courage"), { listOf(Fear) }, { listOf() })
 
+    object Safety : IdeationalConcept(Meme("Safety"), { listOf(Danger, Hardship) }, { listOf(Comfort) })
+    object Danger : IdeationalConcept(Meme("Danger"), { listOf(Safety, Comfort) }, { listOf(Hardship) })
+
+    object Spirituality : IdeationalConcept(Meme("Spirituality"), { listOf() }, { listOf() })
+
     object Luck : IdeationalConcept(Meme("Luck"), { listOf(Misfortune) }, { listOf() })
     object Misfortune : IdeationalConcept(Meme("Misfortune"), { listOf(Luck) }, { listOf() })
 }

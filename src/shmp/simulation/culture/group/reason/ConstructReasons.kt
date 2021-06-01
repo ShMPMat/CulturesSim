@@ -7,7 +7,6 @@ import kotlin.random.Random
 
 
 fun constructBetterAspectUseReason(
-        group: Group,
         converseWrappers: List<ConverseWrapper>,
         exceptions: Collection<Reason>,
         random: Random,
@@ -24,7 +23,7 @@ fun constructBetterAspectUseReason(
                 random
         ) ?: return null
 
-        reason = BetterAspectUseReason(group, converseWrapper)
+        reason = BetterAspectUseReason(converseWrapper)
         i++
     } while (i <= tries && exceptions.contains(reason))
 

@@ -128,7 +128,7 @@ class AspectCenter(aspects: List<Aspect>) {
         _lastResourcesForCw.addAll(newResources)
         newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
 
-        return _converseWrappers.toList()
+        return _converseWrappers.sortedBy { it.name }
     }
 
     fun finishUpdate(): Set<Aspect> {

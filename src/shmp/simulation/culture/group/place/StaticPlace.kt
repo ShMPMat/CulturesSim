@@ -54,6 +54,12 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
         return ResourcePack(result.resources.map { it.free() })
     }
 
+    fun getResource(resource: Resource): ResourcePack {
+        val remapedResource = resource.copyWithOwnership(ownershipMarker)
+
+        return _owned.getResource(remapedResource)
+    }
+
     fun getResourcesAndRemove(predicate: (Resource) -> Boolean) =
             ResourcePack(_owned.getResourcesAndRemove { predicate(it.freeCopy()) }.resources.map { it.free() })
 

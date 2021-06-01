@@ -7,6 +7,7 @@ import shmp.simulation.culture.aspect.MeaningResourceFeature
 import shmp.simulation.culture.group.stratum.CultStratum
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.cultureaspect.worship.CultType.*
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.request.SimpleResourceRequest
@@ -15,7 +16,13 @@ import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 
 
-class Cult(val name: String) : WorshipFeature {
+class Cult(val name: String, type: CultType = Shaman) : WorshipFeature {
+    var type = type
+        private set
+
+    override var isFunctioning = false
+        private set
+
     override fun use(group: Group, parent: Worship) {
         val stratum: Stratum = group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
                 ?: run {
@@ -25,9 +32,29 @@ class Cult(val name: String) : WorshipFeature {
                     group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
                             ?: throw GroupError("Cannot create Stratum for $this")
                 }
-        0.01.chanceOf {
-            group.populationCenter.getStratumPeople(stratum, stratum.population + 1)
+        when(type) {
+            Shaman -> {
+                isFunctioning = if (stratum.population < 1) {
+                    group.populationCenter.getStratumPeople(stratum, 1)
+
+                    stratum.population == 1
+                } else true
+            }
+            is Institution -> {
+                val institution = type as Institution
+
+                0.01.chanceOf {
+                    institution.peopleNeeded += 1
+                }
+
+                isFunctioning = if (stratum.population < institution.peopleNeeded) {
+                    group.populationCenter.getStratumPeople(stratum, institution.peopleNeeded - stratum.population)
+
+                    stratum.population >= institution.peopleNeeded
+                } else true
+            }
         }
+
 
         manageSpecialPlaces(group, parent)
     }
@@ -75,5 +102,11 @@ class Cult(val name: String) : WorshipFeature {
 
     override fun swapWorship(worshipObject: WorshipObject) = Cult(name)
 
-    override fun toString() = "Cult"
+    override fun toString() = "$type"
+}
+
+
+sealed class CultType {
+    object Shaman : CultType()
+    class Institution(var peopleNeeded: Int) : CultType()
 }

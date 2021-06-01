@@ -43,7 +43,7 @@ class EvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAc
     override val internalToString = "Let ${group.name} evaluate ${pack.listResources}"
 }
 
-class ProduceExactResourceA(
+class ProduceExactResourceA( //TODO exact? is it though?
         group: Group,
         val resource: Resource,
         val amount: Int,

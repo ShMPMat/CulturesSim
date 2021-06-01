@@ -16,6 +16,7 @@ sealed class RequestType: AbstractReasonConcept() {
     object Shelter : RequestType()
 
     object Vital : RequestType()
+    object Spiritual : RequestType()
     object Comfort : RequestType()
     object Improvement : RequestType()
     object Trade : RequestType()

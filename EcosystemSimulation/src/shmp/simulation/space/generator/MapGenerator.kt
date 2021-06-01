@@ -2,7 +2,6 @@ package shmp.simulation.space.generator
 
 import shmp.random.randomElement
 import shmp.random.randomTile
-import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.space.TectonicPlate
 import shmp.simulation.space.WorldMap
@@ -90,7 +89,7 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
                 random
         )
         val tectonicPlate = TectonicPlate(direction, type)
-        val tile = randomTile(map, random)
+        val tile = randomTile(map)
 
         tectonicPlate.add(tile)
         tectonicPlates.add(tectonicPlate)
@@ -138,7 +137,7 @@ private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resourc
     for (i in 0 until n) {
         val tile: Tile = idealTiles.randomElementOrNull()
                 ?: goodTiles.randomElementOrNull()
-                        ?: randomTile(map, random)
+                        ?: randomTile(map)
 
         tile.addDelayedResource(resource.copy())
         addDependencies(listOf(), resource, tile, resourcePool)

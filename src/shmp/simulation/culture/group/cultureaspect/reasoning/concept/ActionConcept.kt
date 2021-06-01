@@ -33,4 +33,7 @@ sealed class ActionConcept(
 
     object Fear: ActionConcept(Meme("Fear"), { listOf(Face) }, { listOf() }, IdeationalConcept.Fear)
     object Face: ActionConcept(Meme("Face"), { listOf(Fear) }, { listOf() }, Courage)
+
+    object BeCloser: ActionConcept(Meme("Be closer to"), { listOf(WardOff) }, { listOf() }, Spirituality)
+    object WardOff: ActionConcept(Meme("Ward off"), { listOf(BeCloser) }, { listOf() }, Danger)
 }

@@ -42,6 +42,12 @@ open class Worship(
         taleSystem.use(group)
         depictSystem.use(group)
         placeSystem.use(group)
+        features.forEach { it.use(group, this) }
+
+        update(group)
+    }
+
+    private fun update(group: Group) {
         (0.05 / (depictSystem.depictions.size + 1)).chanceOf {
             val depiction = createDepictObject(
                     group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
@@ -57,11 +63,14 @@ open class Worship(
             ) ?: return
             taleSystem.addTale(tale)
         }
-        update(group)
-    }
+        (0.25 / (features.filterIsInstance<Fetish>().size + 1.0).pow(2)).chanceOf {
+            makeWorshipObject(this, group)?.let {
+                val fetish = Fetish(it)
 
-    private fun update(group: Group) {
-        features.forEach { it.use(group, this) }
+                if (!features.contains(fetish))
+                    features.add(fetish)
+            }
+        }
         if (group.populationCenter.freePopulation >= session.minimalStableFreePopulation
                 && features.filterIsInstance<Cult>().isEmpty())
             0.01.chanceOf {
@@ -73,13 +82,11 @@ open class Worship(
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
         }
 
-        (session.worshipPlaceProb / (1 + placeSystem.places.size)).chanceOfNot {
-            return
-        } otherwise {
-            placeSystem.addPlace(
-                    createSpecialPlaceForWorship(this, group)
-                            ?: return
-            )
+        (session.worshipPlaceProb / (1 + placeSystem.places.size)).chanceOf {
+            val place = createSpecialPlaceForWorship(this, group)
+                    ?: return
+
+            placeSystem.addPlace(place)
         }
     }
 

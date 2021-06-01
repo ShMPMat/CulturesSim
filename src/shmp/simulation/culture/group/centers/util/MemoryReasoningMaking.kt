@@ -94,6 +94,7 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
             is RequestType.Improvement -> listOf(Comfort, Good, Life, Change, Creation)
             is RequestType.Trade -> listOf(Change)
             is RequestType.Luxury -> listOf(Comfort)
+            is RequestType.Spiritual -> listOf(Spirituality)
         }.toMutableList()
         concepts += listOf(type)
 
@@ -130,5 +131,6 @@ private fun makeNotSatisfiedRequestReasoning(type: RequestType, resource: Resour
         RequestType.Improvement -> emptyReasonConversionResult()
         RequestType.Trade -> emptyReasonConversionResult()
         RequestType.Luxury -> emptyReasonConversionResult()
+        RequestType.Spiritual -> emptyReasonConversionResult()
     }
 }

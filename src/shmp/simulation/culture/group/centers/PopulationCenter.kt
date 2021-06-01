@@ -1,6 +1,5 @@
 package shmp.simulation.culture.group.centers
 
-import shmp.simulation.Controller
 import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper
@@ -14,7 +13,6 @@ import shmp.simulation.culture.group.stratum.AspectStratum
 import shmp.simulation.culture.group.stratum.Person
 import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.culture.group.stratum.StratumPeople
-import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.OwnershipMarker
 import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.MutableResourcePack
@@ -192,8 +190,10 @@ class PopulationCenter(
         val actualPack = request.finalFilter(pack)
         turnResources.addAll(pack)
 
-        if (!request.isFloorSatisfied(actualPack))
+        if (!request.isFloorSatisfied(actualPack)) {
             request.group.resourceCenter.addNeeded(request.evaluator.labeler, request.need)
+            strataForRequest.filter { it.population == 0 }.forEach { it.importance += 25 }
+        }
 
         return ExecutedRequestResult(actualPack, usedAspects)
     }

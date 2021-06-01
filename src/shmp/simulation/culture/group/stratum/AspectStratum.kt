@@ -4,6 +4,7 @@ import shmp.random.singleton.chanceOfNot
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.AspectController
 import shmp.simulation.culture.aspect.ConverseWrapper
+import shmp.simulation.culture.aspect.MeaningInserter
 import shmp.simulation.culture.aspect.dependency.Dependency
 import shmp.simulation.culture.aspect.getAspectImprovement
 import shmp.simulation.culture.group.centers.Group
@@ -97,25 +98,28 @@ class AspectStratum(
         if (population == 0)
             return
 
-        val oldPopulation = population
-        val evaluator = passingEvaluator
-        val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation.toDouble()).toDouble()
-        val amount = aspect.calculateProducedValue(evaluator, freePopulation)
-        val pack = use(AspectController(
-                1,
-                amount,
-                amount,
-                evaluator,
-                group.populationCenter,
-                accessibleTerritory,
-                false,
-                group,
-                group.cultureCenter.meaning
-        ))
+        if (aspect !is MeaningInserter) {
+            val oldPopulation = population
+            val evaluator = passingEvaluator
+            val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation.toDouble()).toDouble()
+            val amount = aspect.calculateProducedValue(evaluator, freePopulation)
+            val pack = use(AspectController(
+                    1,
+                    amount,
+                    amount,
+                    evaluator,
+                    group.populationCenter,
+                    accessibleTerritory,
+                    false,
+                    group,
+                    group.cultureCenter.meaning
+            ))
 
-        if (population < oldPopulation)
-            population = oldPopulation
-        accessibleResources.addAll(pack)
+            if (population < oldPopulation)
+                population = oldPopulation
+            accessibleResources.addAll(pack)
+        }
+
         updateInfrastructure(accessibleTerritory, group)
         isRaisedAmount = false
         ego.update(accessibleResources, accessibleTerritory, group, this)
