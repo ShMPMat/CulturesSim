@@ -137,9 +137,9 @@ fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile)
 
 fun ecosystemTypeMapper(resourceSymbols: Map<Resource, String>, tile: Tile) = when (tile.type) {
     Tile.Type.Water, Tile.Type.Ice, Tile.Type.Woods, Tile.Type.Growth, Tile.Type.Normal -> {
-        val actual = tile.resourcePack.getResources { r ->
+        val actual = tile.resourcePack.getResourcesUnpacked { r ->
             r.genome.type !== ResourceType.Plant && r.isNotEmpty && r.simpleName != "Vapour"
-        }.resources
+        }
         if ( /*actual.size() > 0*/false) {
             "\u001b[30m" + if (resourceSymbols[actual[0]] == null) "Ё" else resourceSymbols[actual[0]]
         } else {

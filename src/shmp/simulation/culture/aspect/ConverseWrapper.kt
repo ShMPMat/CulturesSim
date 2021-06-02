@@ -41,7 +41,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
         val targetResources = result.resources
                 .getResourcesAndRemove { it in producedResources }
-                .resources.toMutableList()
+                .toMutableList()
         targetResources.removeIf { it.isEmpty }
 
         result.resources.addAll(targetResources.map {

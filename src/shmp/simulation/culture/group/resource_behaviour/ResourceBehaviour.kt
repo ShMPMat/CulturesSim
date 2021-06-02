@@ -5,7 +5,7 @@ import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.territory.Territory
 
 
-class ResourceBehaviour constructor(private val placementStrategy: PlacementStrategy) {
+class ResourceBehaviour(private val placementStrategy: PlacementStrategy) {
     fun proceedResources(resourcePack: MutableResourcePack, territory: Territory) {
         placementStrategy.place(resourcePack, territory)
     }
@@ -13,5 +13,5 @@ class ResourceBehaviour constructor(private val placementStrategy: PlacementStra
     override fun toString() = placementStrategy.toString()
 }
 
-fun getRandom(): ResourceBehaviour =
+fun getRandom() =
         ResourceBehaviour(PlacementStrategy(PlacementStrategy.Strategy.values().toList().randomElement()))

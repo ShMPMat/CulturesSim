@@ -233,7 +233,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                             controller.ceiling
                     ).second)
                 else
-                    usedForDependency.addAll(_rp.getResources(requirementTag))
+                    usedForDependency.addAll(_rp.getResourcesUnpacked(requirementTag))
                 meaningfulPack.addAll(_rp)
                 isFinished = true
                 break

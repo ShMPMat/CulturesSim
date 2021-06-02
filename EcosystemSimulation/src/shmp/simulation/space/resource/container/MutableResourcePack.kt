@@ -4,7 +4,6 @@ import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
-import java.util.*
 import kotlin.math.min
 
 
@@ -51,7 +50,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     }
 
     fun getAmountOfResourcesWithTagAndErase(tag: ResourceTag, amount: Double): Pair<Int, List<Resource>> { //TODO looks bad
-        val innerResource: Collection<Resource> = getResources(tag).resources
+        val innerResource: Collection<Resource> = getResourcesUnpacked(tag)
         val result = mutableListOf<Resource>()
         var counter = 0
         for (resource in innerResource) {
@@ -64,8 +63,8 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         return counter to result
     }
 
-    fun getResourcesAndRemove(predicate: (Resource) -> Boolean): ResourcePack {
-        val result = getResources(predicate)
+    fun getResourcesAndRemove(predicate: (Resource) -> Boolean): List<Resource> {
+        val result = getResourcesUnpacked(predicate)
         removeAll(result)
         return result
     }
@@ -89,8 +88,8 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     fun removeAll(pack: ResourcePack) = removeAll(pack.resources)
 
     fun destroyAllResourcesWithTag(tag: ResourceTag) {
-        val result = getResources(tag)
+        val result = getResourcesUnpacked(tag)
         removeAll(result)
-        result.resources.forEach { it.destroy() }
+        result.forEach { it.destroy() }
     }
 }

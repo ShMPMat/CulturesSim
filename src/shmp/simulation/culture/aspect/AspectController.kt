@@ -20,7 +20,7 @@ data class AspectController(
         val territory: Territory,
         val isMeaningNeeded: Boolean = false,
         val group: Group,
-        val meaning: Meme = group.cultureCenter.meaning
+        val meaning: Meme? = null
 ) {
     init {
         floor = max(0.0, floor)

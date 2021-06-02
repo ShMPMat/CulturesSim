@@ -75,11 +75,12 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
         }
 
         if (buildingsType is One) {
-            if (parent.placeSystem.places.isEmpty())
+            if (parent.placeSystem.places.isEmpty()) {
                 parent.addWorshipPlace(group)
 
-            if (parent.placeSystem.places.isEmpty())
-                return
+                if (parent.placeSystem.places.isEmpty())
+                    return
+            }
 
             val templeResource = session.world.resourcePool.getSimpleName("Temple")
 
@@ -112,7 +113,7 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
                         }
                 group.resourceCenter.addAll(temple)
                 val place = parent.placeSystem.places
-                        .minByOrNull { t -> t.staticPlace.owned.getResources { it in temple }.amount }
+                        .minByOrNull { t -> t.staticPlace.owned.getAmount { it in temple } }
                         ?: throw GroupError("Couldn't find Special places")
 
                 place.staticPlace.addResources(temple)

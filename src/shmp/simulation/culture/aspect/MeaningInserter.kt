@@ -1,6 +1,7 @@
 package shmp.simulation.culture.aspect
 
 import shmp.random.singleton.randomElementOrNull
+import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.thinking.meaning.Meme
@@ -26,11 +27,13 @@ class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspe
                 .resources.toMutableList()
         targetResources.removeIf { it.isEmpty }
 
+        val meaning = controller.meaning ?: controller.group.cultureCenter.meaning
+
         val resultResources = targetResources.map { r ->
-            val name = makePostfix(result, controller.meaning)
+            val name = makePostfix(result, meaning)
 
             r.copyWithNewExternalFeatures(listOf(
-                    MeaningResourceFeature(controller.meaning, name),
+                    MeaningResourceFeature(meaning, name),
                     MadeByResourceFeature(controller.group)
             ))
         }

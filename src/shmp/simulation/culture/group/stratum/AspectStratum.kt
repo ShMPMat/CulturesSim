@@ -111,8 +111,7 @@ class AspectStratum(
                     group.populationCenter,
                     accessibleTerritory,
                     false,
-                    group,
-                    group.cultureCenter.meaning
+                    group
             ))
 
             if (population < oldPopulation)
@@ -176,8 +175,7 @@ class AspectStratum(
                                     group.populationCenter,
                                     accessibleTerritory,
                                     false,
-                                    group,
-                                    group.cultureCenter.meaning
+                                    group
                             ))
                     if (result.isFinished) {
                         currentAmount += (evaluator.evaluate(result.resources)).toInt()

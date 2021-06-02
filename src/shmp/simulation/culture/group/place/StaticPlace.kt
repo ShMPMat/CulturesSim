@@ -61,7 +61,7 @@ open class StaticPlace(val tile: Tile, val tileTag: TileTag) {
     }
 
     fun getResourcesAndRemove(predicate: (Resource) -> Boolean) =
-            ResourcePack(_owned.getResourcesAndRemove { predicate(it.freeCopy()) }.resources.map { it.free() })
+            ResourcePack(_owned.getResourcesAndRemove { predicate(it.freeCopy()) }.map { it.free() })
 
     fun contains(resource: Resource) = _owned.contains(resource.copyWithOwnership(ownershipMarker))
 

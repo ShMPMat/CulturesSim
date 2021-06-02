@@ -26,8 +26,7 @@ class AspectRitual(
                 group.populationCenter,
                 group.territoryCenter.accessibleTerritory,
                 true,
-                group,
-                group.cultureCenter.meaning
+                group
         ))
         result.pushNeeds(group)
         if (result.isFinished) {

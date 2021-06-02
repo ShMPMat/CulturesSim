@@ -1,6 +1,7 @@
 package shmp.simulation.culture.thinking.meaning
 
-import shmp.random.randomElement
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.randomElement
 import shmp.random.testProbability
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.aspect.Aspect
@@ -57,8 +58,9 @@ class GroupMemes : MemePool() {
 
     val valuableMeme: Meme
         get() {
-            if (testProbability(0.9, session.random))
+            0.9.chanceOf {
                 return chooseMeme(popularMemes)
+            }
 
             updatePopular()
 
@@ -66,19 +68,10 @@ class GroupMemes : MemePool() {
         }
 
     val memeWithComplexityBias: Meme
-        get() =
-            if (testProbability(0.5, session.random))
-                valuableMeme
-            else
-                chooseMeme(memesCombinationsMap.values.toList())
+        get() = 0.5.chanceOf<Meme> { valuableMeme }
+                ?: chooseMeme(memesCombinationsMap.values.sortedBy { it.toString() })
 
-    private fun chooseMeme(memeList: List<Meme>): Meme {
-        return randomElement(
-                memeList,
-                { it.importance.toDouble().pow(2) },
-                session.random
-        )
-    }
+    private fun chooseMeme(memeList: List<Meme>) = memeList.randomElement { it.importance.toDouble() }
 
     fun addAspectMemes(aspect: Aspect) = addPairMemes(makeAspectMemes(aspect))
 

@@ -24,9 +24,7 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
         get() = resourceMap.navigableKeySet().iterator()
 
     val amount: Int
-        get() = resourceMap.navigableKeySet()
-                .map { it.amount }
-                .fold(0, Int::plus)
+        get() = resourceMap.navigableKeySet().sumBy { it.amount }
 
     val isEmpty: Boolean
         get() = amount == 0
@@ -50,11 +48,18 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
         }
     }
 
+    fun getResourcesUnpacked(predicate: (Resource) -> Boolean) =
+            resourceMap.navigableKeySet().filter(predicate)
+
+
+    fun getResourcesUnpacked(tag: ResourceTag) =
+            resourceMap.navigableKeySet().filter { it.tags.contains(tag) }
+
     fun getResources(predicate: (Resource) -> Boolean) =
-            ResourcePack(resourceMap.navigableKeySet().filter(predicate), false)
+            ResourcePack(getResourcesUnpacked(predicate), false)
 
     fun getResources(tag: ResourceTag) =
-            ResourcePack(resourceMap.navigableKeySet().filter { it.tags.contains(tag) }, false)
+            ResourcePack(getResourcesUnpacked(tag), false)
 
     fun getResource(resource: Resource): ResourcePack {
         val resourceInMap = resourceMap[resource]
@@ -64,15 +69,15 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
 
     fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
 
-    fun getAmount(tag: ResourceTag) = getResources(tag).amount
+    fun getAmount(tag: ResourceTag) = getResourcesUnpacked(tag).sumBy { it.amount }
 
-    fun getTagPresence(tag: ResourceTag) = getResources(tag).resources
+    fun getTagPresence(tag: ResourceTag) = getResourcesUnpacked(tag)
             .map { it.getTagPresence(tag) }
             .sum()
 
     fun getAmount(resource: Resource) = getUnpackedResource(resource).amount
 
-    fun getAmount(predicate: (Resource) -> Boolean) = getResources(predicate).amount
+    fun getAmount(predicate: (Resource) -> Boolean) = getResourcesUnpacked(predicate).sumBy { it.amount }
 
     fun clearEmpty() = resourceMap.entries
             .filter { it.value.amount == 0 }
