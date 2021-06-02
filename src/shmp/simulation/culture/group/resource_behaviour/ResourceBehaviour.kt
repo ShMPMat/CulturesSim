@@ -13,6 +13,5 @@ class ResourceBehaviour constructor(private val placementStrategy: PlacementStra
     override fun toString() = placementStrategy.toString()
 }
 
-fun getRandom(): ResourceBehaviour = ResourceBehaviour(PlacementStrategy(
-        PlacementStrategy.Strategy.values().toList().randomElement()
-))
+fun getRandom(): ResourceBehaviour =
+        ResourceBehaviour(PlacementStrategy(PlacementStrategy.Strategy.values().toList().randomElement()))

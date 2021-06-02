@@ -83,11 +83,15 @@ open class Worship(
         }
 
         (session.worshipPlaceProb / (1 + placeSystem.places.size)).chanceOf {
-            val place = createSpecialPlaceForWorship(this, group)
-                    ?: return
-
-            placeSystem.addPlace(place)
+            addWorshipPlace(group)
         }
+    }
+
+    internal fun addWorshipPlace(group: Group) {
+        val place = createSpecialPlaceForWorship(this, group)
+                ?: return
+
+        placeSystem.addPlace(place)
     }
 
     override fun adopt(group: Group): Worship? {

@@ -5,12 +5,17 @@ import shmp.simulation.space.resource.tag.ResourceTag
 import java.util.*
 
 
-open class ResourcePack(resources: Collection<Resource> = listOf()) {
+open class ResourcePack private constructor(resources: Collection<Resource>, doSafeAdd: Boolean) {
     protected var resourceMap = TreeMap<Resource, Resource>()
 
     init {
-        resources.forEach { internalAdd(it) }
+        if (doSafeAdd)
+            resources.forEach { internalAdd(it) }
+        else
+            resources.forEach{ resourceMap[it] = it }
     }
+
+    constructor(resources: Collection<Resource> = listOf()): this(resources, true)
 
     val resources: List<Resource>
         get() = resourceMap.values.toList()
@@ -46,15 +51,15 @@ open class ResourcePack(resources: Collection<Resource> = listOf()) {
     }
 
     fun getResources(predicate: (Resource) -> Boolean) =
-            ResourcePack(resourceMap.navigableKeySet().filter(predicate))
+            ResourcePack(resourceMap.navigableKeySet().filter(predicate), false)
 
     fun getResources(tag: ResourceTag) =
-            ResourcePack(resourceMap.navigableKeySet().filter { it.tags.contains(tag) })
+            ResourcePack(resourceMap.navigableKeySet().filter { it.tags.contains(tag) }, false)
 
     fun getResource(resource: Resource): ResourcePack {
         val resourceInMap = resourceMap[resource]
                 ?: return ResourcePack()
-        return ResourcePack(listOf(resourceInMap))
+        return ResourcePack(listOf(resourceInMap), false)
     }
 
     fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)

@@ -65,9 +65,6 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
     }
 
     private fun manageSpecialPlaces(group: Group, parent: Worship) {
-        if (parent.placeSystem.places.isEmpty())
-            return
-
         val makeTemple = when(type) {
             Shaman -> 0.01
             is Institution -> 0.1
@@ -78,6 +75,12 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
         }
 
         if (buildingsType is One) {
+            if (parent.placeSystem.places.isEmpty())
+                parent.addWorshipPlace(group)
+
+            if (parent.placeSystem.places.isEmpty())
+                return
+
             val templeResource = session.world.resourcePool.getSimpleName("Temple")
 
             if (group.resourceCenter.getResource(templeResource).amount > 0)

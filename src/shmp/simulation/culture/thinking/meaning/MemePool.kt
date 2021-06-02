@@ -6,7 +6,7 @@ import java.util.*
 open class MemePool private constructor(memes: Collection<Meme>) {
     internal constructor() : this(ArrayList<Meme>())
 
-    protected val memesMap = mutableMapOf<String, Meme>()
+    protected val memesMap = TreeMap<String, Meme>()
 
     init {
         addAll(memes)
@@ -28,7 +28,7 @@ open class MemePool private constructor(memes: Collection<Meme>) {
 
     fun addAll(pool: MemePool) = addAll(pool.memesMap.values)
 
-    open val all get() = memesMap.values.toList()
+    open val all get() = memesMap.values.sortedBy { it.toString() }
 
     open fun getMeme(name: String) = memesMap[name.toLowerCase()]
 
