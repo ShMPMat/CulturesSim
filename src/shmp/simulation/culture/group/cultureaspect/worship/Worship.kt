@@ -32,7 +32,7 @@ open class Worship(
                     " but TaleSystem's concept is ${taleSystem.groupingConcept}")
     }
 
-    private val usingGroups = mutableSetOf<Group>()
+    internal val usingGroups = mutableSetOf<Group>()
 
     override fun getRequest(group: Group): Request? = null
 

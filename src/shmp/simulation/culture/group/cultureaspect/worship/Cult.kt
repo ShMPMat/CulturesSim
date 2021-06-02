@@ -7,16 +7,21 @@ import shmp.simulation.culture.aspect.MeaningResourceFeature
 import shmp.simulation.culture.group.stratum.CultStratum
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.cultureaspect.worship.BuildingsType.*
 import shmp.simulation.culture.group.cultureaspect.worship.CultType.*
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.RequestCore
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.SimpleResourceRequest
 import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 
 
-class Cult(val name: String, type: CultType = Shaman) : WorshipFeature {
+class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsType = NoBuildings) : WorshipFeature {
+    var buildingsType = buildingsType
+        private set
+
     var type = type
         private set
 
@@ -60,10 +65,26 @@ class Cult(val name: String, type: CultType = Shaman) : WorshipFeature {
     }
 
     private fun manageSpecialPlaces(group: Group, parent: Worship) {
-        if (parent.placeSystem.places.isEmpty()) return
-        0.1.chanceOf {//TODO lesser probability
+        if (parent.placeSystem.places.isEmpty())
+            return
+
+        val makeTemple = when(type) {
+            Shaman -> 0.01
+            is Institution -> 0.1
+        }
+
+        makeTemple.chanceOf {
+            buildingsType = One
+        }
+
+        if (buildingsType is One) {
+            val templeResource = session.world.resourcePool.getSimpleName("Temple")
+
+            if (group.resourceCenter.getResource(templeResource).amount > 0)
+                return
+
             val request = SimpleResourceRequest(
-                    session.world.resourcePool.getSimpleName("Temple"),
+                    templeResource,
                     RequestCore(
                             group,
                             1.0,
@@ -71,7 +92,7 @@ class Cult(val name: String, type: CultType = Shaman) : WorshipFeature {
                             passingReward,
                             passingReward,
                             75,
-                            setOf()
+                            setOf(RequestType.Spiritual)
                     )
             )
             val result = group.populationCenter.executeRequest(request)
@@ -112,8 +133,12 @@ sealed class CultType {
     }
 
     class Institution(var peopleNeeded: Int) : CultType() {
-        override fun toString(): String {
-            return "Institution of size $peopleNeeded"
-        }
+        override fun toString() = "Institution of size $peopleNeeded"
     }
+}
+
+sealed class BuildingsType {
+    object NoBuildings: BuildingsType()
+
+    object One: BuildingsType()
 }
