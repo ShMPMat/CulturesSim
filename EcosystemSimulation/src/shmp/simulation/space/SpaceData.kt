@@ -30,6 +30,7 @@ class Data(
         val tileScale: Double = 5.0,
         val tileResourceCapacity: Double = 10000.0,
         val tectonicRange: Int = 2,
+        val minTectonicRise: Int = 5,
         val resourceDenseCoefficient: Double = tileScale,
         val windPropagation: Double = 0.025,
         val windFillIn: Double = 0.1,

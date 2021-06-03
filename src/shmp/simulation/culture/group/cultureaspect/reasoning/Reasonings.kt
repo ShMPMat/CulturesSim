@@ -29,6 +29,23 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
     }
 }
 
+class AssociationReasoning(val firstAssociation: ReasonConcept, val secondAssociation: ReasonConcept) : BaseReasoning(
+        Meme("$firstAssociation associates with $secondAssociation"),
+        listOf(firstAssociation.meme, secondAssociation.meme),
+        listOf()
+) {
+    val isOppositions = any { it in firstAssociation.oppositeConcepts || it in secondAssociation.oppositeConcepts }
+
+    fun toList() = listOf(firstAssociation, secondAssociation)
+
+    fun any(predicate: (ReasonConcept) -> Boolean) = predicate(firstAssociation) || predicate(secondAssociation)
+    fun all(predicate: (ReasonConcept) -> Boolean) = predicate(firstAssociation) && predicate(secondAssociation)
+
+    fun <T> applyToBoth(action: (ReasonConcept, ReasonConcept) -> T?): List<T> {
+        return listOf(action(firstAssociation, secondAssociation), action(secondAssociation, firstAssociation)).mapNotNull { it }
+    }
+}
+
 class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
         Meme("$objectConcept opposes $subjectConcept"),
         listOf(objectConcept.meme, subjectConcept.meme),

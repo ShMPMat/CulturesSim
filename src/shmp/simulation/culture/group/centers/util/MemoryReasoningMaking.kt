@@ -5,19 +5,19 @@ import shmp.random.randomElementOrNull
 import shmp.random.singleton.*
 import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.centers.MemoryCenter
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
+import shmp.simulation.culture.group.centers.util.ReasoningRandom.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.equals
-import shmp.simulation.culture.group.cultureaspect.reasoning.livesIn
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.ResultStatus
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Taker
 import shmp.utils.MovingAverage
 import kotlin.math.pow
 
@@ -34,9 +34,9 @@ private enum class ReasoningRandom(override val probability: Double) : SampleSpa
 }
 
 private fun takeOutCommonReasonings(memoryCenter: MemoryCenter): ReasonConversionResult =
-        when (ReasoningRandom.values().randomElement()) {
-            ReasoningRandom.Requests -> takeOutRequest(memoryCenter.turnRequests)
-            ReasoningRandom.MemoryResources -> takeOutResourceTraction(memoryCenter.resourceTraction)
+        when (values().randomElement()) {
+            Requests -> takeOutRequest(memoryCenter.turnRequests)
+            MemoryResources -> takeOutResourceTraction(memoryCenter.resourceTraction)
         }
 
 private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverage>): ReasonConversionResult {
@@ -48,21 +48,36 @@ private fun takeOutResourceTraction(resourceTraction: Map<Resource, MovingAverag
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(commonResource)
 
-        0.5.chanceOf<ReasonConversionResult> {
+        commonResource.getAdditionalConcepts() + (0.5.chanceOf<ReasonConversionResult> {
             ReasonConversionResult(resourceConcept equals Commonness, resourceConcept)
-        } ?: ReasonConversionResult(ObjectConcept.We livesIn resourceConcept, resourceConcept)
+        } ?: ReasonConversionResult(ObjectConcept.We livesIn resourceConcept, resourceConcept))
     } ?: run {
-        val rareResource = randomElementOrNull(resourceTraction.entries.sortedBy { it.value }, { 1 - it.value.value.value }, CulturesController.session.random)
+        val rareResource = resourceTraction.entries.sortedBy { it.value }
+                .randomElementOrNull { 1 - it.value.value.value }
                 ?.key
                 ?: return emptyReasonConversionResult()
         val resourceConcept = ArbitraryResource(rareResource)
 
-        ReasonConversionResult(resourceConcept equals Rareness, resourceConcept)
+        ReasonConversionResult(resourceConcept equals Rareness, resourceConcept) + rareResource.getAdditionalConcepts()
     }
 }
 
+fun Resource.getConcepts() = ReasonConversionResult(ArbitraryResource(this)) +
+        getAdditionalConcepts()
+
+fun List<Resource>.getResourceConcepts() = map { it.getConcepts() }
+        .foldRight(emptyReasonConversionResult(), ReasonConversionResult::plus)
+
+internal fun Resource.getAdditionalConcepts(): ReasonConversionResult {//TODO wind and death and all
+    val takers = takers.filterIsInstance<Taker.ResourceTaker>()
+            .map { ArbitraryResource(it.resource) }
+    val takersReasonings = listOf(ArbitraryResource(this)) oppose takers
+
+    return ReasonConversionResult(takersReasonings.toMutableList(), takers.toMutableList())
+}
+
 private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
-    val reasonResult = emptyReasonConversionResult()
+    var reasonResult = emptyReasonConversionResult()
 
     val (request, result) = turnRequests.resultStatus.entries
             .sortedBy { it.key.need }
@@ -76,8 +91,10 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
                 ResultStatus.NotSatisfied -> {
                     reasonResult += makeNotSatisfiedRequestReasoning(type, resource)
                 }
-                ResultStatus.Satisfied -> {}
-                ResultStatus.Excellent -> {}
+                ResultStatus.Satisfied -> {
+                }
+                ResultStatus.Excellent -> {
+                }
             }
             continue
         }
@@ -86,7 +103,7 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
 
         val resourceConcept = ArbitraryResource(resource)
         reasonResult.concepts.add(resourceConcept)
-        val concepts = when(type) {
+        val concepts = when (type) {
             is RequestType.Food, is RequestType.Warmth, is RequestType.Clothes -> listOf<ReasonConcept>()
             is RequestType.Shelter -> listOf(Life)
             is RequestType.Vital -> listOf(Life, Good)
@@ -101,7 +118,9 @@ private fun takeOutRequest(turnRequests: RequestPool): ReasonConversionResult {
         reasonResult.reasonings.add(resourceConcept equals concepts.randomElement())
     }
 
-    return reasonResult
+    val additionalResourceReasonings = result.pack.resources.getResourceConcepts()
+
+    return reasonResult + additionalResourceReasonings
 }
 
 
@@ -121,7 +140,7 @@ private fun makeNotSatisfiedRequestReasoning(type: RequestType, resource: Resour
         )
     }
 
-    return when(type) {
+    return when (type) {
         RequestType.Food -> emptyReasonConversionResult()
         RequestType.Warmth -> emptyReasonConversionResult()
         RequestType.Clothes -> emptyReasonConversionResult()

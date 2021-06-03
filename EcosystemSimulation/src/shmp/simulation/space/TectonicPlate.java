@@ -147,10 +147,14 @@ public class TectonicPlate extends BrinkInvariantTerritory {
         if (testProbability(0.7, RandomSingleton.INSTANCE.getRandom()) && isMoved) {
             return;
         }
+        int rise = SpaceData.INSTANCE.getData().getMinTectonicRise();
+
         for (Pair<Tile, Double> pair: getAffectedTiles()) {
             if (testProbability(pair.getSecond(), RandomSingleton.INSTANCE.getRandom())) {
-                pair.getFirst().setLevel(isMoved ? pair.getFirst().getLevel() + 1 :
-                        pair.getFirst().getLevel() + 5 + RandomSingleton.INSTANCE.getRandom().nextInt(5));
+                pair.getFirst().setLevel(
+                        isMoved ? pair.getFirst().getLevel() + 1 :
+                        pair.getFirst().getLevel() + rise + RandomSingleton.INSTANCE.getRandom().nextInt(rise)
+                );
             }
         }
         isMoved = true;

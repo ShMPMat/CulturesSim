@@ -11,7 +11,8 @@ abstract class NonAspectStratum(tile: Tile, baseName: String, postfix: String) :
     override var population: Int = 0
         internal set
 
-    protected var aspect: Aspect? = null
+    var aspect: Aspect? = null
+        protected set
 
     private var gainedImportance = 0
 

@@ -6,12 +6,12 @@ import shmp.random.singleton.testProbability
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.centers.AspectCenter
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
+import shmp.simulation.culture.group.cultureaspect.reasoning.associateWith
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.allEqualsAll
 import shmp.simulation.culture.group.cultureaspect.reasoning.equalsAll
 
 
@@ -41,7 +41,12 @@ class AspectConversion(private val aspectCenter: AspectCenter) : ReasonConversio
 
         val concept = ArbitraryAspect(aspect)
         val reasoning = (concept equalsAll appropriateConcepts).randomElement()
+        val allResources = aspect.getAssociatedResources()
+        val associations = allResources.map { ArbitraryResource(it) } associateWith listOf(concept)
 
-        return ReasonConversionResult(reasoning, concept)
+        return ReasonConversionResult(reasoning, concept) + ReasonConversionResult(associations)
     }
 }
+
+internal fun Aspect.getAssociatedResources() = producedResources //+
+// aspect.dependencies.map.values.flatten().map { it. }//TODO dependencies
