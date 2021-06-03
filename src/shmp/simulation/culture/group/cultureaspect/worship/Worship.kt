@@ -144,6 +144,7 @@ open class Worship(
     override fun hashCode() = worshipObject.name.hashCode()
 
     override fun toString() = "$simpleName, " +
+            "${usingGroups.size} groups, " +
             "reasons: ${reasonComplex.reasonings.joinToString()} " +
             "features - ${features.joinToString()}"
 }

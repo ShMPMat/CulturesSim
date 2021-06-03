@@ -67,6 +67,7 @@ object TextCultureHandler : CommandHandler<TextCultureVisualizer> {
                     world.groups.flatMap { it.aspects }
                             .filter { it.name.contains(splitCommand[1]) }
                             .distinct()
+                            .sortedBy { it.name }
                             .forEach { aspect ->
                                 println(aspect.name)
                                 println(printApplicableResources(aspect, world.resourcePool.all))
@@ -78,6 +79,8 @@ object TextCultureHandler : CommandHandler<TextCultureVisualizer> {
                     world.groups.flatMap { it.subgroups }
                             .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.all }
                             .filter { it.toString().contains(splitCommand[1]) }
+                            .distinct()
+                            .sortedBy { it.toString() }
                             .forEach { println(it) }
                 }
                 Strata -> printMap { strataMapper(splitCommand[1], it) }
