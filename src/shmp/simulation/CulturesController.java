@@ -15,7 +15,7 @@ public class CulturesController extends Controller<CulturesWorld> {
 
     public final int cultureTurns = 0;
 
-    public final int startGroupAmount = 10;
+    public final int startGroupAmount = 10 * proportionCoefficient;
     public final double defaultGroupSpreadability = 1;
     public final double defaultGroupTraitSpread = 100;//TODO back to 0?
     public final int defaultGroupMaxPopulation = 100;
@@ -30,6 +30,7 @@ public class CulturesController extends Controller<CulturesWorld> {
     public final double cultureAspectBaseProbability = 0.02;
     public final double groupCultureAspectCollapse = 0.05;
     public final double groupCollapsedAspectUpdate = 0.01;
+    public final double groupAspectAdoptionProb = 0.07;
     public final boolean groupDiverge = true;
     public final boolean groupMultiplication = true;
     public final boolean independentCvSimpleAspectAdding = true;
@@ -46,7 +47,6 @@ public class CulturesController extends Controller<CulturesWorld> {
     public final double stratumInstrumentRenewalProb = 0.03;
 
     public final int groupTurnsBetweenBorderCheck = 10;
-    public final int groupTurnsBetweenAdopts = 10;
     public final int maxGroupDependencyDepth = 5;
     public final int minimalStableFreePopulation = 10;
     public final int aspectFalloff = -500;

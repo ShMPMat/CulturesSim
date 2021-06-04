@@ -123,8 +123,9 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
             getNeighbourCultureAspects(group).filter { (f) -> predicate(f) }
 
     fun adoptCultureAspects(group: Group) {
-        if (!session.isTime(session.groupTurnsBetweenAdopts))
+        session.groupAspectAdoptionProb.chanceOfNot {
             return
+        }
 
         val aspect = getNeighbourCultureAspects(group) { !aspectPool.contains(it) }
                 .randomElementOrNull { (_, g) -> group.relationCenter.getNormalizedRelation(g) }

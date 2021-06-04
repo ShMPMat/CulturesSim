@@ -209,8 +209,9 @@ class AspectCenter(aspects: List<Aspect>) {
             .filter { (a) -> predicate(a) }
 
     fun adoptAspects(group: Group): List<Event> {
-        if (!session.isTime(session.groupTurnsBetweenAdopts))
+        session.groupAspectAdoptionProb.chanceOfNot {
             return emptyList()
+        }
 
         val allExistingAspects = getNeighbourAspects(group) { !changedAspectPool.contains(it) }
         if (allExistingAspects.isNotEmpty()) {
