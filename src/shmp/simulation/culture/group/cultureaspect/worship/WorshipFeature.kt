@@ -15,6 +15,9 @@ interface WorshipFeature: WorshipObjectDependent {
 
 
 abstract class BaseWorshipFeature: WorshipFeature {
+    override var isFunctioning = false
+        protected set
+
     override var defunctTurns = 0
         protected set
 

@@ -1,33 +1,38 @@
 package shmp.simulation.culture.group.cultureaspect
 
+import shmp.random.singleton.chanceOf
 import shmp.random.testProbability
 import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.Request
 
-class PlaceSystem(
-        val places: MutableSet<SpecialPlace>
-) : CultureAspect {
+
+class PlaceSystem(private val _places: MutableSet<SpecialPlace>, val hasOutsidePlaces: Boolean) : CultureAspect {
+    val places: Set<SpecialPlace> = _places
     override fun getRequest(group: Group): Request? = null
 
     fun addPlace(placeSystem: SpecialPlace) {
-        places.add(placeSystem)
+        _places.add(placeSystem)
     }
 
     override fun use(group: Group) {
         places.forEach { it.use(group) }
-        if (testProbability(session.placeSystemLimitsCheck, session.random))
+
+        if (hasOutsidePlaces)
+            return
+
+        session.placeSystemLimitsCheck.chanceOf {
             checkLimits(group)
+        }
     }
 
-    private fun checkLimits(group: Group) {
-        places.filter { !group.territoryCenter.territory.contains(it.staticPlace.tile) }
-                .forEach { removePlace(it, group) }
-    }
+    private fun checkLimits(group: Group) = places
+            .filter { !group.territoryCenter.territory.contains(it.staticPlace.tile) }
+            .forEach { removePlace(it, group) }
 
     fun removePlace(place: SpecialPlace, group: Group) {
-        if (places.remove(place)) {
+        if (_places.remove(place)) {
             place.die(group)
         } else throw GroupError("Trying to delete Place which is not owned")
     }
@@ -35,7 +40,8 @@ class PlaceSystem(
     override fun adopt(group: Group) = PlaceSystem(
             places.filter { group.territoryCenter.territory.contains(it.staticPlace.tile) }
                     .map { it.adopt(group) }
-                    .toMutableSet()
+                    .toMutableSet(),
+            hasOutsidePlaces
     )
 
     override fun die(group: Group) = places.forEach { it.die(group) }

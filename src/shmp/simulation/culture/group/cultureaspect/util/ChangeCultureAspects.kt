@@ -83,7 +83,7 @@ private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableC
             ConceptObjectWorship(concept),
             taleSystem,
             depictSystem,
-            PlaceSystem(mutableSetOf()),
+            PlaceSystem(mutableSetOf(), true),
             reasonField.commonReasonings.extractComplexFor(concept, "Worship of $concept"),
             mutableListOf()
     ))

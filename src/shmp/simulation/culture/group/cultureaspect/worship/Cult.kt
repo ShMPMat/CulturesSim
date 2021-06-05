@@ -26,9 +26,6 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
     var type = type
         private set
 
-    override var isFunctioning = false
-        private set
-
     internal fun findStratum(group: Group, parent: Worship) = group.populationCenter.stratumCenter
             .getByCultNameOrNull(parent.simpleName)
             ?: run {

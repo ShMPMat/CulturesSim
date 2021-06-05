@@ -8,9 +8,6 @@ import shmp.simulation.space.resource.container.ResourcePack
 
 
 abstract class WorshipResourceFeature(val resource: Resource) : BaseWorshipFeature() {
-    override var isFunctioning = false
-        protected set
-
     override fun use(group: Group, parent: Worship) {
         super.use(group, parent)
 
@@ -27,8 +24,11 @@ abstract class WorshipResourceFeature(val resource: Resource) : BaseWorshipFeatu
             val gotten = result.pack
             diff -= gotten.amount
 
-            if (diff > 0)
+            if (diff > 0) {
+                isFunctioning = true
+
                 group.resourceCenter.addNeeded(request.evaluator.labeler, diff * 5)
+            }
 
             processResources(gotten, group, parent)
         } else isFunctioning = true

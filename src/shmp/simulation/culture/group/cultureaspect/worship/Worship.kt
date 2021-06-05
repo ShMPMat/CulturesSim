@@ -77,7 +77,7 @@ open class Worship(
                     _features.add(fetish)
             }
         }
-        if (group.populationCenter.freePopulation >= session.minimalStableFreePopulation && cult == null)
+        if (group.populationCenter.freePopulation > 0 && cult == null)
             0.01.chanceOf {
                 _features.add(Cult(simpleName))
             }
@@ -136,7 +136,7 @@ open class Worship(
                 worshipObject,
                 taleSystem.swapWorship(worshipObject) ?: return null,
                 depictSystem.swapWorship(worshipObject),
-                PlaceSystem(mutableSetOf()),
+                PlaceSystem(mutableSetOf(), true),
                 reasonComplex.copy(),
                 _features.map { it.swapWorship(worshipObject) }.toMutableList()
         )
