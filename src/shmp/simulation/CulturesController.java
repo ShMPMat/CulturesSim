@@ -50,6 +50,7 @@ public class CulturesController extends Controller<CulturesWorld> {
     public final int maxGroupDependencyDepth = 5;
     public final int minimalStableFreePopulation = 10;
     public final int aspectFalloff = -500;
+    public final int worshipFeatureFalloff = 100;
     public final int defaultAspectUsefulness = 50;
 
     public final double strayPlacesUpdate = 0.01;

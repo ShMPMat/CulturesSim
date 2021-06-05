@@ -19,7 +19,7 @@ import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 
 
-class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsType = NoBuildings) : WorshipFeature {
+class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsType = NoBuildings) : BaseWorshipFeature() {
     var buildingsType = buildingsType
         private set
 
@@ -40,6 +40,8 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
             }
 
     override fun use(group: Group, parent: Worship) {
+        super.use(group, parent)
+
         val stratum = findStratum(group, parent)
 
         when (type) {

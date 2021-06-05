@@ -50,8 +50,7 @@ open class Worship(
         _features.forEach { it.use(group, this) }
 
         update(group)
-
-        _features.addAll(newFeatures)
+        manageFeatures(group)
     }
 
     private fun update(group: Group) {
@@ -87,6 +86,15 @@ open class Worship(
             baseConversions().randomElementOrNull()
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
         }
+    }
+
+    private fun manageFeatures(group: Group) {
+        _features.filter { it.defunctTurns >= session.worshipFeatureFalloff }.forEach {
+            _features.remove(it)
+            it.die(group, this)
+        }
+
+        _features.addAll(newFeatures)
     }
 
     internal fun addWorshipPlace(group: Group) {

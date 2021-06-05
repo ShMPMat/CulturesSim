@@ -7,11 +7,13 @@ import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.container.ResourcePack
 
 
-abstract class WorshipResourceFeature(val resource: Resource) : WorshipFeature {
+abstract class WorshipResourceFeature(val resource: Resource) : BaseWorshipFeature() {
     override var isFunctioning = false
         protected set
 
     override fun use(group: Group, parent: Worship) {
+        super.use(group, parent)
+
         if (!doUse(group, parent))
             return
 

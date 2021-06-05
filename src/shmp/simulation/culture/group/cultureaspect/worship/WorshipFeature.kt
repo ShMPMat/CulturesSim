@@ -10,4 +10,17 @@ interface WorshipFeature: WorshipObjectDependent {
     override fun swapWorship(worshipObject: WorshipObject) : WorshipFeature
 
     val isFunctioning: Boolean
+    val defunctTurns: Int
+}
+
+
+abstract class BaseWorshipFeature: WorshipFeature {
+    override var defunctTurns = 0
+        protected set
+
+    override fun use(group: Group, parent: Worship) {
+        if (isFunctioning)
+            defunctTurns = 0
+        else defunctTurns++
+    }
 }
