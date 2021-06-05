@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.chanceOf
+import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.GroupError
@@ -13,6 +14,7 @@ import shmp.simulation.culture.group.cultureaspect.util.createDepictObject
 import shmp.simulation.culture.group.cultureaspect.util.createSpecialPlaceForWorship
 import shmp.simulation.culture.group.cultureaspect.util.createTale
 import shmp.simulation.culture.group.request.Request
+import shmp.simulation.culture.group.request.RequestType
 import kotlin.math.pow
 
 
@@ -85,6 +87,15 @@ open class Worship(
         session.reasoningUpdate.pow(0.5).chanceOf {
             baseConversions().randomElementOrNull()
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
+        }
+
+        (0.002 / (_features.filterIsInstance<BannedResource>().size + 1)).chanceOf {
+            makeWorshipObject(this, group)?.let {
+                _features.add(BannedResource(
+                        it,
+                        listOf(setOf(), setOf(RequestType.Spiritual)).randomElement()
+                ))
+            }
         }
     }
 

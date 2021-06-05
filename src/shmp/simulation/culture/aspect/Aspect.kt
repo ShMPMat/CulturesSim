@@ -110,6 +110,12 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         //TODO put dependency resources only in node; otherwise they may merge with phony
         if (checkTermination(controller)) return AspectResult(isFinished = false, node = ResultNode(this))
 
+        producedResources.forEach { resource ->
+            val ban = controller.group.resourceCenter.bannedResources[resource]
+            if (ban != null && controller.requestTypes.none { it in ban.allowedTypes })
+                return AspectResult(isFinished = false, node = ResultNode(this))
+        }
+
         this as ConverseWrapper
         timesUsedInTurn++
         used = true

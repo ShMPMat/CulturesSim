@@ -2,7 +2,10 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.randomElement
 import shmp.simulation.CulturesController.session
+import shmp.simulation.SimulationError
+import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.group.place.MovablePlace
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.MutableResourcePack
@@ -13,11 +16,7 @@ import shmp.simulation.space.tile.TileTag
 import shmp.utils.addLinePrefix
 
 
-class ResourceCenter(
-        cherishedResources: MutableResourcePack,
-        storageTile: Tile,
-        groupName: String
-) {
+class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile, groupName: String) {
     private var place = MovablePlace(storageTile, TileTag(groupName + "_storage", "storage"))
     val pack: ResourcePack
         get() = place.current.owned
@@ -29,6 +28,9 @@ class ResourceCenter(
     private val _direBound = 50
 
     private val neededResourcesMap = mutableMapOf<ResourceLabeler, ResourceNeed>()
+
+    private val _bannedResources = mutableMapOf<Resource, ResourceBan>()
+    val bannedResources: Map<Resource, ResourceBan> = _bannedResources
 
     val neededResources: Map<ResourceLabeler, ResourceNeed>
         get() = neededResourcesMap.toMap()
@@ -104,11 +106,38 @@ class ResourceCenter(
             .maxOrNull()
             ?: 0
 
+    fun addBan(resource: Resource, provider: ResourceBanProvider) {
+        val existingBan = _bannedResources[resource]
+
+        if (existingBan == null) {
+            _bannedResources[resource] = ResourceBan(provider.allowedTypes.toMutableSet(), mutableListOf(provider))
+        } else {
+            existingBan.providers.add(provider)
+            existingBan.allowedTypes.removeIf { it in provider.allowedTypes }
+        }
+    }
+
+    fun removeBan(resource: Resource, provider: ResourceBanProvider) {
+        val existingBan = _bannedResources[resource]
+
+        if (existingBan != null) {
+            val providers = existingBan.providers
+            providers.remove(provider)
+
+            _bannedResources.remove(resource)
+
+            providers.forEach { addBan(resource, it) }
+        } else
+            throw SimulationError("Trying to remove non-existing ban on ${resource.fullName}")
+    }
+
     override fun toString() = """
         |Current resources:
         |${place.current.owned.addLinePrefix()}
         |Needed resources: 
         |${printedNeeds().addLinePrefix()}
+        |Banned resources:
+        |${bannedResources.entries.joinToString("\n") { (r, b) -> r.fullName + " " + b }}
         """.trimMargin()
 }
 
@@ -122,4 +151,12 @@ data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
         if (!wasUpdated) importance /= 2
         else wasUpdated = false
     }
+}
+
+data class ResourceBan(val allowedTypes: MutableSet<RequestType>, val providers: MutableList<ResourceBanProvider>) {
+    override fun toString() = if (allowedTypes.isEmpty()) "" else " only for " + allowedTypes.joinToString()
+}
+
+interface ResourceBanProvider {
+    val allowedTypes: Set<RequestType>
 }

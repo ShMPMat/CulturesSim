@@ -5,6 +5,7 @@ import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.request.Request
+import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.passingEvaluator
 import shmp.simulation.culture.group.resource_behaviour.ResourceBehaviour
 import shmp.simulation.culture.group.resource_behaviour.getRandom
@@ -26,7 +27,8 @@ class AspectRitual(
                 group.populationCenter,
                 group.territoryCenter.accessibleTerritory,
                 true,
-                group
+                group,
+                setOf(RequestType.Spiritual)
         ))
         result.pushNeeds(group)
         if (result.isFinished) {

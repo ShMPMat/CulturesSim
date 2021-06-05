@@ -9,7 +9,8 @@ import shmp.simulation.culture.group.request.ResourceEvaluator
 import shmp.simulation.space.resource.container.MutableResourcePack
 import java.util.*
 
-class AspectDependency(
+
+class AspectDependency(//TODO what's the difference between this and LineDependency?
         isPhony: Boolean,
         aspect: ConverseWrapper,
         private val evaluator: ResourceEvaluator,
@@ -37,11 +38,9 @@ class AspectDependency(
     override fun useDependency(controller: AspectController): AspectResult {
         if (isAlreadyUsed || controller.ceiling <= 0)//TODO mb unnecessary
             return AspectResult()
+
         isAlreadyUsed = true
-        val result = aspect.use(controller.copy(
-                evaluator = evaluator,
-                isMeaningNeeded = false
-        ))
+        val result = aspect.use(controller.copy(evaluator = evaluator, isMeaningNeeded = false))
         isAlreadyUsed = false
         return result
     }

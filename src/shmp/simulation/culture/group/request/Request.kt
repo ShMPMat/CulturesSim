@@ -79,7 +79,8 @@ abstract class Request(val core: RequestCore) {
             core.group.populationCenter,
             core.group.territoryCenter.accessibleTerritory,
             false,
-            core.group
+            core.group,
+            types
     )
 
     open fun finalFilter(pack: MutableResourcePack) = evaluator.pickAndRemove(pack)

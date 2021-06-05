@@ -37,7 +37,8 @@ class MeaningResourceRequest(
             core.group.territoryCenter.accessibleTerritory,
             true,
             core.group,
-            meme
+            types,
+            meme,
     )
 
     override fun toString() = "want resource ${resource.fullName} with meaning $meme"

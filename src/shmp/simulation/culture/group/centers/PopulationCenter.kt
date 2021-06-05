@@ -192,7 +192,7 @@ class PopulationCenter(
 
         if (!request.isFloorSatisfied(actualPack)) {
             request.group.resourceCenter.addNeeded(request.evaluator.labeler, request.need)
-            strataForRequest.filter { it.population == 0 }.forEach { it.importance += 25 }
+            strataForRequest.filter { it.population == 0 }.forEach { it.importance += request.need }
         }
 
         return ExecutedRequestResult(actualPack, usedAspects)

@@ -35,9 +35,9 @@ class LineDependency(
     override fun useDependency(controller: AspectController): AspectResult {
         return try {
             val resourcePack = MutableResourcePack()
-            if (isAlreadyUsed || controller.ceiling <= 0 || !goodForInsertMeaning() && controller.isMeaningNeeded) {
+            if (isAlreadyUsed || controller.ceiling <= 0 || !goodForInsertMeaning() && controller.isMeaningNeeded)
                 return AspectResult(resourcePack)
-            }
+
             isAlreadyUsed = true
             val _p = converseWrapper.use(controller.copy(
                     evaluator = resourceEvaluator(parentConverseWrapper.resource)
