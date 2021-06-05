@@ -59,8 +59,17 @@ object RandomDepictCaB : AbstractGroupBehaviour() {
         if (group.cultureCenter.memePool.isEmpty)
             return emptyProcessResult
 
+        val meaningAspects = group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects()
+
+        if (meaningAspects.isEmpty()) {
+            val aspect = session.world.aspectPool.filter { it.canApplyMeaning }.randomElementOrNull()
+                    ?: return emptyProcessResult
+            group.cultureCenter.aspectCenter.addAspect(aspect, group)
+            return emptyProcessResult
+        }
+
         val depict = createDepictObject(
-                group.cultureCenter.aspectCenter.aspectPool.getMeaningAspects(),
+                meaningAspects,
                 constructAndAddSimpleMeme(group.cultureCenter.memePool),
                 null
         )
@@ -74,7 +83,7 @@ object RandomDepictCaB : AbstractGroupBehaviour() {
         return processResult + ProcessResult(Trait.Creation.toPositiveChange() * 10)
     }
 
-    override val internalToString = "Make a random Resource with some meaning"
+    override val internalToString = "Make a random Depiction of something"
 }
 
 class BuildRoadB(path: Territory, val projectName: String) : PlanBehaviour() {
@@ -162,10 +171,10 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         val finish = disconnected.randomElement().tile
 
         val startPlace = roadPlaces
-                .minBy { getDistance(it.tile, finish) }
+                .minByOrNull { getDistance(it.tile, finish) }
                 ?: disconnected
                         .filter { it.tile != finish }
-                        .minBy { getDistance(it.tile, finish) }
+                        .minByOrNull { getDistance(it.tile, finish) }
                 ?: throw SimulationError("IMPOSSIBLE")
         val start = startPlace.tile
 

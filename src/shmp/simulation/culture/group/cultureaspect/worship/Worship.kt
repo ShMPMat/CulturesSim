@@ -1,8 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.chanceOf
-import shmp.random.singleton.chanceOfNot
-import shmp.random.singleton.otherwise
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.GroupError
@@ -24,7 +22,7 @@ open class Worship(
         val depictSystem: DepictSystem,
         val placeSystem: PlaceSystem,
         val reasonComplex: ReasonComplex,
-        val features: MutableList<WorshipFeature>
+        private val _features: MutableList<WorshipFeature>
 ) : CultureAspect, WorshipObjectDependent {
     init {
         if (worshipObject.name != taleSystem.groupingConcept.meme || worshipObject.name != depictSystem.groupingMeme)
@@ -32,7 +30,14 @@ open class Worship(
                     " but TaleSystem's concept is ${taleSystem.groupingConcept}")
     }
 
+    val features: List<WorshipFeature> = _features
+
+    private val newFeatures = mutableListOf<WorshipFeature>()
+
     internal val usingGroups = mutableSetOf<Group>()
+
+    val cult
+        get() = _features.filterIsInstance<Cult>().firstOrNull()
 
     override fun getRequest(group: Group): Request? = null
 
@@ -42,9 +47,11 @@ open class Worship(
         taleSystem.use(group)
         depictSystem.use(group)
         placeSystem.use(group)
-        features.forEach { it.use(group, this) }
+        _features.forEach { it.use(group, this) }
 
         update(group)
+
+        _features.addAll(newFeatures)
     }
 
     private fun update(group: Group) {
@@ -63,27 +70,22 @@ open class Worship(
             ) ?: return
             taleSystem.addTale(tale)
         }
-        (0.25 / (features.filterIsInstance<Fetish>().size + 1.0).pow(2)).chanceOf {
+        (0.25 / (_features.filterIsInstance<Fetish>().size + 1.0).pow(2)).chanceOf {
             makeWorshipObject(this, group)?.let {
                 val fetish = Fetish(it)
 
-                if (!features.contains(fetish))
-                    features.add(fetish)
+                if (!_features.contains(fetish))
+                    _features.add(fetish)
             }
         }
-        if (group.populationCenter.freePopulation >= session.minimalStableFreePopulation
-                && features.filterIsInstance<Cult>().isEmpty())
+        if (group.populationCenter.freePopulation >= session.minimalStableFreePopulation && cult == null)
             0.01.chanceOf {
-                features.add(Cult(simpleName))
+                _features.add(Cult(simpleName))
             }
 
         session.reasoningUpdate.pow(0.5).chanceOf {
             baseConversions().randomElementOrNull()
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
-        }
-
-        (session.worshipPlaceProb / (1 + placeSystem.places.size)).chanceOf {
-            addWorshipPlace(group)
         }
     }
 
@@ -94,8 +96,10 @@ open class Worship(
         placeSystem.addPlace(place)
     }
 
+    fun addFeature(feature: WorshipFeature) = newFeatures.add(feature)
+
     override fun adopt(group: Group): Worship? {
-        val newFeatures = features.map { it.adopt(group) }
+        val newFeatures = _features.map { it.adopt(group) }
         if (newFeatures.any { it == null }) return null
         return Worship(
                 worshipObject.copy(group),
@@ -113,7 +117,7 @@ open class Worship(
         if (usingGroups.isNotEmpty())
             return
 
-        features.forEach { it.die(group, this) }
+        _features.forEach { it.die(group, this) }
         taleSystem.die(group)
         depictSystem.die(group)
         placeSystem.die(group)
@@ -126,7 +130,7 @@ open class Worship(
                 depictSystem.swapWorship(worshipObject),
                 PlaceSystem(mutableSetOf()),
                 reasonComplex.copy(),
-                features.map { it.swapWorship(worshipObject) }.toMutableList()
+                _features.map { it.swapWorship(worshipObject) }.toMutableList()
         )
     }
 
@@ -146,5 +150,5 @@ open class Worship(
     override fun toString() = "$simpleName, " +
             "${usingGroups.size} groups, " +
             "reasons: ${reasonComplex.reasonings.joinToString()} " +
-            "features - ${features.joinToString()}"
+            "features - ${_features.joinToString()}"
 }

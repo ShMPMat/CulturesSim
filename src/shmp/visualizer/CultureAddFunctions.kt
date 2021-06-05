@@ -63,7 +63,7 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
         }
         try {
             val a: Aspect = aspectPool.getValue(aspectName.split("On".toRegex()).toTypedArray()[0])
-            if (a.canApplyMeaning())
+            if (a.canApplyMeaning)
                 MeaningInserter(a, accessibleResource)
             else
                 ConverseWrapper(a, accessibleResource)

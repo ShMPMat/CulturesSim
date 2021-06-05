@@ -1,5 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
+import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
 import shmp.simulation.CulturesController.*
 import shmp.simulation.culture.aspect.MadeByResourceFeature
@@ -9,11 +10,11 @@ import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.worship.BuildingsType.*
 import shmp.simulation.culture.group.cultureaspect.worship.CultType.*
+import shmp.simulation.culture.group.cultureaspect.worship.OfferingType.*
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.SimpleResourceRequest
-import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 
@@ -28,16 +29,20 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
     override var isFunctioning = false
         private set
 
+    internal fun findStratum(group: Group, parent: Worship) = group.populationCenter.stratumCenter
+            .getByCultNameOrNull(parent.simpleName)
+            ?: run {
+                val newStratum = CultStratum(parent.simpleName, group.territoryCenter.center)
+                group.populationCenter.stratumCenter.addStratum(newStratum)
+                group.populationCenter.getStratumPeople(newStratum, 1)
+                group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
+                        ?: throw GroupError("Cannot create Stratum for $this")
+            }
+
     override fun use(group: Group, parent: Worship) {
-        val stratum: Stratum = group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
-                ?: run {
-                    val newStratum = CultStratum(parent.simpleName, group.territoryCenter.center)
-                    group.populationCenter.stratumCenter.addStratum(newStratum)
-                    group.populationCenter.getStratumPeople(newStratum, 1)
-                    group.populationCenter.stratumCenter.getByCultNameOrNull(parent.simpleName)
-                            ?: throw GroupError("Cannot create Stratum for $this")
-                }
-        when(type) {
+        val stratum = findStratum(group, parent)
+
+        when (type) {
             Shaman -> {
                 isFunctioning = if (stratum.population < 1) {
                     group.populationCenter.getStratumPeople(stratum, 1)
@@ -60,12 +65,41 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
             }
         }
 
-
+        manageOfferings(group, parent)
         manageSpecialPlaces(group, parent)
     }
 
+    private fun manageOfferings(group: Group, parent: Worship) {
+        val basePractitionerOfferProb = when (type) {
+            Shaman -> 0.01
+            is Institution -> 0.5
+        }
+        val offeringsAmount = parent.features.filterIsInstance<Offering>().size
+
+        (basePractitionerOfferProb / (offeringsAmount + 1)).chanceOf {
+            makeWorshipObject(parent, group)?.let { resource ->
+                parent.addFeature(Offering(
+                        resource,
+                        CultPractitioners,
+                        RandomSingleton.random.nextInt(1, 30)
+                ))
+            }
+        }
+
+        if (buildingsType == One)
+            (basePractitionerOfferProb / (offeringsAmount + 1)).chanceOf {
+                makeWorshipObject(parent, group)?.let { resource ->
+                    parent.addFeature(Offering(
+                            resource,
+                            LocalTemple,
+                            RandomSingleton.random.nextInt(1, 30)
+                    ))
+                }
+            }
+    }
+
     private fun manageSpecialPlaces(group: Group, parent: Worship) {
-        val makeTemple = when(type) {
+        val makeTemple = when (type) {
             Shaman -> 0.01
             is Institution -> 0.1
         }
@@ -84,7 +118,7 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
 
             val templeResource = session.world.resourcePool.getSimpleName("Temple")
 
-            if (group.resourceCenter.getResource(templeResource).amount > 0)
+            if (parent.placeSystem.places.first().staticPlace.getResource(templeResource).amount > 0)
                 return
 
             val request = SimpleResourceRequest(
@@ -142,7 +176,7 @@ sealed class CultType {
 }
 
 sealed class BuildingsType {
-    object NoBuildings: BuildingsType()
+    object NoBuildings : BuildingsType()
 
-    object One: BuildingsType()
+    object One : BuildingsType()
 }

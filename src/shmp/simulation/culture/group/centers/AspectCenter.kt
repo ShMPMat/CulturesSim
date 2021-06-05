@@ -79,7 +79,7 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun addConverseWrapper(aspect: Aspect, resource: Resource) { //TODO I'm adding a lot of garbage
-        val wrapper = if (aspect.canApplyMeaning())
+        val wrapper = if (aspect.canApplyMeaning)
             MeaningInserter(aspect, resource)
         else
             ConverseWrapper(aspect, resource)

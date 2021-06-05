@@ -9,7 +9,7 @@ class MultigroupWorshipWrapper(val worship: Worship): Worship(
         worship.depictSystem,
         worship.placeSystem,
         worship.reasonComplex,
-        worship.features
+        mutableListOf()
 ) {
     override fun getRequest(group: Group) = worship.getRequest(group)
 

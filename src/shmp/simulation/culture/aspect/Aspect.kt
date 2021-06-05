@@ -65,7 +65,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     open val producedResources: List<Resource> = emptyList()
 
-    fun canApplyMeaning() = core.applyMeaning
+    val canApplyMeaning = core.applyMeaning
 
     fun canReturnMeaning() = this is ConverseWrapper && this.canInsertMeaning
 

@@ -1,37 +1,20 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.simulation.culture.group.centers.Group
-import shmp.simulation.culture.group.request.RequestType
-import shmp.simulation.culture.group.request.resourceToRequest
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.container.ResourcePack
 
 
-class Fetish(val resource: Resource) : WorshipFeature {
-    override var isFunctioning = false
-        private set
+class Fetish(resource: Resource) : WorshipResourceFeature(resource) {
+    override fun doUse(group: Group, parent: Worship) = true
 
-    override fun use(group: Group, parent: Worship) {
-        val neededAmount = group.populationCenter.population
-        var diff = neededAmount - group.resourceCenter.getResource(resource).amount
+    override fun getNeededAmount(group: Group, parent: Worship) = group.populationCenter.population -
+            group.resourceCenter.getResource(resource).amount
 
-        if (diff > 0) {
-            isFunctioning = false
-            val request = resourceToRequest(resource, group, diff, diff, setOf(RequestType.Spiritual))
-            val result = group.populationCenter.executeRequest(request)
-
-            val gotten = result.pack
-            diff -= gotten.amount
-
-            if (diff > 0)
-                group.resourceCenter.addNeeded(request.evaluator.labeler, diff * 5)
-
-            group.resourceCenter.addAll(gotten)
-        } else isFunctioning = true
-    }
+    override fun processResources(pack: ResourcePack, group: Group, parent: Worship) =
+            group.resourceCenter.addAll(pack)
 
     override fun adopt(group: Group) = Fetish(resource)
-
-    override fun die(group: Group, parent: Worship) = Unit
 
     override fun swapWorship(worshipObject: WorshipObject) = Fetish(resource)
 
@@ -46,8 +29,5 @@ class Fetish(val resource: Resource) : WorshipFeature {
         return true
     }
 
-    override fun hashCode(): Int {
-        return resource.hashCode()
-    }
+    override fun hashCode() = resource.hashCode()
 }
-
