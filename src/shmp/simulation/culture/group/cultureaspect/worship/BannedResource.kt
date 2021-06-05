@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.simulation.culture.group.centers.Group
+import shmp.simulation.culture.group.centers.ResourceBan
 import shmp.simulation.culture.group.centers.ResourceBanProvider
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.resourceToRequest
@@ -31,4 +32,7 @@ class BannedResource(
     override fun swapWorship(worshipObject: WorshipObject) = BannedResource(resource, allowedTypes)
 
     override fun die(group: Group, parent: Worship) = group.resourceCenter.removeBan(resource, this)
+
+    override fun toString() = "${resource.fullName} is banned" +
+            ResourceBan(allowedTypes.toMutableSet(), mutableListOf(this))
 }
