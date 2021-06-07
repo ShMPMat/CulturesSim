@@ -56,6 +56,10 @@
     &t:hard-->=0.05--<=1.5--!!t:composite--#Dish:1
     Shard
     C3.0
+-MakeBloomery
+    &m:Stone!!t:composite--#Bloomery:1
+    Shard
+    C8.0
 -MakeBoat
     &t:hard-->=2--<D900--!!t:composite--#Boat:1
     Shard
@@ -75,6 +79,12 @@
 -MakeDye
     &t:hasColour--#Dye:1
     C10.0
+
+
+-MeltIron                                                                    #furnace #burns
+    &r:RawIron--#Iron:1
+    C2.0
+
 
 -Killing                                                                     #weapon
     C5.0

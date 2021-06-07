@@ -33,6 +33,10 @@
         $composite:1
         &a(Take)-0.01
 
+-Bloomery        0       1      10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1
+        $furnace:1
+
 -House           0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
         $composite:1
         $shelter:3
