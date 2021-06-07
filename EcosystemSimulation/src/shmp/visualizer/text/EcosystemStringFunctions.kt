@@ -68,6 +68,7 @@ fun outputFoodWeb(resource: Resource, world: World): String {
             .asSequence()
             .flatMap { t -> t.resourcePack.getResourcesUnpacked { it.simpleName == resource.simpleName } }
             .flatMap { it.takers }
+            .filter { it.second > 0 }
             .map { it.first }
             .filterIsInstance<Taker.ResourceTaker>()
             .map { it.resource.baseName }
