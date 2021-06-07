@@ -10,7 +10,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
                 Genome(
                         "Person",
                         ResourceType.Animal,
-                        1.6,
+                        1.6 to 1.6,
                         0.0,
                         0,
                         false,

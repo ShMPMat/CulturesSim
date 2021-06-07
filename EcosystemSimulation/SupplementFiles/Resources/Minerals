@@ -16,5 +16,6 @@
 -Ruby            0       0.03   100000     -500   500  100        0             1 0  Ignore  Mineral      @Ruby
         cRed
 
--Iron            0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Iron
+-RawIron         0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Iron
+        $composite:1
         cWhite

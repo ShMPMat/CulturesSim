@@ -106,10 +106,16 @@ class ResourceTemplateCreator(
                 else
                     tags[3].toDouble()
 
+        val sizeRange = if (tags[2].contains('~')) {
+            val (l, r) = tags[2].split('~')
+
+            l.toDouble() to r.toDouble()
+        } else tags[2].toDouble().let { it to it }
+
         var genome = Genome(
                 name = name,
                 type = ResourceType.valueOf(tags[11]),
-                size = tags[2].toDouble(),
+                sizeRange = sizeRange,
                 spreadProbability = tags[1].toDouble(),
                 baseDesirability = tags[7].toInt(),
                 isMutable = false,

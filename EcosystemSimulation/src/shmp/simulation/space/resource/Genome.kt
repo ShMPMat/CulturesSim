@@ -8,12 +8,13 @@ import shmp.simulation.space.resource.material.Material
 import shmp.simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.pow
 
 
 open class Genome(
         val name: String,
         val type: ResourceType,
-        val size: Double,
+        val sizeRange: Pair<Double, Double>,
         val spreadProbability: Double,
         val baseDesirability: Int,
         val isMutable: Boolean,
@@ -31,6 +32,7 @@ open class Genome(
         secondaryMaterials: List<Material>,
         var conversionCore: ConversionCore
 ) {
+    val size = (sizeRange.first + sizeRange.second) / 2
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
     val parts: MutableList<Resource> = ArrayList()
 
@@ -53,7 +55,7 @@ open class Genome(
     fun copy(
             name: String = this.name,
             type: ResourceType = this.type,
-            size: Double = this.size,
+            sizeRange: Pair<Double, Double> = this.sizeRange,
             spreadProbability: Double = this.spreadProbability,
             baseDesirability: Int = this.baseDesirability,
             isMutable: Boolean = this.isMutable,
@@ -75,7 +77,7 @@ open class Genome(
         val genome = Genome(
                 name,
                 type,
-                size,
+                sizeRange,
                 spreadProbability,
                 baseDesirability,
                 isMutable,
@@ -139,7 +141,7 @@ open class Genome(
         get() {
             val material = primaryMaterial
                     ?: return 0.0
-            return material.density * size * size * size
+            return material.density * size.pow(3)
         }
 
     fun addPart(part: Resource) {

@@ -20,7 +20,7 @@
 
 -Clay          2000      -soft:1     -malleable:2                           -mass:1                   +Bake:Ceramics
 -Ceramics      2000      -hard:5     -fragile:1                             -solid:1
--Iron          10000     -hard:10    -malleable:10                          -solid:1
+-Iron          10000     -hard:10    -sturdy:10     -malleable:10           -solid:1
 
 -Stone         2500      -hard:7     -sturdy:7                              -solid:1
 -Ruby          2500      -hard:8     -sturdy:8                              -solid:1

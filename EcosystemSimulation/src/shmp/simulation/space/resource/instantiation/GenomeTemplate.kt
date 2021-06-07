@@ -6,7 +6,7 @@ import shmp.simulation.space.resource.Genome
 class GenomeTemplate(genome: Genome) : Genome(
         genome.name,
         genome.type,
-        genome.size,
+        genome.sizeRange,
         genome.spreadProbability,
         genome.baseDesirability,
         genome.isMutable,
