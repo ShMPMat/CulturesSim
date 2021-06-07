@@ -28,7 +28,7 @@ fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
                 lastResources
                         .flatMap { it.genome.conversionCore.actionConversion.values }
                         .flatten()
-                        .mapNotNull { (r) -> r?.genome } //TODO why are there nulls?
+                        .map { r -> r.genome }
                         .map { ResourceIdeal(it) }
         )
 

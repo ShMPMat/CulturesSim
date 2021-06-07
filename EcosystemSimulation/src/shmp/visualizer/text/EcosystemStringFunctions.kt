@@ -53,7 +53,7 @@ data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
 fun outputResource(resource: Resource): String {
     val actionConversions = resource.genome.conversionCore.actionConversion.entries
             .joinToString("\n") { (a, v) ->
-                a.name + ": " + v.joinToString { (it.first?.fullName ?: "LEGEND") + ":" + it.second }
+                a.name + ": " + v.joinToString { it.fullName + ":" + it.amount }
             }
 
     val parts = resource.genome.parts.joinToString("\n") { p ->

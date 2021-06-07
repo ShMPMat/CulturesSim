@@ -2,13 +2,11 @@ package shmp.simulation.space.resource.instantiation
 
 import shmp.utils.InputDatabase
 import shmp.simulation.space.SpaceData
-import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.ResourceIdeal
+import shmp.simulation.space.resource.*
 import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.container.ResourcePool
 import shmp.simulation.space.resource.material.MaterialPool
-import shmp.simulation.space.resource.specialActions
 import shmp.simulation.space.resource.transformer.ColourTransformer
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -69,8 +67,7 @@ class ResourceInstantiation(
         for ((a, l) in actionConversion.entries) {
             resource.genome.conversionCore.addActionConversion(
                     a,
-                    l.map { readConversion(template, it) }
-                            .map { it.first?.let { r -> injectParentColour(r, resource) } to it.second }
+                    l.map { readConversion(template, it) }.map { injectParentColour(it, resource) }
             )
         }
         if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
@@ -82,45 +79,39 @@ class ResourceInstantiation(
                     resource.genome.conversionCore.addActionConversion(
                             action,
                             matcher.getResults(template, resourceStringTemplates)
-                                    .map { (t, n) -> t.resource to n }
+                                    .map { (t, n) -> t.resource.copy(n) }
                     )
     }
 
-    private fun readConversion(
-            template: ResourceStringTemplate,
-            link: ResourceLink
-    ): Pair<Resource?, Int> {
+    private fun readConversion(template: ResourceStringTemplate, link: ResourceLink): Resource {
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
         val nextTemplate = getTemplateWithName(link.resourceName)
         actualizeLinks(nextTemplate)
         val resource = link.transform(nextTemplate.resource)
-        return Pair(resource, link.amount)//TODO insert amount in Resource amount;
+        return resource.copy(link.amount)
     }
 
-    private fun manageLegacyConversion(
-            resource: ResourceIdeal,
-            amount: Int
-    ): Pair<Resource?, Int> {
+    private fun manageLegacyConversion(resource: ResourceIdeal, amount: Int): Resource {
         val legacy = resource.genome.legacy
-                ?: return null to amount //TODO this is so wrong
+                ?: return phonyResource.copy(amount) //TODO this is kinda wrong
         val legacyTemplate = getTemplateWithName(legacy)
-        return legacyTemplate.resource to amount
+        return legacyTemplate.resource.copy(amount)
     }
 
-    private fun replaceLinks(resource: ResourceIdeal) {
-        for (resources in resource.genome.conversionCore.actionConversion.values) {
-            for (i in resources.indices) {
-                val (conversionResource, conversionResourceAmount) = resources[i]
-                if (conversionResource == null) {
-                    resources[i] = Pair(getTemplateWithName(resource.genome.legacy!!).resource, conversionResourceAmount)//FIXME
-                } else if (conversionResource.simpleName == resource.genome.name) {
-                    resources[i] = Pair(resource.copy(), conversionResourceAmount)
-                }
-            }
-        }
-    }
+//    private fun replaceLinks(resource: ResourceIdeal) {
+//        for (resources in resource.genome.conversionCore.actionConversion.values) {
+//            for (i in resources.indices) {
+//                val conversionResource = resources[i]
+//                if (conversionResource == null) {
+//                    resources[i] = Pair(getTemplateWithName(resource.genome.legacy!!).resource, conversionResourceAmount)//FIXME
+//                } else if (conversionResource.simpleName == resource.genome.name) {
+//                    resources[i] = Pair(resource.copy(), conversionResourceAmount)
+//                }
+//            }
+//        }
+//    }
 
     private fun actualizeParts(template: ResourceStringTemplate) {
         val (resource, actionConversion, parts) = template
@@ -140,7 +131,7 @@ class ResourceInstantiation(
     private fun injectParentColour(partResource: Resource, resource: Resource): Resource {
         if (partResource.genome.appearance.colour == null)
             resource.genome.appearance.colour?.let {
-                return ColourTransformer(it).transform(partResource)
+                return ColourTransformer(it).transform(partResource).copy(partResource.amount)
             }
         return partResource
     }
@@ -151,7 +142,7 @@ class ResourceInstantiation(
         val (resource, actionConversion, _) = template
 
         if (resource.genome.parts.isNotEmpty()) {
-            val result = resource.genome.parts.map { it to it.amount }
+            val result = resource.genome.parts.toList()
 
             if (!actionConversion.containsKey(takeApart) && !resource.genome.behaviour.isResisting)
                 resource.genome.conversionCore.addActionConversion(takeApart, result)
@@ -174,10 +165,10 @@ class ResourceInstantiation(
                 oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
             else oldGenome
         }
-        val newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName, parts = listOf()))
+        val newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName, parts = listOf()), resource.amount)
 
         val newParts = resource.genome.parts.map {
-            swapLegacies(it, newResource, treeStart + listOf(newResource)).copy()
+            swapLegacies(it, newResource, treeStart + listOf(newResource)).copy(it.amount)
         }.toMutableList()
 
         newParts.forEach {
@@ -187,13 +178,12 @@ class ResourceInstantiation(
         val newConversionCore = ConversionCore(mutableMapOf())
 
         resource.genome.conversionCore.actionConversion.map { (action, results) ->
-            action to results.map { (r, n) ->
-                if (r == resource)
-                    newResource to n
-                else if (r == null)
-                    treeStart[0] to n
-                else
-                    swapLegacies(r, newResource, treeStart + listOf(newResource)) to n
+            action to results.map { r ->
+                when (r) {
+                    resource -> newResource.copy(r.amount)
+                    phonyResource -> treeStart[0].copy(r.amount)
+                    else -> swapLegacies(r, newResource, treeStart + listOf(newResource))
+                }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
 
@@ -209,3 +199,30 @@ data class ResourceStringTemplate(
 )
 
 typealias TemplateConversions = Map<ResourceAction, List<ResourceLink>>
+
+
+val phonyResource = Resource(
+        ResourceCore(
+                Genome(
+                        "Phony",
+                        ResourceType.Animal,
+                        1.6 to 1.6,
+                        0.0,
+                        0,
+                        false,
+                        true,
+                        Behaviour(0.1, 0.05, 0.25, OverflowType.Ignore),
+                        Appearance(null),
+                        false,
+                        false,
+                        0.0,
+                        1,
+                        null,
+                        emptyList(),
+                        emptySet(),
+                        null,
+                        emptyList(),
+                        ConversionCore(mapOf())
+                )
+        )
+)

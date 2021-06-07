@@ -18,6 +18,10 @@ public class ResourceIdeal extends Resource {
         super(new ResourceCore(genome, new ArrayList<>(), getFreeMarker()), 1);
     }
 
+    public ResourceIdeal(Genome genome, int amount) {
+        super(new ResourceCore(genome, new ArrayList<>(), getFreeMarker()), amount);
+    }
+
     @Override
     public Resource getPart(int part, Taker taker) {
         System.err.println("Ideal is changing");

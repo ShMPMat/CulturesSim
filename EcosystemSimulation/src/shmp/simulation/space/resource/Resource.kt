@@ -290,7 +290,7 @@ open class Resource private constructor(
     }
 
     fun applyAction(action: ResourceAction, part: Int = 1): List<Resource> {
-        val result = genome.conversionCore.applyAction(action) ?: listOf(copy(1))
+        val result = genome.conversionCore.applyAction(action) ?: listOf(copy(part))
         result.forEach { it.amount *= part }
         return result
     }
@@ -304,9 +304,6 @@ open class Resource private constructor(
     fun hasApplicationForAction(action: ResourceAction) = genome.conversionCore.hasApplication(action)
 
     fun destroy() {
-        if (simpleName == "Person") {
-            val v = 0
-        }
         takers.add(DeathTaker to amount)
         amount = 0
     }

@@ -23,7 +23,7 @@ class TransformerInstantiator(private val actions: List<ResourceAction>) {
             val (action, resources) = parseConversion(value, actions)
 
             val instantiatedResources = resources.map {
-                it.transform(SpaceData.data.resourcePool.getSimpleName(it.resourceName)) to it.amount
+                it.transform(SpaceData.data.resourcePool.getSimpleName(it.resourceName)).copy(it.amount)
             }
 
             AddActionTransformer(action, instantiatedResources)

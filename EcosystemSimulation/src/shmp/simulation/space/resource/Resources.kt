@@ -18,11 +18,9 @@ internal fun Resource.flingConversionLinks(old: Resource): Resource {
     val newConversionCore = ConversionCore(mapOf())
 
     genome.conversionCore.actionConversion.map { (action, results) ->
-        action to results.map { (r, n) ->
-            if (r == old)
-                this to n
-            else
-                r to n
+        action to results.map { r ->
+            if (r == old) this
+            else r
         }
     }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
 
