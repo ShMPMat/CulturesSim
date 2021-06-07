@@ -7,11 +7,14 @@
         +Chisel:StoneAxe:1
         cGrey
 
--Boulder         0       0.5    100000     -500   500  100000000  0             1 0  Ignore  Mineral      @Stone
+-Boulder         0       0.5    100000     -500   500  10000      0             1 0  Ignore  Mineral      @Stone
         cGrey
 
--Ruby            0       0.1    100000     -500   500  100000000  0             1 0  Ignore  Mineral      @Ruby
+-Cliff           0       10     100000     -500   500  10         0             0 0  Ignore  Mineral      @Stone
+        cGrey
+
+-Ruby            0       0.03   100000     -500   500  100        0             1 0  Ignore  Mineral      @Ruby
         cRed
 
--Iron            0       0.1    100000     -500   500  100000000  0             1 0  Ignore  Mineral      @Iron
+-Iron            0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Iron
         cWhite

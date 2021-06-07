@@ -168,9 +168,7 @@ open class Resource private constructor(
     fun copy(amount: Int = genome.defaultAmount) =
             Resource(core, amount, _hash)
 
-    fun copyAndDestroy(
-            amount: Int = genome.defaultAmount
-    ): Resource {
+    fun copyAndDestroy(amount: Int = genome.defaultAmount): Resource {
         val result = Resource(core, amount, _hash)
         destroy()
         return result

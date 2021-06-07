@@ -67,7 +67,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
     override val isValid: Boolean
         get() {
-            if (resource.genome.behaviour.isResisting && aspect.name == "Take")
+            if (resource.genome.behaviour.isResisting && aspect.name == "Take")//TODO why here?
                 return false
             return resource.hasApplicationForAction(aspect.core.resourceAction)
         }

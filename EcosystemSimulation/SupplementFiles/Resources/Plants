@@ -107,3 +107,7 @@
         ^Leaf:7:s|0.2
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
+
+-Diatom          0.8     0.0001 3          -100   90   200000     0             1 0 Cut        Plant        @PlantFibre
+        #Normal:Mountain:Ice:Woods:Growth
+        cGreen

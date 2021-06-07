@@ -4,9 +4,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.ResourceBan
 import shmp.simulation.culture.group.centers.ResourceBanProvider
 import shmp.simulation.culture.group.request.RequestType
-import shmp.simulation.culture.group.request.resourceToRequest
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.container.ResourcePack
 
 
 class BannedResource(

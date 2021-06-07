@@ -171,6 +171,8 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     }
 
     fun startUpdate() { //TODO wind blows on 2 neighbour tiles
+        resourcePack.resources.forEach { it.takers.clear() }
+
         updateResources()
         windCenter.startUpdate()
         windCenter.useWind(_resourcePack.resources)
@@ -186,8 +188,6 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
     fun finishUpdate() {
         windCenter.finishUpdate()
-
-        resourcePack.resources.forEach { it.takers.clear() }
 //        if (testProbability(data.clearSpan, data.random))
 //            resourcePack.clearEmpty()
     }

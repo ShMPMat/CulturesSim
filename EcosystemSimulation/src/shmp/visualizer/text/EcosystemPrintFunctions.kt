@@ -16,4 +16,5 @@ fun TextEcosystemVisualizer.printResource(resource: Resource) {
         else ""
     }
     println(outputResource(resource))
+    println(outputFoodWeb(resource, controller.world))
 }

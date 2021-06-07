@@ -35,21 +35,17 @@ fun fillResources(
         supplement: MapGeneratorSupplement,
         random: Random
 ) {
-    for (resource in resourcePool.getAll {
-        it.genome.spreadProbability != 0.0
-                || it.genome.type == ResourceType.Mineral
-    }) {
-        scatter(
-                map,
-                resourcePool,
-                resource,
-                random.nextInt(
-                        supplement.startResourceAmountRange.first,
-                        supplement.startResourceAmountRange.last
-                ),
-                random
-        )
+    val resourcesToScatter = resourcePool.getAll {
+        it.genome.spreadProbability != 0.0 || it.genome.type == ResourceType.Mineral
     }
+
+    for (resource in resourcesToScatter) scatter(
+            map,
+            resourcePool,
+            resource,
+            random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last),
+            random
+    )
 }
 
 private fun setTileNeighbours(map: WorldMap) {
@@ -69,9 +65,7 @@ private fun setTileNeighbours(map: WorldMap) {
 private fun createTiles(x: Int, y: Int, water: Resource): List<List<Tile>> {
     val map: MutableList<List<Tile>> = ArrayList()
     (0 until x).map { i ->
-        map.add(
-                (0 until y).map { j -> Tile(i, j, TypeUpdater(water)) }
-        )
+        map.add((0 until y).map { j -> Tile(i, j, TypeUpdater(water)) })
     }
     return map
 }

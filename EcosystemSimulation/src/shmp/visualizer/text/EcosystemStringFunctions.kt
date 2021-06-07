@@ -5,7 +5,9 @@ import shmp.simulation.event.Event
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.ResourceType
+import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
+import shmp.simulation.space.resource.dependency.ConsumeDependency
 import shmp.simulation.space.resource.free
 import shmp.simulation.space.tile.Tile
 import java.util.regex.PatternSyntaxException
@@ -48,13 +50,37 @@ data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
     }
 }
 
-fun outputResource(resource: Resource): String = resource.toString() + "\n" +
-        resource.genome.conversionCore.actionConversion.entries.joinToString("\n") { (a, v) ->
-            a.name + ": " + v.joinToString { (it.first?.fullName ?: "LEGEND") + ":" + it.second }
-        } + "\n\nParts:\n" +
-        resource.genome.parts.joinToString("\n") { p ->
-            outputResource(p).lines().joinToString("\n") { "--$it" }
-        }
+fun outputResource(resource: Resource): String {
+    val actionConversions = resource.genome.conversionCore.actionConversion.entries
+            .joinToString("\n") { (a, v) ->
+                a.name + ": " + v.joinToString { (it.first?.fullName ?: "LEGEND") + ":" + it.second }
+            }
+
+    val parts = resource.genome.parts.joinToString("\n") { p ->
+        outputResource(p).lines().joinToString("\n") { "--$it" }
+    }
+
+    return "$resource\n$actionConversions\n\nParts:\n$parts"
+}
+
+fun outputFoodWeb(resource: Resource, world: World): String {
+    val consumers = world.map.tiles
+            .asSequence()
+            .flatMap { t -> t.resourcePack.getResourcesUnpacked { it.simpleName == resource.simpleName } }
+            .flatMap { it.takers }
+            .map { it.first }
+            .filterIsInstance<Taker.ResourceTaker>()
+            .map { it.resource.baseName }
+            .distinct()
+            .joinToString("\n")
+
+    val consumed = resource.genome.dependencies
+            .filterIsInstance<ConsumeDependency>()
+            .flatMap { it.lastConsumed }
+            .joinToString("\n")
+
+    return "Consumers:\n$consumers\n\nConsumed:\n$consumed"
+}
 
 fun printResources(resources: List<Resource>) = resources
         .joinToString("\n\n\n\n") { outputResource(it) }
