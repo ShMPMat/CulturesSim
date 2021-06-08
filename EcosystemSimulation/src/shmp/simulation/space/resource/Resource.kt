@@ -295,6 +295,9 @@ open class Resource private constructor(
         return result
     }
 
+    fun applyActionUnsafe(action: ResourceAction) =
+            genome.conversionCore.actionConversion[action] ?: listOf(copy(1))
+
     fun applyActionOrEmpty(action: ResourceAction, part: Int = 1): List<Resource> {
         val result = genome.conversionCore.applyAction(action) ?: listOf()
         result.forEach { it.amount *= part }

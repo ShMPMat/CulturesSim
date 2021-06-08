@@ -51,7 +51,6 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
     fun getResourcesUnpacked(predicate: (Resource) -> Boolean) =
             resourceMap.navigableKeySet().filter(predicate)
 
-
     fun getResourcesUnpacked(tag: ResourceTag) =
             resourceMap.navigableKeySet().filter { it.tags.contains(tag) }
 

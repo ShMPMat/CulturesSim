@@ -192,7 +192,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         val pack = resourceEvaluator((this as ConverseWrapper).resource).pick(controller.populationCenter.turnResources)
         return controller.pickCeilingPart(
                 pack.resources,
-                { it.applyAction(aspect.core.resourceAction) }
+                { it.applyActionUnsafe(aspect.core.resourceAction) }
         ) { r, n ->
             r.applyActionAndConsume(
                     aspect.core.resourceAction,

@@ -112,7 +112,7 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
 
 private fun getReducedTags(resource: Resource, aspect: Aspect): List<ResourceTag> {
     val result: MutableList<ResourceTag> = ArrayList()
-    val allTags = resource.applyAction(aspect.core.resourceAction).flatMap { it.tags }
+    val allTags = resource.applyActionUnsafe(aspect.core.resourceAction).flatMap { it.tags }
     for (tag in allTags) {
         if (!result.contains(tag))
             result.add(tag)

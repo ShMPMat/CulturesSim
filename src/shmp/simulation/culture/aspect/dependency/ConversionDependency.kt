@@ -31,7 +31,7 @@ class ConversionDependency(
 
         val gatheredPack = controller.pickCeilingPart(
                 controller.territory.getResourceInstances(resource),
-                { it.applyAction(aspect.core.resourceAction) },
+                { it.applyActionUnsafe(aspect.core.resourceAction) },
                 { r, n ->
                     r.getPart(n, taker).applyActionAndConsume(aspect.core.resourceAction, n, false, taker)
                 }
