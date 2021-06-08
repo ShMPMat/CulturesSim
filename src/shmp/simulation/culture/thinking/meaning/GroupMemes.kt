@@ -15,7 +15,7 @@ class GroupMemes : MemePool() {
     private var popularMemes = listOf<Meme>()
 
     private fun updatePopular() {
-        popularMemes = all.sortedByDescending { it.importance }.take(50)
+        popularMemes = all.sortedByDescending { it.importance }.take(40)
     }
 
     init {
@@ -58,7 +58,7 @@ class GroupMemes : MemePool() {
 
     val valuableMeme: Meme
         get() {
-            0.9.chanceOf {
+            0.95.chanceOf {
                 return chooseMeme(popularMemes)
             }
 
@@ -68,7 +68,7 @@ class GroupMemes : MemePool() {
         }
 
     val memeWithComplexityBias: Meme
-        get() = 0.5.chanceOf<Meme> { valuableMeme }
+        get() = 0.75.chanceOf<Meme> { valuableMeme }
                 ?: chooseMeme(memesCombinationsMap.values.sortedBy { it.toString() })
 
     private fun chooseMeme(memeList: List<Meme>) = memeList.randomElement { it.importance.toDouble() }

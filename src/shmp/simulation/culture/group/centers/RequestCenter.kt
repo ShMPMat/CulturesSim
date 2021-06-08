@@ -70,7 +70,7 @@ class RequestCenter {
 
     private fun addClothesRequest(controller: RequestConstructController) {
         val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
-        val neededClothes = controller.population.toDouble() - clothesEvaluator.evaluate(controller.accessibleResources)
+        val neededClothes = controller.population.toDouble() - clothesEvaluator.evaluatePack(controller.accessibleResources)
         if (neededClothes <= 0)
             return
         val types = setOf(Clothes, Comfort)
@@ -80,7 +80,7 @@ class RequestCenter {
 
     private fun addShelterRequest(controller: RequestConstructController) {
         val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
-        val neededShelter = controller.population.toDouble() - shelterEvaluator.evaluate(controller.accessibleResources)
+        val neededShelter = controller.population.toDouble() - shelterEvaluator.evaluatePack(controller.accessibleResources)
         if (neededShelter <= 0)
             return
         val types = setOf(Shelter, Comfort)

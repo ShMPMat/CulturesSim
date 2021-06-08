@@ -50,9 +50,10 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     }
 
     fun getAmountOfResourcesWithTagAndErase(tag: ResourceTag, amount: Double): Pair<Int, List<Resource>> { //TODO looks bad
-        val innerResource: Collection<Resource> = getResourcesUnpacked(tag)
+        val innerResource = getTaggedResourcesUnpacked(tag)
         val result = mutableListOf<Resource>()
         var counter = 0
+
         for (resource in innerResource) {
             if (counter >= amount)
                 break
@@ -88,7 +89,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
     fun removeAll(pack: ResourcePack) = removeAll(pack.resources)
 
     fun destroyAllResourcesWithTag(tag: ResourceTag) {
-        val result = getResourcesUnpacked(tag)
+        val result = getTaggedResourcesUnpacked(tag)
         removeAll(result)
         result.forEach { it.destroy() }
     }

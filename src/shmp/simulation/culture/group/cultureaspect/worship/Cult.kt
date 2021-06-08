@@ -135,7 +135,7 @@ class Cult(val name: String, type: CultType = Shaman, buildingsType: BuildingsTy
             val result = group.populationCenter.executeRequest(request)
             val pack = MutableResourcePack(result.pack)
 
-            if (request.evaluator.evaluate(pack) != 0.0) {
+            if (request.evaluator.evaluatePack(pack) != 0.0) {
                 result.usedAspects.forEach { it.gainUsefulness(20) }
                 val temple = request.evaluator.pickAndRemove(pack).resources
                         .map {

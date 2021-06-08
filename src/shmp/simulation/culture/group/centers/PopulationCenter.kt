@@ -63,9 +63,7 @@ class PopulationCenter(
     val turnResources = MutableResourcePack(initResources)
 
     val freePopulation: Int
-        get() = population - stratumCenter.strata
-                .map(Stratum::population)
-                .foldRight(0, Int::plus)
+        get() = population - stratumCenter.strata.sumBy { it.population }
 
     fun getMaxPopulation(controlledTerritory: Territory) = controlledTerritory.size * maxPopulation
 
@@ -176,13 +174,13 @@ class PopulationCenter(
                 ) { r, p -> listOf(r.getCleanPart(p, taker)) }
 
         for (stratum in strataForRequest) {
-            val amount = evaluator.evaluate(pack)
+            val amount = evaluator.evaluatePack(pack)
             if (amount >= request.ceiling)
                 break
 
             val produced: ResourcePack = stratum.use(request.getController(ceil(amount).toInt()))
 
-            if (evaluator.evaluate(produced) > 0)
+            if (evaluator.evaluatePack(produced) > 0)
                 usedAspects.add(stratum.aspect)
             pack.addAll(produced)
         }

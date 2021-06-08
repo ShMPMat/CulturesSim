@@ -17,7 +17,7 @@ import kotlin.math.pow
 
 
 open class Resource private constructor(
-        internal val core: ResourceCore,
+        val core: ResourceCore,
         amount: Int = core.genome.defaultAmount,
         hash: Int?
 ) : Comparable<Resource> {
@@ -60,15 +60,13 @@ open class Resource private constructor(
     inline val tags: Set<ResourceTag>
         get() = genome.tags
 
-    val externalFeatures: List<ExternalResourceFeature>
+    inline val externalFeatures: List<ExternalResourceFeature>
         get() = core.externalFeatures
 
-    val fullName = genome.baseName +
-            if (externalFeatures.isNotEmpty())
-                externalFeatures.joinToString("_", "_") { it.name }
-            else ""
+    inline val fullName: String
+        get() = core.fullName
 
-    val ownershipMarker: OwnershipMarker
+    inline val ownershipMarker: OwnershipMarker
         get() = core.ownershipMarker
 
     val takers = mutableListOf<Pair<Taker, Int>>()

@@ -18,7 +18,7 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
     constructor(resources: Collection<Resource> = listOf()): this(resources, true)
 
     val resources: List<Resource>
-        get() = resourceMap.values.toList()
+        get() = resourceMap.navigableKeySet().toList()
 
     val resourcesIterator: Iterator<Resource>
         get() = resourceMap.navigableKeySet().iterator()
@@ -51,14 +51,11 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
     fun getResourcesUnpacked(predicate: (Resource) -> Boolean) =
             resourceMap.navigableKeySet().filter(predicate)
 
-    fun getResourcesUnpacked(tag: ResourceTag) =
+    fun getTaggedResourcesUnpacked(tag: ResourceTag) =
             resourceMap.navigableKeySet().filter { it.tags.contains(tag) }
 
     fun getResources(predicate: (Resource) -> Boolean) =
             ResourcePack(getResourcesUnpacked(predicate), false)
-
-    fun getResources(tag: ResourceTag) =
-            ResourcePack(getResourcesUnpacked(tag), false)
 
     fun getResource(resource: Resource): ResourcePack {
         val resourceInMap = resourceMap[resource]
@@ -68,9 +65,9 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
 
     fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
 
-    fun getAmount(tag: ResourceTag) = getResourcesUnpacked(tag).sumBy { it.amount }
+    fun getAmount(tag: ResourceTag) = getTaggedResourcesUnpacked(tag).sumBy { it.amount }
 
-    fun getTagPresence(tag: ResourceTag) = getResourcesUnpacked(tag)
+    fun getTagPresence(tag: ResourceTag) = getTaggedResourcesUnpacked(tag)
             .map { it.getTagPresence(tag) }
             .sum()
 

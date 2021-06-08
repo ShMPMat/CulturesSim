@@ -39,11 +39,11 @@ data class AspectController constructor(
             floor = amount
     }
 
-    fun evaluate(pack: ResourcePack) = evaluator.evaluate(pack)
+    fun evaluate(pack: ResourcePack) = evaluator.evaluatePack(pack)
 
-    fun isFloorExceeded(resourcePack: MutableResourcePack) = evaluator.evaluate(resourcePack) >= floor
+    fun isFloorExceeded(resourcePack: MutableResourcePack) = evaluator.evaluatePack(resourcePack) >= floor
 
-    fun isCeilingExceeded(resourcePack: ResourcePack) = evaluator.evaluate(resourcePack) >= ceiling
+    fun isCeilingExceeded(resourcePack: ResourcePack) = evaluator.evaluatePack(resourcePack) >= ceiling
 
     fun left(pack: ResourcePack) = max(0.0, ceiling - evaluate(pack))
 

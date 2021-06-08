@@ -10,6 +10,7 @@ import kotlin.math.ceil
 
 //Evaluates ResourcePacks for containing needed Resources.
 // If labeler returns true on a Resource, evaluator MUST return Double > 0.
+// Evaluator MUST be linear
 class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Resource) -> Double) {
     fun pick(resourcePack: ResourcePack) = resourcePack.getResources { evaluator(it) > 0 }
 
@@ -19,11 +20,9 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
         return result
     }
 
-    fun evaluate(resources: List<Resource>) = resources
-            .map { evaluator(it) }
-            .foldRight(0.0, Double::plus)
+    fun evaluate(resources: List<Resource>) = resources.sumByDouble { evaluator(it) }
 
-    fun evaluate(pack: ResourcePack) = evaluate(pack.resources)
+    fun evaluatePack(pack: ResourcePack) = evaluate(pack.resources)
 
     fun evaluate(resource: Resource) = evaluator(resource)
 
@@ -31,8 +30,7 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
         val oneResourceWorth = evaluate(resources)
         return if (oneResourceWorth != 0.0)
             part / oneResourceWorth
-        else
-            0.0
+        else 0.0
     }
 
     fun pick(
@@ -45,6 +43,7 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
         if (part == 0.0)
             return resultPack
         var amount = 0.0
+
         for (resource in resources) {
             val neededAmount = getSatisfiableAmount(part - amount.toInt(), onePortionGetter(resource))
             if (neededAmount == 0.0)
@@ -52,9 +51,12 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
             if (neededAmount <= 0)
                 throw SimulationError("Wrong needed amount - $neededAmount")
 
-            resultPack.addAll(partGetter(resource, ceil(neededAmount).toInt()))
-            amount = evaluate(resultPack)
-            if (amount >= part) break
+            val newResources = partGetter(resource, ceil(neededAmount).toInt())
+            amount += evaluate(newResources)
+            resultPack.addAll(newResources)
+
+            if (amount >= part)
+                break
         }
         return resultPack
     }

@@ -35,12 +35,12 @@ class RequestHelpI(
 
         return if (given.isNotEmpty) {
             delivery.run()
-            ChangeRelationsA(initiator, participator, request.evaluator.evaluate(given) / request.ceiling).run()
+            ChangeRelationsA(initiator, participator, request.evaluator.evaluatePack(given) / request.ceiling).run()
 
             ProcessResult(HelpEvent(
                     "${initiator.name} got help in $request from ${participator.name}: " +
                             "${given.listResources}, with delay ${delivery.delay}",
-                    request.evaluator.evaluate(given)
+                    request.evaluator.evaluatePack(given)
             )) +
                     ProcessResult(makeResourcePackMemes(given)) +
                     ProcessResult(Trait.Peace.toPositiveChange() * 3.0) to

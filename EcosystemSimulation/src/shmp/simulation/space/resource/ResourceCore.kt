@@ -12,7 +12,12 @@ class ResourceCore(
         externalFeatures: List<ExternalResourceFeature> = listOf(),
         val ownershipMarker: OwnershipMarker = freeMarker
 ) {
-    internal val externalFeatures = externalFeatures.sortedBy { it.index }
+    val externalFeatures = externalFeatures.sortedBy { it.index }
+
+    val fullName = genome.baseName +
+            if (externalFeatures.isNotEmpty())
+                externalFeatures.joinToString("_", "_") { it.name }
+            else ""
 
     init {
         if (externalFeatures.groupBy { it.index }.map { it.value.size }.any { it != 1 })

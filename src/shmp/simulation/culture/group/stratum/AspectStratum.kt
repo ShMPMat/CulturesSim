@@ -180,7 +180,7 @@ class AspectStratum(
                                     setOf(RequestType.Improvement)
                             ))
                     if (result.isFinished) {
-                        currentAmount += (evaluator.evaluate(result.resources)).toInt()
+                        currentAmount += (evaluator.evaluatePack(result.resources)).toInt()
                         value.addAll(evaluator.pickAndRemove(result.resources))
                         group.populationCenter.turnResources.addAll(result.resources)
 

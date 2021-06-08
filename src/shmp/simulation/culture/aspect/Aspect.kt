@@ -10,7 +10,6 @@ import shmp.simulation.culture.group.request.ResourceEvaluator
 import shmp.simulation.culture.group.request.resourceEvaluator
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.BaseNameLabeler
@@ -231,6 +230,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             _rp.addAll(result.resources)
             if (!result.isFinished)
                 continue
+
             if (_rp.getAmount(requirementTag) >= controller.ceiling) {
                 //TODO sometimes can spend resources without getting result because other dependencies are lacking
                 if (!requirementTag.isInstrumental)
@@ -239,12 +239,10 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                             controller.ceiling
                     ).second)
                 else
-                    usedForDependency.addAll(_rp.getResourcesUnpacked(requirementTag))
+                    usedForDependency.addAll(_rp.getTaggedResourcesUnpacked(requirementTag))
                 meaningfulPack.addAll(_rp)
                 isFinished = true
                 break
-            } else {
-                val j = 0
             }
         }
         node.resourceUsed[requirementTag] = usedForDependency
