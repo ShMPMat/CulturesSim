@@ -12,8 +12,7 @@ import shmp.simulation.space.tile.Tile
 
 class StratumCenter(initTile: Tile) {
     private val _strata = mutableListOf<Stratum>()
-    val strata: List<Stratum>
-        get() = _strata
+    val strata: List<Stratum> = _strata
 
     init {
         _strata.add(WarriorStratum(initTile))
@@ -41,9 +40,9 @@ class StratumCenter(initTile: Tile) {
             ?: throw GroupError("No Stratum for an Aspect ${aspect.name}")
 
     fun getStrataForRequest(request: Request): List<AspectStratum> = _strata
-            .filter { request.isAcceptable(it) != null }
-            .sortedBy { request.satisfactionLevel(it) }
             .filterIsInstance<AspectStratum>()
+            .filter { request.isAcceptable(it) != null }
+            .sortedByDescending { request.satisfactionLevel(it) }
 
     fun addStratum(stratum: Stratum) {
         when (stratum) {

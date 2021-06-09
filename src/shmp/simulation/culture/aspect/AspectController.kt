@@ -45,6 +45,8 @@ data class AspectController constructor(
 
     fun isCeilingExceeded(resourcePack: ResourcePack) = evaluator.evaluatePack(resourcePack) >= ceiling
 
+    fun isCeilingExceeded(amount: Double) = amount >= ceiling
+
     fun left(pack: ResourcePack) = max(0.0, ceiling - evaluate(pack))
 
     fun pickCeilingPart(

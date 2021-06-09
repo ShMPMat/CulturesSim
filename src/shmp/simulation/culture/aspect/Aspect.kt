@@ -1,6 +1,6 @@
 package shmp.simulation.culture.aspect
 
-import shmp.random.testProbability
+import shmp.random.singleton.chanceOf
 import shmp.simulation.CulturesController.*
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
@@ -82,7 +82,6 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             }
         } catch (e: Exception) {
             System.err.println(e)
-            val i = 0
         }
     }
 
@@ -107,7 +106,8 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     protected fun _use(controller: AspectController): AspectResult {
         //TODO put dependency resources only in node; otherwise they may merge with phony
-        if (checkTermination(controller)) return AspectResult(isFinished = false, node = ResultNode(this))
+        if (checkTermination(controller))
+            return AspectResult(isFinished = false, node = ResultNode(this))
 
         producedResources.forEach { resource ->
             val ban = controller.group.resourceCenter.bannedResources[resource]
@@ -154,8 +154,9 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         }
         if (!isFinished) {
             timesUsedInTurnUnsuccessfully++
-            if (!testProbability(1.0 / timesUsedInTurnUnsuccessfully.toDouble().pow(0.05), session.random))
+            (1.0 / timesUsedInTurnUnsuccessfully.toDouble().pow(0.05)).chanceOf {
                 tooManyFailsThisTurn = true
+            }
         }
         used = false
 
@@ -167,21 +168,29 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             dependencies: Set<Dependency>,
             meaningfulPack: MutableResourcePack
     ): Boolean {
-        meaningfulPack.addAll(getPhonyFromResources(controller))
-        if (controller.isCeilingExceeded(meaningfulPack))
+        var amount = controller.evaluator.evaluate(meaningfulPack.resources)
+        val resourcesPhony = getPhonyFromResources(controller)
+        amount += controller.evaluator.evaluate(resourcesPhony.resources)
+        meaningfulPack.addAll(resourcesPhony)
+
+        if (controller.isCeilingExceeded(amount))
             return true
+
         for (dependency in dependencies) {
             val newDelta = meaningfulPack.getAmount((this as ConverseWrapper).resource)
-            val _p = dependency.useDependency(controller.copy(
+            val result = dependency.useDependency(controller.copy(
                     depth = controller.depth + 1,
                     ceiling = controller.ceiling - newDelta,
                     floor = controller.floor - newDelta,
                     isMeaningNeeded = shouldPassMeaningNeed(controller.isMeaningNeeded)
             ))
-            if (!_p.isFinished)
+            if (!result.isFinished)
                 continue
-            meaningfulPack.addAll(_p.resources)
-            if (controller.isCeilingExceeded(meaningfulPack))
+
+            amount += controller.evaluator.evaluate(result.resources.resources)
+            meaningfulPack.addAll(result.resources)
+
+            if (controller.isCeilingExceeded(amount))
                 break
         }
         return true
@@ -211,15 +220,15 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     ): Result {
         val needs = mutableListOf<Need>()
         var isFinished = false
-        val _rp = MutableResourcePack()
-        _rp.addAll(controller.pickCeilingPart(
+        val dependencyPack = MutableResourcePack()
+        dependencyPack.addAll(controller.pickCeilingPart(
                 controller.populationCenter.stratumCenter.getByAspect(this as ConverseWrapper)
                         .getInstrumentByTag(requirementTag).resources,
                 { listOf(it.copy(1)) }
         ) { r, n -> listOf(r.getCleanPart(n, controller.populationCenter.taker)) })
         val usedForDependency = MutableResourcePack()
         for (dependency in dependencies) {
-            val newDelta = _rp.getAmount(requirementTag)
+            val newDelta = dependencyPack.getAmount(requirementTag)
             val result = dependency.useDependency(controller.copy(
                     depth = controller.depth + 1,
                     ceiling = controller.ceiling - newDelta,
@@ -227,20 +236,20 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                     isMeaningNeeded = false
             ))
             needs.addAll(result.neededResources)
-            _rp.addAll(result.resources)
+            dependencyPack.addAll(result.resources)
             if (!result.isFinished)
                 continue
 
-            if (_rp.getAmount(requirementTag) >= controller.ceiling) {
+            if (dependencyPack.getAmount(requirementTag) >= controller.ceiling) {
                 //TODO sometimes can spend resources without getting result because other dependencies are lacking
                 if (!requirementTag.isInstrumental)
-                    usedForDependency.addAll(_rp.getAmountOfResourcesWithTagAndErase(
+                    usedForDependency.addAll(dependencyPack.getAmountOfResourcesWithTagAndErase(
                             requirementTag,
                             controller.ceiling
                     ).second)
                 else
-                    usedForDependency.addAll(_rp.getTaggedResourcesUnpacked(requirementTag))
-                meaningfulPack.addAll(_rp)
+                    usedForDependency.addAll(dependencyPack.getTaggedResourcesUnpacked(requirementTag))
+                meaningfulPack.addAll(dependencyPack)
                 isFinished = true
                 break
             }

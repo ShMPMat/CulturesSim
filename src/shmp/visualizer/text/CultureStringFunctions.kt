@@ -32,7 +32,7 @@ fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: Conglomer
             continue
 
         stringBuilder.append(info.getConglomerateSymbol(group)).append(" ").append(group.name).append(" \u001b[31m")
-        val aspects = group.aspects.sortedByDescending { it.usefulness }
+        val aspects = group.aspects.sortedByDescending { it.usefulness }.take(10)
         for (aspect in aspects) {
             if (aspect.usefulness <= 0)
                 break
@@ -41,7 +41,7 @@ fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: Conglomer
         }
         stringBuilder.append(" \u001b[32m\n")
 
-        group.cultureAspects.forEach {
+        group.cultureAspects.take(10).forEach {
             stringBuilder.append("($it)")
         }
 

@@ -14,7 +14,7 @@ import java.util.*
  * Special Aspect which wraps around another aspect and resource and returns application
  * of this aspect to the resource.
  */
-open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
+open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         aspect.core.copy(
                 name = aspect.name + "On" + resource.baseName,
                 tags = getReducedTags(resource, aspect),
@@ -24,15 +24,13 @@ open class ConverseWrapper(var aspect: Aspect, resource: Resource) : Aspect(
         ),
         AspectDependencies(mutableMapOf())
 ) {
-    val resource = resource
-
     override fun swapDependencies(aspectCenter: AspectCenter) {
         super.swapDependencies(aspectCenter)
         aspect = aspectCenter.aspectPool.getValue(aspect)
     }
 
     override val producedResources: List<Resource>
-        get() = resource.applyAction(aspect.core.resourceAction)
+        get() = resource.applyActionUnsafe(aspect.core.resourceAction)
 
     open fun use(controller: AspectController) = try {
         val result = super._use(controller)

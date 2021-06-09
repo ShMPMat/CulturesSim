@@ -34,9 +34,8 @@ abstract class Request(val core: RequestCore) {
 
     abstract fun reassign(group: Group): Request
 
-    open fun isAcceptable(stratum: Stratum) = when {
-        stratum !is AspectStratum -> null
-        evaluator.evaluate(stratum.aspect.producedResources) > 0 -> evaluator
+    open fun isAcceptable(stratum: AspectStratum) = when {
+        evaluator.hasValue(stratum.aspect.producedResources) -> evaluator
         else -> null
     }
 
@@ -68,8 +67,7 @@ abstract class Request(val core: RequestCore) {
     fun satisfactionLevel(stratum: Stratum) =
             if (stratum !is AspectStratum) 0.0
             else stratum.aspect.producedResources
-                    .map { satisfactionLevel(it) }
-                    .foldRight(0.0, Double::plus)
+                    .sumByDouble { satisfactionLevel(it) }
 
     open fun getController(ignoreAmount: Int) = AspectController(
             1,

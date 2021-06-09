@@ -24,6 +24,8 @@ class ResourceCore(
             throw SimulationError("${genome.name} has doubled external features: $externalFeatures")
     }
 
+//    val sample = Resource(this, 1)
+
     internal fun fullCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
             if (genome is GenomeTemplate)
                 throw SpaceError("Can't make a full copy of a template")

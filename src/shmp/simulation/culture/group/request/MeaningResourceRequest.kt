@@ -18,8 +18,8 @@ class MeaningResourceRequest(
     override fun reducedAmountCopy(amount: Double) =
             MeaningResourceRequest(meme, resource, core.copy(floor = 0.0, ceiling = amount))
 
-    override fun isAcceptable(stratum: Stratum) =
-            if (stratum is AspectStratum && stratum.aspect.canInsertMeaning)
+    override fun isAcceptable(stratum: AspectStratum) =
+            if (stratum.aspect.canInsertMeaning)
                 super.isAcceptable(stratum)
             else null
 

@@ -20,6 +20,8 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
         return result
     }
 
+    fun hasValue(resources: List<Resource>) = resources.any { evaluator(it) > 0 }
+
     fun evaluate(resources: List<Resource>) = resources.sumByDouble { evaluator(it) }
 
     fun evaluatePack(pack: ResourcePack) = evaluate(pack.resources)
