@@ -64,7 +64,7 @@ object RandomDepictCaB : AbstractGroupBehaviour() {
         if (meaningAspects.isEmpty()) {
             val aspect = session.world.aspectPool.filter { it.canApplyMeaning }.randomElementOrNull()
                     ?: return emptyProcessResult
-            group.cultureCenter.aspectCenter.addAspect(aspect, group)
+            group.cultureCenter.aspectCenter.addAspectTry(aspect, group)
             return emptyProcessResult
         }
 

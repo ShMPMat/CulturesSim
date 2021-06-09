@@ -78,7 +78,7 @@ class CultureCenter(
                 .randomElementOrNull()
                 ?: return
 
-        aspectCenter.addAspect(first, group)
+        aspectCenter.addAspectTry(first, group)
 
         events.add(
                 if (second == null)

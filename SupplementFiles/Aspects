@@ -57,7 +57,7 @@
     Shard
     C3.0
 -MakeBloomery
-    &m:Stone!!t:composite--#Bloomery:1
+    &m:Stone--!!t:composite--#Bloomery:1
     Shard
     C8.0
 -MakeBoat
@@ -81,7 +81,7 @@
     C10.0
 
 
--MeltIron                                                                    #furnace #burns
+-MeltIron                                                                    #furnace /burns
     &r:RawIron--#Iron:1
     C2.0
 

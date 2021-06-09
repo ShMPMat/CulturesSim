@@ -24,7 +24,7 @@ class AspectCenter(aspects: List<Aspect>) {
     //    Aspects added on the current turn
     private val changedAspectPool = MutableAspectPool(HashSet())
     private val _converseWrappers = mutableSetOf<ConverseWrapper>()
-    private val _lastResourcesForCw: MutableList<Resource> = ArrayList()
+    private val _lastResourcesForCw = mutableListOf<Resource>()
 
     init {
         aspects.forEach { hardAspectAdd(it) }
@@ -34,7 +34,7 @@ class AspectCenter(aspects: List<Aspect>) {
     val aspectPool: AspectPool
         get() = _mutableAspectPool
 
-    fun addAspect(aspect: Aspect, group: Group): Boolean {
+    fun addAspectTry(aspect: Aspect, group: Group): Boolean {
         var currentAspect = aspect
         if (!currentAspect.isValid)
             return false
@@ -43,11 +43,11 @@ class AspectCenter(aspects: List<Aspect>) {
         val dependencies = calculateDependencies(currentAspect, group)
         if (!currentAspect.isDependenciesOk(dependencies))
             return false
-        addAspectNow(currentAspect, dependencies, group)
+        addAspect(currentAspect, dependencies, group)
         return true
     }
 
-    private fun addAspectNow(aspect: Aspect, dependencies: AspectDependencies, group: Group) {
+    private fun addAspect(aspect: Aspect, dependencies: AspectDependencies, group: Group) {
         val currentAspect: Aspect
         if (_mutableAspectPool.contains(aspect)) {
             currentAspect = _mutableAspectPool.getValue(aspect) //TODO why one, add a l l
@@ -56,7 +56,7 @@ class AspectCenter(aspects: List<Aspect>) {
             currentAspect = aspect.copy(dependencies)
             changedAspectPool.add(currentAspect)
             if (currentAspect !is ConverseWrapper) { //TODO maybe should do the same in straight
-                val allResources: MutableSet<Resource> = HashSet(group.overallTerritory.differentResources)
+                val allResources = group.overallTerritory.differentResources.toMutableSet()
                 allResources.addAll(_mutableAspectPool.producedResources)
                 for (resource in allResources)
                     addConverseWrapper(currentAspect, resource)
@@ -78,7 +78,7 @@ class AspectCenter(aspects: List<Aspect>) {
         return calculator.dependencies
     }
 
-    private fun addConverseWrapper(aspect: Aspect, resource: Resource) { //TODO I'm adding a lot of garbage
+    private fun addConverseWrapper(aspect: Aspect, resource: Resource) {
         val wrapper = if (aspect.canApplyMeaning)
             MeaningInserter(aspect, resource)
         else
@@ -86,6 +86,7 @@ class AspectCenter(aspects: List<Aspect>) {
 
         if (!wrapper.isValid)
             return
+
         _converseWrappers.add(wrapper)
     }
 
@@ -98,7 +99,7 @@ class AspectCenter(aspects: List<Aspect>) {
 
         if (session.independentCvSimpleAspectAdding) {
             0.1.chanceOf {
-                options.addAll(session.world.aspectPool.all)
+                options.addAll(session.world.aspectPool.all.filter { it !in aspectPool.all })
             } otherwise {
                 options.addAll(getAllPossibleConverseWrappers(group))
             }
@@ -111,14 +112,14 @@ class AspectCenter(aspects: List<Aspect>) {
             if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
                 return listOf()
 
-            if (addAspect(aspect, group))
+            if (addAspectTry(aspect, group))
                 return listOf(aspect)
         }
         return listOf()
     }
 
     private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
-        val newResources: MutableSet<Resource> = group.overallTerritory.differentResources.toMutableSet()
+        val newResources = group.overallTerritory.differentResources.toMutableSet()
         newResources.addAll(_mutableAspectPool.producedResources)
         newResources.removeAll(_lastResourcesForCw)
 
@@ -219,7 +220,7 @@ class AspectCenter(aspects: List<Aspect>) {
                 max(a.usefulness * group.relationCenter.getNormalizedRelation(g), 0.0) + 1.0
             }
 
-            if (addAspect(aspect, group))
+            if (addAspectTry(aspect, group))
                 return listOf(Event(
                         Type.AspectGaining,
                         "${group.name} got ${aspect.name} from ${aspectGroup.name}"

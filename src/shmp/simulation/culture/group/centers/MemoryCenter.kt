@@ -51,7 +51,9 @@ class MemoryCenter {
     override fun toString() = "$turnRequests\n" +
             "\n" +
             "Resources awareness\n" +
-            resourceTraction.entries.sortedBy { it.value.value.actualValue }.joinToString("\n") { (r, ma) ->
-                "${r.fullName} - ${ma.value.actualValue}"
-            }
+            resourceTraction.entries.sortedByDescending { it.value.value.actualValue }
+                    .take(20)
+                    .joinToString("\n") { (r, ma) ->
+                        "${r.fullName} - ${ma.value.actualValue}"
+                    }
 }

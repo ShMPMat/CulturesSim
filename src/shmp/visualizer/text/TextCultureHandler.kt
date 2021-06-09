@@ -1,6 +1,5 @@
 package shmp.visualizer.text
 
-import shmp.simulation.culture.group.GroupConglomerate
 import shmp.utils.chompToSize
 import shmp.visualizer.*
 import shmp.visualizer.command.Command
@@ -64,6 +63,13 @@ object TextCultureHandler : CommandHandler<TextCultureVisualizer> {
                 GroupStatistics -> println(printGroupStatistics(world))
                 Aspects -> {
                     printMap { aspectMapper(splitCommand[1], it) }
+                    world.aspectPool.all.filter { it.name.contains(splitCommand[1]) }
+                            .forEach {
+                                println(it.name)
+                                println(printApplicableResources(it, world.resourcePool.all))
+                                println()
+                            }
+                    println("\nActual instances:\n")
                     world.groups.flatMap { it.aspects }
                             .filter { it.name.contains(splitCommand[1]) }
                             .distinct()
@@ -100,12 +106,6 @@ object TextCultureHandler : CommandHandler<TextCultureVisualizer> {
         return true
     }
 
-    private fun TextCultureVisualizer.getConglomerate(string: String): GroupConglomerate? {
-        val index = string.substring(1).toInt()
-        val world = controller.world
-
-        return if (index < world.groups.size)
-            world.groups[index]
-        else null
-    }
+    private fun TextCultureVisualizer.getConglomerate(name: String) = controller.world.groups
+            .firstOrNull { it.name == name }
 }

@@ -39,7 +39,7 @@ class CulturesWorld : World() {
 
         for (aspectName in compulsoryAspects)
             groups.forEach { c ->
-                c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspect(aspectPool.getValue(aspectName), it) }
+                c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspectTry(aspectPool.getValue(aspectName), it) }
             }
 
         groups.forEach { it.finishUpdate() }

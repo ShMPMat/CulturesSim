@@ -57,7 +57,7 @@ abstract class NonAspectStratum(tile: Tile, baseName: String, postfix: String) :
                 val actualAspect = group.cultureCenter.aspectCenter.aspectPool.get(it)
 
                 if (actualAspect == null)
-                    group.cultureCenter.aspectCenter.addAspect(it, group)
+                    group.cultureCenter.aspectCenter.addAspectTry(it, group)
                 else
                     aspect = actualAspect
 
