@@ -67,7 +67,7 @@ class ResourceInstantiation(
         for ((a, l) in actionConversion.entries) {
             resource.genome.conversionCore.addActionConversion(
                     a,
-                    l.map { readConversion(template, it) }.map { injectParentColour(it, resource) }
+                    l.map { readConversion(template, it) }
             )
         }
         if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
@@ -95,32 +95,17 @@ class ResourceInstantiation(
 
     private fun manageLegacyConversion(resource: ResourceIdeal, amount: Int): Resource {
         val legacy = resource.genome.legacy
-                ?: return phonyResource.copy(amount) //TODO this is kinda wrong
+                ?: return phonyResource.copy(amount)
         val legacyTemplate = getTemplateWithName(legacy)
         return legacyTemplate.resource.copy(amount)
     }
-
-//    private fun replaceLinks(resource: ResourceIdeal) {
-//        for (resources in resource.genome.conversionCore.actionConversion.values) {
-//            for (i in resources.indices) {
-//                val conversionResource = resources[i]
-//                if (conversionResource == null) {
-//                    resources[i] = Pair(getTemplateWithName(resource.genome.legacy!!).resource, conversionResourceAmount)//FIXME
-//                } else if (conversionResource.simpleName == resource.genome.name) {
-//                    resources[i] = Pair(resource.copy(), conversionResourceAmount)
-//                }
-//            }
-//        }
-//    }
 
     private fun actualizeParts(template: ResourceStringTemplate) {
         val (resource, actionConversion, parts) = template
         for (part in parts) {
             val link = parseLink(part, actions)
             val partTemplate = getTemplateWithName(link.resourceName)
-            var partResource = link.transform(partTemplate.resource)
-
-            partResource = injectParentColour(partResource, resource)
+            val partResource = link.transform(partTemplate.resource)
 
             resource.genome.addPart(partResource)
         }
@@ -128,12 +113,12 @@ class ResourceInstantiation(
         addTakeApartAction(template)
     }
 
-    private fun injectParentColour(partResource: Resource, resource: Resource): Resource {
-        if (partResource.genome.appearance.colour == null)
-            resource.genome.appearance.colour?.let {
-                return ColourTransformer(it).transform(partResource).copy(partResource.amount)
+    private fun Resource.injectColour(referenceResource: Resource): Resource {
+        if (genome.appearance.colour == null)
+            referenceResource.genome.appearance.colour?.let {
+                return ColourTransformer(it).transform(this).exactCopy()
             }
-        return partResource
+        return this
     }
 
     private fun addTakeApartAction(template: ResourceStringTemplate) {
@@ -168,7 +153,7 @@ class ResourceInstantiation(
         val newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName, parts = listOf()), resource.amount)
 
         val newParts = resource.genome.parts.map {
-            swapLegacies(it, newResource, treeStart + listOf(newResource)).copy(it.amount)
+            swapLegacies(it.injectColour(resource), newResource, treeStart + listOf(newResource)).copy(it.amount)
         }.toMutableList()
 
         newParts.forEach {
@@ -182,7 +167,7 @@ class ResourceInstantiation(
                 when (r) {
                     resource -> newResource.copy(r.amount)
                     phonyResource -> treeStart[0].copy(r.amount)
-                    else -> swapLegacies(r, newResource, treeStart + listOf(newResource))
+                    else -> swapLegacies(r.injectColour(resource), newResource, treeStart + listOf(newResource))
                 }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
