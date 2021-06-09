@@ -170,7 +170,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     ): Boolean {
         var amount = controller.evaluator.evaluate(meaningfulPack.resources)
         val resourcesPhony = getPhonyFromResources(controller)
-        amount += controller.evaluator.evaluate(resourcesPhony.resources)
+        amount += controller.evaluator.evaluate(resourcesPhony)
         meaningfulPack.addAll(resourcesPhony)
 
         if (controller.isCeilingExceeded(amount))
@@ -196,7 +196,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         return true
     }
 
-    private fun getPhonyFromResources(controller: AspectController): ResourcePack {
+    private fun getPhonyFromResources(controller: AspectController): List<Resource> {
         val pack = resourceEvaluator((this as ConverseWrapper).resource).pick(controller.populationCenter.turnResources)
         return controller.pickCeilingPart(
                 pack.resources,
@@ -226,21 +226,25 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
                         .getInstrumentByTag(requirementTag).resources,
                 { listOf(it.copy(1)) }
         ) { r, n -> listOf(r.getCleanPart(n, controller.populationCenter.taker)) })
+        var amount = dependencyPack.getAmount(requirementTag)
         val usedForDependency = MutableResourcePack()
+
+
         for (dependency in dependencies) {
-            val newDelta = dependencyPack.getAmount(requirementTag)
             val result = dependency.useDependency(controller.copy(
                     depth = controller.depth + 1,
-                    ceiling = controller.ceiling - newDelta,
-                    floor = controller.floor - newDelta,
+                    ceiling = controller.ceiling - amount,
+                    floor = controller.floor - amount,
                     isMeaningNeeded = false
             ))
             needs.addAll(result.neededResources)
-            dependencyPack.addAll(result.resources)
             if (!result.isFinished)
                 continue
 
-            if (dependencyPack.getAmount(requirementTag) >= controller.ceiling) {
+            amount += result.resources.getAmount(requirementTag)
+            dependencyPack.addAll(result.resources)
+
+            if (controller.isCeilingExceeded(amount)) {
                 //TODO sometimes can spend resources without getting result because other dependencies are lacking
                 if (!requirementTag.isInstrumental)
                     usedForDependency.addAll(dependencyPack.getAmountOfResourcesWithTagAndErase(

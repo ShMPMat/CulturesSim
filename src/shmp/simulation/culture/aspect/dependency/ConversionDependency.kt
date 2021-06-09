@@ -36,7 +36,7 @@ class ConversionDependency(
                     r.getPart(n, taker).applyActionAndConsume(aspect.core.resourceAction, n, false, taker)
                 }
         )
-        return AspectResult(gatheredPack)
+        return AspectResult(MutableResourcePack(gatheredPack))
     }
 
     override fun copy() = ConversionDependency(isPhony, aspect, resource)

@@ -29,8 +29,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         aspect = aspectCenter.aspectPool.getValue(aspect)
     }
 
-    override val producedResources: List<Resource>
-        get() = resource.applyActionUnsafe(aspect.core.resourceAction)
+    override val producedResources = resource.applyActionUnsafe(aspect.core.resourceAction)
 
     open fun use(controller: AspectController) = try {
         val result = super._use(controller)

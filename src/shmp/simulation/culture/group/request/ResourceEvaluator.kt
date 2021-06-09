@@ -13,8 +13,15 @@ import kotlin.math.ceil
 // Evaluator MUST be linear
 class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Resource) -> Double) {
     fun pick(resourcePack: ResourcePack) = resourcePack.getResources { evaluator(it) > 0 }
+    fun pick(resources: List<Resource>) = resources.filter { evaluator(it) > 0 }
 
     fun pickAndRemove(pack: MutableResourcePack) : ResourcePack {
+        val result = pick(pack)
+        pack.removeAll(result)
+        return result
+    }
+
+    fun pickAndRemove(pack: MutableList<Resource>) : List<Resource> {
         val result = pick(pack)
         pack.removeAll(result)
         return result
@@ -40,8 +47,8 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
             resources: Collection<Resource>,
             onePortionGetter: (Resource) -> List<Resource>,
             partGetter: (Resource, Int) -> List<Resource>
-    ): MutableResourcePack {
-        val resultPack = MutableResourcePack()
+    ): MutableList<Resource> {
+        val resultPack = mutableListOf<Resource>()
         if (part == 0.0)
             return resultPack
         var amount = 0.0

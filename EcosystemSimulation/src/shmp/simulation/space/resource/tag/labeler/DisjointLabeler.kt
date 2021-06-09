@@ -4,8 +4,15 @@ import shmp.simulation.space.resource.Genome
 import shmp.simulation.space.resource.Resource
 
 
-open class DisjointLabeler(private val labelers: Collection<ResourceLabeler>) : ResourceLabeler {
-    override fun isSuitable(genome: Genome) = labelers.any { it.isSuitable(genome) }
+open class DisjointLabeler(private val labelers: List<ResourceLabeler>) : ResourceLabeler {
+    // It's actually faster than built-in "any {...}" (maybe)
+    override fun isSuitable(genome: Genome): Boolean {
+        for (labeler in labelers) {
+            if (labeler.isSuitable(genome))
+                return true
+        }
+        return false
+    }
 
     override fun actualMatches(resource: Resource) = labelers
             .flatMap { it.actualMatches(resource) }

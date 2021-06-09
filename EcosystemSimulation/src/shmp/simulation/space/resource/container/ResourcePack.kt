@@ -71,7 +71,7 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
             .map { it.getTagPresence(tag) }
             .sum()
 
-    fun getAmount(resource: Resource) = getUnpackedResource(resource).amount
+    fun getAmount(resource: Resource) = resourceMap[resource]?.amount ?: 0
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResourcesUnpacked(predicate).sumBy { it.amount }
 

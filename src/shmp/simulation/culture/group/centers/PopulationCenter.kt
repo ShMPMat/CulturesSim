@@ -172,15 +172,18 @@ class PopulationCenter(
                         turnResources.resources,
                         { listOf(it.copy(1)) }
                 ) { r, p -> listOf(r.getCleanPart(p, taker)) }
+        var amount = evaluator.evaluate(pack)
 
         for (stratum in strataForRequest) {
-            val amount = evaluator.evaluatePack(pack)
             if (amount >= request.ceiling)
                 break
 
-            val produced: ResourcePack = stratum.use(request.getController(ceil(amount).toInt()))
+            val produced = stratum.use(request.getController(ceil(amount).toInt())).resources
 
-            if (evaluator.evaluatePack(produced) > 0)
+            val producedAmount = evaluator.evaluate(produced)
+            amount += producedAmount
+
+            if (producedAmount > 0)
                 usedAspects.add(stratum.aspect)
             pack.addAll(produced)
         }
@@ -193,7 +196,7 @@ class PopulationCenter(
             strataForRequest.filter { it.population == 0 }.forEach { it.importance += request.need }
         }
 
-        return ExecutedRequestResult(actualPack, usedAspects)
+        return ExecutedRequestResult(MutableResourcePack(actualPack), usedAspects)
     }
 
     fun manageNewAspects(aspects: Set<Aspect?>, newTile: Tile) = aspects

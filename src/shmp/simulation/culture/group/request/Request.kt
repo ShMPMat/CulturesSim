@@ -41,7 +41,7 @@ abstract class Request(val core: RequestCore) {
 
     fun amountLeft(resourcePack: ResourcePack) = max(0.0, core.ceiling - evaluator.evaluatePack(resourcePack))
 
-    fun isFloorSatisfied(resourcePack: ResourcePack) = evaluator.evaluatePack(resourcePack) >= core.floor
+    fun isFloorSatisfied(resources: List<Resource>) = evaluator.evaluate(resources) >= core.floor
 
     fun end(resourcePack: MutableResourcePack): Result {
         val partPack = evaluator.pick(
@@ -50,15 +50,16 @@ abstract class Request(val core: RequestCore) {
                 { listOf(it.copy(1)) },
                 { r, n -> listOf(r.getCleanPart(n, group.populationCenter.taker)) }
         )
-        val amount = evaluator.evaluatePack(partPack)
-        val neededCopy = ResourcePack(evaluator.pick(partPack).resources.map { it.exactCopy() })
+        val amount = evaluator.evaluate(partPack)
+        val neededCopy = ResourcePack(evaluator.pick(partPack).map { it.exactCopy() })
 
         if (amount < core.floor) {
-            core.penalty(Pair(core.group, partPack), amount / core.floor)
+            core.penalty(core.group to MutableResourcePack(partPack), amount / core.floor)
             return Result(ResultStatus.NotSatisfied, neededCopy)
         } else
-            core.reward(Pair(core.group, partPack), amount / core.floor - 1)
-        return if (amount < core.ceiling) Result(ResultStatus.Satisfied, neededCopy)
+            core.reward(core.group to MutableResourcePack(partPack), amount / core.floor - 1)
+        return if (amount < core.ceiling)
+            Result(ResultStatus.Satisfied, neededCopy)
         else Result(ResultStatus.Excellent, neededCopy)
     }
 
@@ -82,6 +83,8 @@ abstract class Request(val core: RequestCore) {
     )
 
     open fun finalFilter(pack: MutableResourcePack) = evaluator.pickAndRemove(pack)
+
+    open fun finalFilter(pack: MutableList<Resource>) = evaluator.pickAndRemove(pack)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

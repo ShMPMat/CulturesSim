@@ -43,8 +43,7 @@ fun fillResources(
             map,
             resourcePool,
             resource,
-            random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last),
-            random
+            random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last)
     )
 }
 
@@ -124,7 +123,7 @@ private fun fill(map: WorldMap) {
     map.platesUpdate()
 }
 
-private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int, random: Random) {
+private fun scatter(map: WorldMap, resourcePool: ResourcePool, resource: Resource, n: Int) {
     val idealTiles = map.getTiles { resource.isIdeal(it) }
     val goodTiles = map.getTiles { resource.isAcceptable(it) }
 
