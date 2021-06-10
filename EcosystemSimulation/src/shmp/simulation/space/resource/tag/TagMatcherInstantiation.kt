@@ -2,6 +2,9 @@ package shmp.simulation.space.resource.tag
 
 import shmp.utils.InputDatabase
 import shmp.simulation.space.resource.tag.labeler.makeResourceLabeler
+import shmp.simulation.space.resource.tag.leveler.ConstLeveler
+import shmp.simulation.space.resource.tag.leveler.ResourceLeveler
+import shmp.simulation.space.resource.tag.leveler.makeResourceLeveler
 import java.net.URL
 import java.util.*
 
@@ -13,17 +16,18 @@ fun createTagMatchers(path: Enumeration<URL>): List<TagMatcher> {
     while (true) {
         val line = inputDatabase.readLine() ?: break
         val tags = line.split("\\s+".toRegex())
+        var leveler: ResourceLeveler = ConstLeveler(1)
 
         var name = tags[0]
-        var level = 1
         if (name.contains(':')) {
-            level = name.split(':')[1].toInt()
+            leveler = makeResourceLeveler(name.split(':')[1])
             name = name.split(':')[0]
         }
 
         matchers.add(TagMatcher(
-                ResourceTag(name, level),
-                makeResourceLabeler(tags.drop(1).joinToString(","))
+                ResourceTag(name),
+                makeResourceLabeler(tags.drop(1).joinToString(",")),
+                leveler
         ))
     }
     return matchers

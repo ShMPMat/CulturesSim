@@ -26,4 +26,6 @@ class Material(val name: String, val density: Double, val tags: List<ResourceTag
     }
 
     override fun hashCode() = Objects.hash(name)
+
+    override fun toString() = name
 }

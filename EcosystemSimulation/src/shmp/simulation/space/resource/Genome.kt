@@ -126,10 +126,12 @@ open class Genome(
 
     private fun computeTags() {
         tags.addAll(primaryMaterial!!.tags.filter { it !in tags })
-        for ((tag, labeler) in data.additionalTags)
+        for ((tag, labeler, leveler) in data.additionalTags)
             if (!tags.contains(tag) && labeler.isSuitable(this))
-                tags.add(tag.copy())
+                tags.add(tag.copy(level = leveler.getLevel(this)))
     }
+
+    fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
 
     val baseName: BaseName = name + legacyPostfix
 

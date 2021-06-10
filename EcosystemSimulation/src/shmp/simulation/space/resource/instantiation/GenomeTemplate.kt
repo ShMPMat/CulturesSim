@@ -31,6 +31,7 @@ class GenomeTemplate(genome: Genome) : Genome(
     fun getInstantiatedGenome(legacyGenome: Genome) = copy(
             lifespan = legacyGenome.lifespan,
             legacy = legacyGenome.baseName,
-            primaryMaterial = legacyGenome.primaryMaterial
+            primaryMaterial = legacyGenome.primaryMaterial,
+            tags = legacyGenome.tags + this.tags.filter { it !in legacyGenome.tags }
     )
 }

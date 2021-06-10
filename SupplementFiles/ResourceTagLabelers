@@ -6,34 +6,34 @@
 //      mм - isMovable
 //      rs - isResisting
 //
--goodForClothes          t:flexible   t:solid       t:soft
+-goodForClothes                    t:flexible   t:solid       t:soft
 
--weapon                  t:hard       t:sturdy
+-weapon:t|hard,t|sturdy            t:hard       t:sturdy
     >=0.05
     <=3
     mv
 
--goodForEngraving        t:hard       t:sturdy
+-goodForEngraving                  t:hard       t:sturdy
 
--goodForIncrusting       t:hard       t:sturdy
+-goodForIncrusting                 t:hard       t:sturdy
     <=0.1
 
--goodForFrame            t:hard       t:solid      t:sturdy
+-goodForFrame                      t:hard       t:solid      t:sturdy
     >=0.2
 
--goodForTent             t:soft       t:solid      t:thin        t:flexible
+-goodForTent                       t:soft       t:solid      t:thin        t:flexible
     >=0.1
 
--goodForMonuments        t:goodForEngraving
+-goodForMonuments                  t:goodForEngraving
     >=1
 
 -hasColour
     D(m:Blood||m:Pulp)
 
 
--food:1 m:Meat
--food:2 m:Fungus
--food:3 m:Nut
--food:4 m:Pulp
+-food:i|1 m:Meat
+-food:i|2 m:Fungus
+-food:i|3 m:Nut
+-food:i|4 m:Pulp
 
--food:6 m:RoastedMeat
+-food:i|6 m:RoastedMeat

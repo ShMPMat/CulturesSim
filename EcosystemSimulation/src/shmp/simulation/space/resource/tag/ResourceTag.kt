@@ -8,7 +8,7 @@ open class ResourceTag constructor(
         var level: Int = 1,
         var isInstrumental: Boolean = false // Whether Resource doesn't waste on use.
 ) {
-    fun copy() = ResourceTag(name, level, isInstrumental)
+    fun copy(level: Int = this.level) = ResourceTag(name, level, isInstrumental)
 
     override fun toString() = name
 

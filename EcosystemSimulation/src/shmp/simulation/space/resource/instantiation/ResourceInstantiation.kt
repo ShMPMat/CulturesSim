@@ -158,7 +158,11 @@ class ResourceInstantiation(
                 oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
             else oldGenome
         }
-        val newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName, parts = listOf()), resource.amount)
+        val newResource = ResourceIdeal(newGenome.copy(
+                legacy = legacyResource?.baseName,
+                parts = listOf(),
+                primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial
+        ), resource.amount)
 
         val newParts = resource.genome.parts.map {
             swapLegacies(it.injectAppearance(resource), newResource, treeStart + listOf(newResource)).copy(it.amount)

@@ -71,6 +71,9 @@ open class Resource private constructor(
 
     val takers = mutableListOf<Pair<Taker, Int>>()
 
+    val genome: Genome
+        get() = core.genome
+
     init {
         _hash = hash ?: computeHash()
     }
@@ -78,7 +81,7 @@ open class Resource private constructor(
     fun getTagPresence(tag: ResourceTag) =
             (amount * getTagLevel(tag)).toDouble() * genome.size.pow(data.resourceSizeEffect)
 
-    fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
+    fun getTagLevel(tag: ResourceTag) = genome.getTagLevel(tag)
 
     /**
      * @return Copy of this Resource with amount equal or less than requested.
@@ -131,9 +134,6 @@ open class Resource private constructor(
 
         return copy(result)
     }
-
-    val genome: Genome
-        get() = core.genome
 
     open fun merge(resource: Resource): Resource {
         if (resource.baseName != baseName)
@@ -363,9 +363,9 @@ open class Resource private constructor(
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.lifespan}, amount - $amount, ${genome.appearance}, " +
-            "ownership - ${core.ownershipMarker}, tags: " +
-            tags.joinToString(" ") { it.name }
+            "lifespan - ${genome.lifespan}, amount - $amount, material - ${genome.primaryMaterial}," +
+            " ${genome.appearance}, ownership - ${core.ownershipMarker}, tags: " +
+            tags.joinToString(" ") { it.name + ":" + it.level }
 
     override fun compareTo(other: Resource): Int {
         val nameCompare = fullName.compareTo(other.fullName)
