@@ -4,9 +4,11 @@
         ~m:Wood;1;100;0;EXIST
         #Water
         cGrey
+        tMatt
 
 -TreeMushroom    0.1     0.1    11         0      40   50         0             1 0  Cut       Plant        @Fungus
         ~r:Vapour;0.1;100;0;CONSUME
         ~m:Wood;1;100;0;EXIST
         #Water
         cBrown
+        tMatt

@@ -36,6 +36,8 @@ class ResourceTemplateCreator(
         val actionConversion = mutableMapOf<ResourceAction, List<ResourceLink>>()
         val parts = mutableListOf<String>()
         var colour: ResourceColour? = null
+        var texture: ResourceTexture? = null
+        var shape: ResourceShape? = null
         var camouflage = 0.0
 
         for (i in 12..tags.lastIndex) {
@@ -73,8 +75,10 @@ class ResourceTemplateCreator(
                     'R' -> resistance = tag.toDouble()
                     'D' -> danger = tag.toDouble()
                     'U' -> isDesirable = false
+                    's' -> shape = ResourceShape.valueOf(tag)
                     'c' -> colour = ResourceColour.valueOf(tag)
                     'C' -> camouflage = tag.toDouble()
+                    't' -> texture = ResourceTexture.valueOf(tag)
                     'T' -> {
                         val tempBound = tag.take(3)
                         val coefficient = tag.drop(3).toDouble()
@@ -121,7 +125,7 @@ class ResourceTemplateCreator(
                 isMutable = false,
                 isMovable = tags[8] == "1",
                 behaviour = Behaviour(resistance ?: danger, danger, camouflage, OverflowType.valueOf(tags[10])),
-                appearance = Appearance(colour),
+                appearance = Appearance(colour, texture, shape),
                 isDesirable = isDesirable,
                 hasLegacy = tags[9] == "1",
                 lifespan = lifespan,

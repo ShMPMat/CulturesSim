@@ -1,6 +1,8 @@
 package shmp.simulation.space.resource.transformer
 
 import shmp.simulation.space.SpaceData
+import shmp.simulation.space.resource.ResourceColour
+import shmp.simulation.space.resource.ResourceTexture
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.instantiation.parseConversion
 import shmp.simulation.space.resource.tag.labeler.makeResourceLabeler
@@ -18,6 +20,8 @@ class TransformerInstantiator(private val actions: List<ResourceAction>) {
 
     private fun getLabel(key: String, value: String): ResourceTransformer = when (key) {
         "s|" -> SizeTransformer(value.toDouble())
+        "c|" -> ColourTransformer(ResourceColour.valueOf(value))
+        "t|" -> TextureTransformer(ResourceTexture.valueOf(value))
         "n|" -> NameTransformer { value.split("$").joinToString(it) }
         "a|" -> {
             val (action, resources) = parseConversion(value, actions)

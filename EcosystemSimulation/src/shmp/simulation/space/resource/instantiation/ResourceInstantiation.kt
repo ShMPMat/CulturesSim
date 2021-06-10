@@ -8,6 +8,7 @@ import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.container.ResourcePool
 import shmp.simulation.space.resource.material.MaterialPool
 import shmp.simulation.space.resource.transformer.ColourTransformer
+import shmp.simulation.space.resource.transformer.TextureTransformer
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -101,7 +102,7 @@ class ResourceInstantiation(
     }
 
     private fun actualizeParts(template: ResourceStringTemplate) {
-        val (resource, actionConversion, parts) = template
+        val (resource, _, parts) = template
         for (part in parts) {
             val link = parseLink(part, actions)
             val partTemplate = getTemplateWithName(link.resourceName)
@@ -113,12 +114,19 @@ class ResourceInstantiation(
         addTakeApartAction(template)
     }
 
-    private fun Resource.injectColour(referenceResource: Resource): Resource {
+    private fun Resource.injectAppearance(referenceResource: Resource): Resource {
+        var result = this
+
         if (genome.appearance.colour == null)
             referenceResource.genome.appearance.colour?.let {
-                return ColourTransformer(it).transform(this).exactCopy()
+                result = ColourTransformer(it).transform(result).exactCopy()
             }
-        return this
+        if (genome.appearance.texture == null)
+            referenceResource.genome.appearance.texture?.let {
+                result = TextureTransformer(it).transform(result).exactCopy()
+            }
+
+        return result
     }
 
     private fun addTakeApartAction(template: ResourceStringTemplate) {
@@ -153,7 +161,7 @@ class ResourceInstantiation(
         val newResource = ResourceIdeal(newGenome.copy(legacy = legacyResource?.baseName, parts = listOf()), resource.amount)
 
         val newParts = resource.genome.parts.map {
-            swapLegacies(it.injectColour(resource), newResource, treeStart + listOf(newResource)).copy(it.amount)
+            swapLegacies(it.injectAppearance(resource), newResource, treeStart + listOf(newResource)).copy(it.amount)
         }.toMutableList()
 
         newParts.forEach {
@@ -167,7 +175,7 @@ class ResourceInstantiation(
                 when (r) {
                     resource -> newResource.copy(r.amount)
                     phonyResource -> treeStart[0].copy(r.amount)
-                    else -> swapLegacies(r.injectColour(resource), newResource, treeStart + listOf(newResource))
+                    else -> swapLegacies(r.injectAppearance(resource), newResource, treeStart + listOf(newResource))
                 }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
@@ -196,8 +204,8 @@ val phonyResource = Resource(
                         0,
                         false,
                         true,
-                        Behaviour(0.1, 0.05, 0.25, OverflowType.Ignore),
-                        Appearance(null),
+                        Behaviour(0.0, 0.00, 0.0, OverflowType.Ignore),
+                        Appearance(null, null, null),
                         false,
                         false,
                         0.0,

@@ -36,6 +36,7 @@
         ^PlantFibre:1 ^Seed:1
 -Nut             0       0.02   5          -500   500  100000000  0             1 1  Ignore    None         @Nut
         cBrown
+        sRound
 -Pome            0       0.05   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
         ^Pulp:4  ^Seed:5
 -Drupe           0       0.05   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
@@ -48,6 +49,8 @@
 
 -Seed            0       0.01   100        -500   500  100000000  0             1 1  Ignore    None         @Seed
         +PlantSeed:LEGACY:1
+        cBrown
+        sRound
 
 -PlantFibre      0       0.5    5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
         +MakingFibre:Fibre:1

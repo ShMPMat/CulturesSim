@@ -7,8 +7,10 @@
 
 -Bone            0       0.1    1000       -500   500  100000000  0             1 1  Ignore    None         @Bone
         cWhite
+        tMatt
 
 -SeaShell        0       0.03   1000       -500   500  100000000  0             1 1  Ignore    None         @SeaShell
+        sPeculiar
 
 -Chitin          0       0.02   1000       -500   500  100000000  0             1 1  Ignore    None         @Chitin
 
@@ -19,6 +21,7 @@
 
 -Blood           0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Blood
         cRed
+        tSemitransparent
 
 -Leather         0       1.0    50         -500   500  100000000  0             1 1  Ignore    None         @Leather
         +MakeClothes:LeatherClothes:1
