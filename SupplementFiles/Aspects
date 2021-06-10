@@ -60,6 +60,10 @@
     &m:Stone--!!t:composite--#Bloomery:1
     Shard
     C8.0
+-MakeClayBloomery
+    &m:Clay--!!t:composite--#Bloomery:1
+    Shard
+    C8.0
 -MakeBoat
     &t:hard-->=2--<D900--!!t:composite--#Boat:1
     Shard
@@ -83,6 +87,12 @@
 
 -MeltIron                                                                    #furnace /burns
     &r:RawIron--#Iron:1
+    C4.0
+-MeltCopper                                                                  #furnace /burns
+    &r:RawCopper--#Copper:1
+    C2.0
+-MeltTin                                                                     #furnace /burns
+    &r:RawTin--#Tin:1
     C2.0
 
 

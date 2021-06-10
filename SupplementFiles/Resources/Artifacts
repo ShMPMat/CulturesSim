@@ -6,6 +6,12 @@
 -Iron         0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Iron
         cWhite
 
+-Copper       0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Iron
+        cWhite
+
+-Tin          0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Iron
+        cWhite
+
 
 -Clothes         0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Cloth
         $clothes:2
