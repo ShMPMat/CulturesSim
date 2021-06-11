@@ -69,7 +69,7 @@ class AspectInstantiation(
                     val labeler = makeResourceLabeler(labelerTags.joinToString(","))
                     val results = resultsTags.map {
                         val temp = it.drop(1).split(":".toRegex()).toTypedArray()
-                        Pair(temp[0], temp[1].toInt())
+                        temp[0] to temp[1].toInt()
                     }
                     matchers.add(ActionMatcher(labeler, results, name))
                 }

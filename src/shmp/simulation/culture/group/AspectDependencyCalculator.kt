@@ -5,13 +5,22 @@ import shmp.simulation.culture.aspect.AspectPool
 import shmp.simulation.culture.aspect.ConverseWrapper
 import shmp.simulation.culture.aspect.dependency.*
 import shmp.simulation.culture.group.request.tagEvaluator
+import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.phony
 import java.util.*
 
+
 class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Territory) {
     val dependencies: AspectDependencies = AspectDependencies(mutableMapOf())
+
+    fun getAcceptableResources(aspect: Aspect): List<Resource> {
+        val allResources = territory.differentResources.toMutableSet()
+        allResources.addAll(aspectPool.producedResources)
+
+        return allResources.filter { it.hasApplicationForAction(aspect.core.resourceAction) }
+    }
 
     fun calculateDependencies(aspect: Aspect): AspectDependencies {
         if (aspect is ConverseWrapper) addPhony(aspect)
@@ -38,12 +47,13 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
             )
     }
 
-    private fun addLinePhony(converseWrapper: ConverseWrapper) =
-            addDependenciesInMap(aspectPool.converseWrappers
+    private fun addLinePhony(converseWrapper: ConverseWrapper) = addDependenciesInMap(
+            aspectPool.converseWrappers
                     .filter { converseWrapper.resource in it.producedResources }
                     .map { LineDependency(true, converseWrapper, it) }
                     .filter { !it.isCycleDependency(converseWrapper) },
-                    phony)
+            phony
+    )
 
     private fun addNonPhony(aspect: Aspect) {
         for (requirement in aspect.requirements) {

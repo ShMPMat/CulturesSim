@@ -19,7 +19,8 @@ import kotlin.math.max
 
 
 class AspectCenter(aspects: List<Aspect>) {
-    private val _mutableAspectPool = MutableAspectPool(HashSet())
+    private val _aspectPool = MutableAspectPool(HashSet())
+    val aspectPool: AspectPool = _aspectPool
 
     //    Aspects added on the current turn
     private val changedAspectPool = MutableAspectPool(HashSet())
@@ -28,18 +29,15 @@ class AspectCenter(aspects: List<Aspect>) {
 
     init {
         aspects.forEach { hardAspectAdd(it) }
-        _mutableAspectPool.all.forEach { it.swapDependencies(this) } //TODO will it swap though?
+        _aspectPool.all.forEach { it.swapDependencies(this) } //TODO will it swap though?
     }
-
-    val aspectPool: AspectPool
-        get() = _mutableAspectPool
 
     fun addAspectTry(aspect: Aspect, group: Group): Boolean {
         var currentAspect = aspect
         if (!currentAspect.isValid)
             return false
-        if (_mutableAspectPool.contains(currentAspect))
-            currentAspect = _mutableAspectPool.getValue(currentAspect.name)
+        if (_aspectPool.contains(currentAspect))
+            currentAspect = _aspectPool.getValue(currentAspect.name)
         val dependencies = calculateDependencies(currentAspect, group)
         if (!currentAspect.isDependenciesOk(dependencies))
             return false
@@ -49,45 +47,45 @@ class AspectCenter(aspects: List<Aspect>) {
 
     private fun addAspect(aspect: Aspect, dependencies: AspectDependencies, group: Group) {
         val currentAspect: Aspect
-        if (_mutableAspectPool.contains(aspect)) {
-            currentAspect = _mutableAspectPool.getValue(aspect) //TODO why one, add a l l
+        if (_aspectPool.contains(aspect)) {
+            currentAspect = _aspectPool.getValue(aspect)
             currentAspect.addOneDependency(dependencies)
         } else {
             currentAspect = aspect.copy(dependencies)
             changedAspectPool.add(currentAspect)
             if (currentAspect !is ConverseWrapper) { //TODO maybe should do the same in straight
-                val allResources = group.overallTerritory.differentResources.toMutableSet()
-                allResources.addAll(_mutableAspectPool.producedResources)
-                for (resource in allResources)
-                    addConverseWrapper(currentAspect, resource)
+                val allResources = AspectDependencyCalculator(_aspectPool, group.overallTerritory)
+                        .getAcceptableResources(currentAspect)
+
+                allResources.map { resource -> queueConverseWrapper(currentAspect, resource) }
+                        .randomElementOrNull()
+                        ?.let { addAspectTry(it, group) }
             }
         }
     }
 
     private fun hardAspectAdd(aspect: Aspect) {
         changedAspectPool.add(aspect)
-        _mutableAspectPool.add(aspect)
+        _aspectPool.add(aspect)
     }
 
     private fun calculateDependencies(aspect: Aspect, group: Group): AspectDependencies {
-        val calculator = AspectDependencyCalculator(
-                _mutableAspectPool,
-                group.territoryCenter.territory
-        )
+        val calculator = AspectDependencyCalculator(_aspectPool, group.territoryCenter.territory)
         calculator.calculateDependencies(aspect)
         return calculator.dependencies
     }
 
-    private fun addConverseWrapper(aspect: Aspect, resource: Resource) {
+    private fun queueConverseWrapper(aspect: Aspect, resource: Resource): ConverseWrapper? {
         val wrapper = if (aspect.canApplyMeaning)
             MeaningInserter(aspect, resource)
         else
             ConverseWrapper(aspect, resource)
 
         if (!wrapper.isValid)
-            return
+            return null
 
         _converseWrappers.add(wrapper)
+        return wrapper
     }
 
     fun mutateAspects(group: Group): List<Aspect> { //TODO separate adding of new aspects and updating old
@@ -120,12 +118,12 @@ class AspectCenter(aspects: List<Aspect>) {
 
     private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
         val newResources = group.overallTerritory.differentResources.toMutableSet()
-        newResources.addAll(_mutableAspectPool.producedResources)
+        newResources.addAll(_aspectPool.producedResources)
         newResources.removeAll(_lastResourcesForCw)
 
-        for (aspect in _mutableAspectPool.filter { it !is ConverseWrapper })
+        for (aspect in _aspectPool.filter { it !is ConverseWrapper })
             for (resource in newResources)
-                addConverseWrapper(aspect, resource)
+                queueConverseWrapper(aspect, resource)
         _lastResourcesForCw.addAll(newResources)
         newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
 
@@ -133,13 +131,13 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     fun finishUpdate(): Set<Aspect> {
-        _mutableAspectPool.all.forEach { it.finishUpdate() }
+        _aspectPool.all.forEach { it.finishUpdate() }
         return pushAspects()
     }
 
     fun pushAspects(): Set<Aspect> {
         changedAspectPool.all.forEach { addNewDependencies(it) }
-        _mutableAspectPool.addAll(changedAspectPool.all)
+        _aspectPool.addAll(changedAspectPool.all)
         val addedAspects = changedAspectPool.all
         changedAspectPool.clear()
         return addedAspects
@@ -147,7 +145,7 @@ class AspectCenter(aspects: List<Aspect>) {
 
     private fun addNewDependencies(newAspect: Aspect) {
         if (newAspect is ConverseWrapper)
-            for (converseWrapper in _mutableAspectPool.converseWrappers) {
+            for (converseWrapper in _aspectPool.converseWrappers) {
                 for (tag in newAspect.tags)
                     if (converseWrapper.dependencies.containsDependency(tag))
                         converseWrapper.dependencies.map[tag]!!.add(LineDependency(
@@ -156,7 +154,7 @@ class AspectCenter(aspects: List<Aspect>) {
                                 newAspect
                         ))
                 if (newAspect.producedResources.any { converseWrapper.resource == it })
-                    converseWrapper.dependencies.map[phony]!!.add(LineDependency(
+                    converseWrapper.dependencies.map.getValue(phony).add(LineDependency(
                             true,
                             converseWrapper,
                             newAspect
@@ -195,8 +193,8 @@ class AspectCenter(aspects: List<Aspect>) {
         val allExistingAspects = mutableListOf<Pair<Aspect, Group>>()
         for (neighbour in group.relationCenter.relatedGroups) {
             allExistingAspects.addAll(
-                    neighbour.cultureCenter.aspectCenter._mutableAspectPool.all
-                            .filter { (it !is ConverseWrapper || _mutableAspectPool.contains(it.aspect)) }
+                    neighbour.cultureCenter.aspectCenter._aspectPool.all
+                            .filter { (it !is ConverseWrapper || _aspectPool.contains(it.aspect)) }
                             .map { it to neighbour }
             )
         }
@@ -204,7 +202,7 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun getNewNeighbourAspects(group: Group): List<Pair<Aspect, Group>> = getNeighbourAspects(group)
-            .filter { (a) -> !_mutableAspectPool.contains(a) }
+            .filter { (a) -> !_aspectPool.contains(a) }
 
     private fun getNeighbourAspects(group: Group, predicate: (Aspect) -> Boolean) = getNeighbourAspects(group)
             .filter { (a) -> predicate(a) }
@@ -242,7 +240,7 @@ class AspectCenter(aspects: List<Aspect>) {
                     if (aspect in changedAspectPool.converseWrappers.map { it.aspect })
                         return@let
 
-                    if (_mutableAspectPool.remove(aspect)) {
+                    if (_aspectPool.remove(aspect)) {
                         changedAspectPool.deleteDependencyOnAspect(aspect)
                         if (aspect !is ConverseWrapper)
                             _converseWrappers.removeIf { it.aspect == aspect }

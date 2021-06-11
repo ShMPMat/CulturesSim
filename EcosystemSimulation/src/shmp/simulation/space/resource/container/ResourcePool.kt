@@ -4,7 +4,7 @@ import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.ResourceIdeal
 
 
-class ResourcePool(private val resources: List<ResourceIdeal>) {
+class ResourcePool(val resources: List<ResourceIdeal>) {
     private val baseNameMap: Map<String, ResourceIdeal> = resources
             .map { it.baseName to it }
             .toMap()
@@ -21,6 +21,5 @@ class ResourcePool(private val resources: List<ResourceIdeal>) {
     fun getSimpleName(name: String) = get { it.simpleName == name }
             ?: throw NoSuchElementException("No resource with name $name")
 
-    val all: List<Resource>
-        get() = resources
+    val all: List<Resource> = resources
 }

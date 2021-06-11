@@ -2,6 +2,7 @@ package shmp.simulation.culture.aspect.dependency
 
 import shmp.simulation.space.resource.tag.ResourceTag
 
+
 data class AspectDependencies(val map: MutableMap<ResourceTag, MutableSet<Dependency>>) {
     val size: Int
         get() = map.size
@@ -15,9 +16,6 @@ data class AspectDependencies(val map: MutableMap<ResourceTag, MutableSet<Depend
     fun containsDependency(tag: ResourceTag) = map.containsKey(tag)
 
     fun removeIf(predicate: (Dependency) -> Boolean) = map.forEach {
-//        if (it.value.any(predicate)) {
-//            val k = 0
-//        }
         it.value.removeIf(predicate)
     }
 }

@@ -73,7 +73,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     open fun canTakeResources() = false
 
     fun addOneDependency(newDependencies: AspectDependencies) {
-        for (tag in dependencies.map.keys) try {
+        for (tag in dependencies.map.keys) try {//TODO why one, add a l l
             for (dependency1 in newDependencies.map.getValue(tag)) {
                 if (!dependencies.map.getValue(tag).contains(dependency1)) {
                     dependencies.map.getValue(tag).add(dependency1)

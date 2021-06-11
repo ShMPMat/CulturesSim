@@ -151,13 +151,21 @@ open class TextEcosystemVisualizer(
     }
 
     private fun printedResources(): StringBuilder {
-        val resources = StringBuilder()
-        for (resource in world.resourcePool.all) {
-            resources.append("\u001b[31m").append(resourceSymbols[resource]).append(" - ")
-                    .append(resource.baseName).append("\n")
+        resourcesPrinted?.let {
+            return it
         }
+
+        val resources = StringBuilder()
+        for (resource in world.resourcePool.resources)
+            resources.append("\u001b[31m").append(resourceSymbols[resource]).append(" - ")
+                .append(resource.baseName).append("\n")
+
+        resourcesPrinted = resources
+
         return resources
     }
+
+    private var resourcesPrinted: StringBuilder? = null
 
     private fun printedEvents(events: Collection<Event>, printAll: Boolean): StringBuilder {
         val main = StringBuilder()
