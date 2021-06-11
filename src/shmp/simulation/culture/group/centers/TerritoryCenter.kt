@@ -13,6 +13,8 @@ import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
 import shmp.simulation.space.tile.getDistance
+import java.util.*
+import kotlin.math.abs
 
 
 class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
@@ -225,40 +227,54 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     fun canSettle(tile: Tile, additionalCondition: (Tile) -> Boolean) = canSettle(tile) && additionalCondition(tile)
 
     fun makePath(start: Tile, finish: Tile): List<Tile>? {
-        val checked = mutableSetOf<Tile>()
-        val queue = mutableListOf<TileAndPrev>()
-        queue.add(TileAndPrev(start, null))
+        return makePathAStar(start, finish)
+    }
+
+    private fun makePathAStar(start: Tile, finish: Tile): List<Tile>? {
+        val h = {t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) }
+        val g = mutableMapOf<Tile, Int>()
+        val f = mutableMapOf<Tile, Int>()
+        val prev = mutableMapOf<Tile, Tile>()
+        val q = PriorityQueue<Tile>(Comparator.comparingInt { t -> f.getValue(t) })
+        val u = mutableSetOf<Tile>()
+
+        g[start] = 0
+        g[start] = h(start)
+        q.add(start)
+
         var turns = 0
-        while (true) {
-            if (queue.isEmpty() || turns > 50)
-                break
-
-            checked.addAll(queue.map { it.tile })
-            val currentTiles = queue
-                    .filter { isTileReachableInTraverse(it.tile to 0) }
-                    .flatMap { it.tile.neighbours.map { n -> TileAndPrev(n, it) } }.asSequence()
-                    .groupBy { it.tile }
-                    .map { it.value.minByOrNull { p -> p.length } ?: throw SimulationError("IMPOSSIBLE") }
-                    .filter { !checked.contains(it.tile) }.toList()
-
-            val maybeFinish = currentTiles.firstOrNull { it.tile == finish }
-
-            if (maybeFinish != null)
-                return maybeFinish.unwind()
-
-            queue.clear()
-            queue.addAll(currentTiles)
+        while (q.isNotEmpty() && turns < 50) {
             turns++
+
+            val cur = q.remove()
+            if (cur == finish)
+                return unwind(start, finish, prev)
+
+            u.add(cur)
+
+            val neighbours = cur.neighbours.filter { isTileReachableInTraverse(it to 0) }
+            for (v in neighbours) {
+                val distance = g.getValue(cur) + abs(cur.level - v.level) + 1
+
+                if (v in u && distance >= g.getValue(v))
+                    continue
+
+                prev[v] = cur
+                g[v] = distance
+                f[v] = distance + h(v)
+                q.add(v)
+            }
         }
 
         return null
     }
+
+    private fun unwind(start: Tile, cur: Tile, map: Map<Tile, Tile>): List<Tile> =
+            (if (cur == start) emptyList() else unwind(start, map.getValue(cur), map)) + listOf(cur)
 }
 
 const val SETTLE_TAG = "Settlement"
 
 data class TileAndPrev(val tile: Tile, val prev: TileAndPrev?, val length: Int = 0) {
-    fun next(next: Tile) = TileAndPrev(next, this, length + 1)
-
     fun unwind(): List<Tile> = listOf(this.tile) + if (this.prev == null) emptyList() else this.prev.unwind()
 }
