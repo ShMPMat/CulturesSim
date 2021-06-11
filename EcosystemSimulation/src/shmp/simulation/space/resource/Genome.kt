@@ -8,6 +8,7 @@ import shmp.simulation.space.resource.material.Material
 import shmp.simulation.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.pow
 
 
@@ -126,9 +127,16 @@ open class Genome(
 
     private fun computeTags() {
         tags.addAll(primaryMaterial!!.tags.filter { it !in tags })
-        for ((tag, labeler, leveler) in data.additionalTags)
-            if (!tags.contains(tag) && labeler.isSuitable(this))
-                tags.add(tag.copy(level = leveler.getLevel(this)))
+        for ((tag, labeler, leveler) in data.additionalTags) {
+            val level = leveler.getLevel(this)
+            if (tags.contains(tag)) {
+                val existingTag = tags.first { it == tag }
+
+                tags.remove(tag)
+                tags.add(tag.copy(level = max(level, existingTag.level)))
+            } else if (labeler.isSuitable(this))
+                tags.add(tag.copy(level = level))
+        }
     }
 
     fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0

@@ -8,10 +8,9 @@
 //
 -goodForClothes                    t:flexible   t:solid       t:soft
 
--weapon:t|hard,t|sturdy            t:hard       t:sturdy
-    >=0.05
-    <=3
-    mv
+-weapon:t|hard,t|sturdy            t:weapon
+
+-defence:t|hard,t|sturdy            t:defence
 
 -goodForEngraving                  t:hard       t:sturdy
 
@@ -31,9 +30,10 @@
     D(m:Blood||m:Pulp)
 
 
--food:i|1 m:Meat
--food:i|2 m:Fungus
--food:i|3 m:Nut
--food:i|4 m:Pulp
-
 -food:i|6 m:RoastedMeat
+
+-food:i|4 m:Pulp
+-food:i|3 m:Nut
+-food:i|2 m:Fungus
+-food:i|1 m:Meat
+
