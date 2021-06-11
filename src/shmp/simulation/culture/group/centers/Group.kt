@@ -90,6 +90,7 @@ class Group(
     fun addEvents(events: List<Event>) = cultureCenter.events.addAll(events)
 
     fun update() {
+        territoryCenter.tileEvaluationHash.clear()
         val others = System.nanoTime()
         populationCenter.update(territoryCenter.accessibleTerritory, this)
         cultureCenter.requestCenter.updateRequests(this)

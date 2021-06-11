@@ -65,11 +65,11 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
 
     fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
 
-    fun getAmount(tag: ResourceTag) = getTaggedResourcesUnpacked(tag).sumBy { it.amount }
-
     fun getTagPresence(tag: ResourceTag) = getTaggedResourcesUnpacked(tag)
             .map { it.getTagPresence(tag) }
             .sum()
+
+    fun getAmount(tag: ResourceTag) = getTaggedResourcesUnpacked(tag).sumBy { it.amount }
 
     fun getAmount(resource: Resource) = resourceMap[resource]?.amount ?: 0
 

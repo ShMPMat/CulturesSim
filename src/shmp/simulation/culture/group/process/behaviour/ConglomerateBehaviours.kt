@@ -26,8 +26,8 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val groupValueMapper = { g: Group ->
             val relation = group.relationCenter.getNormalizedRelation(g).pow(3)
-            val territoryValue = group.territoryCenter.territoryPotentialMapper(g.territoryCenter.territory).toDouble()
-            relation * sqrt(territoryValue)
+            val territoryValue = group.territoryCenter.territoryPotentialMapper(g.territoryCenter.territory)
+            relation * sqrt(territoryValue.toDouble())
         }
 
         val options = group.territoryCenter.getAllNearGroups(group)
