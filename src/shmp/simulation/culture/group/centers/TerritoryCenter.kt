@@ -254,7 +254,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
             val neighbours = cur.neighbours.filter { isTileReachableInTraverse(it to 0) }
             for (v in neighbours) {
-                val distance = g.getValue(cur) + abs(cur.level - v.level) + 1
+                val distance = g.getValue(cur) + distance(cur, v)
 
                 if (v in u && distance >= g.getValue(v))
                     continue
@@ -267,6 +267,13 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         }
 
         return null
+    }
+
+    private fun distance(start: Tile, finish: Tile): Int {
+        if (finish.resourcePack.any { it.simpleName == "Road" })
+            return 0
+
+        return abs(start.level - finish.level) + 1
     }
 
     private fun unwind(start: Tile, cur: Tile, map: Map<Tile, Tile>): List<Tile> =
