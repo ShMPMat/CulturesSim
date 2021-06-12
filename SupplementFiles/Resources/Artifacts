@@ -92,6 +92,9 @@
 -Shield          0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $composite:1 $defence:3
         &a(Killing)-0.2
+-RingMail        0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+        $composite:1 $defence:5
+        &a(Killing)-0.5
 
 -Dye             0       0.05   10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $colour:3

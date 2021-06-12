@@ -76,6 +76,10 @@
     &t:hard--t:sturdy-->=0.4--<=2--!!t:composite--#Shield:1
     Shard
     C3.0
+-MakeRingMail
+    &t:hard--t:sturdy--t:malleable-->=0.4--<=2--!!t:composite--#RingMail:1
+    Shard
+    C3.0
 -MakeHandPlough                        $instrument
     &t:hard--t:sturdy-->=0.5--<=2--!!t:composite--#HandPlough:1
     C3.0
