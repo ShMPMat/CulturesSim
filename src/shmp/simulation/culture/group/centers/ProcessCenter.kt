@@ -15,7 +15,7 @@ class ProcessCenter(type: AdministrationType) {
             field = value
         }
 
-    private var behaviours: MutableList<GroupBehaviour> = mutableListOf(
+    private var _behaviours: MutableList<GroupBehaviour> = mutableListOf(
             RandomArtifactB.withTrait(Trait.Creation.get().pow(0.25)),
             RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
                 1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
@@ -49,12 +49,14 @@ class ProcessCenter(type: AdministrationType) {
             InternalConsolidationB.withTrait(Trait.Consolidation.getPositive())
     )
 
+    val behaviours: List<GroupBehaviour> = _behaviours
+
     private val addedBehaviours = mutableListOf<GroupBehaviour>()
 
     fun addBehaviour(behaviour: AbstractGroupBehaviour) = addedBehaviours.add(behaviour)
 
     private fun updateBehaviours(group: Group) {
-        behaviours = behaviours
+        _behaviours = _behaviours
                 .mapNotNull { it.update(group) }
                 .toMutableList()
 
@@ -72,7 +74,7 @@ class ProcessCenter(type: AdministrationType) {
             updateBehaviours(group)
         }
 
-        if (behaviours.size > 20)
+        if (_behaviours.size > 20)
             updateBehaviours(group)
 
         runBehaviours(group)
@@ -81,12 +83,12 @@ class ProcessCenter(type: AdministrationType) {
 
     private fun AddAdministrativeBehaviours(group: Group) {
         if (group.territoryCenter.settled)
-            if (behaviours.none { it is ManageRoadsB })
-                behaviours.add(ManageRoadsB())
+            if (_behaviours.none { it is ManageRoadsB })
+                _behaviours.add(ManageRoadsB())
     }
 
     private fun runBehaviours(group: Group) {
-        behaviours.forEach {
+        _behaviours.forEach {
             consumeProcessResult(group, it.run(group))
         }
 
@@ -98,7 +100,7 @@ class ProcessCenter(type: AdministrationType) {
                 consumeProcessResult(group, it.run(group))
             }
 
-            behaviours.addAll(newBehaviours)
+            _behaviours.addAll(newBehaviours)
         }
     }
 
@@ -111,7 +113,7 @@ class ProcessCenter(type: AdministrationType) {
     override fun toString() = """
         |Type: $type
         |Behaviours:
-        |${behaviours.joinToString("\n")}
+        |${_behaviours.joinToString("\n")}
         """.trimMargin()
 }
 

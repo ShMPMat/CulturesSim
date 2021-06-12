@@ -1,6 +1,7 @@
 package shmp.simulation.culture.group.stratum
 
 import shmp.random.*
+import shmp.random.singleton.chanceOf
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.RequestConstructController
@@ -26,17 +27,17 @@ class Ego(tile: Tile, name: String) {
             group: Group,
             parent: Stratum
     ) {
-        if (!isActive) return
-        if (!testProbability(session.egoRenewalProb, session.random)) return
+        if (!isActive)
+            return
+        session.egoRenewalProb.chanceOf {
+            return
+        }
 
         takeGoodResources(accessibleResources, group)
         manageRequests(group, parent)
     }
 
-    private fun takeGoodResources(
-            accessibleResources: MutableResourcePack,
-            group: Group
-    ) {
+    private fun takeGoodResources(accessibleResources: MutableResourcePack, group: Group) {
         val best = accessibleResources.resources.asSequence()
                 .map { group.cultureCenter.evaluateResource(it) to it }
                 .filter { it.first > 2 }

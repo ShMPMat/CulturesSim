@@ -17,8 +17,7 @@ class ActionMatcher(
     }
 
     fun constructResults(pool: ResourcePool) = results.flatMap { (n, a) ->
-        pool.getAll { it.simpleName == n }
-                .map { it.copy(a) }
+        pool.simpleNameMap.getOrDefault(n, listOf()).map { it.copy(a) }
     }
 
     fun match(resource: Resource) =

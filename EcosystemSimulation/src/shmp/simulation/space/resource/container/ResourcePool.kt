@@ -9,11 +9,11 @@ class ResourcePool(val resources: List<ResourceIdeal>) {
             .map { it.baseName to it }
             .toMap()
 
+    val simpleNameMap = resources.groupBy { it.simpleName }
+
     fun get(predicate: (Resource) -> Boolean) = resources.firstOrNull(predicate)?.copy()
 
-    fun getAll(predicate: (Resource) -> Boolean) = resources
-            .filter(predicate)
-            .map { it.copy() }
+    fun getAll(predicate: (Resource) -> Boolean) = resources.filter(predicate).map { it.copy() }
 
     fun getBaseName(name: String) = baseNameMap[name]?.copy()
             ?: throw NoSuchElementException("No resource with name $name")

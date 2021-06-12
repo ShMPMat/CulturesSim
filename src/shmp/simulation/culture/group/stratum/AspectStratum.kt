@@ -16,10 +16,12 @@ import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
+import shmp.utils.SoftValue
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 
 class AspectStratum(
         override var population: Int,
@@ -30,6 +32,7 @@ class AspectStratum(
 
     private var workedAmount = 0
     private var isRaisedAmount = false
+    private var workedStraight = 0
     private val dependencies: MutableMap<ResourceTag, MutableResourcePack> = HashMap()
     private val popularMemes: MutableList<Meme> = ArrayList()
     override var importance: Int
@@ -66,10 +69,7 @@ class AspectStratum(
         get() {
             if (_effectiveness == -1.0) {
                 _effectiveness = 1.0 +
-                        places
-                                .flatMap { it.owned.resources }
-                                .map { it.getAspectImprovement(aspect) }
-                                .foldRight(0.0, Double::plus)
+                        places.flatMap { it.owned.resources }.sumByDouble { it.getAspectImprovement(aspect) }
             }
             return _effectiveness
         }
@@ -101,23 +101,29 @@ class AspectStratum(
         if (aspect !is MeaningInserter) {
             val oldPopulation = population
             val evaluator = passingEvaluator
-            val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation.toDouble()).toDouble()
-            val amount = aspect.calculateProducedValue(evaluator, freePopulation)
-            val pack = use(AspectController(
-                    1,
-                    amount,
-                    amount,
-                    evaluator,
-                    group.populationCenter,
-                    accessibleTerritory,
-                    false,
-                    group,
-                    setOf(RequestType.Improvement)
-            ))
+//            val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation.toDouble()).toDouble()
+            val amountToRise = min(
+                    freePopulation,
+                    (freePopulation * SoftValue(workedStraight).value.pow(2)).toInt() + 1
+            )
+            if (amountToRise > 0) {
+                val amount = aspect.calculateProducedValue(evaluator, amountToRise)
+                val pack = use(AspectController(
+                        1,
+                        amount,
+                        amount,
+                        evaluator,
+                        group.populationCenter,
+                        accessibleTerritory,
+                        false,
+                        group,
+                        setOf(RequestType.Improvement)
+                ))
 
-            if (population < oldPopulation)
-                population = oldPopulation
-            accessibleResources.addAll(pack)
+                if (population < oldPopulation)
+                    population = oldPopulation
+                accessibleResources.addAll(pack)
+            }
         }
 
         updateInfrastructure(accessibleTerritory, group)
@@ -218,6 +224,10 @@ class AspectStratum(
     override fun finishUpdate(group: Group) {
         popularMemes.forEach { group.cultureCenter.memePool.strengthenMeme(it) }
         popularMemes.clear()
+
+        if (workedAmount > 0) {
+            workedStraight++
+        }
 
         if (workedAmount < population && !ego.isActive)
             population = workedAmount

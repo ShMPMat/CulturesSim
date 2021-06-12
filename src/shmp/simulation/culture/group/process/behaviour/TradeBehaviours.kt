@@ -75,7 +75,11 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
 
 object EstablishTradeRelationsB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
+        val existingTrades = group.processCenter.behaviours.filterIsInstance<TradeRelationB>()
+                .map { it.partner }
+
         val groupsToChances = group.relationCenter.relations
+                .filter { it.other !in existingTrades }
                 .map {
                     it.other.toSampleSpaceObject(
                             it.normalized *
