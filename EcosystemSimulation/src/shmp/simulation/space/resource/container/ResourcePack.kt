@@ -52,7 +52,7 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
             resourceMap.navigableKeySet().filter(predicate)
 
     fun getTaggedResourcesUnpacked(tag: ResourceTag) =
-            resourceMap.navigableKeySet().filter { it.tags.contains(tag) }
+            resourceMap.navigableKeySet().filter { it.genome.getTagLevel(tag) > 0 }
 
     fun getResources(predicate: (Resource) -> Boolean) =
             ResourcePack(getResourcesUnpacked(predicate), false)

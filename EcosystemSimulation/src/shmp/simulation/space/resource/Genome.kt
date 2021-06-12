@@ -42,7 +42,10 @@ open class Genome(
     val negativeDependencies = dependencies.filter { !it.isPositive }
     val positiveDependencies = dependencies.filter { it.isPositive }
 
-    val tags = tags.toMutableSet()
+    private val tagsMap = tags.map { it to it }.toMap().toMutableMap()
+    var tags: Set<ResourceTag> = tagsMap.keys
+        private set
+
     val secondaryMaterials: List<Material>
 
     init {
@@ -126,20 +129,20 @@ open class Genome(
     }
 
     private fun computeTags() {
-        tags.addAll(primaryMaterial!!.tags.filter { it !in tags })
+        tagsMap.putAll(primaryMaterial!!.tags.filter { !tagsMap.containsKey(it) }.map { it to it }.toMap())
         for ((tag, labeler, leveler) in data.additionalTags) {
             val level = leveler.getLevel(this)
-            if (tags.contains(tag)) {
-                val existingTag = tags.first { it == tag }
+            if (tagsMap.containsKey(tag)) {
+                val existingTag = tagsMap.getValue(tag)
 
-                tags.remove(tag)
-                tags.add(tag.copy(level = max(level, existingTag.level)))
+                tagsMap[tag] = tag.copy(level = max(level, existingTag.level))
             } else if (labeler.isSuitable(this))
-                tags.add(tag.copy(level = level))
+                tagsMap[tag] = tag.copy(level = level)
         }
+        tags = tagsMap.keys
     }
 
-    fun getTagLevel(tag: ResourceTag) = tags.firstOrNull { it == tag }?.level ?: 0
+    fun getTagLevel(tag: ResourceTag) = tagsMap[tag]?.level ?: 0
 
     val baseName: BaseName = name + legacyPostfix
 

@@ -23,11 +23,9 @@ class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTag
 
 fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() * tags.getAspectImprovement(aspect)
 
-private fun Set<ResourceTag>.getAspectImprovement(aspect: Aspect) = this
-        .filterIsInstance<AspectImprovementTag>()
+private fun Set<ResourceTag>.getAspectImprovement(aspect: Aspect) = filterIsInstance<AspectImprovementTag>()
         .filter { it.labeler.isSuitable(aspect) }
-        .map { it.improvement }
-        .foldRight(0.0, Double::plus)
+        .sumByDouble { it.improvement }
 
 class AspectImprovementLabeler(val aspect: Aspect): ResourceLabeler {
     override fun isSuitable(genome: Genome) = genome.tags.getAspectImprovement(aspect) > 0
