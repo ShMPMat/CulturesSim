@@ -30,12 +30,11 @@ interface Territory {
         get() = allResources.distinct()
 
     val minTemperature: Int?
-        get() = tiles
-                .map(Tile::temperature)
-                .min()
+        get() = tiles.map(Tile::temperature)
+                .minOrNull()
 
     fun filter(predicate: (Tile) -> Boolean) = tiles.filter(predicate)
-    fun filterOuterBrink(predicate: (Tile) -> Boolean) = outerBrink.filter(predicate)
+    fun filterOuterBrink(predicate: (Tile) -> Boolean) = outerBrink.filter(predicate)//TODO sort
     fun filterInnerBrink(predicate: (Tile) -> Boolean) = innerBrink.filter(predicate)
 
     operator fun contains(tile: Tile?) = tiles.contains(tile)

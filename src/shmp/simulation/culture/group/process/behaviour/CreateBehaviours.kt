@@ -181,7 +181,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         val path = group.territoryCenter.makePath(start, finish)
                 ?: return
         roadConstruction = BuildRoadB(
-                StaticTerritory(path),
+                StaticTerritory(path.toSet()),
                 "${group.name} road $projectsDone"
         )
         projectsDone++

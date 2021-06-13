@@ -21,13 +21,9 @@ abstract class LabelerDependency(
     open fun isResourceDependency(resource: Resource) =
             resource.isNotEmpty && labeler.isSuitable(resource.genome)
 
-    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.copy(1))
-                    .map(Resource::amount)
-                    .foldRight(0, Int::plus)
+    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumBy(Resource::amount)
 
     fun partByResource(resource: Resource, amount: Double) = ceil(
-            amount / labeler.actualMatches(resource.copy(1))
-            .map(Resource::amount)
-            .foldRight(0, Int::plus)
+            amount / labeler.actualMatches(resource.core.sample).sumBy(Resource::amount)
     ).toInt()
 }

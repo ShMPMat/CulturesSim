@@ -224,7 +224,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         dependencyPack.addAll(controller.pickCeilingPart(
                 controller.populationCenter.stratumCenter.getByAspect(this as ConverseWrapper)
                         .getInstrumentByTag(requirementTag).resources,
-                { listOf(it.copy(1)) }
+                { it.core.wrappedSample }
         ) { r, n -> listOf(r.getCleanPart(n, controller.populationCenter.taker)) })
         var amount = dependencyPack.getAmount(requirementTag)
         val usedForDependency = MutableResourcePack()

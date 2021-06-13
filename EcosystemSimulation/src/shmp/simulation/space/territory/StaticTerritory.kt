@@ -3,19 +3,16 @@ package shmp.simulation.space.territory
 import shmp.simulation.space.tile.Tile
 
 
-open class StaticTerritory(tiles: Collection<Tile> = setOf()) : Territory {
-    override val tiles = tiles.toSet()
+class StaticTerritory(override val tiles: Set<Tile> = setOf()) : Territory {
+    override val outerBrink by lazy {
+        tiles.flatMap { t -> t.getNeighbours { it !in tiles } }.toSet()
+    }
 
-    override val outerBrink: Set<Tile>
-        get() = tiles
-                .flatMap { t -> t.getNeighbours { it !in tiles } }
-                .toSet()
+    override val center = tiles.firstOrNull()
 
-    override val center: Tile?
-        get() = tiles.firstOrNull()
-
-    override val innerBrink: List<Tile>
-        get() = outerBrink
-                .flatMap { t -> t.getNeighbours { it !in tiles } }
-                .distinct()
+    override val innerBrink by lazy {
+        outerBrink
+            .flatMap { t -> t.getNeighbours { it !in tiles } }
+            .distinct()
+    }
 }

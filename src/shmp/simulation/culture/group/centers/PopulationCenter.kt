@@ -170,7 +170,7 @@ class PopulationCenter(
         val pack = evaluator.pick(
                         request.ceiling,
                         turnResources.resources,
-                        { listOf(it.copy(1)) }
+                        { it.core.wrappedSample }
                 ) { r, p -> listOf(r.getCleanPart(p, taker)) }
         var amount = evaluator.evaluate(pack)
 

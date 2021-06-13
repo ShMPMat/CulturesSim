@@ -24,7 +24,8 @@ class ResourceCore(
             throw SimulationError("${genome.name} has doubled external features: $externalFeatures")
     }
 
-//    val sample = Resource(this, 1)
+    val sample by lazy { Resource(this, 1) }
+    val wrappedSample by lazy { listOf(sample) }
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
             if (genome is GenomeTemplate)

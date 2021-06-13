@@ -18,4 +18,4 @@ fun randomTile(map: WorldMap): Tile = map.linedTiles.randomElement().randomEleme
  * If such Tile does not exists, returns null.
  */
 fun randomTileOnBrink(tiles: Collection<Tile>, predicate: (Tile) -> Boolean): Tile? =
-        StaticTerritory(tiles).filterOuterBrink(predicate).randomElementOrNull()
+        StaticTerritory(tiles.toSet()).filterOuterBrink(predicate).randomElementOrNull()

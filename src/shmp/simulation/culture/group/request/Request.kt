@@ -47,7 +47,7 @@ abstract class Request(val core: RequestCore) {
         val partPack = evaluator.pick(
                 core.ceiling,
                 resourcePack.resources,
-                { listOf(it.copy(1)) },
+                { it.core.wrappedSample },
                 { r, n -> listOf(r.getCleanPart(n, group.populationCenter.taker)) }
         )
         val amount = evaluator.evaluate(partPack)
@@ -63,7 +63,7 @@ abstract class Request(val core: RequestCore) {
         else Result(ResultStatus.Excellent, neededCopy)
     }
 
-    fun satisfactionLevel(sample: Resource) = evaluator.evaluate(sample.copy(1))
+    fun satisfactionLevel(sample: Resource) = evaluator.evaluate(sample.core.sample)
 
     fun satisfactionLevel(stratum: Stratum) =
             if (stratum !is AspectStratum) 0.0

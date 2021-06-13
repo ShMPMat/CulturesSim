@@ -38,7 +38,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         get() = _places
 
     private var _oldCenter: Tile? = null
-    private var _oldReach: Collection<Tile> = listOf()
+    private var _oldReach: Set<Tile> = setOf()
     private var _oldTileTypes: Collection<Tile.Type> = listOf()
 
     fun tilePotentialMapper(tile: Tile): Int {
@@ -114,7 +114,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
                 .filter { canSettleAndNoGroupExcept(it) }
                 .maxByOrNull { tilePotentialMapper(it) }
 
-    private val reachableTiles: Collection<Tile>
+    private val reachableTiles: Set<Tile>
         get() {
             val tileTypes = getAccessibleTileTypes()
             if (_oldCenter != territory.center || tileTypes != _oldTileTypes) {
@@ -131,7 +131,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         else listOf()
     }
 
-    private fun getReachableTilesFrom(tile: Tile): Collection<Tile> {
+    private fun getReachableTilesFrom(tile: Tile): Set<Tile> {
         val tiles = mutableSetOf<Tile>()
         val queue = mutableListOf<Pair<Tile, Int>>()
         queue.add(tile to 0)
