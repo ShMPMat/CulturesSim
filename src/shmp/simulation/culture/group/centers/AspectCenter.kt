@@ -25,7 +25,7 @@ class AspectCenter(aspects: List<Aspect>) {
     //    Aspects added on the current turn
     private val changedAspectPool = MutableAspectPool(HashSet())
     private val _converseWrappers = mutableSetOf<ConverseWrapper>()
-    private val _lastResourcesForCw = mutableListOf<Resource>()
+    private val _lastResourcesForCw = mutableSetOf<Resource>()
 
     init {
         aspects.forEach { hardAspectAdd(it) }
@@ -117,9 +117,9 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
-        val newResources = group.overallTerritory.differentResources.toMutableSet()
-        newResources.addAll(_aspectPool.producedResources)
-        newResources.removeAll(_lastResourcesForCw)
+        val newResources = group.overallTerritory.differentResources.filter { it !in _lastResourcesForCw }
+                .toMutableSet()
+        newResources.addAll(_aspectPool.producedResources.filter { it !in _lastResourcesForCw })
 
         for (aspect in _aspectPool.filter { it !is ConverseWrapper })
             for (resource in newResources)

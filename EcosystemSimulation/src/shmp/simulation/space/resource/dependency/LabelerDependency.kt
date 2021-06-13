@@ -1,5 +1,6 @@
 package shmp.simulation.space.resource.dependency
 
+import shmp.simulation.space.resource.Genome
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
@@ -18,8 +19,21 @@ abstract class LabelerDependency(
 
     fun isResourceGood(resource: Resource) = isResourceDependency(resource)
 
-    open fun isResourceDependency(resource: Resource) =
-            resource.isNotEmpty && labeler.isSuitable(resource.genome)
+    open fun isResourceDependency(resource: Resource): Boolean {
+        if (resource.isEmpty)
+            return false
+
+        genomeHash[resource.genome]?.let {
+            return it
+        }
+
+        val isDependency = labeler.isSuitable(resource.genome)
+        genomeHash[resource.genome] = isDependency
+
+        return isDependency
+    }
+
+    private val genomeHash = mutableMapOf<Genome, Boolean>()
 
     fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumBy(Resource::amount)
 

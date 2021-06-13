@@ -34,9 +34,17 @@ abstract class Request(val core: RequestCore) {
 
     abstract fun reassign(group: Group): Request
 
-    open fun isAcceptable(stratum: AspectStratum) = when {
-        evaluator.hasValue(stratum.aspect.producedResources) -> evaluator
-        else -> null
+    open fun isAcceptable(stratum: AspectStratum): Boolean {
+        val pair = stratum.aspect.name to toString()
+        stratumRequestHash[pair]?.let {
+            return it
+        }
+
+        val isAcceptable = evaluator.hasValue(stratum.aspect.producedResources)
+
+        stratumRequestHash[pair] = isAcceptable
+
+        return isAcceptable
     }
 
     fun amountLeft(resourcePack: ResourcePack) = max(0.0, core.ceiling - evaluator.evaluatePack(resourcePack))
@@ -67,8 +75,7 @@ abstract class Request(val core: RequestCore) {
 
     fun satisfactionLevel(stratum: Stratum) =
             if (stratum !is AspectStratum) 0.0
-            else stratum.aspect.producedResources
-                    .sumByDouble { satisfactionLevel(it) }
+            else stratum.aspect.producedResources.sumByDouble { satisfactionLevel(it) }
 
     open fun getController(ignoreAmount: Int) = AspectController(
             1,
@@ -112,3 +119,5 @@ enum class ResultStatus {
     Satisfied,
     Excellent
 }
+
+private val stratumRequestHash = mutableMapOf<Pair<String, String>, Boolean>()

@@ -23,6 +23,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+
 class AspectStratum(
         override var population: Int,
         val aspect: ConverseWrapper,

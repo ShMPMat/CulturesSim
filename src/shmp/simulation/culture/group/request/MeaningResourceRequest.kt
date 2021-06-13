@@ -21,7 +21,7 @@ class MeaningResourceRequest(
     override fun isAcceptable(stratum: AspectStratum) =
             if (stratum.aspect.canInsertMeaning)
                 super.isAcceptable(stratum)
-            else null
+            else false
 
     override val evaluator = resourceEvaluator(resource)
 

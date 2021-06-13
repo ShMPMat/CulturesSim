@@ -41,7 +41,7 @@ class StratumCenter(initTile: Tile) {
 
     fun getStrataForRequest(request: Request): List<AspectStratum> = _strata
             .filterIsInstance<AspectStratum>()
-            .filter { request.isAcceptable(it) != null }
+            .filter { request.isAcceptable(it) }
             .sortedByDescending { request.satisfactionLevel(it) }
 
     fun addStratum(stratum: Stratum) {
