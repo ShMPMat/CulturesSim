@@ -3,7 +3,7 @@ package shmp.simulation.culture.thinking.meaning
 import java.util.*
 
 
-open class Meme(observerWord: String, var predicates: MutableList<Meme> = mutableListOf(), open var importance: Int = 1) {
+open class Meme(observerWord: String, var predicates: List<Meme> = listOf(), open var importance: Int = 1) {
     var observerWord: String = observerWord.toLowerCase()
 
     val isSimple: Boolean
@@ -16,55 +16,20 @@ open class Meme(observerWord: String, var predicates: MutableList<Meme> = mutabl
             importance = Int.MAX_VALUE
     }
 
-    fun addPredicate(predicate: Meme): Meme {
-        predicates.add(predicate)
-        return this
-    }
-
-    fun splitOn(splitters: Collection<String?>): List<Meme> {
-        val memes: MutableList<Meme> = mutableListOf()
-        val newMemes: Queue<Meme> = ArrayDeque()
-        val copy = copy()
-        memes.add(copy)
-        newMemes.add(copy)
-        while (!newMemes.isEmpty()) {
-            val current = newMemes.poll()
-            if (splitters.contains(current.observerWord)) {
-                memes.addAll(current.predicates)
-                continue
-            }
-            val children: MutableList<Meme> = current.predicates
-            var i = 0
-            while (i < children.size) {
-                val child = children[i]
-                if (splitters.contains(child.observerWord)) {
-                    children.removeAt(i)
-                    i--
-                    memes.addAll(child.predicates)
-                }
-                newMemes.addAll(child.predicates)
-                i++
-            }
-        }
-        return memes.distinct()
-    }
+    fun addPredicate(predicate: Meme) = Meme(observerWord, predicates + listOf(predicate), importance)
 
     fun refactor(mapper: (Meme) -> Meme): Meme {
-        val dummy = Meme("dummy").addPredicate(copy())
-        val queue: Queue<Meme> = ArrayDeque()
-        queue.add(dummy)
-        while (!queue.isEmpty()) {
-            val current = queue.poll()
-            val predicates = current.predicates
-            for (i in predicates.indices) {
-                val child = predicates[i]
-                val substitution = mapper(child)
-                child.predicates.forEach { substitution.addPredicate(it) }
-                predicates[i] = substitution
-            }
-            queue.addAll(predicates)
+        var newMeme = mapper(this)
+        if (newMeme.predicates.isNotEmpty()) {
+            newMeme = newMeme.refactor(mapper)
         }
-        return dummy.predicates[0]
+
+        predicates.forEach {
+            val newPredicate = it.refactor(mapper)
+            newMeme = newMeme.addPredicate(newPredicate)
+        }
+
+        return newMeme
     }
 
     fun anyMatch(predicate: (Meme) -> Boolean): Boolean {
@@ -79,12 +44,11 @@ open class Meme(observerWord: String, var predicates: MutableList<Meme> = mutabl
         return false
     }
 
-    fun hasPart(that: Meme, splitters: Collection<String>): Boolean {
-        val thatMemes: Collection<Meme> = that.splitOn(splitters)
-        return splitOn(splitters).any { thatMemes.contains(it) }
-    }
+    fun contains(string: String) = toString().contains(string.toLowerCase())
 
-    override fun toString() = observerWord +
+    override fun toString() = string
+
+    private val string = this.observerWord +
             if (predicates.isNotEmpty())
                 predicates.joinToString(" ", " ")
             else ""
@@ -92,6 +56,7 @@ open class Meme(observerWord: String, var predicates: MutableList<Meme> = mutabl
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other !is Meme) return false
+
 
         return toString() == other.toString()
     }

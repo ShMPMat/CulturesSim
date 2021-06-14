@@ -27,9 +27,8 @@ class TextInfo(val map: MutableMap<InfoKey, Meme>, val actorConcept: ObjectConce
             if (CulturesController.session.templateBase.templateChars.contains(it.observerWord[0])) {
                 val substitution = map[it.observerWord] ?: throw RuntimeException()
                 return@refactor substitution.copy()
-            } else {
+            } else
                 return@refactor it.topMemeCopy()
-            }
         }
     }
 }

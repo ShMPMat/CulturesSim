@@ -18,7 +18,7 @@ fun constructAndAddSimpleMeme(groupMemes: GroupMemes, complicateProbability: Dou
         do {
             second = groupMemes.memeWithComplexityBias.copy()
             tests++
-        } while (second.hasPart(meme, setOf("and")) && tests <= maxTests)
+        } while (second.contains(" and ") && meme.contains(second.toString()) && tests <= maxTests)
         meme = meme.copy().apply {
             groupMemes.getMemeCopy("and")
                     ?.addPredicate(second)

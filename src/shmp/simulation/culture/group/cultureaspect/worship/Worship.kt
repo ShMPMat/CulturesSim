@@ -29,7 +29,8 @@ open class Worship(
     init {
         if (worshipObject.name != taleSystem.groupingConcept.meme || worshipObject.name != depictSystem.groupingMeme)
             throw GroupError("Inconsistent Worship: worship object's name is ${worshipObject.name}" +
-                    " but TaleSystem's concept is ${taleSystem.groupingConcept}")
+                    " but TaleSystem's concept is ${taleSystem.groupingConcept}" +
+                    " and DepictSystem's is ${depictSystem.groupingMeme}")
     }
 
     val features: List<WorshipFeature> = _features

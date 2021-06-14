@@ -8,7 +8,7 @@ import java.util.*
 
 
 class Tale(internal val template: Meme, val info: TextInfo) : CultureAspect {
-    private val meme: Meme = info.substitute(template)
+    private val meme = info.substitute(template)
 
     override fun getRequest(group: Group): Request? = null
 
