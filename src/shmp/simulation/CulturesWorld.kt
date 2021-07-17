@@ -59,7 +59,10 @@ class CulturesWorld : World() {
 
                         val oldAspectCore = aspectPool.get(a.name)!!.core
                         mutableAspectPool.add(
-                                Aspect(oldAspectCore.copy(name = actionName), AspectDependencies(mutableMapOf()))
+                                Aspect(
+                                        oldAspectCore.copy(name = actionName, resourceAction = newAction),
+                                        AspectDependencies(mutableMapOf())
+                                )
                         )
 
                         newAction to newResources
