@@ -18,7 +18,8 @@ class ResourceInstantiation(
         private val actions: List<ResourceAction>,
         materialPool: MaterialPool,
         amountCoefficient: Int = 1,
-        tagParser: TagParser
+        tagParser: TagParser,
+        private val resourceActionInjectors: List<ResourceActionInjector>
 ) {
     private val resourceTemplateCreator = ResourceTemplateCreator(actions, materialPool, amountCoefficient, tagParser)
 
@@ -183,9 +184,18 @@ class ResourceInstantiation(
                 }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
+        injectBuildings(newConversionCore)
 
         newResource.genome.conversionCore = newConversionCore
         return newResource
+    }
+
+    private fun injectBuildings(conversionCore: ConversionCore) {
+        conversionCore.actionConversion.flatMap{ (a, rs) ->
+            resourceActionInjectors.flatMap { i -> i(a, rs) }
+        }.forEach { (a, rs) ->
+            conversionCore.addActionConversion(a, rs)
+        }
     }
 }
 

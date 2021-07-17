@@ -4,6 +4,9 @@ import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 
 
+typealias Resources = List<Resource>
+
+
 data class ResourceUpdateResult(val isAlive: Boolean, val produced: List<Resource> = emptyList())
 
 

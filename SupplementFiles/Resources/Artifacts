@@ -64,15 +64,15 @@
         &a(PlantSeed)-0.5
         U
 
--CraftHouse      0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
-        &D(a(ShapeMalleable):a(Engrave):a(Sculpt):a(Carve):a(Paint):a(Incrust))-0.5
-        U
-
--TradeHouse      0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
-        &a(Trade)-0.5
-        U
+/-CraftHouse      0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+/        $composite:1
+/        &D(a(ShapeMalleable):a(Engrave):a(Sculpt):a(Carve):a(Paint):a(Incrust))-0.5
+/        U
+/
+/-TradeHouse      0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+/        $composite:1
+/        &a(Trade)-0.5
+/        U
 
 -Road            0       1000   10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
         $composite:1

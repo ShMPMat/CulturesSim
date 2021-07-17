@@ -12,7 +12,7 @@ fun main() {
     val textEcosystemVisualizer = TextEcosystemVisualizer(controller)
 
     controller.initializeWorld(world)
-    world.initializeMap(emptyList(), DefaultTagParser(world.tags), controller.proportionCoefficient)
+    world.initializeMap(emptyList(), DefaultTagParser(world.tags), listOf(), controller.proportionCoefficient)
 
     textEcosystemVisualizer.initialize()
     textEcosystemVisualizer.run()

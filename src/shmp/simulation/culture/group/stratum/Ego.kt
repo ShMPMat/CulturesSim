@@ -2,6 +2,7 @@ package shmp.simulation.culture.group.stratum
 
 import shmp.random.*
 import shmp.random.singleton.chanceOf
+import shmp.random.singleton.randomUnwrappedElementOrNull
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.RequestConstructController
@@ -14,6 +15,7 @@ import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.TileTag
 import java.util.HashMap
+
 
 class Ego(tile: Tile, name: String) {
     var isActive = false
@@ -50,7 +52,7 @@ class Ego(tile: Tile, name: String) {
                 .filter { it.probability > 3.0 }
                 .toList()
 
-        randomUnwrappedElementOrNull(allGoodProduced, session.random)?.let { chosen ->
+        allGoodProduced.randomUnwrappedElementOrNull()?.let { chosen ->
             val request = resourceToRequest(chosen, group, 1, 50, setOf(RequestType.Luxury))
             val result = group.populationCenter.executeRequest(request).pack
             place.current.addResources(result)

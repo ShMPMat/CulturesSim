@@ -1,6 +1,7 @@
 package shmp.simulation.space.resource.action
 
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.Resources
 
 
 class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>>) {
@@ -11,15 +12,15 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>
         actionConversion.forEach { (a, rs) -> addActionConversion(a, rs) }
     }
 
-    internal fun addActionConversion(action: ResourceAction, resourceList: List<Resource>) {
+    internal fun addActionConversion(action: ResourceAction, resources: Resources) {
         if (action is ResourceProbabilityAction)
             probabilityActions.add(action)
 
-        actionConversion[action] = resourceList.toMutableList()
+        actionConversion[action] = resources.toMutableList()
     }
 
     //TODO get rid of Templates
-    fun applyAction(action: ResourceAction): List<Resource>? = actionConversion[action]
+    fun applyAction(action: ResourceAction): Resources? = actionConversion[action]
             ?.map { r ->
                 /*val resource = */r.copy(r.amount)
 

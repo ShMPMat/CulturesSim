@@ -6,6 +6,7 @@ import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.instantiation.DefaultTagParser
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
+import shmp.simulation.space.resource.transformer.ResourceTransformer
 
 
 class AspectResourceTagParser(allowedTags: Collection<ResourceTag>) : DefaultTagParser(allowedTags) {

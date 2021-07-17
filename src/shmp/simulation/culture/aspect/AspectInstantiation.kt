@@ -22,7 +22,7 @@ class AspectInstantiation(
 ) {
     private val aspects = mutableListOf<Aspect>()
 
-    fun createPool(path: Enumeration<URL>): AspectPool {
+    fun createPool(path: Enumeration<URL>): MutableAspectPool {
         val inputDatabase = InputDatabase(path)
 
         while (true) {
@@ -33,7 +33,7 @@ class AspectInstantiation(
 
         checkAspectsCoherency()
 
-        return AspectPool(aspects.toMutableSet())
+        return MutableAspectPool(aspects.toMutableSet())
     }
 
     private fun createAspect(tags: Array<String>) = Aspect(createCore(tags), AspectDependencies(mutableMapOf()))

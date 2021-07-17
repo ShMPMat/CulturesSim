@@ -12,6 +12,12 @@ open class ResourceAction(val name: String, val matchers: List<ActionMatcher>, v
     }
 
     override fun hashCode() = name.hashCode()
+
+    fun copy(
+            name: String = this.name,
+            matchers: List<ActionMatcher> = this.matchers,
+            tags: List<ActionTag> = this.tags
+    ) = ResourceAction(name, matchers, tags)
 }
 
 

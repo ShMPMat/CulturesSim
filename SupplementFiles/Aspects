@@ -43,14 +43,14 @@
     &t:hard-->=0.5--!!t:composite--#Farm:1
     Shard
     C10.0
--BuildCraftHouse                       $building
-    &t:hard-->=0.5--!!t:composite--#CraftHouse:1
-    Shard
-    C10.0
--BuildTradeHouse                       $building
-    &t:hard-->=0.5--!!t:composite--#TradeHouse:1
-    Shard
-    C10.0
+/-BuildCraftHouse                       $building
+/    &t:hard-->=0.5--!!t:composite--#CraftHouse:1
+/    Shard
+/    C10.0
+/-BuildTradeHouse                       $building
+/    &t:hard-->=0.5--!!t:composite--#TradeHouse:1
+/    Shard
+/    C10.0
 
 -MakeDish
     &t:hard-->=0.05--<=1.5--!!t:composite--#Dish:1

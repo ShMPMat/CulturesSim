@@ -32,7 +32,10 @@ class ActionMatcher(
             results.map { (name, amount) ->
                 val resultResource =
                         if (name != "MATCHED")
-                            resources.first { it.resource.baseName == name }
+                            resources.firstOrNull() { it.resource.baseName == name }
+                                    ?: kotlin.run {
+                                        resources[0]
+                                    }
                         else resource
                 resultResource to amount
             }
