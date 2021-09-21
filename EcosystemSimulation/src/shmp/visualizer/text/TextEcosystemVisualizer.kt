@@ -33,6 +33,9 @@ open class TextEcosystemVisualizer(
      */
     var resourceSymbols: MutableMap<Resource, String> = mutableMapOf()
     var mapPrintInfo: MapPrintInfo
+
+    internal var showLegend = false
+
     private val world
         get() = controller.world
 
@@ -81,18 +84,8 @@ open class TextEcosystemVisualizer(
      * Prints default map and information output.
      */
     override fun print() {
-        val main = StringBuilder()
-        main.append(world.getStringTurn()).append("\n")
-        print(main.append(addToRight(
-                printedMap { "" },
-                addToRight(
-                        chompToLines(printedResources().toString(), map.linedTiles.size + 2),
-                        printedEvents(interactionModel.eventLog.newEvents, false),
-                        false
-                ),
-                true
-        ))
-        )
+        println(world.getStringTurn())
+        printMap { "" }
     }
 
     /**
@@ -102,11 +95,17 @@ open class TextEcosystemVisualizer(
      * above default map. If function returns non-empty string
      * for a tile, output of the function will be drawn above the tile.
      */
-    fun printMap(condition: (Tile) -> String) = print(addToRight(
-            printedMap(condition),
-            chompToLines(printedResources(), map.linedTiles.size + 2),
-            true
-    ))
+    fun printMap(condition: (Tile) -> String) {
+        val printedMap = printedMap(condition)
+
+        val resultPrint = if (showLegend) {
+            val printedResources = chompToLines(printedResources(), map.linedTiles.size + 2)
+
+            addToRight(printedMap, printedResources, true)
+        } else printedMap
+
+        print(resultPrint)
+    }
 
     /**
      * @param mapper function which adds an extra layer of information
@@ -139,7 +138,8 @@ open class TextEcosystemVisualizer(
                         Tile.Type.Water -> token = "\u001b[44m"
                         Tile.Type.Woods -> token = "\u001b[42m"
                         Tile.Type.Growth -> token = "\u001b[103m"
-                        else -> {}
+                        else -> {
+                        }
                     }
                     token += applyMappers(tile)
                 }
@@ -150,7 +150,7 @@ open class TextEcosystemVisualizer(
         return main.append(map)
     }
 
-    private fun printedResources(): StringBuilder {
+    internal fun printedResources(): StringBuilder {
         resourcesPrinted?.let {
             return it
         }
@@ -158,7 +158,7 @@ open class TextEcosystemVisualizer(
         val resources = StringBuilder()
         for (resource in world.resourcePool.resources)
             resources.append("\u001b[31m").append(resourceSymbols[resource]).append(" - ")
-                .append(resource.baseName).append("\n")
+                    .append(resource.baseName).append("\n")
 
         resourcesPrinted = resources
 

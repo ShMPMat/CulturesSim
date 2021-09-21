@@ -1,6 +1,5 @@
 package shmp.visualizer.command
 
-import shmp.visualizer.Visualizer
 import shmp.visualizer.text.TextEcosystemVisualizer
 
 
@@ -18,10 +17,13 @@ enum class EnvironmentCommand(command: String) : Command {
     ResourceType("rt \\w+"),
     ResourceOwner("ro \\w+"),
     AllBasicResources("rr"),
-    AllResources("rrr( f)?"),
+    AllPresentResources("rrr( f)?"),
+    AllPossibleResources("rrrr"),
     ResourceDensity("rd"),
     Events("(\\d+ )?e ?.*"),
     ShowMap("[mM]"),
+    LegendOn("legend on"),
+    LegendOff("legend off"),
     Exit("EXIT"),
     AddResource("\\d+ \\d+ \\w+"),
     GeologicalTurn("Geo"),

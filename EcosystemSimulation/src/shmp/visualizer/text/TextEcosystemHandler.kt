@@ -49,10 +49,11 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                     println("Unknown type - " + splitCommand[1])
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
                 AllBasicResources -> println(basicResourcesCounter(world))
-                AllResources -> println(allResourcesCounter(
+                AllPresentResources -> println(allResourcesCounter(
                         world,
                         splitCommand.size > 1 && splitCommand[1] == "f"
                 ))
+                AllPossibleResources -> println(visualizer.printedResources())
                 Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]?.let {
                     printTile(it)
                 } ?: print("No such Tile")
@@ -75,6 +76,8 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                     ))
                 }
                 ShowMap -> printMap { "" }
+                LegendOn -> visualizer.showLegend = true
+                LegendOff -> visualizer.showLegend = false
                 Exit -> return true
                 AddResource -> addResourceOnTile(
                         map[splitCommand[0].toInt(), splitCommand[1].toInt()],
