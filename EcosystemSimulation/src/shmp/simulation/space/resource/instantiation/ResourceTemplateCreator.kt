@@ -6,6 +6,7 @@ import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.dependency.*
 import shmp.simulation.space.resource.instantiation.tag.TagParser
+import shmp.simulation.space.resource.instantiation.tag.TagTemplate
 import shmp.simulation.space.resource.material.Material
 import shmp.simulation.space.resource.material.MaterialPool
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -30,7 +31,7 @@ class ResourceTemplateCreator(
         var isDesirable = true
         var minTempDeprivation = 2.0
         var maxTempDeprivation = 2.0
-        val resourceTags = mutableSetOf<ResourceTag>()
+        val resourceTags = mutableListOf<TagTemplate>()
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
@@ -133,13 +134,15 @@ class ResourceTemplateCreator(
                 defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
                 legacy = null,
                 dependencies = resourceDependencies,
-                tags = resourceTags,
+                tags = setOf(),
                 primaryMaterial = primaryMaterial,
                 secondaryMaterials = secondaryMaterials,
                 conversionCore = ConversionCore(mapOf())
         )
         if (isTemplate)
-            genome = GenomeTemplate(genome)
+            genome = GenomeTemplate(genome, resourceTags)
+        else
+            genome = genome.copy(tags = resourceTags.map { it.initialize(genome) }.toSet())
         specialActions.values
                 .filter { it.name[0] == '_' }
                 .forEach {

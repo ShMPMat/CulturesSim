@@ -17,12 +17,23 @@ fun makeResourceLeveler(tagString: String): ResourceLeveler {
 private fun makeLevelerList(tagString: String): List<ResourceLeveler> {
     val tags = tagString.bracketSensitiveSplit(',')
 
-    return tags.map { tag -> getLeveler(tag.take(2), tag.drop(2)) }
+    return tags.map { getLeveler(it) }
 }
 
-private fun getLeveler(key: String, value: String): ResourceLeveler = when (key) {
-    "i|" -> ConstLeveler(value.toDouble())
-    "t|" -> TagLeveler(ResourceTag(value))
-    "m(" -> MulLeveler(makeLevelerList(value.dropLast(1)))
-    else -> throw RuntimeException("Wrong tag for a leveler - $key")
+private fun getLeveler(tag: String): ResourceLeveler {
+    tag.toDoubleOrNull()?.let {
+        return ConstLeveler(it)
+    }
+
+    val key = tag.take(2)
+    val value = tag.drop(2)
+
+    return when (key) {
+        "i|" -> ConstLeveler(value.toDouble())
+        "t|" -> TagLeveler(ResourceTag(value))
+        "m(" -> MulLeveler(makeLevelerList(value.dropLast(1)))
+        else -> if (tag.matches(Regex("[a-zA-Z]+")))
+            TagLeveler(ResourceTag(tag))
+        else throw RuntimeException("Wrong tag for a leveler - $key")
+    }
 }

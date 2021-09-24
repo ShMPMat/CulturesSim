@@ -56,7 +56,7 @@ open class Genome(
         this.secondaryMaterials = secondaryMaterials.toMutableList()
     }
 
-    fun copy(
+    open fun copy(
             name: String = this.name,
             type: ResourceType = this.type,
             sizeRange: Pair<Double, Double> = this.sizeRange,

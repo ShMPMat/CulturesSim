@@ -80,8 +80,8 @@
         &a(Killing)-0.3
 
 -Shield          0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1 $defence:3
-        &a(Killing)-0.2
+        $composite:1 $defence:m(0.1,hard,sturdy)
+        &a(Killing)-m(0.02,hard,sturdy)
 -RingMail        0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $composite:1 $defence:5
         &a(Killing)-0.5
