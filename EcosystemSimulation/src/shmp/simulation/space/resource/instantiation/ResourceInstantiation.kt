@@ -6,6 +6,7 @@ import shmp.simulation.space.resource.*
 import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.container.ResourcePool
+import shmp.simulation.space.resource.instantiation.tag.TagParser
 import shmp.simulation.space.resource.material.MaterialPool
 import shmp.simulation.space.resource.transformer.ColourTransformer
 import shmp.simulation.space.resource.transformer.TextureTransformer

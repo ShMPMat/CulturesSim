@@ -49,7 +49,7 @@ class AspectInstantiation(
         val matchers = ArrayList<ActionMatcher>()
         var applyMeaning = false
         var isResourceExposed = true
-        var standardComplexity = 1.0
+        var complexity = 1.0
         val sideComplexities = mutableListOf<ResourceComplexity>()
         val actionTags = mutableListOf<ActionTag>()
 
@@ -78,7 +78,7 @@ class AspectInstantiation(
                         ?.let { actionTags.add(it) }
                         ?: throw DataInitializationError("No such ActionTag - $tag")
                 'E' -> isResourceExposed = false
-                'C' -> standardComplexity = tag.toDouble()
+                'C' -> complexity = tag.toDouble()
                 'S' -> sideComplexities.addAll( tag.split(",").map {
                     if (allowedResourceTags.none { t -> t.name == it }) {
                         throw GroupError("Tag $it doesnt exist")
@@ -93,7 +93,7 @@ class AspectInstantiation(
                 requirements,
                 applyMeaning,
                 isResourceExposed,
-                standardComplexity,
+                complexity,
                 sideComplexities,
                 ResourceAction(name, matchers, actionTags)
         )

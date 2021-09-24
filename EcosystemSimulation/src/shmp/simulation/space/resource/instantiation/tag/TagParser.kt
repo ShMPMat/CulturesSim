@@ -1,4 +1,4 @@
-package shmp.simulation.space.resource.instantiation
+package shmp.simulation.space.resource.instantiation.tag
 
 import shmp.simulation.DataInitializationError
 import shmp.simulation.space.resource.tag.ResourceTag
@@ -12,7 +12,7 @@ open class DefaultTagParser(private val allowedTags: Collection<ResourceTag>): T
     override fun parse(key: Char, tag: String) = when (key) {
         '$' -> {
             val (name, level) = tag.split(":".toRegex()).toTypedArray()
-            val resourceTag = ResourceTag(name, level.toInt())
+            val resourceTag = ResourceTag(name, level.toDouble())
             if (!allowedTags.contains(resourceTag))
                 throw DataInitializationError("Tag $resourceTag doesnt exist")
             resourceTag

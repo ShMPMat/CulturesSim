@@ -10,10 +10,8 @@ import shmp.simulation.culture.group.GROUP_TAG_TYPE
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.compulsoryAspects
 import shmp.simulation.culture.group.place.StrayPlacesManager
-import shmp.simulation.space.resource.ResourceColour
 import shmp.simulation.space.resource.Resources
 import shmp.simulation.space.resource.action.ResourceAction
-import shmp.simulation.space.resource.transformer.ColourTransformer
 import shmp.simulation.space.resource.transformer.ConcatTransformer
 import shmp.simulation.space.resource.transformer.NameTransformer
 import shmp.simulation.space.resource.transformer.TagTransformer

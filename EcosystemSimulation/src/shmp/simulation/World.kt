@@ -11,7 +11,7 @@ import shmp.simulation.space.resource.action.ActionTag
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.instantiation.ResourceActionInjector
 import shmp.simulation.space.resource.instantiation.ResourceInstantiation
-import shmp.simulation.space.resource.instantiation.TagParser
+import shmp.simulation.space.resource.instantiation.tag.TagParser
 import shmp.simulation.space.resource.material.MaterialInstantiation
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.createTagMatchers

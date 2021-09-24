@@ -142,7 +142,7 @@ open class Genome(
         tags = tagsMap.keys
     }
 
-    fun getTagLevel(tag: ResourceTag) = tagsMap[tag]?.level ?: 0
+    fun getTagLevel(tag: ResourceTag) = tagsMap[tag]?.level ?: 0.0
 
     val baseName: BaseName = name + legacyPostfix
 

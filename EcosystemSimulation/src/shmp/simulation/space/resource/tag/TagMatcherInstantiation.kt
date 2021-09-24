@@ -16,7 +16,7 @@ fun createTagMatchers(path: Enumeration<URL>): List<TagMatcher> {
     while (true) {
         val line = inputDatabase.readLine() ?: break
         val tags = line.split("\\s+".toRegex())
-        var leveler: ResourceLeveler = ConstLeveler(1)
+        var leveler: ResourceLeveler = ConstLeveler(1.0)
 
         var name = tags[0]
         if (name.contains(':')) {

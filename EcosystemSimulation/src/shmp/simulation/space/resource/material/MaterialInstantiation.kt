@@ -41,7 +41,7 @@ class MaterialInstantiation(
                     '-' -> {
                         val resourceTag = ResourceTag(
                                 tag.takeWhile { it != ':' },
-                                tag.substring(tag.indexOf(':') + 1).toInt()
+                                tag.substring(tag.indexOf(':') + 1).toDouble()
                         )
                         if (!allowedTags.contains(resourceTag))
                             throw DataInitializationError("Tag $resourceTag doesnt exist")

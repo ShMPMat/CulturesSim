@@ -19,7 +19,7 @@ data class AspectCore(
 ) {
     fun makeAspect(dependencies: AspectDependencies) = Aspect(this, dependencies)
 
-    internal fun getPrecomputedComplexity(resource: Resource): Double = standardComplexity *
+    internal fun getPrecomputedComplexity(resource: Resource) = standardComplexity *
             sideComplexities.map { it.getComplexity(resource) }
                     .foldRight(1.0, Double::times)
 }

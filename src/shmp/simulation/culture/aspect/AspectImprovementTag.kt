@@ -7,4 +7,6 @@ import shmp.simulation.space.resource.tag.ResourceTag
 class AspectImprovementTag(
         val labeler: AspectLabeler,
         val improvement: Double
-) : ResourceTag("$labeler - $improvement")
+) : ResourceTag("$labeler - $improvement") {
+    override fun copy(level: Double) = AspectImprovementTag(labeler, level)
+}

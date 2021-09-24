@@ -5,10 +5,10 @@ import java.util.*
 
 open class ResourceTag constructor(
         var name: String,
-        var level: Int = 1,
+        var level: Double = 1.0,
         var isInstrumental: Boolean = false // Whether Resource doesn't waste on use.
 ) {
-    fun copy(level: Int = this.level) = ResourceTag(name, level, isInstrumental)
+    open fun copy(level: Double = this.level) = ResourceTag(name, level, isInstrumental)
 
     override fun toString() = name
 

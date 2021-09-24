@@ -4,5 +4,5 @@ import shmp.simulation.space.resource.Genome
 
 
 interface ResourceLeveler {
-    fun getLevel(genome: Genome): Int
+    fun getLevel(genome: Genome): Double
 }
