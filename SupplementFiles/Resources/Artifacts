@@ -15,74 +15,74 @@
 
 -Clothes         0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Cloth
         $clothes:m(0.02,soft,flexible)
-        $composite:1
+        $composite
 
 -FurClothes      0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
         $clothes:m(0.01,soft,flexible)
-        $composite:1
+        $composite
 
 -LeatherClothes  0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
         $clothes:m(0.01,soft,flexible)
-        $composite:1
+        $composite
 
 -StoneAxe        0       0.1    10000      -500   500  100000000  0             1 1  Ignore    Artifact     @Stone
-        $composite:1
+        $composite
         $weapon:3
         &a(Killing)-m(0.01,hard,sturdy)
 
 -HandPlough      0       0.5    10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1
+        $composite
         &a(PlantSeed)-m(0.001,hard,sturdy)
         U
 
 -Basket          0       0.3    10         -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1
+        $composite
         &a(Take)-0.01
 
 -Bloomery        0       1      10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1
-        $furnace:1
+        $composite
+        $furnace
 
 -House           0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
+        $composite
         $shelter:3
 
 -Wigwam          0       3      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
+        $composite
         $shelter:2
 
 -Yurt            0       3      10000      -500   500  100000000  10            1 1  Ignore    Building     @TEMPLATE
-        $composite:1
+        $composite
         $shelter:2
 
 -Temple          0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
+        $composite
         U
 
 -Farm            0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
+        $composite
         &a(PlantSeed)-0.5
         U
 
 -Road            0       1000   10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
-        $composite:1
+        $composite
         U
 
 
 -Dish            0       0.1    10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
 
 -Boat            0       2      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1
+        $composite
 
 -Spear           0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1  $weapon:m(0.03,hard,sturdy)
+        $composite  $weapon:m(0.03,hard,sturdy)
         &a(Killing)-m(0.03,hard,sturdy)
 
 -Shield          0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1 $defence:m(0.1,hard,sturdy)
+        $composite $defence:m(0.1,hard,sturdy)
         &a(Killing)-m(0.02,hard,sturdy)
 -RingMail        0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1 $defence:m(0.2,hard,sturdy)
+        $composite $defence:m(0.2,hard,sturdy)
         &a(Killing)-m(0.05,hard,sturdy)
 
 -Dye             0       0.05   10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE

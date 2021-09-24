@@ -9,10 +9,13 @@ interface TagParser {
     fun parse(key: Char, tag: String): TagTemplate?
 }
 
-open class DefaultTagParser(private val allowedTags: Collection<ResourceTag>): TagParser {
+open class DefaultTagParser(private val allowedTags: Collection<ResourceTag>) : TagParser {
     override fun parse(key: Char, tag: String) = when (key) {
         '$' -> {
-            val (name, level) = tag.split(":".toRegex()).toTypedArray()
+            val (name, level) =
+                    if (tag.contains(':'))
+                        tag.split(":".toRegex()).toList()
+                    else listOf(tag, "1")
             val resourceTag = ResourceTag(name)
             if (!allowedTags.contains(resourceTag))
                 throw DataInitializationError("Tag $resourceTag doesnt exist")

@@ -365,7 +365,7 @@ open class Resource private constructor(
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
             "lifespan - ${genome.lifespan}, amount - $amount, material - ${genome.primaryMaterial}," +
             " ${genome.appearance}, ownership - ${core.ownershipMarker}, tags: " +
-            tags.joinToString(" ") { it.name + ":" + it.level }
+            tags.joinToString(" ")
 
     override fun compareTo(other: Resource): Int {
         val nameCompare = fullName.compareTo(other.fullName)

@@ -41,14 +41,14 @@
         ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1:s|1 ^SoftBranch:15 ^Leaf:30:s|0.02              ^Seed:2 ^SoftRoot:5
         #Water
-        $Tree:1
+        $Tree
         cWhite
 
 -Spruce          0.05    5      40         -15     15  100        0             0 0 Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^PineNeedle:300 ^Branch:30  ^ConiferCone:10 ^Root:5
         #Water
-        $Tree:1
+        $Tree
         cGreen
 
 -Cactus          0.2     1      15         10     50   50         0             0 0 Cut        Plant        @PlantFibre
@@ -61,21 +61,21 @@
         ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
-        $Tree:1
+        $Tree
         cGreen
 
 -Filbert         0.05    5      40         0      30   10         0             0 0 Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;0;CONSUME
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
         #Water
-        $Tree:1
+        $Tree
         cGreen
 
 -JungleTree      0.05    5      40         20     40   150        0             0 0 Cut        Plant        @Wood
         ~r:Vapour;0.1;2;0;CONSUME
         ^Trunk:1:s|5       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
-        $Tree:1
+        $Tree
         cGreen
 
 -Reed            0.25    1      5          5      30   50         0             1 0 Cut        Plant        @PlantFibre

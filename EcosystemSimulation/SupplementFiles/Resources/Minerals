@@ -22,13 +22,13 @@
         tSemitransparent
 
 -RawIron         0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Iron
-        $composite:1
+        $composite
         cWhite
 
 -RawCopper       0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Copper
-        $composite:1
+        $composite
         cYellow
 
 -RawTin          0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Tin
-        $composite:1
+        $composite
         cWhite
