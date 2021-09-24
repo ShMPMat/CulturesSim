@@ -1,6 +1,6 @@
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
 -Cloth           0       0.5    100        -500   500  100000000  2             1 1  Ignore    Artifact     @Cloth
-        $clothes:1
+        $clothes:m(0.01,soft,flexible)
         +MakeClothes:Clothes:1
 
 -Iron         0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Iron
@@ -14,25 +14,25 @@
 
 
 -Clothes         0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Cloth
-        $clothes:2
+        $clothes:m(0.02,soft,flexible)
         $composite:1
 
 -FurClothes      0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
-        $clothes:1
+        $clothes:m(0.01,soft,flexible)
         $composite:1
 
 -LeatherClothes  0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
-        $clothes:1
+        $clothes:m(0.01,soft,flexible)
         $composite:1
 
 -StoneAxe        0       0.1    10000      -500   500  100000000  0             1 1  Ignore    Artifact     @Stone
         $composite:1
         $weapon:3
-        &a(Killing)-0.1
+        &a(Killing)-m(0.01,hard,sturdy)
 
 -HandPlough      0       0.5    10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
         $composite:1
-        &a(PlantSeed)-0.02
+        &a(PlantSeed)-m(0.001,hard,sturdy)
         U
 
 -Basket          0       0.3    10         -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
@@ -75,16 +75,15 @@
         $composite:1
 
 -Spear           0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1
-        $weapon:3
-        &a(Killing)-0.3
+        $composite:1  $weapon:m(0.03,hard,sturdy)
+        &a(Killing)-m(0.03,hard,sturdy)
 
 -Shield          0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $composite:1 $defence:m(0.1,hard,sturdy)
         &a(Killing)-m(0.02,hard,sturdy)
 -RingMail        0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-        $composite:1 $defence:5
-        &a(Killing)-0.5
+        $composite:1 $defence:m(0.2,hard,sturdy)
+        &a(Killing)-m(0.05,hard,sturdy)
 
 -Dye             0       0.05   10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
         $colour:3
