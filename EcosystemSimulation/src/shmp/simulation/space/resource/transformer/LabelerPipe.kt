@@ -14,6 +14,6 @@ class LabelerPipe(transformer: ResourceTransformer, val labeler: ResourceLabeler
         val newParts = newResource.genome.parts.map { transform(it) }
         val genome = newResource.genome.copy(parts = newParts)
         val core = newResource.core.copy(genome = genome)
-        return Resource(core)
+        return Resource(core, resource.amount)
     }
 }

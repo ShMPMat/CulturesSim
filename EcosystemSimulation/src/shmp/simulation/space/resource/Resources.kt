@@ -17,12 +17,12 @@ val specialActions = mapOf(
 )
 
 
-internal fun Resource.flingConversionLinks(old: Resource): Resource {
+internal fun Resource.replaceRecursiveLinks(old: Resource): Resource {
     val newConversionCore = ConversionCore(mapOf())
 
     genome.conversionCore.actionConversion.map { (action, results) ->
         action to results.map { r ->
-            if (r == old) this
+            if (r == old) this.copy(r.amount)
             else r
         }
     }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }

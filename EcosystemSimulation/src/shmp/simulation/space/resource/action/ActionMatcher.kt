@@ -13,7 +13,8 @@ class ActionMatcher(
         private val resourceActionName: String
 ) {
     init {
-        if (results.isEmpty()) throw DataInitializationError("Action matcher does nothing")
+        if (results.isEmpty())
+            throw DataInitializationError("Action matcher does nothing")
     }
 
     fun constructResults(pool: ResourcePool) = results.flatMap { (n, a) ->

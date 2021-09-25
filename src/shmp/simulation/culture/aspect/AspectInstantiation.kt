@@ -87,6 +87,7 @@ class AspectInstantiation(
                 })
             }
         }
+
         return AspectCore(
                 name,
                 aspectTags,

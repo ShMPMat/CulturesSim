@@ -179,10 +179,10 @@ class ResourceInstantiation(
         resource.genome.conversionCore.actionConversion.map { (action, results) ->
             action to results.map { r ->
                 when (r) {
-                    resource -> newResource.copy(r.amount)
-                    phonyResource -> treeStart[0].copy(r.amount)
+                    resource -> newResource
+                    phonyResource -> treeStart[0]
                     else -> swapLegacies(r.injectAppearance(resource), newResource, treeStart + listOf(newResource))
-                }
+                }.copy(r.amount)
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
         injectBuildings(newConversionCore)

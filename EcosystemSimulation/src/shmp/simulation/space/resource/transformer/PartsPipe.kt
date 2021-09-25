@@ -8,6 +8,6 @@ class PartsPipe(transformer: ResourceTransformer) : PipeTransformer(transformer)
         val newParts = resource.genome.parts.map { transformer.transform(it) }
         val genome = resource.genome.copy(parts = newParts)
         val core = resource.core.copy(genome = genome)
-        return Resource(core)
+        return Resource(core, resource.amount)
     }
 }

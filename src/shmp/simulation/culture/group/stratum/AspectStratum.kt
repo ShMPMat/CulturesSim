@@ -30,7 +30,6 @@ class AspectStratum(
         tile: Tile
 ) : BaseStratum(tile, "Stratum of aspect ${aspect.name}", "") {
     private var _effectiveness = -1.0
-
     private var workedAmount = 0
     private var isRaisedAmount = false
     private var workedStraight = 0
@@ -95,17 +94,18 @@ class AspectStratum(
     }
 
     override fun update(accessibleResources: MutableResourcePack, accessibleTerritory: Territory, group: Group) {
-        super.update(accessibleResources, accessibleTerritory, group)
         if (population == 0)
             return
+
+        super.update(accessibleResources, accessibleTerritory, group)
 
         if (aspect !is MeaningInserter) {
             val oldPopulation = population
             val evaluator = passingEvaluator
-//            val overhead = aspect.calculateNeededWorkers(evaluator, freePopulation.toDouble()).toDouble()
+            val decreaseCoefficient = SoftValue(workedStraight).value.pow(2)
             val amountToRise = min(
                     freePopulation,
-                    (freePopulation * SoftValue(workedStraight).value.pow(2)).toInt() + 1
+                    (freePopulation * decreaseCoefficient).toInt() + 1
             )
             if (amountToRise > 0) {
                 val amount = aspect.calculateProducedValue(evaluator, amountToRise)
