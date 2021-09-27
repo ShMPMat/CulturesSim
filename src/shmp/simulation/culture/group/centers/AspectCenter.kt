@@ -89,7 +89,7 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     fun mutateAspects(group: Group): List<Aspect> { //TODO separate adding of new aspects and updating old
-        (session.rAspectAcquisition / (aspectPool.all.size + 1)).chanceOfNot {
+        (group.cultureCenter.traitCenter.normalValue(Trait.Discovery) * 3 / (aspectPool.all.size + 1)).chanceOfNot {
             return listOf()
         }
 

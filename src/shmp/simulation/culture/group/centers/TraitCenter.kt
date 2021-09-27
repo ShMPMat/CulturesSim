@@ -48,7 +48,8 @@ enum class Trait(val positiveMeme: Meme, val negativeMeme: Meme) {
     Peace(Meme("Peace"), Meme("War")),
     Expansion(Meme("Expansion"), Meme("Content")),
     Consolidation(Meme("Consolidation"), Meme("Freedom")),
-    Creation(Meme("Creation"), Meme("Destruction"))
+    Creation(Meme("Creation"), Meme("Destruction")),
+    Discovery(Meme("Discovery"), Meme("Passiveness"))
 }
 
 typealias TraitValue = SoftValue

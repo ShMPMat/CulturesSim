@@ -30,7 +30,6 @@ fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {
     Self, Good, Bad, NoEvaluation, Uncertainty,
     Hardship, Comfort,
     Importance, Unimportance,
-    Change, Permanence,
     Life, Death,
     Uniqueness, Commonness,
     Simpleness, Complexity -> listOf()
@@ -43,6 +42,8 @@ fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {
     is Freedom -> listOf(Trait.Consolidation.toChange(-value))
     is Creation -> listOf(Trait.Creation.toChange(value))
     is Destruction -> listOf(Trait.Creation.toChange(-value))
+    is Change -> listOf(Trait.Discovery.toChange(value))
+    is Permanence -> listOf(Trait.Discovery.toChange(-value))
 
     is DeterminedConcept -> concept.objectConcept.toConclusion(value).toTraitChanges() +
             concept.ideationalConcept.toConclusion(value).toTraitChanges()
