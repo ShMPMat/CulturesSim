@@ -13,10 +13,7 @@ import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.thinking.meaning.Meme
 
 
-fun takeOutSimilarRituals(
-        aspectPool: MutableCultureAspectPool,
-        bound: Int = 3
-): RitualSystem? {
+fun takeOutSimilarRituals(aspectPool: MutableCultureAspectPool, bound: Int = 3): RitualSystem? {
     val (popularReason, popularRituals) = aspectPool
             .filter { it is Ritual }
             .map { it as Ritual }
@@ -30,10 +27,7 @@ fun takeOutSimilarRituals(
     return null
 }
 
-fun takeOutSimilarTales(
-        aspectPool: MutableCultureAspectPool,
-        bound: Int = 3
-): TaleSystem? {
+fun takeOutSimilarTales(aspectPool: MutableCultureAspectPool, bound: Int = 3): TaleSystem? {
     val (popularConcept, popularTales) = aspectPool
             .filter { it is Tale }
             .map { it as Tale }
@@ -89,11 +83,7 @@ private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableC
     ))
 }
 
-fun takeOutDepictionSystem(
-        aspectPool: MutableCultureAspectPool,
-        groupingMeme: Meme,
-        bound: Int = 3
-): DepictSystem? {
+fun takeOutDepictionSystem(aspectPool: MutableCultureAspectPool, groupingMeme: Meme, bound: Int = 3): DepictSystem? {
     val depictions = aspectPool
             .filter { it is DepictObject }
             .map { it as DepictObject }

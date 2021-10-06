@@ -2,11 +2,8 @@ package shmp.simulation.culture.group.stratum
 
 import shmp.random.singleton.chanceOfNot
 import shmp.simulation.CulturesController.session
-import shmp.simulation.culture.aspect.AspectController
-import shmp.simulation.culture.aspect.ConverseWrapper
-import shmp.simulation.culture.aspect.MeaningInserter
+import shmp.simulation.culture.aspect.*
 import shmp.simulation.culture.aspect.dependency.Dependency
-import shmp.simulation.culture.aspect.getAspectImprovement
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.*

@@ -57,12 +57,11 @@ class AspectInstantiation(
             val key = tags[i][0]
             val tag = tags[i].substring(1)
             when (key) {
-                '/' -> requirements.add(ResourceTag(tag, isInstrumental = false))
-                '#' -> if (tag == "MEANING") {
+                '/' -> requirements.add(ResourceTag(tag))
+                '#' -> if (tag == "MEANING")
                     applyMeaning = true
-                } else {
-                    requirements.add(ResourceTag(tag, isInstrumental = true))
-                }
+                else
+                    requirements.add(InstrumentTag(tag))
                 '&' -> {
                     val matcherTags = tag.split("-+".toRegex()).toTypedArray()
                     val (resultsTags, labelerTags) = matcherTags.partition { it[0] == '#' }
