@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.cultureaspect.reasoning
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 
 
 open class BaseReasoning(

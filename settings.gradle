@@ -1,1 +1,2 @@
 include ':EcosystemSimulation'
+include ':WorldviewGenerator'

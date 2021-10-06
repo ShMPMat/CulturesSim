@@ -12,7 +12,7 @@ import shmp.simulation.culture.group.cultureaspect.util.*
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.culture.thinking.meaning.constructAndAddSimpleMeme
 import shmp.simulation.space.resource.Resource
 import java.util.*

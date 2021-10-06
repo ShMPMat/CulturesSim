@@ -8,7 +8,7 @@ import shmp.simulation.culture.group.GROUP_TAG_TYPE
 import shmp.simulation.culture.group.cultureaspect.CherishedResource
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.thinking.meaning.GroupMemes
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.Event
 import shmp.simulation.event.EventLog
 import shmp.simulation.event.Type

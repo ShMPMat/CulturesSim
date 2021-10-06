@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.centers
 import shmp.random.singleton.RandomSingleton
 import shmp.simulation.CulturesController
 import shmp.simulation.CulturesController.*
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.utils.SoftValue
 import java.util.*
 

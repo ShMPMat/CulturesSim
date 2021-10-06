@@ -9,7 +9,7 @@ import shmp.simulation.culture.group.request.MeaningResourceRequest
 import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.resource_behaviour.ResourceBehaviour
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
 

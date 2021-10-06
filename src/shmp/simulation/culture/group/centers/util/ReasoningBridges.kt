@@ -1,22 +1,23 @@
 package shmp.simulation.culture.group.centers.util
 
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.culture.aspect.Aspect
-import shmp.simulation.culture.aspect.AspectCore
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.TraitChange
 import shmp.simulation.culture.group.centers.toChange
 import shmp.simulation.culture.group.cultureaspect.CherishedResource
 import shmp.simulation.culture.group.cultureaspect.Concept
-import shmp.simulation.culture.group.cultureaspect.reasoning.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.ArbitraryObjectConcept
+import shmp.simulation.culture.group.cultureaspect.reasoning.ActionReasoning
+import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonConclusion
+import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
+import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept.ArbitraryActionConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.DeterminedConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.*
+import shmp.simulation.culture.group.cultureaspect.reasoning.toConclusion
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.group.stratum.Stratum
-import shmp.simulation.culture.thinking.meaning.Meme
 import shmp.simulation.space.resource.Resource
 
 

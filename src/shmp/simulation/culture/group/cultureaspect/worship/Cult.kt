@@ -15,7 +15,7 @@ import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.RequestCore
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.SimpleResourceRequest
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 
 

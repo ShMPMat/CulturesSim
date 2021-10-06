@@ -7,7 +7,7 @@ import shmp.simulation.culture.group.centers.*
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
 import shmp.simulation.culture.thinking.meaning.GroupMemes
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.EventLog
 import shmp.simulation.space.resource.OwnershipMarker
 import shmp.simulation.space.resource.container.MutableResourcePack

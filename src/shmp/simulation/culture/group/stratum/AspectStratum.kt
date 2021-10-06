@@ -7,7 +7,7 @@ import shmp.simulation.culture.aspect.dependency.Dependency
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.passingReward
 import shmp.simulation.culture.group.request.*
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.culture.thinking.meaning.makeMeme
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.container.MutableResourcePack

@@ -1,10 +1,14 @@
-package shmp.simulation.culture.thinking.meaning
+package shmp.generator.culture.worldview
 
 import java.util.*
+import kotlin.collections.forEach
+import kotlin.collections.sortedBy
+import kotlin.let
+import kotlin.text.toLowerCase
 
 
 open class MemePool private constructor(memes: Collection<Meme>) {
-    internal constructor() : this(ArrayList<Meme>())
+    protected constructor() : this(ArrayList<Meme>())
 
     protected val memesMap = TreeMap<String, Meme>()
 

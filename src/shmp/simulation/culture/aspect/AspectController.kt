@@ -4,7 +4,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.PopulationCenter
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.ResourceEvaluator
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource

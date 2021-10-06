@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.process
 
 import shmp.simulation.culture.group.centers.TraitChange
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.Event
 
 

@@ -5,7 +5,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConce
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObject
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObjectDependent
 import shmp.simulation.culture.group.request.Request
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import java.util.*
 
 class DepictSystem(

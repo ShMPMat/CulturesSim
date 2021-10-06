@@ -4,7 +4,7 @@ import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.group.centers.Group
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.space.resource.ExternalResourceFeature
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.ResourceTag

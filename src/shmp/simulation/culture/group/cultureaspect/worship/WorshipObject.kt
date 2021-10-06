@@ -4,7 +4,7 @@ import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 
 
 interface WorshipObject {

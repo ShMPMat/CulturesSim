@@ -5,10 +5,11 @@ import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.stratum.AspectStratum
 import shmp.simulation.culture.group.stratum.Stratum
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.container.ResourcePack
+
 
 class MeaningResourceRequest(
         private val meme: Meme,

@@ -8,7 +8,7 @@ import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.GroupTileTag
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.thinking.meaning.GroupMemes
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.Type
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile

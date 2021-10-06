@@ -19,7 +19,7 @@ import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.thinking.language.templates.TemplateBase
 import shmp.simulation.culture.thinking.language.templates.constructTextInfo
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import shmp.simulation.culture.thinking.meaning.makeAspectMemes
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.TileTag

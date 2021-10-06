@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.reasoning.concept
 
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 
 
 sealed class IdeationalConcept(

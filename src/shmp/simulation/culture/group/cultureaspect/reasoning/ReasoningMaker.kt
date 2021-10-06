@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.cultureaspect.reasoning
 import shmp.random.randomElement
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import kotlin.random.Random
 
 

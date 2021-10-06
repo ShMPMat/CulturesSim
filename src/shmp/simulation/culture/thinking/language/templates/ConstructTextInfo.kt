@@ -1,5 +1,6 @@
 package shmp.simulation.culture.thinking.language.templates
 
+import shmp.generator.culture.worldview.Meme
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.aspect.Aspect

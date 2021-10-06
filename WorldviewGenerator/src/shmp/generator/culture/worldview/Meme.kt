@@ -1,6 +1,14 @@
-package shmp.simulation.culture.thinking.meaning
+package shmp.generator.culture.worldview
 
 import java.util.*
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.joinToString
+import kotlin.collections.map
+import kotlin.collections.plus
+import kotlin.collections.toMutableList
+import kotlin.text.contains
+import kotlin.text.toLowerCase
 
 
 open class Meme(observerWord: String, var predicates: List<Meme> = listOf(), open var importance: Int = 1) {

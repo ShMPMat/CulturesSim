@@ -5,7 +5,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalC
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.IdeaConversion
 import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 
 
 class ReasonField(

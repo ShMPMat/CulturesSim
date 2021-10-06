@@ -8,7 +8,7 @@ import shmp.simulation.culture.group.cultureaspect.reasoning.concept.DeterminedC
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import kotlin.random.Random
 
 

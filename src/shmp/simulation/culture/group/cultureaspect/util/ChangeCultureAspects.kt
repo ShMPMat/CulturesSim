@@ -10,7 +10,7 @@ import shmp.simulation.culture.group.cultureaspect.worship.ConceptObjectWorship
 import shmp.simulation.culture.group.cultureaspect.worship.GodWorship
 import shmp.simulation.culture.group.cultureaspect.worship.MultigroupWorshipWrapper
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 
 
 fun takeOutSimilarRituals(aspectPool: MutableCultureAspectPool, bound: Int = 3): RitualSystem? {

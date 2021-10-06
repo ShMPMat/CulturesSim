@@ -2,7 +2,7 @@ package shmp.simulation.culture.thinking.language.templates
 
 import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 
 
 class TextInfo(val map: MutableMap<InfoKey, Meme>, val actorConcept: ObjectConcept) {

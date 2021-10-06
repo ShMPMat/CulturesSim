@@ -1,5 +1,6 @@
 package shmp.simulation.culture.thinking.meaning
 
+import shmp.generator.culture.worldview.Meme
 import shmp.random.singleton.chanceOf
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.aspect.ConverseWrapper

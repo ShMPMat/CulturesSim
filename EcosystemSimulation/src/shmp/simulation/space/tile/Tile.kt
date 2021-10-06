@@ -154,10 +154,6 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         if (resource.isEmpty)
             return
 
-        if (resource.simpleName == "Person") {
-            val a = 0
-        }
-
         _delayedResources.add(resource)
     }
 

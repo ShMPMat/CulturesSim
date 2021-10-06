@@ -1,8 +1,7 @@
 package shmp.simulation.culture.thinking.language.templates;
 
+import shmp.generator.culture.worldview.Meme;
 import shmp.simulation.CulturesController;
-import shmp.simulation.culture.thinking.meaning.Meme;
-import shmp.simulation.culture.thinking.meaning.Meme;
 
 import java.util.*;
 import java.util.stream.Collectors;

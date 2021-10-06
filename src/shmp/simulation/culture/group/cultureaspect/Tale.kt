@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.cultureaspect
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.Request
 import shmp.simulation.culture.thinking.language.templates.TextInfo
-import shmp.simulation.culture.thinking.meaning.Meme
+import shmp.generator.culture.worldview.Meme
 import java.util.*
 
 
