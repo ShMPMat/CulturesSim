@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.request
 
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.AbstractReasonConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
+import shmp.generator.culture.worldview.reasoning.concept.AbstractReasonConcept
+import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
 import shmp.generator.culture.worldview.Meme
 
 

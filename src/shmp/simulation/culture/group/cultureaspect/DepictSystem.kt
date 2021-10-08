@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect
 
 import shmp.simulation.culture.group.centers.Group
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObject
 import shmp.simulation.culture.group.cultureaspect.worship.WorshipObjectDependent
 import shmp.simulation.culture.group.request.Request

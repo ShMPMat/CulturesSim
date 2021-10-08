@@ -1,7 +1,7 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
+package shmp.generator.culture.worldview.reasoning.convertion
 
 import shmp.random.SampleSpaceObject
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
+import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
 
 
 data class Combinator(

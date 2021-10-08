@@ -5,14 +5,14 @@ import shmp.random.singleton.randomElementOrNull
 import shmp.random.singleton.testProbability
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.centers.AspectCenter
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.associateWith
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.equalsAll
+import shmp.generator.culture.worldview.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.associateWith
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
+import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversion
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversionResult
+import shmp.generator.culture.worldview.reasoning.convertion.emptyReasonConversionResult
+import shmp.generator.culture.worldview.reasoning.equalsAll
 
 
 class AspectConversion(private val aspectCenter: AspectCenter) : ReasonConversion {

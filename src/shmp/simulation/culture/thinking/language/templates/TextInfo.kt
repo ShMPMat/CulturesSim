@@ -1,7 +1,7 @@
 package shmp.simulation.culture.thinking.language.templates
 
 import shmp.simulation.CulturesController
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.generator.culture.worldview.Meme
 
 

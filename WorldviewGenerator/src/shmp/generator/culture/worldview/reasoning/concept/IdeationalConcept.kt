@@ -1,4 +1,4 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning.concept
+package shmp.generator.culture.worldview.reasoning.concept
 
 import shmp.generator.culture.worldview.Meme
 

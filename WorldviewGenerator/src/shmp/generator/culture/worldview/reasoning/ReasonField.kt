@@ -1,10 +1,10 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning
+package shmp.generator.culture.worldview.reasoning
 
 import shmp.random.singleton.randomElement
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.IdeaConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept
+import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
+import shmp.generator.culture.worldview.reasoning.convertion.IdeaConversion
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversion
 import shmp.generator.culture.worldview.Meme
 
 

@@ -1,18 +1,16 @@
 package shmp.simulation.culture.group.centers.util
 
 import shmp.random.SampleSpaceObject
-import shmp.random.randomElementOrNull
 import shmp.random.singleton.*
-import shmp.simulation.CulturesController
 import shmp.simulation.culture.group.centers.MemoryCenter
 import shmp.simulation.culture.group.centers.util.ReasoningRandom.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
+import shmp.generator.culture.worldview.reasoning.*
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversion
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversionResult
+import shmp.generator.culture.worldview.reasoning.convertion.emptyReasonConversionResult
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.culture.group.request.RequestType
 import shmp.simulation.culture.group.request.ResultStatus

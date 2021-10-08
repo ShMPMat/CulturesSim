@@ -1,10 +1,10 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
+package shmp.generator.culture.worldview.reasoning.convertion
 
 import shmp.random.randomSublist
 import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.EqualityReasoning
+import shmp.generator.culture.worldview.reasoning.ReasonComplex
 
 
 object EqualitySubjectCorrelationConversion : ReasonConversion {

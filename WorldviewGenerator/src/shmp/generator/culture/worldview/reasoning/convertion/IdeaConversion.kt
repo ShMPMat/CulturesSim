@@ -1,11 +1,11 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
+package shmp.generator.culture.worldview.reasoning.convertion
 
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.equals
+import shmp.generator.culture.worldview.reasoning.EqualityReasoning
+import shmp.generator.culture.worldview.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept
+import shmp.generator.culture.worldview.reasoning.equals
 import shmp.utils.without
 
 

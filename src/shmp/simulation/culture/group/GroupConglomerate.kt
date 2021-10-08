@@ -5,7 +5,7 @@ import shmp.simulation.CulturesController
 import shmp.simulation.culture.aspect.Aspect
 import shmp.simulation.culture.group.centers.*
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
+import shmp.generator.culture.worldview.reasoning.ReasonField
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.EventLog

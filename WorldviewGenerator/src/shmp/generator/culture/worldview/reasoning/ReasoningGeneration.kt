@@ -1,13 +1,12 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning
+package shmp.generator.culture.worldview.reasoning
 
 import shmp.random.randomElement
-import shmp.random.randomElementOrNull
 import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.DeterminedConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.concept.DeterminedConcept
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.generator.culture.worldview.Meme
 import kotlin.random.Random
 

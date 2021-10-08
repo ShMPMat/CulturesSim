@@ -3,9 +3,9 @@ package shmp.simulation.culture.group.cultureaspect.util
 import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.EqualityReasoning
+import shmp.generator.culture.worldview.reasoning.ReasonField
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.ConceptObjectWorship
 import shmp.simulation.culture.group.cultureaspect.worship.GodWorship
 import shmp.simulation.culture.group.cultureaspect.worship.MultigroupWorshipWrapper

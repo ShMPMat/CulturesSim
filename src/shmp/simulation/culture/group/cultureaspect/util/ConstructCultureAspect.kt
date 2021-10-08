@@ -12,7 +12,7 @@ import shmp.simulation.culture.group.centers.Trait
 import shmp.simulation.culture.group.centers.toNegativeChange
 import shmp.simulation.culture.group.centers.toPositiveChange
 import shmp.simulation.culture.group.cultureaspect.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.BetterAspectUseReason
 import shmp.simulation.culture.group.reason.Reason

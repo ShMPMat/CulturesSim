@@ -1,7 +1,7 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
+package shmp.generator.culture.worldview.reasoning.convertion
 
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ReasonConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
+import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
+import shmp.generator.culture.worldview.reasoning.Reasoning
 
 
 data class ReasonConversionResult(val reasonings: MutableList<Reasoning>, val concepts: MutableList<ReasonConcept>) {

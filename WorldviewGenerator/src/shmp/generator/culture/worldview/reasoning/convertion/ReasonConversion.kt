@@ -1,10 +1,9 @@
-package shmp.simulation.culture.group.cultureaspect.reasoning.convertion
+package shmp.generator.culture.worldview.reasoning.convertion
 
-import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonField
-import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept
+import shmp.generator.culture.worldview.reasoning.EqualityReasoning
+import shmp.generator.culture.worldview.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.ReasonField
+import shmp.generator.culture.worldview.reasoning.Reasoning
 
 
 interface ReasonConversion {

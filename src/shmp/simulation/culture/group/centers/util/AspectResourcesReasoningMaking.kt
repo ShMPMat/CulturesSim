@@ -1,12 +1,12 @@
 package shmp.simulation.culture.group.centers.util
 
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.culture.group.cultureaspect.reasoning.EqualityReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversion
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.ReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.convertion.emptyReasonConversionResult
-import shmp.simulation.culture.group.cultureaspect.reasoning.equals
+import shmp.generator.culture.worldview.reasoning.EqualityReasoning
+import shmp.generator.culture.worldview.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversion
+import shmp.generator.culture.worldview.reasoning.convertion.ReasonConversionResult
+import shmp.generator.culture.worldview.reasoning.convertion.emptyReasonConversionResult
+import shmp.generator.culture.worldview.reasoning.equals
 
 
 object AspectResourcesConversion : ReasonConversion {
@@ -16,7 +16,7 @@ object AspectResourcesConversion : ReasonConversion {
                 if (equalityReasoning.objectConcept !is ArbitraryAspect)
                     return@mapNotNull null
 
-                equalityReasoning.objectConcept.aspect to equalityReasoning.subjectConcept
+                (equalityReasoning.objectConcept as ArbitraryAspect).aspect to equalityReasoning.subjectConcept
             }
             .randomElementOrNull()
             ?.let { (aspect, subjectConcept) ->

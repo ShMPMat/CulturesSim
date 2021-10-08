@@ -8,8 +8,8 @@ import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.baseConversions
 import shmp.simulation.culture.group.cultureaspect.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonComplex
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept
+import shmp.generator.culture.worldview.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.simulation.culture.group.cultureaspect.util.createDepictObject
 import shmp.simulation.culture.group.cultureaspect.util.createSpecialPlaceForWorship
 import shmp.simulation.culture.group.cultureaspect.util.createTale

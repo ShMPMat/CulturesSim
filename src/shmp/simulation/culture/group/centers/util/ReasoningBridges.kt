@@ -8,14 +8,14 @@ import shmp.simulation.culture.group.centers.TraitChange
 import shmp.simulation.culture.group.centers.toChange
 import shmp.simulation.culture.group.cultureaspect.CherishedResource
 import shmp.simulation.culture.group.cultureaspect.Concept
-import shmp.simulation.culture.group.cultureaspect.reasoning.ActionReasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.ReasonConclusion
-import shmp.simulation.culture.group.cultureaspect.reasoning.Reasoning
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ActionConcept.ArbitraryActionConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.DeterminedConcept
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.IdeationalConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.concept.ObjectConcept.*
-import shmp.simulation.culture.group.cultureaspect.reasoning.toConclusion
+import shmp.generator.culture.worldview.reasoning.ActionReasoning
+import shmp.generator.culture.worldview.reasoning.ReasonConclusion
+import shmp.generator.culture.worldview.reasoning.Reasoning
+import shmp.generator.culture.worldview.reasoning.concept.ActionConcept.ArbitraryActionConcept
+import shmp.generator.culture.worldview.reasoning.concept.DeterminedConcept
+import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
+import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept.*
+import shmp.generator.culture.worldview.reasoning.toConclusion
 import shmp.simulation.culture.group.resource_behaviour.getRandom
 import shmp.simulation.culture.group.stratum.Stratum
 import shmp.simulation.space.resource.Resource
@@ -46,8 +46,10 @@ fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {
     is Change -> listOf(Trait.Discovery.toChange(value))
     is Permanence -> listOf(Trait.Discovery.toChange(-value))
 
-    is DeterminedConcept -> concept.objectConcept.toConclusion(value).toTraitChanges() +
-            concept.ideationalConcept.toConclusion(value).toTraitChanges()
+    is DeterminedConcept -> (concept as DeterminedConcept).let {
+        it.objectConcept.toConclusion(value).toTraitChanges() +
+                it.ideationalConcept.toConclusion(value).toTraitChanges()
+    }
 
     else -> throw GroupError("No trait conversion for a concept $this")
 }
@@ -62,7 +64,7 @@ fun Reasoning.toCherishedResource(): CherishedResource? {
         return null
 
     return when (objectConcept) {
-        is ArbitraryResource -> CherishedResource(this.objectConcept.resource, getRandom())
+        is ArbitraryResource -> CherishedResource((objectConcept as ArbitraryResource).resource, getRandom())
         else -> null
     }
 }
