@@ -18,7 +18,7 @@ import java.util.*
 import kotlin.math.pow
 
 
-class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: List<ReasonConversion>) {
+class CultureAspectCenter(val reasonField: ReasonField) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
     private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
     private val reasonsWithSystems: MutableSet<Reason> = HashSet()
@@ -32,7 +32,7 @@ class CultureAspectCenter(val reasonField: ReasonField, val reasonConversions: L
 
     private fun updateReasonings(group: Group) {
         session.reasoningUpdate.chanceOf {
-            val newReasonings = reasonField.update(listOf(Meme(group.name)), reasonConversions)
+            val newReasonings = reasonField.update(listOf(Meme(group.name)))
             processReasonings(newReasonings)
         }
     }
@@ -182,15 +182,7 @@ fun cultureConversions(
         MemoryConversion(memoryCenter),
         AspectConversion(aspectCenter),
         StratumConversion(stratumCenter),
-) + allCorrespondingIdealActionConversions + baseConversions()
+) + groupBaseConversions()
 
-fun baseConversions() = listOf(
-        CorrespondingConversion,
-        OppositionConversion,
-        CombinatorsConversion,
-        EqualitySubjectCorrelationConversion,
-        CommonnessExistenceInConversion,
-        ActionConversion.PositiveDriveConversion,
-        AspectResourcesConversion,
-        StratumResourcesConversion
-)
+fun groupBaseConversions() = baseConversions() +
+        listOf(AspectResourcesConversion, StratumResourcesConversion)

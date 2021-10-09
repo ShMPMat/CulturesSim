@@ -8,10 +8,11 @@ import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept
 import shmp.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
 import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
 import shmp.generator.culture.worldview.Meme
+import shmp.random.singleton.randomElement
 import kotlin.random.Random
 
 
-fun generateBaseReasoning(reasonerMemes: List<Meme>): Reasoning {
+internal fun generateBaseReasoning(reasonerMemes: List<Meme>): Reasoning {
     val random = RandomSingleton.random
 
     val positiveConcepts = listOf(Importance, Uniqueness, Commonness)
@@ -24,27 +25,26 @@ fun generateBaseReasoning(reasonerMemes: List<Meme>): Reasoning {
         )
     } ?: listOf()
 
-    return randomElement(
-            listOf(
-                    makeAdjectiveReasoning(
-                            generateDeterminedConceptFromMemes(reasonerMemes, listOf(Life, Death), random),
-                            positiveConcepts,
-                            true,
-                            random
-                    ),
-                    makeAdjectiveReasoning(
-                            generateDeterminedConceptFromMemes(reasonerMemes, listOf(Life, Death), random),
-                            negativeConcepts,
-                            false,
-                            random
-                    )
-            ) + reasonerPredicates,
-            random
-    )
+    val possibleReasonings = listOf(
+            makeAdjectiveReasoning(
+                    generateDeterminedConceptFromMemes(reasonerMemes, listOf(Life, Death), random),
+                    positiveConcepts,
+                    true,
+                    random
+            ),
+            makeAdjectiveReasoning(
+                    generateDeterminedConceptFromMemes(reasonerMemes, listOf(Life, Death), random),
+                    negativeConcepts,
+                    false,
+                    random
+            )
+    ) + reasonerPredicates
+
+    return possibleReasonings.randomElement()
 }
 
 
-fun generateNewReasonings(field: ReasonField, complex: ReasonComplex): List<Reasoning> {
+internal fun generateNewReasonings(field: ReasonField, complex: ReasonComplex): List<Reasoning> {
     return listOf()
 }
 

@@ -2,14 +2,14 @@ package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomElement
-import shmp.random.singleton.randomElementOrNull
 import shmp.simulation.CulturesController.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
-import shmp.simulation.culture.group.centers.baseConversions
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.generator.culture.worldview.reasoning.ReasonComplex
 import shmp.generator.culture.worldview.reasoning.concept.ObjectConcept
+import shmp.random.singleton.randomElementOrNull
+import shmp.simulation.culture.group.centers.groupBaseConversions
 import shmp.simulation.culture.group.cultureaspect.util.createDepictObject
 import shmp.simulation.culture.group.cultureaspect.util.createSpecialPlaceForWorship
 import shmp.simulation.culture.group.cultureaspect.util.createTale
@@ -86,7 +86,7 @@ open class Worship(
             }
 
         session.reasoningUpdate.pow(0.5).chanceOf {
-            baseConversions().randomElementOrNull()
+            groupBaseConversions().randomElementOrNull()
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
         }
 

@@ -9,6 +9,7 @@ import shmp.generator.culture.worldview.Meme
 
 
 class ReasonField(
+        val conversions: List<ReasonConversion>,
         startReasonComplexes: List<ReasonComplex> = listOf(),
         startSpecialConcepts: Set<ReasonConcept> = setOf(),
         startSpecialConversions: List<ReasonConversion> = listOf()
@@ -61,25 +62,26 @@ class ReasonField(
         }
     }
 
-    fun update(reasonerMemes: List<Meme>, conversions: List<ReasonConversion>): List<Reasoning> {
+    fun update(reasonerMemes: List<Meme>): List<Reasoning> {
         val resultReasonings = mutableListOf<Reasoning>()
 
-        reasonComplexes.forEach { complex ->
+        for (complex in reasonComplexes) {
             val newReasonings = if (complex.isEmpty)
                 listOf(generateBaseReasoning(reasonerMemes))
             else
                 generateNewReasonings(this, complex)
+
             resultReasonings += complex.addReasonings(newReasonings)
         }
 
         val conversion = conversions.randomElement()
-
         resultReasonings += conversion.enrichComplex(commonReasonings, this)
 
         return resultReasonings
     }
 
-    fun copy() = ReasonField(
+    fun copy(conversions: List<ReasonConversion> = this.conversions) = ReasonField(
+            conversions,
             reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toSet()) },
             specialConcepts,
             specialConversions
