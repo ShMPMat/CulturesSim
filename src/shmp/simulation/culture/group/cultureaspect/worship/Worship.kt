@@ -86,7 +86,7 @@ open class Worship(
             }
 
         session.reasoningUpdate.pow(0.5).chanceOf {
-            groupBaseConversions().randomElementOrNull()
+            groupBaseConversions().randomElementOrNull() //TODO mb culture conversions?
                     ?.enrichComplex(reasonComplex, group.cultureCenter.cultureAspectCenter.reasonField)
         }
 

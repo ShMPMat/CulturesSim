@@ -15,6 +15,7 @@ dependencies {
     implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
     implementation 'com.github.ShMPMat:GenerationUtils:master-SNAPSHOT' changing true
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    runtimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.4.31'
 }
 
 repositories {
