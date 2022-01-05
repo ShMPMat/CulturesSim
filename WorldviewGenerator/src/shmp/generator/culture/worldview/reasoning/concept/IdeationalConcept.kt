@@ -1,6 +1,8 @@
 package shmp.generator.culture.worldview.reasoning.concept
 
 import shmp.generator.culture.worldview.Meme
+import shmp.generator.culture.worldview.reasoning.convertion.ActionConversion
+import shmp.utils.without
 
 
 sealed class IdeationalConcept(
@@ -70,3 +72,6 @@ sealed class IdeationalConcept(
     object Luck : IdeationalConcept(Meme("Luck"), { listOf(Misfortune) }, { listOf() })
     object Misfortune : IdeationalConcept(Meme("Misfortune"), { listOf(Luck) }, { listOf() })
 }
+
+val ideationalConcepts = IdeationalConcept::class.sealedSubclasses
+        .mapNotNull { it.objectInstance }

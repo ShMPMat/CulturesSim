@@ -1,9 +1,10 @@
 package shmp.visualizer.worldview
 
-import shmp.generator.culture.worldview.Meme
 import shmp.generator.culture.worldview.reasoning.ReasonField
+import shmp.generator.culture.worldview.reasoning.concept.ideationalConcepts
 import shmp.generator.culture.worldview.reasoning.convertion.baseConversions
 import shmp.generator.culture.worldview.toMeme
+import shmp.random.randomSublist
 import shmp.random.singleton.RandomSingleton
 import kotlin.random.Random
 
@@ -28,7 +29,9 @@ fun main() {
     if (RandomSingleton.safeRandom == null)
         RandomSingleton.safeRandom = Random(1)
 
-    val reasonField = ReasonField(baseConversions())
+    val concepts = randomSublist(ideationalConcepts, RandomSingleton.random, 0, ideationalConcepts.size)
+            .toSet()
+    val reasonField = ReasonField(baseConversions(), startSpecialConcepts = concepts)
     val visualizer = WorldviewVisualizer(reasonField)
 
     visualizer.run()
