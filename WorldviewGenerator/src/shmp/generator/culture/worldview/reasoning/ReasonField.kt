@@ -10,30 +10,29 @@ import shmp.generator.culture.worldview.Meme
 
 class ReasonField(
         val conversions: List<ReasonConversion>,
-        startReasonComplexes: List<ReasonComplex> = listOf(),
-        startSpecialConcepts: Set<ReasonConcept> = setOf(),
-        startSpecialConversions: List<ReasonConversion> = listOf()
+        reasonComplexes: List<ReasonComplex> = listOf(),
+        specialConcepts: Set<ReasonConcept> = setOf(),
+        specialConversions: List<ReasonConversion> = listOf()
 ) {
-    var commonReasonings = ReasonComplex(COMMON_REASONS)
+    var commonReasons = ReasonComplex(COMMON_REASONS)
         private set
 
-    private val _reasoningComplexes = startReasonComplexes.toMutableList()
-    val reasonComplexes: List<ReasonComplex> = _reasoningComplexes
+    private val _reasonComplexes = reasonComplexes.toMutableList()
+    val reasonComplexes: List<ReasonComplex> = _reasonComplexes
 
-    private val _specialConcepts = startSpecialConcepts.toMutableSet()
+    private val _specialConcepts = specialConcepts.toMutableSet()
     val specialConcepts: Set<ReasonConcept> = _specialConcepts
 
-    private val _specialConversions = startSpecialConversions.toMutableList()
+    private val _specialConversions = specialConversions.toMutableList()
     val specialConversions: List<ReasonConversion> = _specialConversions
 
     init {
-        _reasoningComplexes.find { it.name == COMMON_REASONS }
-                ?.let {
-                    commonReasonings = it
-                }
-                ?: run {
-                    _reasoningComplexes.add(commonReasonings)
-                }
+        val addedCommonReasons = _reasonComplexes.find { it.name == COMMON_REASONS }
+
+        if (addedCommonReasons == null)
+            _reasonComplexes.add(commonReasons)
+        else
+            commonReasons = addedCommonReasons
     }
 
     fun addConcepts(concepts: List<ReasonConcept>) = _specialConcepts.addAll(concepts)
@@ -54,7 +53,8 @@ class ReasonField(
         } else {
             _specialConversions.removeAll(appropriateConversions)
 
-            val newEquivalents = appropriateConversions.flatMap { it.equivalentIdeas }.toMutableSet()
+            val newEquivalents = appropriateConversions.flatMap { it.equivalentIdeas }
+                    .toMutableSet()
             newEquivalents.add(equalityReasoning.objectConcept)
             newEquivalents.add(equalityReasoning.subjectConcept)
 
@@ -75,7 +75,7 @@ class ReasonField(
         }
 
         val conversion = conversions.randomElement()
-        resultReasonings += conversion.enrichComplex(commonReasonings, this)
+        resultReasonings += conversion.enrichComplex(commonReasons, this)
 
         return resultReasonings
     }

@@ -100,8 +100,8 @@ fun printGroupStatistics(world: CulturesWorld): String {
              |Richest common sense:
              |${
         conglomerates.flatMap { it.subgroups }
-                .maxByOrNull { it.cultureCenter.cultureAspectCenter.reasonField.commonReasonings.reasonings.size }
-                ?.let { g -> "${g.name} - ${g.cultureCenter.cultureAspectCenter.reasonField.commonReasonings}" }
+                .maxByOrNull { it.cultureCenter.cultureAspectCenter.reasonField.commonReasons.reasonings.size }
+                ?.let { g -> "${g.name} - ${g.cultureCenter.cultureAspectCenter.reasonField.commonReasons}" }
     }
              |
              |Most additional conversions:

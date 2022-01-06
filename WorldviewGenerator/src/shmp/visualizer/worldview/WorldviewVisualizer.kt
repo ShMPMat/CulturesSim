@@ -31,7 +31,7 @@ fun main() {
 
     val concepts = randomSublist(ideationalConcepts, RandomSingleton.random, 0, ideationalConcepts.size)
             .toSet()
-    val reasonField = ReasonField(baseConversions(), startSpecialConcepts = concepts)
+    val reasonField = ReasonField(baseConversions(), specialConcepts = concepts)
     val visualizer = WorldviewVisualizer(reasonField)
 
     visualizer.run()

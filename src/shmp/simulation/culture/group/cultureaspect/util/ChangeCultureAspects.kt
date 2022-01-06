@@ -47,7 +47,7 @@ fun takeOutWorship(reasonField: ReasonField, aspectPool: MutableCultureAspectPoo
 }
 
 private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableCultureAspectPool): Worship? {
-    val reasoning = reasonField.commonReasonings.reasonings
+    val reasoning = reasonField.commonReasons.reasonings
             .filterIsInstance<EqualityReasoning>()
             .filter { it.objectConcept is ObjectConcept }
             .randomElementOrNull()
@@ -78,7 +78,7 @@ private fun takeOutConceptWorship(reasonField: ReasonField, aspectPool: MutableC
             taleSystem,
             depictSystem,
             PlaceSystem(mutableSetOf(), true),
-            reasonField.commonReasonings.extractComplexFor(concept, "Worship of $concept"),
+            reasonField.commonReasons.extractComplexFor(concept, "Worship of $concept"),
             mutableListOf()
     ))
 }
