@@ -47,7 +47,8 @@ open class TextEcosystemVisualizer(
 
     private var currentTurner: Turner? = null
     private var turnerThread: Thread? = null
-    private val tileMappers: MutableList<TileMapper> = mutableListOf()
+    private val _tileMappers = mutableListOf<TileMapper>()
+    val tileMappers: List<TileMapper> = _tileMappers
 
     init {
         Controller.visualizer = this
@@ -226,17 +227,20 @@ open class TextEcosystemVisualizer(
         defaultManager.handleCommand(line, this)
     }
 
-    protected fun addTileMapper(mapper: TileMapper) {
-        tileMappers.add(mapper)
-        tileMappers.sortWith(Comparator.comparingInt(TileMapper::order))
+    fun addTileMapper(mapper: TileMapper) {
+        _tileMappers.add(mapper)
+        _tileMappers.sortWith(Comparator.comparingInt(TileMapper::order))
+    }
+
+    fun removeTileMapperByName(mapperName: String) {
+        _tileMappers.removeIf { it.name == mapperName }
     }
 
     private fun applyMappers(tile: Tile?): String {
-        for (mapper in tileMappers) {
+        for (mapper in _tileMappers) {
             val result = mapper.mapper.invoke(tile!!)
-            if (result != "") {
+            if (result != "")
                 return result
-            }
         }
         return " "
     }

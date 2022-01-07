@@ -10,7 +10,8 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 
-const val MARK = "\u001b[31mX"
+const val MARK_COLOR = "\u001b[31m"
+const val MARK = MARK_COLOR + "X"
 const val NOTHING = ""
 
 
@@ -118,8 +119,8 @@ fun resourceTypeMapper(type: ResourceType, tile: Tile) =
         if (tile.resourcePack.any { it.genome.type == type }) MARK
         else NOTHING
 
-fun resourceSubstringMapper(substring: String, tile: Tile) =
-        if (tile.resourcesWithMoved.any { it.fullName.contains(substring)}) MARK
+fun resourceSubstringMapper(substring: String, tile: Tile, symbol: String = MARK) =
+        if (tile.resourcesWithMoved.any { it.fullName.contains(substring)}) symbol
         else NOTHING
 
 fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =

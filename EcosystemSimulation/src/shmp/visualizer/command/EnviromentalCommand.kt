@@ -20,6 +20,8 @@ enum class EnvironmentCommand(command: String) : Command {
     AllPresentResources("rrr( f)?"),
     AllPossibleResources("rrrr"),
     ResourceDensity("rd"),
+    PinResources("pin \\w+ ."),
+    UnpinResources("unpin \\w+"),
     Events("(\\d+ )?e ?.*"),
     ShowMap("[mM]"),
     LegendOn("legend on"),

@@ -23,16 +23,17 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                 TerrainLevel -> printMap { levelMapper(it) }
                 Vapour -> printMap { vapourMapper(it) }
                 TileTag -> printMap { tileTagMapper(splitCommand[1], it) }
-                Resource -> try {
-                    val resource = world.resourcePool.getBaseName(line.substring(2))
-                    printResource(resource)
-                } catch (e: NoSuchElementException) {
-                    resourceSymbols.entries
-                            .filter { it.value == line.substring(2) }
-                            .map { it.key }
-                            .firstOrNull()
-                            ?.let { printResource(it) }
-                }
+                Resource ->
+                    try {
+                        val resource = world.resourcePool.getBaseName(line.substring(2))
+                        printResource(resource)
+                    } catch (e: NoSuchElementException) {
+                        resourceSymbols.entries
+                                .filter { it.value == line.substring(2) }
+                                .map { it.key }
+                                .firstOrNull()
+                                ?.let { printResource(it) }
+                    }
                 ResourceSubstring -> {
                     printMap { resourceSubstringMapper(splitCommand[1], it) }
                     println(briefPrintResourcesWithSubstring(map, splitCommand[1]))
@@ -42,11 +43,12 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                                 splitCommand[1].toInt() + mapPrintInfo.cut]!!,
                         splitCommand[3]
                 ))
-                ResourceType -> if (ResourceType.values().toList().any { it.toString() == splitCommand[1] }) {
-                    val type = ResourceType.valueOf(splitCommand[1])
-                    printMap { resourceTypeMapper(type, it) }
-                } else
-                    println("Unknown type - " + splitCommand[1])
+                ResourceType ->
+                    if (ResourceType.values().toList().any { it.toString() == splitCommand[1] }) {
+                        val type = ResourceType.valueOf(splitCommand[1])
+                        printMap { resourceTypeMapper(type, it) }
+                    } else
+                        println("Unknown type - " + splitCommand[1])
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
                 AllBasicResources -> println(basicResourcesCounter(world))
                 AllPresentResources -> println(allResourcesCounter(
@@ -54,10 +56,27 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                         splitCommand.size > 1 && splitCommand[1] == "f"
                 ))
                 AllPossibleResources -> println(visualizer.printedResources())
-                Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]?.let {
-                    printTile(it)
-                } ?: print("No such Tile")
+                Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]
+                        ?.let {
+                            printTile(it)
+                        } ?: print("No such Tile")
                 ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
+                PinResources -> {
+                    val resourceQuery = splitCommand[1]
+                    val mapperFun = { t: shmp.simulation.space.tile.Tile ->
+                        resourceSubstringMapper(resourceQuery, t, MARK_COLOR + splitCommand[2])
+                    }
+                    val minOrder = visualizer.tileMappers.map { it.order }
+                            .minOrNull()
+                            ?: 0
+                    val mapper = TileMapper(mapperFun, minOrder - 1, "Resource $resourceQuery")
+
+                    visualizer.addTileMapper(mapper)
+                    printMap(mapperFun)
+                    println(briefPrintResourcesWithSubstring(map, splitCommand[1]))
+                    println("Added mapper for this resource")
+                }
+                UnpinResources -> visualizer.removeTileMapperByName("Resource ${splitCommand[1]}")
                 Events -> {
                     var amount = 100
                     var drop = splitCommand[0].length + 1
@@ -88,9 +107,10 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                     controller.geologicTurn()
                     print()
                 }
-                Turner -> line.toIntOrNull()?.let {
-                    launchTurner(it)
-                } ?: println("Wrong number format for amount of turns")
+                Turner -> line.toIntOrNull()
+                        ?.let {
+                            launchTurner(it)
+                        } ?: println("Wrong number format for amount of turns")
                 Turn -> {
                     controller.turn()
                     print()
