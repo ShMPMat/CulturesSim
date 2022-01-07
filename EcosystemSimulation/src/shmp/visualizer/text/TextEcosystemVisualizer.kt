@@ -47,6 +47,8 @@ open class TextEcosystemVisualizer(
 
     private var currentTurner: Turner? = null
     private var turnerThread: Thread? = null
+    internal var printTurnStep = 50
+
     private val _tileMappers = mutableListOf<TileMapper>()
     val tileMappers: List<TileMapper> = _tileMappers
 
@@ -58,11 +60,11 @@ open class TextEcosystemVisualizer(
     open fun initialize() {
         registerEnvironmentalCommands(commandManager, TextEcosystemHandler())
         addTileMapper(TileMapper({ ecosystemTypeMapper(resourceSymbols, it) }, 10))
-        print()
+        println()
         controller.initializeFirst()
-        print()
+        println()
         controller.initializeSecond()
-        print()
+        println()
         mapPrintInfo.computeCut(map)
     }
 
@@ -114,9 +116,9 @@ open class TextEcosystemVisualizer(
      * for a tile, output of the function will be drawn above the tile.
      */
     private fun printedMap(mapper: (Tile) -> String): StringBuilder {
-        val main = StringBuilder()
+        val main = StringBuilder("  ")
         val worldMap = map
-        main.append("  ")
+
         for (i in worldMap.linedTiles[0].indices)
             main.append(if (i < 100) " " else i / 100 % 100)
         main.append("\n").append("  ")
@@ -126,6 +128,7 @@ open class TextEcosystemVisualizer(
         for (i in worldMap.linedTiles[0].indices)
             main.append(i % 10)
         main.append("\n")
+
         val map = StringBuilder()
         for (i in 0 until data.mapSizeX) {
             var token: String
@@ -171,15 +174,14 @@ open class TextEcosystemVisualizer(
     private fun printedEvents(events: Collection<Event>, printAll: Boolean): StringBuilder {
         val main = StringBuilder()
         for (event in events) {
-            if (printAll || event.type === Type.Death || event.type === Type.ResourceDeath || event.type === Type.DisbandResources) {
+            if (printAll || event.type === Type.Death || event.type === Type.ResourceDeath || event.type === Type.DisbandResources)
                 main.append(event).append("\n")
-            }
         }
         return main
     }
 
     fun launchTurner(turnAmount: Int) {
-        currentTurner = Turner(turnAmount, controller)
+        currentTurner = Turner(turnAmount, printTurnStep, controller)
         turnerThread = Thread(currentTurner)
         turnerThread!!.start()
     }

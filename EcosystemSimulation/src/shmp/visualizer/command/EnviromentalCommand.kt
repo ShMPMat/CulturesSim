@@ -30,7 +30,8 @@ enum class EnvironmentCommand(command: String) : Command {
     AddResource("\\d+ \\d+ \\w+"),
     GeologicalTurn("Geo"),
     Turn(""),
-    Turner("\\d+");
+    Turner("\\d+"),
+    PrintStep("print step \\d+");
 
     override val pattern = Regex(command)
 }

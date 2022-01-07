@@ -108,14 +108,22 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                     print()
                 }
                 Turner -> line.toIntOrNull()
-                        ?.let {
-                            launchTurner(it)
-                        } ?: println("Wrong number format for amount of turns")
+                        ?.let { launchTurner(it) }
+                        ?: println("Wrong number format for amount of turns")
                 Turn -> {
                     controller.turn()
                     print()
                 }
-                else -> return false
+                PrintStep -> {
+                    splitCommand[2].toIntOrNull()
+                            ?.let { visualizer.printTurnStep = it }
+                            ?: println("Wrong number format for amount of turns")
+                    println("Print step number changed")
+                }
+                else -> {
+                    println("Unknown command")
+                    return false
+                }
             }
         }
         return true
