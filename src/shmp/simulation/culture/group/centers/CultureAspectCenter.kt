@@ -13,6 +13,7 @@ import shmp.simulation.culture.group.cultureaspect.worship.Worship
 import shmp.simulation.culture.group.reason.Reason
 import shmp.simulation.culture.group.reason.constructBetterAspectUseReason
 import shmp.generator.culture.worldview.Meme
+import shmp.generator.culture.worldview.toMeme
 import shmp.simulation.space.resource.Resource
 import java.util.*
 import kotlin.math.pow
@@ -32,7 +33,7 @@ class CultureAspectCenter(val reasonField: ReasonField) {
 
     private fun updateReasonings(group: Group) {
         session.reasoningUpdate.chanceOf {
-            val newReasonings = reasonField.update(listOf(Meme(group.name)))
+            val newReasonings = reasonField.update(listOf(group.name.toMeme()))
             processReasonings(newReasonings)
         }
     }

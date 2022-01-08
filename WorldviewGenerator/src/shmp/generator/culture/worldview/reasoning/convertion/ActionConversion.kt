@@ -18,15 +18,12 @@ sealed class ActionConversion(
     constructor(ideationalConcept: IdeationalConcept, actionConcept: ActionConcept) :
             this(listOf(ideationalConcept), listOf(actionConcept))
 
-    override fun makeConversion(complex: ReasonComplex): ReasonConversionResult {
-        val concept = complex.reasonings
-                .filterIsInstance<EqualityReasoning>()
-                .filter { it.subjectConcept in ideationalConcepts }
-                .map { it.objectConcept }
-                .randomOrNull()
-                ?: return emptyReasonConversionResult()
+    override fun makeConversion(complex: ReasonComplex) = complex.calculate {
+        filterInstances<EqualityReasoning> { it.subjectConcept in ideationalConcepts }
 
-        return ReasonConversionResult(concept needs actionConcepts.randomElement())
+        withRandom<EqualityReasoning> {
+            ReasonConversionResult(it.objectConcept needs actionConcepts.randomElement())
+        }
     }
 
     object PositiveDriveConversion : ActionConversion(listOf(Importance), listOf(Protect, Cherish))

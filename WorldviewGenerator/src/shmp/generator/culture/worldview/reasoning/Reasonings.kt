@@ -25,7 +25,7 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
     fun all(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) && predicate(subjectConcept)
 
     fun <T> applyToBoth(action: (ReasonConcept, ReasonConcept) -> T?): List<T> {
-        return listOf(action(objectConcept, subjectConcept), action(subjectConcept, objectConcept)).mapNotNull { it }
+        return listOfNotNull(action(objectConcept, subjectConcept), action(subjectConcept, objectConcept))
     }
 }
 

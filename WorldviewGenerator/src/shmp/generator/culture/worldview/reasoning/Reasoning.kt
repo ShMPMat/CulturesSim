@@ -22,9 +22,7 @@ abstract class AbstractReasoning : Reasoning {
         return true
     }
 
-    override fun hashCode(): Int {
-        return meme.hashCode()
-    }
+    override fun hashCode() = meme.hashCode()
 
     override fun toString() = meme.toString()
 }

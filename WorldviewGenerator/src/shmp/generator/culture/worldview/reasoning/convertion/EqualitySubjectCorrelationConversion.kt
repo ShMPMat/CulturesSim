@@ -5,21 +5,23 @@ import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.randomElementOrNull
 import shmp.generator.culture.worldview.reasoning.EqualityReasoning
 import shmp.generator.culture.worldview.reasoning.ReasonComplex
+import shmp.generator.culture.worldview.reasoning.Reasoning
 
 
 object EqualitySubjectCorrelationConversion : ReasonConversion {
-    override fun makeConversion(complex: ReasonComplex): ReasonConversionResult {
-        val opposingConversions = complex.reasonings
-                .filterIsInstance<EqualityReasoning>()
-                .groupBy { it.objectConcept }
-                .filter { it.value.size > 1 }
-                .map { it.value }
-                .randomElementOrNull()
-                ?.map { it.subjectConcept }
-                ?: return emptyReasonConversionResult()
+    override fun makeConversion(complex: ReasonComplex) = complex.calculate {
+        filter<EqualityReasoning>().invoke {
+            state = state.groupBy { it.objectConcept }
+                    .filter { it.value.size > 1 }
+                    .map { it.value }
+                    .randomElementOrNull()
+                    ?: emptyList()
 
-        val (subj, obj) = randomSublist(opposingConversions, RandomSingleton.random, 2, 3)
+            if (state.isNotEmpty()) {
+                val (subj, obj) = randomSublist(state.map { it.subjectConcept }, RandomSingleton.random, 2, 3)
 
-        return ReasonConversionResult(listOf(EqualityReasoning(subj, obj)))
+                EqualityReasoning(subj, obj).toConversionResult()
+            } else emptyReasonConversionResult()
+        }
     }
 }

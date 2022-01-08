@@ -183,7 +183,7 @@ open class TextEcosystemVisualizer(
     fun launchTurner(turnAmount: Int) {
         currentTurner = Turner(turnAmount, printTurnStep, controller)
         turnerThread = Thread(currentTurner)
-        turnerThread!!.start()
+        turnerThread?.start()
     }
 
     @Throws(InterruptedException::class)

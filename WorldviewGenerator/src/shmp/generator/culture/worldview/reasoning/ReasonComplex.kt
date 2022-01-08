@@ -4,8 +4,8 @@ import shmp.generator.culture.worldview.reasoning.concept.ReasonConcept
 import shmp.utils.SoftValue
 
 
-class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf()) {
-    private val _reasonings = startReasonings.toMutableSet()
+class ReasonComplex(val name: String, reasonings: Set<Reasoning> = setOf()) {
+    private val _reasonings = reasonings.toMutableSet()
     val reasonings: Set<Reasoning> = _reasonings
 
     val equalityReasonings: List<EqualityReasoning>
@@ -24,6 +24,8 @@ class ReasonComplex(val name: String, startReasonings: Set<Reasoning> = setOf())
 
     val isEmpty: Boolean
         get() = reasonings.isEmpty()
+
+    inline fun <reified E: Reasoning> filterReasonings() = reasonings.filterIsInstance<E>()
 
     /***
      * returns: List of accepted Reasonings
