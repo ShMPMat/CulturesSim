@@ -11,7 +11,7 @@ object CommonnessExistenceInConversion : ReasonConversion {
         0.5.chanceOf<Unit> {
             filter<ExistenceInReasoning>()
         } ?: run {
-            mapNotNull { r: EqualityReasoning ->
+            mapInstanceNotNull { r: EqualityReasoning ->
                 if (r.subjectConcept == IdeationalConcept.Commonness)
                     ObjectConcept.We livesIn r.objectConcept
                 else null

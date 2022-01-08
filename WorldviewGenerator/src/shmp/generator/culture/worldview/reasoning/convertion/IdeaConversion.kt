@@ -11,17 +11,17 @@ import shmp.utils.without
 data class IdeaConversion(val equivalentIdeas: List<IdeationalConcept>) : ReasonConversion {
     constructor(vararg equivalentIdeas: IdeationalConcept): this(equivalentIdeas.toList())
 
-    override fun makeConversion(complex: ReasonComplex) = complex.calculate {
-        filterInstances<EqualityReasoning> { e -> e.any { it in equivalentIdeas } }
+    override fun makeConversion(complex: ReasonComplex) = complex.calculateOn<EqualityReasoning> {
+        filter { e -> e.any { it in equivalentIdeas } }
 
-        withRandom<EqualityReasoning> { r ->
+        withRandom { r ->
             if (r.subjectConcept in equivalentIdeas) {
                 val newIdea = equivalentIdeas.without(r.subjectConcept).randomElement()
-                ReasonConversionResult(newIdea equals r.objectConcept)
+                newIdea equals r.objectConcept
             } else {
                 val newIdea = equivalentIdeas.without(r.objectConcept).randomElement()
-                ReasonConversionResult(r.subjectConcept equals newIdea)
-            }
+                r.subjectConcept equals newIdea
+            }.toConversionResult()
         }
     }
 }

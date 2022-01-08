@@ -18,10 +18,10 @@ sealed class ActionConversion(
     constructor(ideationalConcept: IdeationalConcept, actionConcept: ActionConcept) :
             this(listOf(ideationalConcept), listOf(actionConcept))
 
-    override fun makeConversion(complex: ReasonComplex) = complex.calculate {
-        filterInstances<EqualityReasoning> { it.subjectConcept in ideationalConcepts }
+    override fun makeConversion(complex: ReasonComplex) = complex.calculateOn<EqualityReasoning> {
+        filter { it.subjectConcept in ideationalConcepts }
 
-        withRandom<EqualityReasoning> {
+        withRandom {
             ReasonConversionResult(it.objectConcept needs actionConcepts.randomElement())
         }
     }

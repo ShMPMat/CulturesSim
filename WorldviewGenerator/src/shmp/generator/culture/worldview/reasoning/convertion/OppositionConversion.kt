@@ -2,14 +2,14 @@ package shmp.generator.culture.worldview.reasoning.convertion
 
 import shmp.generator.culture.worldview.reasoning.EqualityReasoning
 import shmp.generator.culture.worldview.reasoning.ReasonComplex
-import shmp.generator.culture.worldview.reasoning.opposes
+import shmp.generator.culture.worldview.reasoning.oppose
 
 
 object OppositionConversion : ReasonConversion {
     override fun makeConversion(complex: ReasonComplex) = complex.calculateAndChoose {
-        flatMap { r: EqualityReasoning ->
-            r.subjectConcept.oppositeConcepts.map { o -> r.objectConcept opposes o } +
-                    r.objectConcept.correspondingConcepts.map { c -> c opposes r.subjectConcept }
+        flatMapInstance { r: EqualityReasoning ->
+            (r.objectConcept oppose r.subjectConcept.oppositeConcepts) +
+                    (r.objectConcept.correspondingConcepts oppose r.subjectConcept)
         }
     }
 }
