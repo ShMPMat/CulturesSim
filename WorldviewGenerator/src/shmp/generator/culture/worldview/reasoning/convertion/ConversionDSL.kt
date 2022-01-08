@@ -39,6 +39,10 @@ class ConversionContext<T : Reasoning>(var state: List<T>) {
 
     inline fun <reified R : T> map(transform: (T) -> R) = ConversionContext(state.map(transform))
 
+    inline fun <reified R : T> mapNotNull(transform: (T) -> R?) {
+        state = state.mapNotNull(transform)
+    }
+
     inline fun <reified R : T> flatMap(transform: (T) -> Iterable<R>) {
         state = state.flatMap(transform)
     }
