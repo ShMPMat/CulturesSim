@@ -13,6 +13,8 @@ data class Combinator(
 data class SemiCombinator(val startConcepts: Set<ReasonConcept>, val result: ReasonConcept)
 
 
+infix fun ReasonConcept.leadsTo(result: ReasonConcept) =
+        SemiCombinator(setOf(this), result)
 infix fun Set<ReasonConcept>.leadsTo(result: ReasonConcept) =
         SemiCombinator(this, result)
 infix fun Pair<ReasonConcept, ReasonConcept>.leadsTo(result: ReasonConcept) =

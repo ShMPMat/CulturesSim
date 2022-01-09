@@ -7,7 +7,7 @@ import shmp.generator.culture.worldview.reasoning.ReasonComplex
 
 object CombinatorsConversion : ReasonConversion {
     override fun makeConversion(complex: ReasonComplex) = complex.calculateAndChoose {
-        combinators.mapNotNull { c -> c.takeIf { it.probability.testProbability() } }
+        state = combinators.mapNotNull { c -> c.takeIf { it.probability.testProbability() } }
                 .flatMap { combinator ->
                     complex.equalityReasonings
                             .groupBy { it.objectConcept }
@@ -25,5 +25,8 @@ object CombinatorsConversion : ReasonConversion {
                                 else null
                             }
                 }
+        if (state.isNotEmpty()) {
+            val k = ""
+        }
     }
 }

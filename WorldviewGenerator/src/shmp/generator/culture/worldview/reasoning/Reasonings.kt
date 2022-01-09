@@ -12,23 +12,6 @@ open class BaseReasoning(
         override val conclusions: List<ReasonConclusion>
 ) : AbstractReasoning()
 
-class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
-        Meme("$objectConcept represents $subjectConcept"),
-        listOf(objectConcept.meme, subjectConcept.meme),
-        listOf()
-) {
-    val isOppositions = any { it in subjectConcept.oppositeConcepts || it in objectConcept.oppositeConcepts }
-
-    fun toList() = listOf(objectConcept, subjectConcept)
-
-    fun any(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) || predicate(subjectConcept)
-    fun all(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) && predicate(subjectConcept)
-
-    fun <T> applyToBoth(action: (ReasonConcept, ReasonConcept) -> T?): List<T> {
-        return listOfNotNull(action(objectConcept, subjectConcept), action(subjectConcept, objectConcept))
-    }
-}
-
 class AssociationReasoning(val firstAssociation: ReasonConcept, val secondAssociation: ReasonConcept) : BaseReasoning(
         Meme("$firstAssociation associates with $secondAssociation"),
         listOf(firstAssociation.meme, secondAssociation.meme),
@@ -43,6 +26,23 @@ class AssociationReasoning(val firstAssociation: ReasonConcept, val secondAssoci
 
     fun <T> applyToBoth(action: (ReasonConcept, ReasonConcept) -> T?): List<T> {
         return listOf(action(firstAssociation, secondAssociation), action(secondAssociation, firstAssociation)).mapNotNull { it }
+    }
+}
+
+class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
+        Meme("$objectConcept represents $subjectConcept"),
+        listOf(objectConcept.meme, subjectConcept.meme),
+        listOf()
+) {
+    val isOppositions = any { it in subjectConcept.oppositeConcepts || it in objectConcept.oppositeConcepts }
+
+    fun toList() = listOf(objectConcept, subjectConcept)
+
+    fun any(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) || predicate(subjectConcept)
+    fun all(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) && predicate(subjectConcept)
+
+    fun <T> applyToBoth(action: (ReasonConcept, ReasonConcept) -> T?): List<T> {
+        return listOfNotNull(action(objectConcept, subjectConcept), action(subjectConcept, objectConcept))
     }
 }
 

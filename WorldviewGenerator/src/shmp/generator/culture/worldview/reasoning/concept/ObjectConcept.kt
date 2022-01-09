@@ -7,7 +7,7 @@ sealed class ObjectConcept(
         override val meme: Meme,
         oppositeConcepts: () -> List<ReasonConcept>,
         correspondingConcepts: () -> List<ReasonConcept>
-) : AbstractKotlinBugSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
+) : AbstractKotlinSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
     open class ArbitraryObjectConcept(objectMeme: Meme) : ObjectConcept(objectMeme, { listOf() }, { listOf() }) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

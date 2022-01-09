@@ -9,7 +9,7 @@ sealed class ActionConcept(
         oppositeConcepts: () -> List<ReasonConcept>,
         correspondingConcepts: () -> List<ReasonConcept>,
         val ideationalConcept: IdeationalConcept
-) : AbstractKotlinBugSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
+) : AbstractKotlinSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
     open class ArbitraryActionConcept(objectMeme: Meme) : ActionConcept(objectMeme, { listOf() }, { listOf() }, Work) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

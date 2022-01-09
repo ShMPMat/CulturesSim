@@ -14,7 +14,8 @@ abstract class AbstractReasonConcept : ReasonConcept {
     override fun toString() = meme.toString()
 }
 
-abstract class AbstractKotlinBugSafeReasonConcept(
+// Lambdas are used since cross-references between ReasonConcepts lead to code that doesn't compile
+abstract class AbstractKotlinSafeReasonConcept(
         private val _oppositeConcepts: () -> List<ReasonConcept>,
         private val _correspondingConcepts: () -> List<ReasonConcept>
 ) : ReasonConcept {
