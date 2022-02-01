@@ -19,6 +19,8 @@
 -liquid
 -gas
 
+-rawMineral
+
 -canBeIgnited
 
 /Resource classes

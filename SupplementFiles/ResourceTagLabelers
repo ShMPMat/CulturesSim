@@ -37,3 +37,4 @@
 -food:i|2 m:Fungus
 -food:i|1 m:Meat
 
+-composite:i|1 m:rawMineral

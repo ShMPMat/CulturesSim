@@ -16,8 +16,6 @@
 /          T(min|max)\NUM - add special deprivation coefficient value to the Resource (base is 2.0)
 /
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
--Fibre           0       0.5    100        -500   500  100000000  1             1 1  Ignore    None         @Fibre
-        +Weaving:Cloth:1
 -Fire            0       0.5    2          -500   500  100000000  0             1 0  Migrate   None         @Flame
         cRed
         tSemitransparent
