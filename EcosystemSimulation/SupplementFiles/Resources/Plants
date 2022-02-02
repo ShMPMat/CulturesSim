@@ -97,6 +97,12 @@
         #Water
         cGreen
 
+-WindPollinatedPlant     0.25    0.1    5          5      30   100        0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.0000001;1.25;0;CONSUME
+        ^Leaf:3   ^Flower:1:c|Brown
+        #Water
+        cGreen
+
 -Moss            0.06    0.05   20         -10    30   100        0             1 0 Cut        Plant        @PlantFibre
         ~r:Vapour;0.0001;2;0;CONSUME
         ^PlantFibre:1
