@@ -11,11 +11,11 @@ import shmp.visualizer.Visualizer;
 
 
 public class Controller<E extends World> {
-    public static Controller session;
+    public static Controller<?> session;
     public E world;
     public InteractionModel<E> interactionModel;
 
-    public final Random random = RandomKt.Random(8565728 + 25);
+    public final Random random = RandomKt.Random(8565728 + 26);
 
     public final boolean doTurns = true;
 
