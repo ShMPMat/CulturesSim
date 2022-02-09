@@ -57,7 +57,7 @@
 
 -Desman         0.1     0.2    15         0      20   20         0             1 0  Migrate   Animal       @Meat
         ~D(m:Meat,m:Chitin),>=0.005,<=0.06;0.5;1.25;0;CONSUME
-        ~m:Water;8000;200;0;EXIST
+        ~r:Water;0.001;200;0;EXIST
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
         #Water
         cGrey
@@ -89,7 +89,7 @@
 
 -Heron           0.15   0.5    10         0      30   10         0             1 0  Migrate   Animal       @Meat
         ~m:Meat,<=0.12,>=0.009;0.1;2;1;CONSUME
-        ~m:Water;1000;20;1;EXIST
+        ~r:Water;0.001;200;0;EXIST
         ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite
@@ -138,9 +138,9 @@
         cGreen
         D0.02
 
--FreshWaterFish  0.12    0.05   10         -5     30   50         0             1 0  Migrate   Animal       @Meat
+-FreshWaterFish  0.2     0.05   10         -5     30   50         0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;00.05;010;0;CONSUME
-        ~m:Water;8000;200;0;EXIST
+        ~r:Water;0.001;200;0;EXIST
         ^Meat:2 ^Fat:1 ^Bone:4:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
@@ -177,7 +177,7 @@
         D0.5
 
 -Frog            0.25    0.07   7          5      30   100        0             1 0  Migrate   Animal       @Meat
-        ~m:Water;8000;200;0;EXIST
+        ~r:Water;0.001;200;0;EXIST
         ~m:Chitin;0.5;2;0;CONSUME
         ^Meat:1:s|0.07
         cGreen
