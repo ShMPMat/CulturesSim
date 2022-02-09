@@ -110,7 +110,13 @@
         cGreen
 
 -Seaweed         0.25    0.1    5          -10    30   2000       0             1 0 Cut        Plant        @PlantFibre
-        ^Leaf:7:s|0.2
+        ^Leaf:7:s|0.5
+        #Normal:Mountain:Ice:Woods:Growth
+        cGreen
+
+-FreshWaterWeed  0.4     0.1    4          -5     30   2000       0             1 0 Cut        Plant        @PlantFibre
+        ^Leaf:6:s|0.2
+        ~m:Water;8000;200;0;EXIST
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
 
