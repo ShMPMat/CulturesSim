@@ -193,10 +193,10 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         val finish = data.temperatureBaseFinish
         val size = data.mapSizeX
         var levelShift = 0
-        if (type == Type.Water) {
+        if (type == Type.Water || type == Type.Ice) {
             levelShift -= 2
-            val deepness = max(data.defaultWaterLevel - level, 0)
-            levelShift -= deepness
+            val deepness = max(data.defaultWaterLevel - secondLevel, 0)
+            levelShift -= deepness / 2
         } else {
             val elevation = max(level - data.defaultWaterLevel, 0)
             levelShift -= elevation / 3
