@@ -55,6 +55,14 @@
         cGrey
         R0.2 D0.5
 
+-Desman         0.1     0.2    15         0      20   20         0             1 0  Migrate   Animal       @Meat
+        ~D(m:Meat,m:Chitin),>=0.005,<=0.06;0.5;1.25;0;CONSUME
+        ~m:Water;8000;200;0;EXIST
+        ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
+        #Water
+        cGrey
+        R0.5
+
 -PolarBear      0.04    2.3    30         -30    0    7          0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=0.1;0.1;1.25;0;CONSUME;4
         ^Meat:20 ^Fat:15 ^Bone:7:s|0.5 ^Fur:6 ^Blood:15 ^Leather:1:s|2.3
