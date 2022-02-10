@@ -176,14 +176,25 @@
         cWhite
         D0.5
 
--Frog            0.25    0.07   7          5      30   100        0             1 0  Migrate   Animal       @Meat
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-Frog            0.0     0.07   6          5      30   100        0             1 0  Migrate   Animal       @Meat
         ~r:Water;0.001;200;0;EXIST
         ~m:Chitin;0.5;2;0;CONSUME
+        +_layEggs_prob_0.03_true:Frogspawn:8
         ^Meat:1:s|0.07
         cGreen
         R0.1
         C0.1
 
+-Frogspawn       0.0     0.01   3          5      30   1000       0             1 0  Ignore    Animal       @Meat
+        ~r:Water;0.001;200;0;EXIST
+        +_OnDeath_:Frog:1
+        ^Meat:1:s|0.01
+        #Normal:Mountain:Ice:Woods:Growth
+        tTransparent
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -ShelledMollusk  0.15    0.03   10          10    30   500        0             1 0  Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME

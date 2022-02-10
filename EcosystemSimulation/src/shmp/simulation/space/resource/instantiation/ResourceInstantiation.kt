@@ -47,7 +47,9 @@ class ResourceInstantiation(
             resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
         }
         SpaceData.data.resourcePool = ResourcePool(filteredFinalResources)
-        resourceStringTemplates.forEach { actualizeLinks(it) }
+        resourceStringTemplates.forEach {
+            i = 0
+            actualizeLinks(it, listOf()) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
         val endResources = filteredFinalResources
@@ -57,6 +59,8 @@ class ResourceInstantiation(
         return finalizePool(endResources)
     }
 
+    var i = 0
+
     private val filteredFinalResources
         get() = resourceStringTemplates
                 .map { (r) -> r }
@@ -65,12 +69,19 @@ class ResourceInstantiation(
     private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceStringTemplates
             .first { it.resource.baseName == name }
 
-    private fun actualizeLinks(template: ResourceStringTemplate) {
+    private fun actualizeLinks(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
+        i++
+        if (i > 10) {
+            val k = 0
+        }
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
+            if (resource.simpleName == "Frog") {
+                val j = 3
+            }
             resource.genome.conversionCore.addActionConversion(
                     a,
-                    l.map { readConversion(template, it) }
+                    l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
             )
         }
         if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
@@ -86,13 +97,19 @@ class ResourceInstantiation(
                     )
     }
 
-    private fun readConversion(template: ResourceStringTemplate, link: ResourceLink): Resource {
+    private fun readConversion(template: ResourceStringTemplate, link: ResourceLink, conversionPrefix: List<Resource>): Resource {
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
-        val nextTemplate = getTemplateWithName(link.resourceName)
-        actualizeLinks(nextTemplate)
-        val resource = link.transform(nextTemplate.resource)
+        val conversionResource =
+                if (link.resourceName != conversionPrefix[0].baseName) {
+                    val foundTemplate = getTemplateWithName(link.resourceName)
+                    actualizeLinks(foundTemplate, conversionPrefix)
+                    foundTemplate.resource
+                } else {
+                    conversionPrefix[0]
+                }
+        val resource = link.transform(conversionResource)
         return resource.copy(link.amount)
     }
 
