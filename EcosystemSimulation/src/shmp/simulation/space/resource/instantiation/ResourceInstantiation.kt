@@ -47,9 +47,7 @@ class ResourceInstantiation(
             resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
         }
         SpaceData.data.resourcePool = ResourcePool(filteredFinalResources)
-        resourceStringTemplates.forEach {
-            i = 0
-            actualizeLinks(it, listOf()) }
+        resourceStringTemplates.forEach { actualizeLinks(it, listOf()) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
         val endResources = filteredFinalResources
@@ -58,8 +56,6 @@ class ResourceInstantiation(
         SpaceData.data.resourcePool = ResourcePool(listOf())
         return finalizePool(endResources)
     }
-
-    var i = 0
 
     private val filteredFinalResources
         get() = resourceStringTemplates
@@ -70,15 +66,8 @@ class ResourceInstantiation(
             .first { it.resource.baseName == name }
 
     private fun actualizeLinks(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
-        i++
-        if (i > 10) {
-            val k = 0
-        }
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
-            if (resource.simpleName == "Frog") {
-                val j = 3
-            }
             resource.genome.conversionCore.addActionConversion(
                     a,
                     l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
