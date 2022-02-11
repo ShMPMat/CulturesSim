@@ -131,12 +131,24 @@
         cYellow
         R0.1
 
--Fish            0.12    0.1    10         -20    30   100        0             1 0  Migrate   Animal       @Meat
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-FishSpawn       0.0     0.01   3          -20    30   1000       0             1 0  Ignore    Animal       @Meat
+        ~r:Water;0.001;200;0;EXIST
+        +_OnDeath_:Fish:1
+        ^Meat:1:s|0.01
+        #Normal:Mountain:Ice:Woods:Growth
+        tTransparent
+
+-Fish            0.0     0.1    10         -20    30   100        0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;00.1;10;0;CONSUME
+        +_layEggs_prob_0.005_true:FishSpawn:10
         ^Meat:2 ^Fat:1 ^Bone:05:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
         D0.02
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -FreshWaterFish  0.2     0.05   10         -5     30   50         0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;00.05;010;0;CONSUME
@@ -153,7 +165,7 @@
         cGreen
         D0.02
 
--CoralFish       0.3    0.04    6         0       30   150        0             1 0  Migrate   Animal       @Meat
+-CoralFish       0.3     0.04   6         0       30   150        0             1 0  Migrate   Animal       @Meat
         ~m:Coral;1;200;0;EXIST
         ~m:PlantFibre,>=0.001;0.1;10;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Blood:1
@@ -162,19 +174,26 @@
         R0.1
         C0.7
 
--PredatorFish    0.15    2      10         -20    30   10         0             1 0  Migrate   Animal       @Meat
-        ~m:Meat,<=0.5;0.025;1.25;0;CONSUME
+-PredatorFish    0.15    0.3    10         -20    30   30         0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,<=0.5;0.05;1.25;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cBrown
         D0.2
 
--Shark          0.1     0.3    15          0      40   5          0             1 0  Migrate   Animal       @Meat
+-Shark           0.1     2      15          0      40   10        0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=0.05;1;1.25;0;CONSUME
         ^Meat:5 ^Fat:5 ^Bone:7:s|0.3 ^Blood:10
         #Normal:Mountain:Ice:Woods:Growth
         cWhite
         D0.5
+
+-BlueWhale       0.03    20     50          -10    35   4         0             1 0  Migrate   Animal       @Meat
+        ~D(m:Meat||m:Chitin||m:PlantFibre),<=0.03;100;1.25;0;CONSUME
+        ^Meat:100 ^Fat:100 ^Bone:20:s|3 ^Blood:150
+        #Normal:Mountain:Ice:Woods:Growth
+        cBlue
+        D0.4
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
