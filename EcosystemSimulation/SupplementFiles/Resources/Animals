@@ -109,7 +109,7 @@
         cGreen
         C0.2
 
--Mosquito        0.25    0.01   5          10      30   500        0             1 0  Migrate   Animal       @Chitin
+-Mosquito        0.25    0.01   5          10      30   500       0             1 0  Migrate   Animal       @Chitin
         ~m:Meat,>=0.2;0.01;100;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
@@ -133,6 +133,25 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-OctopusSpawn    0.0     0.01   3          0      30   1000       0             1 0  Ignore    Animal       @Meat
+        ~r:Water;0.001;200;0;EXIST
+        +_OnDeath_:Octopus:1
+        ^Meat:1:s|0.01
+        #Normal:Mountain:Ice:Woods:Growth
+        tTransparent
+
+-Octopus         0.0     1      10         0      20   30         0              1 0  Migrate   Animal       @Meat
+        ~m:Meat,>=0.05,<=1;0.8;1.25;0;CONSUME
+        +_layEggs_prob_0.0005_true:OctopusSpawn:10
+        ^Meat:4:s|0.3 ^Ink:2
+        #Normal:Mountain:Ice:Woods:Growth
+        cYellow
+        tSemitransparent
+        R0.2
+        D0.3
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -FishSpawn       0.0     0.01   3          -20    30   1000       0             1 0  Ignore    Animal       @Meat
         ~r:Water;0.001;200;0;EXIST
         +_OnDeath_:Fish:1
@@ -141,7 +160,7 @@
         tTransparent
 
 -Fish            0.0     0.1    10         -20    30   100        0             1 0  Migrate   Animal       @Meat
-        ~m:PlantFibre,>=0.01;00.1;10;0;CONSUME
+        ~m:PlantFibre,>=0.002;00.1;10;0;CONSUME
         +_layEggs_prob_0.005_true:FishSpawn:10
         ^Meat:2 ^Fat:1 ^Bone:05:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth

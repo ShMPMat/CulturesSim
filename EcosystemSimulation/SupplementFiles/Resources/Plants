@@ -114,7 +114,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
 
--FreshWaterWeed  0.4     0.1    4          -5     30   2000       0             1 0 Cut        Plant        @PlantFibre
+-FreshWaterWeed  0.6     0.1    4          -5     30   2000       0             1 0 Cut        Plant        @PlantFibre
         ^Leaf:6:s|0.2
         ~r:Water;0.001;200;0;EXIST
         #Normal:Mountain:Ice:Woods:Growth
