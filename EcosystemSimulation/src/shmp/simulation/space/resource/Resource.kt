@@ -9,7 +9,6 @@ import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.action.ResourceProbabilityAction
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
-import shmp.utils.SoftValue
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -142,7 +141,7 @@ open class Resource private constructor(
         if (this === resource)
             return this
 
-        addAmount(resource.amount)
+        smartAddAmount(resource.amount, resource.deathPart)
         resource.destroy()
         return this
     }
@@ -281,10 +280,12 @@ open class Resource private constructor(
         }
     }
 
-    open fun addAmount(amount: Int) {
-        if (amount > 0)
-            deathPart = this.amount * deathPart / (this.amount + amount)
-        this.amount += amount
+    open fun addAmount(amount: Int) = smartAddAmount(amount)
+
+    private fun smartAddAmount(otherAmount: Int, otherDeathPart: Double = 1.0) {
+        if (otherAmount > 0)
+            deathPart = (amount * deathPart + otherAmount * otherDeathPart) / (amount + otherAmount)
+        this.amount += otherAmount
     }
 
     fun applyAction(action: ResourceAction, part: Int = 1): List<Resource> {
