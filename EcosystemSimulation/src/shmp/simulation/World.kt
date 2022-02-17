@@ -5,7 +5,7 @@ import shmp.simulation.event.EventLog
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.generator.MapGeneratorSupplement
-import shmp.simulation.space.generator.fillResources
+import shmp.simulation.space.generator.placeResources
 import shmp.simulation.space.generator.generateMap
 import shmp.simulation.space.resource.action.ActionTag
 import shmp.simulation.space.resource.action.ResourceAction
@@ -69,7 +69,7 @@ open class World {
     private var thousandTurns = 0
     private var millionTurns = 0
 
-    fun fillResources() = fillResources(
+    fun placeResources() = placeResources(
             map,
             resourcePool,
             MapGeneratorSupplement(IntRange(data.startResourceAmountMin, data.startResourceAmountMax)),

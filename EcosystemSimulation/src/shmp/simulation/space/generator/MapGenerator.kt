@@ -29,7 +29,7 @@ fun generateMap(x: Int, y: Int, platesAmount: Int, resourcePool: ResourcePool, r
 }
 
 
-fun fillResources(
+fun placeResources(
         map: WorldMap,
         resourcePool: ResourcePool,
         supplement: MapGeneratorSupplement,
