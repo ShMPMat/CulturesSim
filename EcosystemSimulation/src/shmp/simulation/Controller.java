@@ -15,7 +15,7 @@ public class Controller<E extends World> {
     public E world;
     public InteractionModel<E> interactionModel;
 
-    public final Random random = RandomKt.Random(8565728 + 26);
+    public final Random random = RandomKt.Random(8565728 + 31);
 
     public final boolean doTurns = true;
 
@@ -25,7 +25,7 @@ public class Controller<E extends World> {
     public final int fillCycles = 2;
     public final int cultureTurns = 0;
 
-    public final int proportionCoefficient = 1;
+    public final int proportionCoefficient = 2;
 
     public static Visualizer visualizer;
     public static final boolean doPrint = false;
@@ -54,21 +54,12 @@ public class Controller<E extends World> {
                 visualizer.print();
             }
         }
-        world.fillResources();
+        world.placeResources();
     }
 
     public void initializeSecond() {
         Resource water = world.getResourcePool().getBaseName("Water");
         for (int j = 0; j < fillCycles && doTurns; j++) {
-            if (j != 0) {
-                world.fillResources();
-            }
-            for (int i = 0; i < stabilizationTurns; i++) {
-                turn();
-                if (doPrint) {
-                    visualizer.print();
-                }
-            }
             LandscapeChangesKt.createRivers(
                     world.getMap(),
                     5 * proportionCoefficient * proportionCoefficient,
@@ -80,6 +71,15 @@ public class Controller<E extends World> {
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
+            if (j != 0) {
+                world.placeResources();
+            }
+            for (int i = 0; i < stabilizationTurns; i++) {
+                turn();
+                if (doPrint) {
+                    visualizer.print();
+                }
+            }
             turn();
         }
         turn();

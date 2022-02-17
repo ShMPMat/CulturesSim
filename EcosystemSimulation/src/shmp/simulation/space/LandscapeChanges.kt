@@ -2,6 +2,7 @@ package shmp.simulation.space
 
 import shmp.random.randomElement
 import shmp.random.randomSublist
+import shmp.simulation.Controller
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.Tile
 import shmp.simulation.space.tile.getLakeTag
@@ -27,7 +28,7 @@ fun createRiver(
         if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
             break
         }
-        currentTile.addDelayedResource(water.copy(2))
+        currentTile.addDelayedResource(water.copy(2000 * Controller.session.proportionCoefficient))
         currentTile.tagPool.add(nameTag)
         val minLevel = min(
                 currentTile.level,
