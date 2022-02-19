@@ -11,7 +11,7 @@ fun parseProbabilityAction(string: String): ResourceProbabilityAction? {
         if (elements.size != 5 || elements[0] != "" || elements[2] != "prob")
             return null
 
-        elements[3].toDoubleOrNull()?.let {prob ->
+        elements[3].toDoubleOrNull()?.let { prob ->
             ResourceProbabilityAction(elements[1], prob, elements[4].toBoolean())
         }
     } catch (e: Exception) {

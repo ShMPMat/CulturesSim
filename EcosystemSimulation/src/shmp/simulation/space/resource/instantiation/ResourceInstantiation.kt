@@ -90,13 +90,11 @@ class ResourceInstantiation(
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
-        val conversionResource =
-                if (link.resourceName != conversionPrefix[0].baseName) {
+        val conversionResource = conversionPrefix.dropLast(1).firstOrNull { link.resourceName == it.baseName }
+                ?: run {
                     val foundTemplate = getTemplateWithName(link.resourceName)
                     actualizeLinks(foundTemplate, conversionPrefix)
                     foundTemplate.resource
-                } else {
-                    conversionPrefix[0]
                 }
         val resource = link.transform(conversionResource)
         return resource.copy(link.amount)
@@ -198,7 +196,7 @@ class ResourceInstantiation(
     }
 
     private fun injectBuildings(conversionCore: ConversionCore) {
-        conversionCore.actionConversion.flatMap{ (a, rs) ->
+        conversionCore.actionConversion.flatMap { (a, rs) ->
             resourceActionInjectors.flatMap { i -> i(a, rs) }
         }.forEach { (a, rs) ->
             conversionCore.addActionConversion(a, rs)

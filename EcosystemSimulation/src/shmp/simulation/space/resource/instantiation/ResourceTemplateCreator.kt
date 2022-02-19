@@ -70,7 +70,7 @@ class ResourceTemplateCreator(
                         resourceDependencies.add(rDependency)
                     }
                     '#' -> resourceDependencies.add(AvoidTiles(
-                            tag.split(":".toRegex()).toTypedArray()
+                            tag.split(":".toRegex())
                                     .map { Tile.Type.valueOf(it) }
                                     .toSet()
                     ))
