@@ -139,7 +139,11 @@ open class TextEcosystemVisualizer(
                 if (token == "") {
                     when (tile.type) {
                         Tile.Type.Ice -> token = "\u001b[47m"
-                        Tile.Type.Water -> token = "\u001b[44m"
+                        Tile.Type.Water -> token = when (tile.level) {
+                            in 0..70 -> "\u001b[48:5:27m"
+                            in 71..80 -> "\u001b[48:5:33m"
+                            else -> "\u001b[48:5:39m"
+                        }
                         Tile.Type.Woods -> token = "\u001b[42m"
                         Tile.Type.Growth -> token = "\u001b[103m"
                         else -> {
