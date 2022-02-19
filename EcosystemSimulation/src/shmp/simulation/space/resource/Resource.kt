@@ -187,7 +187,9 @@ open class Resource private constructor(
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
 
-        result.addAll(genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) })
+        val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) }
+        if (resources.any { it.isAcceptable(tile) })
+            result.addAll(resources)
 
         for (dependency in genome.dependencies) {
             val part = dependency.satisfactionPercent(tile, this)

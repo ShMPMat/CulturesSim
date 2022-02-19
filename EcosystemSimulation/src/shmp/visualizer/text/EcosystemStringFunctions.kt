@@ -24,10 +24,13 @@ fun basicResourcesCounter(world: World): String {
                 resourceAmounts.getValue(it).add(it)
         }
     }
-    return resourceAmounts.entries.joinToString("\n", postfix = "\u001b[30m")
-    {
-        (if (it.value.amount == 0) "\u001b[31m" else "\u001b[30m") +
-                "${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}"
+    return resourceAmounts.entries.joinToString("\n", postfix = "\u001b[30m") {
+        val colourMark = when (it.value.tilesAmount) {
+            0 -> "\u001b[31m"
+            in 1..99 -> "\u001b[33m"
+            else -> "\u001b[30m"
+        }
+        "$colourMark${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}"
     }
 }
 

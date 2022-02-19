@@ -118,7 +118,7 @@
 //TODO only insects!
 
 -Mosquito        0.3     0.01   5          10      30   500       0             1 0  Migrate   Animal       @Chitin
-        ~m:Meat,>=0.2;0.01;4;0;EXIST
+        ~P(m:Blood),>=0.2;0.01;4;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown
