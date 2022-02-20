@@ -48,15 +48,22 @@
         cGrey
         R0.3 D0.7
 
--Marten         0.1     0.5    20         0      20   15         0             1 0  Migrate   Animal       @Meat
-        ~m:Meat,>=0.04,<=0.4;0.5;1.25;0;CONSUME
+-Marten         0.1     0.5    20         0      20   20         0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,>=0.04,<=0.4;0.4;1.25;0;CONSUME
         ^Meat:6 ^Fat:4 ^Bone:5:s|0.5 ^Fur:6 ^Blood:10
         #Water
         cGrey
         R0.2 D0.5
 
+-Hedgehog       0.15    0.2    12         0      20   40         0             1 0  Migrate   Animal       @Meat
+        ~A(m:Meat),>=0.004,<=0.04;0.1;1.25;0;CONSUME
+        ^Meat:2 ^Fat:1 ^Bone:2:s|0.1 ^Fur:1 ^Spike:4 ^Blood:3
+        #Water
+        cGrey
+        R0.4 D0.1
+
 -Desman         0.2     0.2    15         0      20   20         0             1 0  Migrate   Animal       @Meat
-        ~D(m:Meat,m:Chitin),>=0.005,<=0.06;0.5;1.25;0;CONSUME
+        ~A(m:Meat),>=0.005,<=0.06;0.5;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
         #Water
@@ -102,12 +109,23 @@
         cBrown
         R0.1 D0.2
 
--Beetle          0.3     0.02   5          0      30   500        0             1 0  Migrate   Animal       @Chitin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-HerbivorousCricketEgg 0.0     0.01   3          0      30   1000       0             1 0  Ignore    Animal       @Meat
+        +_OnDeath_:HerbivorousCricket:1
+        ^Meat:1:s|0.01
+        #Water
+        tTransparent
+
+-HerbivorousCricket    0.0     0.02   5          0      30   500        0             1 0  Migrate   Animal       @Chitin
         ~m:PlantFibre,>=0.001;0.01;100;0;CONSUME
+        +_layEggs_prob_0.023_true:HerbivorousCricketEgg:10
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
-        cGreen
+        cBrown
         C0.2
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -WaterStrider    0.3     0.01   6          2      30   500        0             1 0  Migrate   Animal       @Chitin
         ~m:Meat,>=0.0005,<=0.03;0.01;2;0;CONSUME
@@ -276,7 +294,7 @@
 
 -Frog            0.0     0.07   6          5      30   100        0             1 0  Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        ~m:Meat,>=0.005,<=0.05,!!r:Tadpole,!!r:Frogspawn;0.5;2;0;CONSUME
+        ~A(m:Meat),>=0.005,<=0.05,!!r:Tadpole,!!r:Frogspawn;0.5;2;0;CONSUME
         +_layEggs_prob_0.017_true:Frogspawn:10
         ^Meat:1:s|0.07
         cGreen

@@ -40,7 +40,7 @@
 /        +_makeCloud_prob_1.0_false:Cloud:2500
         tTransparent
 
--Puddle          0       10     25         -1000  1000 5          0             0 0  Cut       None         @Water
+-Puddle          0       10     25         0      1000 5          0             0 0  Cut       None         @Water
         $liquid
         +_evaporate_prob_0.1_false:Vapour:5
         #Water

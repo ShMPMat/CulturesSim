@@ -12,10 +12,14 @@
 -SeaShell        0       0.03   1000       -500   500  100000000  0             1 1  Ignore    None         @SeaShell
         sPeculiar
 
+-EggShell        0       0.05   80         -500   500  100000000  0             1 1  Ignore    None         @EggShell
+
 -Chitin          0       0.02   1000       -500   500  100000000  0             1 1  Ignore    None         @Chitin
 
 -Fur             0       0.1    50         -500   500  100000000  0             1 1  Ignore    None         @Fur
         +MakeClothes:FurClothes:1
+
+-Spike           0       0.05   60         -500   500  100000000  0             1 1  Ignore    None         @Fur
 
 -Feather         0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Feather
 
