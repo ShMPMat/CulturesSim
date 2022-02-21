@@ -18,7 +18,8 @@ import kotlin.math.pow
 open class Resource private constructor(
         val core: ResourceCore,
         amount: Int = core.genome.defaultAmount,
-        hash: Int?
+        hash: Int?,
+        protected var deathTurn: Int = 0
 ) : Comparable<Resource> {
     constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount) : this(core, amount, null)
 
@@ -32,9 +33,6 @@ open class Resource private constructor(
 
     // Precomputed hash.
     private var _hash = 0
-
-    //How many turns has this Resource been existing.
-    protected var deathTurn = 0
 
     //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death.
     protected var deathOverhead = 0
@@ -99,7 +97,7 @@ open class Resource private constructor(
 
         hurtTaker(result, taker)
 
-        return copy(result)
+        return copy(result, deathTurn)
     }
 
     private fun calculateAccessiblePart(taker: Taker): Double {
@@ -131,7 +129,7 @@ open class Resource private constructor(
 
         takers.add(taker to result)
 
-        return copy(result)
+        return copy(result, deathTurn)
     }
 
     open fun merge(resource: Resource): Resource {
@@ -162,8 +160,8 @@ open class Resource private constructor(
         return Resource(core, amount)
     }
 
-    fun copy(amount: Int = genome.defaultAmount) =
-            Resource(core, amount, _hash)
+    fun copy(amount: Int = genome.defaultAmount, deathTurn: Int = 0) =
+            Resource(core, amount, _hash, deathTurn)
 
     fun copyAndDestroy(amount: Int = genome.defaultAmount): Resource {
         val result = Resource(core, amount, _hash)

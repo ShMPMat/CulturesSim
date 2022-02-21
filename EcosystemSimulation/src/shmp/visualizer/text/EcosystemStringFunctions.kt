@@ -8,6 +8,7 @@ import shmp.simulation.space.resource.ResourceType
 import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.dependency.ConsumeDependency
+import shmp.simulation.space.resource.dependency.NeedDependency
 import shmp.simulation.space.resource.free
 import shmp.simulation.space.tile.Tile
 import java.util.regex.PatternSyntaxException
@@ -82,7 +83,12 @@ fun outputFoodWeb(resource: Resource, world: World): String {
             .flatMap { it.lastConsumed }
             .joinToString("\n")
 
-    return "Consumers:\n$consumers\n\nConsumed:\n$consumed"
+    val needed = resource.genome.dependencies
+            .filterIsInstance<NeedDependency>()
+            .flatMap { it.lastConsumed }
+            .joinToString("\n")
+
+    return "Consumers:\n$consumers\n\nConsumed:\n$consumed\n\nNeeded:\n$needed"
 }
 
 fun printResources(resources: List<Resource>) = resources

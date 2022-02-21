@@ -56,7 +56,7 @@
         R0.2 D0.5
 
 -Hedgehog       0.2     0.2    12         0      20   40         0             1 0  Migrate   Animal       @Meat
-        ~A(m:Meat),>=0.004,<=0.04;0.1;1.25;0;CONSUME
+        ~D(A(m:Meat)||m:Fungus||A(m:Pulp)),>=0.004,<=0.06;0.1;1.25;0;CONSUME
         ^Meat:2 ^Fat:1 ^Bone:2:s|0.1 ^Fur:1 ^Spike:4 ^Blood:3
         #Water
         cGrey
@@ -123,7 +123,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--HerbivorousCricketEgg 0.0     0.001  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
+-HerbivorousCricketEgg 0.0     0.003  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
         +_OnDeath_:HerbivorousCricket:1
         ^Meat:1:s|0.01
         #Water
@@ -170,7 +170,7 @@
         cYellow
         R0.1
 
--Shark           0.2     2      15          0      40   10        0             1 0  Migrate   Animal       @Meat
+-Shark           0.12    2      15          0      40   10        0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=0.05;1;1.25;0;CONSUME
         ^Meat:5 ^Fat:5 ^Bone:7:s|0.3 ^Blood:10
         #Normal:Mountain:Ice:Woods:Growth

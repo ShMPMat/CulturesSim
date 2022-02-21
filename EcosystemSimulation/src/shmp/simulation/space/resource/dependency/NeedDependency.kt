@@ -25,6 +25,11 @@ class NeedDependency(
 
                 if (isResourceDependency(res)) {
                     currentAmount += res.amount * oneResourceWorth(res)
+
+                    if (res.isNotEmpty) {
+                        lastConsumed.add(res.fullName)
+                    }
+
                     if (currentAmount >= actualAmount)
                         break@loop
                 }
