@@ -67,14 +67,13 @@ fun outputResource(resource: Resource): String {
 }
 
 fun outputFoodWeb(resource: Resource, world: World): String {
-    val consumers = world.map.tiles
+    val consumers = world.resourcePool.all
             .asSequence()
-            .flatMap { t -> t.resourcePack.getResourcesUnpacked { it.simpleName == resource.simpleName } }
-            .flatMap { it.takers }
-            .filter { it.second > 0 }
-            .map { it.first }
-            .filterIsInstance<Taker.ResourceTaker>()
-            .map { it.resource.baseName }
+            .filter {
+                it.genome.dependencies.filterIsInstance<ConsumeDependency>()
+                    .any { r -> r.lastConsumed.contains(resource.simpleName) }
+            }
+            .map { it.simpleName }
             .distinct()
             .joinToString("\n")
 
