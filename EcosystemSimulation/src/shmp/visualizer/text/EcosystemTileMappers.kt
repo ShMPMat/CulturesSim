@@ -147,7 +147,5 @@ fun ecosystemTypeMapper(resourceSymbols: Map<Resource, String>, tile: Tile) = wh
             " "
         }
     }
-    Tile.Type.Mountain -> (if (tile.level > 130) "\u001b[43m" else "") +
-            (if (tile.resourcePack.contains(data.resourcePool.getBaseName("Snow"))) "\u001b[30m" else "\u001b[93m") + "^"
     else -> " "
 }

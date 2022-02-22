@@ -135,21 +135,41 @@ open class TextEcosystemVisualizer(
             map.append(if (i < 10) " $i" else i)
             for (j in 0 until data.mapSizeY) {
                 val tile = worldMap.getValue(i, j + mapPrintInfo.cut)
-                token = mapper(tile)
-                if (token == "") {
+                token = mapper(tile).takeIf { it != "" } ?: applyMappers(tile)
+                if (token == " ") {
+                    token = ""
                     when (tile.type) {
                         Tile.Type.Ice -> token = "\u001b[47m"
                         Tile.Type.Water -> token = when (tile.level) {
                             in 0..70 -> "\u001b[48:5:27m"
                             in 71..80 -> "\u001b[48:5:33m"
-                            else -> "\u001b[48:5:39m"
+                            in 81..90 -> "\u001b[48:5:39m"
+                            else -> "\u001b[48:5:45m"
                         }
-                        Tile.Type.Woods -> token = "\u001b[42m"
+                        Tile.Type.Woods,
+                        Tile.Type.Mountain -> {
+                            val treeAmount = tile.resourcePack.getAmount { it.tags.any { t -> t.name == "Tree" } }
+
+                            token = when (treeAmount) {
+                                in 0..1000 -> "\u001b[48:5:46m"
+                                in 1001..10000 -> "\u001b[48:5:40m"
+                                in 10001..100000 -> "\u001b[48:5:34m"
+                                in 100001..1000000 -> "\u001b[48:5:28m"
+                                else -> "\u001b[48:5:22m"
+                            }
+                        }
                         Tile.Type.Growth -> token = "\u001b[103m"
                         else -> {
                         }
                     }
-                    token += applyMappers(tile)
+                    token += if (tile.type == Tile.Type.Mountain) {
+                        val levelPrint = if (tile.level > 130) "\u001b[43m" else ""
+                        val snowPrint =
+                                if (tile.resourcePack.contains(data.resourcePool.getBaseName("Snow")))
+                                    "\u001b[30m"
+                                else "\u001b[93m"
+                        "$levelPrint$snowPrint^"
+                    } else " "
                 }
                 map.append(token).append("\u001b[0m")
             }
@@ -178,7 +198,7 @@ open class TextEcosystemVisualizer(
     private fun printedEvents(events: Collection<Event>, printAll: Boolean): StringBuilder {
         val main = StringBuilder()
         for (event in events) {
-            if (printAll || event.type === Type.Death || event.type === Type.ResourceDeath || event.type === Type.DisbandResources)
+            if (printAll || event.type in listOf(Type.Death, Type.ResourceDeath, Type.DisbandResources))
                 main.append(event).append("\n")
         }
         return main

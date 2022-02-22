@@ -243,12 +243,9 @@ open class Resource private constructor(
             applyAction(action, part)
     }
 
-    fun isIdeal(tile: Tile) =
-            genome.necessaryDependencies.all { it.satisfactionPercent(tile, this) == 1.0 }
+    fun isIdeal(tile: Tile) = genome.necessaryDependencies.all { it.satisfactionPercent(tile, this) == 1.0 }
 
-    fun isAcceptable(tile: Tile) =
-            genome.negativeDependencies.all { it.satisfactionPercent(tile, this) >= 0.8 }
-                    && genome.positiveDependencies.all { it.satisfactionPercent(tile, this) >= 0.8 }
+    fun isAcceptable(tile: Tile) = genome.dependencies.all { it.satisfactionPercent(tile, this) >= 0.8 }
 
     private fun distribute(tile: Tile) {
         if (amount <= genome.naturalDensity)
