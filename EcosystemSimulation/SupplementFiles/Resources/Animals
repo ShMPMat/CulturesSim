@@ -89,14 +89,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--SparrowEgg     0.0     0.03   3          0      30   1000       0             1 0  Ignore    Animal       @Meat
+-SparrowEgg      0.0     0.03   3          0      30   1000       0             1 0  Ignore    Animal       @Meat
         +_OnDeath_:Sparrow:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
         #Water
         cGrey
         tMatt
 
--Sparrow        0.0     0.1    10         0      30   100        0             1 0  Migrate   Animal       @Meat
+-Sparrow         0.0     0.1    10         0      30   100        0             1 0  Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
         +_layEggs_prob_0.04_true:SparrowEgg:5
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
@@ -106,16 +106,33 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--Heron           0.2    0.5    10         0      30   10         0             1 0  Migrate   Animal       @Meat
-        ~m:Meat,>=0.009,<=0.16;0.1;2;1;CONSUME
+-HeronEgg        0.0     0.04   3          0      30   5         0             1 0  Ignore    Animal       @Meat
+        +_OnDeath_:Heron:1
+        ^Meat:1:s|0.02 ^EggShell:1:s|0.03
+        #Water
+        cWhite
+        tMatt
+
+-Heron           0.0    0.5    10         0      30   10         0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,>=0.009,<=0.16,!!r:HeronEgg;0.1;2;1;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
+        +_layEggs_prob_0.04_true:HeronEgg:5
         ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite
         D0.04
 
--Hawk            0.2     0.1    10         0      30   5          0             1 0  Migrate   Animal       @Meat
-        ~m:Meat,<=0.05,>=0.009;1;1.25;0;CONSUME;4
+////////////////////////////////////////////////////////////////////////////////////////////////////
+-HawkEgg         0.0     0.04   3          0      30   5          0             1 0  Ignore    Animal       @Meat
+        +_OnDeath_:Hawk:1
+        ^Meat:1:s|0.02 ^EggShell:1:s|0.03
+        #Water
+        cWhite
+        tMatt
+
+-Hawk            0.0     0.1    11         0      30   5          0             1 0  Migrate   Animal       @Meat
+        ~m:Meat,<=0.05,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME;4
+        +_layEggs_prob_0.0275_true:HawkEgg:5
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
         #Water
         cBrown
@@ -139,14 +156,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--WaterStrider    0.3     0.01   6          2      30   500        0             1 0  Migrate   Animal       @Chitin
-        ~m:Meat,>=0.0005,<=0.03;0.01;2;0;CONSUME
-        ~m:Water,t:liquid;0.001;200;1;EXIST
-        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
-        cGrey
-        C0.1
-//TODO only insects!
-
 -Mosquito        0.3     0.01   5          10      30   500       0             1 0  Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
@@ -169,6 +178,14 @@
         #Water
         cYellow
         R0.1
+
+-WaterStrider    0.3     0.01   6          2      30   500        0             1 0  Migrate   Animal       @Chitin
+        ~m:Meat,>=0.0005,<=0.03;0.01;2;0;CONSUME
+        ~m:Water,t:liquid;0.001;200;1;EXIST
+        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
+        cGrey
+        C0.1
+//TODO only insects!
 
 -Shark           0.12    2      15          0      40   10        0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=0.05;1;1.25;0;CONSUME
