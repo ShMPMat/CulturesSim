@@ -15,7 +15,9 @@ class ConsumeDependency(
         goodResource: ResourceLabeler,
         val radius: Int
 ) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResource) {
-    var lastConsumed: MutableSet<String> = HashSet()
+    fun lastConsumed(name: String): MutableSet<String> = consumed.getOrPut(name) {
+        HashSet<String>()
+    }
 
     var currentAmount = 0
 
@@ -38,7 +40,7 @@ class ConsumeDependency(
                                 resource
                         )
                         if (part.isNotEmpty) {
-                            lastConsumed.add(part.fullName)
+                            lastConsumed(resource.baseName).add(part.fullName)
                             currentAmount += part.amount * oneResourceWorth(res)
                         }
 
@@ -59,3 +61,5 @@ class ConsumeDependency(
     override val isPositive: Boolean
         get() = true
 }
+
+private val consumed = mutableMapOf<String, MutableSet<String>>()

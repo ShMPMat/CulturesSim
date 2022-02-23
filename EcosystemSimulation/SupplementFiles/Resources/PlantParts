@@ -48,9 +48,9 @@
         ^Wood:1  ^Nut:15
         cBrown
 
--Seed            0       0.01   50         -500   500  100000000  0             1 1  Migrate   None         @Seed
+-Seed            0       0.03   25         -500   500  100000000  0             1 1  Migrate   None         @Seed
         +PlantSeed:LEGACY:1
-        +_grow_prob_0.02_true:LEGACY:1
+        +_grow_prob_0.04_true:LEGACY:1
         cBrown
         sRound
 

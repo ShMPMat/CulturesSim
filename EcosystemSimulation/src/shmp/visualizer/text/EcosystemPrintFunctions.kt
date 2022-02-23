@@ -11,7 +11,7 @@ fun TextEcosystemVisualizer.printTile(tile: Tile) {
 
 fun TextEcosystemVisualizer.printResource(resource: Resource) {
     printMap { tile: Tile ->
-        if (tile.resourcePack.any { it.simpleName == resource.simpleName && it.isNotEmpty })
+        if (tile.resourcePack.any { it.baseName == resource.baseName && it.isNotEmpty })
             "\u001b[30m\u001b[41m" + tile.resourcePack.getAmount(resource) % 10
         else ""
     }

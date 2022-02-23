@@ -72,20 +72,20 @@ fun outputFoodWeb(resource: Resource, world: World): String {
             .asSequence()
             .filter {
                 it.genome.dependencies.filterIsInstance<ConsumeDependency>()
-                    .any { r -> r.lastConsumed.contains(resource.simpleName) }
+                    .any { r -> r.lastConsumed(it.baseName).contains(resource.baseName) }
             }
-            .map { it.simpleName }
+            .map { it.baseName }
             .distinct()
             .joinToString("\n")
 
     val consumed = resource.genome.dependencies
             .filterIsInstance<ConsumeDependency>()
-            .flatMap { it.lastConsumed }
+            .flatMap { it.lastConsumed(resource.baseName) }
             .joinToString("\n")
 
     val needed = resource.genome.dependencies
             .filterIsInstance<NeedDependency>()
-            .flatMap { it.lastConsumed }
+            .flatMap { it.lastConsumed(resource.baseName) }
             .joinToString("\n")
 
     return "Consumers:\n$consumers\n\nConsumed:\n$consumed\n\nNeeded:\n$needed"

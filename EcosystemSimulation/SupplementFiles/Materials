@@ -3,7 +3,7 @@
 -Wood          800       -hard:2     -sturdy:3                              -solid:1   -canBeIgnited:1
 -Pulp          80        -soft:1                                            -mass:1
 -Nut           700       -hard:1     -sturdy:3                              -solid:1
--Seed          1300      -hard:2     -sturdy:5                              -solid:1
+-Seed          25000     -hard:2     -sturdy:5                              -solid:1
 -Fungus        100       -springy:1                                         -solid:1
 -Coral         600       -hard:2     -sturdy:1                              -solid:1
 -SeaShell      1100      -hard:3     -sturdy:4                              -solid:1

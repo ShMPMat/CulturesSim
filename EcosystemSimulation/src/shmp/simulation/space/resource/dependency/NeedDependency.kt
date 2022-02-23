@@ -3,6 +3,7 @@ package shmp.simulation.space.resource.dependency
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
+import java.util.HashSet
 import kotlin.math.min
 
 
@@ -12,7 +13,9 @@ class NeedDependency(
         isNecessary: Boolean,
         goodResources: ResourceLabeler
 ) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResources) {
-    var lastConsumed = mutableSetOf<String>()
+    fun lastConsumed(name: String): MutableSet<String> = consumed.getOrPut(name) {
+        HashSet<String>()
+    }
 
     override fun satisfaction(tile: Tile, resource: Resource): Double {
         val actualAmount = amount * resource.amount
@@ -27,7 +30,7 @@ class NeedDependency(
                     currentAmount += res.amount * oneResourceWorth(res)
 
                     if (res.isNotEmpty) {
-                        lastConsumed.add(res.fullName)
+                        lastConsumed(res.baseName).add(res.fullName)
                     }
 
                     if (currentAmount >= actualAmount)
@@ -43,3 +46,6 @@ class NeedDependency(
 
     override val isPositive = true
 }
+
+
+private val consumed = mutableMapOf<String, MutableSet<String>>()
