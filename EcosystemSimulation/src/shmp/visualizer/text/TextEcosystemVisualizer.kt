@@ -144,14 +144,16 @@ open class TextEcosystemVisualizer(
                             in 0..70 -> "\u001b[48:5:27m"
                             in 71..80 -> "\u001b[48:5:33m"
                             in 81..90 -> "\u001b[48:5:39m"
-                            else -> "\u001b[48:5:45m"
+                            in 91..100 -> "\u001b[48:5:45m"
+                            else -> "\u001b[48:5:51m"
                         }
                         Tile.Type.Woods,
                         Tile.Type.Mountain -> {
                             val treeAmount = tile.resourcePack.getAmount { it.tags.any { t -> t.name == "Tree" } }
 
                             token = when (treeAmount) {
-                                in 0..1000 -> "\u001b[48:5:46m"
+                                0 -> ""
+                                in 1..1000 -> "\u001b[48:5:46m"
                                 in 1001..10000 -> "\u001b[48:5:40m"
                                 in 10001..100000 -> "\u001b[48:5:34m"
                                 in 100001..1000000 -> "\u001b[48:5:28m"

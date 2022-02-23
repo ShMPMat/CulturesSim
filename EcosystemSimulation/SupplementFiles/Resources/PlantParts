@@ -38,6 +38,7 @@
         cBrown
         sRound
 -Pome            0       0.05   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
+        +_burst_prob_0.2_true:Seed:5
         ^Pulp:4  ^Seed:5
 -Drupe           0       0.05   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
         ^Pulp:4  ^Seed:1:s|0.02
@@ -47,8 +48,9 @@
         ^Wood:1  ^Nut:15
         cBrown
 
--Seed            0       0.01   100        -500   500  100000000  0             1 1  Ignore    None         @Seed
+-Seed            0       0.01   50         -500   500  100000000  0             1 1  Migrate   None         @Seed
         +PlantSeed:LEGACY:1
+        +_grow_prob_0.02_true:LEGACY:1
         cBrown
         sRound
 
