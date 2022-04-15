@@ -120,7 +120,7 @@ fun resourceTypeMapper(type: ResourceType, tile: Tile) =
         else NOTHING
 
 fun resourceSubstringMapper(substring: String, tile: Tile, symbol: String = MARK) =
-        if (tile.resourcesWithMoved.any { it.fullName.contains(substring)}) symbol
+        if (tile.resourcesWithMoved.any { it.fullName.contains(substring) and it.isNotEmpty }) symbol
         else NOTHING
 
 fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =

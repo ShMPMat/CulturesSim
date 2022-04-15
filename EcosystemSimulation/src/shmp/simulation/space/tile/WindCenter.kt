@@ -25,7 +25,7 @@ class WindCenter internal constructor() {
                 continue
 
             for ((tile, t) in wind.affectedTiles) {
-                val part = (resource.amount * t.pow(2) / wind.sumLevel * getFlyCoefficient(resource)).toInt()
+                val part = (resource.amount * t.pow(1) / wind.sumLevel * getFlyCoefficient(resource)).toInt()
 
                 if (part > 0)
                     tile.addDelayedResource(resource.getCleanPart(part, Taker.WindTaker))
@@ -33,7 +33,8 @@ class WindCenter internal constructor() {
         }
     }
 
-    private fun getFlyCoefficient(resource: Resource) = 0.0001 / resource.genome.mass /
+    private fun getFlyCoefficient(resource: Resource) = 0.0001 /
+            resource.genome.mass /
             if (resource.core.ownershipMarker == freeMarker) 1 else 10
 
     fun middleUpdate(x: Int, y: Int, map: WorldMap) {

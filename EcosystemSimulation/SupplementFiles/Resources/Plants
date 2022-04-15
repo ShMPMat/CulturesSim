@@ -1,7 +1,7 @@
 /Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -AppleTree       0.0     2      10         0       30  150        0             0 0  Cut       Plant        @PlantFibre
         ~r:Vapour;0.00025;2;0;CONSUME
-        +_disperse_prob_0.04_true:Pome:5:n|Apple#c|Red
+        +_disperse_prob_0.04_false:Pome:5:n|Apple#c|Red
         ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple#c|Red ^SoftRoot:5
         #Water
         cGreen

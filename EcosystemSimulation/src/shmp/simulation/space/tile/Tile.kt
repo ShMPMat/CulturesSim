@@ -82,8 +82,7 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
             tiles.addAll(neighbours)
 
         for (i in 0 until radius - 1) {
-            outer = outer
-                    .flatMap { it.neighbours }
+            outer = outer.flatMap { it.neighbours }
                     .filter { !tiles.contains(it) }
                     .toSet()
             tiles.addAll(outer)

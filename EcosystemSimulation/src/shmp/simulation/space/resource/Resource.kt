@@ -27,8 +27,7 @@ open class Resource private constructor(
         protected set(value) {
             field = if (value < 0)
                 Int.MAX_VALUE
-            else
-                value
+            else value
         }
 
     // Precomputed hash.
@@ -75,8 +74,7 @@ open class Resource private constructor(
         _hash = hash ?: computeHash()
     }
 
-    fun getTagPresence(tag: ResourceTag) =
-            (amount * getTagLevel(tag)).toDouble() * genome.size.pow(data.resourceSizeEffect)
+    fun getTagPresence(tag: ResourceTag) = amount * getTagLevel(tag) * genome.size.pow(data.resourceSizeEffect)
 
     fun getTagLevel(tag: ResourceTag) = genome.getTagLevel(tag)
 
@@ -101,11 +99,12 @@ open class Resource private constructor(
     }
 
     private fun calculateAccessiblePart(taker: Taker): Double {
-        var prob = RandomSingleton.random.nextDouble() * 0.9
+        var prob = RandomSingleton.random.nextDouble().pow(2) * 0.9
 
-        prob -= genome.behaviour.camouflage + genome.behaviour.resistance
+        prob -= genome.behaviour.camouflage + genome.behaviour.resistance + genome.behaviour.danger
         if (taker is ResourceTaker)
-            prob += taker.resource.genome.behaviour.danger
+            prob += taker.resource.genome.behaviour
+                    .let { it.danger + it.camouflage }
 
         return max(min(prob, 1.0), 0.0)
     }
@@ -190,8 +189,8 @@ open class Resource private constructor(
             result.addAll(resources)
 
         for (dependency in genome.dependencies) {
-            val part = dependency.satisfactionPercent(tile, this)
-            deathOverhead += ((1 - part) * genome.lifespan).toInt()
+            val satisfaction = dependency.satisfactionPercent(tile, this)
+            deathOverhead += ((1 - satisfaction) * genome.lifespan).toInt()
         }
 
         result.addAll(naturalDeath())
@@ -291,11 +290,12 @@ open class Resource private constructor(
         return result
     }
 
-    fun applyActionUnsafe(action: ResourceAction) =
-            genome.conversionCore.actionConversion[action] ?: core.wrappedSample
+    fun applyActionUnsafe(action: ResourceAction) = genome.conversionCore.actionConversion[action]
+            ?: core.wrappedSample
 
     fun applyActionOrEmpty(action: ResourceAction, part: Int = 1): List<Resource> {
-        val result = genome.conversionCore.applyAction(action) ?: listOf()
+        val result = genome.conversionCore.applyAction(action)
+                ?: listOf()
         result.forEach { it.amount *= part }
         return result
     }
