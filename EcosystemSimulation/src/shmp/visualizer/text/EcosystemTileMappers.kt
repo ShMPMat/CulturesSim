@@ -133,8 +133,9 @@ fun resourceDensityMapper(threshold: Double, tile: Tile) = hotnessMapper(
         { it.resourceDensity.toInt() }
 )
 
-fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile)
-{ t -> t.tagPool.all.any { it.name.contains(tagName) } }
+fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile) { t ->
+    t.tagPool.all.any { it.name.contains(tagName) }
+}
 
 fun ecosystemTypeMapper(resourceSymbols: Map<Resource, String>, tile: Tile) = when (tile.type) {
     Tile.Type.Water, Tile.Type.Ice, Tile.Type.Woods, Tile.Type.Growth, Tile.Type.Normal -> {

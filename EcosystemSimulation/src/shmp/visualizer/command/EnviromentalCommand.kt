@@ -22,6 +22,7 @@ enum class EnvironmentCommand(command: String) : Command {
     ResourceDensity("rd"),
     PinResources("pin \\w+ ."),
     UnpinResources("unpin \\w+"),
+    CleanConsumers("cln consumer"),
     Events("(\\d+ )?e ?.*"),
     ShowMap("[mM]"),
     LegendOn("legend on"),
@@ -31,7 +32,7 @@ enum class EnvironmentCommand(command: String) : Command {
     GeologicalTurn("Geo"),
     Turn(""),
     Turner("\\d+"),
-    PrintStep("print step \\d+");
+    PrintStep("step \\d+");
 
     override val pattern = Regex(command)
 }

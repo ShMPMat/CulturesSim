@@ -63,3 +63,5 @@ class ConsumeDependency(
 }
 
 private val consumed = mutableMapOf<String, MutableSet<String>>()
+
+fun cleanConsumed() = consumed.forEach { it.value.clear() }

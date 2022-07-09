@@ -13,7 +13,7 @@ class NeedDependency(
         isNecessary: Boolean,
         goodResources: ResourceLabeler
 ) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResources) {
-    fun lastConsumed(name: String): MutableSet<String> = consumed.getOrPut(name) {
+    fun lastConsumed(name: String): MutableSet<String> = needed.getOrPut(name) {
         HashSet<String>()
     }
 
@@ -29,9 +29,8 @@ class NeedDependency(
                 if (isResourceDependency(res)) {
                     currentAmount += res.amount * oneResourceWorth(res)
 
-                    if (res.isNotEmpty) {
-                        lastConsumed(res.baseName).add(res.fullName)
-                    }
+                    if (res.isNotEmpty)
+                        lastConsumed(resource.baseName).add(res.fullName)
 
                     if (currentAmount >= actualAmount)
                         break@loop
@@ -48,4 +47,6 @@ class NeedDependency(
 }
 
 
-private val consumed = mutableMapOf<String, MutableSet<String>>()
+private val needed = mutableMapOf<String, MutableSet<String>>()
+
+fun cleanNeeded() = needed.forEach { it.value.clear() }

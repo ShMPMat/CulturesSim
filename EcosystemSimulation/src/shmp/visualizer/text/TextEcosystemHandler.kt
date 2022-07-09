@@ -2,6 +2,9 @@ package shmp.visualizer.text
 
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.ResourceType
+import shmp.simulation.space.resource.dependency.ConsumeDependency
+import shmp.simulation.space.resource.dependency.cleanConsumed
+import shmp.simulation.space.resource.dependency.cleanNeeded
 import shmp.visualizer.addResourceOnTile
 import shmp.visualizer.command.Command
 import shmp.visualizer.command.CommandHandler
@@ -77,6 +80,10 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                     println("Added mapper for this resource")
                 }
                 UnpinResources -> visualizer.removeTileMapperByName("Resource ${splitCommand[1]}")
+                CleanConsumers -> {
+                    cleanConsumed()
+                    cleanNeeded()
+                }
                 Events -> {
                     var amount = 100
                     var drop = splitCommand[0].length + 1
