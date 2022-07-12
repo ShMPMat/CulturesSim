@@ -122,7 +122,7 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                     print()
                 }
                 PrintStep -> {
-                    splitCommand[2].toIntOrNull()
+                    splitCommand[1].toIntOrNull()
                             ?.let { visualizer.printTurnStep = it }
                             ?: println("Wrong number format for amount of turns")
                     println("Print step number changed")
