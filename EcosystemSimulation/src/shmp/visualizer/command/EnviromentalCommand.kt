@@ -32,7 +32,9 @@ enum class EnvironmentCommand(command: String) : Command {
     GeologicalTurn("Geo"),
     Turn(""),
     Turner("\\d+"),
-    PrintStep("step \\d+");
+    PrintStep("step \\d+"),
+    AddPrintCommand("pc .+"),
+    ClearPrintCommands("cln pc");
 
     override val pattern = Regex(command)
 }

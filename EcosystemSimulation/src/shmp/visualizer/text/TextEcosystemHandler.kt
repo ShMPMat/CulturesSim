@@ -127,6 +127,15 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                             ?: println("Wrong number format for amount of turns")
                     println("Print step number changed")
                 }
+                AddPrintCommand -> {
+                    val suffixCommand = splitCommand.drop(1).joinToString(" ")
+                    visualizer.printCommands += suffixCommand
+                    println("Command '$suffixCommand' added on print")
+                }
+                ClearPrintCommands -> {
+                    visualizer.printCommands.clear()
+                    println("All print commands cleared")
+                }
                 else -> {
                     println("Unknown command")
                     return false

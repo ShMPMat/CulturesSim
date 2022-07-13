@@ -52,6 +52,8 @@ open class TextEcosystemVisualizer(
     private val _tileMappers = mutableListOf<TileMapper>()
     val tileMappers: List<TileMapper> = _tileMappers
 
+    val printCommands = mutableListOf<String>()
+
     init {
         Controller.visualizer = this
         mapPrintInfo = MapPrintInfo()
@@ -89,6 +91,8 @@ open class TextEcosystemVisualizer(
     override fun print() {
         println(world.getStringTurn())
         printMap { "" }
+        for (command in printCommands)
+            handleCommand(command)
     }
 
     /**
