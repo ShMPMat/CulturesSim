@@ -22,7 +22,7 @@ enum class EnvironmentCommand(command: String) : Command {
     ResourceDensity("rd"),
     PinResources("pin \\w+ ."),
     UnpinResources("unpin \\w+"),
-    CleanConsumers("cln consumer"),
+    CleanConsumers("cln cons"),
     Events("(\\d+ )?e ?.*"),
     ShowMap("[mM]"),
     LegendOn("legend on"),

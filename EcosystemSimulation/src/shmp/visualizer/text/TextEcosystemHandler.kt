@@ -83,6 +83,7 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                 CleanConsumers -> {
                     cleanConsumed()
                     cleanNeeded()
+                    println("Consumers cleared")
                 }
                 Events -> {
                     var amount = 100
