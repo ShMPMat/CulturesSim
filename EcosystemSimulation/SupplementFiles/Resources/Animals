@@ -32,7 +32,7 @@
         #Water
         l110;1000
         cWhite
-        R0.2 D0.1
+        R0.4 D0.1
 
 -Mouse           0.35    0.05   5          -10    35   100        0             1 0  Migrate   Animal       @Meat
         ~D(A(m:Seed)||m:Fungus),>=0.003;0.025;3;0;CONSUME
@@ -49,7 +49,7 @@
         D0.02
 
 -Wolf           0.12    1      20         0      20   15         0             1 0  Migrate   Animal       @Meat
-        ~m:Meat,>=1;0.5;1.25;0;CONSUME;4
+        ~m:Meat,>=0.3;0.6;2;0;CONSUME;2
         ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|1.3
         #Water
         cGrey
@@ -127,7 +127,7 @@
         ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite
-        D0.04
+        D0.2
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 -HawkEgg         0.0     0.04   3          0      30   5          0             1 0  Ignore    Animal       @Meat
@@ -149,7 +149,7 @@
 
 -HerbivorousCricketEgg 0.0     0.003  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
         +_OnDeath_:HerbivorousCricket:1
-        ^Meat:1:s|0.01
+        ^Meat:1:s|0.003
         #Water
         tTransparent
 
@@ -160,6 +160,25 @@
         #Water
         cBrown
         C0.2
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-CrabLarvae      0.0     0.002  3          8      30   1000       0             1 0  Migrate   Animal       @Meat
+        +_OnDeath_:Crab:1
+        ~r:Water;0.001;200;1;EXIST
+        ^Meat:1:s|0.002
+        tTransparent
+
+-Crab            0.0     0.05   6          8      30   70         0             1 0  Migrate   Animal       @Chitin
+        ~D(A(m:PlantFibre)||A(m:Meat)),<=0.04,>=0.003,!!r:CrabLarvae;0.04;1.01;1;CONSUME
+        ~r:Water;0.001;200;1;EXIST
+        +_spawnLarvae_prob_0.03_true:CrabLarvae:1000
+        ^Chitin:1:s|0.04 ^Meat:1:s|0.02
+        #Water
+        cRed
+        C0.05
+        R0.02
+        D0.01
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -348,7 +367,7 @@
         l95;1000
         cBlack
         tMatt
-        R0.5
+        R0.6
 
 -Starfish        0.12    0.08   20          0     30   200        0             1 0  Migrate   Animal       @Meat
         ~m:Meat,<=0.05;1;1.25;0;CONSUME

@@ -2,7 +2,6 @@ package shmp.visualizer.text
 
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.ResourceType
-import shmp.simulation.space.resource.dependency.ConsumeDependency
 import shmp.simulation.space.resource.dependency.cleanConsumed
 import shmp.simulation.space.resource.dependency.cleanNeeded
 import shmp.visualizer.addResourceOnTile
