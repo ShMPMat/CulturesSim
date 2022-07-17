@@ -1,5 +1,6 @@
 package shmp.simulation.space.tile
 
+import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.ResourceType
 
@@ -14,11 +15,12 @@ class TypeUpdater(val water: Resource) {
             tile.resourcePack.any { it.genome.type === ResourceType.Plant } ->
                 tile.setType(Tile.Type.Growth, false)
             else -> tile.setType(Tile.Type.Normal, false)
-        } else if (tile.type == Tile.Type.Water && tile.temperature < -10) {
+        } else if (tile.type == Tile.Type.Water && tile.temperature < -10)
             tile.setType(Tile.Type.Ice, true)
-        } else if (tile.type == Tile.Type.Ice && tile.temperature > 0) {
+        else if (tile.type == Tile.Type.Ice && tile.temperature > 0) {
             tile.type = Tile.Type.Water
             tile.level = tile.secondLevel
+            tile.addDelayedResource(SpaceData.data.resourcePool.getBaseName("SaltWater"))
         }
     }
 }

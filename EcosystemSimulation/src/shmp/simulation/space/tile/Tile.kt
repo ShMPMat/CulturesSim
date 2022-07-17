@@ -134,8 +134,10 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
         if (level >= 110)
             type = Type.Mountain
-        if (level < data.defaultWaterLevel)
+        if (level < data.defaultWaterLevel) {
             type = Type.Water
+            addDelayedResource(data.resourcePool.getBaseName("SaltWater"))
+        }
     }
 
     private fun addResource(resource: Resource) {
@@ -219,8 +221,8 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
     private fun updateType() {
         typeUpdater.updateType(this)
 
-        if (type == Type.Water)
-            addDelayedResource(SpaceData.data.resourcePool.getBaseName("Vapour"))
+//        if (type == Type.Water)
+//            addDelayedResource(SpaceData.data.resourcePool.getBaseName("Vapour"))
     }
 
     fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop growing

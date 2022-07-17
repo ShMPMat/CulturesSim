@@ -123,5 +123,5 @@
         cGreen
 
 -Diatom          0.8     0.0001 3          -100   90   200000     0             1 0 Cut        Plant        @PlantFibre
-        #Normal:Mountain:Ice:Woods:Growth
+        ~D(m:Water||m:SaltWater),t:liquid;0.001;200;1;EXIST
         cGreen

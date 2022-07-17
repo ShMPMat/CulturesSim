@@ -382,6 +382,6 @@
 
 -Copepod         0.6     0.001  4           -90   80   100000     0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre,<=0.01;0.0005;4;0;CONSUME
-        #Normal:Mountain:Ice:Woods:Growth
+        ~D(m:Water||m:SaltWater),t:liquid;0.001;200;1;EXIST
         cOrange
         R0.05
