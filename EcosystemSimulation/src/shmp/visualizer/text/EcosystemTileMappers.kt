@@ -37,10 +37,10 @@ fun vapourMapper(tile: Tile): String {
             .map { it.amount }.fold(0, Int::plus)
     val colour = when {
         level == 0 -> "\u001b[44m"
-        level < 50 -> "\u001b[104m"
-        level < 100 -> "\u001b[46m"
-        level < 150 -> "\u001b[47m"
-        level < 200 -> "\u001b[43m"
+        level < 1000 -> "\u001b[104m"
+        level < 10000 -> "\u001b[46m"
+        level < 100000 -> "\u001b[47m"
+        level < 1000000 -> "\u001b[43m"
         else -> "\u001b[41m"
     }
     return "\u001b[90m" + colour + level / 10 % 10

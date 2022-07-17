@@ -23,12 +23,11 @@ public class Controller<E extends World> {
     public final int initialTurns = 100;
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
-    public final int cultureTurns = 0;
 
     public final int proportionCoefficient = 2;
 
     public static Visualizer visualizer;
-    public static final boolean doPrint = false;
+    private final boolean debugPrint = false;
 
     public Controller(InteractionModel<E> interactionModel) {
         session = this;
@@ -44,13 +43,13 @@ public class Controller<E extends World> {
     public void initializeFirst() {
         for (int i = 0; i < geologyTurns; i++) {
             geologicTurn();
-            if (doPrint) {
+            if (debugPrint) {
                 visualizer.print();
             }
         }
         for (int i = 0; i < initialTurns; i++) {
             turn();
-            if (doPrint) {
+            if (debugPrint) {
                 visualizer.print();
             }
         }
@@ -76,7 +75,7 @@ public class Controller<E extends World> {
             }
             for (int i = 0; i < stabilizationTurns; i++) {
                 turn();
-                if (doPrint) {
+                if (debugPrint) {
                     visualizer.print();
                 }
             }
