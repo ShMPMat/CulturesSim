@@ -75,7 +75,7 @@
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
         #Water
         cGrey
-        R0.5
+        R0.7
 
 -PolarBear      0.08    2.3    30         -30    0    7          0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=0.1;0.1;1.25;0;CONSUME;4
@@ -147,6 +147,25 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-CrabLarva       0.0     0.002  3          8      30   1000       0             1 0  Migrate   Animal       @Meat
+        +_OnDeath_:Crab:1
+        ~r:Water;0.001;200;1;EXIST
+        ^Meat:1:s|0.002
+        tTransparent
+
+-Crab            0.0     0.05   6          8      30   70         0             1 0  Migrate   Animal       @Chitin
+        ~D(A(m:PlantFibre)||A(m:Meat)),<=0.04,>=0.003,!!r:CrabLarva;0.04;1.01;1;CONSUME
+        ~r:Water;0.001;200;1;EXIST
+        +_spawnLarva_prob_0.03_true:CrabLarva:1000
+        ^Chitin:1:s|0.04 ^Meat:1:s|0.02
+        #Water
+        cRed
+        C0.05
+        R0.02
+        D0.01
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -HerbivorousCricketEgg 0.0     0.003  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
         +_OnDeath_:HerbivorousCricket:1
         ^Meat:1:s|0.003
@@ -163,31 +182,34 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--CrabLarvae      0.0     0.002  3          8      30   1000       0             1 0  Migrate   Animal       @Meat
-        +_OnDeath_:Crab:1
-        ~r:Water;0.001;200;1;EXIST
+-MosquitoEgg     0.0     0.002  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
+        ~m:Water;0.001;200;1;EXIST
+        +_OnDeath_:MosquitoLarva:1
         ^Meat:1:s|0.002
         tTransparent
 
--Crab            0.0     0.05   6          8      30   70         0             1 0  Migrate   Animal       @Chitin
-        ~D(A(m:PlantFibre)||A(m:Meat)),<=0.04,>=0.003,!!r:CrabLarvae;0.04;1.01;1;CONSUME
-        ~r:Water;0.001;200;1;EXIST
-        +_spawnLarvae_prob_0.03_true:CrabLarvae:1000
-        ^Chitin:1:s|0.04 ^Meat:1:s|0.02
-        #Water
-        cRed
-        C0.05
-        R0.02
-        D0.01
+-MosquitoLarva   0.0     0.005  3          0      30   1000       0             1 0  Ignore    Animal       @Meat
+        ~D(A(m:PlantFibre)||A(m:Meat)),<=0.001;0.001;200;1;CONSUME
+        ~m:Water;0.001;200;1;EXIST
+        +_OnDeath_:MosquitoPupa:1
+        ^Meat:1:s|0.005
+        tTransparent
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+-MosquitoPupa   0.0     0.008  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
+        ~m:Water;0.001;200;1;EXIST
+        +_OnDeath_:Mosquito:1
+        ^Meat:1:s|0.008
+        tTransparent
 
--Mosquito        0.5     0.01   5          10      30   500       0             1 0  Migrate   Animal       @Chitin
+-Mosquito        0.0     0.01   5          10      30   500       0             1 0  Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;0;EXIST
+        +_layEggs_prob_0.021_true:MosquitoEgg:25
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown
         R0.3
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -Bee             0.5     0.01   5          10     30   200        0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.001;0;EXIST
