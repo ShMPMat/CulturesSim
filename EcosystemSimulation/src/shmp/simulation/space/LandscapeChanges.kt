@@ -1,7 +1,6 @@
 package shmp.simulation.space
 
 import shmp.random.randomElement
-import shmp.random.randomSublist
 import shmp.simulation.Controller
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.Tile
@@ -88,7 +87,11 @@ fun createRivers(
             .filter { it.second > 0.0 }
             .map { it.first }
     val actualAmount = min(amount, allTiles.size)
-    if (actualAmount == 0) return
-    randomSublist(allTiles, goodSpotProbability, random, actualAmount, actualAmount + 1)
-            .forEach { createRiver(it, water, goodTilePredicate, random) }
+    if (actualAmount == 0)
+        return
+
+    repeat(actualAmount) {
+        val tile = randomElement(allTiles, goodSpotProbability, random)
+        createRiver(tile, water, goodTilePredicate, random)
+    }
 }
