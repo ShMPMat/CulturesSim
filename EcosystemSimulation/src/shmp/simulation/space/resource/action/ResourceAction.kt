@@ -24,5 +24,6 @@ open class ResourceAction(val name: String, val matchers: List<ActionMatcher>, v
 class ResourceProbabilityAction(
         baseName: String,
         val probability: Double,
-        val isWasting: Boolean
+        val isWasting: Boolean,
+        val canChooseTile: Boolean
 ) : ResourceAction("_${baseName}_prob_${probability}", listOf(), listOf())

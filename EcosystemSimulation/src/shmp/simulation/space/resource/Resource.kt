@@ -2,6 +2,7 @@ package shmp.simulation.space.resource
 
 import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
+import shmp.random.singleton.randomElementOrNull
 import shmp.random.singleton.randomTileOnBrink
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.resource.Taker.*
@@ -14,6 +15,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+
+var n = 0
+var s = 0.0
 
 open class Resource private constructor(
         val core: ResourceCore,
@@ -180,12 +184,12 @@ open class Resource private constructor(
             copyWithExternalFeatures(externalFeatures + features)
 
     open fun update(tile: Tile): ResourceUpdateResult {
-        val result = mutableListOf<Resource>()
+        val result = mutableListOf<TiledResource>()
         if (amount <= 0)
             return ResourceUpdateResult(false, result)
 
-        val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it) }
-        if (resources.any { it.isAcceptable(tile) })
+        val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it, tile) }
+        if (resources.any { (t, r) -> r.isAcceptable(t) })
             result.addAll(resources)
 
         for (dependency in genome.dependencies) {
@@ -193,7 +197,7 @@ open class Resource private constructor(
             deathOverhead += ((1 - satisfaction) * genome.lifespan).toInt()
         }
 
-        result.addAll(naturalDeath())
+        result.addAll(naturalDeath().map { tile to it })
 
         if (amount <= 0)
             ResourceUpdateResult(false, result)
@@ -227,19 +231,23 @@ open class Resource private constructor(
         return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
     }
 
-    private fun applyProbabilityAction(action: ResourceProbabilityAction): List<Resource> {
+    private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = amount * action.probability
-        val part =
-                if (expectedValue < 1.0)
-                    expectedValue.chanceOf<Int> {
-                        1
-                    } ?: 0
-                else expectedValue.toInt()
+        val part = if (expectedValue < 1.0)
+            expectedValue.chanceOf<Int> { 1 } ?: 0
+        else expectedValue.toInt()
 
-        return if (action.isWasting)
+        val result = if (action.isWasting)
             applyActionAndConsume(action, part, true, SelfTaker)
         else
             applyAction(action, part)
+        val targetTile = if (action.canChooseTile)
+            (tile.neighbours + tile).filter { isAcceptable(it) }
+                    .randomElementOrNull()
+                    ?: tile
+        else tile
+
+        return result.map { targetTile to it }
     }
 
     fun isIdeal(tile: Tile) = genome.necessaryDependencies.all { it.satisfactionPercent(tile, this) == 1.0 }
@@ -284,7 +292,7 @@ open class Resource private constructor(
         this.amount += otherAmount
     }
 
-    fun applyAction(action: ResourceAction, part: Int = 1): List<Resource> {
+    fun applyAction(action: ResourceAction, part: Int = 1): Resources {
         val result = genome.conversionCore.applyAction(action) ?: listOf(copy(part))
         result.forEach { it.amount *= part }
         return result
@@ -307,7 +315,7 @@ open class Resource private constructor(
         amount = 0
     }
 
-    open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): List<Resource> {
+    open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): Resources {
         val resourcePart =
                 if (isClean) getCleanPart(part, taker)
                 else getPart(part, taker)

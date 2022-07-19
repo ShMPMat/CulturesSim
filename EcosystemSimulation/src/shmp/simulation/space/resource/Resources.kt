@@ -2,12 +2,14 @@ package shmp.simulation.space.resource
 
 import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
+import shmp.simulation.space.tile.Tile
 
 
 typealias Resources = List<Resource>
+typealias TiledResource = Pair<Tile, Resource>
 
 
-data class ResourceUpdateResult(val isAlive: Boolean, val produced: List<Resource> = emptyList())
+data class ResourceUpdateResult(val isAlive: Boolean, val produced: List<TiledResource> = emptyList())
 
 
 val specialActions = mapOf(

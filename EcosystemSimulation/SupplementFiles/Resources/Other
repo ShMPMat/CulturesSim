@@ -13,7 +13,7 @@
 /          "inf" in time - no death time.
 /
 /         +probability actions:
-/          NAME_prob_PROB_ISWASTING:RESOURCES
+/          NAME_prob_PROB_IS.WASTING[_IS.CHOOSING.TILE]:RESOURCES
 /
 /          "None" in temperature - no temperature restriction.
 /          T(min|max)\NUM - add special deprivation coefficient value to the Resource (base is 2.0)

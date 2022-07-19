@@ -35,8 +35,9 @@ fun placeResources(
         supplement: MapGeneratorSupplement,
         random: Random
 ) {
+    val validTypes = listOf(ResourceType.Mineral, ResourceType.Animal, ResourceType.Plant)
     val resourcesToScatter = resourcePool.getAll {
-        it.genome.spreadProbability != 0.0 || it.genome.type == ResourceType.Mineral
+        it.genome.spreadProbability != 0.0 || it.genome.type in validTypes
     }
 
     for (resource in resourcesToScatter) scatter(

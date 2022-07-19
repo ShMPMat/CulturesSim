@@ -210,9 +210,12 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
         for (resource in _resourcePack.resources) {
             val result = resource.update(this)
+
             if (!result.isAlive)
                 deletedResources.add(resource)
-            addDelayedResources(result.produced)
+
+            for ((t, r) in result.produced)
+                t.addDelayedResource(r)
         }
 
         _resourcePack.removeAll(deletedResources)

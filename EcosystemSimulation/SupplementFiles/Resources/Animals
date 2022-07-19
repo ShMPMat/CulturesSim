@@ -183,27 +183,27 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -MosquitoEgg     0.0     0.002  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
-        ~m:Water;0.001;200;1;EXIST
-        +_OnDeath_:MosquitoLarva:1
+        ~m:Water,t:liquid;0.001;200;1;EXIST
+        +_transform_prob_0.5_t:MosquitoLarva:1
         ^Meat:1:s|0.002
         tTransparent
 
 -MosquitoLarva   0.0     0.005  3          0      30   1000       0             1 0  Ignore    Animal       @Meat
         ~D(A(m:PlantFibre)||A(m:Meat)),<=0.001;0.001;200;1;CONSUME
-        ~m:Water;0.001;200;1;EXIST
-        +_OnDeath_:MosquitoPupa:1
+        ~m:Water,t:liquid;0.001;200;1;EXIST
+        +_transform_prob_0.333_t:MosquitoPupa:1
         ^Meat:1:s|0.005
         tTransparent
 
 -MosquitoPupa   0.0     0.008  2          0      30   1000       0             1 0  Ignore    Animal       @Meat
-        ~m:Water;0.001;200;1;EXIST
-        +_OnDeath_:Mosquito:1
+        ~m:Water,t:liquid;0.001;200;1;EXIST
+        +_transform_prob_0.5_t:Mosquito:1
         ^Meat:1:s|0.008
         tTransparent
 
 -Mosquito        0.0     0.01   5          10      30   500       0             1 0  Migrate   Animal       @Chitin
-        ~P(m:Blood),>=0.1;0.01;1.1;0;EXIST
-        +_layEggs_prob_0.021_true:MosquitoEgg:25
+        ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
+        +_layEggs_prob_0.021_t:MosquitoEgg:10
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown

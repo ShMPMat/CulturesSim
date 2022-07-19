@@ -1,10 +1,10 @@
 package shmp.simulation.space.resource.dependency
 
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
 import java.util.*
+import kotlin.math.ceil
 import kotlin.math.min
 
 
@@ -22,6 +22,9 @@ class ConsumeDependency(
     var currentAmount = 0
 
     override fun satisfaction(tile: Tile, resource: Resource): Double {
+        if (resource.amount == 0)
+            return 0.0
+
         if (currentAmount < 0)
             currentAmount = 0
 
@@ -53,7 +56,7 @@ class ConsumeDependency(
         result = min(currentAmount.toDouble() / neededAmount, 1.0)
 
         if (currentAmount >= neededAmount)
-            currentAmount -= neededAmount.toInt()
+            currentAmount -= ceil(neededAmount).toInt()
 
         return result
     }

@@ -28,6 +28,7 @@ public class Controller<E extends World> {
 
     public static Visualizer visualizer;
     private final boolean debugPrint = false;
+    private final boolean doLastStabilization = true;
 
     public Controller(InteractionModel<E> interactionModel) {
         session = this;
@@ -73,13 +74,16 @@ public class Controller<E extends World> {
             if (j != 0) {
                 world.placeResources();
             }
-            for (int i = 0; i < stabilizationTurns; i++) {
-                turn();
-                if (debugPrint) {
-                    visualizer.print();
+
+            if (j != fillCycles - 1 || doLastStabilization) {
+                for (int i = 0; i < stabilizationTurns; i++) {
+                    turn();
+                    if (debugPrint) {
+                        visualizer.print();
+                    }
                 }
+                turn();
             }
-            turn();
         }
         turn();
         world.getMap().setTags();
