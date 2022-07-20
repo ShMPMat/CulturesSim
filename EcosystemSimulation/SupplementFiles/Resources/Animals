@@ -77,6 +77,13 @@
         cGrey
         R0.7
 
+-VampireBat     0.2     0.1    15         5       30   25       0             1 0  Migrate   Animal       @Chitin
+        ~P(m:Blood),>=0.2;0.05;1.1;1;EXIST
+        ^Meat:1 ^Fat:1 ^Bone:1:s|0.07 ^Fur:1 ^Blood:2
+        #Water
+        cBlack
+        R0.3 D0.1
+
 -PolarBear      0.08    2.3    30         -30    0    7          0             1 0  Migrate   Animal       @Meat
         ~m:Meat,>=0.1;0.1;1.25;0;CONSUME;4
         ^Meat:20 ^Fat:15 ^Bone:7:s|0.5 ^Fur:6 ^Blood:15 ^Leather:1:s|2.3
@@ -207,7 +214,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -Bee             0.5     0.01   5          10     30   200        0             1 0  Migrate   Animal       @Chitin
-        ~P(r:Flower);1.25;1.001;0;EXIST
+        ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         $Pollinator:1
         #Water
@@ -215,7 +222,7 @@
         R0.1
 
 -BumbleBee       0.35    0.02   5          10     30   50         0             1 0  Migrate   Animal       @Chitin
-        ~P(r:Flower);1.25;1.001;0;EXIST
+        ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.015 ^Meat:1:s|0.015
         $Pollinator:1
         #Water
