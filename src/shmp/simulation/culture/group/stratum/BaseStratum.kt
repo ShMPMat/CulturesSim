@@ -30,12 +30,12 @@ abstract class BaseStratum(tile: Tile, final override val baseName: String, post
     }
 
     protected fun addEnhancement(resource: Resource, group: Group) {
-        val goodPlaces = innerPlaces.filter { resource.isIdeal(it.tile) }
+        val goodPlaces = innerPlaces.filter { resource.areNecessaryDependenciesSatisfied(it.tile) }
         var place: StaticPlace? = null
 
         if (goodPlaces.isEmpty()) {
             val goodTiles = group.territoryCenter.territory
-                    .filter { resource.isIdeal(it) }
+                    .filter { resource.areNecessaryDependenciesSatisfied(it) }
 
 
             if (goodTiles.isNotEmpty()) {

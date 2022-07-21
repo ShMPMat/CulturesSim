@@ -10,7 +10,6 @@ import shmp.simulation.culture.group.request.ResourceEvaluator
 import shmp.simulation.culture.group.request.resourceEvaluator
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.resource.tag.labeler.BaseNameLabeler
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
@@ -101,7 +100,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
             || core.resourceExposed && producedResources.any {
         val center = controller.territory.center
                 ?: throw SimulationError("Empty Territory for the Aspect use")
-        !it.isIdeal(center)
+        !it.areNecessaryDependenciesSatisfied(center)
     }
 
     protected fun _use(controller: AspectController): AspectResult {

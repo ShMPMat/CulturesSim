@@ -250,9 +250,13 @@ open class Resource private constructor(
         return result.map { targetTile to it }
     }
 
-    fun isIdeal(tile: Tile) = genome.necessaryDependencies.all { it.satisfactionPercent(tile, this) == 1.0 }
+    fun areNecessaryDependenciesSatisfied(tile: Tile) = genome.necessaryDependencies.all {
+        it.satisfactionPercent(tile, this) == 1.0
+    }
 
-    fun isAcceptable(tile: Tile) = genome.dependencies.all { it.satisfactionPercent(tile, this) >= 0.8 }
+    fun isAcceptable(tile: Tile, threshold: Double = 0.8) = genome.dependencies.all {
+        it.satisfactionPercent(tile, this) >= threshold
+    }
 
     private fun distribute(tile: Tile) {
         if (amount <= genome.naturalDensity)
@@ -260,7 +264,7 @@ open class Resource private constructor(
 
         when (genome.behaviour.overflowType) {
             OverflowType.Migrate -> {
-                val tiles = tile.getNeighbours { isIdeal(it) }
+                val tiles = tile.getNeighbours { areNecessaryDependenciesSatisfied(it) }
                         .sortedBy { it.resourcePack.getAmount(this) }
 
                 for (neighbour in tiles) {
@@ -327,13 +331,13 @@ open class Resource private constructor(
         val tileList = mutableListOf(tile)
 
         var newTile = tileList.randomTileOnBrink {
-            isIdeal(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
+            areNecessaryDependenciesSatisfied(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
         }
         if (newTile == null) {
             if (genome.dependencies.all { it.hasNeeded(tile) })
                 newTile = tile
             else {
-                newTile = tileList.randomTileOnBrink { isIdeal(it) }
+                newTile = tileList.randomTileOnBrink { areNecessaryDependenciesSatisfied(it) }
                 if (newTile == null)
                     newTile = tile
             }

@@ -71,11 +71,9 @@ public class Controller<E extends World> {
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
-            System.out.println("Start scatter");
             if (j != 0) {
                 world.placeResources();
             }
-            System.out.println("End scatter");
 
             if (j != fillCycles - 1 || doLastStabilization) {
                 for (int i = 0; i < stabilizationTurns; i++) {
