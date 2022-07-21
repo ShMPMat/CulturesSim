@@ -18,6 +18,7 @@ class ResourcePlacer(
         val random: Random
 ) {
     fun placeResources() {
+        println("Start spread")
         val validTypes = listOf(ResourceType.Mineral, ResourceType.Animal, ResourceType.Plant)
         val resourcesToScatter = resourcePool.getAll {
             it.genome.spreadProbability != 0.0 || it.genome.type in validTypes
@@ -28,13 +29,14 @@ class ResourcePlacer(
                     resource,
                     random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last)
             )
+        println("End spread")
     }
 
     private fun scatter(resource: Resource, n: Int) {
-        println("Start scatter ${resource.baseName}")
         val idealTiles = map.getTiles { resource.areNecessaryDependenciesSatisfied(it) }
         val goodTiles = map.getTiles { resource.isAcceptable(it) }
-        println("Done tiles")
+
+        val dependencyResources = computeDependencies(resource)
 
         for (i in 0 until n) {
             val tile: Tile = idealTiles.randomElementOrNull()
@@ -42,36 +44,46 @@ class ResourcePlacer(
                     ?: randomTile(map)
 
             tile.addDelayedResource(resource.copy())
-            println("Start deps")
-            //TODO precompute the whole tree
-            addDependencies(listOf(), resource, tile)
-            println("End deps")
+            addDependencies(dependencyResources, tile)
         }
-        println("End scatter ${resource.baseName}")
     }
 
-    private fun addDependencies(resourceStack: List<Resource>, resource: Resource, tile: Tile) {
-        val newStack = resourceStack + listOf(resource)
-        for (dependency in resource.genome.dependencies) {
-            if (!dependency.isPositive || !dependency.isResourceNeeded)
-                continue
-            if (dependency is LabelerDependency) {
-                val suitableResources = resourcePool
-                        .getAll { dependency.isResourceDependency(it) }
-                        .filter { filterDependencyResources(it, newStack) }
-                for (dependencyResource in suitableResources) {
-                    if (dependencyResource.areNecessaryDependenciesSatisfied(tile)) {
-                        tile.addDelayedResource(dependencyResource)
-                        addDependencies(newStack, dependencyResource, tile)
-                    }
+    private fun computeDependencies(resource: Resource): List<Resource> {
+        val resourcesQueue = mutableListOf(resource)
+        val dependencyResources = mutableListOf<Resource>()
+        val nextResources = mutableListOf<Resource>()
+
+        while (resourcesQueue.isNotEmpty()) {
+            for (res in resourcesQueue) {
+                for (dependency in res.genome.dependencies) {
+                    if (!dependency.isPositive || !dependency.isResourceNeeded)
+                        continue
+
+                    if (dependency is LabelerDependency)
+                        nextResources += resourcePool
+                                .getAll { dependency.isResourceDependency(it) }
+                                .filter { filterDependencyResources(it, dependencyResources, resource) }
                 }
             }
+            resourcesQueue.clear()
+            resourcesQueue += nextResources
+            dependencyResources += nextResources
+            nextResources.clear()
         }
+
+        return dependencyResources.reversed()
     }
 
-    private fun filterDependencyResources(resource: Resource, previous: List<Resource>) =
+    private fun addDependencies(resources: List<Resource>, tile: Tile) {
+        for (dependencyResource in resources)
+            if (dependencyResource.areNecessaryDependenciesSatisfied(tile))
+                tile.addDelayedResource(dependencyResource)
+    }
+
+    private fun filterDependencyResources(resource: Resource, previous: List<Resource>, rootResource: Resource? = null) =
             resource.genome.type in listOf(ResourceType.Plant, ResourceType.Animal)
                     && previous.none { resource.simpleName == it.simpleName }
+                    && resource.simpleName != rootResource?.simpleName
                     && resource.genome.primaryMaterial != null
 
 }

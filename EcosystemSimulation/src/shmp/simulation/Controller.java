@@ -24,7 +24,7 @@ public class Controller<E extends World> {
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
 
-    public final double proportionCoefficient = 1.5;
+    public final double proportionCoefficient = 2.0;
 
     public static Visualizer visualizer;
     private final boolean debugPrint = false;
