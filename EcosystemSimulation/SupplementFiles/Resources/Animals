@@ -107,9 +107,10 @@
         cGrey
         tMatt
 
+//TODO actually plant food
 -Sparrow         0.0     0.1    10         0      30   100        0             1 0  Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
-        +_layEggs_prob_0.06_true:SparrowEgg:5
+        +_layEggs_prob_0.1_true:SparrowEgg:5
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cBrown
@@ -213,6 +214,33 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-ButterflyEgg    0.0     0.002  2          10     30   1000       0             1 0  Ignore    Animal       @Meat
+        +_transform_prob_0.5_t:Caterpillar:1
+        ^Meat:1:s|0.002
+        cYellow
+
+//TODO dependency up to 0.1
+-Caterpillar     0.0     0.02   4          10     30   1000       0             1 0  Ignore    Animal       @Meat
+        ~A(m:PlantFibre),>=0.01;0.02;200;1;CONSUME
+        +_transform_prob_0.333_t:ButterflyPupa:1
+        ^Meat:1:s|0.005
+        tTransparent
+
+-ButterflyPupa   0.0     0.03   2          10     30   1000       0             1 0  Ignore    Animal       @Meat
+        +_transform_prob_0.5_t:Butterfly:1
+        ^Meat:1:s|0.008
+        tTransparent
+
+-Butterfly       0.0     0.04   4          10     30   300        0             1 0  Migrate   Animal       @Chitin
+        ~P(r:Flower);1;1.1;0;EXIST
+        +_layEggs_prob_0.05_t:ButterflyEgg:10
+        ^Chitin:1:s|0.02 ^Meat:1:s|0.01
+        $Pollinator:1
+        #Water
+        cYellow
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -Bee             0.5     0.01   5          10     30   200        0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
@@ -221,7 +249,7 @@
         cYellow
         R0.1
 
--BumbleBee       0.35    0.02   5          10     30   50         0             1 0  Migrate   Animal       @Chitin
+-BumbleBee       0.45    0.02   5          10     30   50         0             1 0  Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.015 ^Meat:1:s|0.015
         $Pollinator:1
@@ -359,7 +387,7 @@
         ^Meat:1:s|0.01
         tTransparent
 
--Tadpole         0.0     0.03   3          5      30   1000       0             1 0  Ignore    Animal       @Meat
+-Tadpole         0.0     0.03   3          5      30   1000       0             1 0  Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ~m:PlantFibre,<=0.15;0.0025;2;0;CONSUME
         +_transform_prob_0.333_t:Frog:1
@@ -369,7 +397,7 @@
 -Frog            0.0     0.07   6          5      30   100        0             1 0  Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ~A(m:Meat),>=0.005,<=0.05,!!r:Tadpole,!!r:Frogspawn;0.5;2;0;CONSUME
-        +_layEggs_prob_0.019_true:Frogspawn:20
+        +_layEggs_prob_0.02_t:Frogspawn:20
         ^Meat:1:s|0.07
         #Water
         cGreen

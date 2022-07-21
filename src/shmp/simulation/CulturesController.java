@@ -15,7 +15,7 @@ public class CulturesController extends Controller<CulturesWorld> {
 
     public final int cultureTurns = 0;
 
-    public final int startGroupAmount = 20 * proportionCoefficient;
+    public final int startGroupAmount = (int) (20 * proportionCoefficient);
     public final double defaultGroupSpreadability = 1;
     public final double defaultGroupTraitSpread = 100;//TODO back to 0?
     public final int defaultGroupMaxPopulation = 100;

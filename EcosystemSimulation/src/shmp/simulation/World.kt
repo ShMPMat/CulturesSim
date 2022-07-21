@@ -42,7 +42,7 @@ open class World {
             actions: List<ResourceAction>,
             tagParser: TagParser,
             resourceActionInjectors: List<ResourceActionInjector>,
-            proportionCoefficient: Int
+            proportionCoefficient: Double
     ) {
         val materialPool = MaterialInstantiation(tags, actions).createPool()
 

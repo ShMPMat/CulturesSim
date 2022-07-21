@@ -8,20 +8,20 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 
-fun instantiateSpaceData(proportionFactor: Int, resourceTagMatchers: List<TagMatcher>, materialPool: MaterialPool) {
-    val startResourceAmountMin = 40 * proportionFactor * proportionFactor
+fun instantiateSpaceData(proportionFactor: Double, resourceTagMatchers: List<TagMatcher>, materialPool: MaterialPool) {
+    val startResourceAmountMin = (40 * proportionFactor * proportionFactor).toInt()
     val defaultData = Data()
 
     SpaceData.data = Data(
             materialPool = materialPool,
-            mapSizeX = defaultData.mapSizeX * proportionFactor,
-            mapSizeY = defaultData.mapSizeY * proportionFactor,
-            platesAmount = defaultData.platesAmount * proportionFactor,
+            mapSizeX = (defaultData.mapSizeX * proportionFactor).toInt(),
+            mapSizeY = (defaultData.mapSizeY * proportionFactor).toInt(),
+            platesAmount = (defaultData.platesAmount * proportionFactor).toInt(),
             additionalTags = resourceTagMatchers,
-            tectonicRange = defaultData.tectonicRange * (proportionFactor.toDouble() * 0.75).roundToInt(),
+            tectonicRange = defaultData.tectonicRange * (proportionFactor * 0.75).roundToInt(),
             minTectonicRise = ceil(defaultData.minTectonicRise.toDouble() / proportionFactor).toInt(),
             startResourceAmountMin = startResourceAmountMin,
-            startResourceAmountMax = startResourceAmountMin + 30 * proportionFactor * proportionFactor,
-            seabedLevel = defaultData.seabedLevel - (proportionFactor - 1) * 10
+            startResourceAmountMax = (startResourceAmountMin + 30 * proportionFactor * proportionFactor).toInt(),
+            seabedLevel = (defaultData.seabedLevel - (proportionFactor - 1) * 10).toInt()
     )
 }

@@ -11,6 +11,9 @@ import shmp.simulation.space.resource.dependency.ConsumeDependency
 import shmp.simulation.space.resource.dependency.NeedDependency
 import shmp.simulation.space.resource.free
 import shmp.simulation.space.tile.Tile
+import shmp.utils.addToRight
+import shmp.utils.chompToLines
+import shmp.utils.chompToSize
 import java.util.regex.PatternSyntaxException
 
 
@@ -25,7 +28,7 @@ fun basicResourcesCounter(world: World): String {
                 resourceAmounts.getValue(it).add(it)
         }
     }
-    return resourceAmounts.entries.joinToString("\n", postfix = "\u001b[30m") {
+    val lines =  resourceAmounts.entries.joinToString("\n") {
         val colourMark = when (it.value.tilesAmount) {
             0 -> "\u001b[31m"
             in 1..99 -> "\u001b[33m"
@@ -33,6 +36,10 @@ fun basicResourcesCounter(world: World): String {
         }
         "$colourMark${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}"
     }
+
+    return chompToLines(lines, 30)
+            .append("\u001b[30m")
+            .toString()
 }
 
 fun allResourcesCounter(world: World, shouldFree: Boolean): String {

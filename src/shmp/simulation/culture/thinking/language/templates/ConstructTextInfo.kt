@@ -66,7 +66,7 @@ fun getResourceInformationTextInfo(resource: Resource): List<TextInfo> {
     val infos: MutableList<TextInfo> = ArrayList()
     for (resourceDependency in resource.genome.dependencies)
         if (resourceDependency is ConsumeDependency)
-            for (res in resourceDependency.lastConsumed) {
+            for (res in resourceDependency.lastConsumed(resource.baseName)) {
                 infos.add(TextInfo(
                         ArbitraryResource(resource),
                         Meme("consume"),

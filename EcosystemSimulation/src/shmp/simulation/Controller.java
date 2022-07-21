@@ -15,7 +15,7 @@ public class Controller<E extends World> {
     public E world;
     public InteractionModel<E> interactionModel;
 
-    public final Random random = RandomKt.Random(8565728 + 34);
+    public final Random random = RandomKt.Random(8565728 + 35);
 
     public final boolean doTurns = true;
 
@@ -24,7 +24,7 @@ public class Controller<E extends World> {
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
 
-    public final int proportionCoefficient = 2;
+    public final double proportionCoefficient = 1.5;
 
     public static Visualizer visualizer;
     private final boolean debugPrint = false;
@@ -62,7 +62,7 @@ public class Controller<E extends World> {
         for (int j = 0; j < fillCycles && doTurns; j++) {
             LandscapeChangesKt.createRivers(
                     world.getMap(),
-                    5 * proportionCoefficient * proportionCoefficient,
+                    (int) (5 * proportionCoefficient * proportionCoefficient),
                     water,
                     t -> t.getType() == Tile.Type.Mountain
                             && t.getResourcePack().contains(world.getResourcePool().getBaseName("Snow"))
@@ -71,9 +71,11 @@ public class Controller<E extends World> {
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
+            System.out.println("Start scatter");
             if (j != 0) {
                 world.placeResources();
             }
+            System.out.println("End scatter");
 
             if (j != fillCycles - 1 || doLastStabilization) {
                 for (int i = 0; i < stabilizationTurns; i++) {

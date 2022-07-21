@@ -30,7 +30,7 @@ class CulturesWorld : World() {
     lateinit var aspectPool: AspectPool
         private set
 
-    fun initializeMap(proportionCoefficient: Int) {
+    fun initializeMap(proportionCoefficient: Double) {
         val aspectUrls = this::class.java.classLoader.getResources("Aspects")
         val mutableAspectPool = AspectInstantiation(tags, actionTags).createPool(aspectUrls)
         aspectPool = mutableAspectPool

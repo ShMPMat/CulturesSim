@@ -27,7 +27,7 @@ fun createRiver(
         if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
             break
         }
-        currentTile.addDelayedResource(water.copy(2000 * Controller.session.proportionCoefficient))
+        currentTile.addDelayedResource(water.copy((2000 * Controller.session.proportionCoefficient).toInt()))
         currentTile.tagPool.add(nameTag)
         val minLevel = min(
                 currentTile.level,
