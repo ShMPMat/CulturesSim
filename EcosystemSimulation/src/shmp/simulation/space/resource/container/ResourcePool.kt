@@ -15,7 +15,9 @@ class ResourcePool(val resources: List<ResourceIdeal>) {
 
     fun getAll(predicate: (Resource) -> Boolean) = resources.filter(predicate).map { it.copy() }
 
-    fun getBaseName(name: String) = baseNameMap[name]?.copy()
+    fun getBaseNameOrNull(name: String) = baseNameMap[name]?.copy()
+
+    fun getBaseName(name: String) = getBaseNameOrNull(name)
             ?: throw NoSuchElementException("No resource with name $name")
 
     fun getSimpleName(name: String) = get { it.simpleName == name }

@@ -27,11 +27,14 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
                 TileTag -> printMap { tileTagMapper(splitCommand[1], it) }
                 Resource ->
                     try {
-                        val resource = world.resourcePool.getBaseName(line.substring(2))
+                        val resource = world.resourcePool.getBaseNameOrNull(splitCommand[1])
+                                ?: world.resourcePool.all.first {
+                                    it.baseName.toLowerCase() == splitCommand[1].toLowerCase()
+                                }
                         printResource(resource)
                     } catch (e: NoSuchElementException) {
                         resourceSymbols.entries
-                                .filter { it.value == line.substring(2) }
+                                .filter { it.value == splitCommand[1] }
                                 .map { it.key }
                                 .firstOrNull()
                                 ?.let { printResource(it) }

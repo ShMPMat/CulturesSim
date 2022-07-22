@@ -15,7 +15,7 @@ public class Controller<E extends World> {
     public E world;
     public InteractionModel<E> interactionModel;
 
-    public final Random random = RandomKt.Random(8565728 + 35);
+    public final Random random = RandomKt.Random(8565728 + 36);
 
     public final boolean doTurns = true;
 
@@ -24,7 +24,7 @@ public class Controller<E extends World> {
     public final int stabilizationTurns = 100;
     public final int fillCycles = 2;
 
-    public final double proportionCoefficient = 2.0;
+    public final double proportionCoefficient = 1.5;
 
     public static Visualizer visualizer;
     private final boolean debugPrint = false;
@@ -67,7 +67,7 @@ public class Controller<E extends World> {
                     t -> t.getType() == Tile.Type.Mountain
                             && t.getResourcePack().contains(world.getResourcePool().getBaseName("Snow"))
                             && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty()
-                            ? (t.getTemperature() + 100) * (t.getTemperature() + 100) : 0.0,
+                            ? (t.getTemperature() + 100) : 0.0,
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );

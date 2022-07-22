@@ -55,6 +55,8 @@
 /-Cloud           0       0.0001 inf       -1000  1000 100000000  0             1 0  Migrate   None         @Cloud
 /        +_evaporate_prob_0.01_true:Vapour:50
 
+-Detritus        0       0.1    20         -500   500  1000       0             1 0  Ignore    None         @Detritus
+
 -Pearl           0       0.01   100000     -500   500  100000000  0             1 0  Migrate   None         @Pearl
         cWhite
         tShiny
