@@ -219,7 +219,8 @@ open class Resource private constructor(
     }
 
     protected open fun naturalDeath(): List<Resource> {
-        if (deathTurn + deathOverhead < genome.lifespan)
+        val shouldDie = deathTurn + deathOverhead >= genome.lifespan
+        if (!shouldDie && (genome.lifespan != Double.POSITIVE_INFINITY || deathOverhead != Int.MAX_VALUE))
             return emptyList()
 
         val deadAmount = (deathPart * amount).toInt()

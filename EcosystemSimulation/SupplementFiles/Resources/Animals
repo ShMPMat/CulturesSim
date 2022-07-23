@@ -69,8 +69,8 @@
         cGrey
         R0.4 D0.1
 
--Desman         0.2     0.2    15         0      20   20         0             1 0  Migrate   Animal       @Meat
-        ~A(m:Meat),>=0.005,<=0.06;0.5;1.25;0;CONSUME
+-Desman         0.3     0.2    15         0      20   20         0             1 0  Migrate   Animal       @Meat
+        ~A(m:Meat),>=0.005,<=0.06;0.4;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
         #Water
@@ -411,6 +411,14 @@
         #Water
         cBrown tMatt
         C0.4
+
+-Woodlouse       0.35    0.02   5           0     30   300        0             1 0  Migrate   Animal       @Meat
+        ~m:Water;0.001;2;1;EXIST
+        ~D(m:Detritus||m:PlantFibre);0.05;2;0;CONSUME
+        ^Chitin:1:s|0.02 ^Meat:1:s|0.01
+        #Water
+        cBrown tMatt
+        C0.1
 
 -ShelledMollusk  0.25    0.04   10          10    30   500        0             1 0  Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME
