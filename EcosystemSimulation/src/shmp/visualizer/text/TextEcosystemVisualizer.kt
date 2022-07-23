@@ -165,17 +165,17 @@ open class TextEcosystemVisualizer(
                             }
                         }
                         Tile.Type.Growth -> token = "\u001b[103m"
-                        else -> {
-                        }
+                        else -> {}
                     }
-                    token += if (tile.type == Tile.Type.Mountain) {
+                    token += if (tile.level >= 110) {
                         val levelPrint = if (tile.level > 130) "\u001b[43m" else ""
                         val snowPrint =
                                 if (tile.resourcePack.contains(data.resourcePool.getBaseName("Snow")))
                                     "\u001b[30m"
                                 else "\u001b[93m"
                         "$levelPrint$snowPrint^"
-                    } else " "
+                    } else if (tile.level > 105) "~"
+                    else " "
                 }
                 map.append(token).append("\u001b[0m")
             }

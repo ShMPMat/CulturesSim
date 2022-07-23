@@ -18,6 +18,7 @@ class ResourcePlacer(
         val random: Random
 ) {
     fun placeResources() {
+        val startTime = System.nanoTime()
         println("Start spread")
         val validTypes = listOf(ResourceType.Mineral, ResourceType.Animal, ResourceType.Plant)
         val resourcesToScatter = resourcePool.getAll {
@@ -30,6 +31,7 @@ class ResourcePlacer(
                     random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last)
             )
         println("End spread")
+        println((System.nanoTime() - startTime).toDouble() / 1000 / 1000 / 1000)
     }
 
     private fun scatter(resource: Resource, n: Int) {
