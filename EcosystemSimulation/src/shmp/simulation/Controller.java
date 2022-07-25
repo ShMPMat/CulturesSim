@@ -5,6 +5,7 @@ import kotlin.random.RandomKt;
 import shmp.random.singleton.RandomSingleton;
 import shmp.simulation.interactionmodel.InteractionModel;
 import shmp.simulation.space.LandscapeChangesKt;
+import shmp.simulation.space.SpaceData;
 import shmp.simulation.space.resource.Resource;
 import shmp.simulation.space.tile.Tile;
 import shmp.visualizer.Visualizer;
@@ -22,7 +23,7 @@ public class Controller<E extends World> {
     public final int geologyTurns = 50;
     public final int initialTurns = 100;
     public final int stabilizationTurns = 100;
-    public final int fillCycles = 2;
+    public final int fillCycles = 3;
 
     public final double proportionCoefficient = 1.5;
 
@@ -59,15 +60,19 @@ public class Controller<E extends World> {
 
     public void initializeSecond() {
         Resource water = world.getResourcePool().getBaseName("Water");
+        int riverCreationThreshold = 108;
         for (int j = 0; j < fillCycles && doTurns; j++) {
             LandscapeChangesKt.createRivers(
                     world.getMap(),
                     (int) (5 * proportionCoefficient * proportionCoefficient),
                     water,
-                    t -> t.getType() == Tile.Type.Mountain
-                            && t.getResourcePack().contains(world.getResourcePool().getBaseName("Snow"))
+                    t -> t.getLevel() >= riverCreationThreshold
+                            && t.getResourcePack().any(r ->
+                            r.getTags().stream().anyMatch(tag -> tag.getName().equals("liquid") || tag.getName().equals("solid"))
+                                    && r.getGenome().getMaterials().stream().anyMatch(m -> m.getName().equals("Water"))
+                    )
                             && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty()
-                            ? (t.getTemperature() + 100) : 0.0,
+                            ? (t.getTemperature() - SpaceData.INSTANCE.getData().getTemperatureBaseStart() + 1) * (t.getLevel() + 1 - riverCreationThreshold) : 0.0,
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );

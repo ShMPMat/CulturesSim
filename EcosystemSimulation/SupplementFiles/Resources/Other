@@ -32,6 +32,7 @@
         tTransparent
 
 -Snow            0       0.1    inf        -1000  0    100000000  0             1 0  Migrate   None         @Water
+        #Water
         cWhite
 
 -Water           0       10     inf        -1000  1000 50         0             1 0  Ignore    None         @Water

@@ -26,22 +26,29 @@
         cBrown
         R0.3 D0.1
 
--MountainGoat    0.1     0.8    20         -10    30   25         0             1 0  Migrate   Animal       @Meat
+-MountainGoat    0.15    0.8    20         -10    30   30         0             1 0  Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         ^Meat:8 ^Fat:4 ^Bone:5:s|0.3 ^Fur:2 ^Blood:8 ^Leather:1:s|1
         #Water
         l110;1000
         cWhite
-        R0.4 D0.1
+        R0.5 D0.1
 
--Mouse           0.35    0.05   5          -10    35   100        0             1 0  Migrate   Animal       @Meat
+-Mouse           0.5     0.05   5          -10    35   100        0             1 0  Migrate   Animal       @Meat
         ~D(A(m:Seed)||m:Fungus),>=0.003;0.025;3;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:2
         #Water
         cWhite
         D0.02
 
--Squirrel        0.3     0.07   5          -5     35   10         0             1 0  Migrate   Animal       @Meat
+-BlindMoleRat    0.4     0.25   5          0      30   30         0             1 0  Migrate   Animal       @Meat
+        ~A(m:PlantFibre),>=0.01;0.05;3;0;CONSUME
+        ^Meat:1 ^Fat:2 ^Bone:1:s|0.06 ^Fur:2 ^Blood:4
+        #Water
+        cBrown
+        R0.8 D0.02
+
+-Squirrel        0.55    0.07   5          -5     35   15         0             1 0  Migrate   Animal       @Meat
         ~D(A(r:Nut)||A(m:Seed)||A(m:Pulp)||m:Fungus),>=0.003;0.07;3;0;CONSUME
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.04 ^Fur:1 ^Blood:2
         #Water
@@ -49,7 +56,7 @@
         D0.02
 
 -Wolf           0.12    1      20         0      20   15         0             1 0  Migrate   Animal       @Meat
-        ~m:Meat,>=0.3;0.6;20;0;CONSUME;2
+        ~m:Meat,>=0.3;0.6;20;0;CONSUME;3
         ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|1.3
         #Water
         cGrey
@@ -60,7 +67,7 @@
         ^Meat:6 ^Fat:4 ^Bone:5:s|0.5 ^Fur:6 ^Blood:10
         #Water
         cGrey
-        R0.2 D0.5
+        R0.2 D0.4
 
 -Hedgehog       0.2     0.2    12         0      20   40         0             1 0  Migrate   Animal       @Meat
         ~D(A(m:Meat)||m:Fungus||A(m:Pulp)),>=0.004,<=0.06;0.1;1.25;0;CONSUME
@@ -69,7 +76,7 @@
         cGrey
         R0.4 D0.1
 
--Desman         0.3     0.2    15         0      20   20         0             1 0  Migrate   Animal       @Meat
+-Desman         0.5     0.2    16         0      20   25         0             1 0  Migrate   Animal       @Meat
         ~A(m:Meat),>=0.005,<=0.06;0.4;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
@@ -391,14 +398,14 @@
 -Tadpole         0.0     0.03   3          5      30   1000       0             1 0  Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ~m:PlantFibre,<=0.15;0.0025;2;0;CONSUME
-        +_transform_prob_0.333_t:Frog:1
+        +_transform_prob_0.333_t_t:Frog:1
         ^Meat:1:s|0.03
         cBlack
 
 -Frog            0.0     0.07   6          5      30   100        0             1 0  Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ~A(m:Meat),>=0.005,<=0.05,!!r:Tadpole,!!r:Frogspawn;0.5;2;0;CONSUME
-        +_layEggs_prob_0.02_t:Frogspawn:20
+        +_layEggs_prob_0.02_t_t:Frogspawn:20
         ^Meat:1:s|0.07
         #Water
         cGreen

@@ -110,13 +110,23 @@
         #Water
         cGreen
 
--Grass           0.5     0.1    5          5      30   1000       0             1 0 Cut        Plant        @PlantFibre
+-Grass           0.0     0.1    5          5      30   5000       0             1 0 Cut        Plant        @PlantFibre
         ~r:Vapour;0.0000001;2;1;CONSUME
         ~r:Detritus;0.1;2;0;CONSUME
+        +_disperse_prob_0.2_f:Seed:5
         +_OnDeath_:Detritus:1
-        ^Leaf:3:s|0.2
+        ^Leaf:3:s|0.1 ^Seed:3
         #Water
         cGreen
+
+-Wheat           0.0     0.2    5          10     28   500        0             1 0 Cut        Plant        @PlantFibre
+        ~r:Vapour;0.000001;2;1;CONSUME
+        ~r:Detritus;0.1;2;0;CONSUME
+        +_disperse_prob_0.2_t:Seed:30
+        +_OnDeath_:Detritus:2
+        ^Leaf:2:s|0.2 ^Seed:30
+        #Water
+        cYellow
 
 -FlowerPlant     0.35    0.1    5          5      30   100        0             1 0 Cut        Plant        @PlantFibre
         ~r:Vapour;0.0000001;1.25;1;CONSUME
