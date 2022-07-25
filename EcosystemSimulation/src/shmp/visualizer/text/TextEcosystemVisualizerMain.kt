@@ -7,11 +7,10 @@ import shmp.simulation.space.resource.instantiation.tag.DefaultTagParser
 
 
 fun main() {
-    val controller = Controller(MapModel())
     val world = World()
+    val controller = Controller(MapModel(), world)
     val textEcosystemVisualizer = TextEcosystemVisualizer(controller)
 
-    controller.initializeWorld(world)
     world.initializeMap(emptyList(), DefaultTagParser(world.tags), listOf(), controller.proportionCoefficient)
 
     textEcosystemVisualizer.initialize()

@@ -72,10 +72,8 @@ public class CulturesController extends Controller<CulturesWorld> {
     }
 
     public CulturesController(InteractionModel<CulturesWorld> interactionModel) {
-        super(interactionModel);
+        super(interactionModel, new CulturesWorld());
         session = this;
-
-        initializeWorld(new CulturesWorld());
 
         world.initializeMap(proportionCoefficient);
 

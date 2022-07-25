@@ -31,15 +31,12 @@ public class Controller<E extends World> {
     private final boolean debugPrint = false;
     private final boolean doLastStabilization = true;
 
-    public Controller(InteractionModel<E> interactionModel) {
+    public Controller(InteractionModel<E> interactionModel, E world) {
         session = this;
+        this.world = world;
         RandomSingleton.INSTANCE.setSafeRandom(random);
 
         this.interactionModel = interactionModel;
-    }
-
-    public void initializeWorld(E world) {
-        this.world = world;
     }
 
     public void initializeFirst() {
@@ -72,7 +69,9 @@ public class Controller<E extends World> {
                                     && r.getGenome().getMaterials().stream().anyMatch(m -> m.getName().equals("Water"))
                     )
                             && t.getTilesInRadius(2, n -> n.getResourcePack().contains(water)).isEmpty()
-                            ? (t.getTemperature() - SpaceData.INSTANCE.getData().getTemperatureBaseStart() + 1) * (t.getLevel() + 1 - riverCreationThreshold) : 0.0,
+                            ? (t.getTemperature() - SpaceData.INSTANCE.getData().getTemperatureBaseStart() + 1)
+                                    * (t.getLevel() + 1 - riverCreationThreshold)
+                            : 0.0,
                     t -> t.getType() != Tile.Type.Ice,
                     random
             );
