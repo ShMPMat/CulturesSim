@@ -65,6 +65,7 @@ public class TectonicPlate extends BrinkInvariantTerritory {
         }
         for (Tile tile: getTiles()) {
             tile.setType(Tile.Type.Water, true);
+            tile.addDelayedResource(SpaceData.INSTANCE.getData().getResourcePool().getBaseName("SaltWater"));
         }
     }
 

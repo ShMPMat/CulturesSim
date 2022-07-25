@@ -35,13 +35,13 @@
         #Water
         cWhite
 
--Water           0       10     inf        -1000  1000 50         0             1 0  Ignore    None         @Water
+-Water           0       10     inf        -1000  1000 50         0             1 0  Cut       None         @Water
         $liquid
         +_evaporate_prob_1.0_false:Vapour:1
 /        +_makeCloud_prob_1.0_false:Cloud:2500
         tTransparent
 
--SaltWater       0       10     inf        -1000  1000 50         0             1 0  Ignore    None         @SaltWater
+-SaltWater       0       10     inf        -1000  1000 50         0             1 0  Cut       None         @SaltWater
         $liquid
         +_evaporate_prob_1.0_false:Vapour:1
         #Normal:Mountain:Ice:Woods:Growth

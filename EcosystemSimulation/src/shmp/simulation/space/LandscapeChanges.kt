@@ -27,7 +27,7 @@ fun createRiver(
         if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
             break
         }
-        currentTile.addDelayedResource(water.copy((2000 * Controller.session.proportionCoefficient).toInt()))
+        currentTile.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt()))
         currentTile.tagPool.add(nameTag)
         val minLevel = min(
                 currentTile.level,
@@ -67,7 +67,7 @@ fun createLake(
             }
         }
     }
-    lakeTiles.forEach { it.addDelayedResource(water.copy(2)) }
+    lakeTiles.forEach { it.addDelayedResource(water.copy((3000 * Controller.session.proportionCoefficient).toInt())) }
     lakeTiles.forEach { it.tagPool.add(nameTag) }
     outflowTiles.forEach {
         createRiver(it, water, goodTilePredicate, random)

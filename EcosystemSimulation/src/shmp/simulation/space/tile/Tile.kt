@@ -1,7 +1,6 @@
 package shmp.simulation.space.tile
 
 import shmp.simulation.DataInitializationError
-import shmp.simulation.space.SpaceData
 import shmp.simulation.space.SpaceData.data
 import shmp.simulation.space.TectonicPlate
 import shmp.simulation.space.WorldMap
@@ -135,8 +134,10 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         if (level >= 110)
             type = Type.Mountain
         if (level < data.defaultWaterLevel) {
+            if (type != Type.Water)
+                addDelayedResource(data.resourcePool.getBaseName("SaltWater"))
+
             type = Type.Water
-            addDelayedResource(data.resourcePool.getBaseName("SaltWater"))
         }
     }
 
