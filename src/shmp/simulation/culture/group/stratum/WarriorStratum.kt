@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.stratum
 
 import shmp.random.singleton.chanceOfNot
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.getAspectImprovement
 import shmp.simulation.culture.group.centers.Group

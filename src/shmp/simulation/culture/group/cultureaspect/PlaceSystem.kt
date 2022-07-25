@@ -1,8 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect
 
 import shmp.random.singleton.chanceOf
-import shmp.random.testProbability
-import shmp.simulation.CulturesController.*
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.request.Request

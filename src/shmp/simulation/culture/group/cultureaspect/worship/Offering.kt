@@ -1,6 +1,6 @@
 package shmp.simulation.culture.group.cultureaspect.worship
 
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.worship.OfferingType.CultPractitioners
 import shmp.simulation.culture.group.cultureaspect.worship.OfferingType.LocalTemple

@@ -1,7 +1,7 @@
 package shmp.simulation.culture.aspect
 
 import shmp.random.singleton.chanceOf
-import shmp.simulation.CulturesController.*
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.aspect.dependency.Dependency

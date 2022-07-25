@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.process.behaviour
 
 import shmp.random.singleton.randomElement
 import shmp.random.singleton.randomElementOrNull
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.aspect.hasMeaning
 import shmp.simulation.culture.group.RoadCreationEvent

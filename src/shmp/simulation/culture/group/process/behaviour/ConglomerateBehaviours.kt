@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.process.behaviour
 
 import shmp.random.singleton.randomUnwrappedElementOrNull
 import shmp.random.toSampleSpaceObject
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.Add
 import shmp.simulation.culture.group.centers.AdministrationType
 import shmp.simulation.culture.group.centers.Group

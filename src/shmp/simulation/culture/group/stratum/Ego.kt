@@ -3,7 +3,7 @@ package shmp.simulation.culture.group.stratum
 import shmp.random.*
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomUnwrappedElementOrNull
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.centers.RequestConstructController
 import shmp.simulation.culture.group.place.MovablePlace

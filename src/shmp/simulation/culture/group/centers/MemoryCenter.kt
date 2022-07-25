@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOf
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.request.RequestPool
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.container.MutableResourcePack

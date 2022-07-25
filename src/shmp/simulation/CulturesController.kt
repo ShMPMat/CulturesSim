@@ -1,117 +1,110 @@
-package shmp.simulation;
+package shmp.simulation
 
-import shmp.simulation.culture.thinking.language.templates.TemplateBase;
-import shmp.simulation.interactionmodel.InteractionModel;
-import shmp.visualizer.Visualizer;
+import shmp.simulation.culture.thinking.language.templates.TemplateBase
+import shmp.simulation.interactionmodel.InteractionModel
 
 
-public class CulturesController extends Controller<CulturesWorld> {
-    public static CulturesController session;
-    public TemplateBase templateBase;
+class CulturesController(
+        interactionModel: InteractionModel<CulturesWorld>
+) : Controller<CulturesWorld>(interactionModel, CulturesWorld()) {
+    var templateBase: TemplateBase
 
-    private int conglomerateCount = -1;
+    val doPrint = false
 
-    public final boolean doTurns = true;
+    private var conglomerateCount = -1
 
-    public final int cultureTurns = 0;
+    val cultureTurns = 0
 
-    public final int startGroupAmount = (int) (20 * proportionCoefficient);
-    public final double defaultGroupSpreadability = 1;
-    public final double defaultGroupTraitSpread = 100;//TODO back to 0?
-    public final int defaultGroupMaxPopulation = 100;
-    public final int defaultGroupTerritoryRadius = 6;
-    public final int defaultGroupReach = defaultGroupTerritoryRadius + 1;
-    public final int defaultGroupMinPopulationPerTile = 1;
-    public final int defaultGroupFertility = 10;
-    public final double defaultGroupExiting = 0.02;
-    public final double defaultGroupDiverge = 0.01;
-    public final double defaultTypeRenewal = 0.05;
-    public final double rAspectAcquisition = 1.0;
-    public final double cultureAspectBaseProbability = 0.02;
-    public final double groupCultureAspectCollapse = 0.05;
-    public final double groupCollapsedAspectUpdate = 0.01;
-    public final double groupAspectAdoptionProb = 0.07;
-    public final boolean groupDiverge = true;
-    public final boolean groupMultiplication = true;
-    public final boolean independentCvSimpleAspectAdding = true;
-    public final double worshipPlaceProb = 0.1;
-    public final double placeSystemLimitsCheck = 0.05;
-    public final double egoRenewalProb = 0.08;
-    public final double reasoningUpdate = 0.1;
-    public final double behaviourUpdateProb = 0.1;
-    public final double memoryUpdateProb = 0.1;
-    public final double egoAcquisitionProb = 0.05;
-    public final double tradeStockUpdateProb = 0.1;
-    public final double resourceValueRefreshTime = 12;
-    public final double memoryStrengthCoefficient = 0.9;
-    public final double stratumInstrumentRenewalProb = 0.03;
+    val startGroupAmount = (20 * proportionCoefficient).toInt()
+    val defaultGroupSpreadability = 1.0
+    val defaultGroupTraitSpread = 100.0 //TODO back to 0?
+    val defaultGroupMaxPopulation = 100
+    val defaultGroupTerritoryRadius = 6
+    val defaultGroupReach = defaultGroupTerritoryRadius + 1
+    val defaultGroupMinPopulationPerTile = 1
+    val defaultGroupFertility = 10
+    val defaultGroupExiting = 0.02
+    val defaultGroupDiverge = 0.01
+    val defaultTypeRenewal = 0.05
+    val rAspectAcquisition = 1.0
+    val cultureAspectBaseProbability = 0.02
+    val groupCultureAspectCollapse = 0.05
+    val groupCollapsedAspectUpdate = 0.01
+    val groupAspectAdoptionProb = 0.07
+    val groupDiverge = true
+    val groupMultiplication = true
+    val independentCvSimpleAspectAdding = true
+    val worshipPlaceProb = 0.1
+    val placeSystemLimitsCheck = 0.05
+    val egoRenewalProb = 0.08
+    val reasoningUpdate = 0.1
+    val behaviourUpdateProb = 0.1
+    val memoryUpdateProb = 0.1
+    val egoAcquisitionProb = 0.05
+    val tradeStockUpdateProb = 0.1
+    val resourceValueRefreshTime = 12.0
+    val memoryStrengthCoefficient = 0.9
+    val stratumInstrumentRenewalProb = 0.03
 
-    public final int groupTurnsBetweenBorderCheck = 10;
-    public final int maxGroupDependencyDepth = 5;
-    public final int minimalStableFreePopulation = 10;
-    public final int aspectFalloff = -500;
-    public final int worshipFeatureFalloff = 100;
-    public final int defaultAspectUsefulness = 50;
+    val groupTurnsBetweenBorderCheck = 10
+    val maxGroupDependencyDepth = 5
+    val minimalStableFreePopulation = 10
+    val aspectFalloff = -500
+    val worshipFeatureFalloff = 100
+    val defaultAspectUsefulness = 50
 
-    public final double strayPlacesUpdate = 0.01;
+    val strayPlacesUpdate = 0.01
 
-    public static Visualizer visualizer;
-    public static final boolean doPrint = false;
+    var overallTime: Long = 0
+    var groupTime: Long = 0
+    var othersTime: Long = 0
+    var groupMainTime: Long = 0
+    var groupOthersTime: Long = 0
+    var groupMigrationTime: Long = 0
+    var groupInnerOtherTime: Long = 0
 
-    public long overallTime = 0;
-    public long groupTime = 0;
-    public long othersTime = 0;
-    public long groupMainTime = 0;
-    public long groupOthersTime = 0;
-    public long groupMigrationTime = 0;
-    public long groupInnerOtherTime = 0;
+    val vacantGroupName: String
+        get() {
+            conglomerateCount++
+            return "G$conglomerateCount"
+        }
 
-    public String getVacantGroupName() {
-        conglomerateCount++;
-        return "G" + conglomerateCount;
+    init {
+        session = this
+        world.initializeMap(proportionCoefficient)
+        templateBase = TemplateBase()
     }
 
-    public CulturesController(InteractionModel<CulturesWorld> interactionModel) {
-        super(interactionModel, new CulturesWorld());
-        session = this;
-
-        world.initializeMap(proportionCoefficient);
-
-        templateBase = new TemplateBase();
-    }
-
-
-    public void initializeThird() {
-        world.initializeGroups();
-        for (int i = 0; i < cultureTurns && doTurns; i++) {
-            turn();
-            if (doPrint) {
-                visualizer.print();
-            }
+    fun initializeThird() {
+        world.initializeGroups()
+        var i = 0
+        while (i < cultureTurns && doTurns) {
+            turn()
+            if (doPrint)
+                visualizer.print()
+            i++
         }
     }
 
-    public boolean isTime(int denominator) {
-        return world.getLesserTurnNumber() % denominator == 0;
+    override fun turn() {
+        super.turn()
+        if (isTime(100))
+            world.clearDeadConglomerates()
+
+        println(
+                "Overall - $overallTime Groups - $groupTime Others - $othersTime Groups to others - "
+                        + groupTime.toDouble() / othersTime.toDouble() +
+                        " main update to others - " + groupMainTime.toDouble() / groupOthersTime.toDouble() +
+                        " current test to others - " + groupMigrationTime.toDouble() / groupInnerOtherTime.toDouble()
+        )
     }
 
-    public void turn() {
-        super.turn();
-
-        if (isTime(100)) {
-            world.clearDeadConglomerates();
-        }
-
-        System.out.println(
-                "Overall - " + overallTime + " Groups - " + groupTime + " Others - " + othersTime
-              + " Groups to others - " + ((double) groupTime) / ((double) othersTime)
-              + " main update to others - " + ((double) groupMainTime) / ((double) groupOthersTime)
-              + " current test to others - " + ((double) groupMigrationTime) / ((double) groupInnerOtherTime)
-        );
+    override fun geologicTurn() {
+        interactionModel.geologicTurn(world)
+        world.incrementTurnGeology()
     }
 
-    public void geologicTurn() {
-        interactionModel.geologicTurn(world);
-        world.incrementTurnGeology();
+    companion object {
+        lateinit var session: CulturesController
     }
 }

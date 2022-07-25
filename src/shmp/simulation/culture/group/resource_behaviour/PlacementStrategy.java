@@ -53,13 +53,13 @@ public class PlacementStrategy {
                 List<Tile> unfinishedBorder = controlledTerritory
                         .filterInnerBrink(t -> !t.getResourcePack().containsAll(resourcePack));
                 return unfinishedBorder.isEmpty()
-                        ? randomElementOrNull(border, session.random)
-                        : randomElementOrNull(unfinishedBorder, session.random);
+                        ? randomElementOrNull(border, session.getRandom())
+                        : randomElementOrNull(unfinishedBorder, session.getRandom());
             case Homogeneous:
                 tiles = controlledTerritory.filter(t -> !t.getResourcePack().containsAll(resourcePack));
                 return tiles.isEmpty()
                         ? randomTile(controlledTerritory)
-                        : randomElement(tiles, session.random);
+                        : randomElement(tiles, session.getRandom());
             case Sprinkle:
                 return chooseSpecialTile(controlledTerritory);
         }
@@ -67,7 +67,7 @@ public class PlacementStrategy {
     }
 
     private Tile chooseSpecialTile(Territory controlledTerritory) {
-        int index = session.random.nextInt(specialTiles.size() + 1);
+        int index = session.getRandom().nextInt(specialTiles.size() + 1);
         if (index < specialTiles.size()) {
             return specialTiles.get(index);
         }
@@ -82,7 +82,7 @@ public class PlacementStrategy {
                 int b = 0;
             }
         }
-        return randomElementOrNull(specialTiles, session.random);
+        return randomElementOrNull(specialTiles, session.getRandom());
     }
 
     public void place(MutableResourcePack resourcePack, Territory territory) {

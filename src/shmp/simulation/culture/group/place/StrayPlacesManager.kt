@@ -1,9 +1,10 @@
 package shmp.simulation.culture.group.place
 
+import shmp.simulation.CulturesController.Companion.session
 import shmp.random.testProbability
-import shmp.simulation.CulturesController.*
 
-class StrayPlacesManager() {
+
+class StrayPlacesManager {
     private val places = mutableSetOf<StaticPlace>()
 
     fun addPlace(staticPlace: StaticPlace) = places.add(staticPlace)

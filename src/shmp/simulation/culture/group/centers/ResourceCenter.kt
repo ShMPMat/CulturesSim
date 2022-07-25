@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.randomElement
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.SimulationError
 import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.group.place.MovablePlace

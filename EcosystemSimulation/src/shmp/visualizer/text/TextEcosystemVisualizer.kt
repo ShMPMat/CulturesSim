@@ -23,10 +23,10 @@ import java.io.InputStreamReader
 import java.util.*
 
 
-open class TextEcosystemVisualizer(
-        open val controller: Controller<out World>,
-        private val defaultManager: CommandManager<TextEcosystemVisualizer> = CommandManager(TextPassHandler()),
-        private val commandManager: CommandManager<out TextEcosystemVisualizer> = defaultManager
+open class TextEcosystemVisualizer<E : World>(
+        open val controller: Controller<E>,
+        private val defaultManager: CommandManager<TextEcosystemVisualizer<E>> = CommandManager(TextPassHandler()),
+        private val commandManager: CommandManager<out TextEcosystemVisualizer<E>> = defaultManager
 ) : Visualizer {
     /**
      * Symbols for representation of resources on the Map.
@@ -39,7 +39,7 @@ open class TextEcosystemVisualizer(
     private val world
         get() = controller.world
 
-    protected val interactionModel: InteractionModel<out World>
+    protected val interactionModel: InteractionModel<E>
         get() = controller.interactionModel
 
     private val map: WorldMap

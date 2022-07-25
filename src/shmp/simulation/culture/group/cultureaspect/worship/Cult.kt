@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.chanceOf
-import shmp.simulation.CulturesController.*
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.aspect.MadeByResourceFeature
 import shmp.simulation.culture.aspect.MeaningResourceFeature
 import shmp.simulation.culture.group.stratum.CultStratum

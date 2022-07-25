@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOf
 import shmp.utils.chompToSize
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.event.Event
 import shmp.simulation.culture.group.GroupConglomerate
 import shmp.simulation.culture.group.GroupTileTag

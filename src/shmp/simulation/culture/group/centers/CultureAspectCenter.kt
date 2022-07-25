@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.SampleSpaceObject
 import shmp.random.singleton.*
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.centers.util.*
 import shmp.simulation.culture.group.cultureaspect.*
 import shmp.generator.culture.worldview.reasoning.ReasonField

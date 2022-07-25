@@ -11,8 +11,8 @@ import shmp.visualizer.command.EnvironmentCommand.*
 import java.util.*
 
 
-class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer> {
-    override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer): Boolean {
+class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer<*>> {
+    override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer<*>): Boolean {
         val splitCommand = line.split(" ")
 
         visualizer.apply {

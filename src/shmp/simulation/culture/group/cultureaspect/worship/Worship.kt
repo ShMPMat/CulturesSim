@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.cultureaspect.worship
 
 import shmp.random.singleton.chanceOf
 import shmp.random.singleton.randomElement
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.GroupError
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.*

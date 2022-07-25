@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.cultureaspect
 
 import shmp.random.singleton.chanceOfNot
-import shmp.simulation.CulturesController.*
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.culture.group.cultureaspect.util.createRitual
 import shmp.simulation.culture.group.reason.Reason

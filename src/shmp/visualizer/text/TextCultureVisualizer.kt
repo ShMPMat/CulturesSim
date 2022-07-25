@@ -1,6 +1,7 @@
 package shmp.visualizer.text
 
 import shmp.simulation.CulturesController
+import shmp.simulation.CulturesWorld
 import shmp.simulation.culture.group.centers.Group
 import shmp.simulation.space.tile.Tile
 import shmp.visualizer.command.CommandManager
@@ -15,7 +16,7 @@ open class TextCultureVisualizer(
         override val controller: CulturesController,
         private val defaultManager: CommandManager<TextCultureVisualizer> = CommandManager(TextPassHandler()),
         private val commandManager: CommandManager<out TextCultureVisualizer> = defaultManager
-) : TextEcosystemVisualizer(controller, CommandManager(TextPassHandler()), commandManager) {
+) : TextEcosystemVisualizer<CulturesWorld>(controller, CommandManager(TextPassHandler()), commandManager) {
     private var groupInfo = ConglomeratePrintInfo(mutableListOf())
     private var lastClaimedTiles: Map<Group, Set<Tile>> = mutableMapOf()
     private var lastClaimedTilesPrintTurn = 0

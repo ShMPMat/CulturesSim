@@ -2,7 +2,7 @@ package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOf
 import shmp.simulation.CulturesController
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.cultureaspect.DepictObject
 import shmp.simulation.culture.group.process.*
 import shmp.simulation.culture.group.process.behaviour.*

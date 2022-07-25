@@ -1,8 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.RandomSingleton
-import shmp.simulation.CulturesController
-import shmp.simulation.CulturesController.*
+import shmp.simulation.CulturesController.Companion.session
 import shmp.generator.culture.worldview.Meme
 import shmp.utils.SoftValue
 import java.util.*

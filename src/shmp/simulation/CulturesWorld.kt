@@ -2,7 +2,7 @@ package shmp.simulation
 
 import shmp.random.singleton.RandomSingleton
 import shmp.random.singleton.randomTile
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.aspect.*
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.aspect.labeler.AspectNameLabeler

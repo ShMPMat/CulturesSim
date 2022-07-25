@@ -1,7 +1,7 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.*
-import shmp.simulation.CulturesController.session
+import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.aspect.*
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.culture.aspect.dependency.LineDependency

@@ -53,6 +53,6 @@ public class TemplateBase {
     }
 
     public Meme getRandomSentenceTemplate() {
-        return randomElement(sentenceBase, CulturesController.session.random);
+        return randomElement(sentenceBase, CulturesController.session.getRandom());
     }
 }
