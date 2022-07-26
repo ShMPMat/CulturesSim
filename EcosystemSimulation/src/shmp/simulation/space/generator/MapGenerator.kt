@@ -94,10 +94,10 @@ private fun fill(map: WorldMap) {
     var ssw = true
     for (plate in map.tectonicPlates) {
         if (sw) {
-            plate.setType(TectonicPlate.Type.Terrain)
+            plate.type = TectonicPlate.Type.Terrain
             sw = false
         } else if (ssw) {
-            plate.setType(TectonicPlate.Type.Oceanic)
+            plate.type = TectonicPlate.Type.Oceanic
             ssw = false
         }
         plate.initialize()
