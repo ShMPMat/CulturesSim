@@ -1,34 +1,35 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
--Clay            0       0.5    100000     -500   500  1000000    0             1 0  Ignore  Mineral      @Clay
+/Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
+-Clay                               0       0.5    100000     -500   500  1000000    Ignore  Mineral      @Clay
         +BuildHouse:House:1
         cBrown
         tMatt
 
--Stone           0       0.1    100000     -500   500  100000000  0             1 0  Ignore  Mineral      @Stone
+-Stone                              0       0.1    100000     -500   500  100000000  Ignore  Mineral      @Stone
         +Chisel:StoneAxe:1
         cGrey
         tMatt
 
--Boulder         0       0.5    100000     -500   500  10000      0             1 0  Ignore  Mineral      @Stone
+-Boulder                            0       0.5    100000     -500   500  10000      Ignore  Mineral      @Stone
         cGrey
         tMatt
 
--Cliff           0       10     100000     -500   500  10         0             0 0  Ignore  Mineral      @Stone
+-Cliff                              0       10     100000     -500   500  10         Ignore  Mineral      @Stone
         cGrey
         tMatt
+        I
 
--Ruby            0       0.03   100000     -500   500  100        0             1 0  Ignore  Mineral      @Ruby
+-Ruby                               0       0.03   100000     -500   500  100        Ignore  Mineral      @Ruby
         cRed
         tSemitransparent
 
--RawIron         0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Iron
+-RawIron                            0       0.1    100000     -500   500  1000       Ignore  Mineral      @Iron
         $rawMineral
         cWhite
 
--RawCopper       0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Copper
+-RawCopper                          0       0.1    100000     -500   500  1000       Ignore  Mineral      @Copper
         $rawMineral
         cYellow
 
--RawTin          0       0.1    100000     -500   500  1000       0             1 0  Ignore  Mineral      @Tin
+-RawTin                             0       0.1    100000     -500   500  1000       Ignore  Mineral      @Tin
         $rawMineral
         cWhite

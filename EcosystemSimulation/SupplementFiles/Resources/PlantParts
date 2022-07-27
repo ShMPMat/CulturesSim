@@ -1,64 +1,81 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
--Trunk           0       4      70         -500   500  100000000  0             1 1  Ignore    None         @Wood
+/Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
+-Trunk                              0       4      70         -500   500  100000000  Ignore    None         @Wood
         cBrown
+        L
 
--Branch          0       0.2    10         -500   500  100000000  0             1 1  Ignore    None         @Wood
+-Branch                             0       0.2    10         -500   500  100000000  Ignore    None         @Wood
         cBrown
+        L
 
--SoftBranch      0       0.2    5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-SoftBranch                         0       0.2    5          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:3
         +Weaving:Basket:1
         cGreen
+        L
 
--Leaf            0       0.03   3          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-Leaf                               0       0.03   3          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:1
         cGreen
+        L
 
--PineNeedle      0       0.02   3          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-PineNeedle                         0       0.02   3          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:1
         cGreen
+        L
 
--Flower          0       0.05   3          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-Flower                             0       0.05   3          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:1
         cWhite
+        L
 
--Root            0       0.5    10         -500   500  100000000  0             1 1  Ignore    None         @Wood
+-Root                               0       0.5    10         -500   500  100000000  Ignore    None         @Wood
         cBrown
+        L
 
--SoftRoot        0       0.5    5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-SoftRoot                           0       0.5    5          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:3
         +Weaving:Basket:1
         cGreen
+        L
 
--Pulp            0       0.01   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
+-Pulp                               0       0.01   5          -500   500  100000000  Ignore    None         @Pulp
+        L
 
--Samara          0       0.03   5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-Samara                             0       0.03   5          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:1 ^Seed:1
--Nut             0       0.02   5          -500   500  100000000  0             1 1  Ignore    None         @Nut
+        L
+-Nut                                0       0.02   5          -500   500  100000000  Ignore    None         @Nut
         cBrown
         sRound
--Pome            0       0.05   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
+        L
+-Pome                               0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
         +_burst_prob_0.2_t:Seed:5
         ^Pulp:4  ^Seed:5
--Drupe           0       0.05   5          -500   500  100000000  0             1 1  Ignore    None         @Pulp
+        L
+-Drupe                              0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
         +_burst_prob_0.2_t:Seed:1
         ^Pulp:4  ^Seed:1:s|0.02
+        L
 
 
--ConiferCone     0       0.05   20         -500   500  100000000  0             1 1  Ignore    None         @Wood
+-ConiferCone                        0       0.05   20         -500   500  100000000  Ignore    None         @Wood
         ^Wood:1  ^Nut:15
         cBrown
+        L
 
--Seed            0       0.03   25         -500   500  100000000  0             1 1  Migrate   None         @Seed
+-Seed                               0       0.03   25         -500   500  100000000  Migrate   None         @Seed
         +PlantSeed:LEGACY:1
         +_grow_prob_0.05_t:LEGACY:1
         cBrown
         sRound
+        L
 
--PlantFibre      0       0.5    5          -500   500  100000000  0             1 1  Ignore    None         @PlantFibre
+-PlantFibre                         0       0.5    5          -500   500  100000000  Ignore    None         @PlantFibre
         +MakingFibre:Fibre:1
         +Weaving:Basket:1
         cGreen
+        L
 
--Wood            0       1      50         -500   500  100000000  0             1 1  Ignore    None         @Wood
+-Wood                               0       1      50         -500   500  100000000  Ignore    None         @Wood
         cBrown
+        L

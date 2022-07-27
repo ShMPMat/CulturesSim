@@ -1,35 +1,45 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
--Meat            0       0.1    5          -500   500  100000000  0             1 1  Ignore    None         @Meat
+/Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
+-Meat                               0       0.1    5          -500   500  100000000  Ignore    None         @Meat
         cRed
+        L
 
--Fat             0       0.1    5          -500   500  100000000  0             1 1  Ignore    None         @Fat
+-Fat                                0       0.1    5          -500   500  100000000  Ignore    None         @Fat
         cWhite
+        L
 
--Bone            0       0.1    1000       -500   500  100000000  0             1 1  Ignore    None         @Bone
+-Bone                               0       0.1    1000       -500   500  100000000  Ignore    None         @Bone
         cWhite
         tMatt
+        L
 
--SeaShell        0       0.03   1000       -500   500  100000000  0             1 1  Ignore    None         @SeaShell
+-SeaShell                           0       0.03   1000       -500   500  100000000  Ignore    None         @SeaShell
         sPeculiar
+        L
 
--EggShell        0       0.05   80         -500   500  100000000  0             1 1  Ignore    None         @EggShell
+-EggShell                           0       0.05   80         -500   500  100000000  Ignore    None         @EggShell
 
--Chitin          0       0.02   1000       -500   500  100000000  0             1 1  Ignore    None         @Chitin
+-Chitin                             0       0.02   1000       -500   500  100000000  Ignore    None         @Chitin
 
--Fur             0       0.1    50         -500   500  100000000  0             1 1  Ignore    None         @Fur
+-Fur                                0       0.1    50         -500   500  100000000  Ignore    None         @Fur
         +MakeClothes:FurClothes:1
+        L
 
--Spike           0       0.05   60         -500   500  100000000  0             1 1  Ignore    None         @Fur
+-Spike                              0       0.05   60         -500   500  100000000  Ignore    None         @Fur
+        L
 
--Feather         0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Feather
+-Feather                            0       0.05   50         -500   500  100000000  Ignore    None         @Feather
+        L
 
--Blood           0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Blood
+-Blood                              0       0.05   50         -500   500  100000000  Ignore    None         @Blood
         cRed
         tSemitransparent
+        L
 
--Ink             0       0.05   50         -500   500  100000000  0             1 1  Ignore    None         @Ink
+-Ink                                0       0.05   50         -500   500  100000000  Ignore    None         @Ink
         cBlack
         tSemitransparent
+        L
 
--Leather         0       1.0    50         -500   500  100000000  0             1 1  Ignore    None         @Leather
+-Leather                            0       1.0    50         -500   500  100000000  Ignore    None         @Leather
         +MakeClothes:LeatherClothes:1
+        L

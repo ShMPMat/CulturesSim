@@ -29,6 +29,7 @@ class ResourceTemplateCreator(
         var danger = 0.0
         var isTemplate = false
         var isDesirable = true
+        var desirability = 0
         var minTempDeprivation = 2.0
         var maxTempDeprivation = 2.0
         val resourceTags = mutableListOf<TagTemplate>()
@@ -41,8 +42,10 @@ class ResourceTemplateCreator(
         var texture: ResourceTexture? = null
         var shape: ResourceShape? = null
         var camouflage = 0.0
+        var hasLegasy = false
+        var isMovable = true
 
-        for (i in 12..tags.lastIndex) {
+        for (i in 9..tags.lastIndex) {
             val key = tags[i][0]
             val tag = tags[i].drop(1)
             try {
@@ -81,6 +84,9 @@ class ResourceTemplateCreator(
                     'c' -> colour = ResourceColour.valueOf(tag)
                     'C' -> camouflage = tag.toDouble()
                     't' -> texture = ResourceTexture.valueOf(tag)
+                    'L' -> hasLegasy = true
+                    'I' -> isMovable = false
+                    'd' -> desirability = tag.toInt()
                     'T' -> {
                         val tempBound = tag.take(3)
                         val coefficient = tag.drop(3).toDouble()
@@ -120,16 +126,16 @@ class ResourceTemplateCreator(
 
         var genome = Genome(
                 name = name,
-                type = ResourceType.valueOf(tags[11]),
+                type = ResourceType.valueOf(tags[8]),
                 sizeRange = sizeRange,
                 spreadProbability = tags[1].toDouble(),
-                baseDesirability = tags[7].toInt(),
+                baseDesirability = desirability,
                 isMutable = false,
-                isMovable = tags[8] == "1",
-                behaviour = Behaviour(resistance ?: danger, danger, camouflage, OverflowType.valueOf(tags[10])),
+                isMovable = isMovable,
+                behaviour = Behaviour(resistance ?: danger, danger, camouflage, OverflowType.valueOf(tags[7])),
                 appearance = Appearance(colour, texture, shape),
                 isDesirable = isDesirable,
-                hasLegacy = tags[9] == "1",
+                hasLegacy = hasLegasy,
                 lifespan = lifespan,
                 defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
                 legacy = null,

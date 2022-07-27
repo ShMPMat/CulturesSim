@@ -1,91 +1,107 @@
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
--Fibre           0       0.5    100        -500   500  100000000  1             1 1  Ignore    None         @Fibre
+/Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
+-Fibre                              0       0.5    100        -500   500  100000000  Ignore    None         @Fibre
         +Weaving:Cloth:1
--Cloth           0       0.5    100        -500   500  100000000  2             1 1  Ignore    Artifact     @Cloth
+        L d1
+-Cloth                              0       0.5    100        -500   500  100000000  Ignore    Artifact     @Cloth
         $clothes:m(0.01,soft,flexible)
         +MakeClothes:Clothes:1
+        L d2
 
--Iron         0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Iron
+-Iron                            0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Iron
         cWhite
 
--Copper       0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Copper
+-Copper                          0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Copper
         cWhite
 
--Tin          0       0.001~30 100000      -500   500  1000       0             1 0  Ignore    Artifact      @Tin
+-Tin                             0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Tin
         cWhite
 
 
--Clothes         0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Cloth
+-Clothes                            0       0.5    100        -500   500  100000000  Ignore    Artifact     @Cloth
         $clothes:m(0.02,soft,flexible)
         $composite
+        L d3
 
--FurClothes      0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
+-FurClothes                         0       0.5    100        -500   500  100000000  Ignore    Artifact     @Fur
         $clothes:m(0.01,soft,flexible)
         $composite
+        L d3
 
--LeatherClothes  0       0.5    100        -500   500  100000000  3             1 1  Ignore    Artifact     @Fur
+-LeatherClothes                     0       0.5    100        -500   500  100000000  Ignore    Artifact     @Fur
         $clothes:m(0.01,soft,flexible)
         $composite
+        L d3
 
--StoneAxe        0       0.1    10000      -500   500  100000000  0             1 1  Ignore    Artifact     @Stone
+-StoneAxe                           0       0.1    10000      -500   500  100000000  Ignore    Artifact     @Stone
         $composite
         $weapon:3
         &a(Killing)-m(0.01,hard,sturdy)
+        L
 
--HandPlough      0       0.5    10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
+-HandPlough                         0       0.5    10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         &a(PlantSeed)-m(0.001,hard,sturdy)
-        U
+        L U
 
--Basket          0       0.3    10         -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
+-Basket                             0       0.3    10         -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         &a(Take)-0.01
+        L d10
 
--Bloomery        0       1      10000      -500   500  100000000  10            1 1  Ignore    Artifact     @TEMPLATE
+-Bloomery                           0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         $furnace
+        L d10
 
--House           0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+-House                              0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         $shelter:3
+        L d10 I
 
--Wigwam          0       3      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+-Wigwam                             0       3      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         $shelter:2
+        L d10 I
 
--Yurt            0       3      10000      -500   500  100000000  10            1 1  Ignore    Building     @TEMPLATE
+-Yurt                               0       3      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         $shelter:2
+        L d10
 
--Temple          0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+-Temple                             0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
-        U
+        L U I
 
--Farm            0       5      10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+-Farm                               0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         &a(PlantSeed)-0.5
-        U
+        L U I
 
--Road            0       1000   10000      -500   500  100000000  10            0 1  Ignore    Building     @TEMPLATE
+-Road                               0       1000   10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
-        U
+        L U I
 
+-Dish                               0       0.1    10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
+        L d5
 
--Dish            0       0.1    10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
-
--Boat            0       2      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+-Boat                               0       2      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
+        L d5
 
--Spear           0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+-Spear                              0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite  $weapon:m(0.03,hard,sturdy)
         &a(Killing)-m(0.03,hard,sturdy)
+        L d5
 
--Shield          0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+-Shield                             0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite $defence:m(0.1,hard,sturdy)
         &a(Killing)-m(0.02,hard,sturdy)
--RingMail        0       1      10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+        L d5
+-RingMail                           0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite $defence:m(0.2,hard,sturdy)
         &a(Killing)-m(0.05,hard,sturdy)
+        L d5
 
--Dye             0       0.05   10000      -500   500  100000000  5             1 1  Ignore    Artifact     @TEMPLATE
+-Dye                                0       0.05   10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $colour:3
+        L d5

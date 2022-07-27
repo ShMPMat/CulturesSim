@@ -60,7 +60,7 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
                     { t ->
                         if (t.level >= riverCreationThreshold
                                 && t.resourcePack.any(::riverResourcePredicate)
-                                && t.getTilesInRadius(2) { it.resourcePack.contains(water) }.isEmpty()
+                                && t.getTilesInRadius(2) { it.resourcesWithMoved.contains(water) }.isEmpty()
                         )
                             (t.temperature - data.temperatureBaseStart + 1).toDouble() *
                                     (t.level + 1 - riverCreationThreshold)

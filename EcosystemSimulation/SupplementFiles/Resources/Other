@@ -1,4 +1,4 @@
-/         M - isMoving (whether can be moved), L - hasLegacy, N - canMove
+/         I - cannot be moved, L - hasLegacy, N - canMove (?), d - desirability
 /         Parts - ^
 /         Dependencies - ~
 /         Conversions - +
@@ -18,47 +18,48 @@
 /          "None" in temperature - no temperature restriction.
 /          T(min|max)\NUM - add special deprivation coefficient value to the Resource (base is 2.0)
 /
-/Name          ||Spread||Size||DeathTime||TempMin|Max||DefAmount||desirability||M|L||Overflow||Type       ||Materials
--Fire            0       0.5    2          -500   500  100000000  0             1 0  Migrate   None         @Flame
+/Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
+-Fire                               0       0.5    2          -500   500  100000000  Migrate   None         @Flame
         cRed
         tSemitransparent
 
--Ash             0       0.5    50         -500   500  100000000  0             1 0  Ignore    None         @Ash
+-Ash                                0       0.5    50         -500   500  100000000  Ignore    None         @Ash
         cGrey
         tMatt
 
--Vapour          0       0.0001 inf        -1000  1000 50         0             1 0  Migrate   None         @Water
+-Vapour                             0       0.0001 inf        -1000  1000 50         Migrate   None         @Water
         +_condence_prob_0.00000001_false:Puddle:1
         tTransparent
 
--Snow            0       0.1    inf        -1000  0    100000000  0             1 0  Migrate   None         @Water
+-Snow                               0       0.1    inf        -1000  0    100000000  Migrate   None         @Water
         #Water
         cWhite
 
--Water           0       10     inf        -1000  1000 50         0             1 0  Cut       None         @Water
+-Water                              0       10     inf        -1000  1000 50         Cut       None         @Water
         $liquid
         +_evaporate_prob_1.0_false:Vapour:1
 /        +_makeCloud_prob_1.0_false:Cloud:2500
         tTransparent
 
--SaltWater       0       10     inf        -1000  1000 50         0             1 0  Cut       None         @SaltWater
+-SaltWater                          0       10     inf        -1000  1000 50         Cut       None         @SaltWater
         $liquid
         +_evaporate_prob_1.0_false:Vapour:1
         #Normal:Mountain:Ice:Woods:Growth
         tTransparent
 
--Puddle          0       10     25         0      1000 5          0             0 0  Cut       None         @Water
+-Puddle                             0       10     25         0      1000 5          Cut       None         @Water
         $liquid
         +_evaporate_prob_0.1_false:Vapour:5
         #Water
         tTransparent
+        I
 
-/-Cloud           0       0.0001 inf       -1000  1000 100000000  0             1 0  Migrate   None         @Cloud
+/-Cloud                              0       0.0001 inf       -1000  1000 100000000  Migrate   None         @Cloud
 /        +_evaporate_prob_0.01_true:Vapour:50
 
--Detritus        0       0.1    20         -500   500  1000       0             1 0  Ignore    None         @Detritus
+-Detritus                           0       0.1    20         -500   500  1000       Ignore    None         @Detritus
 
--Pearl           0       0.01   100000     -500   500  100000000  0             1 0  Migrate   None         @Pearl
+-Pearl                              0       0.01   100000     -500   500  100000000  Migrate   None         @Pearl
         cWhite
         tShiny
         sRound
