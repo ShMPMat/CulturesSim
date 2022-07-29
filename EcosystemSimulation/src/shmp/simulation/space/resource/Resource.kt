@@ -16,9 +16,6 @@ import kotlin.math.min
 import kotlin.math.pow
 
 
-var n = 0
-var s = 0.0
-
 open class Resource private constructor(
         val core: ResourceCore,
         amount: Int = core.genome.defaultAmount,

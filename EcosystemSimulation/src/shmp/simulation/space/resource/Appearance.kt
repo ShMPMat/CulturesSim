@@ -21,6 +21,7 @@ enum class ResourceColour {
 enum class ResourceTexture {
     Shiny,
     Matt,
+    Rough,
     Semitransparent,
     Transparent
 }
