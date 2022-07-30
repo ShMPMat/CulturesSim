@@ -67,7 +67,7 @@ fun createLake(
             }
         }
     }
-    lakeTiles.forEach { it.addDelayedResource(water.copy((3000 * Controller.session.proportionCoefficient).toInt())) }
+    lakeTiles.forEach { it.addDelayedResource(water.copy((4000 * Controller.session.proportionCoefficient).toInt())) }
     lakeTiles.forEach { it.tagPool.add(nameTag) }
     outflowTiles.forEach {
         createRiver(it, water, goodTilePredicate, random)

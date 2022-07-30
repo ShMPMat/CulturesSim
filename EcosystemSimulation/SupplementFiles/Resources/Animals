@@ -177,14 +177,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--LobsterLarva                       0.0     0.002  3          2      30   100      Migrate   Animal       @Meat
+-LobsterLarva                       0.0     0.002  3          0      30   100      Migrate   Animal       @Meat
         ~A(m:Meat),<=0.001;0.001;200;1;CONSUME
         +_transform_prob_0.333_t:Lobster:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tTransparent
 
--Lobster                            0.0     0.25   30         2      30   50       Migrate   Animal       @Chitin
+-Lobster                            0.0     0.25   30         0      30   50       Migrate   Animal       @Chitin
         ~D(A(m:PlantFibre)||A(m:Meat)),h:Water,<=0.1,>=0.005;0.1;1.25;0;CONSUME
         ~r:SaltWater;0.001;200;1;EXIST
         +_spawnLarva_prob_0.03_true:LobsterLarva:100
@@ -395,15 +395,15 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--PredatorFishSpawn                  0.0     0.01   3          -7     30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t:PredatorFish:1
+-EelSpawn                           0.0     0.01   3          -7     30   1000     Ignore    Animal       @Meat
+        +_transform_prob_0.333_t:Eel:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tTransparent
 
--PredatorFish                       0.0     0.3    10         -20    30   30       Migrate   Animal       @Meat
-        ~m:Meat,<=0.5,>=0.003;0.05;1.25;0;CONSUME
-        +_layEggs_prob_0.009_true:PredatorFishSpawn:15
+-Eel                                0.0     0.3    10         -20    30   30       Migrate   Animal       @Meat
+        ~A(m:Meat),<=0.5,>=0.003;0.05;1.25;0;CONSUME
+        +_layEggs_prob_0.009_true:EelSpawn:17
         ^Meat:1 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cBrown

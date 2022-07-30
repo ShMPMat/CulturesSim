@@ -62,6 +62,7 @@
 
 -Spruce                             0.1     5      40         -15     15  100        Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;1;CONSUME
+        ~r:Vapour;0.01;2;1;EXIST
         ~r:Detritus;1;2;0;CONSUME
         +_OnDeath_:Detritus:50
         ^Trunk:1       ^PineNeedle:300 ^Branch:30  ^ConiferCone:10 ^Root:5
@@ -77,6 +78,7 @@
 
 -Oak                                0.09    5      40         0      30   100        Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;1;CONSUME
+        ~r:Vapour;0.01;2;1;EXIST
         ~r:Detritus;1;2;0;CONSUME
         +_OnDeath_:Detritus:50
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
@@ -86,6 +88,7 @@
 
 -Filbert                            0.09    5      40         0      30   10         Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;1;CONSUME
+        ~r:Vapour;0.01;2;1;EXIST
         ~r:Detritus;1;2;0;CONSUME
         +_OnDeath_:Detritus:50
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
