@@ -251,11 +251,7 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         return x == tile.x && y == tile.y
     }
 
-    override fun hashCode(): Int {
-        var result = x
-        result = 31 * result + y
-        return result
-    }
+    override fun hashCode(): Int = 1_000_000 * x + y
 
     override fun toString() = "Tile $posStr, type=$type, temperature=$temperature, level=$level\n" +
             "Tags: " + tagPool.all.joinToString("; ") + "\n\nResources:" +
