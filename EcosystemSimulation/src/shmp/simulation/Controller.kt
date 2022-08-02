@@ -20,7 +20,7 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
     val stabilizationTurns = 100
     val fillCycles = 3
 
-    val proportionCoefficient = 2.0
+    val proportionCoefficient = 1.5
 
     private val debugPrint = false
     private val doLastStabilization = true
