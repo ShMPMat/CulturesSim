@@ -2,7 +2,6 @@ package shmp.simulation.space
 
 import shmp.random.randomElement
 import shmp.random.singleton.chanceOf
-import shmp.random.singleton.otherwise
 import shmp.simulation.Controller
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.Tile
@@ -85,7 +84,7 @@ fun createLake(
             var path: List<Tile>? = null
             for (i in 1..10) {
                 val endTile = outflowTiles.random(random)
-                path = makeRiverPathAStar(tile, endTile, lakeTiles + endTile)
+                path = makeRiverPath(tile, endTile, lakeTiles + endTile, random)
                 if (path != null)
                     break
             }
@@ -129,8 +128,8 @@ fun createRivers(
 
 
 
-private fun makeRiverPathAStar(start: Tile, finish: Tile, allowedTiles: Set<Tile>): List<Tile>? {
-    val h = {t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) }
+private fun makeRiverPath(start: Tile, finish: Tile, allowedTiles: Set<Tile>, random: Random): List<Tile>? {
+    val h = {t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) + random.nextInt(-2, 2) }
     val g = mutableMapOf<Tile, Int>()
     val f = mutableMapOf<Tile, Int>()
     val prev = mutableMapOf<Tile, Tile>()
