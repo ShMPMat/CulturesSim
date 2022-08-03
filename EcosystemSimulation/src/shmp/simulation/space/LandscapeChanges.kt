@@ -1,13 +1,18 @@
 package shmp.simulation.space
 
 import shmp.random.randomElement
+import shmp.random.singleton.chanceOf
+import shmp.random.singleton.otherwise
 import shmp.simulation.Controller
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.tile.Tile
+import shmp.simulation.space.tile.TileTag
 import shmp.simulation.space.tile.getLakeTag
 import shmp.simulation.space.tile.getRiverTag
 import java.lang.Integer.min
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.random.Random
 
 
@@ -23,7 +28,8 @@ fun createRiver(
     val nameTag = getRiverTag(riversCreated.toString())
     riversCreated++
     var currentTile = tile
-    loop@ for (i in 0..200) {
+    val iterations = (200 * Controller.session.proportionCoefficient).toInt()
+    loop@ for (i in 1..iterations) {
         if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
             break
         }
@@ -35,7 +41,7 @@ fun createRiver(
         )
         val tiles = currentTile.getNeighbours { it.level == minLevel }
         if (minLevel == currentTile.level && tiles.size >= 3) {
-            createLake(currentTile, water, goodTilePredicate, random)
+            createLake(currentTile, water, goodTilePredicate, nameTag, random)
             break
         }
         currentTile = when (tiles.size) {
@@ -49,6 +55,7 @@ fun createLake(
         tile: Tile,
         water: Resource,
         goodTilePredicate: (Tile) -> Boolean,
+        previousRiverTag: TileTag,
         random: Random
 ) {
     val nameTag = getLakeTag(lakesCreated.toString())
@@ -58,15 +65,39 @@ fun createLake(
     val queue: Queue<Tile> = ArrayDeque()
     queue.add(tile)
     while (true) {
-        val goodTiles = (queue.poll() ?: break).getNeighbours(goodTilePredicate)
+        val goodTiles = queue.poll()
+                ?.getNeighbours(goodTilePredicate)
+                ?: break
         val tiles = goodTiles.filter { it.level == tile.level }
-        outflowTiles.addAll(goodTiles.filter { it.level < tile.level && tile.type != Tile.Type.Water })
-        tiles.forEach {
-            if (lakeTiles.add(it)) {
-                queue.add(it)
+        outflowTiles += goodTiles.filter { it.level < tile.level && tile.type != Tile.Type.Water }
+        for (t in tiles)
+            if (lakeTiles.add(t))
+                queue += t
+    }
+
+    if (outflowTiles.isNotEmpty()) {
+        val outflowNeighbours = outflowTiles.flatMap { it.neighbours }
+        val crampedOutflowCount = outflowTiles.count { it in outflowNeighbours }
+        val crampedOutflowPart = crampedOutflowCount.toDouble() / outflowTiles.size
+        val riverProbability = crampedOutflowPart + (1 - crampedOutflowPart).pow(1.1)
+
+        riverProbability.chanceOf {
+            var path: List<Tile>? = null
+            for (i in 1..10) {
+                val endTile = outflowTiles.random(random)
+                path = makeRiverPathAStar(tile, endTile, lakeTiles + endTile)
+                if (path != null)
+                    break
+            }
+            path?.let { tiles ->
+                tiles.forEach { it.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt())) }
+                tiles.forEach { it.tagPool.add(previousRiverTag) }
+                createRiver(tiles.last(), water, goodTilePredicate, random)
+                return
             }
         }
     }
+
     lakeTiles.forEach { it.addDelayedResource(water.copy((4000 * Controller.session.proportionCoefficient).toInt())) }
     lakeTiles.forEach { it.tagPool.add(nameTag) }
     outflowTiles.forEach {
@@ -94,4 +125,55 @@ fun createRivers(
         val tile = randomElement(allTiles, goodSpotProbability, random)
         createRiver(tile, water, goodTilePredicate, random)
     }
+}
+
+
+
+private fun makeRiverPathAStar(start: Tile, finish: Tile, allowedTiles: Set<Tile>): List<Tile>? {
+    val h = {t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) }
+    val g = mutableMapOf<Tile, Int>()
+    val f = mutableMapOf<Tile, Int>()
+    val prev = mutableMapOf<Tile, Tile>()
+    val q = PriorityQueue<Tile>(Comparator.comparingInt { t -> f.getValue(t) })
+    val u = mutableSetOf<Tile>()
+
+    g[start] = 0
+    g[start] = h(start)
+    q.add(start)
+
+    var turns = 0
+    while (q.isNotEmpty() && turns < (200 * Controller.session.proportionCoefficient).toInt()) {
+        turns++
+
+        val cur = q.remove()
+        if (cur == finish)
+            return unwind(start, finish, prev)
+
+        u.add(cur)
+
+        val neighbours = cur.neighbours.filter { it in allowedTiles }
+        for (v in neighbours) {
+            val distance = g.getValue(cur) + distance(cur, v)
+
+            if (v in u && distance >= g.getValue(v))
+                continue
+
+            prev[v] = cur
+            g[v] = distance
+            f[v] = distance + h(v)
+            q.add(v)
+        }
+    }
+
+    return null
+}
+
+private fun unwind(start: Tile, cur: Tile, map: Map<Tile, Tile>): List<Tile> =
+        (if (cur == start) emptyList() else unwind(start, map.getValue(cur), map)) + listOf(cur)
+
+private fun distance(start: Tile, finish: Tile): Int {
+    if (finish.resourcePack.any { it.simpleName == "Water" })
+        return 0
+
+    return abs(start.level - finish.level) + 1
 }
