@@ -62,7 +62,7 @@
         cOrange
         D0.02
 
--Wolf                              0.12    1      20         -20     20   15       Migrate   Animal       @Meat
+-Wolf                               0.12    1      20         -20     20   15       Migrate   Animal       @Meat
         ~m:Meat,>=0.3;0.6;20;0;CONSUME;3
         +_OnDeath_:Carcass:10
         ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|1.3
@@ -70,14 +70,22 @@
         cGrey
         R0.3 D0.7
 
--Marten                            0.1     0.5    20         0       20   20       Migrate   Animal       @Meat
+-StripedHyena                       0.1     0.8    15         0       35   30       Migrate   Animal       @Meat
+        ~m:Carcass,>=0.1;0.4;20;0;CONSUME
+        +_OnDeath_:Carcass:10
+        ^Meat:8 ^Fat:4 ^Bone:5:s|0.4 ^Fur:2 ^Blood:8 ^Leather:1:s|1.3
+        #Water
+        cYellow
+        R0.1 D0.2
+
+-Marten                             0.1     0.5    20         0       20   20       Migrate   Animal       @Meat
         ~m:Meat,>=0.04,<=0.4;0.4;1.25;0;CONSUME
         ^Meat:6 ^Fat:4 ^Bone:5:s|0.5 ^Fur:6 ^Blood:10
         #Water
         cGrey
         R0.2 D0.4
 
--Hedgehog                          0.2     0.2    12         0       20   40       Migrate   Animal       @Meat
+-Hedgehog                           0.2     0.2    12         0       20   40       Migrate   Animal       @Meat
         ~D(A(m:Meat)||m:Fungus||A(m:Pulp)),>=0.004,<=0.06;0.1;1.25;0;CONSUME
         +_OnDeath_:Carcass:2
         ^Meat:2 ^Fat:1 ^Bone:2:s|0.1 ^Fur:1 ^Spike:4 ^Blood:3
@@ -85,7 +93,7 @@
         cGrey
         R0.4 D0.1
 
--Desman                            0.5     0.2    16         0       20   25       Migrate   Animal       @Meat
+-Desman                             0.5     0.2    16         0       20   25       Migrate   Animal       @Meat
         ~A(m:Meat),>=0.005,<=0.06;0.4;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         +_OnDeath_:Carcass:2
@@ -94,7 +102,7 @@
         cGrey
         C0.3 R0.6
 
--VampireBat                        0.2     0.1    15         5       30   25       Migrate   Animal       @Chitin
+-VampireBat                         0.2     0.1    15         5       30   25       Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.2;0.05;1.1;1;EXIST
         +_OnDeath_:Carcass:1
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.07 ^Fur:1 ^Blood:2
@@ -102,7 +110,7 @@
         cBlack
         R0.3 D0.1
 
--PolarBear                         0.08    2.3    30         -30     0    7        Migrate   Animal       @Meat
+-PolarBear                          0.08    2.3    30         -30     0    7        Migrate   Animal       @Meat
         ~m:Meat,>=0.1;0.1;1.25;0;CONSUME;4
         +_OnDeath_:Carcass:23
         ^Meat:20 ^Fat:15 ^Bone:7:s|0.5 ^Fur:6 ^Blood:15 ^Leather:1:s|2.3
@@ -110,7 +118,7 @@
         cWhite
         C0.1 D0.9
 
--Seal                              0.4     1.1    25         -30     10   30       Migrate   Animal       @Meat
+-Seal                               0.4     1.1    25         -30     10   30       Migrate   Animal       @Meat
         ~m:Meat,>=0.05,<=0.5,h:Water;0.1;1.25;1;CONSUME;4
         ~D(m:Water||m:SaltWater),t:liquid;0.001;200;1;EXIST
         +_OnDeath_:Carcass:11
@@ -371,11 +379,11 @@
         #Normal:Mountain:Ice:Woods:Growth
         tTransparent
 
--FreshWaterFish                     0.0     0.05   10         -5     30   50       Migrate   Animal       @Meat
+-FreshWaterFish                     0.0     0.1    10         -5     30   50       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;00.05;010;0;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_OnDeath_:Carcass:1
-        +_layEggs_prob_0.025_true:FreshWaterFishSpawn:10
+        +_layEggs_prob_0.025_true:FreshWaterFishSpawn:30
         ^Meat:2 ^Fat:1 ^Bone:4:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
@@ -392,7 +400,7 @@
 -ArcticFish                         0.0     0.1    10         -30    -5   50       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;0.1;10;0;CONSUME
         +_OnDeath_:Carcass:1
-        +_layEggs_prob_0.017_true:ArcticFishSpawn:15
+        +_layEggs_prob_0.017_true:ArcticFishSpawn:25
         ^Meat:2 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
