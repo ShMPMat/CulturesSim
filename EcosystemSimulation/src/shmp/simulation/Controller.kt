@@ -11,7 +11,7 @@ import kotlin.random.Random
 
 
 open class Controller<E : World>(val interactionModel: InteractionModel<E>, val world: E) {
-    val random = Random(8565728 + 37)
+    val random = Random(8565728 + 38)
 
     val doTurns = true
 

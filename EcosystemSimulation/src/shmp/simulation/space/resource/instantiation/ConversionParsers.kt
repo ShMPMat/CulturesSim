@@ -11,7 +11,7 @@ fun parseConversion(conversionStr: String, actions: List<ResourceAction>) : Pair
             ?: parseProbabilityAction(actionName)
             ?: actions.first { it.name == actionName }
 
-    val resourceLinks = conversionStr.substring(conversionStr.indexOf(':') + 1)
+    val resourceLinks = conversionStr.drop(conversionStr.indexOf(':') + 1)
             .split(",")
             .map { parseLink(it, actions) }
 

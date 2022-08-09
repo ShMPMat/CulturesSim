@@ -371,7 +371,7 @@ open class Resource private constructor(
 
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
             ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.lifespan}, amount - $amount, material - ${genome.primaryMaterial}," +
+            "lifespan - ${genome.lifespan}, default amount - ${genome.defaultAmount}, amount - $amount, material - ${genome.primaryMaterial}," +
             " ${genome.appearance}, ownership - ${core.ownershipMarker}, tags: " +
             tags.joinToString(" ")
 
