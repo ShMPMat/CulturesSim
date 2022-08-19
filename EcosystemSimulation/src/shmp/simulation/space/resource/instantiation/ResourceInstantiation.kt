@@ -3,6 +3,7 @@ package shmp.simulation.space.resource.instantiation
 import shmp.utils.InputDatabase
 import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.*
+import shmp.simulation.space.resource.action.ActionMatcher
 import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.container.ResourcePool
@@ -16,7 +17,7 @@ import java.nio.file.Paths
 
 class ResourceInstantiation(
         private val folderPath: String,
-        private val actions: List<ResourceAction>,
+        private val actions: Map<ResourceAction, List<ActionMatcher>>,
         materialPool: MaterialPool,
         amountCoefficient: Int = 1,
         tagParser: TagParser,
@@ -76,8 +77,8 @@ class ResourceInstantiation(
         if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
             return
 
-        for (action in actions)
-            for (matcher in action.matchers)
+        for ((action, matchers) in actions)
+            for (matcher in matchers)
                 if (matcher.match(resource))
                     resource.genome.conversionCore.addActionConversion(
                             action,
@@ -110,7 +111,7 @@ class ResourceInstantiation(
     private fun actualizeParts(template: ResourceStringTemplate) {
         val (resource, _, parts) = template
         for (part in parts) {
-            val link = parseLink(part, actions)
+            val link = parseLink(part, actions.keys.toList())
             val partTemplate = getTemplateWithName(link.resourceName)
             val partResource = link.transform(partTemplate.resource)
 

@@ -7,6 +7,7 @@ import shmp.simulation.space.WorldMap
 import shmp.simulation.space.generator.MapGeneratorSupplement
 import shmp.simulation.space.generator.ResourcePlacer
 import shmp.simulation.space.generator.generateMap
+import shmp.simulation.space.resource.action.ActionMatcher
 import shmp.simulation.space.resource.action.ActionTag
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.instantiation.ResourceActionInjector
@@ -39,12 +40,12 @@ open class World {
         get() = data.resourcePool
 
     fun initializeMap(
-            actions: List<ResourceAction>,
+            actions: Map<ResourceAction, List<ActionMatcher>>,
             tagParser: TagParser,
             resourceActionInjectors: List<ResourceActionInjector>,
             proportionCoefficient: Double
     ) {
-        val materialPool = MaterialInstantiation(tags, actions).createPool()
+        val materialPool = MaterialInstantiation(tags, actions.keys.toList()).createPool()
 
         instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
 

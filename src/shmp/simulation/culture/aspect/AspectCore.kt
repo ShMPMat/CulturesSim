@@ -3,6 +3,7 @@ package shmp.simulation.culture.aspect
 import shmp.simulation.culture.aspect.complexity.ResourceComplexity
 import shmp.simulation.culture.aspect.dependency.AspectDependencies
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.action.ActionMatcher
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.tag.ResourceTag
 
@@ -15,6 +16,7 @@ data class AspectCore(
         val resourceExposed: Boolean,
         val standardComplexity: Double,
         val sideComplexities: List<ResourceComplexity>,
+        val matchers: List<ActionMatcher>,
         val resourceAction: ResourceAction
 ) {
     fun makeAspect(dependencies: AspectDependencies) = Aspect(this, dependencies)

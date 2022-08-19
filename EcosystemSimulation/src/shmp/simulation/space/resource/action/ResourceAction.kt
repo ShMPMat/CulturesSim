@@ -1,7 +1,7 @@
 package shmp.simulation.space.resource.action
 
 
-open class ResourceAction(val name: String, val matchers: List<ActionMatcher>, val tags: List<ActionTag>) {
+open class ResourceAction(val name: String, val tags: List<ActionTag>) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ResourceAction) return false
@@ -15,9 +15,8 @@ open class ResourceAction(val name: String, val matchers: List<ActionMatcher>, v
 
     fun copy(
             name: String = this.name,
-            matchers: List<ActionMatcher> = this.matchers,
             tags: List<ActionTag> = this.tags
-    ) = ResourceAction(name, matchers, tags)
+    ) = ResourceAction(name, tags)
 }
 
 
@@ -26,4 +25,4 @@ class ResourceProbabilityAction(
         val probability: Double,
         val isWasting: Boolean,
         val canChooseTile: Boolean
-) : ResourceAction("_${baseName}_prob_${probability}", listOf(), listOf())
+) : ResourceAction("_${baseName}_prob_${probability}", listOf())

@@ -442,7 +442,7 @@
         ~m:Coral;1;200;0;EXIST
         ~m:PlantFibre,>=0.001;0.1;10;0;CONSUME
         +_OnDeath_:Carcass:1
-        +_layEggs_prob_0.017_true:CoralFishSpawn:50
+        +_layEggs_prob_0.2_t:CoralFishSpawn:30
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Blood:1
         #Normal:Mountain:Ice:Woods:Growth
         cOrange

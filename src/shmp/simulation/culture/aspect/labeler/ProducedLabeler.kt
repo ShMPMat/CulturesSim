@@ -14,7 +14,7 @@ data class ProducedLabeler(val labeler: ResourceLabeler) : AspectLabeler {
 
 
 data class PotentialProducedLabeler(val labeler: ResourceLabeler, val pool: ResourcePool) : AspectLabeler {
-    override fun isSuitable(aspect: Aspect) = aspect.core.resourceAction.matchers.any { matcher ->
+    override fun isSuitable(aspect: Aspect) = aspect.core.matchers.any { matcher ->
         matcher.constructResults(pool).any { labeler.isSuitable(it.genome) }
     }
 

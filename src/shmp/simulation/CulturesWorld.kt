@@ -35,7 +35,9 @@ class CulturesWorld : World() {
         val mutableAspectPool = AspectInstantiation(tags, actionTags).createPool(aspectUrls)
         aspectPool = mutableAspectPool
 
-        val actions = aspectPool.all.map { it.core.resourceAction }
+        val actions = aspectPool.all
+                .map { it.core.resourceAction to it.core.matchers }
+                .toMap()
         val resourceActionInjectors = listOf(
                 fun(a: ResourceAction, rs: Resources): List<Pair<ResourceAction, Resources>> {
                     val building = rs.firstOrNull { it.simpleName in buildingsNames }

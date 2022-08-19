@@ -2,6 +2,7 @@ package shmp.simulation.space.resource.instantiation
 
 import shmp.simulation.DataInitializationError
 import shmp.simulation.space.resource.*
+import shmp.simulation.space.resource.action.ActionMatcher
 import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.dependency.*
@@ -15,7 +16,7 @@ import kotlin.math.min
 
 
 class ResourceTemplateCreator(
-        private val actions: List<ResourceAction>,
+        private val actions: Map<ResourceAction, List<ActionMatcher>>,
         private val materialPool: MaterialPool,
         private val amountCoefficient: Int,
         private val tagParser: TagParser
@@ -51,7 +52,7 @@ class ResourceTemplateCreator(
             try {
                 when (key) {
                     '+' -> {
-                        val (action, result) = parseConversion(tag, actions)
+                        val (action, result) = parseConversion(tag, actions.keys.toList())
                         actionConversion[action] = result
                     }
                     '@' -> if (tag == "TEMPLATE")

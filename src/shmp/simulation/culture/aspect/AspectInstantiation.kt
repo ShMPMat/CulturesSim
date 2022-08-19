@@ -95,7 +95,8 @@ class AspectInstantiation(
                 isResourceExposed,
                 complexity,
                 sideComplexities,
-                ResourceAction(name, matchers, actionTags)
+                matchers,
+                ResourceAction(name, actionTags)
         )
     }
 

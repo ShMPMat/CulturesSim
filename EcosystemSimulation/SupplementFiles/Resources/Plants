@@ -32,7 +32,7 @@
         #Water
         cBrown
 
--FlowerBush                         0.2     1      10         0       30  150        Cut        Plant        @PlantFibre
+-FlowerBush                         0.25    1      10         0       30  150        Cut        Plant        @PlantFibre
         ~r:Vapour;0.00025;1.25;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
         ~r:Detritus;0.75;2;0;CONSUME
@@ -131,7 +131,7 @@
         #Water
         cYellow
 
--FlowerPlant                        0.35    0.1    5          5      30   100        Cut        Plant        @PlantFibre
+-FlowerPlant                        0.4     0.1    5          5      30   100        Cut        Plant        @PlantFibre
         ~r:Vapour;0.0000001;1.25;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
         ~r:Detritus;0.1;2;0;CONSUME
