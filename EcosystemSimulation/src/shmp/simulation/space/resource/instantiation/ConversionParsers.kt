@@ -12,7 +12,7 @@ fun parseConversion(conversionStr: String, actions: List<ResourceAction>) : Pair
             ?: actions.first { it.name == actionName }
 
     val resourceLinks = conversionStr.drop(conversionStr.indexOf(':') + 1)
-            .split(",")
+            .split("/")
             .map { parseLink(it, actions) }
 
     return action to resourceLinks
