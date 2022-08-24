@@ -1,6 +1,7 @@
 package shmp.simulation.space.resource.dependency
 
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
 import java.util.HashSet
@@ -8,11 +9,10 @@ import kotlin.math.min
 
 
 class NeedDependency(
-        amount: Double,
         deprivationCoefficient: Double,
         isNecessary: Boolean,
-        goodResources: ResourceLabeler
-) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResources) {
+        labeler: QuantifiedResourceLabeler
+) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableSet<String> = needed.getOrPut(name) {
         HashSet<String>()
     }

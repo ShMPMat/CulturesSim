@@ -1,17 +1,17 @@
 package shmp.simulation.space.resource.dependency
 
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
 import kotlin.math.min
 
 
 class AvoidDependency(
-        amount: Double,
         deprivationCoefficient: Double,
         isNecessary: Boolean,
-        goodResources: ResourceLabeler
-) : LabelerDependency(deprivationCoefficient, isNecessary, amount, goodResources) {
+        labeler: QuantifiedResourceLabeler
+) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     var lastConsumed = mutableSetOf<String>()
 
     override fun satisfaction(tile: Tile, resource: Resource): Double {

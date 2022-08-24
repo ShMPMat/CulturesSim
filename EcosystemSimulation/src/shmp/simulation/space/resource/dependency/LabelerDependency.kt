@@ -2,6 +2,7 @@ package shmp.simulation.space.resource.dependency
 
 import shmp.simulation.space.resource.Genome
 import shmp.simulation.space.resource.Resource
+import shmp.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
 import shmp.simulation.space.resource.tag.labeler.ResourceLabeler
 import shmp.simulation.space.tile.Tile
 import kotlin.math.ceil
@@ -10,10 +11,12 @@ import kotlin.math.ceil
 abstract class LabelerDependency(
         deprivationCoefficient: Double,
         override val isNecessary: Boolean,
-        var amount: Double,
-        private val labeler: ResourceLabeler
+        quantifiedResourceLabeler: QuantifiedResourceLabeler
 ) : CoefficientDependency(deprivationCoefficient) {
     override val isResourceNeeded = true
+
+    val labeler = quantifiedResourceLabeler.resourceLabeler
+    val amount = quantifiedResourceLabeler.amount
 
     override fun hasNeeded(tile: Tile) = tile.resourcePack.any { isResourceGood(it) }
 
