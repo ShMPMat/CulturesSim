@@ -44,5 +44,5 @@ private fun getLabel(key: String, value: String): ResourceLabeler = when (key) {
             else -> DisjointLabeler(labelers)
         }
     }
-    else -> throw RuntimeException("Wrong tag for a labeler")
+    else -> throw RuntimeException("Wrong tag for a labeler '$key'")
 }

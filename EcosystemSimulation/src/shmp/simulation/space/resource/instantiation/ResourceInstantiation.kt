@@ -23,7 +23,15 @@ class ResourceInstantiation(
         tagParser: TagParser,
         private val resourceActionInjectors: List<ResourceActionInjector>
 ) {
-    private val resourceTemplateCreator = ResourceTemplateCreator(actions, materialPool, amountCoefficient, tagParser)
+    private val dependencyParser = DefaultDependencyParser()
+    private val conversionParser = ConversionParser(actions.keys.toList(), dependencyParser)
+    private val resourceTemplateCreator = ResourceTemplateCreator(
+            materialPool,
+            amountCoefficient,
+            tagParser,
+            dependencyParser,
+            conversionParser
+    )
 
     private val resourceStringTemplates = ArrayList<ResourceStringTemplate>()
 
@@ -111,7 +119,7 @@ class ResourceInstantiation(
     private fun actualizeParts(template: ResourceStringTemplate) {
         val (resource, _, parts) = template
         for (part in parts) {
-            val link = parseLink(part, actions.keys.toList())
+            val link = parseLink(part, conversionParser)
             val partTemplate = getTemplateWithName(link.resourceName)
             val partResource = link.transform(partTemplate.resource)
 

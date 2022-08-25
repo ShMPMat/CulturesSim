@@ -5,15 +5,12 @@ import shmp.simulation.event.Event
 import shmp.simulation.space.WorldMap
 import shmp.simulation.space.resource.Resource
 import shmp.simulation.space.resource.ResourceType
-import shmp.simulation.space.resource.Taker
 import shmp.simulation.space.resource.container.ResourcePack
 import shmp.simulation.space.resource.dependency.ConsumeDependency
 import shmp.simulation.space.resource.dependency.NeedDependency
 import shmp.simulation.space.resource.free
 import shmp.simulation.space.tile.Tile
-import shmp.utils.addToRight
 import shmp.utils.chompToLines
-import shmp.utils.chompToSize
 import java.util.regex.PatternSyntaxException
 
 
@@ -64,7 +61,12 @@ data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
 fun outputResource(resource: Resource): String {
     val actionConversions = resource.genome.conversionCore.actionConversion.entries
             .joinToString("\n") { (a, v) ->
-                a.name + ": " + v.joinToString { it.fullName + ":" + it.amount }
+                val needClause = if (a.dependencies.isNotEmpty())
+                    a.dependencies.joinToString(",", " needs ", " ")
+                else ""
+
+                a.name + needClause + ": " +
+                        v.joinToString { it.fullName + ":" + it.amount }
             }
 
     val parts = resource.genome.parts.joinToString("\n") { p ->

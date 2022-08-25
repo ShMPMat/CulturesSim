@@ -12,7 +12,10 @@ fun parseProbabilityAction(string: String): ResourceProbabilityAction? {
             return null
 
         tokens[3].toDoubleOrNull()?.let { prob ->
-            ResourceProbabilityAction(tokens[1], prob, tokens[4].parseBoolean(), tokens.getOrNull(5).parseBoolean())
+            val isWasting = tokens[4].parseBoolean()
+            val canChooseTile = tokens.getOrNull(5).parseBoolean()
+
+            ResourceProbabilityAction(tokens[1], prob, isWasting, canChooseTile, listOf())
         }
     } catch (e: Exception) {
         null

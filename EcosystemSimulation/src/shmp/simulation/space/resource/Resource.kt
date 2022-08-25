@@ -231,9 +231,14 @@ open class Resource private constructor(
 
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = amount * action.probability
-        val part = if (expectedValue < 1.0)
-            expectedValue.chanceOf<Int> { 1 } ?: 0
-        else expectedValue.toInt()
+        val maxPart = if (expectedValue < 1.0)
+            expectedValue.chanceOf<Double> { 1.0 } ?: 0.0
+        else expectedValue
+        val satisfactionCoefficient = action.dependencies
+                .map { it.satisfactionPercent(tile, this) }
+                .minOrNull()
+                ?: 1.0
+        val part = (maxPart * satisfactionCoefficient).toInt()
 
         val result = if (action.isWasting)
             applyActionAndConsume(action, part, true, SelfTaker)

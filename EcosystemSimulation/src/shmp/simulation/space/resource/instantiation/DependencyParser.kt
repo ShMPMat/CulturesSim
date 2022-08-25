@@ -1,5 +1,6 @@
 package shmp.simulation.space.resource.instantiation
 
+import shmp.simulation.DataInitializationError
 import shmp.simulation.space.resource.dependency.AvoidDependency
 import shmp.simulation.space.resource.dependency.ConsumeDependency
 import shmp.simulation.space.resource.dependency.NeedDependency
@@ -10,6 +11,9 @@ import shmp.simulation.space.resource.tag.labeler.makeResourceLabeler
 
 interface DependencyParser {
     fun parse(tag: String): ResourceDependency?
+
+    fun parseUnsafe(tag: String) = parse(tag)
+            ?: throw DataInitializationError("Unknown dependency with tags: $tag")
 }
 
 open class DefaultDependencyParser : DependencyParser {

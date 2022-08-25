@@ -3,12 +3,11 @@ package shmp.simulation.space.resource.transformer
 import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.ResourceColour
 import shmp.simulation.space.resource.ResourceTexture
-import shmp.simulation.space.resource.action.ResourceAction
-import shmp.simulation.space.resource.instantiation.parseConversion
+import shmp.simulation.space.resource.instantiation.ConversionParser
 import shmp.simulation.space.resource.tag.labeler.makeResourceLabeler
 
 
-class TransformerInstantiator(private val actions: List<ResourceAction>) {
+class TransformerInstantiator(private val conversionParser: ConversionParser) {
     fun makeResourceTransformer(tagString: String): ResourceTransformer {
         val tags = tagString.split("#")
         val transformers = ArrayList<ResourceTransformer>()
@@ -24,7 +23,7 @@ class TransformerInstantiator(private val actions: List<ResourceAction>) {
         "t|" -> TextureTransformer(ResourceTexture.valueOf(value))
         "n|" -> NameTransformer { value.split("$").joinToString(it) }
         "a|" -> {
-            val (action, resources) = parseConversion(value, actions)
+            val (action, resources) = conversionParser.parse(value)
 
             val instantiatedResources = resources.map {
                 it.transform(SpaceData.data.resourcePool.getSimpleName(it.resourceName)).copy(it.amount)

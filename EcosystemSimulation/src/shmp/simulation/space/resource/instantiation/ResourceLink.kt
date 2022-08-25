@@ -11,14 +11,14 @@ data class ResourceLink(val resourceName: String, val transformer: ResourceTrans
             (transformer?.transform(resource) ?: resource).copy(amount)
 }
 
-fun parseLink(tag: String, actions: List<ResourceAction>): ResourceLink {
+fun parseLink(tag: String, conversionParser: ConversionParser): ResourceLink {
     val nameAndTrans = tag.split(":")
     val amount = nameAndTrans[1].toInt()
 
     val name = nameAndTrans[0]
     val transformer =
             if (nameAndTrans.size > 2)
-                TransformerInstantiator(actions).makeResourceTransformer(
+                TransformerInstantiator(conversionParser).makeResourceTransformer(
                         nameAndTrans.drop(2).joinToString(":")
                 )
             else null

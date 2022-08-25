@@ -2,7 +2,6 @@ package shmp.simulation.space.resource.instantiation
 
 import shmp.simulation.DataInitializationError
 import shmp.simulation.space.resource.*
-import shmp.simulation.space.resource.action.ActionMatcher
 import shmp.simulation.space.resource.action.ConversionCore
 import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.resource.dependency.*
@@ -10,19 +9,17 @@ import shmp.simulation.space.resource.instantiation.tag.TagParser
 import shmp.simulation.space.resource.instantiation.tag.TagTemplate
 import shmp.simulation.space.resource.material.Material
 import shmp.simulation.space.resource.material.MaterialPool
-import shmp.simulation.space.resource.tag.ResourceTag
 import shmp.simulation.space.tile.Tile
 import kotlin.math.min
 
 
 class ResourceTemplateCreator(
-        private val actions: Map<ResourceAction, List<ActionMatcher>>,
         private val materialPool: MaterialPool,
         private val amountCoefficient: Int,
-        private val tagParser: TagParser
+        private val tagParser: TagParser,
+        private val dependencyParser: DependencyParser,
+        private val conversionParser: ConversionParser
 ) {
-    private val dependencyParser = DefaultDependencyParser()
-
     fun createResource(tags: Array<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
                 ?: throw DataInitializationError("Tags for Resource are empty")
@@ -52,7 +49,7 @@ class ResourceTemplateCreator(
             try {
                 when (key) {
                     '+' -> {
-                        val (action, result) = parseConversion(tag, actions.keys.toList())
+                        val (action, result) = conversionParser.parse(tag)
                         actionConversion[action] = result
                     }
                     '@' -> if (tag == "TEMPLATE")
@@ -69,8 +66,7 @@ class ResourceTemplateCreator(
                             tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
                     ))
                     '~' -> {
-                        val rDependency = dependencyParser.parse(tag)
-                                ?: throw DataInitializationError("Unknown dependency with tags: $tag")
+                        val rDependency = dependencyParser.parseUnsafe(tag)
                         resourceDependencies.add(rDependency)
                     }
                     '#' -> resourceDependencies.add(AvoidTiles(

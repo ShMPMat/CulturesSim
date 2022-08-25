@@ -139,7 +139,7 @@
 //TODO actually plant food
 -Sparrow                            0.0     0.1    10         0      30   100      Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
-        +_layEggs_prob_0.1_true:SparrowEgg:5
+        +_layEggs_prob_0.1_true:~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/SparrowEgg:5
         +_OnDeath_:Carcass:1
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
         #Water
