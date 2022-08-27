@@ -101,6 +101,8 @@ class ResourceTemplateCreator(
                 }
             } catch (e: NoSuchElementException) {
                 println(e.message)
+            } catch (e: ParseException) {//TODO remove
+                println(e.message)
             }
         }
 

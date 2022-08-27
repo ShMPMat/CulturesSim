@@ -9,7 +9,7 @@
 
 -SoftBranch                         0       0.2    5          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:3
-        +Weaving:Basket:1
+        +Weaving/Basket:1
         cGreen
         L
 
@@ -34,7 +34,7 @@
 
 -SoftRoot                           0       0.5    5          -500   500  100000000  Ignore    None         @PlantFibre
         ^PlantFibre:3
-        +Weaving:Basket:1
+        +Weaving/Basket:1
         cGreen
         L
 
@@ -49,11 +49,11 @@
         sRound
         L
 -Pome                               0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
-        +_burst_prob_0.2_t:Seed:5
+        +_burst_prob_0.2_t/Seed:5
         ^Pulp:4  ^Seed:5
         L
 -Drupe                              0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
-        +_burst_prob_0.2_t:Seed:1
+        +_burst_prob_0.2_t/Seed:1
         ^Pulp:4  ^Seed:1:s|0.02
         L
 
@@ -64,15 +64,15 @@
         L
 
 -Seed                               0       0.03   25         -500   500  100000000  Migrate   None         @Seed
-        +PlantSeed:LEGACY:1
-        +_grow_prob_0.05_t:LEGACY:1
+        +PlantSeed/LEGACY:1
+        +_grow_prob_0.05_t/LEGACY:1
         cBrown
         sRound
         L
 
 -PlantFibre                         0       0.5    5          -500   500  100000000  Ignore    None         @PlantFibre
-        +MakingFibre:Fibre:1
-        +Weaving:Basket:1
+        +MakingFibre/Fibre:1
+        +Weaving/Basket:1
         cGreen
         L
 

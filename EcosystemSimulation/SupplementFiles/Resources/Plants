@@ -2,8 +2,8 @@
 -AppleTree                          0.0     2      10         0       30  150        Cut       Plant        @PlantFibre
         ~r:Vapour;0.00025;2;1;CONSUME
         ~r:Detritus;1.5;2;0;CONSUME
-        +_disperse_prob_0.04_false:Pome:5:n|Apple#c|Red
-        +_OnDeath_:Detritus:20
+        +_disperse_prob_0.04_f/Pome:5:n|Apple#c|Red
+        +_OnDeath_/Detritus:20
         ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple#c|Red ^SoftRoot:5
         #Water
         cGreen
@@ -11,7 +11,7 @@
 -PeachTree                          0.19    2.5    10         10      30  100        Cut       Plant        @PlantFibre
         ~r:Vapour;0.00025;2;1;CONSUME
         ~r:Detritus;2;2;0;CONSUME
-        +_OnDeath_:Detritus:25
+        +_OnDeath_/Detritus:25
         ^Trunk:1:s|2.5 ^SoftBranch:15 ^Leaf:100 ^Drupe:5:n|Peach#c|Yellow ^SoftRoot:5
         #Water
         cGreen
@@ -19,7 +19,7 @@
 -ColdPlant                          0.2     1      15         -30     0   50         Cut       Plant        @PlantFibre
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Detritus;0.5;2;0;CONSUME
-        +_OnDeath_:Detritus:10
+        +_OnDeath_/Detritus:10
         ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.02    ^Seed:2 ^SoftRoot:5
         #Water
         cBrown
@@ -27,7 +27,7 @@
 -ColdBerry                          0.2     1      15         -30     0   50         Cut       Plant        @PlantFibre
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Detritus;0.5;2;0;CONSUME
-        +_OnDeath_:Detritus:10
+        +_OnDeath_/Detritus:10
         ^Trunk:1:s|1  ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.01#c|Red ^SoftRoot:5
         #Water
         cBrown
@@ -36,7 +36,7 @@
         ~r:Vapour;0.00025;1.25;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
         ~r:Detritus;0.75;2;0;CONSUME
-        +_OnDeath_:Detritus:10
+        +_OnDeath_/Detritus:10
         ^SoftBranch:15 ^Leaf:100 ^Flower:10:c|Red   ^Seed:2 ^SoftRoot:5
         #Water
         cGreen
@@ -45,7 +45,7 @@
         ~r:Vapour;0.000001;2;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
         ~r:Detritus;0.1;2;0;CONSUME
-        +_OnDeath_:Detritus:1
+        +_OnDeath_/Detritus:1
         ^Leaf:3:s|0.2 ^Flower:1:c|Yellow
         #Water
         cWhite
@@ -53,8 +53,8 @@
 -DwarfBirch                         0.0     1      15         -30     20  40         Cut        Plant        @PlantFibre
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Detritus;0.5;2;0;CONSUME
-        +_OnDeath_:Detritus:10
-        +_disperse_prob_0.04_true:Seed:13
+        +_OnDeath_/Detritus:10
+        +_disperse_prob_0.04_t/Seed:13
         ^Trunk:1:s|1 ^SoftBranch:15 ^Leaf:30:s|0.02              ^Seed:13 ^SoftRoot:5
         #Water
         $Tree
@@ -64,7 +64,7 @@
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Vapour;0.01;2;1;EXIST
         ~r:Detritus;1;2;0;CONSUME
-        +_OnDeath_:Detritus:50
+        +_OnDeath_/Detritus:50
         ^Trunk:1       ^PineNeedle:300 ^Branch:30  ^ConiferCone:10 ^Root:5
         #Water
         $Tree
@@ -80,7 +80,7 @@
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Vapour;0.01;2;1;EXIST
         ~r:Detritus;1;2;0;CONSUME
-        +_OnDeath_:Detritus:50
+        +_OnDeath_/Detritus:50
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
         $Tree
@@ -90,7 +90,7 @@
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Vapour;0.01;2;1;EXIST
         ~r:Detritus;1;2;0;CONSUME
-        +_OnDeath_:Detritus:50
+        +_OnDeath_/Detritus:50
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
         #Water
         $Tree
@@ -99,7 +99,7 @@
 -JungleTree                         0.06    5      40         20     40   150        Cut        Plant        @Wood
         ~r:Vapour;0.1;2;1;CONSUME
         ~r:Detritus;1;2;0;CONSUME
-        +_OnDeath_:Detritus:50
+        +_OnDeath_/Detritus:50
         ^Trunk:1:s|5       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
         $Tree
@@ -108,7 +108,7 @@
 -Reed                               0.35    1      5          5      30   50         Cut        Plant        @PlantFibre
         ~r:Vapour;0.01;2;1;CONSUME
         ~r:Detritus;1.5;2;0;CONSUME
-        +_OnDeath_:Detritus:10
+        +_OnDeath_/Detritus:10
         ^SoftBranch:1:s|1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
         #Water
         cGreen
@@ -116,8 +116,8 @@
 -Grass                              0.0     0.1    5          5      30   5000       Cut        Plant        @PlantFibre
         ~r:Vapour;0.0000001;2;1;CONSUME
         ~r:Detritus;0.1;2;0;CONSUME
-        +_disperse_prob_0.2_f:Seed:5
-        +_OnDeath_:Detritus:1
+        +_disperse_prob_0.2_f/Seed:5
+        +_OnDeath_/Detritus:1
         ^Leaf:3:s|0.1 ^Seed:3
         #Water
         cGreen
@@ -125,8 +125,8 @@
 -Wheat                              0.0     0.2    5          10     28   500        Cut        Plant        @PlantFibre
         ~r:Vapour;0.000001;2;1;CONSUME
         ~r:Detritus;0.1;2;0;CONSUME
-        +_disperse_prob_0.2_t:Seed:30
-        +_OnDeath_:Detritus:2
+        +_disperse_prob_0.2_t/Seed:30
+        +_OnDeath_/Detritus:2
         ^Leaf:2:s|0.2 ^Seed:30
         #Water
         cYellow
@@ -135,7 +135,7 @@
         ~r:Vapour;0.0000001;1.25;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
         ~r:Detritus;0.1;2;0;CONSUME
-        +_OnDeath_:Detritus:1
+        +_OnDeath_/Detritus:1
         ^Leaf:3   ^Flower:1:c|White
         #Water
         cGreen
@@ -143,14 +143,14 @@
 -WindPollinatedPlant                0.4     0.1    5          5      30   100        Cut        Plant        @PlantFibre
         ~r:Vapour;0.0000001;1.25;1;CONSUME
         ~r:Detritus;0.1;2;0;CONSUME
-        +_OnDeath_:Detritus:1
+        +_OnDeath_/Detritus:1
         ^Leaf:3   ^Flower:1:c|Brown
         #Water
         cGreen
 
 -Moss                               0.1     0.05   20         -10    30   100        Cut        Plant        @PlantFibre
         ~r:Vapour;0.0001;2;1;CONSUME
-        +_OnDeath_:Detritus:1
+        +_OnDeath_/Detritus:1
         ^PlantFibre:1
         #Water
         cGreen

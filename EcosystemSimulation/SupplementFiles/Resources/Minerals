@@ -1,11 +1,11 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
 -Clay                               0       0.5    100000     -500   500  1000000    Ignore  Mineral      @Clay
-        +BuildHouse:House:1
+        +BuildHouse/House:1
         cBrown
         tMatt
 
 -Stone                              0       0.1    100000     -500   500  100000000  Ignore  Mineral      @Stone
-        +Chisel:StoneAxe:1
+        +Chisel/StoneAxe:1
         cGrey
         tMatt
 

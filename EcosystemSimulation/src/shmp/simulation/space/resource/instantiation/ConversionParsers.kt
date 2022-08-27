@@ -7,13 +7,17 @@ import shmp.simulation.space.resource.specialActions
 class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: DependencyParser) {
     fun parse(conversionStr: String): Pair<ResourceAction, List<ResourceLink>> {
         val dependencyPrefix = "~"
-        val actionName = conversionStr.substring(0, conversionStr.indexOf(':'))
+        val nameEndIndex = conversionStr.indexOf('/')
+                .takeIf { it != -1 }
+                ?: throw ParseException("Cannot parse action '$conversionStr'")
+        val actionName = conversionStr.take(nameEndIndex)
 
         val action = specialActions[actionName]
                 ?: parseProbabilityAction(actionName)
-                ?: actions.first { it.name == actionName }
+                ?: actions.firstOrNull { it.name == actionName }
+                ?: throw ParseException("Cannot parse action name '$actionName'")
 
-        val resourceStrings = conversionStr.drop(conversionStr.indexOf(':') + 1)
+        val resourceStrings = conversionStr.drop(nameEndIndex + 1)
                 .split("/")
 
         val resourceLinks = resourceStrings

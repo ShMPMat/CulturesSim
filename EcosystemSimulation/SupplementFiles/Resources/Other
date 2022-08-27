@@ -28,7 +28,7 @@
         tMatt
 
 -Vapour                             0       0.0001 inf        -1000  1000 50         Migrate   None         @Water
-        +_condence_prob_0.00000001_false:Puddle:1
+        +_condence_prob_0.00000001_f/Puddle:1
         tTransparent
 
 -Snow                               0       0.1    inf        -1000  0    100000000  Migrate   None         @Water
@@ -37,28 +37,28 @@
 
 -Water                              0       10     inf        -1000  1000 50         Cut       None         @Water
         $liquid
-        +_evaporate_prob_1.0_false:Vapour:1
-/        +_makeCloud_prob_1.0_false:Cloud:2500
+        +_evaporate_prob_1.0_f/Vapour:1
+/        +_makeCloud_prob_1.0_f/Cloud:2500
         tTransparent
 
 -SaltWater                          0       10     inf        -1000  1000 50         Cut       None         @SaltWater
         $liquid
-        +_evaporate_prob_1.0_false:Vapour:1
+        +_evaporate_prob_1.0_f/Vapour:1
         #Normal:Mountain:Ice:Woods:Growth
         tTransparent
 
 -Puddle                             0       10     25         0      1000 5          Cut       None         @Water
         $liquid
-        +_evaporate_prob_0.1_false:Vapour:5
+        +_evaporate_prob_0.1_f/Vapour:5
         #Water
         tTransparent
         I
 
 /-Cloud                              0       0.0001 inf       -1000  1000 100000000  Migrate   None         @Cloud
-/        +_evaporate_prob_0.01_true:Vapour:50
+/        +_evaporate_prob_0.01_t/Vapour:50
 
 -Carcass                            0       0.1    5          -500   500  1000       Ignore    None         @Carcass
-        +_OnDeath_:Detritus:1
+        +_OnDeath_/Detritus:1
 
 -Detritus                           0       0.1    20         -500   500  1000       Ignore    None         @Detritus
 
