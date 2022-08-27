@@ -43,4 +43,6 @@ abstract class LabelerDependency(
     fun partByResource(resource: Resource, amount: Double) = ceil(
             amount / labeler.actualMatches(resource.core.sample).sumBy(Resource::amount)
     ).toInt()
+
+    override fun toString() = "$labeler of $amount"
 }

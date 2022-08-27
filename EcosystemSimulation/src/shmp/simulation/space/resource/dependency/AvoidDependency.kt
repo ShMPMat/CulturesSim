@@ -41,4 +41,6 @@ class AvoidDependency(
     override fun isResourceDependency(resource: Resource) = false
 
     override val isPositive = false
+
+    override fun toString() = "Avoid " + super.toString()
 }

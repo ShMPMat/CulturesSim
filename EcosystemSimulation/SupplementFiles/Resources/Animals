@@ -160,7 +160,7 @@
         ~m:Meat,>=0.009,<=0.1,!!r:HeronEgg;0.1;2;1;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:5
-        +_layEggs_prob_0.2_f/HeronEgg:5
+        +_layEggs_prob_0.2_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/HeronEgg:5
         ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite

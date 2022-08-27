@@ -44,6 +44,8 @@ class NeedDependency(
             tile.getAccessibleResources().any { it.asSequence().any { r -> isResourceDependency(r) } }
 
     override val isPositive = true
+
+    override fun toString() = "Need " + super.toString()
 }
 
 

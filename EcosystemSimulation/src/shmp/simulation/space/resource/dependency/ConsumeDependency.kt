@@ -63,6 +63,8 @@ class ConsumeDependency(
 
     override val isPositive: Boolean
         get() = true
+
+    override fun toString() = "Consume " + super.toString()
 }
 
 private val consumed = mutableMapOf<String, MutableSet<String>>()
