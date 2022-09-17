@@ -28,7 +28,7 @@
         tMatt
 
 -Vapour                             0       0.0001 inf        -1000  1000 50         Migrate   None         @Water
-        +_condence_prob_0.00000001_f/Puddle:1
+        +_condence_prob_0.00000002_f/Puddle:1
         tTransparent
 
 -Snow                               0       0.1    inf        -1000  0    100000000  Migrate   None         @Water
@@ -49,7 +49,7 @@
 
 -Puddle                             0       10     25         0      1000 5          Cut       None         @Water
         $liquid
-        +_evaporate_prob_0.1_f/Vapour:5
+        +_evaporate_prob_0.1_f/Vapour:10
         #Water
         tTransparent
         I

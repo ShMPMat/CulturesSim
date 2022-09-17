@@ -140,7 +140,7 @@
 //TODO actually plant food
 -Sparrow                            0.0     0.1    10         0      30   100      Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
-        +_layEggs_prob_0.1_t/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/SparrowEgg:5
+        +_layEggs_prob_0.12_t/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/SparrowEgg:5
         +_OnDeath_/Carcass:1
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
         #Water
@@ -160,7 +160,7 @@
         ~m:Meat,>=0.009,<=0.1,!!r:HeronEgg;0.1;2;1;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:5
-        +_layEggs_prob_0.2_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1:s|0.3/HeronEgg:5
+        +_layEggs_prob_0.21_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1:s|0.3/HeronEgg:5
         ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite
@@ -177,7 +177,7 @@
 -Hawk                               0.0     0.12   11         0      30   5        Migrate   Animal       @Meat
         ~m:Meat,<=0.05,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME;4
         +_OnDeath_/Carcass:1
-        +_layEggs_prob_0.04_f/HawkEgg:5
+        +_layEggs_prob_0.07_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/HawkEgg:5
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
         #Water
         cBrown
@@ -194,7 +194,7 @@
 -Crab                               0.0     0.05   6          8      30   80       Migrate   Animal       @Chitin
         ~D(A(m:PlantFibre)||A(m:Meat)),<=0.04,>=0.003,!!r:CrabLarva;0.04;1.01;1;CONSUME
         ~r:SaltWater;0.001;200;1;EXIST
-        +_spawnLarva_prob_0.03_t/CrabLarva:1000
+        +_spawnLarva_prob_0.06_t/CrabLarva:1000
         ^Chitin:1:s|0.04 ^Meat:1:s|0.02
         #Water
         cRed
@@ -212,7 +212,7 @@
 -Lobster                            0.0     0.25   30         0      30   50       Migrate   Animal       @Chitin
         ~D(A(m:PlantFibre)||A(m:Meat)),h:Water,<=0.1,>=0.005;0.1;1.25;0;CONSUME
         ~r:SaltWater;0.001;200;1;EXIST
-        +_spawnLarva_prob_0.03_t/LobsterLarva:100
+        +_spawnLarva_prob_0.06_t/LobsterLarva:100
         ^Chitin:1:s|0.04 ^Meat:1:s|0.02
         l93;1000
         cRed
@@ -228,7 +228,7 @@
 
 -HerbivorousCricket                 0.0     0.02   5          0      30   500      Migrate   Animal       @Chitin
         ~m:PlantFibre,>=0.001;0.01;100;0;CONSUME
-        +_layEggs_prob_0.021_t/HerbivorousCricketEgg:12
+        +_layEggs_prob_0.02_t/HerbivorousCricketEgg:25
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown
@@ -244,7 +244,7 @@
 
 -BuryingBeetleLarva                 0.0     0.01   4          5      30   50       Migrate   Animal       @Chitin
         ~m:Carcass,>=0.001;0.05;100;1;CONSUME
-        +_transform_prob_0.025_t/BuryingBeetle:1
+        +_transform_prob_0.25_t/BuryingBeetle:1
         ^Meat:1:s|0.01
         #Water
         cWhite
@@ -252,7 +252,7 @@
 
 -BuryingBeetle                      0.0     0.02   5          5      30   50       Migrate   Animal       @Chitin
         ~m:Carcass,>=0.001;0.01;10;1;CONSUME
-        +_layEggs_prob_0.021_t/BuryingBeetleEgg:75
+        +_layEggs_prob_0.063_t/BuryingBeetleEgg:75
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBlack
@@ -281,7 +281,7 @@
 
 -Mosquito                           0.0     0.01   5          10      30   500     Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
-        +_layEggs_prob_0.021_t/MosquitoEgg:10
+        +_layEggs_prob_0.1_t/MosquitoEgg:20
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown
@@ -311,7 +311,7 @@
 
 -Butterfly                          0.0     0.04   4          10     30   300      Migrate   Animal       @Chitin
         ~P(r:Flower);1;1.5;0;EXIST
-        +_layEggs_prob_0.04_t/ButterflyEgg:20
+        +_layEggs_prob_0.2_t/ButterflyEgg:20
         ^Chitin:1:s|0.02 ^Meat:1:s|0.01
         $Pollinator:1
         #Water
@@ -371,7 +371,7 @@
         ~r:SaltWater;0.001;200;1;EXIST
         ~m:Meat,>=0.05,<=1;0.8;1.25;0;CONSUME
         +_OnDeath_/Carcass:10
-        +_layEggs_prob_0.0101_t/OctopusSpawn:30
+        +_layEggs_prob_0.05_t/OctopusSpawn:10
         ^Meat:4:s|0.3 ^Ink:2
         #Normal:Mountain:Ice:Woods:Growth
         cYellow
@@ -389,7 +389,7 @@
 -Fish                               0.0     0.1    10         -7     30   100      Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.002;00.1;10;0;CONSUME
         +_OnDeath_/Carcass:1
-        +_layEggs_prob_0.015_t/FishSpawn:20
+        +_layEggs_prob_0.03_t/FishSpawn:20
         ^Meat:2 ^Fat:1 ^Bone:05:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
@@ -408,7 +408,7 @@
         ~m:PlantFibre,>=0.01;00.05;010;0;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:1
-        +_layEggs_prob_0.025_t/FreshWaterFishSpawn:30
+        +_layEggs_prob_0.05_t/FreshWaterFishSpawn:20
         ^Meat:2 ^Fat:1 ^Bone:4:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
@@ -425,7 +425,7 @@
 -ArcticFish                         0.0     0.1    10         -30    -5   50       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;0.1;10;0;CONSUME
         +_OnDeath_/Carcass:1
-        +_layEggs_prob_0.017_t/ArcticFishSpawn:25
+        +_layEggs_prob_0.03_t/ArcticFishSpawn:25
         ^Meat:2 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
@@ -443,11 +443,11 @@
         ~m:Coral;1;200;0;EXIST
         ~m:PlantFibre,>=0.001;0.1;10;0;CONSUME
         +_OnDeath_/Carcass:1
-        +_layEggs_prob_0.2_t/CoralFishSpawn:30
+        +_layEggs_prob_0.3_t/CoralFishSpawn:50
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Blood:1
         #Normal:Mountain:Ice:Woods:Growth
         cOrange
-        C0.7 R0.1
+        C0.8 R0.2
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -460,7 +460,7 @@
 -Eel                                0.0     0.3    10         -20    30   30       Migrate   Animal       @Meat
         ~A(m:Meat),<=0.5,>=0.003;0.05;1.25;0;CONSUME
         +_OnDeath_/Carcass:3
-        +_layEggs_prob_0.009_t/EelSpawn:17
+        +_layEggs_prob_0.1_t/EelSpawn:5
         ^Meat:1 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cBrown
@@ -485,7 +485,7 @@
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ~A(m:Meat),>=0.005,<=0.05,!!r:Tadpole,!!r:Frogspawn;0.5;2;0;CONSUME
         +_OnDeath_/Carcass:1
-        +_layEggs_prob_0.02_t_t/Frogspawn:20
+        +_layEggs_prob_0.1_t_t/Frogspawn:20
         ^Meat:1:s|0.07
         #Water
         cGreen
@@ -508,7 +508,7 @@
 -Barnacle                           0.0     0.01   7           0     35   500      Cut       Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.02;1.25;0;CONSUME
         ~r:SaltWater;0.001;200;1;EXIST
-        +_spawnLarvae_prob_0.13_t/BarnacleNauplius:1000
+        +_spawnLarvae_prob_0.4_f/BarnacleNauplius:1000
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         $Sessile
         #Normal:Mountain:Ice:Woods:Growth
@@ -534,7 +534,7 @@
 -Polychaeta                         0.0     0.08   8           -10   35   400      Migrate   Animal       @Meat
         ~m:Detritus;0.1;2;0;CONSUME
         ~D(r:Water||r:SaltWater),t:liquid;0.001;200;1;EXIST
-        +_layEggs_prob_0.02_t/PolychaetaEgg:20
+        +_layEggs_prob_0.1_t/PolychaetaEgg:20
         ^Meat:1:s|0.05
         l93;1000
         cBrown tMatt

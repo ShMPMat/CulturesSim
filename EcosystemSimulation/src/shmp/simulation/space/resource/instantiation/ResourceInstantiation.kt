@@ -59,8 +59,10 @@ class ResourceInstantiation(
         resourceStringTemplates.forEach { actualizeLinks(it, listOf()) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
-        val endResources = filteredFinalResources
-                .map { swapLegacies(it) as ResourceIdeal }
+        val swappedLegacyResources = mutableListOf<Resource>()
+        val endResources = filteredFinalResources.map {
+            swapLegacies(it, swappedLegacyResources) as ResourceIdeal
+        }
 
         SpaceData.data.resourcePool = ResourcePool(listOf())
         return finalizePool(endResources)
@@ -161,12 +163,13 @@ class ResourceInstantiation(
 
     private fun swapLegacies(
             resource: Resource,
+            swappedLegacyResources: MutableList<Resource>,
             legacyResource: Resource? = null,
             treeStart: List<Resource> = listOf()
     ): Resource {
-        if (!resource.genome.hasLegacy && legacyResource != null)
-            return treeStart.firstOrNull { it.fullName == resource.fullName }
-                    ?: resource //TODO damn, there should be a new Resource
+        if (!resource.genome.hasLegacy) //TODO there are resources with same name but different sizes
+            swappedLegacyResources.firstOrNull { it.fullName == resource.fullName && it.genome.size == resource.genome.size }
+                    ?.let { return ResourceIdeal(it.genome, resource.amount) }
 
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
@@ -174,13 +177,22 @@ class ResourceInstantiation(
             else oldGenome
         }
         val newResource = ResourceIdeal(newGenome.copy(
-                legacy = legacyResource?.baseName,
+                legacy = legacyResource?.baseName?.takeIf { newGenome.hasLegacy },
                 parts = listOf(),
-                primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial
+                primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial!!
         ), resource.amount)
 
+        swappedLegacyResources += newResource
+
         val newParts = resource.genome.parts.map {
-            swapLegacies(it.injectAppearance(resource), newResource, treeStart + listOf(newResource)).copy(it.amount)
+            swapLegacies(
+                    it.injectAppearance(resource),
+                    swappedLegacyResources,
+                    newResource,
+                    treeStart + listOf(newResource)
+            )
+                    .copy(it.amount)
+                    .let { r -> ResourceIdeal(r.genome, it.amount) }
         }.toMutableList()
 
         newParts.forEach {
@@ -194,8 +206,13 @@ class ResourceInstantiation(
                 when (r) {
                     resource -> newResource
                     phonyResource -> treeStart[0]
-                    else -> swapLegacies(r.injectAppearance(resource), newResource, treeStart + listOf(newResource))
-                }.copy(r.amount)
+                    else -> swapLegacies(
+                            r.injectAppearance(resource),
+                            swappedLegacyResources,
+                            newResource,
+                            treeStart + listOf(newResource)
+                    )
+                }.let{ ResourceIdeal(it.genome, r.amount) }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
         injectBuildings(newConversionCore)
