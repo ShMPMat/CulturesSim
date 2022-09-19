@@ -96,7 +96,7 @@ class AspectInstantiation(
                 complexity,
                 sideComplexities,
                 matchers,
-                ResourceAction(name, actionTags)
+                ResourceAction(name, actionTags, listOf())
         )
     }
 
