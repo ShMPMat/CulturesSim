@@ -1,5 +1,5 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
--AppleTree                          0.0     2      10         0       30  150        Cut       Plant        @PlantFibre
+-AppleTree                          0.0     2      10         0       30  150        Cut       Plant        @Wood
         ~r:Vapour;0.00025;2;1;CONSUME
         ~r:Detritus;1.5;2;0;CONSUME
         +_disperse_prob_0.04_f/Pome:5:n|Apple#c|Red
@@ -8,7 +8,7 @@
         #Water
         cGreen
 
--PeachTree                          0.19    2.5    10         10      30  100        Cut       Plant        @PlantFibre
+-PeachTree                          0.19    2.5    10         10      30  100        Cut       Plant        @Wood
         ~r:Vapour;0.00025;2;1;CONSUME
         ~r:Detritus;2;2;0;CONSUME
         +_OnDeath_/Detritus:25
@@ -24,7 +24,7 @@
         #Water
         cBrown
 
--ColdBerry                          0.2     1      15         -30     0   50         Cut       Plant        @PlantFibre
+-ColdBerry                          0.2     1      15         -30     0   50         Cut       Plant        @Wood
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Detritus;0.5;2;0;CONSUME
         +_OnDeath_/Detritus:10
@@ -50,7 +50,7 @@
         #Water
         cWhite
 
--DwarfBirch                         0.0     1      15         -30     20  40         Cut        Plant        @PlantFibre
+-DwarfBirch                         0.0     1      15         -30     20  40         Cut        Plant        @Wood
         ~r:Vapour;0.0001;2;1;CONSUME
         ~r:Detritus;0.5;2;0;CONSUME
         +_OnDeath_/Detritus:10

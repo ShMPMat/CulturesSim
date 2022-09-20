@@ -95,13 +95,23 @@
         R0.4 D0.1
 
 -Desman                             0.5     0.2    16         0       20   25       Migrate   Animal       @Meat
-        ~A(m:Meat),>=0.005,<=0.06;0.4;1.25;0;CONSUME
+        ~A(m:Meat),>=0.005,<=0.06;0.3;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         +_OnDeath_/Carcass:2
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
         #Water
         cGrey
         C0.3 R0.6
+
+-Beaver                             0.4     0.9    20         0       20   15       Migrate   Animal       @Meat
+        ~D(A(m:PlantFibre)||A(m:Wood)),>=0.05;0.4;1.25;0;CONSUME
+        ~r:Water;0.001;200;1;EXIST
+        +_buildDam_prob_0.001_f/~m:Wood,>=0.1;4;200;0;CONSUME/BeaverDam:1
+        +_OnDeath_/Carcass:9
+        ^Meat:8 ^Fat:3 ^Bone:5:s|0.4 ^Fur:6 ^Blood:8
+        #Water
+        cBrown
+        C0.2 R0.4 D0.1
 
 -VampireBat                         0.2     0.1    15         5       30   25       Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.2;0.05;1.1;1;EXIST

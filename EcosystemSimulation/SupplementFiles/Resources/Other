@@ -68,5 +68,12 @@
         sRound
 
 
--BirdNest                           0       0.1    6          -500   500  10         Migrate   None         @PlantFibre
+-BirdNest                           0       0.1    6          -500   500  10         Ignore    None         @PlantFibre
+        +_OnDeath_/Detritus:1
         L
+        $composite
+
+-BeaverDam                          0       3      6          -500   500  30         Cut       None         @Wood
+        ~r:Water;0.001;200;1;EXIST
+        +_OnDeath_/Detritus:30
+        $composite
