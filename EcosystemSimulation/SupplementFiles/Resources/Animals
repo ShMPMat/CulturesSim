@@ -5,6 +5,14 @@
         tMatt
         sPeculiar
 
+-Sponge                             0.12    0.1    15         5      30   1000     Migrate   Animal        @Sponge
+        ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME
+        #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
+        cBlue
+        tMatt
+        sCylinder
+
 -Cow                                0.1     2      20         0      25   25       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         +_OnDeath_/Carcass:20
@@ -588,11 +596,20 @@
         R0.6
 
 -Starfish                           0.12    0.08   20          -30   30   200      Migrate   Animal       @Meat
-        ~m:Meat,<=0.05;1;1.25;0;CONSUME
+        ~m:Meat,<=0.05;0.1;1.25;0;CONSUME
         ^Meat:1:s|0.02
         #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
         cOrange tMatt sStar
         C0.8 R0.1
+
+-SpongivoreStarfish                 0.11    0.06   10          5     30   100      Migrate   Animal       @Meat
+        ~D(m:Meat||m:Sponge),<=0.05;0.1;3;0;CONSUME
+        ^Meat:1:s|0.02
+        #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
+        cBlue tMatt sStar
+        C0.5 R0.1
 
 
 -Copepod                            0.6     0.001  4           -90   80   100000   Migrate   Animal       @Meat
