@@ -66,8 +66,12 @@ class ResourceTemplateCreator(
                             tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
                     ))
                     '~' -> {
-                        val rDependency = dependencyParser.parseUnsafe(tag)
-                        resourceDependencies.add(rDependency)
+                        try {
+                            val rDependency = dependencyParser.parseUnsafe(tag)
+                            resourceDependencies.add(rDependency)
+                        } catch (e: ParseException) {
+                            throw DataInitializationError("Failed initializing resource '$name': ${e.message}")
+                        }
                     }
                     '#' -> resourceDependencies.add(AvoidTiles(
                             tag.split(":".toRegex())
