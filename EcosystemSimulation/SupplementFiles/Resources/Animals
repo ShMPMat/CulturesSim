@@ -520,6 +520,25 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-LeechEgg                           0.0     0.005  2          0      30   200      Ignore    Animal       @Meat
+        ~m:Water,t:liquid;0.001;200;1;EXIST
+        +_transform_prob_0.333_t/Leech:1
+        ^Meat:1:s|0.005
+        #Normal:Mountain:Ice:Woods:Growth
+        tTransparent
+
+-Leech                              0.0     0.04   4          0      30   60       Migrate   Animal       @Meat
+        ~P(m:Blood),>=0.2;0.01;1.1;1;EXIST
+        ~m:Water,t:liquid;0.001;200;1;EXIST
+        +_layEggs_prob_0.005_t/LeechEgg:200
+        ^Meat:1:s|0.04
+        #Normal:Mountain:Ice:Woods:Growth
+        cBlack
+        sCylinder
+        D0.001
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -BarnacleNauplius                   0.0     0.001  3          0      35   1000     Migrate   Animal       @Meat
         +_transform_prob_0.333_t/BarnacleCyprid:1
         ~r:SaltWater;0.001;200;1;EXIST
