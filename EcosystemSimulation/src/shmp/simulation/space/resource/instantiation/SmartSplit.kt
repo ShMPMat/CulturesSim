@@ -1,7 +1,5 @@
 package shmp.simulation.space.resource.instantiation
 
-import shmp.simulation.SimulationError
-
 
 fun String.bracketSensitiveSplit(separator: Char, bracketLeft: Char = '(', bracketRight: Char = ')'): List<String> {
     val splitString = mutableListOf<String>()
@@ -19,7 +17,7 @@ fun String.bracketSensitiveSplit(separator: Char, bracketLeft: Char = '(', brack
             bracketRight -> {
                 depth--
                 if (depth < 0)
-                    throw SimulationError("Wrong bracket sequence - $this")
+                    throw ParseException("Wrong bracket sequence - $this")
             }
         }
         finish++
