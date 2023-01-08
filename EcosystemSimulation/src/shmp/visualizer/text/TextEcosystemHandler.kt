@@ -65,6 +65,22 @@ class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer<*>> {
                         ?.let {
                             printTile(it)
                         } ?: print("No such Tile")
+                Tiles -> {
+                    val top = splitCommand[0].toInt()
+                    val left = splitCommand[1].toInt()
+                    val bottom = splitCommand[2].toInt()
+                    val right = splitCommand[3].toInt()
+
+                    val tiles = mutableListOf<shmp.simulation.space.tile.Tile>()
+
+                    for (i in top..bottom)
+                        for (j in left..right)
+                            map[i, j + mapPrintInfo.cut]?.let {
+                                tiles += it
+                            }
+
+                    printTiles(tiles)
+                }
                 ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
                 PinResources -> {
                     val resourceQuery = splitCommand[1]
