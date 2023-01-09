@@ -199,9 +199,8 @@ open class Resource private constructor(
         if (amount <= 0)
             ResourceUpdateResult(false, result)
         deathTurn++
-        genome.spreadProbability.chanceOf {
-            expand(tile)
-        }
+
+        expand(tile)
 
         if (simpleName == "Vapour") {
             if (tile.temperature < 0) {
@@ -235,8 +234,7 @@ open class Resource private constructor(
             expectedValue.chanceOf<Double> { 1.0 } ?: 0.0
         else expectedValue
         val satisfactionCoefficient = action.dependencies
-                .map { it.satisfactionPercent(tile, this) }
-                .minOrNull()
+                .minOfOrNull { it.satisfactionPercent(tile, this) }
                 ?: 1.0
         val part = (maxPart * satisfactionCoefficient).toInt()
 
@@ -330,7 +328,7 @@ open class Resource private constructor(
         return resourcePart.applyAction(action, resourcePart.amount)
     }
 
-    private fun expand(tile: Tile): Boolean {
+    private fun expand(tile: Tile): Boolean = (genome.spreadProbability * amount).chanceOf<Boolean> {
         val tileList = mutableListOf(tile)
 
         var newTile = tileList.randomTileOnBrink {
@@ -345,10 +343,14 @@ open class Resource private constructor(
                     newTile = tile
             }
         }
-        val resource = copy(amount = min(genome.defaultAmount, amount))
+
+        val amount = min(genome.defaultAmount, (genome.spreadProbability * amount).toInt())
+        // max(..) ensures that at least one Resource is spawned for small amounts and spreadProbabilities
+        val resource = copy(max(1, amount))
         newTile.addDelayedResource(resource)
+
         return true
-    }
+    } ?: false
 
     override fun equals(other: Any?) = fullEquals(other)
 
