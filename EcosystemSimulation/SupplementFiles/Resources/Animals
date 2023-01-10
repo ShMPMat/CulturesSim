@@ -70,7 +70,7 @@
         cOrange
         D0.02
 
--Wolf                               0.12    1      20         -20     20   15       Migrate   Animal       @Meat
+-Wolf                               0.1     1      20         -20     20   15       Migrate   Animal       @Meat
         ~m:Meat,>=0.3;0.6;20;0;CONSUME;3
         +_OnDeath_/Carcass:10
         ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|1.3
@@ -308,7 +308,7 @@
 
 -Mosquito                           0.0     0.01   5          10      30   500     Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
-        +_layEggs_prob_0.1_t/MosquitoEgg:20
+        +_layEggs_prob_0.1_t/MosquitoEgg:100
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown

@@ -2,7 +2,7 @@
 -AppleTree                          0.0     2      10         0       30  150        Cut       Plant        @Wood
         ~r:Vapour;0.00025;2;1;CONSUME
         ~r:Detritus;1.5;2;0;CONSUME
-        +_disperse_prob_0.04_f/Pome:5:n|Apple#c|Red
+        +_disperse_prob_0.04_f/Pome:10:n|Apple#c|Red
         +_OnDeath_/Detritus:20
         ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple#c|Red ^SoftRoot:5
         #Water
