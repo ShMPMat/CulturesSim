@@ -1,18 +1,4 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
--Coral                              0.4     0.1    5          20     30   2000     Cut       Plant        @Coral
-        #Normal:Mountain:Ice:Woods:Growth
-        cRed
-        tMatt
-        sPeculiar
-
--Sponge                             0.12    0.1    15         5      30   1000     Migrate   Animal        @Sponge
-        ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME
-        #Normal:Mountain:Ice:Woods:Growth
-        l93;1000
-        cBlue
-        tMatt
-        sCylinder
-
 -Cow                                0.1     2      20         0      25   25       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         +_OnDeath_/Carcass:20
@@ -613,6 +599,20 @@
         l95;1000
         cBlack tMatt
         R0.6
+
+-Coral                              0.4     0.1    5          20     30   2000     Cut       Plant        @Coral
+        #Normal:Mountain:Ice:Woods:Growth
+        cRed
+        tMatt
+        sPeculiar
+
+-Sponge                             0.12    0.1    15         5      30   1000     Migrate   Animal        @Sponge
+        ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME
+        #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
+        cBlue
+        tMatt
+        sCylinder
 
 -Starfish                           0.12    0.08   20          -30   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.05;0.1;1.25;0;CONSUME
