@@ -384,7 +384,7 @@
         ~r:SaltWater;0.001;200;1;EXIST
         ~m:Meat,>=0.05,<=1;0.8;1.25;0;CONSUME
         +_OnDeath_/Carcass:10
-        +_layEggs_prob_0.05_t/OctopusSpawn:10
+        +_layEggs_prob_0.05_t/OctopusSpawn:15
         ^Meat:4:s|0.3 ^Ink:2
         #Normal:Mountain:Ice:Woods:Growth
         cYellow
