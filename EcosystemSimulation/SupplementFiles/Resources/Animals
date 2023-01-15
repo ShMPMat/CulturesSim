@@ -526,6 +526,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -BarnacleNauplius                   0.0     0.001  3          0      35   1000     Migrate   Animal       @Meat
+        ~D(m:PlantFibre||m:Meat),<=0.001;0.003;1.25;0;CONSUME
         +_transform_prob_0.333_t/BarnacleCyprid:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
