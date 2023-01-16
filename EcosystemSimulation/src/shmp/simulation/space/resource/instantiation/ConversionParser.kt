@@ -5,9 +5,11 @@ import shmp.simulation.space.resource.specialActions
 
 
 class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: DependencyParser) {
+    private val conversionPrefix = "~"
+    private val dependencySeparator = '/'
+
     fun parse(conversionStr: String): Pair<ResourceAction, List<ResourceLink>> {
-        val dependencyPrefix = "~"
-        val nameEndIndex = conversionStr.indexOf('/')
+        val nameEndIndex = conversionStr.indexOf(dependencySeparator)
                 .takeIf { it != -1 }
                 ?: throw ParseException("Cannot parse action '$conversionStr'")
         val actionName = conversionStr.take(nameEndIndex)
@@ -18,16 +20,16 @@ class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: 
                 ?: throw ParseException("Cannot parse action name '$actionName'")
 
         val resourceStrings = conversionStr.drop(nameEndIndex + 1)
-                .split("/")
+                .split(dependencySeparator)
 
         val resourceLinks = resourceStrings
-                .filter { !it.startsWith(dependencyPrefix) }
+                .filter { !it.startsWith(conversionPrefix) }
                 .map { parseLink(it, this) }
 
         val dependencies = resourceStrings
-                .filter { it.startsWith(dependencyPrefix) }
+                .filter { it.startsWith(conversionPrefix) }
                 .map { s ->
-                    val dependencyString = s.drop(dependencyPrefix.length)
+                    val dependencyString = s.drop(conversionPrefix.length)
 
                     dependencyParser.parseUnsafe(dependencyString)
                 }
