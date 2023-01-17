@@ -1,7 +1,6 @@
 package shmp.simulation.space.resource.instantiation
 
 import shmp.simulation.space.resource.action.ResourceProbabilityAction
-import java.lang.Exception
 
 
 fun parseProbabilityAction(string: String): ResourceProbabilityAction? {
@@ -11,13 +10,16 @@ fun parseProbabilityAction(string: String): ResourceProbabilityAction? {
         if (tokens.size < 5 || tokens[0] != "" || tokens[2] != "prob")
             return null
 
-        tokens[3].toDoubleOrNull()?.let { prob ->
-            val isWasting = tokens[4].parseBoolean()
-            val canChooseTile = tokens.getOrNull(5).parseBoolean()
+        val prob = tokens[3].toDoubleOrNull()
+                ?: return null
+        if (prob !in 0.0..1.0)
+            throw ParseException("Probability action must have probability in 0..1")
 
-            ResourceProbabilityAction(tokens[1], prob, isWasting, canChooseTile, listOf())
-        }
-    } catch (e: Exception) {
+        val isWasting = tokens[4].parseBoolean()
+        val canChooseTile = tokens.getOrNull(5).parseBoolean()
+
+        ResourceProbabilityAction(tokens[1], prob, isWasting, canChooseTile, listOf())
+    } catch (e: ParseException) {
         null
     }
 }
