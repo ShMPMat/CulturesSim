@@ -6,12 +6,12 @@ import shmp.simulation.space.resource.dependency.cleanConsumed
 import shmp.simulation.space.resource.dependency.cleanNeeded
 import shmp.visualizer.addResourceOnTile
 import shmp.visualizer.command.Command
-import shmp.visualizer.command.CommandHandler
+import shmp.visualizer.command.CommandExecutor
 import shmp.visualizer.command.EnvironmentCommand.*
 import java.util.*
 
 
-class TextEcosystemHandler : CommandHandler<TextEcosystemVisualizer<*>> {
+class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
     override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer<*>): Boolean {
         val splitCommand = line.split(" ")
 

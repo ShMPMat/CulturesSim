@@ -40,7 +40,7 @@ enum class EnvironmentCommand(command: String) : Command {
     override val pattern = Regex(command)
 }
 
-fun registerEnvironmentalCommands(commandManager: CommandManager<out TextEcosystemVisualizer<*>>, handler: CommandHandler<TextEcosystemVisualizer<*>>) {
+fun registerEnvironmentalCommands(commandManager: CommandManager<out TextEcosystemVisualizer<*>>, handler: CommandExecutor<TextEcosystemVisualizer<*>>) {
     commandManager.registerCommands(EnvironmentCommand.values().toList())
     commandManager.registerHandler(handler)
     commandManager.defaultCommand = EnvironmentCommand.Turn

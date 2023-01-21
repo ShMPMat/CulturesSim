@@ -25,7 +25,7 @@ import java.util.*
 
 open class TextEcosystemVisualizer<E : World>(
         open val controller: Controller<E>,
-        private val defaultManager: CommandManager<TextEcosystemVisualizer<E>> = CommandManager(TextPassHandler()),
+        private val defaultManager: CommandManager<TextEcosystemVisualizer<E>> = CommandManager(TextPassExecutor()),
         private val commandManager: CommandManager<out TextEcosystemVisualizer<E>> = defaultManager
 ) : Visualizer {
     /**
@@ -60,7 +60,7 @@ open class TextEcosystemVisualizer<E : World>(
     }
 
     open fun initialize() {
-        registerEnvironmentalCommands(commandManager, TextEcosystemHandler())
+        registerEnvironmentalCommands(commandManager, TextEcosystemExecutor())
         addTileMapper(TileMapper({ ecosystemTypeMapper(resourceSymbols, it) }, 10))
         println()
         controller.initializeFirst()

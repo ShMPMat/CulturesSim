@@ -3,16 +3,16 @@ package shmp.visualizer.command
 import shmp.visualizer.Visualizer
 
 
-class CommandManager<E : Visualizer>(private val defaultHandler: CommandHandler<E>)  {
+class CommandManager<E : Visualizer>(private val defaultHandler: CommandExecutor<E>)  {
     private val commands: MutableList<Command> = mutableListOf()
 
     var defaultCommand: Command = Pass
 
-    private val handlers: MutableList<CommandHandler<E>> = mutableListOf()
+    private val handlers: MutableList<CommandExecutor<E>> = mutableListOf()
 
     fun registerCommands(newCommands: List<Command>) = commands.addAll(newCommands)
 
-    fun registerHandler(newHandler: CommandHandler<E>) = handlers.add(newHandler)
+    fun registerHandler(newHandler: CommandExecutor<E>) = handlers.add(newHandler)
 
     private fun getCommand(line: String): Command {
         for (command in commands)

@@ -14,9 +14,9 @@ import java.util.*
 
 open class TextCultureVisualizer(
         override val controller: CulturesController,
-        private val defaultManager: CommandManager<TextCultureVisualizer> = CommandManager(TextPassHandler()),
+        private val defaultManager: CommandManager<TextCultureVisualizer> = CommandManager(TextPassExecutor()),
         private val commandManager: CommandManager<out TextCultureVisualizer> = defaultManager
-) : TextEcosystemVisualizer<CulturesWorld>(controller, CommandManager(TextPassHandler()), commandManager) {
+) : TextEcosystemVisualizer<CulturesWorld>(controller, CommandManager(TextPassExecutor()), commandManager) {
     private var groupInfo = ConglomeratePrintInfo(mutableListOf())
     private var lastClaimedTiles: Map<Group, Set<Tile>> = mutableMapOf()
     private var lastClaimedTilesPrintTurn = 0
@@ -25,7 +25,7 @@ open class TextCultureVisualizer(
         get() = controller.world
 
     override fun initialize() {
-        registerCultureCommands(commandManager, TextCultureHandler)
+        registerCultureCommands(commandManager, TextCultureExecutor)
         addTileMapper(TileMapper({ cultureTileMapper(lastClaimedTiles, groupInfo, it) }, 5))
 
         super.initialize()

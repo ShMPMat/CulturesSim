@@ -3,11 +3,11 @@ package shmp.visualizer.text
 import shmp.utils.chompToSize
 import shmp.visualizer.*
 import shmp.visualizer.command.Command
-import shmp.visualizer.command.CommandHandler
+import shmp.visualizer.command.CommandExecutor
 import shmp.visualizer.command.CultureCommand.*
 
 
-object TextCultureHandler : CommandHandler<TextCultureVisualizer> {
+object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
     override fun tryRun(line: String, command: Command, visualizer: TextCultureVisualizer): Boolean {
         val splitCommand = line.split(" ")
 
