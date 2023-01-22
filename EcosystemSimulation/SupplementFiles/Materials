@@ -10,6 +10,7 @@
 -SeaShell      1100      -hard:3     -sturdy:4                              -solid:1
 -EggShell      800       -hard:1     -sturdy:1                              -solid:1
 -Meat          300       -springy:2  -flexible:1                            -solid:1                 +Bake:RoastedMeat
+-Mesoglea      200       -springy:5  -flexible:4                            -solid:1
 -Fat           300       -soft:1     -flexible:1                            -mass:1
 -Bone          1000      -hard:3     -sturdy:4                              -solid:1
 -Chitin        1000      -hard:3     -sturdy:4                              -solid:1

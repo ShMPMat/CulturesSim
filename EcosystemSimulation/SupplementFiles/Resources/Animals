@@ -575,6 +575,29 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-JellyfishLarva                     0.0     0.001  3          5      35   1000     Migrate   Animal       @Meat
+        ~m:Meat,<=0.001;0.001;1.25;0;CONSUME
+        +_transform_prob_0.333_t/JellyfishPolyp:1
+        ~r:SaltWater;0.001;200;1;EXIST
+        tSemitransparent
+
+-JellyfishPolyp                     0.0     0.005  5          5      35   1000     Migrate   Animal       @Mesoglea
+        +_strobilate_prob_0.5_f/Jellyfish:1
+        ~r:SaltWater;0.001;200;1;EXIST
+        tSemitransparent
+
+-Jellyfish                          0.0     0.07   7          5      35   500      Migrate   Animal       @Mesoglea
+        ~m:Meat,>=0.01,<=0.05;0.05;1.25;0;CONSUME
+        ~r:SaltWater;0.001;200;1;EXIST
+        +_spawnLarvae_prob_0.1_f/JellyfishLarva:10
+        #Normal:Mountain:Ice:Woods:Growth
+        l91;1000
+        tSemitransparent
+        sDome
+        R0.3
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -Worm                               0.25    0.04   8           0     35   800      Migrate   Animal       @Meat
         ~m:Detritus;0.1;2;0;CONSUME
         ^Meat:1:s|0.04

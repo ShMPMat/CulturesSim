@@ -29,6 +29,7 @@ enum class ResourceTexture {
 enum class ResourceShape {
     Round,
     Cylinder,
+    Dome,
     Star,
     Peculiar
 }
