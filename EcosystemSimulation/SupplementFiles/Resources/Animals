@@ -599,7 +599,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -Worm                               0.25    0.04   8           0     35   800      Migrate   Animal       @Meat
-        ~m:Detritus;0.1;2;0;CONSUME
+        ~m:Detritus;0.05;2;0;CONSUME
         ^Meat:1:s|0.04
         #Water
         cBrown tMatt
