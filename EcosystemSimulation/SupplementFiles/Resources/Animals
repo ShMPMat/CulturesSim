@@ -614,7 +614,8 @@
         C0.1
 
 //TODO sexual reproduction when bad conditions
--Hydra                              0.2     0.01    10         0      30   800      Migrate   Animal        @Meat
+// Actually they do not consist of Mesoglea, but it's close enough
+-Hydra                              0.2     0.01    10         0      30   800      Migrate   Animal        @Mesoglea
         ~m:Meat,>=0.001,<=0.01;0.01;1.25;0;CONSUME
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
