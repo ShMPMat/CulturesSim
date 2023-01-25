@@ -219,10 +219,10 @@ open class TextEcosystemVisualizer<E : World>(
     @Throws(InterruptedException::class)
     private fun stopTurner() {
         currentTurner!!.isAskedToStop.set(true)
-        println("Turner is asked to stop")
+        println("Pausing the simulation")
         turnerThread!!.join()
         currentTurner = null
-        println("Turner has stopped")
+        println("The simulation is paused")
     }
 
     /**
