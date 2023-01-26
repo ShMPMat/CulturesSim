@@ -31,8 +31,8 @@ open class TextEcosystemVisualizer<E : World>(
     /**
      * Symbols for representation of resources on the Map.
      */
-    var resourceSymbols: MutableMap<Resource, String> = mutableMapOf()
-    var mapPrintInfo: MapPrintInfo
+    val resourceSymbols: MutableMap<Resource, String> = mutableMapOf()
+    val mapPrintInfo: MapPrintInfo
 
     internal var showLegend = false
 
