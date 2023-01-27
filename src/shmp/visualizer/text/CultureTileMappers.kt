@@ -11,7 +11,9 @@ import shmp.simulation.space.tile.Tile
 import shmp.visualizer.printinfo.ConglomeratePrintInfo
 
 
-fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile) { t -> t.resourcePack.any { it.hasMeaning } }
+fun meaningfulResourcesMapper(tile: Tile) = predicateMapper(tile) { t ->
+    t.resourcePack.any { it.hasMeaning }
+}
 
 fun artificialResourcesMapper(tile: Tile): String {
     val meaningful = meaningfulResourcesMapper(tile)
@@ -59,8 +61,9 @@ fun strataMapper(strataSubstr: String, tile: Tile) = hotnessMapper(
         }
 )
 
-fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile)
-{ group.territoryCenter.accessibleTerritory.contains(it) }
+fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile) { t ->
+    group.territoryCenter.accessibleTerritory.contains(t)
+}
 
 fun groupConglomerateMapper(groupConglomerate: GroupConglomerate, tile: Tile) =
         if (groupConglomerate.territory.contains(tile))
@@ -86,4 +89,4 @@ fun cultureTileMapper(lastClaimedTiles: Map<Group, Set<Tile>>, groupInfo: Conglo
                 else "\u001b[96m\u001b[1m"
             } ?: "\u001b[96m\u001b[1m"
             start + groupInfo.getConglomerateSymbol(group.parentGroup)
-        } else ""
+        } else NOTHING
