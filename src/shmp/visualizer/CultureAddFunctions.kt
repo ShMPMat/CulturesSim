@@ -54,30 +54,35 @@ fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {
         System.err.println("No such Group")
         return
     }
-    val aspect = if (aspectName.contains("On")) {
-        val resourceName = aspectName.split("On".toRegex()).toTypedArray()[1]
+    val resourceNameDelimiter = "On"
+
+    val aspect = if (aspectName.contains(resourceNameDelimiter)) {
+        val (shortAspectName, resourceName) = aspectName.split(resourceNameDelimiter)
         val accessibleResource = findGroupResource(resourceName, group)
         if (accessibleResource == null) {
             System.err.println("Group has no access to needed resources")
             return
         }
-        try {
-            val a: Aspect = aspectPool.getValue(aspectName.split("On".toRegex()).toTypedArray()[0])
-            if (a.canApplyMeaning)
-                MeaningInserter(a, accessibleResource)
-            else
-                ConverseWrapper(a, accessibleResource)
-        } catch (e: NoSuchElementException) {
+
+        val aspect: Aspect? = aspectPool.get(shortAspectName)
+        if (aspect == null) {
             System.err.println("No such Aspect")
             return
         }
+
+        if (aspect.canApplyMeaning)
+            MeaningInserter(aspect, accessibleResource)
+        else
+            ConverseWrapper(aspect, accessibleResource)
     } else {
-        try {
-            aspectPool.getValue(aspectName)
-        } catch (e: NoSuchElementException) {
+        val aspect = aspectPool.get(aspectName)
+
+        if (aspect == null) {
             System.err.println("No such Aspect")
             return
         }
+
+        aspect
     }
     addGroupAspect(group, aspect)
 }
