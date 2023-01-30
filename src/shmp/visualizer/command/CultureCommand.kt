@@ -3,20 +3,20 @@ package shmp.visualizer.command
 import shmp.visualizer.text.TextCultureVisualizer
 
 
-enum class CultureCommand(command: String) : Command {
-    Conglomerate("^G\\d+_?\\d*"),
-    GroupTileReach("^G\\d+ r"),
-    GroupProduced("^G\\d+ p"),
-    GroupRelations("^G\\d+ G\\d+"),
-    GroupPotentials("^G\\d+ p \\d+"),
-    MeaningfulResources("meaning"),
-    ArtificialResources("artificial"),
-    GroupStatistics("gstat"),
-    Aspects("a \\w+"),
-    CultureAspects("ca \\w+"),
-    Strata("s \\w+"),
-    AddAspect("^G\\d+ \\w+"),
-    AddWant("^want G\\d+ \\w+");
+enum class CultureCommand(command: String, override val description: String) : Command {
+    Conglomerate("^G\\d+_?\\d*", "Display the conglomerate info"),
+    GroupTileReach("^G\\d+ r", "Display the territory accessible to the group"),
+    ConglomerateProduced("^G\\d+ p", "Display the resources produced be the conglomerate"),
+    GroupRelations("^G\\d+ G\\d+", "Display relations between two conglomerates"),
+    ConglomeratePotentials("^G\\d+ p \\d+", "Display tile potentials for the conglomerate"),
+    MeaningfulResources("meaning", "Display resources with meaning on the map"),
+    ArtificialResources("artificial", "Display artificial resources on the map"),
+    GroupStatistics("gstat", "Display statistics across all groups"),
+    Aspects("a \\w+", "Display aspect description"),
+    CultureAspects("ca \\w+", "Display culture aspect description"),
+    Strata("s \\w+", "Display Group with a strata containing the given substring on the map"),
+    AddAspect("^G\\d+ \\w+", "Try adding aspect to the conglomerate"),
+    AddWant("^want G\\d+ \\w+", "Try adding want to the conglomerate");
 
     override val pattern = Regex(command)
 }

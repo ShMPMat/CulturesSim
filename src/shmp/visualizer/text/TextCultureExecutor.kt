@@ -32,7 +32,7 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                             ?: return true
                     printMap { groupReachMapper(conglomerate.subgroups[0], it) }
                 }
-                GroupProduced -> {
+                ConglomerateProduced -> {
                     val conglomerate = getConglomerate(splitCommand[0])
                             ?: return true
                     println(chompToSize(printProduced(conglomerate), 150))
@@ -46,7 +46,7 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                     }
                     println(printConglomerateRelations(c1, c2))
                 }
-                GroupPotentials -> {
+                ConglomeratePotentials -> {
                     val conglomerate = getConglomerate(splitCommand[0])
                             ?: return true
                     printMap { t ->

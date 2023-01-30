@@ -55,7 +55,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     } else
                         println("Unknown type - " + splitCommand[1])
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
-                AllBasicResources -> println(basicResourcesCounter(world))
+                BasicResourcesAmount -> println(basicResourcesCounter(world))
                 AllPresentResources -> println(allResourcesCounter(
                         world,
                         splitCommand.size > 1 && splitCommand[1] == "f"
