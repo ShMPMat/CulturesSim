@@ -14,17 +14,16 @@ import shmp.utils.chompToLines
 import java.util.regex.PatternSyntaxException
 
 
-fun basicResourcesCounter(world: World): String {
+fun aliveResourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
             .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
-            .map { it to ResourceCount() }
-            .toMap()
+            .associateWith { ResourceCount() }
     world.map.tiles.forEach { t ->
         t.resourcePack.resources.forEach {
-            if (resourceAmounts.containsKey(it))
-                resourceAmounts.getValue(it).add(it)
+            resourceAmounts[it]?.add(it)
         }
     }
+
     val lines =  resourceAmounts.entries.joinToString("\n") {
         val colourMark = when (it.value.tilesAmount) {
             0 -> "\u001b[31m"

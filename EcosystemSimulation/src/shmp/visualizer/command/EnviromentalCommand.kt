@@ -17,7 +17,7 @@ enum class EnvironmentCommand(command: String, override val description: String)
     ResourceSubstringOnTile("\\d+ \\d+ r' \\w+", "Display all resources containing the given substring on this tile"),
     ResourceType("rt \\w+", "Display resources of the given type across the map"),
     ResourceOwner("ro \\w+", "Display resources with the given owner across the map"),
-    BasicResourcesAmount("rr", "Display all basic resources amounts on the map"),
+    AliveResourcesAmount("rr", "Display all basic resources amounts on the map"),
     AllPresentResources("rrr( f)?", "Display all resources amounts on the map"),
     AllPossibleResources("rrrr", "Display all resources amounts on the map"),
     ResourceDensity("rd", "Display resource density across the map"),
