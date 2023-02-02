@@ -56,10 +56,9 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         println("Unknown type - " + splitCommand[1])
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
                 AliveResourcesAmount -> println(aliveResourcesCounter(world))
-                AllPresentResources -> println(allResourcesCounter(
-                        world,
-                        splitCommand.size > 1 && splitCommand[1] == "f"
-                ))
+                AllPresentResources -> println(
+                        allResourcesCounter(world, splitCommand.getOrNull(1) == "f")
+                )
                 AllPossibleResources -> println(visualizer.printedResources())
                 Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]
                         ?.let {
