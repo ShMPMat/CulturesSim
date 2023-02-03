@@ -33,9 +33,9 @@ enum class EnvironmentCommand(command: String, override val description: String)
     GeologicalTurn("Geo", "Display the geological turn"),
     Turn("", "Make one simulation turn"),
     Turner("\\d+", "Make <N> simulation turns"),
-    PrintStep("step \\d+", "Set update display frequency"),
-    AddPrintCommand("pc .+", "Add a command to be executed at every update display"),
-    ClearPrintCommands("cln pc", "Remove all added commands that were added to be executed at every update display");
+    DisplayFrequency("step \\d+", "Set update display frequency"),
+    AddDisplayCommand("pc .+", "Add a command to be executed at every update display"),
+    ClearDisplayCommands("cln pc", "Remove all added commands that were added to be executed at every update display");
 
     override val pattern = Regex(command)
 }

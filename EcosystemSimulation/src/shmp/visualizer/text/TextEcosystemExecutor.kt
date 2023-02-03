@@ -139,18 +139,18 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     controller.turn()
                     print()
                 }
-                PrintStep -> {
+                DisplayFrequency -> {
                     splitCommand[1].toIntOrNull()
                             ?.let { visualizer.printTurnStep = it }
                             ?: println("Wrong number format for amount of turns")
                     println("Print step number changed")
                 }
-                AddPrintCommand -> {
+                AddDisplayCommand -> {
                     val suffixCommand = splitCommand.drop(1).joinToString(" ")
                     visualizer.printCommands += suffixCommand
                     println("Command '$suffixCommand' added on print")
                 }
-                ClearPrintCommands -> {
+                ClearDisplayCommands -> {
                     visualizer.printCommands.clear()
                     println("All print commands cleared")
                 }
