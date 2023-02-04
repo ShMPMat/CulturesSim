@@ -27,10 +27,10 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                         else -> println("No such Group or Conglomerate exist")
                     }
                 }
-                GroupTileReach -> {
+                ConglomerateTileReach -> {
                     val conglomerate = getConglomerate(splitCommand[0])
                             ?: return true
-                    printMap { groupReachMapper(conglomerate.subgroups[0], it) }
+                    printMap { conglomerateReachMapper(conglomerate, it) }
                 }
                 ConglomerateProduced -> {
                     val conglomerate = getConglomerate(splitCommand[0])

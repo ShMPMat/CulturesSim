@@ -61,8 +61,12 @@ fun strataMapper(strataSubstr: String, tile: Tile) = hotnessMapper(
         }
 )
 
-fun groupReachMapper(group: Group, tile: Tile) = predicateMapper(tile) { t ->
-    group.territoryCenter.accessibleTerritory.contains(t)
+fun conglomerateReachMapper(conglomerate: GroupConglomerate, tile: Tile) = predicateMapper(tile) { t ->
+    conglomerate.subgroups.any {
+        it.territoryCenter
+                .accessibleTerritory
+                .contains(t)
+    }
 }
 
 fun groupConglomerateMapper(groupConglomerate: GroupConglomerate, tile: Tile) =
