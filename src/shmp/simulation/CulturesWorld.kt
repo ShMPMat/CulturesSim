@@ -36,8 +36,7 @@ class CulturesWorld : World() {
         aspectPool = mutableAspectPool
 
         val actions = aspectPool.all
-                .map { it.core.resourceAction to it.core.matchers }
-                .toMap()
+                .associate { it.core.resourceAction to it.core.matchers }
         val resourceActionInjectors = listOf(
                 fun(a: ResourceAction, rs: Resources): List<Pair<ResourceAction, Resources>> {
                     val building = rs.firstOrNull { it.simpleName in buildingsNames }
@@ -78,9 +77,11 @@ class CulturesWorld : World() {
             groups.add(GroupConglomerate(1, tileForGroup))
 
         for (aspectName in compulsoryAspects)
-            groups.forEach { c ->
-                c.subgroups.forEach { it.cultureCenter.aspectCenter.addAspectTry(aspectPool.getValue(aspectName), it) }
-            }
+            for (c in groups)
+                for (it in c.subgroups)
+                    it.cultureCenter
+                            .aspectCenter
+                            .addAspectTry(aspectPool.getValue(aspectName), it)
 
         groups.forEach { it.finishUpdate() }
     }
