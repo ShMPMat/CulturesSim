@@ -46,5 +46,7 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
         world.map.geologicUpdate()
 
         eventLog.joinNewEvents(world.events)
+
+        world.incrementTurnGeology()
     }
 }

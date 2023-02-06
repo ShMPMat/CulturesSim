@@ -32,7 +32,7 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
 
     fun initializeFirst() {
         for (i in 0 until geologyTurns) {
-            geologicTurn()
+            interactionModel.geologicTurn(world)
             if (debugPrint)
                 visualizer.print()
         }
@@ -94,7 +94,6 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
 
     open fun geologicTurn() {
         interactionModel.geologicTurn(world)
-        world.incrementTurnGeology()
     }
 
     companion object {

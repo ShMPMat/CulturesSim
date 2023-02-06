@@ -99,11 +99,6 @@ class CulturesController(
         )
     }
 
-    override fun geologicTurn() {
-        interactionModel.geologicTurn(world)
-        world.incrementTurnGeology()
-    }
-
     companion object {
         lateinit var session: CulturesController
     }

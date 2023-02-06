@@ -20,5 +20,7 @@ class MapModel : InteractionModel<World> {
         world.map.geologicUpdate()
 
         eventLog.joinNewEvents(world.events)
+
+        world.incrementTurnGeology()
     }
 }
