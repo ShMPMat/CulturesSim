@@ -9,6 +9,7 @@ import shmp.generator.culture.worldview.reasoning.ReasonField
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.EventLog
+import shmp.simulation.interactionmodel.CulturesMapModel
 import shmp.simulation.space.resource.OwnershipMarker
 import shmp.simulation.space.resource.container.MutableResourcePack
 import shmp.simulation.space.resource.container.ResourcePack
@@ -126,13 +127,20 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         val mainTime = System.nanoTime()
         _subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
-        CulturesController.session.groupMainTime += System.nanoTime() - mainTime
+
+        CulturesController.session.interactionModel.let {
+            if (it is CulturesMapModel)
+                it.groupMainTime += System.nanoTime() - mainTime
+        }
         val othersTime = System.nanoTime()
         updatePopulation()
         if (state == State.Dead)
             return
         shuffledSubgroups.forEach { it.intergroupUpdate() }
-        CulturesController.session.groupOthersTime += System.nanoTime() - othersTime
+        CulturesController.session.interactionModel.let {
+            if (it is CulturesMapModel)
+                it.groupOthersTime += System.nanoTime() - othersTime
+        }
     }
 
     private fun updatePopulation() {
@@ -157,8 +165,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     }
 
     fun getClosestInnerGroupDistance(tile: Tile) = subgroups
-            .map { getClosest(tile, setOf(it.territoryCenter.center)).second }
-            .min()
+            .minOfOrNull { getClosest(tile, setOf(it.territoryCenter.center)).second }
             ?: Int.MAX_VALUE
 
     fun removeGroup(group: Group) {

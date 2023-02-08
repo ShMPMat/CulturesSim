@@ -14,6 +14,8 @@ class MapModel : InteractionModel<World> {
 
         eventLog.joinNewEvents(world.events)
         eventLog.clearNewEvents()
+
+        world.incrementTurn()
     }
 
     override fun geologicTurn(world: World) {

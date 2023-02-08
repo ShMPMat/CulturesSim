@@ -20,7 +20,7 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
     val stabilizationTurns = 100
     val fillCycles = 3
 
-    val proportionCoefficient = 1.5
+    val proportionCoefficient = 1.0
 
     private val debugPrint = false
     private val doLastStabilization = true
@@ -89,7 +89,6 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
 
     open fun turn() {
         interactionModel.turn(world)
-        world.incrementTurn()
     }
 
     open fun geologicTurn() {

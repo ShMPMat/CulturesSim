@@ -1,11 +1,11 @@
 package shmp.simulation.culture.group.centers
 
 import shmp.random.singleton.chanceOf
-import shmp.simulation.CulturesController
 import shmp.simulation.CulturesController.Companion.session
 import shmp.simulation.culture.group.cultureaspect.DepictObject
 import shmp.simulation.culture.group.process.*
 import shmp.simulation.culture.group.process.behaviour.*
+import shmp.simulation.interactionmodel.CulturesMapModel
 import kotlin.math.pow
 
 
@@ -78,7 +78,10 @@ class ProcessCenter(type: AdministrationType) {
             updateBehaviours(group)
 
         runBehaviours(group)
-        CulturesController.session.groupMigrationTime += System.nanoTime() - main
+        session.interactionModel.let {
+            if (it is CulturesMapModel)
+                it.groupMigrationTime += System.nanoTime() - main
+        }
     }
 
     private fun AddAdministrativeBehaviours(group: Group) {

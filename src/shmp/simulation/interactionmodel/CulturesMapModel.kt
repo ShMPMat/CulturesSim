@@ -1,6 +1,5 @@
 package shmp.simulation.interactionmodel
 
-import shmp.simulation.CulturesController
 import shmp.simulation.CulturesWorld
 import shmp.simulation.event.EventLog
 
@@ -9,13 +8,21 @@ import shmp.simulation.event.EventLog
 class CulturesMapModel : InteractionModel<CulturesWorld> {
     override val eventLog = EventLog(isOblivious = false)
 
+    var overallTime: Long = 0
+    var groupTime: Long = 0
+    var othersTime: Long = 0
+    var groupMainTime: Long = 0
+    var groupOthersTime: Long = 0
+    var groupMigrationTime: Long = 0
+    var groupInnerOtherTime: Long = 0
+
     override fun turn(world: CulturesWorld) {
-        CulturesController.session.overallTime = System.nanoTime()
-        CulturesController.session.groupTime = System.nanoTime()
-        CulturesController.session.groupMainTime = 0
-        CulturesController.session.groupOthersTime = 0
-        CulturesController.session.groupInnerOtherTime = 0
-        CulturesController.session.groupMigrationTime = 0
+        overallTime = System.nanoTime()
+        groupTime = System.nanoTime()
+        groupMainTime = 0
+        groupOthersTime = 0
+        groupInnerOtherTime = 0
+        groupMigrationTime = 0
 
         world.map.update()
         var groups = world.shuffledGroups
@@ -23,8 +30,8 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
             group.update()
         }
 
-        CulturesController.session.groupTime = System.nanoTime() - CulturesController.session.groupTime
-        CulturesController.session.othersTime = System.nanoTime()
+        groupTime = System.nanoTime() - groupTime
+        othersTime = System.nanoTime()
 
         groups = world.shuffledGroups
         for (group in groups)
@@ -38,8 +45,20 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
         }
         eventLog.clearNewEvents()
 
-        CulturesController.session.othersTime = System.nanoTime() - CulturesController.session.othersTime
-        CulturesController.session.overallTime = System.nanoTime() - CulturesController.session.overallTime
+        othersTime = System.nanoTime() - othersTime
+        overallTime = System.nanoTime() - overallTime
+
+        world.incrementTurn()
+
+        if (world.lesserTurnNumber % 100 == 0)
+            world.clearDeadConglomerates()
+
+        println(
+                "Overall - $overallTime Groups - $groupTime Others - $othersTime Groups to others - "
+                        + groupTime.toDouble() / othersTime.toDouble() +
+                        " main update to others - " + groupMainTime.toDouble() / groupOthersTime.toDouble() +
+                        " current test to others - " + groupMigrationTime.toDouble() / groupInnerOtherTime.toDouble()
+        )
     }
 
     override fun geologicTurn(world: CulturesWorld) {

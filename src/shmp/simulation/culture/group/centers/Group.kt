@@ -10,6 +10,7 @@ import shmp.simulation.culture.group.cultureaspect.CultureAspect
 import shmp.simulation.culture.thinking.meaning.GroupMemes
 import shmp.generator.culture.worldview.Meme
 import shmp.simulation.event.Type
+import shmp.simulation.interactionmodel.CulturesMapModel
 import shmp.simulation.space.territory.Territory
 import shmp.simulation.space.tile.Tile
 import java.util.*
@@ -111,7 +112,10 @@ class Group(
 
         if (populationCenter.population == 0)
             die()
-        session.groupInnerOtherTime += System.nanoTime() - others
+        session.interactionModel.let {
+            if (it is CulturesMapModel)
+                it.groupInnerOtherTime += System.nanoTime() - others
+        }
     }
 
     private fun move() {

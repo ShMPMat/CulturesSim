@@ -55,14 +55,6 @@ class CulturesController(
 
     val strayPlacesUpdate = 0.01
 
-    var overallTime: Long = 0
-    var groupTime: Long = 0
-    var othersTime: Long = 0
-    var groupMainTime: Long = 0
-    var groupOthersTime: Long = 0
-    var groupMigrationTime: Long = 0
-    var groupInnerOtherTime: Long = 0
-
     val vacantGroupName: String
         get() {
             conglomerateCount++
@@ -84,19 +76,6 @@ class CulturesController(
                 visualizer.print()
             i++
         }
-    }
-
-    override fun turn() {
-        super.turn()
-        if (isTime(100))
-            world.clearDeadConglomerates()
-
-        println(
-                "Overall - $overallTime Groups - $groupTime Others - $othersTime Groups to others - "
-                        + groupTime.toDouble() / othersTime.toDouble() +
-                        " main update to others - " + groupMainTime.toDouble() / groupOthersTime.toDouble() +
-                        " current test to others - " + groupMigrationTime.toDouble() / groupInnerOtherTime.toDouble()
-        )
     }
 
     companion object {
