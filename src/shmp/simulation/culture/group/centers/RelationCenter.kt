@@ -33,10 +33,10 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     }
 
     fun getMinConglomerateRelation(conglomerate: GroupConglomerate) =
-            getConglomerateGroups(conglomerate).map { it.normalized }.min() ?: 1.0
+            getConglomerateGroups(conglomerate).minOfOrNull { it.normalized } ?: 1.0
 
     fun getMaxConglomerateRelation(conglomerate: GroupConglomerate) =
-            getConglomerateGroups(conglomerate).map { it.normalized }.max() ?: 1.0
+            getConglomerateGroups(conglomerate).maxOfOrNull { it.normalized } ?: 1.0
 
     fun getNormalizedRelation(group: Group) = relationsMap[group]?.normalized ?: 0.5
 

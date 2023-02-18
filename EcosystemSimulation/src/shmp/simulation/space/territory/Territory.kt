@@ -42,11 +42,11 @@ interface Territory {
     fun getResourceInstances(resource: Resource) = tiles
             .flatMap { it.resourcePack.getResource(resource).resources }
 
-    fun getMostUselessTile(mapper: (Tile) -> Int): Tile? = tiles.minBy { mapper(it) }
+    fun getMostUselessTile(mapper: (Tile) -> Int): Tile? = tiles.minByOrNull { mapper(it) }
 
     fun getMostUsefulTileOnOuterBrink(predicate: (Tile) -> Boolean, mapper: (Tile) -> Int): Tile? =
             filterOuterBrink(predicate)
                     .map { it to mapper(it) }
-                    .maxBy { it.second }
+                    .maxByOrNull { it.second }
                     ?.first
 }

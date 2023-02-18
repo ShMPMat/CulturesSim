@@ -12,6 +12,6 @@ fun isCloser(tile1: Tile, tile2: Tile, distance: Int) = getDistance(tile1, tile2
 fun getClosest(tile: Tile, tiles: Collection<Tile>): Pair<Tile, Int> {
     return tiles
             .map { it to getDistance(tile, it) }
-            .minBy { it.second }
+            .minByOrNull { it.second }
             ?: throw SpaceError("Empty tiles collection")
 }

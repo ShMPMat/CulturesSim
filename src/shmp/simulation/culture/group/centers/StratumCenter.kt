@@ -78,7 +78,7 @@ class StratumCenter(initTile: Tile) {
         if (testProbability(CulturesController.session.egoRenewalProb, CulturesController.session.random)) {
             val mostImportantStratum = strata
                     .filter { it.population > 0 }
-                    .maxBy { it.importance }
+                    .maxByOrNull { it.importance }
             if (mostImportantStratum != null)
                 if (mostImportantStratum.importance > 0)
                     mostImportantStratum.ego.isActive = true
