@@ -2,10 +2,6 @@ package shmp.simulation
 
 import shmp.random.singleton.RandomSingleton
 import shmp.simulation.interactionmodel.InteractionModel
-import shmp.simulation.space.SpaceData.data
-import shmp.simulation.space.createRivers
-import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.tile.Tile
 import shmp.visualizer.Visualizer
 import kotlin.random.Random
 
@@ -24,6 +20,17 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
 
     private val debugPrint = false
     private val doLastStabilization = true
+
+    protected val initSteps = mutableListOf<ControllerInitStep<E>>(
+            AddRiversInitStep(
+                    fillCycles,
+                    doTurns,
+                    (5 * proportionCoefficient * proportionCoefficient).toInt(),
+                    stabilizationTurns,
+                    debugPrint,
+                    random
+            )
+    )
 
     init {
         session = this
@@ -44,45 +51,11 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
         world.placeResources()
     }
 
-    fun initializeSecond() {
-        fun riverResourcePredicate(r: Resource) =
-                (r.tags.any { it.name in listOf("liquid", "solid") }
-                        && r.genome.materials.any { it.name == "Water" })
-
-        val water = world.resourcePool.getBaseName("Water")
-        val riverCreationThreshold = 108
-        var j = 0
-        while (j < fillCycles && doTurns) {
-            createRivers(
-                    world.map,
-                    (5 * proportionCoefficient * proportionCoefficient).toInt(),
-                    water,
-                    { t ->
-                        if (t.level >= riverCreationThreshold
-                                && t.resourcePack.any(::riverResourcePredicate)
-                                && t.getTilesInRadius(2) { it.resourcesWithMoved.contains(water) }.isEmpty()
-                        )
-                            (t.temperature - data.temperatureBaseStart + 1).toDouble() *
-                                    (t.level + 1 - riverCreationThreshold)
-                        else 0.0
-                    },
-                    { it.type !== Tile.Type.Ice },
-                    random
-            )
-            if (j != 0)
-                world.placeResources()
-            if (j != fillCycles - 1 || doLastStabilization) {
-                for (i in 0 until stabilizationTurns) {
-                    turn()
-                    if (debugPrint)
-                        visualizer.print()
-                }
-                turn()
-            }
-            j++
+    fun runInitSteps() {
+        for (initStep in initSteps) {
+            initStep.run(world, interactionModel)
+            println()
         }
-        turn()
-        world.map.setTags()
     }
 
     fun isTime(denominator: Int) = world.lesserTurnNumber % denominator == 0
