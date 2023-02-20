@@ -63,9 +63,9 @@ open class TextEcosystemVisualizer<E : World>(
         registerEnvironmentalCommands(commandManager, TextEcosystemExecutor())
         addTileMapper(TileMapper({ ecosystemTypeMapper(resourceSymbols, it) }, 10))
         println()
-        controller.initializeFirst()
-        println()
+
         controller.runInitSteps()
+
         mapPrintInfo.computeCut(map)
     }
 
@@ -189,7 +189,7 @@ open class TextEcosystemVisualizer<E : World>(
         }
 
         val resources = StringBuilder()
-        for (resource in world.resourcePool.resources)
+        for (resource in world.resourcePool.all)
             resources.append("\u001b[31m").append(resourceSymbols[resource]).append(" - ")
                     .append(resource.baseName).append("\n")
 

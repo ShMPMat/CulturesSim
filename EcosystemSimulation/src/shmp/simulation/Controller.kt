@@ -22,6 +22,8 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
     private val doLastStabilization = true
 
     protected val initSteps = mutableListOf<ControllerInitStep<E>>(
+            GeologicalTurnsStep(geologyTurns, debugPrint),
+            EcosystemTurnsStep(initialTurns, debugPrint),
             AddRiversInitStep(
                     fillCycles,
                     doTurns,
@@ -35,20 +37,6 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
     init {
         session = this
         RandomSingleton.safeRandom = random
-    }
-
-    fun initializeFirst() {
-        for (i in 0 until geologyTurns) {
-            interactionModel.geologicTurn(world)
-            if (debugPrint)
-                visualizer.print()
-        }
-        for (i in 0 until initialTurns) {
-            turn()
-            if (debugPrint)
-                visualizer.print()
-        }
-        world.placeResources()
     }
 
     fun runInitSteps() {
