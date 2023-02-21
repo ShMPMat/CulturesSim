@@ -11,8 +11,8 @@ import kotlin.random.Random
 class AddRiversInitStep<E : World>(
         private val fillCycles: Int,
         private val doTurns: Boolean,
-        private val riversAmount: Int, //(5 * proportionCoefficient * proportionCoefficient).toInt()
-        private val stabilizationTurns: Int, //also a flag was present
+        private val riversAmount: Int,
+        private val stabilizationTurns: Int,
         private val debugPrint: Boolean,
         private val random: Random
 ) : ControllerInitStep<E> {
@@ -20,8 +20,8 @@ class AddRiversInitStep<E : World>(
         val water = world.resourcePool.getBaseName("Water")
         val riverCreationThreshold = 108
 
-        var j = 0
-        while (j < fillCycles && doTurns) {
+        var i = 0
+        while (i < fillCycles && doTurns) {
             createRivers(
                     world.map,
                     riversAmount,
@@ -39,18 +39,18 @@ class AddRiversInitStep<E : World>(
                     random
             )
 
-            if (j != 0)
+            if (i != 0)
                 world.placeResources()
 
-            if (j != fillCycles - 1 || stabilizationTurns != 0) {
-                for (i in 1..stabilizationTurns) {
+            if (i != fillCycles - 1 || stabilizationTurns != 0) {
+                for (j in 1..stabilizationTurns) {
                     interactionModel.turn(world)
                     if (debugPrint)
                         Controller.visualizer.print()
                 }
                 interactionModel.turn(world)
             }
-            j++
+            i++
         }
 
         interactionModel.turn(world)
