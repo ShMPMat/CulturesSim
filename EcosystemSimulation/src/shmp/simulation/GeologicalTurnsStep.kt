@@ -8,7 +8,7 @@ class GeologicalTurnsStep<E : World>(
         private val debugPrint: Boolean,
 ) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
-        for (i in 0 until turnNumber) {
+        for (i in 1..turnNumber) {
             interactionModel.geologicTurn(world)
             if (debugPrint)
                 Controller.visualizer.print()
