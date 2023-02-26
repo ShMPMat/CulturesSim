@@ -19,7 +19,7 @@ import shmp.simulation.space.tile.Tile
 import java.util.*
 
 
-class CulturesWorld : World() {
+open class CulturesWorld : World() {
     var groups: MutableList<GroupConglomerate> = ArrayList()
 
     val shuffledGroups: List<GroupConglomerate>
