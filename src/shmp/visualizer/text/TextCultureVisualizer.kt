@@ -29,8 +29,6 @@ open class TextCultureVisualizer(
         addTileMapper(TileMapper({ cultureTileMapper(lastClaimedTiles, groupInfo, it) }, 5))
 
         super.initialize()
-
-        controller.initializeThird()
     }
 
     override fun print() {

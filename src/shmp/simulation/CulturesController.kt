@@ -65,17 +65,8 @@ class CulturesController(
         session = this
         world.initializeMap(proportionCoefficient)
         templateBase = TemplateBase()
-    }
 
-    fun initializeThird() {
-        world.initializeGroups()
-        var i = 0
-        while (i < cultureTurns && doTurns) {
-            turn()
-            if (doPrint)
-                visualizer.print()
-            i++
-        }
+        initSteps.add(GroupTurnsStep(cultureTurns, doPrint))
     }
 
     companion object {
