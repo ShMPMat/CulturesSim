@@ -143,6 +143,25 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-CrocodileEgg                       0.0     0.06   4          20     40   20       Ignore    Animal       @Meat
+        +_transform_prob_0.25_t/Crocodile:1
+        ^Meat:1:s|0.04 ^EggShell:1:s|0.05
+        #Water
+        cWhite
+        tMatt
+
+//TODO very vulnerable when young
+-Crocodile                          0.0    2       10         20     40   7        Migrate   Animal       @Meat
+        ~m:Meat,>=0.1,!!r:CrocodileEgg;1.5;2;1;CONSUME
+        ~m:Water,t:liquid;10;200;1;EXIST
+        +_OnDeath_/Carcass:20
+        +_layEggs_prob_0.11_f/CrocodileEgg:10
+        ^Meat:10 ^Fat:3 ^Bone:5 ^Leather:2:s|1 ^Blood:5
+        cGreen
+        C0.3 R0.3 D0.8
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -SparrowEgg                         0.0     0.03   3          0      30   1000     Ignore    Animal       @Meat
         +_transform_prob_0.333_t/Sparrow:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
