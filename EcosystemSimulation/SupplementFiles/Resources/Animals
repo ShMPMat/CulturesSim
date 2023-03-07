@@ -321,6 +321,22 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-TickEgg                            0.0     0.0005 2          0      30   1000     Ignore    Animal       @Meat
+        +_transform_prob_0.5_t/Tick:1
+        ^Meat:1:s|0.002
+        #Water
+        tSemitransparent
+
+-Tick                               0.0     0.005  5          8      30   200     Migrate   Animal       @Chitin
+        ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
+        +_layEggs_prob_0.01_t/TickEgg:500
+        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
+        #Water
+        cBrown
+        R0.1
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -ButterflyEgg                       0.0     0.002  2          10     30   1000     Ignore    Animal       @Meat
         +_transform_prob_0.5_t/Caterpillar:1
         ^Meat:1:s|0.002
