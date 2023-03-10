@@ -4,19 +4,20 @@ import shmp.visualizer.Visualizer
 
 
 class CommandManager<E : Visualizer>(private val defaultHandler: CommandExecutor<E>)  {
-    private val commands: MutableList<Command> = mutableListOf()
+    private val commands: MutableList<TextCommand> = mutableListOf()
 
-    var defaultCommand: Command = Pass
+    var defaultCommand: TextCommand = Pass
 
     private val handlers: MutableList<CommandExecutor<E>> = mutableListOf()
 
-    fun registerCommands(newCommands: List<Command>) = commands.addAll(newCommands)
+    fun registerCommands(newCommands: List<TextCommand>) = commands.addAll(newCommands)
 
     fun registerHandler(newHandler: CommandExecutor<E>) = handlers.add(newHandler)
 
-    private fun getCommand(line: String): Command {
+    private fun getCommand(line: String): TextCommand {
         for (command in commands)
-            if (command.pattern.matches(line)) return command
+            if (command.pattern.matches(line))
+                return command
         return defaultCommand
     }
 

@@ -3,7 +3,7 @@ package shmp.visualizer.command
 import shmp.visualizer.text.TextCultureVisualizer
 
 
-enum class CultureCommand(command: String, override val description: String) : Command {
+enum class CultureCommand(command: String, override val description: String) : TextCommand {
     Conglomerate("^G\\d+_?\\d*", "Display the conglomerate info"),
     ConglomerateTileReach("^G\\d+ r", "Display the territory accessible to the conglomerate"),
     ConglomerateProduced("^G\\d+ p", "Display the resources produced be the conglomerate"),

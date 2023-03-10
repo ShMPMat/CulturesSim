@@ -1,7 +1,7 @@
 package shmp.visualizer.command
 
 
-object Pass : Command {
+object Pass : TextCommand {
     override val pattern = Regex("")
     override val description = "Do nothing"
 }

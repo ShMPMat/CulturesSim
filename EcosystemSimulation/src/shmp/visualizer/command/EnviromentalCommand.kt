@@ -3,7 +3,7 @@ package shmp.visualizer.command
 import shmp.visualizer.text.TextEcosystemVisualizer
 
 
-enum class EnvironmentCommand(command: String, override val description: String) : Command {
+enum class EnvironmentCommand(command: String, override val description: String) : TextCommand {
     Plates("plates", "Display tectonic plates"),
     TileTag("tt \\w+", "Display tile tags"),
     Tile("\\d+ \\d+", "Display tile info"),
