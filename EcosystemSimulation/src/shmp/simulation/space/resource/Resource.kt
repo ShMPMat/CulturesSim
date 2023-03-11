@@ -123,7 +123,7 @@ open class Resource private constructor(
 
     fun getPart(part: Int, resource: Resource) = getPart(part, ResourceTaker(resource))
 
-    fun getCleanPart(part: Int, taker: Taker): Resource {
+    open fun getCleanPart(part: Int, taker: Taker): Resource {
         val result = min(amount, part)
         amount -= result
 
@@ -320,7 +320,7 @@ open class Resource private constructor(
         amount = 0
     }
 
-    open fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): Resources {
+    fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): Resources {
         val resourcePart =
                 if (isClean) getCleanPart(part, taker)
                 else getPart(part, taker)

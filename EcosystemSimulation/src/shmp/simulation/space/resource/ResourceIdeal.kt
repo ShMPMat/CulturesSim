@@ -1,7 +1,7 @@
 package shmp.simulation.space.resource
 
-import shmp.simulation.space.resource.action.ResourceAction
 import shmp.simulation.space.tile.Tile
+import javax.naming.OperationNotSupportedException
 
 /**
  * Special resource instance, which must is never be placed on the map and
@@ -10,27 +10,22 @@ import shmp.simulation.space.tile.Tile
  */
 class ResourceIdeal(genome: Genome, amount: Int = 1) : Resource(ResourceCore(genome, ArrayList(), freeMarker), amount) {
     override fun getPart(part: Int, taker: Taker): Resource {
-        System.err.println("Ideal is changing")
-        return super.getPart(part, taker)
+        throw OperationNotSupportedException("ResourceIdeal doesn't support getPart(..)")
+    }
+
+    override fun getCleanPart(part: Int, taker: Taker): Resource {
+        throw OperationNotSupportedException("ResourceIdeal doesn't support applyActionAndConsume(..)")
     }
 
     override fun merge(resource: Resource): Resource {
-        System.err.println("Ideal is changing")
-        return super.merge(resource)
+        throw OperationNotSupportedException("ResourceIdeal doesn't support merge(..)")
     }
 
     override fun update(tile: Tile): ResourceUpdateResult {
-        System.err.println("Ideal is changing")
-        return super.update(tile)
+        throw OperationNotSupportedException("ResourceIdeal doesn't support update(..)")
     }
 
     override fun addAmount(amount: Int) {
-        System.err.println("Ideal is changing")
-        super.addAmount(amount)
-    }
-
-    override fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): List<Resource> {
-        System.err.println("Ideal is changing")
-        return super.applyActionAndConsume(action, part, isClean, taker)
+        throw OperationNotSupportedException("ResourceIdeal doesn't support addAmount(..)")
     }
 }
