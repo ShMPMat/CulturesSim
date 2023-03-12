@@ -8,7 +8,16 @@ import javax.naming.OperationNotSupportedException
  * will print a warning on any attempt of changing it. Can be used as
  * an example instance of a resource inside classes working with resources.
  */
-class ResourceIdeal(genome: Genome, amount: Int = 1) : Resource(ResourceCore(genome, ArrayList(), freeMarker), amount) {
+class ResourceIdeal(
+        genome: Genome,
+        amount: Int = 1,
+        val copyFun: ((Int, Int) -> Resource)? = null
+) : Resource(ResourceCore(genome, ArrayList(), freeMarker), amount) {
+    override fun copy(amount: Int, deathTurn: Int): Resource {
+        return copyFun?.invoke(amount, deathTurn)
+                ?: super.copy(amount, deathTurn)
+    }
+
     override fun getPart(part: Int, taker: Taker): Resource {
         throw OperationNotSupportedException("ResourceIdeal doesn't support getPart(..)")
     }

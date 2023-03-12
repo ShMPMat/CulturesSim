@@ -28,7 +28,12 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
                         emptyList(),
                         ConversionCore(mapOf())
                 ),
-                ownershipMarker = ownershipMarker
+                ownershipMarker = ownershipMarker,
+                resourceBuilder = { c, a ->
+                    Person(c.ownershipMarker).apply {
+                        amount = a
+                    }
+                }
         )
 ) {
     private var toDie = 0

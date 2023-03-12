@@ -10,7 +10,8 @@ import java.util.*
 class ResourceCore(
         val genome: Genome,
         externalFeatures: List<ExternalResourceFeature> = listOf(),
-        val ownershipMarker: OwnershipMarker = freeMarker
+        val ownershipMarker: OwnershipMarker = freeMarker,
+        val resourceBuilder: (ResourceCore, Int) -> Resource = { c, a -> Resource(c, a) }
 ) {
     val externalFeatures = externalFeatures.sortedBy { it.index }
 
@@ -24,13 +25,13 @@ class ResourceCore(
             throw SimulationError("${genome.name} has doubled external features: $externalFeatures")
     }
 
-    val sample by lazy { Resource(this, 1) }
+    val sample by lazy { resourceBuilder(this, 1) }
     val wrappedSample by lazy { listOf(sample) }
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
             if (genome is GenomeTemplate)
                 throw SpaceError("Can't make a full copy of a template")
-            else Resource(ResourceCore(genome.copy(), externalFeatures, ownershipMarker))
+            else resourceBuilder(ResourceCore(genome.copy(), externalFeatures, ownershipMarker), genome.defaultAmount)
 
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = ResourceCore(
             genome.copy(),

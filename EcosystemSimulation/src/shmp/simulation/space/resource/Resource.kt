@@ -144,8 +144,6 @@ open class Resource private constructor(
         return this
     }
 
-    fun exactCopy() = copy(amount)
-
     fun swapOwnership(ownershipMarker: OwnershipMarker): Resource {
         val core = core.copy(ownershipMarker = ownershipMarker)
         val currentAmount = amount
@@ -160,7 +158,9 @@ open class Resource private constructor(
         return Resource(core, amount)
     }
 
-    fun copy(amount: Int = genome.defaultAmount, deathTurn: Int = 0) =
+    fun exactCopy() = copy(amount)
+
+    open fun copy(amount: Int = genome.defaultAmount, deathTurn: Int = 0) =
             Resource(core, amount, _hash, deathTurn)
 
     fun copyAndDestroy(amount: Int = genome.defaultAmount): Resource {
