@@ -53,7 +53,8 @@ class ResourceInstantiation(
             line = inputDatabase.readLine()
                     ?: break
             tags = line.split("\\s+".toRegex()).toTypedArray()
-            resourceStringTemplates.add(resourceTemplateCreator.createResource(tags))
+
+            addTemplate(resourceTemplateCreator.createResource(tags))
         }
         SpaceData.data.resourcePool = ResourcePool(filteredFinalResources)
         resourceStringTemplates.forEach { actualizeLinks(it, listOf()) }
@@ -73,8 +74,16 @@ class ResourceInstantiation(
                 .map { (r) -> r }
                 .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
 
+    private fun addTemplate(template: ResourceStringTemplate) {
+        if (resourceStringTemplates.any { it.resource.baseName == template.resource.baseName })
+            throw ParseException("Resource with name ${template.resource.baseName} is already being created")
+
+        resourceStringTemplates += template
+    }
+
     private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceStringTemplates
-            .first { it.resource.baseName == name }
+            .firstOrNull { it.resource.baseName == name }
+            ?: throw NoSuchElementException("Cannot find a Resource template with a name '$name'")
 
     private fun actualizeLinks(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
         val (resource, actionConversion, _) = template
