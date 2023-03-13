@@ -56,7 +56,7 @@ class ResourceInstantiation(
 
             addTemplate(resourceTemplateCreator.createResource(tags))
         }
-        SpaceData.data.resourcePool = ResourcePool(filteredFinalResources)
+        SpaceData.data.resourcePool = ResourcePool(filteredFinalResources.map { it.core })
         resourceStringTemplates.forEach { actualizeLinks(it, listOf()) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 

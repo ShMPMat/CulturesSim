@@ -63,7 +63,7 @@ class ResourcePlacer(
 
                     if (dependency is LabelerDependency)
                         nextResources += resourcePool
-                                .getAll { dependency.isResourceDependency(it) }
+                                .getAll { dependency.isResourceDependency(it.largeSample) }
                                 .filter { filterDependencyResources(it, dependencyResources, resource) }
                 }
             }

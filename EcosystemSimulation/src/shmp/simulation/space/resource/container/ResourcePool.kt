@@ -1,32 +1,32 @@
 package shmp.simulation.space.resource.container
 
 import shmp.simulation.space.resource.Resource
-import shmp.simulation.space.resource.ResourceIdeal
+import shmp.simulation.space.resource.ResourceCore
 
 
-class ResourcePool(private val resources: List<ResourceIdeal>) {
-    private val baseNameMap: Map<String, ResourceIdeal> =
-            resources.associateBy { it.baseName }
+class ResourcePool(val cores: List<ResourceCore>) {
+    private val baseNameMap: Map<String, ResourceCore> =
+            cores.associateBy { it.genome.baseName }
 
-    val simpleNameMap: Map<String, List<ResourceIdeal>> =
-            resources.groupBy { it.simpleName }
+    val simpleNameMap: Map<String, List<ResourceCore>> =
+            cores.groupBy { it.genome.name }
 
-    fun get(predicate: (Resource) -> Boolean): Resource? =
-            resources.firstOrNull(predicate)?.copy()
+    fun get(predicate: (ResourceCore) -> Boolean): Resource? =
+            cores.firstOrNull(predicate)?.largeSample?.copy()
 
-    fun getAll(predicate: (Resource) -> Boolean): List<Resource> =
-            resources.filter(predicate).map { it.copy() }
+    fun getAll(predicate: (ResourceCore) -> Boolean): List<Resource> =
+            cores.filter(predicate).map { it.largeSample.copy() }
 
     fun getBaseNameOrNull(name: String): Resource? =
-            baseNameMap[name]?.copy()
+            baseNameMap[name]?.largeSample?.copy()
 
     fun getBaseName(name: String): Resource =
             getBaseNameOrNull(name)
                     ?: throw NoSuchElementException("No resource with name $name")
 
     fun getSimpleName(name: String): Resource =
-            get { it.simpleName == name }
+            get { it.genome.name == name }
                     ?: throw NoSuchElementException("No resource with name $name")
 
-    val all: List<Resource> = resources
+    val all: List<Resource> = cores.map { it.largeSample }
 }

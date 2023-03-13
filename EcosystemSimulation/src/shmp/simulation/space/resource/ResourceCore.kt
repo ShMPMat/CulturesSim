@@ -26,6 +26,7 @@ class ResourceCore(
     }
 
     val sample by lazy { resourceBuilder(this, 1) }
+    val largeSample by lazy { resourceBuilder(this, genome.defaultAmount) }
     val wrappedSample by lazy { listOf(sample) }
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =

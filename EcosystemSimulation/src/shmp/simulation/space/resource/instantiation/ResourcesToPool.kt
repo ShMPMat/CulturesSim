@@ -35,5 +35,5 @@ fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
         resourcesToAdd.removeIf { it in finalizedResources }
     }
 
-    return ResourcePool(finalizedResources.sortedBy { it.baseName }.distinctBy { it.baseName })
+    return ResourcePool(finalizedResources.sortedBy { it.baseName }.distinctBy { it.baseName }.map { it.core })
 }
