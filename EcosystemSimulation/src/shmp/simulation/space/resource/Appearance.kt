@@ -30,6 +30,7 @@ enum class ResourceShape {
     Round,
     Cylinder,
     Dome,
+    Mushroom,
     Star,
     Peculiar
 }

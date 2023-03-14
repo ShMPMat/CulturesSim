@@ -5,6 +5,7 @@
         #Water
         cGrey
         tMatt
+        sMushroom
 
 -TreeMushroom                       0.19    0.1    11         0      40   50         Cut       Plant        @Fungus
         ~r:Vapour;0.1;100;0;CONSUME
