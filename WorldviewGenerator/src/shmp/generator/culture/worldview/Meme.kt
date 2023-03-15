@@ -8,11 +8,10 @@ import kotlin.collections.map
 import kotlin.collections.plus
 import kotlin.collections.toMutableList
 import kotlin.text.contains
-import kotlin.text.toLowerCase
 
 
 open class Meme(observerWord: String, var predicates: List<Meme> = listOf(), open var importance: Int = 1) {
-    var observerWord: String = observerWord.toLowerCase()
+    var observerWord: String = observerWord.lowercase()
 
     val isSimple: Boolean
         get() = predicates.isEmpty()
@@ -52,7 +51,7 @@ open class Meme(observerWord: String, var predicates: List<Meme> = listOf(), ope
         return false
     }
 
-    fun contains(string: String) = toString().contains(string.toLowerCase())
+    fun contains(string: String) = toString().contains(string.lowercase())
 
     override fun toString() = string
 

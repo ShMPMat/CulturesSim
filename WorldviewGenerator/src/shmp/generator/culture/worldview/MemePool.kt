@@ -4,7 +4,6 @@ import java.util.*
 import kotlin.collections.forEach
 import kotlin.collections.sortedBy
 import kotlin.let
-import kotlin.text.toLowerCase
 
 
 open class MemePool private constructor(memes: Collection<Meme>) {
@@ -34,7 +33,7 @@ open class MemePool private constructor(memes: Collection<Meme>) {
 
     open val all get() = memesMap.values.sortedBy { it.toString() }
 
-    open fun getMeme(name: String) = memesMap[name.toLowerCase()]
+    open fun getMeme(name: String) = memesMap[name.lowercase()]
 
     open fun getMemeCopy(name: String) = getMeme(name)?.copy()
 

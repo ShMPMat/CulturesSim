@@ -29,7 +29,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     try {
                         val resource = world.resourcePool.getBaseNameOrNull(splitCommand[1])
                                 ?: world.resourcePool.all.first {
-                                    it.baseName.toLowerCase() == splitCommand[1].toLowerCase()
+                                    it.baseName.lowercase() == splitCommand[1].lowercase()
                                 }
                         printResource(resource)
                     } catch (e: NoSuchElementException) {

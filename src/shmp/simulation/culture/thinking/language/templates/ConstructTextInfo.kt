@@ -70,7 +70,7 @@ fun getResourceInformationTextInfo(resource: Resource): List<TextInfo> {
                 infos.add(TextInfo(
                         ArbitraryResource(resource),
                         Meme("consume"),
-                        Meme(res.toLowerCase()))
+                        Meme(res.lowercase()))
                 )
             }
     return infos

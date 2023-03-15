@@ -82,7 +82,7 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
     for (resourceDependency in resource.genome.dependencies)
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed(resource.baseName)) {
-                val subject = Meme(res.toLowerCase())
+                val subject = Meme(res.lowercase())
                 memes.first.add(subject)
                 val element = makeMeme(resource).addPredicate(Meme("consume"))
                 element.predicates[0].addPredicate(subject)

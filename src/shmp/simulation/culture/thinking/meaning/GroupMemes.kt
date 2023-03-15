@@ -54,7 +54,7 @@ class GroupMemes : MemePool() {
     }
 
     private fun getMemeCombinationByName(name: String) =
-            memesCombinationsMap[name.toLowerCase()]
+            memesCombinationsMap[name.lowercase()]
 
     val valuableMeme: Meme
         get() {
