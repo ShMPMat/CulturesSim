@@ -352,9 +352,13 @@ open class Resource private constructor(
         return true
     } ?: false
 
-    override fun equals(other: Any?) = fullEquals(other)
+    override fun equals(other: Any?) =
+            fullEquals(other)
 
-    fun ownershiplessEquals(o: Any?): Boolean {
+    fun fullEquals(o: Any?) =
+            equalsWithoutOwnership(o) && core.ownershipMarker == (o as Resource).core.ownershipMarker
+
+    fun equalsWithoutOwnership(o: Any?): Boolean {
         if (this === o) return true
         if (o == null) return false
         val resource = o as Resource
@@ -362,16 +366,6 @@ open class Resource private constructor(
         return if (_hash == resource._hash)
             fullName == resource.fullName
         else false
-    }
-
-    fun fullEquals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null) return false
-        val resource = o as Resource
-        return if (_hash != resource._hash)
-            false
-        else
-            fullName == resource.fullName && core.ownershipMarker == resource.core.ownershipMarker
     }
 
     override fun hashCode() = _hash
