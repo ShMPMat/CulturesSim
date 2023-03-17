@@ -80,7 +80,7 @@
         cGrey
         R0.2 D0.4
 
--Hedgehog                           0.2     0.2    12         0      20   40       Migrate   Animal       @Meat
+-Hedgehog                           0.15    0.2    12         0      20   40       Migrate   Animal       @Meat
         ~D(A(m:Meat)||m:Fungus||A(m:Pulp)),>=0.004,<=0.06;0.1;1.25;0;CONSUME
         +_OnDeath_/Carcass:2
         ^Meat:2 ^Fat:1 ^Bone:2:s|0.1 ^Fur:1 ^Spike:4 ^Blood:3
@@ -155,10 +155,29 @@
         ~m:Meat,>=0.1,!!r:CrocodileEgg;1.5;2;1;CONSUME
         ~m:Water,t:liquid;10;200;1;EXIST
         +_OnDeath_/Carcass:20
-        +_layEggs_prob_0.11_f/CrocodileEgg:10
+        +_layEggs_prob_0.11_f/CrocodileEgg:15
         ^Meat:10 ^Fat:3 ^Bone:5 ^Leather:2:s|1 ^Blood:5
         cGreen
         C0.3 R0.3 D0.8
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-SnakeEgg                           0.0     0.03   3          15     35   20       Ignore    Animal       @Meat
+        +_transform_prob_0.333_t/Snake:1
+        ^Meat:1:s|0.02 ^EggShell:1:s|0.03
+        #Water
+        cWhite
+        tMatt
+
+-Snake                              0.0    0.4     7          15     35   18       Migrate   Animal       @Meat
+        ~m:Meat,>=0.01,<=0.1;0.3;2;1;CONSUME
+        +_OnDeath_/Carcass:4
+        +_layEggs_prob_0.06_f/SnakeEgg:8
+        ^Meat:3 ^Fat:1 ^Bone:10:s|0.02 ^Leather:2:s|0.1 ^Blood:2
+        #Water
+        cBlack
+        sCylinder
+        C0.4 R0.1 D0.3
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -170,7 +189,7 @@
         tMatt
 
 //TODO actually plant food
--Sparrow                            0.0     0.1    10         0      30   100      Migrate   Animal       @Meat
+-Sparrow                            0.0     0.07   10         0      30   100      Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
         +_layEggs_prob_0.12_t/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/SparrowEgg:5
         +_OnDeath_/Carcass:1
