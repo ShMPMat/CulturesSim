@@ -66,7 +66,8 @@ class CulturesController(
         world.initializeMap(proportionCoefficient)
         templateBase = TemplateBase()
 
-        initSteps.add(GroupTurnsStep(cultureTurns, doPrint))
+        initSteps += RegisterPersonStep()
+        initSteps += GroupTurnsStep(cultureTurns, doPrint)
     }
 
     companion object {
