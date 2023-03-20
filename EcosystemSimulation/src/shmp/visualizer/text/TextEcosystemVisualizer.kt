@@ -14,6 +14,7 @@ import shmp.utils.chompToLines
 import shmp.visualizer.Turner
 import shmp.visualizer.Visualizer
 import shmp.visualizer.command.CommandManager
+import shmp.visualizer.command.ExecutionResult
 import shmp.visualizer.command.registerEnvironmentalCommands
 import shmp.visualizer.printinfo.MapPrintInfo
 import java.io.BufferedReader
@@ -90,6 +91,8 @@ open class TextEcosystemVisualizer<E : World>(
     override fun print() {
         println(world.getStringTurn())
         printMap { "" }
+
+        //Results are ignored
         for (command in printCommands)
             handleCommand(command)
     }
@@ -236,14 +239,17 @@ open class TextEcosystemVisualizer<E : World>(
                 while (true) {
                     val line = if (isFirstTurn) "10000" else br.readLine()
                     isFirstTurn = false
-                    if (line != null) {
-                        if (currentTurner != null) {
-                            stopTurner()
-                            print()
-                            continue
-                        }
-                        handleCommand(line)
-                    } else break
+                    line ?: break
+
+                    if (currentTurner != null) {
+                        stopTurner()
+                        print()
+                        continue
+                    }
+
+                    val executionResult = handleCommand(line)
+                    if (executionResult == ExecutionResult.Terminate)
+                        break
                 }
             }
         } catch (t: Throwable) {
@@ -254,9 +260,8 @@ open class TextEcosystemVisualizer<E : World>(
         }
     }
 
-    open fun handleCommand(line: String) {
-        defaultManager.handleCommand(line, this)
-    }
+    open fun handleCommand(line: String) =
+            defaultManager.handleCommand(line, this)
 
     fun addTileMapper(mapper: TileMapper) {
         _tileMappers.add(mapper)

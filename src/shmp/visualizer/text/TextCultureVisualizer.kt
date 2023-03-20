@@ -44,9 +44,8 @@ open class TextCultureVisualizer(
         super.run()
     }
 
-    override fun handleCommand(line: String) {
-        defaultManager.handleCommand(line, this)
-    }
+    override fun handleCommand(line: String) =
+            defaultManager.handleCommand(line, this)
 
     private fun readSymbols() {
         val s = Scanner(FileReader(this::class.java.classLoader.getResource("Symbols/SymbolsLibrary")!!.path))

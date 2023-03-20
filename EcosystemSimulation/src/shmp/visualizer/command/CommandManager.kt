@@ -21,11 +21,16 @@ class CommandManager<E : Visualizer>(private val defaultHandler: CommandExecutor
         return defaultCommand
     }
 
-    fun <T: E> handleCommand(line: String, visualizer: T) {
+    fun <T: E> handleCommand(line: String, visualizer: T): ExecutionResult {
         val command = getCommand(line)
-        for (handler in handlers)
-            if (handler.tryRun(line, command, visualizer))
-                return
-        defaultHandler.tryRun(line, defaultCommand, visualizer)
+
+        for (handler in handlers) {
+            val executionResult = handler.tryRun(line, command, visualizer)
+
+            if (executionResult != ExecutionResult.NotFound)
+                return executionResult
+        }
+
+        return defaultHandler.tryRun(line, defaultCommand, visualizer)
     }
 }

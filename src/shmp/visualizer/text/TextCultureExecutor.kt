@@ -5,10 +5,11 @@ import shmp.visualizer.*
 import shmp.visualizer.command.Command
 import shmp.visualizer.command.CommandExecutor
 import shmp.visualizer.command.CultureCommand.*
+import shmp.visualizer.command.ExecutionResult
 
 
 object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
-    override fun tryRun(line: String, command: Command, visualizer: TextCultureVisualizer): Boolean {
+    override fun tryRun(line: String, command: Command, visualizer: TextCultureVisualizer): ExecutionResult {
         val splitCommand = line.split(" ")
 
         visualizer.apply {
@@ -29,12 +30,12 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                 }
                 ConglomerateTileReach -> {
                     val conglomerate = getConglomerate(splitCommand[0])
-                            ?: return true
+                            ?: return ExecutionResult.Success
                     printMap { conglomerateReachMapper(conglomerate, it) }
                 }
                 ConglomerateProduced -> {
                     val conglomerate = getConglomerate(splitCommand[0])
-                            ?: return true
+                            ?: return ExecutionResult.Success
                     println(chompToSize(printProduced(conglomerate), 150))
                 }
                 GroupRelations -> {
@@ -42,13 +43,13 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                     val c2 = getConglomerate(splitCommand[1])
                     if (c1 == null || c2 == null) {
                         println("No such Conglomerates exist")
-                        return true
+                        return ExecutionResult.Success
                     }
                     println(printConglomerateRelations(c1, c2))
                 }
                 ConglomeratePotentials -> {
                     val conglomerate = getConglomerate(splitCommand[0])
-                            ?: return true
+                            ?: return ExecutionResult.Success
                     printMap { t ->
                         hotnessMapper(
                                 splitCommand[2].toInt(),
@@ -100,10 +101,10 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                         splitCommand[2],
                         world.resourcePool
                 )
-                else -> return false
+                else -> return ExecutionResult.NotFound
             }
         }
-        return true
+        return ExecutionResult.NotFound
     }
 
     private fun TextCultureVisualizer.getConglomerate(name: String) = controller.world.groups

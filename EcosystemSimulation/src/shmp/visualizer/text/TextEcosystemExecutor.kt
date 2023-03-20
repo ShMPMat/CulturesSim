@@ -8,11 +8,12 @@ import shmp.visualizer.addResourceOnTile
 import shmp.visualizer.command.Command
 import shmp.visualizer.command.CommandExecutor
 import shmp.visualizer.command.EnvironmentCommand.*
+import shmp.visualizer.command.ExecutionResult
 import java.util.*
 
 
 class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
-    override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer<*>): Boolean {
+    override fun tryRun(line: String, command: Command, visualizer: TextEcosystemVisualizer<*>): ExecutionResult {
         val splitCommand = line.split(" ")
 
         visualizer.apply {
@@ -110,7 +111,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         drop += splitCommand[1].length + 1
                     }
                     if (drop >= line.length) {
-                        return true
+                        return ExecutionResult.Success
                     }
                     val regexp = line.substring(drop)
                     println(printRegexEvents(
@@ -122,7 +123,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 ShowMap -> printMap { "" }
                 LegendOn -> visualizer.showLegend = true
                 LegendOff -> visualizer.showLegend = false
-                Exit -> return true
+                Exit -> {
+                    println("Terminating the simulation...")
+
+                    return ExecutionResult.Terminate
+                }
                 AddResource -> addResourceOnTile(
                         map[splitCommand[0].toInt(), splitCommand[1].toInt()],
                         splitCommand[2],
@@ -156,10 +161,10 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 }
                 else -> {
                     println("Unknown command")
-                    return false
+                    return ExecutionResult.NotFound
                 }
             }
         }
-        return true
+        return ExecutionResult.NotFound
     }
 }
