@@ -9,12 +9,10 @@ class GroupTurnsStep<E : CulturesWorld>(
 ) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
         world.initializeGroups()
-        var i = 0
-        while (i < turnNumber) {//TODO range
+        for (i in 1..turnNumber) {
             interactionModel.turn(world)
             if (debugPrint)
                 Controller.visualizer.print()
-            i++
         }
     }
 }
