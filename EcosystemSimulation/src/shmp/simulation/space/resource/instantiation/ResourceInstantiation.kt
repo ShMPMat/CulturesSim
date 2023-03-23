@@ -1,7 +1,6 @@
 package shmp.simulation.space.resource.instantiation
 
 import shmp.utils.InputDatabase
-import shmp.simulation.space.SpaceData
 import shmp.simulation.space.resource.*
 import shmp.simulation.space.resource.action.ActionMatcher
 import shmp.simulation.space.resource.action.ConversionCore
@@ -56,7 +55,6 @@ class ResourceInstantiation(
 
             addTemplate(resourceTemplateCreator.createResource(tags))
         }
-        SpaceData.data.resourcePool = ResourcePool(filteredFinalResources.map { it.core })
         resourceStringTemplates.forEach { actualizeLinks(it, listOf()) }
         resourceStringTemplates.forEach { actualizeParts(it) }
 
@@ -65,7 +63,6 @@ class ResourceInstantiation(
             swapLegacies(it, swappedLegacyResources) as ResourceIdeal
         }
 
-        SpaceData.data.resourcePool = ResourcePool(listOf())
         return finalizePool(endResources)
     }
 
