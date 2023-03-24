@@ -17,20 +17,20 @@ import java.util.regex.PatternSyntaxException
 fun aliveResourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
             .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
-            .associateWith { ResourceCount() }
+            .associate { it.baseName to ResourceCounter() }
     world.map.tiles.forEach { t ->
         t.resourcePack.resources.forEach {
-            resourceAmounts[it]?.add(it)
+            resourceAmounts[it.baseName]?.add(it)
         }
     }
 
-    val lines =  resourceAmounts.entries.joinToString("\n") {
-        val colourMark = when (it.value.tilesAmount) {
+    val lines =  resourceAmounts.entries.joinToString("\n") { (resourceName, counter) ->
+        val colourMark = when (counter.tilesAmount) {
             0 -> "\u001b[31m"
             in 1..99 -> "\u001b[33m"
             else -> "\u001b[30m"
         }
-        "$colourMark${it.key.fullName}: tiles - ${it.value.tilesAmount}, amount - ${it.value.amount}"
+        "$colourMark$resourceName: tiles - ${counter.tilesAmount}, amount - ${counter.amount}"
     }
 
     return chompToLines(lines, 30)
@@ -50,7 +50,7 @@ fun allResourcesCounter(world: World, shouldFree: Boolean): String {
             .joinToString("\n") { "${it.fullName}, ${it.ownershipMarker} ${it.amount};" }
 }
 
-data class ResourceCount(var amount: Int = 0, var tilesAmount: Int = 0) {
+data class ResourceCounter(var amount: Int = 0, var tilesAmount: Int = 0) {
     fun add(resource: Resource) {
         amount += resource.amount
         tilesAmount++
