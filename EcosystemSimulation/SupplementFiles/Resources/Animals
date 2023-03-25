@@ -206,7 +206,7 @@
         #Water
         cWhite
         tMatt
-//TODO has nests
+
 -Heron                              0.0    0.5     10         0      30   10       Migrate   Animal       @Meat
         ~m:Meat,>=0.009,<=0.1,!!r:HeronEgg;0.1;2;1;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
