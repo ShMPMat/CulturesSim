@@ -1,9 +1,9 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
--Mushroom                           0.19    0.05   11         0      30   200        Cut       Plant        @Fungus
+-Bolete                             0.19    0.05   11         0      30   200        Cut       Plant        @Fungus
         ~r:Vapour;0.1;100;0;CONSUME
         ~m:Wood;1;100;0;EXIST
         #Water
-        cGrey
+        cBrown
         tMatt
         sMushroom
 
