@@ -378,7 +378,7 @@
 
 -Butterfly                          0.0     0.04   4          10     30   300      Migrate   Animal       @Chitin
         ~P(r:Flower);1;1.5;0;EXIST
-        +_layEggs_prob_0.2_t/ButterflyEgg:20
+        +_layEggs_prob_0.2_t/ButterflyEgg:30
         ^Chitin:1:s|0.02 ^Meat:1:s|0.01
         $Pollinator:1
         #Water
@@ -386,7 +386,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--Bee                                0.5     0.01   5          10     30   200      Migrate   Animal       @Chitin
+-Bee                                0.6     0.01   5          10     30   200      Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         $Pollinator:1
@@ -394,7 +394,7 @@
         cYellow
         R0.1
 
--BumbleBee                          0.45    0.02   5          10     30   50       Migrate   Animal       @Chitin
+-BumbleBee                          0.5     0.02   5          10     30   50       Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.015 ^Meat:1:s|0.015
         $Pollinator:1
