@@ -25,31 +25,34 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                     when {
                         conglomerate != null -> printGroupConglomerate(conglomerate)
                         group != null -> printGroup(group)
-                        else -> println("No such Group or Conglomerate exist")
+                        else -> {
+                            println("No such Group or Conglomerate exist")
+
+                            return ExecutionResult.Invalid
+                        }
                     }
                 }
                 ConglomerateTileReach -> {
                     val conglomerate = getConglomerate(splitCommand[0])
-                            ?: return ExecutionResult.Success
+                            ?: return ExecutionResult.Invalid
                     printMap { conglomerateReachMapper(conglomerate, it) }
                 }
                 ConglomerateProduced -> {
                     val conglomerate = getConglomerate(splitCommand[0])
-                            ?: return ExecutionResult.Success
+                            ?: return ExecutionResult.Invalid
                     println(chompToSize(printProduced(conglomerate), 150))
                 }
                 GroupRelations -> {
                     val c1 = getConglomerate(splitCommand[0])
                     val c2 = getConglomerate(splitCommand[1])
-                    if (c1 == null || c2 == null) {
-                        println("No such Conglomerates exist")
-                        return ExecutionResult.Success
-                    }
+                    if (c1 == null || c2 == null)
+                        return ExecutionResult.Invalid
+
                     println(printConglomerateRelations(c1, c2))
                 }
                 ConglomeratePotentials -> {
                     val conglomerate = getConglomerate(splitCommand[0])
-                            ?: return ExecutionResult.Success
+                            ?: return ExecutionResult.Invalid
                     printMap { t ->
                         hotnessMapper(
                                 splitCommand[2].toInt(),
@@ -109,4 +112,8 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
 
     private fun TextCultureVisualizer.getConglomerate(name: String) = controller.world.groups
             .firstOrNull { it.name == name }
+            .apply {
+                if (this == null)
+                    println("Conglomerate '$name' not found")
+            }
 }

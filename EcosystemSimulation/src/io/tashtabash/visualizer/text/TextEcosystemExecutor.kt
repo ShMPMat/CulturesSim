@@ -53,8 +53,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     if (ResourceType.values().toList().any { it.toString() == splitCommand[1] }) {
                         val type = ResourceType.valueOf(splitCommand[1])
                         printMap { resourceTypeMapper(type, it) }
-                    } else
+                    } else {
                         println("Unknown type - " + splitCommand[1])
+
+                        return ExecutionResult.Terminate
+                    }
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
                 AliveResourcesAmount -> println(aliveResourcesCounter(world))
                 AllPresentResources -> println(
@@ -64,7 +67,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]
                         ?.let {
                             printTile(it)
-                        } ?: print("No such Tile")
+                        } ?: run {
+                            print("No such Tile")
+
+                            return ExecutionResult.Terminate
+                        }
                 Tiles -> {
                     val top = splitCommand[0].toInt()
                     val left = splitCommand[1].toInt()
@@ -111,7 +118,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         drop += splitCommand[1].length + 1
                     }
                     if (drop >= line.length) {
-                        return ExecutionResult.Success
+                        return ExecutionResult.Invalid
                     }
                     val regexp = line.substring(drop)
                     println(printRegexEvents(
@@ -139,7 +146,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 }
                 Turner -> line.toIntOrNull()
                         ?.let { launchTurner(it) }
-                        ?: println("Wrong number format for amount of turns")
+                        ?: run {
+                            println("Wrong number format for amount of turns")
+
+                            return ExecutionResult.Invalid
+                        }
                 Turn -> {
                     controller.turn()
                     print()
@@ -147,7 +158,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 DisplayFrequency -> {
                     splitCommand[1].toIntOrNull()
                             ?.let { visualizer.printTurnStep = it }
-                            ?: println("Wrong number format for amount of turns")
+                            ?: run {
+                                println("Wrong number format for amount of turns")
+
+                                return ExecutionResult.Invalid
+                            }
                     println("Print step number changed")
                 }
                 AddDisplayCommand -> {

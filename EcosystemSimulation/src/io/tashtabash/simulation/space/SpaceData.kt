@@ -40,7 +40,7 @@ class Data(
         val startResourceAmountMax: Int = startResourceAmountMin + 30,
         val resourceProportionCoefficient: Int = 100,
         val mapSizeX: Int = 45,
-        val mapSizeY: Int = 135,
+        val mapSizeY: Int = 60,
         val platesAmount: Int = 10,
         val defaultWaterLevel: Int = 98,
         val seabedLevel: Int = 85,
