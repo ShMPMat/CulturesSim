@@ -4,7 +4,7 @@
         ~r:Detritus;1.5;2;0;CONSUME
         +_disperse_prob_0.04_f/Pome:10:n|Apple#c|Red
         +_OnDeath_/Detritus:20
-        ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple#c|Red ^SoftRoot:5
+        ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple#c|Red ^Flower:10:c|White ^SoftRoot:5
         #Water
         cGreen
 
@@ -148,7 +148,7 @@
         #Water
         cGreen
 
--Moss                               0.1     0.05   20         -10    30   100        Cut        Plant        @PlantFibre
+-Moss                               0.3     0.05   20         -10    30   500        Cut        Plant        @PlantFibre
         ~r:Vapour;0.001;2;1;CONSUME
         +_OnDeath_/Detritus:1
         ^PlantFibre:1
