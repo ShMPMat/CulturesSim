@@ -11,7 +11,6 @@ import io.tashtabash.simulation.space.resource.dependency.NeedDependency
 import io.tashtabash.simulation.space.resource.free
 import io.tashtabash.simulation.space.tile.Tile
 import io.tashtabash.utils.chompToLines
-import java.util.regex.PatternSyntaxException
 
 
 fun aliveResourcesCounter(world: World): String {
@@ -115,10 +114,6 @@ fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean)
         .takeLast(amount)
         .joinToString("\n")
 
-fun printRegexEvents(events: List<Event>, amount: Int, regexString: String) = printEvents(events, amount) {
-    try {
-        regexString.toRegex().containsMatchIn(it.description)
-    } catch (e: PatternSyntaxException) {
-        false
-    }
+fun printRegexEvents(events: List<Event>, amount: Int, regex: Regex) = printEvents(events, amount) {
+        regex.containsMatchIn(it.description)
 }

@@ -10,6 +10,7 @@ import io.tashtabash.visualizer.command.CommandExecutor
 import io.tashtabash.visualizer.command.EnvironmentCommand.*
 import io.tashtabash.visualizer.command.ExecutionResult
 import java.util.*
+import java.util.regex.PatternSyntaxException
 
 
 class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
@@ -120,12 +121,18 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     if (drop >= line.length) {
                         return ExecutionResult.Invalid
                     }
-                    val regexp = line.substring(drop)
-                    println(printRegexEvents(
-                            controller.interactionModel.eventLog.lastEvents,
-                            amount,
-                            regexp
-                    ))
+
+                    try {
+                        val regexp = line.substring(drop).toRegex()
+                        println(printRegexEvents(
+                                controller.interactionModel.eventLog.lastEvents,
+                                amount,
+                                regexp
+                        ))
+                    } catch (e: PatternSyntaxException) {
+                        println("Invalid regex pattern")
+                        return ExecutionResult.Invalid
+                    }
                 }
                 ShowMap -> printMap { "" }
                 LegendOn -> visualizer.showLegend = true
