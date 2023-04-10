@@ -118,12 +118,13 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         amount = splitCommand[0].toInt()
                         drop += splitCommand[1].length + 1
                     }
-                    if (drop >= line.length) {
-                        return ExecutionResult.Invalid
-                    }
 
                     try {
-                        val regexp = line.substring(drop).toRegex()
+                        val regexString =  if (drop < line.length)
+                            line.substring(drop)
+                        else ".*"
+
+                        val regexp = regexString.toRegex()
                         println(printRegexEvents(
                                 controller.interactionModel.eventLog.lastEvents,
                                 amount,
