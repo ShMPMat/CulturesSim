@@ -95,8 +95,8 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     val mapperFun = { t: io.tashtabash.simulation.space.tile.Tile ->
                         resourceSubstringMapper(resourceQuery, t, MARK_COLOR + splitCommand[2])
                     }
-                    val minOrder = visualizer.tileMappers.map { it.order }
-                            .minOrNull()
+                    val minOrder = visualizer.tileMappers
+                            .minOfOrNull { it.order }
                             ?: 0
                     val mapper = TileMapper(mapperFun, minOrder - 1, "Resource $resourceQuery")
 
