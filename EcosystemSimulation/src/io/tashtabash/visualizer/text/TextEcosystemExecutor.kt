@@ -188,6 +188,8 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 }
             }
         }
-        return ExecutionResult.NotFound
+
+        // This return is reached on a successful execution
+        return ExecutionResult.Success
     }
 }

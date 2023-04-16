@@ -107,7 +107,9 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                 else -> return ExecutionResult.NotFound
             }
         }
-        return ExecutionResult.NotFound
+
+        // This return is reached on a successful execution
+        return ExecutionResult.Success
     }
 
     private fun TextCultureVisualizer.getConglomerate(name: String) = controller.world.groups
