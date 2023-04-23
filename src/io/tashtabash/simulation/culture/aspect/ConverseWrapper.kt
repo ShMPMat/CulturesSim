@@ -47,7 +47,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
 
         result
     } catch (e: Exception) {
-        throw GroupError("Error in using Converse Wrapper $name")
+        throw GroupError("Error in using ConverseWrapper $name: ${e.message}")
     }
 
     private fun toFeatures(node: ResultNode?): List<ExternalResourceFeature> =
