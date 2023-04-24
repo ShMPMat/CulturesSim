@@ -1,23 +1,17 @@
-package io.tashtabash.simulation.space.resource.dependency;
+package io.tashtabash.simulation.space.resource.dependency
 
-import io.tashtabash.simulation.space.tile.Tile;
-import io.tashtabash.simulation.space.resource.Resource;
+import io.tashtabash.simulation.space.resource.Resource
+import io.tashtabash.simulation.space.tile.Tile
+import kotlin.math.max
+import kotlin.math.sqrt
 
 
-public class TemperatureMax extends Temperature {
-    public TemperatureMax(int threshold, double deprivationCoefficient) {
-        super(threshold, deprivationCoefficient);
+class TemperatureMax(threshold: Int, deprivationCoefficient: Double) : Temperature(threshold, deprivationCoefficient) {
+    override fun satisfaction(tile: Tile, resource: Resource): Double {
+        var result = (tile.temperature - threshold).toDouble()
+        result = 1 / sqrt(max(0.0, result) + 1)
+        return result
     }
 
-    @Override
-    public double satisfaction(Tile tile, Resource resource) {
-        double result = tile.getTemperature() - threshold;
-        result = 1 / Math.sqrt(Math.max(0, result) + 1);
-        return result;
-    }
-
-    @Override
-    public boolean hasNeeded(Tile tile) {
-        return tile.getTemperature() >= threshold;
-    }
+    override fun hasNeeded(tile: Tile) = tile.temperature >= threshold
 }

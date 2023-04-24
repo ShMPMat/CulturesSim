@@ -1,26 +1,13 @@
-package io.tashtabash.simulation.space.resource.dependency;
+package io.tashtabash.simulation.space.resource.dependency
 
 
-public abstract class Temperature extends CoefficientDependency {
-    int threshold;
+abstract class Temperature(
+        var threshold: Int,
+        deprivationCoefficient: Double
+) : CoefficientDependency(deprivationCoefficient) {
+    override val isNecessary = true
 
-    public Temperature(int threshold, double deprivationCoefficient) {
-        super(deprivationCoefficient);
-        this.threshold = threshold;
-    }
+    override val isPositive = true
 
-    @Override
-    public boolean isNecessary() {
-        return true;
-    }
-
-    @Override
-    public boolean isPositive() {
-        return true;
-    }
-
-    @Override
-    public boolean isResourceNeeded() {
-        return false;
-    }
+    override val isResourceNeeded = false
 }

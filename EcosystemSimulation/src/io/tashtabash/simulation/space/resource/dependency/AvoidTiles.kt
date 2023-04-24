@@ -1,40 +1,17 @@
-package io.tashtabash.simulation.space.resource.dependency;
+package io.tashtabash.simulation.space.resource.dependency
 
-import io.tashtabash.simulation.space.tile.Tile;
-import io.tashtabash.simulation.space.resource.Resource;
-
-import java.util.Set;
+import io.tashtabash.simulation.space.resource.Resource
+import io.tashtabash.simulation.space.tile.Tile
 
 
-public class AvoidTiles implements ResourceDependency {
-    public Set<Tile.Type> badTypes;
+class AvoidTiles(var badTypes: Set<Tile.Type?>) : ResourceDependency {
+    override fun satisfactionPercent(tile: Tile, resource: Resource) = if (hasNeeded(tile)) 1.0 else 0.0
 
-    public AvoidTiles(Set<Tile.Type> badTypes) {
-        this.badTypes = badTypes;
-    }
+    override val isNecessary = true
 
-    @Override
-    public double satisfactionPercent(Tile tile, Resource resource) {
-        return hasNeeded(tile) ? 1 : 0;
-    }
+    override val isPositive = true
 
-    @Override
-    public boolean isNecessary() {
-        return true;
-    }
+    override val isResourceNeeded = false
 
-    @Override
-    public boolean isPositive() {
-        return true;
-    }
-
-    @Override
-    public boolean isResourceNeeded() {
-        return false;
-    }
-
-    @Override
-    public boolean hasNeeded(Tile tile) {
-        return !badTypes.contains(tile.getType());
-    }
+    override fun hasNeeded(tile: Tile) = !badTypes.contains(tile.type)
 }
