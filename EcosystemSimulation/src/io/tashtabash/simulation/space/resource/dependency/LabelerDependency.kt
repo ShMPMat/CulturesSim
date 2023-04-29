@@ -3,7 +3,6 @@ package io.tashtabash.simulation.space.resource.dependency
 import io.tashtabash.simulation.space.resource.Genome
 import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
-import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.simulation.space.tile.Tile
 import kotlin.math.ceil
 
@@ -38,10 +37,10 @@ abstract class LabelerDependency(
 
     private val genomeHash = mutableMapOf<Genome, Boolean>()
 
-    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumBy(Resource::amount)
+    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumOf(Resource::amount)
 
     fun partByResource(resource: Resource, amount: Double) = ceil(
-            amount / labeler.actualMatches(resource.core.sample).sumBy(Resource::amount)
+            amount / labeler.actualMatches(resource.core.sample).sumOf(Resource::amount)
     ).toInt()
 
     override fun toString() = "$labeler of $amount"
