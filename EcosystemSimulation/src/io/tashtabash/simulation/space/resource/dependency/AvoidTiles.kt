@@ -5,7 +5,9 @@ import io.tashtabash.simulation.space.tile.Tile
 
 
 class AvoidTiles(var badTypes: Set<Tile.Type?>) : ResourceDependency {
-    override fun satisfactionPercent(tile: Tile, resource: Resource) = if (hasNeeded(tile)) 1.0 else 0.0
+    override fun satisfactionPercent(tile: Tile, resource: Resource, isSafe: Boolean): Double =
+            if (hasNeeded(tile)) 1.0
+            else 0.0
 
     override val isNecessary = true
 

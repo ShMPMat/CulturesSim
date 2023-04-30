@@ -2,7 +2,6 @@ package io.tashtabash.simulation.space.resource.dependency
 
 import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
-import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.simulation.space.tile.Tile
 import kotlin.math.min
 
@@ -14,7 +13,7 @@ class AvoidDependency(
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     var lastConsumed = mutableSetOf<String>()
 
-    override fun satisfaction(tile: Tile, resource: Resource): Double {
+    override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
         val result: Double
         val actualAmount = amount * resource.amount
         var currentAmount = 0

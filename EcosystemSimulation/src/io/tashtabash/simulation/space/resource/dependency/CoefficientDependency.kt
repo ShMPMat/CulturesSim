@@ -5,11 +5,11 @@ import io.tashtabash.simulation.space.tile.Tile
 
 
 abstract class CoefficientDependency(private val deprivationCoefficient: Double) : ResourceDependency {
-    override fun satisfactionPercent(tile: Tile, resource: Resource): Double {
-        val result = satisfaction(tile, resource)
+    override fun satisfactionPercent(tile: Tile, resource: Resource, isSafe: Boolean): Double {
+        val result = satisfaction(tile, resource, isSafe)
 
         return result + (1 - result) / deprivationCoefficient
     }
 
-    abstract fun satisfaction(tile: Tile, resource: Resource): Double
+    abstract fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double
 }

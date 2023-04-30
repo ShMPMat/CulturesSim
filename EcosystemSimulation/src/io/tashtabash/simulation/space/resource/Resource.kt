@@ -252,11 +252,11 @@ open class Resource private constructor(
     }
 
     fun areNecessaryDependenciesSatisfied(tile: Tile) = genome.necessaryDependencies.all {
-        it.satisfactionPercent(tile, this) == 1.0
+        it.satisfactionPercent(tile, this, true) == 1.0
     }
 
     fun isAcceptable(tile: Tile, threshold: Double = 0.8) = genome.dependencies.all {
-        it.satisfactionPercent(tile, this) >= threshold
+        it.satisfactionPercent(tile, this, true) >= threshold
     }
 
     private fun distribute(tile: Tile) {

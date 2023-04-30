@@ -2,7 +2,6 @@ package io.tashtabash.simulation.space.resource.dependency
 
 import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
-import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.simulation.space.tile.Tile
 import java.util.*
 import kotlin.math.ceil
@@ -21,7 +20,7 @@ class ConsumeDependency(
 
     var currentAmount = 0
 
-    override fun satisfaction(tile: Tile, resource: Resource): Double {
+    override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
         if (resource.amount == 0)
             return 0.0
 
@@ -38,16 +37,21 @@ class ConsumeDependency(
                         continue
 
                     if (isResourceDependency(res)) {
-                        val part = res.getPart(
-                                partByResource(res, neededAmount - currentAmount),
-                                resource
-                        )
-                        if (part.isNotEmpty) {
-                            lastConsumed(resource.baseName).add(part.fullName)
-                            currentAmount += part.amount * oneResourceWorth(res)
+                        if (isSafe) {
+                           currentAmount += res.amount * oneResourceWorth(res)
+                        } else {
+                            val part = res.getPart(
+                                    partByResource(res, neededAmount - currentAmount),
+                                    resource
+                            )
+                            if (part.isNotEmpty) {
+                                lastConsumed(resource.baseName).add(part.fullName)
+                                currentAmount += part.amount * oneResourceWorth(res)
+                            }
+
+                            part.destroy()
                         }
 
-                        part.destroy()
                         if (currentAmount >= neededAmount)
                             break@loop
                     }

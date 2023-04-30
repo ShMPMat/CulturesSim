@@ -2,7 +2,6 @@ package io.tashtabash.simulation.space.resource.dependency
 
 import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.tag.labeler.QuantifiedResourceLabeler
-import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.simulation.space.tile.Tile
 import java.util.HashSet
 import kotlin.math.min
@@ -17,7 +16,7 @@ class NeedDependency(
         HashSet<String>()
     }
 
-    override fun satisfaction(tile: Tile, resource: Resource): Double {
+    override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
@@ -29,7 +28,7 @@ class NeedDependency(
                 if (isResourceDependency(res)) {
                     currentAmount += res.amount * oneResourceWorth(res)
 
-                    if (res.isNotEmpty)
+                    if (res.isNotEmpty && !isSafe)
                         lastConsumed(resource.baseName).add(res.fullName)
 
                     if (currentAmount >= actualAmount)
