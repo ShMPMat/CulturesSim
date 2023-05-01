@@ -75,7 +75,7 @@ abstract class Request(val core: RequestCore) {
 
     fun satisfactionLevel(stratum: Stratum) =
             if (stratum !is AspectStratum) 0.0
-            else stratum.aspect.producedResources.sumByDouble { satisfactionLevel(it) }
+            else stratum.aspect.producedResources.sumOf { satisfactionLevel(it) }
 
     open fun getController(ignoreAmount: Int) = AspectController(
             1,

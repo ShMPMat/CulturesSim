@@ -30,7 +30,7 @@ fun TextEcosystemVisualizer<*>.printTiles(tiles: Collection<Tile>) {
 
     val resourceString = tiles.flatMap { it.resourcePack.resources }
             .groupBy { it }
-            .map { (k, rs) -> k.copy(rs.sumBy { it.amount }) }
+            .map { (k, rs) -> k.copy(rs.sumOf { it.amount }) }
             .map { it.toString() }
             .sorted()
             .joinToString("\n", "\n", "\n")

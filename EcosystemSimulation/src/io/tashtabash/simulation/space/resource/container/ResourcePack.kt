@@ -24,7 +24,7 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
         get() = resourceMap.navigableKeySet().iterator()
 
     val amount: Int
-        get() = resourceMap.navigableKeySet().sumBy { it.amount }
+        get() = resourceMap.navigableKeySet().sumOf { it.amount }
 
     val isEmpty: Boolean
         get() = amount == 0
@@ -69,11 +69,11 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
             .map { it.getTagPresence(tag) }
             .sum()
 
-    fun getAmount(tag: ResourceTag) = getTaggedResourcesUnpacked(tag).sumBy { it.amount }
+    fun getAmount(tag: ResourceTag) = getTaggedResourcesUnpacked(tag).sumOf { it.amount }
 
     fun getAmount(resource: Resource) = resourceMap[resource]?.amount ?: 0
 
-    fun getAmount(predicate: (Resource) -> Boolean) = getResourcesUnpacked(predicate).sumBy { it.amount }
+    fun getAmount(predicate: (Resource) -> Boolean) = getResourcesUnpacked(predicate).sumOf { it.amount }
 
     fun clearEmpty() = resourceMap.entries
             .filter { it.value.amount == 0 }

@@ -3,7 +3,6 @@ package io.tashtabash.simulation.culture.group.centers
 import io.tashtabash.random.singleton.chanceOfNot
 import io.tashtabash.random.singleton.randomTile
 import io.tashtabash.simulation.CulturesController.Companion.session
-import io.tashtabash.simulation.SimulationError
 import io.tashtabash.simulation.culture.group.*
 import io.tashtabash.simulation.culture.group.place.StaticPlace
 import io.tashtabash.simulation.space.territory.BrinkInvariantTerritory
@@ -42,12 +41,12 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     private var _oldTileTypes: Collection<Tile.Type> = listOf()
 
     fun tilePotentialMapper(tile: Tile): Int {
-        val neededResourcePart = getReachableTilesFrom(tile).sumBy { evaluateOneTile(it) }
+        val neededResourcePart = getReachableTilesFrom(tile).sumOf { evaluateOneTile(it) }
         val relationPart = tileTag.group.relationCenter.evaluateTile(tile)
         return neededResourcePart + relationPart
     }
 
-    fun territoryPotentialMapper(territory: Territory) = territory.tiles.sumBy { tilePotentialMapper(it) }
+    fun territoryPotentialMapper(territory: Territory) = territory.tiles.sumOf { tilePotentialMapper(it) }
 
     private fun evaluateOneTile(tile: Tile): Int {
         tileEvaluationHash[tile to session.world.getTurn()]?.let {
@@ -55,7 +54,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         }
 
         val requirements = tileTag.group.cultureCenter.aspectCenter.aspectPool.getResourceRequirements()
-        val sum = requirements.sumBy { tile.resourcePack.getAmount(it) }
+        val sum = requirements.sumOf { tile.resourcePack.getAmount(it) }
 
         tileEvaluationHash[tile to session.world.getTurn()] = 3 * sum
 

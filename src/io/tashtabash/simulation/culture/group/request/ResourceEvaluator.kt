@@ -29,7 +29,7 @@ class ResourceEvaluator(val labeler: ResourceLabeler, private val evaluator: (Re
 
     fun hasValue(resources: List<Resource>) = resources.any { evaluator(it) > 0 }
 
-    fun evaluate(resources: List<Resource>) = resources.sumByDouble { evaluator(it) }
+    fun evaluate(resources: List<Resource>) = resources.sumOf { evaluator(it) }
 
     fun evaluatePack(pack: ResourcePack) = evaluate(pack.resources)
 

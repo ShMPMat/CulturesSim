@@ -26,7 +26,7 @@ fun Resource.getAspectImprovement(aspect: Aspect) = amount.toDouble() * tags.get
 
 private fun Set<ResourceTag>.getAspectImprovement(aspect: Aspect) = filterIsInstance<AspectImprovementTag>()
         .filter { it.labeler.isSuitable(aspect) }
-        .sumByDouble { it.improvement }
+        .sumOf { it.improvement }
 
 class AspectImprovementLabeler(val aspect: Aspect) : ResourceLabeler {
     override fun isSuitable(genome: Genome) = genome.tags.getAspectImprovement(aspect) > 0

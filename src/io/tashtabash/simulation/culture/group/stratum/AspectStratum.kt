@@ -66,7 +66,7 @@ class AspectStratum(
         get() {
             if (_effectiveness == -1.0) {
                 _effectiveness = 1.0 +
-                        places.flatMap { it.owned.resources }.sumByDouble { it.getAspectImprovement(aspect) }
+                        places.flatMap { it.owned.resources }.sumOf { it.getAspectImprovement(aspect) }
             }
             return _effectiveness
         }

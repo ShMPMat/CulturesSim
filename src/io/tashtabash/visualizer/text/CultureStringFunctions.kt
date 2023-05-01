@@ -51,7 +51,7 @@ fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: Conglomer
         }
         stringBuilder.append(" \u001b[39m\n")
 
-        val hasGrown = group.population > info.populations[group] ?: 0
+        val hasGrown = group.population > (info.populations[group] ?: 0)
         stringBuilder.append(if (hasGrown) "\u001b[32m" else "\u001b[31m")
                 .append("population=${group.population}")
                 .append(if (hasGrown) "↑" else "↓")
@@ -89,7 +89,7 @@ fun printGroupStatistics(world: CulturesWorld): String {
              |Largest territory:   ${conglomerates.maxByOrNull { it.territory.size }?.let { g -> "${g.name} - ${g.territory.size}" }}
              |Most groups:         ${conglomerates.maxByOrNull { it.subgroups.size }?.let { g -> "${g.name} - ${g.subgroups.size}" }}
              |Max free population: ${
-        conglomerates.map { it to it.subgroups.sumBy { g -> g.populationCenter.freePopulation } }
+        conglomerates.map { it to it.subgroups.sumOf { g -> g.populationCenter.freePopulation } }
                 .maxByOrNull { it.second }?.let { (g, n) -> "${g.name} - $n" }
     }
              |

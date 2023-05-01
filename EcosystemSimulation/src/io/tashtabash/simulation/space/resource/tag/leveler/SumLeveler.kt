@@ -4,5 +4,5 @@ import io.tashtabash.simulation.space.resource.Genome
 
 
 data class SumLeveler(private val levelers: List<ResourceLeveler>) : ResourceLeveler {
-    override fun getLevel(genome: Genome) = levelers.sumByDouble { it.getLevel(genome) }
+    override fun getLevel(genome: Genome) = levelers.sumOf { it.getLevel(genome) }
 }

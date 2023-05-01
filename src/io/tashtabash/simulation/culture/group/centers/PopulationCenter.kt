@@ -63,7 +63,7 @@ class PopulationCenter(
     val turnResources = MutableResourcePack(initResources)
 
     val freePopulation: Int
-        get() = population - stratumCenter.strata.sumBy { it.population }
+        get() = population - stratumCenter.strata.sumOf { it.population }
 
     fun getMaxPopulation(controlledTerritory: Territory) = controlledTerritory.size * maxPopulation
 
