@@ -153,7 +153,7 @@
 //TODO very vulnerable when young
 -Crocodile                          0.0    2       10         20     40   7        Migrate   Animal       @Meat
         ~m:Meat,>=0.1,!!r:CrocodileEgg;1.5;2;1;CONSUME
-        ~m:Water,t:liquid;10;200;1;EXIST
+        ~m:Water,t:liquid;2;200;1;EXIST
         +_OnDeath_/Carcass:20
         +_layEggs_prob_0.11_f/CrocodileEgg:15
         ^Meat:10 ^Fat:3 ^Bone:5 ^Leather:2:s|1 ^Blood:5
