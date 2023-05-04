@@ -181,6 +181,24 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-LizardEgg                          0.0     0.02   3          14     35   20       Ignore    Animal       @Meat
+        +_transform_prob_0.333_t/Lizard:1
+        ^Meat:1:s|0.01 ^EggShell:1:s|0.02
+        #Water
+        cWhite
+        tMatt
+
+-Lizard                             0.0    0.1     8          14     35   40       Migrate   Animal       @Meat
+        ~m:Meat,>=0.002,<=0.08;0.04;2;1;CONSUME
+        +_OnDeath_/Carcass:1
+        +_layEggs_prob_0.06_f/LizardEgg:8
+        ^Meat:1 ^Fat:1 ^Bone:10:s|0.01 ^Leather:2:s|0.05 ^Blood:1
+        #Water
+        cGreen
+        C0.4 R0.05 D0.02
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -SparrowEgg                         0.0     0.03   3          0      30   1000     Ignore    Animal       @Meat
         +_transform_prob_0.333_t/Sparrow:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
