@@ -1,5 +1,6 @@
 package io.tashtabash.simulation.culture.group.centers
 
+import io.tashtabash.simulation.Controller
 import io.tashtabash.simulation.CulturesController
 import io.tashtabash.simulation.culture.aspect.Aspect
 import io.tashtabash.simulation.culture.aspect.ConverseWrapper
@@ -13,6 +14,8 @@ import io.tashtabash.simulation.culture.group.stratum.AspectStratum
 import io.tashtabash.simulation.culture.group.stratum.Person
 import io.tashtabash.simulation.culture.group.stratum.Stratum
 import io.tashtabash.simulation.culture.group.stratum.StratumPeople
+import io.tashtabash.simulation.event.Event
+import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.resource.OwnershipMarker
 import io.tashtabash.simulation.space.resource.Taker
 import io.tashtabash.simulation.space.resource.container.MutableResourcePack
@@ -107,12 +110,17 @@ class PopulationCenter(
     fun goodConditionsGrow(fraction: Double, territory: Territory) {
         population += (fraction * population).toInt() / 5 + 1
         if (isMaxReached(territory))
-            decreasePopulation(population - getMaxPopulation(territory))
+            decreasePopulation(
+                    population - getMaxPopulation(territory),
+                    "Growth exceeded the max population"
+            )
     }
 
-    fun decreasePopulation(amount: Int) {
+    fun decreasePopulation(amount: Int, reason: String?) {
         var actualAmount = amount
-        if (freePopulation < 0) throw GroupError("Negative population in a PopulationCenter")
+        if (freePopulation < 0)
+            throw GroupError("Negative population in a PopulationCenter")
+
         actualAmount = min(population, actualAmount)
         val delta = actualAmount - freePopulation
         if (delta > 0)
@@ -125,24 +133,34 @@ class PopulationCenter(
             }
 
         population -= actualAmount
+
+        reason?.let {
+            Controller.session.world.events.add(Event(
+                    Type.PopulationDecrease,
+                    "${actualPopulation.ownershipMarker} population decreased by $actualAmount: $it"
+            ))
+        }
     }
 
     fun update(accessibleTerritory: Territory, group: Group) {
         if (actualPopulation.amount < population) {
             val decrease = population - actualPopulation.amount
-            decreasePopulation(decrease)
+            decreasePopulation(
+                    decrease,
+                    "WARNING unexpected populationCenter update, actual population is bigger than expected"
+            )
 
             actualPopulation.takers.map { it.first }
                     .filterIsInstance<Taker.ResourceTaker>()
                     .forEach {
-                val hostileResource = it.resource
+                        val hostileResource = it.resource
 
-                hostileResource.genome.parts.firstOrNull()?.let { part ->
-                    group.resourceCenter.addNeeded(BaseNameLabeler(part.baseName), decrease * 100)
-                    group.resourceCenter.addNeeded(TagLabeler(ResourceTag("weapon")), decrease * 100)
-                    group.resourceCenter.addNeeded(TagLabeler(ResourceTag("defence")), decrease * 100)
-                }
-            }
+                        hostileResource.genome.parts.firstOrNull()?.let { part ->
+                            group.resourceCenter.addNeeded(BaseNameLabeler(part.baseName), decrease * 100)
+                            group.resourceCenter.addNeeded(TagLabeler(ResourceTag("weapon")), decrease * 100)
+                            group.resourceCenter.addNeeded(TagLabeler(ResourceTag("defence")), decrease * 100)
+                        }
+                    }
         }
 
         stratumCenter.update(accessibleTerritory, group, turnResources)
@@ -214,7 +232,7 @@ class PopulationCenter(
 
     fun getPart(fraction: Double, newTile: Tile, ownershipMarker: OwnershipMarker): PopulationCenter {
         val populationPart = (fraction * population).toInt()
-        decreasePopulation(populationPart)
+        decreasePopulation(populationPart, "Part taken by $ownershipMarker")
 
         val pack = MutableResourcePack()
         turnResources.resources.forEach {

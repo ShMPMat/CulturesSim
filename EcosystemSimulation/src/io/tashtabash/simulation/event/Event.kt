@@ -25,5 +25,6 @@ enum class Type(val colourString: String) {
     Creation("\u001B[34m"),
     Move("\u001B[33m"),
     Change("\u001B[33m"),
+    PopulationDecrease(""),
     Other("")
 }
