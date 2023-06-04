@@ -1,7 +1,9 @@
 package io.tashtabash.simulation.space.resource
 
 sealed class Taker {
-    data class ResourceTaker(val resource: Resource): Taker()
+    data class ResourceTaker(val resource: Resource): Taker() {
+        override fun toString() = "Resource ${resource.fullName}"
+    }
 
     object WindTaker: Taker()
 
