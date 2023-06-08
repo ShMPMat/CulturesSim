@@ -139,7 +139,7 @@ open class Resource private constructor(
         if (this === resource)
             return this
 
-        smartAddAmount(resource.amount, resource.deathPart)
+        addAmount(resource.amount, resource.deathPart)
         resource.destroy()
         return this
     }
@@ -150,12 +150,12 @@ open class Resource private constructor(
 
         destroy()
 
-        return Resource(core, currentAmount)
+        return core.resourceBuilder(core, currentAmount)
     }
 
     fun copyWithOwnership(ownershipMarker: OwnershipMarker): Resource {
         val core = core.copy(ownershipMarker = ownershipMarker)
-        return Resource(core, amount)
+        return core.resourceBuilder(core, amount)
     }
 
     fun exactCopy() = copy(amount)
@@ -164,7 +164,7 @@ open class Resource private constructor(
             Resource(core, amount, _hash, deathTurn)
 
     fun copyAndDestroy(amount: Int = genome.defaultAmount): Resource {
-        val result = Resource(core, amount, _hash)
+        val result = copy(amount)
         destroy()
         return result
     }
@@ -172,7 +172,7 @@ open class Resource private constructor(
     fun fullCopy() = core.fullCopy()
 
     fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): Resource {
-        val resource = Resource(core.copyWithNewExternalFeatures(features), amount)
+        val resource = core.resourceBuilder(core.copyWithNewExternalFeatures(features), amount)
         destroy()
         return resource
     }
@@ -219,7 +219,7 @@ open class Resource private constructor(
         if (!shouldDie && (genome.lifespan != Double.POSITIVE_INFINITY || deathOverhead != Int.MAX_VALUE))
             return emptyList()
 
-        val deadAmount = (deathPart * amount).toInt()
+        val deadAmount = calculateDeadAmount()
         takers.add(DeathTaker to deadAmount)
         amount -= deadAmount
         deathTurn = 0
@@ -227,6 +227,8 @@ open class Resource private constructor(
         deathPart = 1.0
         return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
     }
+
+    protected open fun calculateDeadAmount() = (deathPart * amount).toInt()
 
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = amount * action.probability
@@ -289,9 +291,7 @@ open class Resource private constructor(
         }
     }
 
-    open fun addAmount(amount: Int) = smartAddAmount(amount)
-
-    private fun smartAddAmount(otherAmount: Int, otherDeathPart: Double = 1.0) {
+    open fun addAmount(otherAmount: Int, otherDeathPart: Double = 1.0) {
         if (otherAmount > 0)
             deathPart = (amount * deathPart + otherAmount * otherDeathPart) / (amount + otherAmount)
         this.amount += otherAmount

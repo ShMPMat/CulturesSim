@@ -46,7 +46,7 @@ class PopulationCenter(
                 val diff = value - field
 
                 if (diff > 0)
-                    actualPopulation.addAmount(diff)
+                    actualPopulation.addAmount(diff, 0.0)
                 else if (diff < 0)
                     actualPopulation.getCleanPart(-diff, Taker.SelfTaker)
             }
@@ -137,7 +137,7 @@ class PopulationCenter(
         reason?.let {
             Controller.session.world.events.add(Event(
                     Type.PopulationDecrease,
-                    "${actualPopulation.ownershipMarker} population decreased by $actualAmount: $it"
+                    "${actualPopulation.ownershipMarker} population of $population decreased by $actualAmount: $it"
             ))
         }
     }

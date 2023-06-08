@@ -1,5 +1,8 @@
 package io.tashtabash.simulation.culture.group.stratum
 
+import io.tashtabash.simulation.Controller
+import io.tashtabash.simulation.event.Event
+import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.SpaceData
 import io.tashtabash.simulation.space.resource.*
 import io.tashtabash.simulation.space.resource.action.ConversionCore
@@ -37,6 +40,29 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
         )
 ) {
     private var toDie = 0
+
+    override fun getPart(part: Int, taker: Taker) = super.getPart(part, taker).also {
+        logGetPart(it, taker)
+    }
+
+    override fun getCleanPart(part: Int, taker: Taker) = super.getCleanPart(part, taker).also {
+        logGetPart(it, taker)
+    }
+
+    private fun logGetPart(result: Resource, taker: Taker) {
+        if (result.isEmpty)
+            return
+
+        Controller.session.world.events.add(Event(
+                Type.PopulationDecrease,
+                "$ownershipMarker actual population of $amount decreased by ${result.amount}: taken by $taker"
+        ))
+    }
+
+    override fun copy(amount: Int, deathTurn: Int) = Person(ownershipMarker).apply {
+        this.amount = amount
+        this.deathTurn = deathTurn
+    }
 
     override fun naturalDeath(): List<Resource> {
         if (toDie > 0) {
