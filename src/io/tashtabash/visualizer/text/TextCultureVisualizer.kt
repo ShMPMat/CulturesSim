@@ -34,8 +34,8 @@ open class TextCultureVisualizer(
     override fun print() {
         lastClaimedTiles = interactionModel.eventLog.lastClaimedTiles(lastClaimedTilesPrintTurn)
         lastClaimedTilesPrintTurn = world.getTurn()
-        println(printedConglomerates(world.groups, groupInfo))
-        println("Conglomerates overall: ${world.groups.size}")
+        println(printedConglomerates(world.conglomerates, groupInfo))
+        println("Conglomerates overall: ${world.conglomerates.size}")
         super.print()
     }
 

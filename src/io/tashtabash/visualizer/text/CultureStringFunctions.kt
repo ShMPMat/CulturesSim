@@ -81,7 +81,7 @@ fun printConglomerateRelation(conglomerate1: GroupConglomerate, conglomerate2: G
         }
 
 fun printGroupStatistics(world: CulturesWorld): String {
-    val conglomerates = world.groups.filter { it.state == GroupConglomerate.State.Live }
+    val conglomerates = world.conglomerates.filter { it.state == GroupConglomerate.State.Live }
 
     return """CONGLOMERATES:
              |

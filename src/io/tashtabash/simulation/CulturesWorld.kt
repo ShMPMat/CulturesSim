@@ -20,10 +20,10 @@ import java.util.*
 
 
 open class CulturesWorld : World() {
-    var groups: MutableList<GroupConglomerate> = ArrayList()
+    var conglomerates: MutableList<GroupConglomerate> = ArrayList()
 
-    val shuffledGroups: List<GroupConglomerate>
-        get() = groups.shuffled(RandomSingleton.random)
+    val shuffledConglomerates: List<GroupConglomerate>
+        get() = conglomerates.shuffled(RandomSingleton.random)
 
     val strayPlacesManager = StrayPlacesManager()
 
@@ -74,16 +74,16 @@ open class CulturesWorld : World() {
 
     fun initializeGroups() {
         for (i in 0 until session.startGroupAmount)
-            groups.add(GroupConglomerate(1, tileForGroup))
+            conglomerates.add(GroupConglomerate(1, tileForGroup))
 
         for (aspectName in compulsoryAspects)
-            for (c in groups)
+            for (c in conglomerates)
                 for (it in c.subgroups)
                     it.cultureCenter
                             .aspectCenter
                             .addAspectTry(aspectPool.getValue(aspectName), it)
 
-        groups.forEach { it.finishUpdate() }
+        conglomerates.forEach { it.finishUpdate() }
     }
 
     private val tileForGroup: Tile
@@ -98,11 +98,11 @@ open class CulturesWorld : World() {
         }
 
     fun addGroupConglomerate(groupConglomerate: GroupConglomerate) {
-        groups.add(groupConglomerate)
+        conglomerates.add(groupConglomerate)
     }
 
     fun clearDeadConglomerates() {
-        groups.removeIf { it.state == GroupConglomerate.State.Dead }
+        conglomerates.removeIf { it.state == GroupConglomerate.State.Dead }
     }
 }
 

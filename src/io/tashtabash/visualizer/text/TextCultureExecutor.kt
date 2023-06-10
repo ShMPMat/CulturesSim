@@ -17,9 +17,9 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
 
             when (command) {
                 Conglomerate -> {
-                    val conglomerate = world.groups
+                    val conglomerate = world.conglomerates
                             .firstOrNull { it.name == line }
-                    val group = world.groups
+                    val group = world.conglomerates
                             .flatMap { it.subgroups }
                             .firstOrNull { it.name == line }
                     when {
@@ -74,7 +74,7 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                                 println()
                             }
                     println("\nActual instances:\n")
-                    world.groups.flatMap { it.aspects }
+                    world.conglomerates.flatMap { it.aspects }
                             .filter { it.name.contains(splitCommand[1]) }
                             .distinct()
                             .sortedBy { it.name }
@@ -86,7 +86,7 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                 }
                 CultureAspects -> {
                     printMap { cultureAspectMapper(splitCommand[1], it) }
-                    world.groups.flatMap { it.subgroups }
+                    world.conglomerates.flatMap { it.subgroups }
                             .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.all }
                             .filter { it.toString().contains(splitCommand[1]) }
                             .distinct()
@@ -112,7 +112,7 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
         return ExecutionResult.Success
     }
 
-    private fun TextCultureVisualizer.getConglomerate(name: String) = controller.world.groups
+    private fun TextCultureVisualizer.getConglomerate(name: String) = controller.world.conglomerates
             .firstOrNull { it.name == name }
             .apply {
                 if (this == null)
