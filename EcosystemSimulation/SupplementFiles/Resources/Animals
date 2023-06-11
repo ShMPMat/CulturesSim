@@ -261,7 +261,7 @@
         tSemitransparent
 
 -Crab                               0.0     0.05   6          8      30   80       Migrate   Animal       @Chitin
-        ~D(A(m:PlantFibre)||A(m:Meat)),<=0.04,>=0.003,!!r:CrabLarva;0.04;1.01;1;CONSUME
+        ~D(A(m:PlantFibre)||A(m:Meat),<=0.04),>=0.003,!!r:CrabLarva;0.04;1.01;1;CONSUME
         ~r:SaltWater;0.001;200;1;EXIST
         +_spawnLarva_prob_0.06_t/CrabLarva:1000
         ^Chitin:1:s|0.04 ^Meat:1:s|0.02
