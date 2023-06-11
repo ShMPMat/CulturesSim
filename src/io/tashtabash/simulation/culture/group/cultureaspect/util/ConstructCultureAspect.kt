@@ -47,7 +47,7 @@ fun createAestheticallyPleasingObject(resource: Resource?): CherishedResource? =
     CherishedResource(resource, getRandom())
 }
 
-fun createTale(group: Group, templateBase: io.tashtabash.simulation.culture.thinking.language.templates.TemplateBase): Tale? {
+fun createTale(group: Group, templateBase: TemplateBase): Tale? {
     val template = templateBase.randomSentenceTemplate
             ?: return null
 
@@ -74,7 +74,7 @@ fun createSimpleConcept(group: Group, random: Random): Concept? {
 
 fun createRitual(reason: Reason?, group: Group, random: Random): Ritual? {
     return when (reason) {
-        is io.tashtabash.simulation.culture.group.reason.BetterAspectUseReason -> {
+        is BetterAspectUseReason -> {
             createBetterAspectUseReasonRitual(
                     reason,
                     group.cultureCenter.aspectCenter.aspectPool,
@@ -86,7 +86,7 @@ fun createRitual(reason: Reason?, group: Group, random: Random): Ritual? {
 }
 
 fun createBetterAspectUseReasonRitual(
-        reason: io.tashtabash.simulation.culture.group.reason.BetterAspectUseReason,
+        reason: BetterAspectUseReason,
         aspectPool: AspectPool,
         random: Random
 ): Ritual? {

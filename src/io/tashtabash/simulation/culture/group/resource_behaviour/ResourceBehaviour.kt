@@ -5,7 +5,7 @@ import io.tashtabash.simulation.space.resource.container.MutableResourcePack
 import io.tashtabash.simulation.space.territory.Territory
 
 
-class ResourceBehaviour(private val placementStrategy: io.tashtabash.simulation.culture.group.resource_behaviour.PlacementStrategy) {
+class ResourceBehaviour(private val placementStrategy: PlacementStrategy) {
     fun proceedResources(resourcePack: MutableResourcePack, territory: Territory) {
         placementStrategy.place(resourcePack, territory)
     }
@@ -14,4 +14,4 @@ class ResourceBehaviour(private val placementStrategy: io.tashtabash.simulation.
 }
 
 fun getRandom() =
-        ResourceBehaviour(io.tashtabash.simulation.culture.group.resource_behaviour.PlacementStrategy(PlacementStrategy.Strategy.values().toList().randomElement()))
+        ResourceBehaviour(PlacementStrategy(PlacementStrategy.Strategy.values().toList().randomElement()))
