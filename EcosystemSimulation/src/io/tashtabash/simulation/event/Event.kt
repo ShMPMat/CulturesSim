@@ -8,7 +8,7 @@ open class Event(var type: Type, val description: String) {
     private val turnString = Controller.session.world?.getStringTurn() ?: "Pre-historic"
     val turn = turnString.toIntOrNull()
 
-    override fun toString() = "${type.colourString}$turnString. $description\u001B[37m"
+    override fun toString() = "${type.colourString}$turnString. $type: $description\u001B[37m"
 }
 
 enum class Type(val colourString: String) {

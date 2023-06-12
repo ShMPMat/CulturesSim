@@ -115,5 +115,5 @@ fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean)
         .joinToString("\n")
 
 fun printRegexEvents(events: List<Event>, amount: Int, regex: Regex) = printEvents(events, amount) {
-        regex.containsMatchIn(it.description)
+        regex.containsMatchIn(it.toString())
 }
