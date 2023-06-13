@@ -69,6 +69,9 @@ sealed class IdeationalConcept(
 
     object Luck :          IdeationalConcept(Meme("Luck"),          { listOf(Misfortune) },           { listOf() })
     object Misfortune :    IdeationalConcept(Meme("Misfortune"),    { listOf(Luck) },                 { listOf() })
+
+    object Mortality :     IdeationalConcept(Meme("Mortality"),     { listOf(Immortality) },          { listOf() })
+    object Immortality :   IdeationalConcept(Meme("Immortality"),   { listOf(Mortality) },            { listOf() })
 }
 
 val ideationalConcepts = IdeationalConcept::class.sealedSubclasses
