@@ -115,7 +115,7 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
         val aspectCenter = AspectCenter(aspects)
         val populationCenter = group.populationCenter.getPart(0.5, startTile, OwnershipMarker(name))
         val reasonField = group.cultureCenter.cultureAspectCenter.reasonField.copy(
-                cultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
+                generateCultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
         )
 
         return Group(

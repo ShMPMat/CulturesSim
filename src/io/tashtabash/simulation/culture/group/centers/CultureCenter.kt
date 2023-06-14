@@ -82,11 +82,11 @@ class CultureCenter(
 
         events.add(
                 if (second == null)
-                    Event(Type.AspectGaining, "Group ${group.name} developed aspect ${first.name}")
+                    Event(Type.AspectGaining, "Group ${group.name} developed aspect ${first.name} for a need")
                 else
                     Event(
                             Type.AspectGaining,
-                            "Group ${group.name} took aspect ${first.name} from group ${second.name}"
+                            "Group ${group.name} took aspect ${first.name} from group ${second.name} for a need"
                     )
         )
     }
@@ -134,7 +134,7 @@ class CultureCenter(
         val uniqueness = resource.externalFeatures.size + 1
         val durability =
                 if (resource.genome.lifespan < 1_000_000_000)
-                    log(resource.genome.lifespan.toDouble(), 10.0).toInt() + 1
+                    log(resource.genome.lifespan, 10.0).toInt() + 1
                 else 1
         val accessibility = getResourceAccessibility(resource)
 

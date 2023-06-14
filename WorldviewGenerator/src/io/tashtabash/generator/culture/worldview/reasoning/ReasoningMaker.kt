@@ -1,7 +1,6 @@
 package io.tashtabash.generator.culture.worldview.reasoning
 
 import io.tashtabash.random.randomElement
-import io.tashtabash.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
 import io.tashtabash.generator.culture.worldview.reasoning.concept.ReasonConcept
 import kotlin.random.Random
 
@@ -17,11 +16,8 @@ fun makeAdjectiveReasoning(
     else
         random.nextDouble(-1.0, 0.0)
     val adjectiveConceptChange = random.nextDouble(0.0, 0.1)
-    return BaseReasoning(
-            io.tashtabash.generator.culture.worldview.Meme("${concept.meme} is ${conceptToAdjectiveString(adjectiveConcept)}"),
-            listOf(concept.meme, adjectiveConcept.meme),
-            listOf(concept.toConclusion(conceptChange), adjectiveConcept.toConclusion(adjectiveConceptChange))
-    )
+
+    return QualityReasoning(concept, adjectiveConcept, conceptChange, adjectiveConceptChange)
 }
 
 fun makeAdjectiveReasoning(
@@ -29,18 +25,4 @@ fun makeAdjectiveReasoning(
         adjectiveConcepts: List<ReasonConcept>,
         isPositive: Boolean,
         random: Random
-) =
-        randomElement(adjectiveConcepts.map { makeAdjectiveReasoning(concept, it, isPositive, random) }, random)
-
-fun conceptToAdjectiveString(concept: ReasonConcept) = when (concept) {
-    Importance -> "important"
-    Unimportance -> "unimportant"
-    Uniqueness -> "unique"
-    Commonness -> "common"
-    Simplicity -> "simple"
-    Complexity -> "complex"
-    Simpleness -> "easy"
-    Hardness -> "hard"
-
-    else -> throw ReasoningError("No adjective for $concept")
-}
+) = randomElement(adjectiveConcepts.map { makeAdjectiveReasoning(concept, it, isPositive, random) }, random)

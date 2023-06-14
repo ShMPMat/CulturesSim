@@ -12,8 +12,9 @@ import io.tashtabash.simulation.culture.group.cultureaspect.util.*
 import io.tashtabash.simulation.culture.group.cultureaspect.worship.Worship
 import io.tashtabash.simulation.culture.group.reason.Reason
 import io.tashtabash.simulation.culture.group.reason.constructBetterAspectUseReason
-import io.tashtabash.generator.culture.worldview.Meme
 import io.tashtabash.generator.culture.worldview.toMeme
+import io.tashtabash.simulation.event.Event
+import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.resource.Resource
 import java.util.*
 import kotlin.math.pow
@@ -43,13 +44,16 @@ class CultureAspectCenter(val reasonField: ReasonField) {
         reasonings.forEach { addCultureAspect(it.toCherishedResource()) }
     }
 
-    fun addCultureAspect(cultureAspect: CultureAspect?) {
-        cultureAspect ?: return
+    fun addCultureAspect(cultureAspect: CultureAspect?): Boolean {
+        cultureAspect
+                ?: return false
 
         aspectPool.add(cultureAspect)
 
         if (cultureAspect is CherishedResource)
             aestheticallyPleasingResources.add(cultureAspect.resource)
+
+        return true
     }
 
     private fun useCultureAspects(group: Group) = aspectPool.all.forEach { it.use(group) }
@@ -85,7 +89,8 @@ class CultureAspectCenter(val reasonField: ReasonField) {
             )
         }
 
-        addCultureAspect(cultureAspect)
+        if (addCultureAspect(cultureAspect))
+            group.addEvent(Event(Type.AspectGaining, "Group ${group.name} gained a random aspect $cultureAspect"))
     }
 
     fun mutateCultureAspects(group: Group) {
@@ -175,7 +180,7 @@ private enum class ChangeRandom(override val probability: Double) : SampleSpaceO
 }
 
 
-fun cultureConversions(
+fun generateCultureConversions(
         memoryCenter: MemoryCenter,
         aspectCenter: AspectCenter,
         stratumCenter: StratumCenter

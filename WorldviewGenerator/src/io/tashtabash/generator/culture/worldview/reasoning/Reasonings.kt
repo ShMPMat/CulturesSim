@@ -4,6 +4,7 @@ import io.tashtabash.generator.culture.worldview.reasoning.concept.ActionConcept
 import io.tashtabash.generator.culture.worldview.reasoning.concept.ObjectConcept
 import io.tashtabash.generator.culture.worldview.reasoning.concept.ReasonConcept
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.generator.culture.worldview.reasoning.concept.conceptToAdjectiveString
 
 
 open class BaseReasoning(
@@ -45,6 +46,17 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
         return listOfNotNull(action(objectConcept, subjectConcept), action(subjectConcept, objectConcept))
     }
 }
+
+class QualityReasoning(
+        val objectConcept: ReasonConcept,
+        val qualityConcept: ReasonConcept,
+        conceptChange: Double,
+        adjectiveConceptChange: Double
+) : BaseReasoning(
+        Meme("${objectConcept.meme} is ${conceptToAdjectiveString(qualityConcept)}"),
+        listOf(objectConcept.meme, qualityConcept.meme),
+        listOf(objectConcept.toConclusion(conceptChange), qualityConcept.toConclusion(adjectiveConceptChange))
+)
 
 class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
         Meme("$objectConcept opposes $subjectConcept"),
