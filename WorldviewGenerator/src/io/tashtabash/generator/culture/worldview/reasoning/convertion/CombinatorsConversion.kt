@@ -25,8 +25,5 @@ object CombinatorsConversion : ReasonConversion {
                                 else null
                             }
                 }
-        if (state.isNotEmpty()) {
-            val k = ""
-        }
     }
 }
