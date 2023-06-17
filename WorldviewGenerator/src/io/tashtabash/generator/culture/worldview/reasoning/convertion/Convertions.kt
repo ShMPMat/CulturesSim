@@ -6,6 +6,7 @@ fun baseConversions() = listOf(
         OppositionConversion,
         CombinatorsConversion,
         EqualitySubjectCorrelationConversion,
+        QualityTransferConversion,
         CommonnessExistenceInConversion,
         ActionConversion.PositiveDriveConversion
 ) + allCorrespondingIdealActionConversions

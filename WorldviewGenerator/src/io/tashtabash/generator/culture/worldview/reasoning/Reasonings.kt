@@ -42,20 +42,23 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
     fun any(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) || predicate(subjectConcept)
     fun all(predicate: (ReasonConcept) -> Boolean) = predicate(objectConcept) && predicate(subjectConcept)
 
+    fun contains(reasonConcept: ReasonConcept): Boolean =
+            reasonConcept == objectConcept || reasonConcept == subjectConcept
+
     fun <T> applyToBoth(action: (ReasonConcept, ReasonConcept) -> T?): List<T> {
         return listOfNotNull(action(objectConcept, subjectConcept), action(subjectConcept, objectConcept))
     }
 }
 
 class QualityReasoning(
-        val objectConcept: ReasonConcept,
+        val subjectConcept: ReasonConcept,
         val qualityConcept: ReasonConcept,
-        conceptChange: Double,
-        adjectiveConceptChange: Double
+        val conceptChange: Double,
+        val adjectiveConceptChange: Double
 ) : BaseReasoning(
-        Meme("${objectConcept.meme} is ${conceptToAdjectiveString(qualityConcept)}"),
-        listOf(objectConcept.meme, qualityConcept.meme),
-        listOf(objectConcept.toConclusion(conceptChange), qualityConcept.toConclusion(adjectiveConceptChange))
+        Meme("${subjectConcept.meme} is ${conceptToAdjectiveString(qualityConcept)}"),
+        listOf(subjectConcept.meme, qualityConcept.meme),
+        listOf(subjectConcept.toConclusion(conceptChange), qualityConcept.toConclusion(adjectiveConceptChange))
 )
 
 class OppositionReasoning(val objectConcept: ReasonConcept, val subjectConcept: ReasonConcept) : BaseReasoning(
