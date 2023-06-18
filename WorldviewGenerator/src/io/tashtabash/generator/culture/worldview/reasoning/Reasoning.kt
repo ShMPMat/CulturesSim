@@ -10,6 +10,8 @@ interface Reasoning {
     val additionalMemes: List<Meme>
 
     val conclusions: List<ReasonConclusion>
+
+    fun substitute(substitutions: Map<ReasonConcept, ReasonConcept>): Reasoning?
 }
 
 abstract class AbstractReasoning : Reasoning {

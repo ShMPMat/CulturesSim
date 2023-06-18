@@ -8,6 +8,9 @@ interface ReasonConcept {
 
     val oppositeConcepts: List<ReasonConcept>
     val correspondingConcepts: List<ReasonConcept>
+
+    fun substitute(substitutions: Map<ReasonConcept, ReasonConcept>): ReasonConcept? =
+            substitutions[this] ?: this
 }
 
 abstract class AbstractReasonConcept : ReasonConcept {
