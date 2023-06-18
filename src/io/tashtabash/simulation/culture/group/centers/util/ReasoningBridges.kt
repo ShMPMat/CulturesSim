@@ -16,6 +16,7 @@ import io.tashtabash.generator.culture.worldview.reasoning.concept.DeterminedCon
 import io.tashtabash.generator.culture.worldview.reasoning.concept.IdeationalConcept.*
 import io.tashtabash.generator.culture.worldview.reasoning.concept.ObjectConcept.*
 import io.tashtabash.generator.culture.worldview.reasoning.toConclusion
+import io.tashtabash.simulation.culture.group.request.RequestType
 import io.tashtabash.simulation.culture.group.resource_behaviour.getRandom
 import io.tashtabash.simulation.culture.group.stratum.Stratum
 import io.tashtabash.simulation.space.resource.Resource
@@ -50,6 +51,9 @@ fun ReasonConclusion.toTraitChanges(): List<TraitChange> = when (concept) {
         it.objectConcept.toConclusion(value).toTraitChanges() +
                 it.ideationalConcept.toConclusion(value).toTraitChanges()
     }
+
+    // It's here in case I'd like to add some instances before it
+    is RequestType -> listOf()
 
     else -> throw GroupError("No trait conversion for a concept $this")
 }
