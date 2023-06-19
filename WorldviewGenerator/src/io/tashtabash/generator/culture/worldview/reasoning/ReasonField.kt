@@ -6,6 +6,7 @@ import io.tashtabash.generator.culture.worldview.reasoning.concept.ReasonConcept
 import io.tashtabash.generator.culture.worldview.reasoning.convertion.IdeaConversion
 import io.tashtabash.generator.culture.worldview.reasoning.convertion.ReasonConversion
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.generator.culture.worldview.reasoning.concept.ObjectConcept
 
 
 class ReasonField(
@@ -80,12 +81,21 @@ class ReasonField(
         return resultReasonings
     }
 
-    fun copy(conversions: List<ReasonConversion> = this.conversions) = ReasonField(
-            conversions,
-            reasonComplexes.map { ReasonComplex(it.name, it.reasonings.toSet()) },
-            specialConcepts,
-            specialConversions
-    )
+    fun copy(reasonerMemeSubstitution: Map<Meme, Meme>, conversions: List<ReasonConversion> = this.conversions): ReasonField {
+        val reasonerSubstitution: Map<ReasonConcept, ReasonConcept> = reasonerMemeSubstitution.entries.associate { (old, new) ->
+            ObjectConcept.ArbitraryObjectConcept(old) to ObjectConcept.ArbitraryObjectConcept(new)
+        }
+        val newReasonComplexes = reasonComplexes.map { c ->
+            ReasonComplex(
+                    c.name,
+                    c.reasonings
+                            .mapNotNull { it.substitute(reasonerSubstitution) }
+                            .toSet()
+            )
+        }
+
+        return ReasonField(conversions, newReasonComplexes, specialConcepts, specialConversions)
+    }
 
     override fun toString() = """
         |Complexes:
