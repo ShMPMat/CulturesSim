@@ -26,6 +26,7 @@ open class Resource private constructor(
 
     open var amount = amount
         protected set(value) {
+            // It is assumed that a negative value can only be assigned on overflow
             field = if (value < 0)
                 Int.MAX_VALUE
             else value

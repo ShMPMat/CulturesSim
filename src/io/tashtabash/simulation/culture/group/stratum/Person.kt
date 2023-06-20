@@ -6,6 +6,7 @@ import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.SpaceData
 import io.tashtabash.simulation.space.resource.*
 import io.tashtabash.simulation.space.resource.action.ConversionCore
+import java.lang.Integer.min
 
 
 class Person(ownershipMarker: OwnershipMarker) : Resource(
@@ -66,7 +67,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
 
     override fun naturalDeath(): List<Resource> {
         if (toDie > 0) {
-            val deadAmount = (toDie / genome.lifespan).toInt() + 1
+            val deadAmount = min(amount, (toDie / genome.lifespan).toInt() + 1)
             toDie -= deadAmount
 
             takers.add(Taker.DeathTaker to deadAmount)
