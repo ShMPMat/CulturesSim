@@ -1,12 +1,13 @@
 package io.tashtabash.simulation.culture.group.centers
 
+import io.tashtabash.generator.culture.worldview.reasoning.*
+import io.tashtabash.generator.culture.worldview.reasoning.concept.IdeationalConcept
+import io.tashtabash.generator.culture.worldview.reasoning.concept.ObjectConcept
 import io.tashtabash.random.SampleSpaceObject
 import io.tashtabash.random.singleton.*
 import io.tashtabash.simulation.CulturesController.Companion.session
 import io.tashtabash.simulation.culture.group.centers.util.*
 import io.tashtabash.simulation.culture.group.cultureaspect.*
-import io.tashtabash.generator.culture.worldview.reasoning.ReasonField
-import io.tashtabash.generator.culture.worldview.reasoning.Reasoning
 import io.tashtabash.generator.culture.worldview.reasoning.convertion.*
 import io.tashtabash.simulation.culture.group.cultureaspect.util.*
 import io.tashtabash.simulation.culture.group.cultureaspect.worship.Worship
@@ -192,3 +193,10 @@ fun generateCultureConversions(
 
 fun groupBaseConversions() = baseConversions() +
         listOf(AspectResourcesConversion, StratumResourcesConversion)
+
+fun generateCommonReasonings(name: String) = ReasonComplex(
+        COMMON_REASONS,
+        setOf(
+                QualityReasoning(ObjectConcept.ArbitraryObjectConcept(name.toMeme()), IdeationalConcept.Mortality)
+        )
+)

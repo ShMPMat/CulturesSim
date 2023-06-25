@@ -70,8 +70,8 @@ class EqualityReasoning(val objectConcept: ReasonConcept, val subjectConcept: Re
 class QualityReasoning(
         val subjectConcept: ReasonConcept,
         val qualityConcept: ReasonConcept,
-        val conceptChange: Double,
-        val adjectiveConceptChange: Double
+        val conceptChange: Double = 0.0,
+        val adjectiveConceptChange: Double = 0.0
 ) : BaseReasoning(
         Meme("${subjectConcept.meme} is ${conceptToAdjectiveString(qualityConcept)}"),
         listOf(subjectConcept.meme, qualityConcept.meme),

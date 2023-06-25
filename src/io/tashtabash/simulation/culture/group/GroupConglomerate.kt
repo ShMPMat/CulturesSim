@@ -64,7 +64,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     },
                     CultureAspectCenter(
                             ReasonField(
-                                    generateCultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
+                                    generateCultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter),
+                                    listOf(generateCommonReasonings(name))
                             )
                     ),
                     TraitCenter(),
