@@ -670,13 +670,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--StarfishEgg                        0.0     0.0001 2           -20   35   1000     Ignore    Animal       @Meat
+-StarfishEgg                        0.0     0.0001 2           -15   35   1000     Ignore    Animal       @Meat
         +_transform_prob_0.5_t/Brachiolaria:1
         ^Meat:1:s|0.0001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
 
--Brachiolaria                       0.0     0.001  2           -20   30   200      Migrate   Animal       @Meat
+-Brachiolaria                       0.0     0.001  2           -15   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
         +_transform_prob_0.5_t/Starfish:1
         ^Meat:1:s|0.001
@@ -685,14 +685,40 @@
         tSemitransparent
         C0.8 R0.1
 
--Starfish                           0.0     0.08   20          -20   30   200      Migrate   Animal       @Meat
+-Starfish                           0.0     0.08   20          -15   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.05;0.1;1.25;0;CONSUME
-        +_layEggsLarvae_prob_0.04_f/StarfishEgg:10
+        +_layEggs_prob_0.04_f/StarfishEgg:10
         ^Meat:1:s|0.02
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
         cOrange tMatt sStar
         C0.8 R0.1
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-SeaLilyEgg                         0.0     0.0001 2           -20   35   1000     Ignore    Animal       @Meat
+        +_transform_prob_0.5_t/Vitellaria:1
+        ^Meat:1:s|0.0001
+        #Normal:Mountain:Ice:Woods:Growth
+        tSemitransparent
+
+-Vitellaria                         0.0     0.001  2           -20   30   200      Migrate   Animal       @Meat
+        ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
+        +_transform_prob_0.5_t/SeaLily:1
+        ^Meat:1:s|0.001
+        #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
+        tSemitransparent
+        C0.8 R0.1
+
+-SeaLily                            0.0     0.1    20          -20   30   200      Migrate   Animal       @Meat
+        ~D(m:PlantFibre||m:Meat),<=0.001;0.2;1.25;0;CONSUME
+        +_layEggs_prob_0.04_f/SeaLilyEgg:10
+        ^Meat:3:s|0.04
+        #Normal:Mountain:Ice:Woods:Growth
+        l80;1000
+        cWhite
+        C0.2 R0.1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
