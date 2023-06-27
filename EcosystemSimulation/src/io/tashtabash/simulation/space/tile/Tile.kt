@@ -186,6 +186,8 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
 
     fun finishUpdate() {
         windCenter.finishUpdate()
+
+        // [Un]comment if it will help the performance
 //        if (testProbability(data.clearSpan, data.random))
 //            resourcePack.clearEmpty()
     }
