@@ -51,7 +51,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
     }
 
     private fun logGetPart(result: Resource, taker: Taker) {
-        if (result.isEmpty)
+        if (result.isEmpty || taker == Taker.SelfTaker)
             return
 
         Controller.session.world.events.add(Event(
