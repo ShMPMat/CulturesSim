@@ -7,6 +7,7 @@ import io.tashtabash.simulation.culture.group.Transfer
 import io.tashtabash.simulation.culture.group.centers.*
 import io.tashtabash.simulation.culture.group.process.ProcessResult
 import io.tashtabash.simulation.culture.thinking.meaning.GroupMemes
+import io.tashtabash.simulation.culture.thinking.meaning.makeMeme
 import io.tashtabash.simulation.event.Event
 import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.resource.OwnershipMarker
@@ -116,7 +117,7 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
         val aspectCenter = AspectCenter(aspects)
         val populationCenter = group.populationCenter.getPart(0.5, startTile, OwnershipMarker(name))
         val reasonField = group.cultureCenter.cultureAspectCenter.reasonField.copy(
-                mapOf(Meme(group.name) to Meme(name)),
+                mapOf(makeMeme(group) to Meme(name)),
                 generateCultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter)
         )
 

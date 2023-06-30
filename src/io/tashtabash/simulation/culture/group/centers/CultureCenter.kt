@@ -9,6 +9,7 @@ import io.tashtabash.simulation.culture.group.cultureaspect.CherishedResource
 import io.tashtabash.simulation.culture.group.resource_behaviour.getRandom
 import io.tashtabash.simulation.culture.thinking.meaning.GroupMemes
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.simulation.culture.thinking.meaning.makeMeme
 import io.tashtabash.simulation.event.Event
 import io.tashtabash.simulation.event.EventLog
 import io.tashtabash.simulation.event.Type
@@ -95,7 +96,7 @@ class CultureCenter(
         val aspects = aspectCenter.finishUpdate()
         aspects.forEach {
             memePool.addAspectMemes(it)
-            memePool.addMemeCombination(Meme(group.name).addPredicate(
+            memePool.addMemeCombination(makeMeme(group).addPredicate(
                     Meme("acquireAspect").addPredicate(Meme(it.name))
             ))
         }
