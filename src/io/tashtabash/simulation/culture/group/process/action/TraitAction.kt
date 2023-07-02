@@ -12,3 +12,6 @@ class TestTraitA(group: Group, val extractor: TraitExtractor): AbstractGroupActi
 
     override val internalToString = "Test relation of ${group.name} to $extractor"
 }
+
+
+infix fun TraitExtractor.testOn(group: Group) = TestTraitA(group, this).run()

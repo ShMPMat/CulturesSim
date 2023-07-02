@@ -2,20 +2,20 @@ package io.tashtabash.simulation.culture.group.process.behaviour
 
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.random.singleton.randomElementOrNull
-import io.tashtabash.simulation.culture.group.ConflictResultEvent
 import io.tashtabash.simulation.culture.group.centers.Group
 import io.tashtabash.simulation.culture.group.centers.Trait
 import io.tashtabash.simulation.culture.group.centers.toNegativeChange
 import io.tashtabash.simulation.culture.group.process.*
 import io.tashtabash.simulation.culture.group.process.action.AddGroupA
 import io.tashtabash.simulation.culture.group.process.action.ChooseResourcesAndTakeA
-import io.tashtabash.simulation.culture.group.process.action.TestTraitA
 import io.tashtabash.simulation.culture.group.process.action.pseudo.ActionSequencePA
 import io.tashtabash.simulation.culture.group.process.action.pseudo.ConflictWinner
 import io.tashtabash.simulation.culture.group.process.action.pseudo.ConflictWinner.*
 import io.tashtabash.simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import io.tashtabash.simulation.culture.group.process.action.pseudo.decide
+import io.tashtabash.simulation.culture.group.process.action.testOn
 import io.tashtabash.simulation.culture.group.process.interaction.BattleI
+import io.tashtabash.simulation.culture.group.process.interaction.EndWarI
 import io.tashtabash.simulation.event.Event
 import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.resource.container.ResourcePromisePack
@@ -34,8 +34,7 @@ object RandomWarB : AbstractGroupBehaviour() {
         } ?: return emptyProcessResult
 
         val goal =
-                if (opponent.parentGroup != group.parentGroup &&
-                        TestTraitA(group, Trait.Expansion.getPositive().pow(0.5)).run())
+                if (opponent.parentGroup != group.parentGroup && Trait.Expansion.getPositive().pow(0.5) testOn group)
                     AddGroupA(opponent, group)
                 else ChooseResourcesAndTakeA(
                         group,
@@ -69,7 +68,7 @@ class WarB(
         private val initiatorWinAction: EventfulGroupPseudoAction,
         private val participatorWinAction: EventfulGroupPseudoAction,
         private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA(),
-        val warFinisher: WarFinisher = ProbabilisticWarFinisher()
+        private val warFinisher: WarFinisher = ProbabilisticWarFinisher()
 ) : PlanBehaviour() {
     override fun run(group: Group): ProcessResult {
         if (isFinished)
@@ -82,31 +81,9 @@ class WarB(
         val warResult = when (val warStatus = warFinisher.decide(listOf(battleResult))) {
             Continue -> emptyProcessResult
             is Finish -> {
-                if (opponent.state == Group.State.Dead || group.state == Group.State.Dead)
-                    return emptyProcessResult
-
-                val traitChange = warStatus.winner.decide(
-                        ProcessResult(Trait.Peace.toNegativeChange() * 2.0),
-                        emptyProcessResult,
-                        ProcessResult(Trait.Peace.toNegativeChange())
-                )
-                val winner = warStatus.winner.decide(group.name, opponent.name, "no one")
-                val action = warStatus.winner.decide(initiatorWinAction, participatorWinAction, drawWinAction)
-                val actionInternalEvents = action.run()
-
-                warStatus.winner.decide(group, opponent, null)?.populationCenter?.stratumCenter?.warriorStratum
-                        ?.let { it.importance += 10 }
-                warStatus.winner.decide(opponent, group, null)?.populationCenter?.stratumCenter?.warriorStratum
-                        ?.let { it.importance += 3 }
-
                 isFinished = true
-
-                actionInternalEvents + traitChange +
-                        ProcessResult(ConflictResultEvent(
-                                "The war between ${group.name} and ${opponent.name} has ended, " +
-                                        "the winner is $winner, the result: $action",
-                                warStatus.winner
-                        ))
+                EndWarI(group, opponent, initiatorWinAction, participatorWinAction, drawWinAction, warStatus)
+                        .run()
             }
         }
 
@@ -126,13 +103,13 @@ class ProbabilisticWarFinisher : WarFinisher {
     private var second = 0.0
     private var draw = 0.0
 
-    private fun incF() = first++
-    private fun incS() = second++
-    private fun incD() = draw++
+    private fun incrementF() = first++
+    private fun incrementS() = second++
+    private fun incrementD() = draw++
 
     override fun decide(results: List<ConflictWinner>): WarStatus {
         results.forEach {
-            it.decide(this::incF, this::incS, this::incD)()
+            it.decide(this::incrementF, this::incrementS, this::incrementD)()
         }
 
         return listOf(

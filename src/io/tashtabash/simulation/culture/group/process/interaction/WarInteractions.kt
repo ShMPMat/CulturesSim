@@ -1,14 +1,19 @@
 package io.tashtabash.simulation.culture.group.process.interaction
 
+import io.tashtabash.simulation.culture.group.ConflictResultEvent
 import io.tashtabash.simulation.culture.group.centers.Group
 import io.tashtabash.simulation.culture.group.centers.Trait
 import io.tashtabash.simulation.culture.group.centers.toNegativeChange
 import io.tashtabash.simulation.culture.group.centers.toPositiveChange
 import io.tashtabash.simulation.culture.group.process.ProcessResult
 import io.tashtabash.simulation.culture.group.process.action.DecideWarDeclarationA
+import io.tashtabash.simulation.culture.group.process.action.pseudo.ActionSequencePA
 import io.tashtabash.simulation.culture.group.process.action.pseudo.EventfulGroupPseudoAction
 import io.tashtabash.simulation.culture.group.process.action.pseudo.InteractionWrapperPA
+import io.tashtabash.simulation.culture.group.process.action.pseudo.decide
+import io.tashtabash.simulation.culture.group.process.behaviour.Finish
 import io.tashtabash.simulation.culture.group.process.behaviour.WarB
+import io.tashtabash.simulation.culture.group.process.emptyProcessResult
 import io.tashtabash.simulation.event.Event
 import io.tashtabash.simulation.event.Type
 
@@ -45,6 +50,40 @@ class ProbableStrikeWarI(
                         ProcessResult(Trait.Peace.toNegativeChange())
             } else ProcessResult(Trait.Peace.toPositiveChange()) to
                     ProcessResult(Trait.Peace.toPositiveChange())
+}
+
+class EndWarI(
+        initiator: Group,
+        participator: Group,
+        private val initiatorWinAction: EventfulGroupPseudoAction,
+        private val participatorWinAction: EventfulGroupPseudoAction,
+        private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA(),
+        private val warStatus: Finish
+) : AbstractGroupInteraction(initiator, participator) {
+    override fun innerRun(): InteractionResult {
+        if (participator.state == Group.State.Dead || initiator.state == Group.State.Dead)
+            return emptyProcessResult to emptyProcessResult
+
+        val traitChange = warStatus.winner.decide(
+                ProcessResult(Trait.Peace.toNegativeChange() * 2.0),
+                emptyProcessResult,
+                ProcessResult(Trait.Peace.toNegativeChange())
+        )
+        val winner = warStatus.winner.decide(initiator.name, participator.name, "no one")
+        val action = warStatus.winner.decide(initiatorWinAction, participatorWinAction, drawWinAction)
+        val actionInternalEvents = action.run()
+
+        warStatus.winner.decide(initiator, participator, null)?.populationCenter?.stratumCenter?.warriorStratum
+                ?.let { it.importance += 10 }
+        warStatus.winner.decide(participator, initiator, null)?.populationCenter?.stratumCenter?.warriorStratum
+                ?.let { it.importance += 3 }
+
+        return actionInternalEvents + traitChange + ProcessResult(ConflictResultEvent(
+                "The war between ${initiator.name} and ${participator.name} has ended, " +
+                        "the winner is $winner, the result: $action",
+                warStatus.winner
+        )) to emptyProcessResult
+    }
 }
 
 fun makeDecreaseRelationsResult(initiator: Group, participator: Group) = InteractionWrapperPA(
