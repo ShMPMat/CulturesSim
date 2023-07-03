@@ -13,7 +13,7 @@ import io.tashtabash.simulation.space.resource.dependency.ConsumeDependency
 import java.util.*
 
 
-fun constructTextInfo(cultureCenter: CultureCenter, templateBase: io.tashtabash.simulation.culture.thinking.language.templates.TemplateBase): TextInfo? {
+fun constructTextInfo(cultureCenter: CultureCenter, templateBase: TemplateBase): TextInfo? {
     val textInfos: List<TextInfo> = cultureCenter.aspectCenter.aspectPool.converseWrappers
             .flatMap { getAspectTextInfo(it) }
 
@@ -26,7 +26,7 @@ fun constructTextInfo(cultureCenter: CultureCenter, templateBase: io.tashtabash.
     }
 }
 
-fun complicateInfo(info: TextInfo, templateBase: io.tashtabash.simulation.culture.thinking.language.templates.TemplateBase, groupMemes: GroupMemes): TextInfo {
+fun complicateInfo(info: TextInfo, templateBase: TemplateBase, groupMemes: GroupMemes): TextInfo {
     val substitutions: MutableMap<String, Meme> = HashMap()
     for ((key, value) in info.map) {
         if (key[0] == '!') {
@@ -70,7 +70,7 @@ fun getResourceInformationTextInfo(resource: Resource): List<TextInfo> {
                 infos.add(TextInfo(
                         ArbitraryResource(resource),
                         Meme("consume"),
-                        Meme(res.lowercase()))
+                        Meme(res))
                 )
             }
     return infos
