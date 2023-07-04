@@ -21,9 +21,7 @@ import io.tashtabash.simulation.space.resource.Taker
 import io.tashtabash.simulation.space.resource.container.MutableResourcePack
 import io.tashtabash.simulation.space.resource.container.ResourcePack
 import io.tashtabash.simulation.space.resource.tag.ResourceTag
-import io.tashtabash.simulation.space.resource.tag.labeler.BaseNameLabeler
 import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
-import io.tashtabash.simulation.space.resource.tag.labeler.TagLabeler
 import io.tashtabash.simulation.space.territory.Territory
 import io.tashtabash.simulation.space.tile.Tile
 import io.tashtabash.utils.addLinePrefix
@@ -149,18 +147,6 @@ class PopulationCenter(
                     decrease,
                     "WARNING unexpected populationCenter update, actual population is bigger than expected"
             )
-
-            actualPopulation.takers.map { it.first }
-                    .filterIsInstance<Taker.ResourceTaker>()
-                    .forEach {
-                        val hostileResource = it.resource
-
-                        hostileResource.genome.parts.firstOrNull()?.let { part ->
-                            group.resourceCenter.addNeeded(BaseNameLabeler(part.baseName), decrease * 100)
-                            group.resourceCenter.addNeeded(TagLabeler(ResourceTag("weapon")), decrease * 100)
-                            group.resourceCenter.addNeeded(TagLabeler(ResourceTag("defence")), decrease * 100)
-                        }
-                    }
         }
 
         stratumCenter.update(accessibleTerritory, group, turnResources)

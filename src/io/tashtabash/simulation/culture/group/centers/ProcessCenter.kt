@@ -46,7 +46,8 @@ class ProcessCenter(type: AdministrationType) {
                 it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
             },
             RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive()),
-            InternalConsolidationB.withTrait(Trait.Consolidation.getPositive())
+            InternalConsolidationB.withTrait(Trait.Consolidation.getPositive()),
+            DefenceFromNatureB
     )
 
     val behaviours: List<GroupBehaviour> = _behaviours
