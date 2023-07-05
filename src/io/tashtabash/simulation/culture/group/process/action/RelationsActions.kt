@@ -36,8 +36,7 @@ class CooperateA(
 ) : AbstractGroupAction(group) {
     override fun run(): Boolean {
         val probability = (1 - helpAmount) * group.relationCenter.getNormalizedRelation(group)
-        val answer = probability.testProbability() &&
-                TestTraitA(group, Trait.Peace.get()).run()
+        val answer = probability.testProbability() && Trait.Peace.get() testOn group
 
         val relationsChange = 1.0 * if (answer) 1 else -1
         ChangeRelationsI(group, target, relationsChange).run()
