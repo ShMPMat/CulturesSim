@@ -50,13 +50,13 @@ open class CulturesWorld : World() {
                     }
 
                     return transformers.map { (postfix, transformer) ->
-                        val actionName = a.name + postfix
+                        val actionName = a.technicalName + postfix
                         val newAction = a.copy(actionName)
                         val newResources = rs.map {
                             if (it != building) it.exactCopy() else transformer.transform(it)
                         }
 
-                        val oldAspectCore = aspectPool.get(a.name)!!.core
+                        val oldAspectCore = aspectPool.get(a.technicalName)!!.core
                         mutableAspectPool.add(
                                 Aspect(
                                         oldAspectCore.copy(name = actionName, resourceAction = newAction),

@@ -63,7 +63,7 @@ fun outputResource(resource: Resource): String {
                     a.dependencies.joinToString(",", " needs ", " ")
                 else ""
 
-                a.name + needClause + ": " +
+                a.technicalName + needClause + ": " +
                         v.joinToString { it.fullName + ":" + it.amount }
             }
 

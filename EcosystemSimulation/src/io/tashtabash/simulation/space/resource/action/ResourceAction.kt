@@ -4,38 +4,40 @@ import io.tashtabash.simulation.space.resource.dependency.ResourceDependency
 
 
 open class ResourceAction(
-        val name: String,
+        val technicalName: String,
         val tags: List<ActionTag>,
-        val dependencies: List<ResourceDependency>
+        val dependencies: List<ResourceDependency>,
+        val name: String = technicalName
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ResourceAction) return false
 
-        if (name != other.name) return false
+        if (technicalName != other.technicalName) return false
 
         return true
     }
 
-    override fun hashCode() = name.hashCode()
+    override fun hashCode() = technicalName.hashCode()
 
     open fun copy(
-            name: String = this.name,
+            technicalName: String = this.technicalName,
             tags: List<ActionTag> = this.tags,
-            dependencies: List<ResourceDependency> = this.dependencies
-    ) = ResourceAction(name, tags, dependencies)
+            dependencies: List<ResourceDependency> = this.dependencies,
+            name: String = this.name
+    ) = ResourceAction(technicalName, tags, dependencies, name)
 }
 
 
 class ResourceProbabilityAction(
-        val baseName: String,
+        baseName: String,
         val probability: Double,
         val isWasting: Boolean,
         val canChooseTile: Boolean,
         dependencies: List<ResourceDependency>
-) : ResourceAction("_${baseName}_prob_${probability}", listOf(), dependencies) {
+) : ResourceAction("_${baseName}_prob_${probability}", listOf(), dependencies, baseName) {
     fun copy(
-            baseName: String = this.baseName,
+            baseName: String = this.name,
             probability: Double = this.probability,
             isWasting: Boolean = this.isWasting,
             canChooseTile: Boolean = this.canChooseTile,
@@ -43,8 +45,9 @@ class ResourceProbabilityAction(
     ) = ResourceProbabilityAction(baseName, probability, isWasting, canChooseTile, dependencies)
 
     override fun copy(
-            name: String,
+            technicalName: String,
             tags: List<ActionTag>,
             dependencies: List<ResourceDependency>,
-    ) =  ResourceProbabilityAction(baseName, probability, isWasting, canChooseTile, dependencies)
+            name: String
+    ): ResourceAction =  ResourceProbabilityAction(name, probability, isWasting, canChooseTile, dependencies)
 }

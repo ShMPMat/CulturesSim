@@ -36,7 +36,7 @@ class MaterialInstantiation(
             val tag = tags[i].substring(1)
             try {
                 when (key) {
-                    '+' -> aspectConversion[actions.first { a -> a.name == tag.takeWhile { it != ':' } }] =
+                    '+' -> aspectConversion[actions.first { a -> a.technicalName == tag.takeWhile { it != ':' } }] =
                             tag.substring(tag.indexOf(':') + 1)
                     '-' -> {
                         val resourceTag = ResourceTag(

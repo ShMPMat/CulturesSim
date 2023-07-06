@@ -24,7 +24,7 @@ class ActionMatcher(
     }
 
     fun match(resource: Resource) =
-            if (!resource.genome.conversionCore.actionConversion.keys.map { it.name }.any { it == resourceActionName })
+            if (!resource.genome.conversionCore.actionConversion.keys.map { it.technicalName }.any { it == resourceActionName })
                 if (resource.genome.hasLegacy && resource.simpleName in results.map { (n) -> n })
                     false
                 else

@@ -153,7 +153,7 @@ class ResourceTemplateCreator(
         else
             genome = genome.copy(tags = resourceTags.map { it.initialize(genome) }.toSet())
         specialActions.values
-                .filter { it.name[0] == '_' }
+                .filter { it.technicalName[0] == '_' }
                 .forEach {
                     if (!actionConversion.containsKey(it))
                         actionConversion[it] = listOf()

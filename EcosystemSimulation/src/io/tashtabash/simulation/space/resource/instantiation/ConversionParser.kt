@@ -16,7 +16,7 @@ class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: 
 
         val action = specialActions[actionName]
                 ?: parseProbabilityAction(actionName)
-                ?: actions.firstOrNull { it.name == actionName }
+                ?: actions.firstOrNull { it.technicalName == actionName }
                 ?: throw ParseException("Cannot parse action name '$actionName'")
 
         val resourceStrings = conversionStr.drop(nameEndIndex + 1)
