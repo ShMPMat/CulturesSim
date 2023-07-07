@@ -367,10 +367,27 @@
 -Tick                               0.0     0.005  5          8      30   200     Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
         +_layEggs_prob_0.01_t/TickEgg:500
-        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
+        ^Chitin:1:s|0.003 ^Meat:1:s|0.001
         #Water
         cBrown
         R0.1
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-SpiderEgg                          0.0     0.001  2          0      30   1000     Ignore    Animal       @Meat
+        +_transform_prob_0.5_t/Spider:1
+        ^Meat:1:s|0.002
+        #Water
+        tSemitransparent
+
+-Spider                             0.0     0.01   5          5      30   100     Migrate   Animal       @Chitin
+        ~P(m:Meat),>=0.0005,<=0.03;0.01;3;0;CONSUME
+        +_layEggs_prob_0.01_t/SpiderEgg:50
+        +_castWeb_prob_0.1_f/SpiderWeb:1
+        ^Chitin:1:s|0.01 ^Meat:1:s|0.01
+        #Water
+        cBlack
+        R0.1 D0.01
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -421,7 +438,7 @@
         R0.1
 
 -WaterStrider                       0.3     0.01   6          2      30   500      Migrate   Animal       @Chitin
-        ~m:Meat,>=0.0005,<=0.03;0.01;2;0;CONSUME
+        ~P(m:Meat),>=0.0005,<=0.03;0.01;2;0;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         cGrey
