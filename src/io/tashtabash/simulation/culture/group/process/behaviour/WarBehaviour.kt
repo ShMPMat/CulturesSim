@@ -42,21 +42,17 @@ object RandomWarB : AbstractGroupBehaviour() {
                         1000
                 )
 
-        group.processCenter.addBehaviour(WarB(
-                opponent,
-                ActionSequencePA(goal),
-                ActionSequencePA(ChooseResourcesAndTakeA(
+        return ProcessResult(Event(Type.Conflict, "${group.name} declared war to ${opponent.name}")) +
+                ProcessResult(Trait.Peace.toNegativeChange() * 2.0) +
+                ProcessResult(WarB(
                         opponent,
-                        ResourcePromisePack(group.populationCenter.turnResources),
-                        1000
+                        ActionSequencePA(goal),
+                        ActionSequencePA(ChooseResourcesAndTakeA(
+                                opponent,
+                                ResourcePromisePack(group.populationCenter.turnResources),
+                                1000
+                        ))
                 ))
-        ))
-
-        return ProcessResult(Event(
-                Type.Conflict,
-                "${group.name} declared war to ${opponent.name}"
-        )) +
-                ProcessResult(Trait.Peace.toNegativeChange() * 2.0)
     }
 
     override val internalToString = "Declare war to a random neighbour"

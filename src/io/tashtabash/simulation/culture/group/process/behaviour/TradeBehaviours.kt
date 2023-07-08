@@ -96,16 +96,13 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
             return ChangeRelationsI(group, chosenPartner, -1.0).run() +
                     ProcessResult(Event(
                             Type.Conflict,
-                            "${group.name} tried to make a trade agreement with ${chosenPartner.name}, " +
-                                    "but got rejected"
+                            "${group.name} tried to make a trade agreement with ${chosenPartner.name}, but got rejected"
                     ))
-
-        group.processCenter.addBehaviour(TradeRelationB(chosenPartner))
 
         return ProcessResult(Event(
                 Type.Cooperation,
                 "${group.name} made a trade agreement with a ${chosenPartner.name}"
-        ))
+        )) + ProcessResult(TradeRelationB(chosenPartner))
     }
 
     override val internalToString = "Try to establish trade relations with a random Group"

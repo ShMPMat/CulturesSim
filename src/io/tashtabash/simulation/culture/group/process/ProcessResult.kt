@@ -2,22 +2,26 @@ package io.tashtabash.simulation.culture.group.process
 
 import io.tashtabash.simulation.culture.group.centers.TraitChange
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.simulation.culture.group.process.behaviour.GroupBehaviour
 import io.tashtabash.simulation.event.Event
 
 
 class ProcessResult constructor(
         val memes: List<Meme> = listOf(),
         val events: List<Event> = listOf(),
-        val traitChanges: List<TraitChange> = listOf()
+        val traitChanges: List<TraitChange> = listOf(),
+        val behaviours: List<GroupBehaviour> = listOf()
 ) {
     constructor(vararg events: Event) : this(events = events.toList())
     constructor(vararg memes: Meme) : this(memes.toList())
     constructor(vararg traitChanges: TraitChange) : this(traitChanges = traitChanges.toList())
+    constructor(vararg behaviours: GroupBehaviour) : this(behaviours = behaviours.toList())
 
     operator fun plus(other: ProcessResult) = ProcessResult(
             memes + other.memes,
             events + other.events,
-            traitChanges + other.traitChanges
+            traitChanges + other.traitChanges,
+            behaviours + other.behaviours
     )
 }
 

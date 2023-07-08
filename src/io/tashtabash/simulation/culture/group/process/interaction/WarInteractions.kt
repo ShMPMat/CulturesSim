@@ -32,21 +32,16 @@ class ProbableStrikeWarI(
     override fun innerRun(): InteractionResult =
             if (DecideWarDeclarationA(participator, initiator).run()) {
                 val decreaseRelationsEvent = ChangeRelationsI(initiator, participator, -1.0).run()
-                initiator.processCenter.addBehaviour(WarB(
-                        participator,
-                        firstAction,
-                        secondAction,
-                        drawAction
-                ))
 
                 warStruck = true
 
                 decreaseRelationsEvent +
-                        ProcessResult(Event(
+                    ProcessResult(Event(
                                 Type.Conflict,
                                 "${initiator.name} started a war with ${participator.name}, because $reason"
                         )) +
-                        ProcessResult(Trait.Peace.toNegativeChange()) to
+                        ProcessResult(Trait.Peace.toNegativeChange()) +
+                        ProcessResult(WarB(participator, firstAction, secondAction, drawAction)) to
                         ProcessResult(Trait.Peace.toNegativeChange())
             } else ProcessResult(Trait.Peace.toPositiveChange()) to
                     ProcessResult(Trait.Peace.toPositiveChange())

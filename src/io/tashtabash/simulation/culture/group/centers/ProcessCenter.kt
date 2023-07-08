@@ -54,7 +54,11 @@ class ProcessCenter(type: AdministrationType) {
 
     private val addedBehaviours = mutableListOf<GroupBehaviour>()
 
-    fun addBehaviour(behaviour: AbstractGroupBehaviour) = addedBehaviours.add(behaviour)
+    fun addBehaviour(behaviour: GroupBehaviour) =
+            addedBehaviours.add(behaviour)
+
+    private fun addBehaviours(behaviours: List<GroupBehaviour>) =
+            behaviours.forEach { addBehaviour(it) }
 
     private fun updateBehaviours(group: Group) {
         _behaviours = _behaviours
@@ -109,6 +113,7 @@ class ProcessCenter(type: AdministrationType) {
     }
 
     fun consumeProcessResult(group: Group, result: ProcessResult) {
+        addBehaviours(result.behaviours)
         group.addEvents(result.events)
         group.cultureCenter.memePool.strengthenMemes(result.memes)
         group.cultureCenter.consumeAllTraitChanges(result.traitChanges)
