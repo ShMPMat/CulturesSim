@@ -23,13 +23,16 @@ import kotlin.math.pow
 
 class CultureAspectCenter(val reasonField: ReasonField) {
     val aspectPool = MutableCultureAspectPool(mutableSetOf())
-    private val aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
-    private val reasonsWithSystems: MutableSet<Reason> = HashSet()
+
+    private val _aestheticallyPleasingResources: MutableSet<Resource> = HashSet()
+    val aestheticallyPleasingResources: Set<Resource>
+        get() = _aestheticallyPleasingResources
+
+    val reasonsWithSystems: MutableSet<Reason> = HashSet()
 
     internal fun update(group: Group) {
         useCultureAspects(group)
         addRandomCultureAspect(group)
-        mutateCultureAspects(group)
         updateReasonings(group)
     }
 
@@ -52,7 +55,7 @@ class CultureAspectCenter(val reasonField: ReasonField) {
         aspectPool.add(cultureAspect)
 
         if (cultureAspect is CherishedResource)
-            aestheticallyPleasingResources.add(cultureAspect.resource)
+            _aestheticallyPleasingResources.add(cultureAspect.resource)
 
         return true
     }
@@ -92,32 +95,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
 
         if (addCultureAspect(cultureAspect))
             group.addEvent(Event(Type.AspectGaining, "Group ${group.name} gained a random aspect $cultureAspect"))
-    }
-
-    fun mutateCultureAspects(group: Group) {
-        session.groupCultureAspectCollapse.chanceOfNot {
-            return
-        }
-
-        when (ChangeRandom.values().randomElement()) {
-            ChangeRandom.RitualSystem -> joinSimilarRituals()
-            ChangeRandom.TaleSystem -> joinSimilarTales()
-            ChangeRandom.Worship -> addCultureAspect(takeOutWorship(reasonField, aspectPool))
-            ChangeRandom.God -> makeGod(group)
-        }
-    }
-
-    private fun joinSimilarRituals() = takeOutSimilarRituals(aspectPool)?.let { system ->
-        addCultureAspect(system)
-        reasonsWithSystems.add(system.reason)
-    }
-
-    private fun makeGod(group: Group) = takeOutGod(aspectPool, group)?.let { cult ->
-        addCultureAspect(cult)
-    }
-
-    private fun joinSimilarTales() = takeOutSimilarTales(aspectPool)?.let { system ->
-        addCultureAspect(system)
     }
 
     private fun getNeighbourCultureAspects(group: Group) =
@@ -172,14 +149,6 @@ private enum class AspectRandom(override val probability: Double) : SampleSpaceO
     Ritual(1.0),
     Concept(1.0)
 }
-
-private enum class ChangeRandom(override val probability: Double) : SampleSpaceObject {
-    RitualSystem(3.0),
-    TaleSystem(3.0),
-    Worship(2.0),
-    God(1.0),
-}
-
 
 fun generateCultureConversions(
         memoryCenter: MemoryCenter,

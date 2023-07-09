@@ -37,7 +37,7 @@ fun takeOutSimilarTales(aspectPool: MutableCultureAspectPool, bound: Int = 3): T
 
     if (popularTales.size >= bound) {
         aspectPool.removeAll(popularTales)
-        return TaleSystem(popularTales, popularConcept);
+        return TaleSystem(popularTales, popularConcept)
     }
     return null
 }
@@ -95,7 +95,7 @@ fun takeOutDepictionSystem(aspectPool: MutableCultureAspectPool, groupingMeme: M
     return null
 }
 
-fun takeOutGod(aspectPool: MutableCultureAspectPool, group: Group): CultureAspect? {
+fun takeOutGod(aspectPool: MutableCultureAspectPool, group: Group): Worship? {
     val chosen = aspectPool.worships
             .filter { it.worshipObject is ConceptObjectWorship }
             .randomElementOrNull()

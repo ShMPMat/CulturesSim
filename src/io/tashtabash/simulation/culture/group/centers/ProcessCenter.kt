@@ -20,6 +20,8 @@ class ProcessCenter(type: AdministrationType) {
             RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
                 1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
             },
+            MutateCultureAspectsB.withProbability(session.groupCultureAspectCollapse),
+
             RandomTradeB.times(1, 3),
             RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),
             MakeTradeResourceB(5).times(
