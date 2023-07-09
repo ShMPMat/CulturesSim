@@ -28,3 +28,6 @@ enum class Type(val colourString: String) {
     PopulationDecrease(""),
     Other("")
 }
+
+infix fun Type.of(description: String) =
+        Event(this, description)
