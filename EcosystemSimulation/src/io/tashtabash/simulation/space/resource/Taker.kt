@@ -11,6 +11,8 @@ sealed class Taker {
 
     object SeparationTaker: Taker()
 
+    object CataclysmTaker: Taker()
+
     object SelfTaker: Taker()
 
     override fun toString() = javaClass.simpleName.takeWhile { it != 'T' }
