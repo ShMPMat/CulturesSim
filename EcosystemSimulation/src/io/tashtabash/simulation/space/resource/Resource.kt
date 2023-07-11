@@ -304,7 +304,7 @@ open class Resource private constructor(
         return result
     }
 
-    fun applyActionUnsafe(action: ResourceAction) = genome.conversionCore.actionConversion[action]
+    fun applyActionUnsafe(action: ResourceAction) = genome.conversionCore.actionConversions[action]
             ?: core.wrappedSample
 
     fun applyActionOrEmpty(action: ResourceAction, part: Int = 1): List<Resource> {

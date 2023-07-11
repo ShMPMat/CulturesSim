@@ -5,23 +5,31 @@ import io.tashtabash.simulation.space.resource.Resources
 
 
 class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>>) {
-    val actionConversion = mutableMapOf<ResourceAction, MutableList<Resource>>()
+    val actionConversions = mutableMapOf<ResourceAction, MutableList<Resource>>()
     internal val probabilityActions = mutableListOf<ResourceProbabilityAction>()
+    internal val passiveActions = mutableListOf<ResourceProbabilityAction>()
+
+    val allActionConversions: Map<ResourceAction, List<Resource>>
+        get() = actionConversions + passiveActions.associateWith { listOf() }
 
     init {
-        actionConversion.forEach { (a, rs) -> addActionConversion(a, rs) }
+        for ((a, rs) in actionConversion)
+            addActionConversion(a, rs)
     }
 
     internal fun addActionConversion(action: ResourceAction, resources: Resources) {
-        if (action is ResourceProbabilityAction)
-            if (action !in probabilityActions)
+        if (action is ResourceProbabilityAction) {
+            if (resources.isEmpty() && action !in passiveActions)
+                passiveActions.add(action)
+            else if (action !in probabilityActions)
                 probabilityActions.add(action)
+        }
 
-        actionConversion[action] = resources.toMutableList()
+        actionConversions[action] = resources.toMutableList()
     }
 
     //TODO get rid of Templates
-    fun applyAction(action: ResourceAction): Resources? = actionConversion[action]
+    fun applyAction(action: ResourceAction): Resources? = actionConversions[action]
             ?.map { r ->
                 /*val resource = */r.copy(r.amount)
 
@@ -30,7 +38,7 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>
 //                else resource
             }
 
-    fun copy() = ConversionCore(actionConversion)
+    fun copy() = ConversionCore(actionConversions)
 
-    fun hasApplication(action: ResourceAction) = actionConversion.containsKey(action)
+    fun hasApplication(action: ResourceAction) = actionConversions.containsKey(action)
 }

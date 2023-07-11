@@ -207,7 +207,7 @@ class ResourceInstantiation(
 
         val newConversionCore = ConversionCore(mutableMapOf())
 
-        resource.genome.conversionCore.actionConversion.map { (action, results) ->
+        resource.genome.conversionCore.actionConversions.map { (action, results) ->
             action to results.map { r ->
                 when (r) {
                     resource -> newResource
@@ -228,7 +228,7 @@ class ResourceInstantiation(
     }
 
     private fun injectBuildings(conversionCore: ConversionCore) {
-        conversionCore.actionConversion.flatMap { (a, rs) ->
+        conversionCore.actionConversions.flatMap { (a, rs) ->
             resourceActionInjectors.flatMap { i -> i(a, rs) }
         }.forEach { (a, rs) ->
             conversionCore.addActionConversion(a, rs)

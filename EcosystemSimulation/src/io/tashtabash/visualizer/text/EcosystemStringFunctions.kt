@@ -57,7 +57,7 @@ data class ResourceCounter(var amount: Int = 0, var tilesAmount: Int = 0) {
 }
 
 fun outputResource(resource: Resource): String {
-    val actionConversions = resource.genome.conversionCore.actionConversion.entries
+    val actionConversions = resource.genome.conversionCore.allActionConversions.entries
             .joinToString("\n") { (a, v) ->
                 val needClause = if (a.dependencies.isNotEmpty())
                     a.dependencies.joinToString(",", " needs ", " ")

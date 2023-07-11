@@ -26,7 +26,7 @@ fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
         )
         resourcesToAdd.addAll(
                 lastResources
-                        .flatMap { it.genome.conversionCore.actionConversion.values }
+                        .flatMap { it.genome.conversionCore.actionConversions.values }
                         .flatten()
                         .map { r -> r.genome }
                         .map { ResourceIdeal(it) }

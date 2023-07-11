@@ -22,7 +22,7 @@ val specialActions = mapOf(
 internal fun Resource.replaceRecursiveLinks(old: Resource): Resource {
     val newConversionCore = ConversionCore(mapOf())
 
-    genome.conversionCore.actionConversion.map { (action, results) ->
+    genome.conversionCore.actionConversions.map { (action, results) ->
         action to results.map { r ->
             if (r == old) this.copy(r.amount)
             else r

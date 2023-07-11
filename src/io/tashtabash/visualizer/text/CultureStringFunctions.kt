@@ -18,7 +18,7 @@ fun printProduced(group: GroupConglomerate) = group.subgroups
         .joinToString { it.fullName }
 
 fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = resources
-        .filter { it.genome.conversionCore.actionConversion.containsKey(aspect.core.resourceAction) }
+        .filter { it.genome.conversionCore.actionConversions.containsKey(aspect.core.resourceAction) }
         .joinToString { it.fullName }
 
 fun outputGroup(group: Group) = "$group"
