@@ -7,12 +7,13 @@ import io.tashtabash.simulation.space.WorldMap
 import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.container.MutableResourcePack
 import io.tashtabash.simulation.space.resource.container.ResourcePack
+import io.tashtabash.simulation.space.tile.updater.TileUpdater
 import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
 
 
-class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
+class Tile(val x: Int, val y: Int, private val updaters: List<TileUpdater>) {
     val tagPool = MutableTileTagPool()
 
     var type: Type? = null
@@ -175,7 +176,9 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         windCenter.startUpdate()
         windCenter.useWind(_resourcePack.resources)
         updateTemperature()
-        updateType()
+
+        for (updater in updaters)
+            updater.update(this)
     }
 
     fun middleUpdate(map: WorldMap) {
@@ -222,13 +225,6 @@ class Tile(val x: Int, val y: Int, private val typeUpdater: TypeUpdater) {
         }
 
         _resourcePack.removeAll(deletedResources)
-    }
-
-    private fun updateType() {
-        typeUpdater.updateType(this)
-
-//        if (type == Type.Water)
-//            addDelayedResource(SpaceData.data.resourcePool.getBaseName("Vapour"))
     }
 
     fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop growing

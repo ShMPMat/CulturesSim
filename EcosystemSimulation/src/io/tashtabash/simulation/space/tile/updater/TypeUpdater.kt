@@ -1,12 +1,13 @@
-package io.tashtabash.simulation.space.tile
+package io.tashtabash.simulation.space.tile.updater
 
 import io.tashtabash.simulation.space.SpaceData
 import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.ResourceType
+import io.tashtabash.simulation.space.tile.Tile
 
 
-class TypeUpdater(val water: Resource) {
-    fun updateType(tile: Tile) {
+class TypeUpdater(val water: Resource): TileUpdater {
+    override fun update(tile: Tile) {
         if (tile.resourcePack.contains(water))
             tile.setType(Tile.Type.Water, false)
         else if (tile.type in listOf(Tile.Type.Normal, Tile.Type.Woods, Tile.Type.Growth)) when {

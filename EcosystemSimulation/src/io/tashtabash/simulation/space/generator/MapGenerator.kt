@@ -2,15 +2,12 @@ package io.tashtabash.simulation.space.generator
 
 import io.tashtabash.random.randomElement
 import io.tashtabash.random.randomTile
-import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.simulation.space.TectonicPlate
 import io.tashtabash.simulation.space.WorldMap
 import io.tashtabash.simulation.space.resource.Resource
-import io.tashtabash.simulation.space.resource.ResourceType
 import io.tashtabash.simulation.space.resource.container.ResourcePool
-import io.tashtabash.simulation.space.resource.dependency.LabelerDependency
 import io.tashtabash.simulation.space.tile.Tile
-import io.tashtabash.simulation.space.tile.TypeUpdater
+import io.tashtabash.simulation.space.tile.updater.TypeUpdater
 import java.util.*
 import kotlin.random.Random
 
@@ -45,9 +42,11 @@ private fun setTileNeighbours(map: WorldMap) {
 
 private fun createTiles(x: Int, y: Int, water: Resource): List<List<Tile>> {
     val map: MutableList<List<Tile>> = ArrayList()
-    (0 until x).map { i ->
-        map.add((0 until y).map { j -> Tile(i, j, TypeUpdater(water)) })
-    }
+    val updaters = listOf(TypeUpdater(water))
+
+    for (i in 0 until x)
+        map.add((0 until y).map { j -> Tile(i, j, updaters) })
+
     return map
 }
 
