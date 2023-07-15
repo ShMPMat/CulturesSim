@@ -39,6 +39,16 @@ fun makeMeme(resource: Resource) = Meme(resource.fullName)
 
 fun makeMeme(aspect: Aspect) = Meme(aspect.name)
 
+fun makePredicateChain(vararg memes: Meme) = memes.toList()
+        .asReversed()
+        .let {
+            if (it.isEmpty())
+                throw ArrayIndexOutOfBoundsException("Non-empty array is expected for a predicate chain")
+
+            it.drop(1).fold(it[0]) { meme, prevMeme ->
+                prevMeme.addPredicate(meme)
+            }
+        }
 
 fun makeResourcePackMemes(pack: ResourcePack) = pack.resources
         .map { makeResourceMemes(it).flattenMemePair() }
@@ -51,17 +61,17 @@ fun makeStratumMemes(stratum: Stratum): List<Meme> =
 fun makeAspectMemes(aspect: Aspect): Pair<MutableList<Meme>, List<Meme>> {
     val memes = mutableListOf<Meme>() to mutableListOf<Meme>()
 
-    memes.first.add(makeMeme(aspect))
+    memes.first += makeMeme(aspect)
 
     if (aspect is ConverseWrapper) {
         val (first, second) = makeResourceMemes(aspect.resource)
-        memes.first.addAll(first)
-        memes.second.addAll(second)
+        memes.first += first
+        memes.second += second
         aspect.producedResources
                 .map { makeResourceMemes(it) }
                 .forEach { (first1, second1) ->
-                    memes.first.addAll(first1)
-                    memes.second.addAll(second1)
+                    memes.first += first1
+                    memes.second += second1
                 }
     }
 
@@ -71,7 +81,7 @@ fun makeAspectMemes(aspect: Aspect): Pair<MutableList<Meme>, List<Meme>> {
 fun makeResourceMemes(resource: Resource): Pair<List<Meme>, List<Meme>> {
     val memes = makeResourceInfoMemes(resource)
 
-    memes.first.add(makeMeme(resource))
+    memes.first += makeMeme(resource)
 
     return memes
 }
@@ -83,12 +93,9 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
         if (resourceDependency is ConsumeDependency)
             for (res in resourceDependency.lastConsumed(resource.baseName)) {
                 val subject = Meme(res)
-                memes.first.add(subject)
-                val element = makeMeme(resource).addPredicate(Meme("consume"))
-                element.predicates[0].addPredicate(subject)
-                memes.second.add(element)
+                memes.first += subject
+                memes.second += makePredicateChain(makeMeme(resource), Meme("consume"), subject)
             }
-
 
     return memes
 }
