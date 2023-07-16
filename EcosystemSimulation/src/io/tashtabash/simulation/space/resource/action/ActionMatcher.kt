@@ -17,6 +17,8 @@ class ActionMatcher(
             throw DataInitializationError("Action matcher does nothing")
     }
 
+    private val resourceNames = results.map { (n) -> n }
+
     fun constructResults(pool: ResourcePool) = results.flatMap { (n, a) ->
         pool.simpleNameMap
                 .getOrDefault(n, listOf())
@@ -25,7 +27,7 @@ class ActionMatcher(
 
     fun match(resource: Resource) =
             if (!resource.genome.conversionCore.actionConversions.keys.map { it.technicalName }.any { it == resourceActionName })
-                if (resource.genome.hasLegacy && resource.simpleName in results.map { (n) -> n })
+                if (resource.genome.hasLegacy && resource.simpleName in resourceNames)
                     false
                 else
                     labeler.isSuitable(resource.genome)
