@@ -21,6 +21,7 @@ class ProcessCenter(type: AdministrationType) {
                 1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
             },
             MutateCultureAspectsB.withProbability(session.groupCultureAspectCollapse),
+            CreateCultureAspectsB.withProbability(session.cultureAspectBaseProbability),
 
             RandomTradeB.times(1, 3),
             RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),

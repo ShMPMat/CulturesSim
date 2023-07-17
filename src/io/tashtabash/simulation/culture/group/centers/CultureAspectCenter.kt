@@ -3,19 +3,14 @@ package io.tashtabash.simulation.culture.group.centers
 import io.tashtabash.generator.culture.worldview.reasoning.*
 import io.tashtabash.generator.culture.worldview.reasoning.concept.IdeationalConcept
 import io.tashtabash.generator.culture.worldview.reasoning.concept.ObjectConcept
-import io.tashtabash.random.SampleSpaceObject
 import io.tashtabash.random.singleton.*
 import io.tashtabash.simulation.CulturesController.Companion.session
 import io.tashtabash.simulation.culture.group.centers.util.*
 import io.tashtabash.simulation.culture.group.cultureaspect.*
 import io.tashtabash.generator.culture.worldview.reasoning.convertion.*
-import io.tashtabash.simulation.culture.group.cultureaspect.util.*
 import io.tashtabash.simulation.culture.group.cultureaspect.worship.Worship
 import io.tashtabash.simulation.culture.group.reason.Reason
-import io.tashtabash.simulation.culture.group.reason.constructBetterAspectUseReason
 import io.tashtabash.generator.culture.worldview.toMeme
-import io.tashtabash.simulation.event.Event
-import io.tashtabash.simulation.event.Type
 import io.tashtabash.simulation.space.resource.Resource
 import java.util.*
 import kotlin.math.pow
@@ -32,7 +27,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
 
     internal fun update(group: Group) {
         useCultureAspects(group)
-        addRandomCultureAspect(group)
         updateReasonings(group)
     }
 
@@ -61,41 +55,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
     }
 
     private fun useCultureAspects(group: Group) = aspectPool.all.forEach { it.use(group) }
-
-    fun addRandomCultureAspect(group: Group) {
-        session.cultureAspectBaseProbability.chanceOfNot {
-            return
-        }
-
-        val cultureAspect = when (AspectRandom.values().randomElement()) {
-            AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
-                    group.cultureCenter.aspectCenter.aspectPool.producedResources
-                            .filter { it.genome.isDesirable }
-                            .filter { !aestheticallyPleasingResources.contains(it) }
-                            .maxByOrNull { it.genome.baseDesirability }
-            )
-            AspectRandom.Ritual -> createRitual(//TODO recursively go in dependencies;
-                    constructBetterAspectUseReason(
-                            group.cultureCenter.aspectCenter.aspectPool.converseWrappers.sortedBy { it.name },
-                            reasonsWithSystems,
-                            session.random
-                    ),
-                    group,
-                    session.random
-            )
-            AspectRandom.Tale -> createTale(
-                    group,
-                    session.templateBase
-            )
-            AspectRandom.Concept -> createSimpleConcept(
-                    group,
-                    session.random
-            )
-        }
-
-        if (addCultureAspect(cultureAspect))
-            group.addEvent(Event(Type.AspectGaining, "Group ${group.name} gained a random aspect $cultureAspect"))
-    }
 
     private fun getNeighbourCultureAspects(group: Group) =
             group.relationCenter.relatedGroups.flatMap { n ->
@@ -142,13 +101,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
     """.trimMargin()
 }
 
-
-private enum class AspectRandom(override val probability: Double) : SampleSpaceObject {
-    Tale(3.0),
-    AestheticallyPleasing(1.0),
-    Ritual(1.0),
-    Concept(1.0)
-}
 
 fun generateCultureConversions(
         memoryCenter: MemoryCenter,
