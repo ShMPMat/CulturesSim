@@ -4,6 +4,7 @@ import io.tashtabash.simulation.space.SpaceData
 import io.tashtabash.simulation.space.resource.ResourceColour
 import io.tashtabash.simulation.space.resource.ResourceTexture
 import io.tashtabash.simulation.space.resource.instantiation.ConversionParser
+import io.tashtabash.simulation.space.resource.tag.ResourceTag
 import io.tashtabash.simulation.space.resource.tag.labeler.makeResourceLabeler
 
 
@@ -20,8 +21,14 @@ class TransformerInstantiator(private val conversionParser: ConversionParser) {
     private fun getLabel(key: String, value: String): ResourceTransformer = when (key) {
         "s|" -> SizeTransformer(value.toDouble())
         "c|" -> ColourTransformer(ResourceColour.valueOf(value))
-        "t|" -> TextureTransformer(ResourceTexture.valueOf(value))
+        "x|" -> TextureTransformer(ResourceTexture.valueOf(value))
         "n|" -> NameTransformer { value.split("$").joinToString(it) }
+        "t|" -> TagTransformer(
+                ResourceTag(
+                        value.takeWhile { it.isLetter() },
+                        value.dropWhile { it.isLetter() }.toDouble()
+                )
+        )
         "a|" -> {
             val (action, resources) = conversionParser.parse(value)
 
