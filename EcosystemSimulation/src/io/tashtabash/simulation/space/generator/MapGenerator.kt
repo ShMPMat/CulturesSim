@@ -4,8 +4,8 @@ import io.tashtabash.random.randomElement
 import io.tashtabash.random.randomTile
 import io.tashtabash.simulation.space.TectonicPlate
 import io.tashtabash.simulation.space.WorldMap
-import io.tashtabash.simulation.space.resource.Resource
 import io.tashtabash.simulation.space.resource.container.ResourcePool
+import io.tashtabash.simulation.space.tile.updater.MeteorStrike
 import io.tashtabash.simulation.space.tile.Tile
 import io.tashtabash.simulation.space.tile.updater.TypeUpdater
 import java.util.*
@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 
 fun generateMap(x: Int, y: Int, platesAmount: Int, resourcePool: ResourcePool, random: Random): WorldMap {
-    val tiles = createTiles(x, y, resourcePool.getBaseName("Water"))
+    val tiles = createTiles(x, y, resourcePool)
     val map = WorldMap(tiles)
     setTileNeighbours(map)
     val tectonicPlates = randomPlates(
@@ -40,9 +40,12 @@ private fun setTileNeighbours(map: WorldMap) {
             ).filterNotNull()
 }
 
-private fun createTiles(x: Int, y: Int, water: Resource): List<List<Tile>> {
+private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool): List<List<Tile>> {
     val map: MutableList<List<Tile>> = ArrayList()
-    val updaters = listOf(TypeUpdater(water))
+    val updaters = listOf(
+            TypeUpdater(resourcePool.getBaseName("Water")),
+            MeteorStrike(resourcePool.getBaseName("RawIron"))
+    )
 
     for (i in 0 until x)
         map.add((0 until y).map { j -> Tile(i, j, updaters) })
