@@ -1,6 +1,7 @@
 package io.tashtabash.simulation.culture.thinking.meaning
 
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.generator.culture.worldview.toMeme
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.simulation.culture.aspect.Aspect
 import io.tashtabash.simulation.culture.aspect.ConverseWrapper
@@ -96,6 +97,18 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
                 memes.first += subject
                 memes.second += makePredicateChain(makeMeme(resource), Meme("consume"), subject)
             }
+
+    // Add appearance
+    memes.first += listOfNotNull(
+            resource.genome.appearance.colour?.name?.toMeme(),
+            resource.genome.appearance.texture?.name?.toMeme(),
+            resource.genome.appearance.shape?.name?.toMeme()
+    )
+    memes.second += listOfNotNull(
+            resource.genome.appearance.colour?.name?.toMeme(),
+            resource.genome.appearance.texture?.name?.toMeme(),
+            resource.genome.appearance.shape?.name?.toMeme()
+    ).map { makeMeme(resource).addPredicate(it) }
 
     return memes
 }
