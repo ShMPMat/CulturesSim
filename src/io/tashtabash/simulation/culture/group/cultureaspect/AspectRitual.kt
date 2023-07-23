@@ -11,6 +11,7 @@ import io.tashtabash.simulation.culture.group.resource_behaviour.ResourceBehavio
 import io.tashtabash.simulation.culture.group.resource_behaviour.getRandom
 import java.util.*
 
+
 class AspectRitual(
         val converseWrapper: ConverseWrapper,
         private val resourceBehaviour: ResourceBehaviour,
