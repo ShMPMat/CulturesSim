@@ -44,8 +44,8 @@ class BattleI(initiator: Group, participator: Group) : AbstractGroupInteraction(
         )
         val traitChangePartResult = status.decide(
                 emptyProcessResult,
-                ProcessResult(Trait.Peace.toNegativeChange()),
-                ProcessResult(Trait.Peace.toNegativeChange())
+                ProcessResult(Trait.Peace.toNegativeChange() * 0.5),
+                ProcessResult(Trait.Peace.toNegativeChange() * 0.5)
         )
         val warriorIniMemes = iniWarriors
                 .map { makeStratumMemes(it.stratum) }
