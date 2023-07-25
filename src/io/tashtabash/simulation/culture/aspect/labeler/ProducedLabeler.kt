@@ -4,6 +4,7 @@ import io.tashtabash.simulation.culture.aspect.Aspect
 import io.tashtabash.simulation.space.resource.container.ResourcePool
 import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
 
+
 data class ProducedLabeler(val labeler: ResourceLabeler) : AspectLabeler {
     override fun isSuitable(aspect: Aspect) = aspect.producedResources.any { labeler.isSuitable(it.genome) }
 
@@ -12,13 +13,13 @@ data class ProducedLabeler(val labeler: ResourceLabeler) : AspectLabeler {
     }
 }
 
-
-data class PotentialProducedLabeler(val labeler: ResourceLabeler, val pool: ResourcePool) : AspectLabeler {
-    override fun isSuitable(aspect: Aspect) = aspect.core.matchers.any { matcher ->
-        matcher.constructResults(pool).any { labeler.isSuitable(it.genome) }
-    }
-
-    override fun toString(): String {
-        return "Produced resource - $labeler"
-    }
-}
+// Commented out since some aspects rn can have no attached resource
+//data class PotentialProducedLabeler(val labeler: ResourceLabeler, val pool: ResourcePool) : AspectLabeler {
+//    override fun isSuitable(aspect: Aspect) = aspect.core.matchers.any { matcher ->
+//        matcher.constructResults(pool).any { labeler.isSuitable(it.genome) }
+//    }
+//
+//    override fun toString(): String {
+//        return "Produced resource - $labeler"
+//    }
+//}
