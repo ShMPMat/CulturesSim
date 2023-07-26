@@ -140,6 +140,16 @@
         #Water
         cGreen
 
+-Lily                               0.0     0.1    5          5      30   100        Cut        Plant        @PlantFibre
+        ~r:Vapour;0.000001;1.25;1;CONSUME
+        ~t:Pollinator;0.01;1.01;0;EXIST
+        ~r:Detritus;0.1;2;0;CONSUME
+        +_disperse_prob_0.2_f/Seed:10
+        +_OnDeath_/Detritus:1
+        ^Leaf:3:s|0.1 ^Seed:3   ^Flower:1:c|Orange
+        #Water
+        cGreen
+
 -WindPollinatedPlant                0.4     0.1    5          5      30   100        Cut        Plant        @PlantFibre
         ~r:Vapour;0.000001;1.25;1;CONSUME
         ~r:Detritus;0.1;2;0;CONSUME
