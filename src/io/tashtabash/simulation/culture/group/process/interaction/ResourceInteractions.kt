@@ -10,8 +10,8 @@ import io.tashtabash.simulation.culture.group.process.action.*
 import io.tashtabash.simulation.culture.group.process.emptyProcessResult
 import io.tashtabash.simulation.culture.group.request.Request
 import io.tashtabash.simulation.culture.thinking.meaning.makeResourcePackMemes
-import io.tashtabash.simulation.event.Event
 import io.tashtabash.simulation.event.Type
+import io.tashtabash.simulation.event.of
 import io.tashtabash.simulation.space.resource.container.ResourcePromise
 import io.tashtabash.simulation.space.resource.container.ResourcePromisePack
 import kotlin.math.pow
@@ -77,22 +77,19 @@ class ReceiveGiftI(
         val giftCopy = gift.makeCopy()
         val giftStr = giftCopy.listResources
         val worth = EvaluateResourcesA(participator, giftCopy).run() + 0.8
-        val acceptanceChance = participator.relationCenter.getNormalizedRelation(initiator) * worth.pow(2)
+        val disposition = participator.relationCenter.getNormalizedRelation(initiator)
+        val acceptanceChance = disposition * worth.pow(2)
 
         return acceptanceChance.chanceOf<InteractionResult> {
             ReceiveGroupWideResourcesA(participator, gift.extract(participator.populationCenter.taker)).run()
 
-            ProcessResult(Event(
-                    Type.Cooperation,
-                    "${participator.name} accepted a gift of $giftStr from ${initiator.name}"
-            )) + ProcessResult(makeResourcePackMemes(giftCopy))
-            ChangeRelationsI(initiator, participator, 2.0).run() to
+            ProcessResult(Type.Cooperation of "${participator.name} accepted a gift of $giftStr from ${initiator.name}") +
+                    ProcessResult(makeResourcePackMemes(giftCopy)) +
+                    ChangeRelationsI(initiator, participator, 2.0).run() to
                     ProcessResult(makeResourcePackMemes(giftCopy))
-        } ?: ProcessResult(Event(
-                Type.Conflict,
-                "${participator.name} rejected a gift of $giftStr from ${initiator.name}"
-        )) +
-        ChangeRelationsI(initiator, participator, -2.0).run() to
-        emptyProcessResult
+        } ?: (ProcessResult(
+                Type.Conflict of "${participator.name} rejected a gift of $giftStr from ${initiator.name} because " +
+                        "of low disposition $disposition"
+        ) + ChangeRelationsI(initiator, participator, -2.0).run() to emptyProcessResult)
     }
 }
