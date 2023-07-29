@@ -22,7 +22,7 @@ fun constructBetterAspectUseReason(
                 random
         ) ?: return null
 
-        reason = io.tashtabash.simulation.culture.group.reason.BetterAspectUseReason(converseWrapper)
+        reason = BetterAspectUseReason(converseWrapper)
         i++
     } while (i <= tries && exceptions.contains(reason))
 
