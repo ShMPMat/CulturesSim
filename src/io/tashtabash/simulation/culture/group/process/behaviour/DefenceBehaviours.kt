@@ -27,7 +27,7 @@ object DefenceFromNatureB : AbstractGroupBehaviour() {
 
                     defenceEvents += Event(
                             Type.Conflict,
-                            "${group.name} increased defence against ${taker.resource.baseName} increased"
+                            "${group.name} increased defence against ${taker.resource.baseName}"
                     )
                 }
 
