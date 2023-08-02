@@ -13,10 +13,19 @@ class EventLog(private val isPurging: Boolean = true, private val isOblivious: B
 
     private val maxEvents = 10000
 
+    // Uncomment this fun and its calls in add if logging is necessary
+//    private fun printImportantEvents(events: List<Event>) {
+//        for (event in events)
+//            if (event.toString().contains("PLACEHOLDER"))
+//                println(event)
+//    }
+
     fun add(event: Event) {
         _newEvents.add(event)
         if (!isOblivious)
             _lastEvents.add(event)
+
+//        printImportantEvents(listOf(event))
     }
 
     fun addAll(events: List<Event>) {
@@ -24,6 +33,8 @@ class EventLog(private val isPurging: Boolean = true, private val isOblivious: B
 
         if (!isOblivious)
             _lastEvents.addAll(events)
+
+//        printImportantEvents(events)
     }
 
     fun clearNewEvents() = _newEvents.clear()
