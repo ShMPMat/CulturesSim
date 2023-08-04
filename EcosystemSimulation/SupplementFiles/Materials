@@ -19,7 +19,7 @@
 -Blood         200                                                          -liquid:1
 -Ink           200                                                          -liquid:1
 -Web           100       -soft:2     -flexible:10                           -mass:1
--Leather       500       -soft:1     -flexible:7      -thin:2               -solid:1
+-Leather       500       -soft:1     -flexible:7      -thin:2    -sturdy:1  -solid:1
 
 -Detritus      500       -soft:1     -flexible:7      -thin:2               -solid:1
 -Carcass       300       -springy:1  -flexible:1                            -solid:1
