@@ -9,7 +9,7 @@ import io.tashtabash.simulation.culture.group.request.Request
 import java.util.*
 
 
-class RitualSystem constructor(rituals: Collection<Ritual>, val reason: Reason) : CultureAspect {
+class RitualSystem(rituals: Collection<Ritual>, val reason: Reason) : CultureAspect {
     private val _rituals: MutableSet<Ritual>
 
     val rituals: Set<Ritual>
