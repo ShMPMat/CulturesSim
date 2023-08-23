@@ -24,7 +24,7 @@ enum class EnvironmentCommand(command: String, override val description: String)
     PinResources("pin \\w+ .", "Always display the resource on the map"),
     UnpinResources("unpin \\w+", "Stop displaying the resource on the map"),
     CleanConsumers("cln cons", "Clean resource statistics for consumers and consumed"),
-    Events("(\\d+ )?e ?.*", "Display events"),
+    Events("(\\d+ )?e ?.*", "Display events: [numberOfEvents ]e <query>; default numberOfEvents = 100"),
     ShowMap("[mM]", "Display map"),
     LegendOn("legend on", "Enable displaying legend"),
     LegendOff("legend off", "Disable displaying legend"),
