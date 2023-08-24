@@ -17,7 +17,7 @@
 
 -Deer                               0.11    2      22         -10     5   15       Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Fungus),>=0.03;0.05;2;0;CONSUME
-        +_OnDeath_/Carcass:2
+        +_OnDeath_/Carcass:22
         ^Meat:12 ^Fat:7 ^Bone:7:s|0.5 ^Fur:5 ^Blood:10 ^Leather:2:s|2.5
         #Water
         cBrown
@@ -156,7 +156,7 @@
         ~m:Water,t:liquid;2;200;1;EXIST
         +_OnDeath_/Carcass:20
         +_layEggs_prob_0.11_f/CrocodileEgg:15
-        ^Meat:10 ^Fat:3 ^Bone:5 ^Leather:2:s|1 ^Blood:5
+        ^Meat:10 ^Fat:3 ^Bone:5 ^Leather:2:s|1#t|flexible4#t|sturdy4 ^Blood:5
         cGreen
         C0.3 R0.3 D0.8
 
@@ -661,6 +661,30 @@
         l93;1000
         cBrown tMatt
         C0.7
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+-AcornWormEgg                       0.0     0.0001 2           -10   35   1000     Ignore    Animal       @Meat
+        ~r:SaltWater,t:liquid;0.001;200;1;EXIST
+        +_transform_prob_0.5_t/Tornaria:1
+        ^Meat:1:s|0.0001
+        tSemitransparent
+
+-Tornaria                           0.0     0.0005 3           -10   35   1000     Ignore    Animal       @Meat
+        ~D(m:PlantFibre||m:Meat),<=0.001;0.0005;1.25;0;CONSUME
+        ~r:SaltWater,t:liquid;0.001;200;1;EXIST
+        +_transform_prob_0.333_t/AcornWorm:1
+        ^Meat:1:s|0.0005
+        tSemitransparent
+
+-AcornWorm                          0.0     0.2    8           -10   35   400      Migrate   Animal       @Meat
+        ~m:Detritus;0.1;2;0;CONSUME
+        ~r:SaltWater,t:liquid;0.001;200;1;EXIST
+        +_layEggs_prob_0.1_t/AcornWormEgg:15
+        ^Meat:1:s|0.05
+        l10;1000
+        cYellow tMatt
+        C0.8
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
