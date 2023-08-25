@@ -47,7 +47,10 @@ class TaleSystem(
                         },
                         worshipObject
                 )
-                else -> null
+                else -> {
+                    println("Unknown WorshipObject type ${worshipObject.javaClass.simpleName} for TaleSystem")
+                    null
+                }
             }
 
 
