@@ -11,7 +11,7 @@ class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: 
     fun parse(conversionStr: String): Pair<ResourceAction, List<ResourceLink>> {
         val nameEndIndex = conversionStr.indexOf(dependencySeparator)
                 .takeIf { it != -1 }
-                ?: throw ParseException("Cannot parse action '$conversionStr'")
+                ?: conversionStr.length
         val actionName = conversionStr.take(nameEndIndex)
 
         val action = specialActions[actionName]
@@ -21,6 +21,7 @@ class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: 
 
         val resourceStrings = conversionStr.drop(nameEndIndex + 1)
                 .split(dependencySeparator)
+                .filter { it.isNotEmpty() }
 
         val resourceLinks = resourceStrings
                 .filter { !it.startsWith(conversionPrefix) }
