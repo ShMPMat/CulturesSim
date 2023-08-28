@@ -5,7 +5,6 @@ import io.tashtabash.simulation.CulturesController.Companion.session
 import io.tashtabash.simulation.culture.aspect.*
 import io.tashtabash.simulation.culture.aspect.dependency.AspectDependencies
 import io.tashtabash.simulation.culture.aspect.dependency.LineDependency
-import io.tashtabash.simulation.culture.aspect.labeler.PotentialProducedLabeler
 import io.tashtabash.simulation.culture.aspect.labeler.ProducedLabeler
 import io.tashtabash.simulation.culture.group.AspectDependencyCalculator
 import io.tashtabash.simulation.culture.group.convert
@@ -117,17 +116,23 @@ class AspectCenter(aspects: List<Aspect>) {
     }
 
     private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
-        val newResources = group.overallTerritory.differentResources.filter { it !in _lastResourcesForCw }
-                .toMutableSet()
-        newResources.addAll(_aspectPool.producedResources.filter { it !in _lastResourcesForCw })
+        val resources = getAllPossibleResources(group)
 
         for (aspect in _aspectPool.filter { it !is ConverseWrapper })
-            for (resource in newResources)
+            for (resource in resources)
                 queueConverseWrapper(aspect, resource)
-        _lastResourcesForCw.addAll(newResources)
-        newResources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
+        _lastResourcesForCw.addAll(resources)
+        resources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
 
         return _converseWrappers.sortedBy { it.name }
+    }
+
+    private fun getAllPossibleResources(group: Group): Set<Resource> {
+        val resources = group.overallTerritory.differentResources.filter { it !in _lastResourcesForCw }
+                .toMutableSet()
+        resources.addAll(_aspectPool.producedResources.filter { it !in _lastResourcesForCw })
+
+        return resources
     }
 
     fun finishUpdate(): Set<Aspect> {
@@ -165,14 +170,6 @@ class AspectCenter(aspects: List<Aspect>) {
     fun findOptions(labeler: ResourceLabeler, group: Group): List<Pair<Aspect, Group?>> {
         val options = mutableListOf<Pair<Aspect, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
-        0.5.chanceOf {
-            val aspectPotentialLabeler = PotentialProducedLabeler(labeler, session.world.resourcePool)
-            for (aspect in session.world.aspectPool.all.filter { aspectPotentialLabeler.isSuitable(it) }) {
-                val dependencies = calculateDependencies(aspect, group)
-                if (aspect.isDependenciesOk(dependencies))
-                    options.add(aspect.copy(dependencies) to null)
-            }
-        }
 
         getAllPossibleConverseWrappers(group)
                 .filter { aspectLabeler.isSuitable(it) }

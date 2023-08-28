@@ -2,7 +2,6 @@ package io.tashtabash.simulation.space.resource.action
 
 import io.tashtabash.simulation.DataInitializationError
 import io.tashtabash.simulation.space.resource.Resource
-import io.tashtabash.simulation.space.resource.container.ResourcePool
 import io.tashtabash.simulation.space.resource.instantiation.ResourceStringTemplate
 import io.tashtabash.simulation.space.resource.tag.labeler.ResourceLabeler
 
@@ -19,12 +18,6 @@ class ActionMatcher(
 
     private val resourceNames = results.map { (n) -> n }
 
-    fun constructResults(pool: ResourcePool) = results.flatMap { (n, a) ->
-        pool.simpleNameMap
-                .getOrDefault(n, listOf())
-                .map { it.sample.copy(a) }
-    }
-
     fun match(resource: Resource) =
             if (!resource.genome.conversionCore.actionConversions.keys.map { it.technicalName }.any { it == resourceActionName })
                 if (resource.genome.hasLegacy && resource.simpleName in resourceNames)
@@ -37,10 +30,8 @@ class ActionMatcher(
             results.map { (name, amount) ->
                 val resultResource =
                         if (name != "MATCHED")
-                            resources.firstOrNull() { it.resource.baseName == name }
-                                    ?: kotlin.run {
-                                        resources[0]
-                                    }
+                            resources.firstOrNull { it.resource.baseName == name }
+                                    ?: run { resources[0] }
                         else resource
                 resultResource to amount
             }
