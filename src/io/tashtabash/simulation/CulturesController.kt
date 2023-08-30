@@ -5,9 +5,9 @@ import io.tashtabash.simulation.interactionmodel.InteractionModel
 
 
 class CulturesController(
-        interactionModel: InteractionModel<io.tashtabash.simulation.CulturesWorld>
-) : Controller<io.tashtabash.simulation.CulturesWorld>(interactionModel, io.tashtabash.simulation.CulturesWorld()) {
-    var templateBase: io.tashtabash.simulation.culture.thinking.language.templates.TemplateBase
+        interactionModel: InteractionModel<CulturesWorld>
+) : Controller<CulturesWorld>(interactionModel, CulturesWorld()) {
+    var templateBase: TemplateBase
 
     val doPrint = false
 
@@ -27,7 +27,6 @@ class CulturesController(
     val defaultGroupDiverge = 0.01
     val defaultTypeRenewal = 0.05
     val rAspectAcquisition = 1.0
-    val cultureAspectBaseProbability = 0.02
     val groupCultureAspectCollapse = 0.05
     val groupCollapsedAspectUpdate = 0.01
     val groupAspectAdoptionProb = 0.07
@@ -62,15 +61,15 @@ class CulturesController(
         }
 
     init {
-        io.tashtabash.simulation.CulturesController.Companion.session = this
+        session = this
         world.initializeMap(proportionCoefficient)
-        templateBase = io.tashtabash.simulation.culture.thinking.language.templates.TemplateBase()
+        templateBase = TemplateBase()
 
-        initSteps += io.tashtabash.simulation.RegisterPersonStep()
-        initSteps += io.tashtabash.simulation.GroupTurnsStep(cultureTurns, doPrint)
+        initSteps += RegisterPersonStep()
+        initSteps += GroupTurnsStep(cultureTurns, doPrint)
     }
 
     companion object {
-        lateinit var session: io.tashtabash.simulation.CulturesController
+        lateinit var session: CulturesController
     }
 }
