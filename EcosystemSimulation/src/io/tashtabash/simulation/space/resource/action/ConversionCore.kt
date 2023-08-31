@@ -28,14 +28,9 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>
         actionConversions[action] = resources.toMutableList()
     }
 
-    //TODO get rid of Templates
     fun applyAction(action: ResourceAction): Resources? = actionConversions[action]
             ?.map { r ->
-                /*val resource = */r.copy(r.amount)
-
-//                if (resource.genome is GenomeTemplate)
-//                    throw SimulationError("No GenomeTemplates allowed")
-//                else resource
+                r.copy(r.amount)
             }
 
     fun copy() = ConversionCore(actionConversions)
