@@ -1,7 +1,7 @@
 package io.tashtabash.visualizer
 
-import io.tashtabash.simulation.Controller
-import io.tashtabash.simulation.World
+import io.tashtabash.sim.Controller
+import io.tashtabash.sim.World
 import java.util.concurrent.atomic.AtomicBoolean
 
 

@@ -1,15 +1,15 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.World
-import io.tashtabash.simulation.event.Event
-import io.tashtabash.simulation.space.WorldMap
-import io.tashtabash.simulation.space.resource.Resource
-import io.tashtabash.simulation.space.resource.ResourceType
-import io.tashtabash.simulation.space.resource.container.ResourcePack
-import io.tashtabash.simulation.space.resource.dependency.ConsumeDependency
-import io.tashtabash.simulation.space.resource.dependency.NeedDependency
-import io.tashtabash.simulation.space.resource.free
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.World
+import io.tashtabash.sim.event.Event
+import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.resource.ResourceType
+import io.tashtabash.sim.space.resource.container.ResourcePack
+import io.tashtabash.sim.space.resource.dependency.ConsumeDependency
+import io.tashtabash.sim.space.resource.dependency.NeedDependency
+import io.tashtabash.sim.space.resource.free
+import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.utils.chompToLines
 
 

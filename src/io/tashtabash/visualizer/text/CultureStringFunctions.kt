@@ -1,11 +1,11 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.CulturesWorld
-import io.tashtabash.simulation.culture.aspect.Aspect
-import io.tashtabash.simulation.culture.group.GroupConglomerate
-import io.tashtabash.simulation.culture.group.centers.Group
-import io.tashtabash.simulation.culture.group.centers.Trait
-import io.tashtabash.simulation.space.resource.Resource
+import io.tashtabash.sim.CulturesWorld
+import io.tashtabash.sim.culture.aspect.Aspect
+import io.tashtabash.sim.culture.group.GroupConglomerate
+import io.tashtabash.sim.culture.group.centers.Group
+import io.tashtabash.sim.culture.group.centers.Trait
+import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.utils.chompToSize
 import io.tashtabash.visualizer.printinfo.ConglomeratePrintInfo
 

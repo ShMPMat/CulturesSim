@@ -1,9 +1,9 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.Controller
-import io.tashtabash.simulation.World
-import io.tashtabash.simulation.interactionmodel.MapModel
-import io.tashtabash.simulation.space.resource.instantiation.tag.DefaultTagParser
+import io.tashtabash.sim.Controller
+import io.tashtabash.sim.World
+import io.tashtabash.sim.interactionmodel.MapModel
+import io.tashtabash.sim.space.resource.instantiation.tag.DefaultTagParser
 
 
 fun main() {

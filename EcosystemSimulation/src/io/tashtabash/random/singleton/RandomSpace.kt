@@ -2,9 +2,9 @@ package io.tashtabash.random.singleton
 
 import io.tashtabash.random.randomTile
 import io.tashtabash.random.randomTileOnBrink
-import io.tashtabash.simulation.space.WorldMap
-import io.tashtabash.simulation.space.territory.Territory
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.territory.Territory
+import io.tashtabash.sim.space.tile.Tile
 
 
 fun Territory.randomTile() = randomTile(this)

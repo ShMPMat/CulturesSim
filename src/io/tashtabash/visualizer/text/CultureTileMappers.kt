@@ -1,13 +1,13 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.culture.aspect.hasMeaning
-import io.tashtabash.simulation.culture.group.GROUP_TAG_TYPE
-import io.tashtabash.simulation.culture.group.GroupConglomerate
-import io.tashtabash.simulation.culture.group.GroupTileTag
-import io.tashtabash.simulation.culture.group.centers.Group
-import io.tashtabash.simulation.culture.group.getResidingGroup
-import io.tashtabash.simulation.space.resource.ResourceType
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.culture.aspect.hasMeaning
+import io.tashtabash.sim.culture.group.GROUP_TAG_TYPE
+import io.tashtabash.sim.culture.group.GroupConglomerate
+import io.tashtabash.sim.culture.group.GroupTileTag
+import io.tashtabash.sim.culture.group.centers.Group
+import io.tashtabash.sim.culture.group.getResidingGroup
+import io.tashtabash.sim.space.resource.ResourceType
+import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.visualizer.printinfo.ConglomeratePrintInfo
 
 

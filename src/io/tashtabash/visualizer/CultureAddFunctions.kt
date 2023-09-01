@@ -1,12 +1,12 @@
 package io.tashtabash.visualizer
 
-import io.tashtabash.simulation.culture.aspect.Aspect
-import io.tashtabash.simulation.culture.aspect.AspectPool
-import io.tashtabash.simulation.culture.aspect.ConverseWrapper
-import io.tashtabash.simulation.culture.aspect.MeaningInserter
-import io.tashtabash.simulation.culture.group.GroupConglomerate
-import io.tashtabash.simulation.culture.group.centers.Group
-import io.tashtabash.simulation.space.resource.container.ResourcePool
+import io.tashtabash.sim.culture.aspect.Aspect
+import io.tashtabash.sim.culture.aspect.AspectPool
+import io.tashtabash.sim.culture.aspect.ConverseWrapper
+import io.tashtabash.sim.culture.aspect.MeaningInserter
+import io.tashtabash.sim.culture.group.GroupConglomerate
+import io.tashtabash.sim.culture.group.centers.Group
+import io.tashtabash.sim.space.resource.container.ResourcePool
 import java.util.*
 
 

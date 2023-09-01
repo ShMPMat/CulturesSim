@@ -1,9 +1,9 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.space.SpaceData.data
-import io.tashtabash.simulation.space.resource.ResourceType
-import io.tashtabash.simulation.space.resource.dependency.cleanConsumed
-import io.tashtabash.simulation.space.resource.dependency.cleanNeeded
+import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.resource.ResourceType
+import io.tashtabash.sim.space.resource.dependency.cleanConsumed
+import io.tashtabash.sim.space.resource.dependency.cleanNeeded
 import io.tashtabash.visualizer.addResourceOnTile
 import io.tashtabash.visualizer.command.Command
 import io.tashtabash.visualizer.command.CommandExecutor
@@ -79,7 +79,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     val bottom = splitCommand[2].toInt()
                     val right = splitCommand[3].toInt()
 
-                    val tiles = mutableListOf<io.tashtabash.simulation.space.tile.Tile>()
+                    val tiles = mutableListOf<io.tashtabash.sim.space.tile.Tile>()
 
                     for (i in top..bottom)
                         for (j in left..right)
@@ -92,7 +92,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
                 PinResources -> {
                     val resourceQuery = splitCommand[1]
-                    val mapperFun = { t: io.tashtabash.simulation.space.tile.Tile ->
+                    val mapperFun = { t: io.tashtabash.sim.space.tile.Tile ->
                         resourceSubstringMapper(resourceQuery, t, MARK_COLOR + splitCommand[2])
                     }
                     val minOrder = visualizer.tileMappers

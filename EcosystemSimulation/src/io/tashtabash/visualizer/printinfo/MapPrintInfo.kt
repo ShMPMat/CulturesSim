@@ -1,9 +1,9 @@
 package io.tashtabash.visualizer.printinfo
 
-import io.tashtabash.simulation.SimulationError
-import io.tashtabash.simulation.space.SpaceData.data
-import io.tashtabash.simulation.space.WorldMap
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.SimulationError
+import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.tile.Tile
 
 
 class MapPrintInfo {

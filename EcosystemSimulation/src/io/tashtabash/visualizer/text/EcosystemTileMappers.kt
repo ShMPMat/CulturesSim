@@ -1,10 +1,10 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.space.SpaceData.data
-import io.tashtabash.simulation.space.TectonicPlate
-import io.tashtabash.simulation.space.resource.Resource
-import io.tashtabash.simulation.space.resource.ResourceType
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.TectonicPlate
+import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.resource.ResourceType
+import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max

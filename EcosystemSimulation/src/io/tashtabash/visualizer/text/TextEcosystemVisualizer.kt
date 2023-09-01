@@ -1,14 +1,14 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.Controller
-import io.tashtabash.simulation.World
-import io.tashtabash.simulation.event.Event
-import io.tashtabash.simulation.event.Type
-import io.tashtabash.simulation.interactionmodel.InteractionModel
-import io.tashtabash.simulation.space.SpaceData.data
-import io.tashtabash.simulation.space.WorldMap
-import io.tashtabash.simulation.space.resource.Resource
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.Controller
+import io.tashtabash.sim.World
+import io.tashtabash.sim.event.Event
+import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.interactionmodel.InteractionModel
+import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.utils.addToRight
 import io.tashtabash.utils.chompToLines
 import io.tashtabash.visualizer.Turner

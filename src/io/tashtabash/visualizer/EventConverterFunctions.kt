@@ -1,9 +1,9 @@
 package io.tashtabash.visualizer
 
-import io.tashtabash.simulation.culture.group.ClaimTileEvent
-import io.tashtabash.simulation.culture.group.centers.Group
-import io.tashtabash.simulation.event.EventLog
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.culture.group.ClaimTileEvent
+import io.tashtabash.sim.culture.group.centers.Group
+import io.tashtabash.sim.event.EventLog
+import io.tashtabash.sim.space.tile.Tile
 
 
 fun EventLog.lastClaimedTiles(from: Int): Map<Group, Set<Tile>> = this.lastEvents

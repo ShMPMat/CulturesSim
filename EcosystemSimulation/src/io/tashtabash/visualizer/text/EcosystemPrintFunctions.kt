@@ -1,7 +1,7 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.space.resource.Resource
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.tile.Tile
 
 
 fun TextEcosystemVisualizer<*>.printTile(tile: Tile) {

@@ -1,7 +1,7 @@
 package io.tashtabash.visualizer;
 
-import io.tashtabash.simulation.CulturesWorld;
-import io.tashtabash.simulation.culture.group.centers.Group;
+import io.tashtabash.sim.CulturesWorld;
+import io.tashtabash.sim.culture.group.centers.Group;
 
 
 /**

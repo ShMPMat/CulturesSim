@@ -1,7 +1,7 @@
 package io.tashtabash.visualizer
 
-import io.tashtabash.simulation.space.resource.container.ResourcePool
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.space.resource.container.ResourcePool
+import io.tashtabash.sim.space.tile.Tile
 import java.util.*
 
 

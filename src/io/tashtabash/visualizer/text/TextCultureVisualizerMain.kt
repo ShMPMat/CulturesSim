@@ -1,7 +1,7 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.CulturesController
-import io.tashtabash.simulation.interactionmodel.CulturesMapModel
+import io.tashtabash.sim.CulturesController
+import io.tashtabash.sim.interactionmodel.CulturesMapModel
 
 
 fun main() {

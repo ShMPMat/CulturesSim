@@ -1,9 +1,9 @@
 package io.tashtabash.visualizer.text
 
-import io.tashtabash.simulation.CulturesController
-import io.tashtabash.simulation.CulturesWorld
-import io.tashtabash.simulation.culture.group.centers.Group
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.CulturesController
+import io.tashtabash.sim.CulturesWorld
+import io.tashtabash.sim.culture.group.centers.Group
+import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.visualizer.command.CommandManager
 import io.tashtabash.visualizer.command.registerCultureCommands
 import io.tashtabash.visualizer.lastClaimedTiles

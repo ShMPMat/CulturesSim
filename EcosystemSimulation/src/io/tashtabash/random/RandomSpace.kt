@@ -2,10 +2,10 @@ package io.tashtabash.random
 
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.random.singleton.randomElementOrNull
-import io.tashtabash.simulation.space.territory.Territory
-import io.tashtabash.simulation.space.WorldMap
-import io.tashtabash.simulation.space.territory.StaticTerritory
-import io.tashtabash.simulation.space.tile.Tile
+import io.tashtabash.sim.space.territory.Territory
+import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.territory.StaticTerritory
+import io.tashtabash.sim.space.tile.Tile
 
 
 fun randomTile(territory: Territory) = territory.tiles.sortedBy { it.x * 1000000 + it.y }.randomElementOrNull()

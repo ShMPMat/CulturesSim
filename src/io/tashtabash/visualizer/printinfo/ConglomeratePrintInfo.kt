@@ -1,6 +1,6 @@
 package io.tashtabash.visualizer.printinfo
 
-import io.tashtabash.simulation.culture.group.GroupConglomerate
+import io.tashtabash.sim.culture.group.GroupConglomerate
 
 
 class ConglomeratePrintInfo(private val symbolsPool: List<String>) {
