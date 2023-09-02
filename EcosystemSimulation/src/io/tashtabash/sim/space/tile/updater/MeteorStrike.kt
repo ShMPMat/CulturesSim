@@ -17,16 +17,30 @@ class MeteorStrike(private val iron: Resource): TileUpdater {
             return
         }
 
-        val strength = RandomSingleton.random.nextDouble(0.0, 0.9)
-        for (resource in tile.resourcePack.resourcesIterator) {
-            val deadPart = resource.amount * strength * RandomSingleton.random.nextDouble(0.8, 1.2)
+        val strength = RandomSingleton.random.nextDouble(0.0, 5 * session.proportionCoefficient)
+        val oldTiles = mutableSetOf<Tile>()
+        var currentStrength = strength
+        var currentTiles = listOf(tile)
+        while (currentStrength > 0) {
+            for (currentTile in currentTiles)
+                destroyTileResources(currentTile, currentStrength)
 
-            resource.getPart(min(resource.amount, deadPart.toInt()), Taker.CataclysmTaker)
+            currentStrength -= 1
+            oldTiles += currentTiles
+            currentTiles = currentTiles.flatMap { it.neighbours } - oldTiles
         }
 
         val ironAmount = (1000 * strength).toInt()
         tile.addDelayedResource(iron.copy(ironAmount))
 
         session.world.events.add(Type.Cataclysm of "Meteor of strength $strength strikes tile ${tile.posStr}")
+    }
+
+    private fun destroyTileResources(tile: Tile, strength: Double) {
+        for (resource in tile.resourcesWithMoved) {
+            val deadPart = resource.amount * strength * RandomSingleton.random.nextDouble(0.8, 1.2)
+
+            resource.getCleanPart(min(resource.amount, deadPart.toInt()), Taker.CataclysmTaker)
+        }
     }
 }
