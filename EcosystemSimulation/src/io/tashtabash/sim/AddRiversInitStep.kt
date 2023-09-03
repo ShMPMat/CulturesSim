@@ -31,7 +31,7 @@ class AddRiversInitStep<E : World>(
                                 && t.resourcePack.any(::riverResourcePredicate)
                                 && t.getTilesInRadius(2) { it.resourcesWithMoved.contains(water) }.isEmpty()
                         )
-                            (t.temperature - SpaceData.data.temperatureBaseStart + 1).toDouble() *
+                            (t.temperature - SpaceData.data.temperatureBaseStart + 1) *
                                     (t.level + 1 - riverCreationThreshold)
                         else 0.0
                     },

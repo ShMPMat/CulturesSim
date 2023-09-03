@@ -29,7 +29,7 @@ interface Territory {
     val differentResources: Collection<Resource>
         get() = allResources.distinct()
 
-    val minTemperature: Int?
+    val minTemperature: Double?
         get() = tiles.map(Tile::temperature)
                 .minOrNull()
 

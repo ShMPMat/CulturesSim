@@ -57,7 +57,12 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                         hotnessMapper(
                                 splitCommand[2].toInt(),
                                 t,
-                                { conglomerate.subgroups[0].territoryCenter.tilePotentialMapper(it) },
+                                {
+                                    conglomerate.subgroups[0]
+                                        .territoryCenter
+                                        .tilePotentialMapper(it)
+                                        .toDouble()
+                                },
                                 splitCommand[2].toInt()
                         )
                     }

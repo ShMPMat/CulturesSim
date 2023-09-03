@@ -66,7 +66,7 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
 }
 
 
-fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1): String {
+fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Double, start: Int = 1): String {
     val result = mapper(tile)
     val colour = when {
         result < start -> NOTHING
@@ -130,7 +130,7 @@ fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =
 fun resourceDensityMapper(threshold: Double, tile: Tile) = hotnessMapper(
         (threshold / 5.0).toInt(),
         tile,
-        { it.resourceDensity.toInt() }
+        { it.resourceDensity }
 )
 
 fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile) { t ->

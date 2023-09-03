@@ -41,7 +41,7 @@ class Tile(val x: Int, val y: Int, private val updaters: List<TileUpdater>) {
     var secondLevel = 0
         private set
 
-    var temperature = 0
+    var temperature = 0.0
         private set
 
     var neighbours = listOf<Tile>()
@@ -251,9 +251,12 @@ class Tile(val x: Int, val y: Int, private val updaters: List<TileUpdater>) {
 
     override fun hashCode(): Int = 1_000_000 * x + y
 
-    override fun toString() = "Tile $posStr, type=$type, temperature=$temperature, level=$level\n" +
+    override fun toString() = "Tile $posStr, type=$type, temperature=$prettyTemperature, level=$level\n" +
             "Tags: " + tagPool.all.joinToString("; ") + "\n\nResources:" +
             _resourcePack.resources.joinToString("\n", "\n", "\n")
+
+    val prettyTemperature: String
+        get() = "%.2f".format(temperature)
 
     val posStr = "$x $y"
 
