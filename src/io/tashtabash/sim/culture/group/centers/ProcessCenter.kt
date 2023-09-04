@@ -50,7 +50,8 @@ class ProcessCenter(type: AdministrationType) {
             },
             RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive()),
             InternalConsolidationB.withTrait(Trait.Consolidation.getPositive()),
-            DefenceFromNatureB
+            DefenceFromNatureB,
+            ManageDefenceB
     )
 
     val behaviours: List<GroupBehaviour> = _behaviours

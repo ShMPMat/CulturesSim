@@ -20,7 +20,6 @@ import io.tashtabash.sim.space.resource.OwnershipMarker
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.container.ResourcePack
-import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.territory.Territory
 import io.tashtabash.sim.space.tile.Tile
@@ -153,11 +152,6 @@ class PopulationCenter(
 
         if (CulturesController.session.isTime(500))
             turnResources.clearEmpty()
-
-        val additionalDanger = group.resourceCenter.pack.getTagPresence(ResourceTag("weapon")) / 1000
-        val additionalResistance = group.resourceCenter.pack.getTagPresence(ResourceTag("defence")) / 1000
-        actualPopulation.genome.behaviour.danger = 0.05 + additionalDanger
-        actualPopulation.genome.behaviour.resistance = 0.1 + additionalResistance
     }
 
     fun executeRequests(requests: RequestPool) {
@@ -242,6 +236,7 @@ class PopulationCenter(
     }
 
     override fun toString() = """
+        |${actualPopulation.genome.behaviour}
         |Free - $freePopulation
         |$stratumCenter
         |
