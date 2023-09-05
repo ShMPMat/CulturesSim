@@ -2,6 +2,7 @@ package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.SampleSpaceObject
 import io.tashtabash.random.singleton.randomElement
+import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.cultureaspect.util.*
@@ -20,7 +21,9 @@ object CreateCultureAspectsB : AbstractGroupBehaviour() {
                             .filter { it.genome.isDesirable }
                             .filter {
                                 !group.cultureCenter.cultureAspectCenter.aestheticallyPleasingResources.contains(it)
-                            }.maxByOrNull { it.genome.baseDesirability }
+                            }
+                            .filter { it.genome.baseDesirability > 0 }
+                            .randomElementOrNull { it.genome.baseDesirability.toDouble() }
             )
             AspectRandom.Ritual -> createRitual(//TODO recursively go in dependencies;
                     constructBetterAspectUseReason(
