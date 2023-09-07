@@ -13,6 +13,7 @@ import io.tashtabash.sim.culture.thinking.meaning.makeMeme
 import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.EventLog
 import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.territory.Territory
@@ -75,21 +76,30 @@ class CultureCenter(
         get() = memePool.valuableMeme
 
     fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
-        val (first, second) = aspectCenter.findOptions(need.first, group)
-                .randomElementOrNull()
-                ?: return
+        val option = aspectCenter.findOptions(need.first, group)
+            .randomElementOrNull()
 
-        aspectCenter.addAspectTry(first, group)
+        if (option == null) {
+            events.add(Type.Fail of "Group ${group.name} couldn't develop an aspect for a need ${need.first}")
+            return
+        }
 
-        events.add(
-                if (second == null)
-                    Event(Type.AspectGaining, "Group ${group.name} developed aspect ${first.name} for a need")
+        val (aspect, sourceGroup) = option
+        val success = aspectCenter.addAspectTry(aspect, group)
+
+        if (success)
+            events.add(
+                if (sourceGroup == null)
+                    Type.AspectGaining of "Group ${group.name} developed aspect ${aspect.name} for a need ${need.first}"
                 else
-                    Event(
-                            Type.AspectGaining,
-                            "Group ${group.name} took aspect ${first.name} from group ${second.name} for a need"
-                    )
-        )
+                    Type.AspectGaining of "Group ${group.name} took aspect ${aspect.name}" +
+                            " from group ${sourceGroup.name} for a need ${need.first}"
+            )
+        else
+            events.add(
+                Type.Fail of "Group ${group.name} came up with aspect ${aspect.name} for a need ${need.first}" +
+                        " but couldn't add it"
+            )
     }
 
     fun finishAspectUpdate(): Set<Aspect> {
