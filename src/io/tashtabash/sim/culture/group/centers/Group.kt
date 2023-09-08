@@ -106,7 +106,6 @@ class Group(
             territoryCenter.expand()
         else
             territoryCenter.shrink()
-        checkNeeds()
         cultureCenter.update(this)
         processCenter.update(this)
 
@@ -124,14 +123,6 @@ class Group(
                 resourceCenter.moveToNewStorage(territoryCenter.center)
                 populationCenter.movePopulation(territoryCenter.center)
             }
-    }
-
-    private fun checkNeeds() {
-        val need = resourceCenter.direNeed
-                ?: return
-
-        cultureCenter.addNeedAspect(need)
-        populationCenter.wakeNeedStrata(need)
     }
 
     private fun shouldMigrate(): Boolean {
