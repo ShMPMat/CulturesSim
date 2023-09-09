@@ -32,7 +32,7 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
     val bannedResources: Map<Resource, ResourceBan> = _bannedResources
 
     val neededResources: Map<ResourceLabeler, ResourceNeed>
-        get() = neededResourcesMap.toMap()
+        get() = neededResourcesMap
 
     val mostImportantNeed: Pair<ResourceLabeler, ResourceNeed>?
         get() {
@@ -84,7 +84,7 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
     fun finishUpdate() {
         place.current.owned.resources.filter { it.isNotEmpty }.forEach {
             if (!place.current.tile.resourcesWithMoved.contains(it)) {
-                val s = 0//TODO remove it if so
+                val s = 0 //TODO remove it if so
             }
         }
         _resourcesToAdd.clear()
@@ -140,6 +140,7 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
         """.trimMargin()
 }
 
+
 data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
     fun normalize() {
         if (importance > 100) importance = 100
@@ -152,9 +153,11 @@ data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
     }
 }
 
+
 data class ResourceBan(val allowedTypes: MutableSet<RequestType>, val providers: MutableList<ResourceBanProvider>) {
     override fun toString() = if (allowedTypes.isEmpty()) "" else " only for " + allowedTypes.joinToString()
 }
+
 
 interface ResourceBanProvider {
     val allowedTypes: Set<RequestType>
