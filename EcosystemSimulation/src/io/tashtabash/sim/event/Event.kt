@@ -14,6 +14,7 @@ open class Event(var type: Type, val description: String) {
 enum class Type(val colourString: String) {
     Death(("\u001B[31m")),
     ResourceDeath(("\u001B[31m")),
+    Fail(("\u001B[31m")),
     AspectGaining("\u001B[32m"),
     CultureAspectGaining("\u001B[32m"),
     TileAcquisition("\u001B[32m"),
