@@ -70,6 +70,12 @@ sealed class IdeationalConcept(
     object Luck :          IdeationalConcept(Meme("Luck"),          { listOf(Misfortune) },           { listOf() })
     object Misfortune :    IdeationalConcept(Meme("Misfortune"),    { listOf(Luck) },                 { listOf() })
 
+    object Fragility :     IdeationalConcept(Meme("Fragility"),     { listOf(Robustness) },           { listOf() })
+    object Robustness :    IdeationalConcept(Meme("Robustness"),    { listOf(Fragility) },            { listOf() })
+
+    object Obvious :       IdeationalConcept(Meme("Obvious"),       { listOf(Secret) },               { listOf() })
+    object Secret :        IdeationalConcept(Meme("Secret"),        { listOf(Obvious) },              { listOf() })
+
     object Mortality :     IdeationalConcept(Meme("Mortality"),     { listOf(Immortality) },          { listOf() })
     object Immortality :   IdeationalConcept(Meme("Immortality"),   { listOf(Mortality) },            { listOf() })
 }
