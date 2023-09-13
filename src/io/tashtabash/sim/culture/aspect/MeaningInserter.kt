@@ -10,7 +10,6 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
 
 
-//Inserts meaning in Resources.
 class MeaningInserter(aspect: Aspect, resource: Resource) : ConverseWrapper(aspect, resource.fullCopy().copy(1)) {
     override val producedResources = listOf(this.resource.copyWithExternalFeatures(listOf(phonyMeaningFeature)))
 
