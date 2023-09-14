@@ -1,6 +1,7 @@
 package io.tashtabash.sim.culture.thinking.meaning
 
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.generator.culture.worldview.reasoning.concept.IdeationalConcept
 import io.tashtabash.generator.culture.worldview.toMeme
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.sim.culture.aspect.Aspect
@@ -98,17 +99,26 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
                 memes.second += makePredicateChain(makeMeme(resource), Meme("consume"), subject)
             }
 
+    val predicateMemes = mutableListOf<Meme>()
     // Add appearance
-    memes.first += listOfNotNull(
+    predicateMemes += listOfNotNull(
             resource.genome.appearance.colour?.name?.toMeme(),
             resource.genome.appearance.texture?.name?.toMeme(),
             resource.genome.appearance.shape?.name?.toMeme()
     )
-    memes.second += listOfNotNull(
-            resource.genome.appearance.colour?.name?.toMeme(),
-            resource.genome.appearance.texture?.name?.toMeme(),
-            resource.genome.appearance.shape?.name?.toMeme()
-    ).map { makeMeme(resource).addPredicate(it) }
+    // Add behaviours
+     predicateMemes += listOfNotNull(
+            resource.genome.behaviour.resistance.takeIf { it > 0.5 }?.let { IdeationalConcept.Robustness.meme },
+            resource.genome.behaviour.resistance.takeIf { it == 0.0 }?.let { IdeationalConcept.Fragility.meme },
+            resource.genome.behaviour.danger.takeIf { it > 0.5 }?.let { IdeationalConcept.Danger.meme },
+            resource.genome.behaviour.danger.takeIf { it == 0.0 }?.let { IdeationalConcept.Safety.meme },
+            resource.genome.behaviour.camouflage.takeIf { it > 0.5 }?.let { IdeationalConcept.Secret.meme },
+    )
+    //Merge predicateMemes
+    memes.first += predicateMemes
+    memes.second += predicateMemes.map {
+        makeMeme(resource).addPredicate(it)
+    }
 
     return memes
 }
