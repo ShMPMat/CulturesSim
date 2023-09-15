@@ -60,7 +60,6 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
         TectonicPlate.Direction.L -> "<"
         TectonicPlate.Direction.R -> ">"
         TectonicPlate.Direction.U -> "^"
-        else -> throw RuntimeException("Null passed")
     }
     return "\u001b[" + (30 + ord) + "m" + direction
 }
