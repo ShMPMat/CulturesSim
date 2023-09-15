@@ -21,11 +21,9 @@ abstract class AbstractReasonConcept : ReasonConcept {
 abstract class AbstractKotlinSafeReasonConcept(
         private val _oppositeConcepts: () -> List<ReasonConcept>,
         private val _correspondingConcepts: () -> List<ReasonConcept>
-) : ReasonConcept {
+) : AbstractReasonConcept() {
     override val oppositeConcepts: List<ReasonConcept>
         get() = _oppositeConcepts()
     override val correspondingConcepts: List<ReasonConcept>
         get() = _correspondingConcepts()
-
-    override fun toString() = meme.toString()
 }
