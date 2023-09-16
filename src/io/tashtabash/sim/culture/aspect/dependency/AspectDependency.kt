@@ -22,11 +22,11 @@ class AspectDependency(//TODO what's the difference between this and LineDepende
         get() = aspect.name
 
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
-        if (parentAspect.used)
+        if (parentAspect.isCurrentlyUsed)
             return false
-        parentAspect.used = true
+        parentAspect.isCurrentlyUsed = true
         val result = otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect
-        parentAspect.used = false
+        parentAspect.isCurrentlyUsed = false
         return result
     }
 

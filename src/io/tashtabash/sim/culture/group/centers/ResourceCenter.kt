@@ -3,6 +3,8 @@ package io.tashtabash.sim.culture.group.centers
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.SimulationError
+import io.tashtabash.sim.culture.aspect.AspectResult
+import io.tashtabash.sim.culture.aspect.ResultNode
 import io.tashtabash.sim.culture.group.place.MovablePlace
 import io.tashtabash.sim.culture.group.request.RequestType
 import io.tashtabash.sim.space.resource.Resource
@@ -116,6 +118,12 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
         }
     }
 
+    fun isBanned(resource: Resource, types: Collection<RequestType>): Boolean {
+        val ban = bannedResources[resource]
+
+        return ban != null && types.none { it in ban.allowedTypes }
+    }
+
     fun removeBan(resource: Resource, provider: ResourceBanProvider) {
         val existingBan = _bannedResources[resource]
 
@@ -151,14 +159,4 @@ data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
         if (!wasUpdated) importance /= 2
         else wasUpdated = false
     }
-}
-
-
-data class ResourceBan(val allowedTypes: MutableSet<RequestType>, val providers: MutableList<ResourceBanProvider>) {
-    override fun toString() = if (allowedTypes.isEmpty()) "" else " only for " + allowedTypes.joinToString()
-}
-
-
-interface ResourceBanProvider {
-    val allowedTypes: Set<RequestType>
 }

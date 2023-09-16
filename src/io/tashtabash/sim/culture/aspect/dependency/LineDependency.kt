@@ -23,10 +23,10 @@ class LineDependency(
 
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
         if (parentConverseWrapper == converseWrapper) return true
-        if (parentConverseWrapper.used) return false
-        parentConverseWrapper.used = true
+        if (parentConverseWrapper.isCurrentlyUsed) return false
+        parentConverseWrapper.isCurrentlyUsed = true
         val b = converseWrapper == otherAspect
-        parentConverseWrapper.used = false
+        parentConverseWrapper.isCurrentlyUsed = false
         return b
     }
 
