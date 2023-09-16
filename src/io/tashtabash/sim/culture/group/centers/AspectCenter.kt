@@ -23,7 +23,7 @@ class AspectCenter(aspects: List<Aspect>) {
 
     //    Aspects added on the current turn
     private val changedAspectPool = MutableAspectPool(HashSet())
-    private val _converseWrappers = mutableSetOf<ConverseWrapper>()
+    private val _potentialConverseWrappers = mutableSetOf<ConverseWrapper>()
     private val _lastResourcesForCw = mutableSetOf<Resource>()
 
     init {
@@ -83,7 +83,7 @@ class AspectCenter(aspects: List<Aspect>) {
         if (!wrapper.isValid)
             return null
 
-        _converseWrappers.add(wrapper)
+        _potentialConverseWrappers.add(wrapper)
         return wrapper
     }
 
@@ -124,7 +124,7 @@ class AspectCenter(aspects: List<Aspect>) {
         _lastResourcesForCw.addAll(resources)
         resources.forEach { group.cultureCenter.memePool.addResourceMemes(it) }
 
-        return _converseWrappers.sortedBy { it.name }
+        return _potentialConverseWrappers.sortedBy { it.name }
     }
 
     private fun getAllPossibleResources(group: Group): Set<Resource> {
@@ -167,7 +167,8 @@ class AspectCenter(aspects: List<Aspect>) {
             }
     }
 
-    fun findOptions(labeler: ResourceLabeler, group: Group): List<Pair<Aspect, Group?>> {
+    //TODO implement depth search
+    fun findOptions(labeler: ResourceLabeler, group: Group, depth: Int = 1): List<Pair<Aspect, Group?>> {
         val options = mutableListOf<Pair<Aspect, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
 
@@ -240,7 +241,7 @@ class AspectCenter(aspects: List<Aspect>) {
                     if (_aspectPool.remove(aspect)) {
                         changedAspectPool.deleteDependencyOnAspect(aspect)
                         if (aspect !is ConverseWrapper)
-                            _converseWrappers.removeIf { it.aspect == aspect }
+                            _potentialConverseWrappers.removeIf { it.aspect == aspect }
                         group.addEvent(Event(Type.Change, "${group.name} lost aspect ${aspect.name}"))
                     }
                 }
