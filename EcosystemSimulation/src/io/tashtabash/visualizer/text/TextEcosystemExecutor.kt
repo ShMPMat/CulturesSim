@@ -1,6 +1,7 @@
 package io.tashtabash.visualizer.text
 
 import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.ResourceType
 import io.tashtabash.sim.space.resource.dependency.cleanConsumed
 import io.tashtabash.sim.space.resource.dependency.cleanNeeded
@@ -46,8 +47,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     println(briefPrintResourcesWithSubstring(map, splitCommand[1]))
                 }
                 ResourceSubstringOnTile -> println(printResourcesOnTile(
-                        map[splitCommand[0].toInt(),
-                                splitCommand[1].toInt() + mapPrintInfo.cut]!!,
+                        findTile(splitCommand[0], splitCommand[1])!!,
                         splitCommand[3]
                 ))
                 ResourceType ->
@@ -56,7 +56,6 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         printMap { resourceTypeMapper(type, it) }
                     } else {
                         println("Unknown type - " + splitCommand[1])
-
                         return ExecutionResult.Terminate
                     }
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
@@ -65,12 +64,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         allResourcesCounter(world, splitCommand.getOrNull(1) == "f")
                 )
                 AllPossibleResources -> println(visualizer.printedResources())
-                Tile -> map[splitCommand[0].toInt(), splitCommand[1].toInt() + mapPrintInfo.cut]
+                Tile -> findTile(splitCommand[0], splitCommand[1])
                         ?.let {
                             printTile(it)
                         } ?: run {
                             print("No such Tile")
-
                             return ExecutionResult.Terminate
                         }
                 Tiles -> {
@@ -83,7 +81,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
                     for (i in top..bottom)
                         for (j in left..right)
-                            map[i, j + mapPrintInfo.cut]?.let {
+                            findTile(i, j)?.let {
                                 tiles += it
                             }
 
@@ -140,7 +138,6 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 LegendOff -> visualizer.showLegend = false
                 Exit -> {
                     println("Terminating the simulation...")
-
                     return ExecutionResult.Terminate
                 }
                 AddResource -> addResourceOnTile(
@@ -156,7 +153,6 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         ?.let { launchTurner(it) }
                         ?: run {
                             println("Wrong number format for amount of turns")
-
                             return ExecutionResult.Invalid
                         }
                 Turn -> {
@@ -168,7 +164,6 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                             ?.let { visualizer.printTurnStep = it }
                             ?: run {
                                 println("Wrong number format for amount of turns")
-
                                 return ExecutionResult.Invalid
                             }
                     println("Print step number changed")

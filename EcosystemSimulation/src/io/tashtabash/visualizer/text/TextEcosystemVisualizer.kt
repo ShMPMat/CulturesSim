@@ -280,4 +280,10 @@ open class TextEcosystemVisualizer<E : World>(
         }
         return " "
     }
+
+    fun findTile(x: String, y: String) =
+        findTile(x.toInt(), y.toInt())
+
+    fun findTile(x: Int, y: Int) =
+        controller.world.map[x, y + mapPrintInfo.cut]
 }

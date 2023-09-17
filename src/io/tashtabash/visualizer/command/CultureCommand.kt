@@ -16,7 +16,8 @@ enum class CultureCommand(command: String, override val description: String) : T
     CultureAspects("ca \\w+", "Display culture aspect description"),
     Strata("s \\w+", "Display Group with a strata containing the given substring on the map"),
     AddAspect("^G\\d+ \\w+", "Try adding aspect to the conglomerate"),
-    AddWant("^want G\\d+ \\w+", "Try adding want to the conglomerate");
+    AddWant("^want G\\d+ \\w+", "Try adding want to the conglomerate"),
+    AddGroup("^new g \\d+ \\d+", "Try adding a new conglomerate");
 
     override val pattern = Regex(command)
 }

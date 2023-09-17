@@ -105,10 +105,21 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                         world.aspectPool
                 )
                 AddWant -> addGroupConglomerateWant(
-                        getConglomerate(splitCommand[1]),
-                        splitCommand[2],
-                        world.resourcePool
+                    getConglomerate(splitCommand[1]),
+                    splitCommand[2],
+                    world.resourcePool
                 )
+                AddGroup -> {
+                    val tile = findTile(splitCommand[2], splitCommand[3])
+                            ?: run {
+                                println("No tile with coordinates ${splitCommand[2]}, ${splitCommand[3]} found")
+                                return ExecutionResult.Invalid
+                            }
+
+                    val conglomerate = world.addConglomerate(tile)
+
+                    println("Conglomerate ${conglomerate.name} created")
+                }
                 else -> return ExecutionResult.NotFound
             }
         }

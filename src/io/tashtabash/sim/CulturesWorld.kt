@@ -74,16 +74,22 @@ open class CulturesWorld : World() {
 
     fun initializeGroups() {
         for (i in 0 until session.startGroupAmount)
-            conglomerates.add(GroupConglomerate(1, tileForGroup))
+            addConglomerate(tileForGroup)
+    }
+
+    fun addConglomerate(tile: Tile): GroupConglomerate {
+        val conglomerate = GroupConglomerate(1, tile)
+        conglomerates += conglomerate
 
         for (aspectName in compulsoryAspects)
-            for (c in conglomerates)
-                for (it in c.subgroups)
-                    it.cultureCenter
-                            .aspectCenter
-                            .addAspectTry(aspectPool.getValue(aspectName), it)
+            for (group in conglomerate.subgroups)
+                group.cultureCenter
+                    .aspectCenter
+                    .addAspectTry(aspectPool.getValue(aspectName), group)
 
-        conglomerates.forEach { it.finishUpdate() }
+        conglomerate.finishUpdate()
+
+        return conglomerate
     }
 
     private val tileForGroup: Tile
