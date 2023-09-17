@@ -9,9 +9,9 @@ import java.util.*
 
 data class AspectResult(
         var resources: MutableResourcePack = MutableResourcePack(),
-        var node: ResultNode? = null,
+        val node: ResultNode? = null,
         var isFinished: Boolean = true,
-        var neededResources: List<Pair<ResourceLabeler, Int>> = emptyList()
+        var neededResources: MutableList<Pair<ResourceLabeler, Int>> = mutableListOf()
 ) {
     fun pushNeeds(group: Group) = neededResources.forEach { (labeler, n) ->
         group.resourceCenter.addNeeded(labeler, n)

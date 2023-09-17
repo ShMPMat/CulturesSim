@@ -74,37 +74,22 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
 
         timesUsedInTurn++
         isCurrentlyUsed = true
-        var isFinished = true
-        val neededResources = mutableListOf<Pair<ResourceLabeler, Int>>()
-        val targetPack = MutableResourcePack()
 
         val gotWorkers = acquireWorkers(controller)
-        val node = ResultNode(this)
+        val result = satisfyDependencies(controller)
 
-        if (controller.ceiling > 0)
-            for ((key, value) in dependencies.nonPhony.entries) {
-                val (isOk, needs) = satisfyRegularDependency(controller, key, value, targetPack, node)
-                neededResources.addAll(needs)
-                if (!isOk) {
-                    isFinished = false
-                    neededResources += TagLabeler(key) to ceil(controller.ceiling).toInt()
-                }
-            }
-
-        isFinished = isFinished && satisfyPhonyDependency(controller, dependencies.phony, targetPack)
-
-        if (controller.isFloorExceeded(targetPack))
+        if (controller.isFloorExceeded(result.resources)) //TODO why don't we free stratum here?
             markAsUsed()
         else {
             controller.populationCenter.freeStratumAmountByAspect(this, gotWorkers)
-            val neededAmount = ceil(controller.floor - controller.evaluate(targetPack)).toInt()
-            neededResources.add(BaseNameLabeler(resource.baseName) to neededAmount)
+            val neededAmount = ceil(controller.floor - controller.evaluate(result.resources)).toInt()
+            result.neededResources.add(BaseNameLabeler(resource.baseName) to neededAmount)
         }
 
-        updateFailStats(isFinished)
+        updateFailStats(result.isFinished)
         isCurrentlyUsed = false
 
-        return AspectResult(targetPack, node, isFinished, neededResources)
+        return result
     }
 
     private fun isBanned(controller: AspectController): Boolean =
@@ -124,6 +109,25 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         controller.setMax(allowedAmount)
 
         return gotWorkers
+    }
+
+    private fun satisfyDependencies(controller: AspectController): AspectResult {
+        val result = AspectResult(MutableResourcePack(), ResultNode(this), true, mutableListOf())
+        result.node!!
+
+        if (controller.ceiling > 0)
+            for ((key, value) in dependencies.nonPhony.entries) {
+                val (isOk, needs) = satisfyRegularDependency(controller, key, value, result.resources, result.node)
+                result.neededResources.addAll(needs)
+                if (!isOk) {
+                    result.isFinished = false
+                    result.neededResources += TagLabeler(key) to ceil(controller.ceiling).toInt()
+                }
+            }
+
+        result.isFinished = result.isFinished && satisfyPhonyDependency(controller, dependencies.phony, result.resources)
+
+        return result
     }
 
     private fun updateFailStats(isFinished: Boolean) {
