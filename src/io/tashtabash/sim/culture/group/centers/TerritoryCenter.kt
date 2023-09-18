@@ -230,7 +230,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     }
 
     private fun makePathAStar(start: Tile, finish: Tile): List<Tile>? {
-        val h = {t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) }
+        val h = {t: Tile -> getDistance(t, finish) }
         val g = mutableMapOf<Tile, Int>()
         val f = mutableMapOf<Tile, Int>()
         val prev = mutableMapOf<Tile, Tile>()
@@ -253,7 +253,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
 
             val neighbours = cur.neighbours.filter { isTileReachableInTraverse(it to 0) }
             for (v in neighbours) {
-                val distance = g.getValue(cur) + distance(cur, v)
+                val distance = g.getValue(cur) + levelDistance(cur, v)
 
                 if (v in u && distance >= g.getValue(v))
                     continue
@@ -268,7 +268,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         return null
     }
 
-    private fun distance(start: Tile, finish: Tile): Int {
+    private fun levelDistance(start: Tile, finish: Tile): Int {
         if (finish.resourcePack.any { it.simpleName == "Road" })
             return 0
 
