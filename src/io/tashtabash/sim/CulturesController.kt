@@ -32,7 +32,6 @@ class CulturesController(
     val groupAspectAdoptionProb = 0.07
     val groupDiverge = true
     val groupMultiplication = true
-    val independentCvSimpleAspectAdding = true
     val worshipPlaceProb = 0.1
     val placeSystemLimitsCheck = 0.05
     val egoRenewalProb = 0.08

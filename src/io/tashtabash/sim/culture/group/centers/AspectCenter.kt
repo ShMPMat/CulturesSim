@@ -87,35 +87,7 @@ class AspectCenter(aspects: List<Aspect>) {
         return wrapper
     }
 
-    fun mutateAspects(group: Group): List<Aspect> { //TODO separate adding of new aspects and updating old
-        (group.cultureCenter.traitCenter.normalValue(Trait.Discovery) * 3 / (aspectPool.all.size + 1)).chanceOfNot {
-            return listOf()
-        }
-
-        val options = mutableListOf<Aspect>()
-
-        if (session.independentCvSimpleAspectAdding) {
-            0.1.chanceOf {
-                options.addAll(session.world.aspectPool.all.filter { it !in aspectPool.all })
-            } otherwise {
-                options.addAll(getAllPossibleConverseWrappers(group))
-            }
-        } else {
-            options.addAll(session.world.aspectPool.all)
-            options.addAll(getAllPossibleConverseWrappers(group))
-        }
-
-        options.randomElementOrNull()?.let { aspect ->
-            if (aspect is ConverseWrapper && !aspectPool.contains(aspect.aspect))
-                return listOf()
-
-            if (addAspectTry(aspect, group))
-                return listOf(aspect)
-        }
-        return listOf()
-    }
-
-    private fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
+    fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
         val resources = getAllPossibleResources(group)
 
         for (aspect in _aspectPool.filter { it !is ConverseWrapper })

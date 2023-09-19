@@ -1,7 +1,13 @@
 package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.SampleSpaceObject
+import io.tashtabash.random.singleton.chanceOf
+import io.tashtabash.random.singleton.otherwise
 import io.tashtabash.random.singleton.randomElement
+import io.tashtabash.random.singleton.randomElementOrNull
+import io.tashtabash.sim.CulturesController
+import io.tashtabash.sim.culture.aspect.Aspect
+import io.tashtabash.sim.culture.aspect.ConverseWrapper
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutGod
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutSimilarRituals
@@ -11,6 +17,34 @@ import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
+
+
+object MutateAspectsB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult { //TODO separate adding of new aspects and updating old
+        val aspectCenter = group.cultureCenter.aspectCenter
+        val options = mutableListOf<Aspect>()
+
+        0.1.chanceOf {
+            options += CulturesController.session.world.aspectPool.all.filter { it !in aspectCenter.aspectPool.all }
+        } otherwise {
+            options += aspectCenter.getAllPossibleConverseWrappers(group)
+        }
+
+        options.randomElementOrNull()?.let { aspect ->
+            if (aspect is ConverseWrapper && !aspectCenter.aspectPool.contains(aspect.aspect))
+                return emptyProcessResult
+
+            if (aspectCenter.addAspectTry(aspect, group))
+                return ProcessResult(
+                    Type.AspectGaining of "${group.name} developed aspect ${aspect.name} by itself"
+                )
+        }
+
+        return emptyProcessResult
+    }
+
+    override val internalToString = "Mutate existing Aspects"
+}
 
 
 object MutateCultureAspectsB : AbstractGroupBehaviour() {

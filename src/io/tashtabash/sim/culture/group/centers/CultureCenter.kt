@@ -45,10 +45,6 @@ class CultureCenter(
     ))
 
     fun update(group: Group) {
-        val aspectEvents = aspectCenter.mutateAspects(group).map {
-            Event(Type.AspectGaining, "${group.name} got aspect ${it.name} by itself")
-        }
-        events.addAll(aspectEvents)
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
         cultureAspectCenter.update(group)
         lookOnTerritory(group.territoryCenter.accessibleTerritory)
