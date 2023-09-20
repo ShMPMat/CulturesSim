@@ -15,17 +15,17 @@ fun resourceToRequest(
         requestTypes: Set<RequestType> = setOf()
 ): Request {
     val amountD = amount.toDouble()
-    if (resource.hasMeaning) {
-        //TODO read native!!!!!
-        return MeaningResourceRequest(
-                resource.getMeaning?.meme ?: group.cultureCenter.meaning,
-                resource,
-                RequestCore(group, amountD, amountD, passingReward, passingReward, need, requestTypes)
+    return if (resource.hasMeaning) {
+        MeaningResourceRequest(
+            resource.getMeaning?.meme?.takeIf { it.observerWord.isNotEmpty() }
+                ?: group.cultureCenter.meaning,
+            resource,
+            RequestCore(group, amountD, amountD, passingReward, passingReward, need, requestTypes)
         )
     } else {
-        return ResourceRequest(
-                resource,
-                RequestCore(group, amountD, amountD, passingReward, passingReward, need, requestTypes)
+        ResourceRequest(
+            resource,
+            RequestCore(group, amountD, amountD, passingReward, passingReward, need, requestTypes)
         )
     }
 }
