@@ -34,7 +34,7 @@ interface Territory {
                 .minOrNull()
 
     fun filter(predicate: (Tile) -> Boolean) = tiles.filter(predicate)
-    fun filterOuterBrink(predicate: (Tile) -> Boolean) = outerBrink.filter(predicate)//TODO sort
+    fun filterOuterBrink(predicate: (Tile) -> Boolean) = outerBrink.filter(predicate)
     fun filterInnerBrink(predicate: (Tile) -> Boolean) = innerBrink.filter(predicate)
 
     operator fun contains(tile: Tile?) = tiles.contains(tile)
