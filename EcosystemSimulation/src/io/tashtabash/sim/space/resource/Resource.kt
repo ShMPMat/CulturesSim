@@ -104,11 +104,16 @@ open class Resource private constructor(
         var prob = RandomSingleton.random.nextDouble().pow(2) * 0.9
 
         prob -= genome.behaviour.camouflage + genome.behaviour.resistance + genome.behaviour.danger
-        if (taker is ResourceTaker)
+        if (taker is ResourceTaker) {
             prob += taker.resource.genome.behaviour
-                    .let { it.danger + it.camouflage }
+                .let { it.danger + it.camouflage }
 
-        return max(min(prob, 1.0), 0.0)
+            prob -= if (taker.resource.genome.behaviour.speed == 0.0)
+                genome.behaviour.speed
+            else (genome.behaviour.speed / taker.resource.genome.behaviour.speed - 1).coerceAtMost(0.9)
+        }
+
+        return prob.coerceIn(0.0, 1.0)
     }
 
     private fun hurtTaker(amount: Int, taker: Taker) {
@@ -371,10 +376,11 @@ open class Resource private constructor(
 
     override fun hashCode() = _hash
 
-    override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}" +
-            ", spread probability - ${genome.spreadProbability}, mass - ${genome.mass}, " +
-            "lifespan - ${genome.lifespan}, default amount - ${genome.defaultAmount}, amount - $amount, material - ${genome.primaryMaterial}," +
-            " ${genome.appearance}, ownership - ${core.ownershipMarker}, tags: " +
+    override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}," +
+            " spread probability - ${genome.spreadProbability}, mass - ${genome.mass}," +
+            " lifespan - ${genome.lifespan}, default amount - ${genome.defaultAmount}, amount - $amount," +
+            " material - ${genome.primaryMaterial},${genome.appearance}, ownership - ${core.ownershipMarker}" +
+            "\n${genome.behaviour}, tags: " +
             tags.joinToString(" ")
 
     override fun compareTo(other: Resource): Int {

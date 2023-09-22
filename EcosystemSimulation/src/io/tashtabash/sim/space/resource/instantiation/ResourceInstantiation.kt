@@ -255,7 +255,7 @@ val phonyResource = Resource(
                         0,
                         false,
                         true,
-                        Behaviour(0.0, 0.00, 0.0, OverflowType.Ignore),
+                        Behaviour(0.0, 0.00, 0.0, 0.0, OverflowType.Ignore),
                         Appearance(null, null, null),
                         false,
                         false,

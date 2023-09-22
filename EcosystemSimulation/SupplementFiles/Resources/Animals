@@ -13,7 +13,7 @@
         ^Meat:3 ^Fat:2 ^Bone:3:s|0.05 ^Fur:2 ^Blood:5
         #Water
         cWhite
-        R0.2
+        R0.2 S2.5
 
 -Deer                               0.11    2      22         -10     5   15       Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Fungus),>=0.03;0.05;2;0;CONSUME
@@ -21,7 +21,7 @@
         ^Meat:12 ^Fat:7 ^Bone:7:s|0.5 ^Fur:5 ^Blood:10 ^Leather:2:s|2.5
         #Water
         cBrown
-        R0.3 D0.1
+        R0.3 D0.1 S2
 
 -MountainGoat                       0.15    0.8    20         -10    30   30       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
@@ -30,7 +30,7 @@
         #Water
         l110;1000
         cWhite
-        R0.5 D0.1
+        R0.5 D0.1 S1.8
 
 -Mouse                              0.5     0.05   5          -10    35   100      Migrate   Animal       @Meat
         ~D(A(m:Seed)||m:Fungus),>=0.003;0.025;3;0;CONSUME
@@ -38,7 +38,7 @@
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:2
         #Water
         cWhite
-        D0.02
+        D0.02 S0.5
 
 -BlindMoleRat                       0.4     0.25   5          0      30   30       Migrate   Animal       @Meat
         ~A(m:PlantFibre),>=0.01;0.05;3;0;CONSUME
@@ -46,7 +46,7 @@
         ^Meat:1 ^Fat:2 ^Bone:1:s|0.06 ^Fur:2 ^Blood:4
         #Water
         cBrown
-        R0.8 D0.02
+        R0.8 D0.02 S0.2
 
 -Squirrel                           0.55    0.07   5          -5     35   15       Migrate   Animal       @Meat
         ~D(A(r:Nut)||A(m:Seed)||A(m:Pulp)||m:Fungus),>=0.003;0.07;3;0;CONSUME
@@ -54,7 +54,7 @@
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.04 ^Fur:1 ^Blood:2
         #Water
         cOrange
-        D0.02
+        D0.02 S0.5
 
 -Wolf                               0.1     1      20         -20    20   15       Migrate   Animal       @Meat
         ~m:Meat,>=0.3;0.6;20;0;CONSUME;3
@@ -62,7 +62,7 @@
         ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|1.3
         #Water
         cGrey
-        R0.3 D0.7
+        R0.3 D0.7 S2
 
 -StripedHyena                       0.2     0.8    15         5      35   30       Migrate   Animal       @Meat
         ~m:Carcass,>=0.1;0.4;20;0;CONSUME
@@ -70,7 +70,7 @@
         ^Meat:8 ^Fat:4 ^Bone:5:s|0.4 ^Fur:2 ^Blood:8 ^Leather:1:s|1.3
         #Water
         cYellow
-        R0.1 D0.2
+        R0.1 D0.2 S2
 
 -Marten                             0.1     0.5    20         0      20   20       Migrate   Animal       @Meat
         ~m:Meat,>=0.04,<=0.4;0.4;1.25;0;CONSUME
@@ -78,7 +78,7 @@
         ^Meat:6 ^Fat:4 ^Bone:5:s|0.5 ^Fur:6 ^Blood:10
         #Water
         cGrey
-        R0.2 D0.4
+        R0.2 D0.4 S1.8
 
 -Hedgehog                           0.15    0.2    12         0      20   40       Migrate   Animal       @Meat
         ~D(A(m:Meat)||m:Fungus||A(m:Pulp)),>=0.004,<=0.06;0.1;1.25;0;CONSUME
@@ -86,7 +86,7 @@
         ^Meat:2 ^Fat:1 ^Bone:2:s|0.1 ^Fur:1 ^Spike:4 ^Blood:3
         #Water
         cGrey
-        R0.4 D0.1
+        R0.4 D0.1 S0.3
 
 -Desman                             0.5     0.2    16         0      20   25       Migrate   Animal       @Meat
         ~A(m:Meat),>=0.005,<=0.06;0.3;1.25;0;CONSUME
@@ -95,7 +95,7 @@
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.1 ^Fur:3 ^Blood:2
         #Water
         cGrey
-        C0.3 R0.6
+        C0.3 R0.6 S0.25
 
 -Beaver                             0.4     0.9    20         0      20   15       Migrate   Animal       @Meat
         ~D(A(m:PlantFibre)||A(m:Wood)),>=0.05;0.4;1.25;0;CONSUME
@@ -105,7 +105,7 @@
         ^Meat:8 ^Fat:3 ^Bone:5:s|0.4 ^Fur:6 ^Blood:8
         #Water
         cBrown
-        C0.2 R0.4 D0.1
+        C0.2 R0.4 D0.1 S0.2
 
 -VampireBat                         0.2     0.1    15         5      30   25       Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.2;0.05;1.1;1;EXIST
@@ -113,7 +113,7 @@
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.07 ^Fur:1 ^Blood:2
         #Water
         cBlack
-        R0.3 D0.1
+        R0.3 D0.1 S4
 
 -PolarBear                          0.08    2.3    30         -30    0    7        Migrate   Animal       @Meat
         ~m:Meat,>=0.1;0.1;1.25;0;CONSUME;4
@@ -121,7 +121,7 @@
         ^Meat:20 ^Fat:15 ^Bone:7:s|0.5 ^Fur:6 ^Blood:15 ^Leather:1:s|2.3
         #Water
         cWhite
-        C0.1 D0.9
+        C0.1 D0.9 S1.5
 
 -Seal                               0.4     1.5    25         -30    10   30       Migrate   Animal       @Meat
         ~m:Meat,>=0.05,<=0.5,h:Water;0.2;1.25;1;CONSUME;4
@@ -130,7 +130,7 @@
         ^Meat:12 ^Fat:12 ^Bone:4:s|0.5 ^Fur:6 ^Blood:10 ^Leather:1:s|1.3
         #Water
         cWhite
-        C0.3 R0.2 D0.1
+        C0.3 R0.2 D0.1 S3
 
 -SeaOtter                           0.2     1      15         -20    10   40       Migrate   Animal       @Meat
         ~m:Meat,>=0.01,<=0.2,h:Water;0.2;1.25;1;CONSUME;4
@@ -139,7 +139,7 @@
         ^Meat:8 ^Fat:10 ^Bone:3:s|0.4 ^Fur:8 ^Blood:8 ^Leather:1:s|1.0
         l94;1000
         cBlack
-        C0.2 R0.1 D0.05
+        C0.2 R0.1 D0.05 S2
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -149,6 +149,7 @@
         #Water
         cWhite
         tMatt
+        S0
 
 //TODO very vulnerable when young
 -Crocodile                          0.0    2       10         20     40   7        Migrate   Animal       @Meat
@@ -158,7 +159,7 @@
         +_layEggs_prob_0.11_f/CrocodileEgg:15
         ^Meat:10 ^Fat:3 ^Bone:5 ^Leather:2:s|1#t|flexible4#t|sturdy4 ^Blood:5
         cGreen
-        C0.3 R0.3 D0.8
+        C0.3 R0.3 D0.8 S0.5
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -168,6 +169,7 @@
         #Water
         cWhite
         tMatt
+        S0
 
 -Snake                              0.0    0.4     7          15     35   18       Migrate   Animal       @Meat
         ~m:Meat,>=0.01,<=0.1;0.3;2;1;CONSUME
@@ -177,7 +179,7 @@
         #Water
         cBlack
         sCylinder
-        C0.4 R0.1 D0.3
+        C0.4 R0.1 D0.3 S0.4
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -187,6 +189,7 @@
         #Water
         cWhite
         tMatt
+        S0
 
 -Lizard                             0.0    0.1     8          14     35   40       Migrate   Animal       @Meat
         ~m:Meat,>=0.002,<=0.08;0.04;2;1;CONSUME
@@ -195,7 +198,7 @@
         ^Meat:1 ^Fat:1 ^Bone:10:s|0.01 ^Leather:2:s|0.05 ^Blood:1
         #Water
         cGreen
-        C0.4 R0.05 D0.02
+        C0.4 R0.05 D0.02 S0.9
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -205,6 +208,7 @@
         #Water
         cGrey
         tMatt
+        S0
 
 //TODO actually plant food
 -Sparrow                            0.0     0.07   10         0      30   100      Migrate   Animal       @Meat
@@ -214,7 +218,7 @@
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cBrown
-        D0.03
+        D0.03 S4
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -224,6 +228,7 @@
         #Water
         cWhite
         tMatt
+        S0
 
 -Heron                              0.0    0.5     10         0      30   10       Migrate   Animal       @Meat
         ~m:Meat,>=0.009,<=0.1,!!r:HeronEgg;0.1;2;1;CONSUME
@@ -233,7 +238,7 @@
         ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
         #Water
         cWhite
-        D0.4
+        D0.4 S3
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 -HawkEgg                            0.0     0.04   3          0      30   5        Ignore    Animal       @Meat
@@ -242,6 +247,7 @@
         #Water
         cWhite
         tMatt
+        S0
 
 -Hawk                               0.0     0.12   11         0      30   5        Migrate   Animal       @Meat
         ~m:Meat,<=0.05,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME;4
@@ -250,7 +256,7 @@
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
         #Water
         cBrown
-        R0.15 D0.4
+        R0.15 D0.4 S5
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -259,6 +265,7 @@
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
+        S0.01
 
 -Crab                               0.0     0.05   6          8      30   80       Migrate   Animal       @Chitin
         ~D(A(m:PlantFibre)||A(m:Meat),<=0.04),>=0.003,!!r:CrabLarva;0.04;1.01;1;CONSUME
@@ -267,7 +274,7 @@
         ^Chitin:1:s|0.04 ^Meat:1:s|0.02
         #Water
         cRed
-        C0.05 R0.02 D0.01
+        C0.05 R0.02 D0.01 S0.1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -277,6 +284,7 @@
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
+        S0.01
 
 -Lobster                            0.0     0.25   30         0      30   50       Migrate   Animal       @Chitin
         ~D(A(m:PlantFibre)||A(m:Meat)),h:Water,<=0.1,>=0.005;0.1;1.25;0;CONSUME
@@ -285,7 +293,7 @@
         ^Chitin:1:s|0.04 ^Meat:1:s|0.02
         l93;1000
         cRed
-        C0.01 R0.05 D0.1
+        C0.01 R0.05 D0.1 S0.15
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -294,6 +302,7 @@
         ^Meat:1:s|0.003
         #Water
         tSemitransparent
+        S0
 
 -HerbivorousCricket                 0.0     0.02   5          0      30   500      Migrate   Animal       @Chitin
         ~m:PlantFibre,>=0.001;0.01;100;0;CONSUME
@@ -301,7 +310,7 @@
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown
-        C0.2
+        C0.2 S0.08
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -310,6 +319,7 @@
         ^Meat:1:s|0.003
         #Water
         tSemitransparent
+        S0
 
 -BuryingBeetleLarva                 0.0     0.01   4          5      30   50       Migrate   Animal       @Chitin
         ~m:Carcass,>=0.001;0.05;100;1;CONSUME
@@ -317,7 +327,7 @@
         ^Meat:1:s|0.01
         #Water
         cWhite
-        C0.1
+        C0.1 S0.01
 
 -BuryingBeetle                      0.0     0.02   5          5      30   50       Migrate   Animal       @Chitin
         ~m:Carcass,>=0.001;0.01;10;1;CONSUME
@@ -325,7 +335,7 @@
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBlack
-        C0.1
+        C0.1 S0.8
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -334,6 +344,7 @@
         +_transform_prob_0.5_t/MosquitoLarva:1
         ^Meat:1:s|0.002
         tSemitransparent
+        S0
 
 -MosquitoLarva                      0.0     0.005  3          0      30   1000     Ignore    Animal       @Meat
         ~D(A(m:PlantFibre)||A(m:Meat)),<=0.001;0.001;200;1;CONSUME
@@ -341,12 +352,14 @@
         +_transform_prob_0.333_t/MosquitoPupa:1
         ^Meat:1:s|0.005
         tSemitransparent
+        S0.01
 
 -MosquitoPupa                       0.0     0.008  2          0      30   1000     Ignore    Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_transform_prob_0.5_t/Mosquito:1
         ^Meat:1:s|0.008
         tSemitransparent
+        S0
 
 -Mosquito                           0.0     0.01   5          10      30   500     Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
@@ -354,7 +367,7 @@
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBrown
-        R0.3
+        R0.3 S0.8
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -363,6 +376,7 @@
         ^Meat:1:s|0.002
         #Water
         tSemitransparent
+        S0
 
 -Tick                               0.0     0.005  5          8      30   200     Migrate   Animal       @Chitin
         ~P(m:Blood),>=0.1;0.01;1.1;1;EXIST
@@ -370,7 +384,7 @@
         ^Chitin:1:s|0.003 ^Meat:1:s|0.001
         #Water
         cBrown
-        R0.1
+        R0.1 S0.05
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -379,15 +393,16 @@
         ^Meat:1:s|0.002
         #Water
         tSemitransparent
+        S0
 
 -Spider                             0.0     0.01   5          5      30   100     Migrate   Animal       @Chitin
-        ~P(m:Meat),>=0.0005,<=0.03;0.01;3;0;CONSUME
+        ~P(m:Meat),>=0.001,<=0.03;0.01;3;0;CONSUME
         +_layEggs_prob_0.01_t/SpiderEgg:50
         +_castWeb_prob_0.1_f/SpiderWeb:1
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         #Water
         cBlack
-        R0.1 D0.01
+        R0.1 D0.01 C0.8 S0.1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -396,6 +411,7 @@
         ^Meat:1:s|0.002
         #Water
         cYellow
+        S0
 
 //TODO dependency up to 0.1
 -Caterpillar                        0.0     0.02   3          10     30   400      Migrate   Animal       @Meat
@@ -404,12 +420,14 @@
         ^Meat:1:s|0.005
         #Water
         tSemitransparent
+        S0.03
 
 -ButterflyPupa                      0.0     0.03   2          10     30   400      Ignore    Animal       @Meat
         +_transform_prob_0.5_t/Butterfly:1
         ^Meat:1:s|0.008
         #Water
         tSemitransparent
+        S0
 
 -Butterfly                          0.0     0.04   4          10     30   300      Migrate   Animal       @Chitin
         ~P(r:Flower);1;1.5;0;EXIST
@@ -418,6 +436,7 @@
         $Pollinator:1
         #Water
         cYellow
+        S0.8
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -427,7 +446,7 @@
         $Pollinator:1
         #Water
         cYellow
-        R0.1
+        R0.1 S0.8
 
 -BumbleBee                          0.5     0.02   5          10     30   50       Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
@@ -435,14 +454,14 @@
         $Pollinator:1
         #Water
         cYellow
-        R0.1
+        R0.1 S0.8
 
 -WaterStrider                       0.3     0.01   6          2      30   500      Migrate   Animal       @Chitin
         ~P(m:Meat),>=0.0005,<=0.03;0.01;2;0;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         cGrey
-        C0.1
+        C0.1 S0.6
 //TODO only insects!
 
 -Shark                              0.12    2      15          0      40   8       Migrate   Animal       @Meat
@@ -451,7 +470,7 @@
         ^Meat:5 ^Fat:5 ^Bone:7:s|0.3 ^Blood:10
         #Normal:Mountain:Ice:Woods:Growth
         cWhite
-        D0.5
+        D0.5 S4
 
 -BlueWhale                          0.04    20     50          -10    35   4       Migrate   Animal       @Meat
         ~D(m:Meat||m:Chitin||m:PlantFibre),!!t:Sessile,<=0.03;100;1.25;0;CONSUME
@@ -459,7 +478,7 @@
         ^Meat:100 ^Fat:100 ^Bone:20:s|3 ^Blood:150
         #Normal:Mountain:Ice:Woods:Growth
         cBlue
-        D0.4
+        D0.4 S1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -468,6 +487,7 @@
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -Octopus                            0.0     1      10         0      20   30       Migrate   Animal       @Meat
         ~r:SaltWater;0.001;200;1;EXIST
@@ -478,7 +498,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         cYellow
         tSemitransparent
-        C0.3 R0.2 D0.3
+        C0.3 R0.2 D0.3 S1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -487,6 +507,7 @@
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -Fish                               0.0     0.1    10         -7     30   100      Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.002;00.1;10;0;CONSUME
@@ -495,7 +516,7 @@
         ^Meat:2 ^Fat:1 ^Bone:05:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
-        D0.02
+        D0.02 S1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -505,6 +526,7 @@
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -FreshWaterFish                     0.0     0.1    10         -5     30   50       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;00.05;010;0;CONSUME
@@ -514,7 +536,7 @@
         ^Meat:2 ^Fat:1 ^Bone:4:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
-        D0.01
+        D0.01 S2
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -523,6 +545,7 @@
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -ArcticFish                         0.0     0.1    10         -30    -5   50       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;0.1;10;0;CONSUME
@@ -531,7 +554,7 @@
         ^Meat:2 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
-        D0.02
+        D0.02 S1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -540,6 +563,7 @@
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -CoralFish                          0.0     0.04   6          20     30   150      Migrate   Animal       @Meat
         ~m:Coral;1;200;0;EXIST
@@ -549,7 +573,7 @@
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Blood:1
         #Normal:Mountain:Ice:Woods:Growth
         cOrange
-        C0.8 R0.2
+        C0.8 R0.2 S1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -558,6 +582,7 @@
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -Eel                                0.0     0.3    10         -20    30   30       Migrate   Animal       @Meat
         ~A(m:Meat),<=0.5,>=0.003;0.05;1.25;0;CONSUME
@@ -566,7 +591,7 @@
         ^Meat:1 ^Fat:1 ^Bone:5:s|0.03 ^Blood:3
         #Normal:Mountain:Ice:Woods:Growth
         cBrown
-        D0.2
+        D0.2 S1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -575,6 +600,7 @@
         +_transform_prob_0.333_t/Tadpole:1
         ^Meat:1:s|0.01
         tSemitransparent
+        S0
 
 -Tadpole                            0.0     0.03   3          5      30   1000     Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
@@ -582,6 +608,7 @@
         +_transform_prob_0.333_t_t/Frog:1
         ^Meat:1:s|0.03
         cBlack
+        S0.07
 
 -Frog                               0.0     0.07   6          5      30   100      Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
@@ -591,7 +618,7 @@
         ^Meat:1:s|0.07
         #Water
         cGreen
-        C0.1 R0.1
+        C0.1 R0.1 S0.6
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -601,6 +628,7 @@
         ^Meat:1:s|0.005
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -Leech                              0.0     0.04   4          0      30   60       Migrate   Animal       @Meat
         ~P(m:Blood),>=0.2;0.01;1.1;1;EXIST
@@ -610,7 +638,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         cBlack
         sCylinder
-        D0.001
+        D0.001 S0.5
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -620,12 +648,14 @@
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
+        S0.01
 
 -BarnacleCyprid                     0.0     0.003  3          0      35   1000     Migrate   Animal       @Meat
         +_transform_prob_0.333_t/Barnacle:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
+        S0.01
 
 -Barnacle                           0.0     0.01   7           0     35   500      Cut       Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.02;1.25;0;CONSUME
@@ -636,7 +666,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000
         cBrown tRough
-        C0.2 R0.6
+        C0.2 R0.6 S0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -645,6 +675,7 @@
         +_transform_prob_0.5_t/Trochophore:1
         ^Meat:1:s|0.0001
         tSemitransparent
+        S0
 
 -Trochophore                        0.0     0.0005 3           -10   35   1000     Ignore    Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.0005;1.25;0;CONSUME
@@ -652,6 +683,7 @@
         +_transform_prob_0.333_t/Polychaeta:1
         ^Meat:1:s|0.0005
         tSemitransparent
+        S0.01
 
 -Polychaeta                         0.0     0.08   8           -10   35   400      Migrate   Animal       @Meat
         ~m:Detritus;0.1;2;0;CONSUME
@@ -660,7 +692,7 @@
         ^Meat:1:s|0.05
         l93;1000
         cBrown tMatt
-        C0.7
+        C0.7 S0.03
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -669,6 +701,7 @@
         +_transform_prob_0.5_t/Tornaria:1
         ^Meat:1:s|0.0001
         tSemitransparent
+        S0
 
 -Tornaria                           0.0     0.0005 3           -10   35   1000     Ignore    Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.0005;1.25;0;CONSUME
@@ -676,6 +709,7 @@
         +_transform_prob_0.333_t/AcornWorm:1
         ^Meat:1:s|0.0005
         tSemitransparent
+        S0.01
 
 -AcornWorm                          0.0     0.2    8           -10   35   400      Migrate   Animal       @Meat
         ~m:Detritus;0.1;2;0;CONSUME
@@ -684,7 +718,7 @@
         ^Meat:1:s|0.05
         l10;1000
         cYellow tMatt
-        C0.8
+        C0.8 S0.03
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -693,11 +727,14 @@
         +_transform_prob_0.333_t/JellyfishPolyp:1
         ~r:SaltWater;0.001;200;1;EXIST
         tSemitransparent
+        S0.01
 
 -JellyfishPolyp                     0.0     0.005  5          5      35   1000     Migrate   Animal       @Mesoglea
         +_strobilate_prob_0.5_f/Jellyfish:1
         ~r:SaltWater;0.001;200;1;EXIST
+        $Sessile
         tSemitransparent
+        S0
 
 -Jellyfish                          0.0     0.07   7          5      35   500      Migrate   Animal       @Mesoglea
         ~m:Meat,>=0.01,<=0.05;0.05;1.25;0;CONSUME
@@ -707,7 +744,7 @@
         l91;1000
         tSemitransparent
         sDome
-        R0.3
+        R0.3 S0.03
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -716,6 +753,7 @@
         ^Meat:1:s|0.0001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -Brachiolaria                       0.0     0.001  2           -15   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
@@ -724,7 +762,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
         tSemitransparent
-        C0.8 R0.1
+        C0.8 R0.1 S0.01
 
 -Starfish                           0.0     0.08   20          -15   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.05;0.1;1.25;0;CONSUME
@@ -733,7 +771,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
         cOrange tMatt sStar
-        C0.8 R0.1
+        C0.8 R0.1 S0.02
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -742,6 +780,7 @@
         ^Meat:1:s|0.0001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
+        S0
 
 -Vitellaria                         0.0     0.001  2           -20   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
@@ -750,7 +789,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
         tSemitransparent
-        C0.8 R0.1
+        C0.8 R0.1 S0.01
 
 -SeaLily                            0.0     0.1    20          -20   30   200      Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.2;1.25;0;CONSUME
@@ -759,7 +798,8 @@
         #Normal:Mountain:Ice:Woods:Growth
         l80;1000
         cWhite
-        C0.2 R0.1
+        $Sessile
+        C0.2 R0.1 S0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -768,7 +808,7 @@
         ^Meat:1:s|0.001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
-        C0.1
+        C0.1 S0.01
 
 -Mussel                             0.0     0.04   10          10    30   500      Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME
@@ -780,7 +820,7 @@
         #Normal:Mountain:Ice:Woods:Growth
         l95;1000
         cBlack tMatt
-        R0.6
+        R0.6 S0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -790,14 +830,14 @@
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
         cBlue tMatt sStar
-        C0.5 R0.1
+        C0.5 R0.1 S0.02
 
 -Worm                               0.25    0.04   8           0     35   800      Migrate   Animal       @Meat
         ~m:Detritus;0.05;2;0;CONSUME
         ^Meat:1:s|0.04
         #Water
         cBrown tMatt
-        C0.7
+        C0.7 S0.03
 
 -Woodlouse                          0.45    0.02   5           0     30   300      Migrate   Animal       @Meat
         ~m:Water;0.001;2;1;EXIST
@@ -805,34 +845,39 @@
         ^Chitin:1:s|0.02 ^Meat:1:s|0.01
         #Water
         cBrown tMatt
-        C0.1
+        C0.1 S0.02
 
 //TODO sexual reproduction when bad conditions
 // Actually they do not consist of Mesoglea, but it's close enough
 -Hydra                              0.2     0.01    10         0      30   800      Migrate   Animal        @Mesoglea
         ~m:Meat,>=0.001,<=0.01;0.01;1.25;0;CONSUME
         #Normal:Mountain:Ice:Woods:Growth
+        $Sessile
         l93;1000
         tSemitransparent
         sCylinder
-        R0.3
+        R0.3 S0
 
 -Coral                              0.4     0.1    5          20     30   2000     Cut       Plant        @Coral
         #Normal:Mountain:Ice:Woods:Growth
+        $Sessile
         cRed
         tMatt
         sPeculiar
+        S0
 
 -Sponge                             0.12    0.1    15         5      30   1000     Migrate   Animal        @Sponge
         ~D(m:PlantFibre||m:Meat),<=0.001;0.1;1.25;0;CONSUME
+        $Sessile
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
         cBlue
         tMatt
         sCylinder
+        S0
 
 -Copepod                            0.6     0.001  4           -90   80   100000   Migrate   Animal       @Meat
         ~m:PlantFibre,<=0.01;0.0005;4;0;CONSUME
         ~D(m:Water||m:SaltWater),t:liquid;0.001;200;1;EXIST
         cOrange
-        R0.05
+        R0.05 S0.001

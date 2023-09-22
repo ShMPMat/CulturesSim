@@ -23,6 +23,8 @@ class ResourceTemplateCreator(
     fun createResource(tags: Array<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
                 ?: throw DataInitializationError("Tags for Resource are empty")
+        val type = ResourceType.valueOf(tags[8])
+        val overflowType = OverflowType.valueOf(tags[7])
         var resistance: Double? = null
         var danger = 0.0
         var isTemplate = false
@@ -40,6 +42,7 @@ class ResourceTemplateCreator(
         var texture: ResourceTexture? = null
         var shape: ResourceShape? = null
         var camouflage = 0.0
+        var speed = if (type == ResourceType.Animal) 1.0 else 0.0
         var hasLegasy = false
         var isMovable = true
 
@@ -84,6 +87,7 @@ class ResourceTemplateCreator(
                     's' -> shape = ResourceShape.valueOf(tag)
                     'c' -> colour = ResourceColour.valueOf(tag)
                     'C' -> camouflage = tag.toDouble()
+                    'S' -> speed = tag.toDouble()
                     't' -> texture = ResourceTexture.valueOf(tag)
                     'L' -> hasLegasy = true
                     'I' -> isMovable = false
@@ -129,13 +133,13 @@ class ResourceTemplateCreator(
 
         var genome = Genome(
                 name = name,
-                type = ResourceType.valueOf(tags[8]),
+                type = type,
                 sizeRange = sizeRange,
                 spreadProbability = tags[1].toDouble(),
                 baseDesirability = desirability,
                 isMutable = false,
                 isMovable = isMovable,
-                behaviour = Behaviour(resistance ?: danger, danger, camouflage, OverflowType.valueOf(tags[7])),
+                behaviour = Behaviour(resistance ?: danger, danger, camouflage, speed, overflowType),
                 appearance = Appearance(colour, texture, shape),
                 isDesirable = isDesirable,
                 hasLegacy = hasLegasy,

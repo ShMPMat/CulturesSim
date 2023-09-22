@@ -113,6 +113,8 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
             resource.genome.behaviour.danger.takeIf { it > 0.5 }?.let { IdeationalConcept.Danger.meme },
             resource.genome.behaviour.danger.takeIf { it == 0.0 }?.let { IdeationalConcept.Safety.meme },
             resource.genome.behaviour.camouflage.takeIf { it > 0.5 }?.let { IdeationalConcept.Secret.meme },
+            resource.genome.behaviour.speed.takeIf { it >= 3 }?.let { IdeationalConcept.Fast.meme },
+            resource.genome.behaviour.danger.takeIf { it <= 0.1 }?.let { IdeationalConcept.Slow.meme },
     )
     //Merge predicateMemes
     memes.first += predicateMemes

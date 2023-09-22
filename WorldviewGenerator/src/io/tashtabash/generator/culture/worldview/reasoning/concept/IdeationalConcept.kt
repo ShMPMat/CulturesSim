@@ -73,6 +73,9 @@ sealed class IdeationalConcept(
     object Fragility :     IdeationalConcept(Meme("Fragility"),     { listOf(Robustness) },           { listOf() })
     object Robustness :    IdeationalConcept(Meme("Robustness"),    { listOf(Fragility) },            { listOf() })
 
+    object Fast :          IdeationalConcept(Meme("Fast"),          { listOf(Slow) },                 { listOf() })
+    object Slow :          IdeationalConcept(Meme("Slow"),          { listOf(Fast) },                 { listOf() })
+
     object Obvious :       IdeationalConcept(Meme("Obvious"),       { listOf(Secret) },               { listOf() })
     object Secret :        IdeationalConcept(Meme("Secret"),        { listOf(Obvious) },              { listOf() })
 
