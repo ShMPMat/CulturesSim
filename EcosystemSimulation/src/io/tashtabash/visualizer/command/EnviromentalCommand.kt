@@ -10,6 +10,7 @@ enum class EnvironmentCommand(command: String, override val description: String)
     Tiles("\\d+ \\d+ \\d+ \\d+", "Display info for a rectangle of tiles"),
     Temperature("temperature", "Display temperature across the map"),
     Wind("wind", "Display wind directions across the map"),
+    Flow("flow", "Display flow directions across the map"),
     TerrainLevel("level", "Display terrain level across the map"),
     Vapour("vapour", "Display vapour amount across the map"),
     Resource("r \\w+", "Display resource description"),

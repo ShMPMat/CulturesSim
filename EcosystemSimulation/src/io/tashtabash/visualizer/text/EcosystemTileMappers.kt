@@ -65,7 +65,7 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
 }
 
 
-fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Double, start: Int = 1): String {
+fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1): String {
     val result = mapper(tile)
     val colour = when {
         result < start -> NOTHING
@@ -82,13 +82,36 @@ fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Double, start: Int = 
     else NOTHING
 }
 
-fun temperatureMapper(tile: Tile) = hotnessMapper(10, tile, Tile::temperature, start = -30)
+fun temperatureMapper(tile: Tile) = hotnessMapper(10, tile, { it.temperature.toInt() }, start = -30)
+
+fun flowMapper(tile: Tile): String {
+    val direction: String
+    val level = tile.flow.strength
+
+    direction = when {
+        level > 3 -> "\u001b[41m"
+        level > 2 -> "\u001b[43m"
+        level > 1 -> "\u001b[47m"
+        level > 0 -> "\u001b[46m"
+        else -> ""
+    } + when {
+        tile.flow.x > 0 && tile.flow.y > 0 -> "J"
+        tile.flow.x > 0 && tile.flow.y < 0 -> "L"
+        tile.flow.x < 0 && tile.flow.y > 0 -> "⏋"
+        tile.flow.x < 0 && tile.flow.y < 0 -> "Г"
+        tile.flow.x > 0 -> "V"
+        tile.flow.x < 0 -> "^"
+        tile.flow.y > 0 -> ">"
+        tile.flow.y < 0 -> "<"
+        else -> ""
+    }
+
+    return direction
+}
 
 fun windMapper(tile: Tile): String {
     var direction: String
-    val level = tile.wind.affectedTiles
-            .map { ceil(it.second).toInt() }
-            .fold(Int.MIN_VALUE) { x, y -> max(x, y) }
+    val level = tile.wind.maxLevel
     direction = when {
         level > 4 -> "\u001b[41m"
         level > 3 -> "\u001b[43m"
@@ -129,7 +152,7 @@ fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =
 fun resourceDensityMapper(threshold: Double, tile: Tile) = hotnessMapper(
         (threshold / 5.0).toInt(),
         tile,
-        { it.resourceDensity }
+        { it.resourceDensity.toInt() }
 )
 
 fun tileTagMapper(tagName: String, tile: Tile) = predicateMapper(tile) { t ->

@@ -61,7 +61,6 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                                     conglomerate.subgroups[0]
                                         .territoryCenter
                                         .tilePotentialMapper(it)
-                                        .toDouble()
                                 },
                                 splitCommand[2].toInt()
                         )

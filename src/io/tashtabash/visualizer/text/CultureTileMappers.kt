@@ -29,11 +29,10 @@ fun aspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
         tile,
         {
             val group: Group = getResidingGroup(it)
-                    ?: return@hotnessMapper 0.0
+                    ?: return@hotnessMapper 0
             group.cultureCenter.aspectCenter.aspectPool.all.firstOrNull { a -> a.name.contains(aspectName) }
                 ?.usefulness
-                ?.toDouble()
-                ?: 0.0
+                ?: 0
         }
 )
 
@@ -42,11 +41,10 @@ fun cultureAspectMapper(aspectName: String, tile: Tile) = hotnessMapper(
         tile,
         { t ->
             val group: Group = getResidingGroup(t)
-                    ?: return@hotnessMapper 0.0
+                    ?: return@hotnessMapper 0
             group.cultureCenter.cultureAspectCenter.aspectPool.all
                 .filter { it.toString().contains(aspectName) }
                 .size
-                .toDouble()
         }
 )
 
@@ -55,12 +53,11 @@ fun strataMapper(strataSubstr: String, tile: Tile) = hotnessMapper(
         tile,
         { t ->
             val group: Group = getResidingGroup(t)
-                    ?: return@hotnessMapper 0.0
+                    ?: return@hotnessMapper 0
             group.populationCenter.stratumCenter.strata
                 .filter { it.name.contains(strataSubstr) }
                 .map { it.population }
                 .foldRight(0, Int::plus)
-                .toDouble()
         }
 )
 

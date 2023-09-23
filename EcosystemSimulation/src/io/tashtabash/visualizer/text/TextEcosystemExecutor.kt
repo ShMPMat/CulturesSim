@@ -25,6 +25,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 Plates -> printMap { platesMapper(map.tectonicPlates, it) }
                 Temperature -> printMap { temperatureMapper(it) }
                 Wind -> printMap { windMapper(it) }
+                Flow -> printMap { flowMapper(it) }
                 TerrainLevel -> printMap { levelMapper(it) }
                 Vapour -> printMap { vapourMapper(it) }
                 TileTag -> printMap { tileTagMapper(splitCommand[1], it) }

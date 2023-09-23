@@ -2,6 +2,7 @@ package io.tashtabash.sim.space
 
 import io.tashtabash.random.randomElement
 import io.tashtabash.random.singleton.chanceOf
+import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.Controller
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.tile.Tile
@@ -28,7 +29,7 @@ fun createRiver(
     riversCreated++
     var currentTile = tile
     val iterations = (200 * Controller.session.proportionCoefficient).toInt()
-    loop@ for (i in 1..iterations) {
+    for (i in 1..iterations) {
         if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
             break
         }
@@ -39,14 +40,24 @@ fun createRiver(
                 currentTile.getNeighbours(goodTilePredicate).minByOrNull { it.level }?.level ?: -1
         )
         val tiles = currentTile.getNeighbours { it.level == minLevel }
-        if (minLevel == currentTile.level && tiles.size >= 3) {
-            createLake(currentTile, water, goodTilePredicate, nameTag, random)
-            break
+        var nextTile = tiles.filter { it.resourcesWithMoved.contains(water) }
+            .randomElementOrNull()
+
+        if (nextTile == null) {
+            if (minLevel == currentTile.level && tiles.size >= 3) {
+                createLake(currentTile, water, goodTilePredicate, nameTag, random)
+                break
+            }
+            nextTile = when (tiles.size) {
+                0 -> break
+                else -> randomElement(tiles, random)
+            }
         }
-        currentTile = when (tiles.size) {
-            0 -> break@loop
-            else -> randomElement(tiles, random)
-        }
+
+        currentTile.flow.x = (nextTile.x - currentTile.x) * (0.5 + currentTile.level - nextTile.level)
+        currentTile.flow.y = (nextTile.y - currentTile.y) * (0.5 + currentTile.level - nextTile.level)
+
+        currentTile = nextTile
     }
 }
 

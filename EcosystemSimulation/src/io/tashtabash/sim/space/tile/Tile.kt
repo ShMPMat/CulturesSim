@@ -13,7 +13,7 @@ import kotlin.math.max
 import kotlin.math.pow
 
 
-class Tile(val x: Int, val y: Int, private val updaters: List<TileUpdater>) {
+class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
     val tagPool = MutableTileTagPool()
 
     var type: Type? = null
@@ -58,6 +58,11 @@ class Tile(val x: Int, val y: Int, private val updaters: List<TileUpdater>) {
 
     private val windCenter = WindCenter()
 
+    val wind: Wind
+        get() = windCenter.wind
+
+    val flow = Flow()
+
     val resourcesWithMoved: List<Resource>
         get() {
             val resources: MutableList<Resource> = ArrayList(_resourcePack.resources)
@@ -94,9 +99,6 @@ class Tile(val x: Int, val y: Int, private val updaters: List<TileUpdater>) {
     fun getTilesInRadius(radius: Int, predicate: (Tile) -> Boolean) = getTilesInRadius(radius)
             .filter(predicate)
             .toSet()
-
-    val wind: Wind
-        get() = windCenter.wind
 
     fun setType(type: Type, updateLevel: Boolean) {
         if (type == this.type)

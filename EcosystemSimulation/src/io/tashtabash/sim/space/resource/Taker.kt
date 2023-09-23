@@ -1,11 +1,14 @@
 package io.tashtabash.sim.space.resource
 
+
 sealed class Taker {
     data class ResourceTaker(val resource: Resource): Taker() {
         override fun toString() = "Resource ${resource.fullName}"
     }
 
     object WindTaker: Taker()
+
+    object FlowTaker: Taker()
 
     object DeathTaker: Taker()
 

@@ -33,6 +33,7 @@ class Data(
         val minTectonicRise: Int = 5,
         val resourceDenseCoefficient: Double = tileScale,
         val windPropagation: Double = 0.025,
+        val coriolisEffect: Double = 0.1,
         val windFillIn: Double = 0.1,
         val temperatureBaseStart: Double = -15.0,
         val temperatureBaseFinish: Double = 29.0,
