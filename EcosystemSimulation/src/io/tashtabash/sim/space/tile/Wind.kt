@@ -3,8 +3,8 @@ package io.tashtabash.sim.space.tile
 import io.tashtabash.sim.space.SpaceData.data
 import kotlin.math.min
 
+
 class Wind {
-    var isFilling = false
     var affectedTiles: MutableList<Pair<Tile, Double>> = mutableListOf()
 
     val isStill: Boolean
@@ -17,15 +17,13 @@ class Wind {
                 ?: 0.0
 
     val sumLevel: Double
-        get() = affectedTiles
-                .map { (_, t) -> t }
-                .sum()
+        get() = affectedTiles.sumOf { (_, t) -> t }
 
     fun changeLevelOnTile(tile: Tile, change: Double) {
         for (i in affectedTiles.indices) {
             var pair = affectedTiles[i]
             if (pair.first == tile) {
-                pair = Pair(pair.first, min(change + pair.second, data.maximalWind))
+                pair = pair.first to min(change + pair.second, data.maximalWind)
                 if (pair.second <= 0)
                     affectedTiles.removeAt(i)
                 return
@@ -48,9 +46,4 @@ class Wind {
                 .firstOrNull()
                 ?: 0.0
     }
-
-    fun getPureLevelByTile(tile: Tile): Double =
-            if (!isFilling)
-                getLevelByTile(tile)
-            else 0.0
 }

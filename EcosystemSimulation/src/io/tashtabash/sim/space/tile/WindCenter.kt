@@ -50,13 +50,10 @@ class WindCenter internal constructor() {
         propagateWindStraight(map[x + 1, y], map[x - 1, y], host)
         propagateWindStraight(map[x, y - 1], map[x, y + 1], host)
         propagateWindStraight(map[x, y + 1], map[x, y - 1], host)
-        //TODO better to addAll wind for cross tiles than try to fetch it; cut wind on large level changes
-        if (!_newWind.isStill)
-            return
-        propagateWindFillIn(map[x - 1, y], map[x - 2, y])
-        propagateWindFillIn(map[x + 1, y], map[x + 2, y])
-        propagateWindFillIn(map[x, y - 1], map[x, y - 2])
-        propagateWindFillIn(map[x, y + 1], map[x, y + 2])
+
+        map[x, y - 1]?.let {
+            _newWind.changeLevelOnTile(it, data.coriolisEffect)
+        }
     }
 
     fun finishUpdate() {
@@ -81,19 +78,8 @@ class WindCenter internal constructor() {
         tile ?: return
         target ?: return
 
-        val level = tile.wind.getPureLevelByTile(master) - data.windPropagation
+        val level = tile.wind.getLevelByTile(master) - data.windPropagation
         if (level > 0)
             _newWind.changeLevelOnTile(target, level)
-    }
-
-    private fun propagateWindFillIn(tile: Tile?, target: Tile?) {
-        tile ?: return
-        target ?: return
-
-        val level = tile.wind.getLevelByTile(target) - data.windFillIn
-        if (level > 0) {
-            _newWind.isFilling = true
-            _newWind.changeLevelOnTile(tile, level)
-        }
     }
 }
