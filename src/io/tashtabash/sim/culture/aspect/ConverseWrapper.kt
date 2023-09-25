@@ -15,7 +15,6 @@ import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.BaseNameLabeler
-import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
 import io.tashtabash.sim.space.resource.tag.phony
 import java.util.*
@@ -78,13 +77,15 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         val gotWorkers = acquireWorkers(controller)
         val result = satisfyDependencies(controller)
 
-        if (controller.isFloorExceeded(result.resources)) //TODO why don't we free stratum here?
+        if (controller.isFloorExceeded(result.resources))
             markAsUsed()
         else {
-            controller.populationCenter.freeStratumAmountByAspect(this, gotWorkers)
             val neededAmount = ceil(controller.floor - controller.evaluate(result.resources)).toInt()
-            result.neededResources.add(BaseNameLabeler(resource.baseName) to neededAmount)
+            result.neededResources += BaseNameLabeler(resource.baseName) to neededAmount
         }
+
+        if (result.isFinished)
+            controller.populationCenter.freeStratumAmountByAspect(this, gotWorkers)
 
         updateFailStats(result.isFinished)
         isCurrentlyUsed = false
