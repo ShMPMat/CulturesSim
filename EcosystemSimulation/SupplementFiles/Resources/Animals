@@ -775,6 +775,33 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-SpongivoreStarfishEgg              0.0     0.0001 2           -15   35   1000     Ignore    Animal       @Meat
+        +_transform_prob_0.5_t/SpongivoreBrachiolaria:1
+        ^Meat:1:s|0.0001
+        #Normal:Mountain:Ice:Woods:Growth
+        tSemitransparent
+        S0
+
+-SpongivoreBrachiolaria             0.0     0.001  2           -15   30   200      Migrate   Animal       @Meat
+        ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
+        +_transform_prob_0.5_t/SpongivoreStarfish:1
+        ^Meat:1:s|0.001
+        #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
+        tSemitransparent
+        C0.8 R0.1 S0.01
+
+-SpongivoreStarfish                 0.11    0.06   10          5     30   100      Migrate   Animal       @Meat
+        ~D(m:Meat||m:Sponge),<=0.05;0.1;3;0;CONSUME
+        +_layEggs_prob_0.02_f/SpongivoreStarfishEgg:10
+        ^Meat:1:s|0.02
+        #Normal:Mountain:Ice:Woods:Growth
+        l93;1000
+        cBlue tMatt sStar
+        C0.5 R0.1 S0.02
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -SeaLilyEgg                         0.0     0.0001 2           -20   35   1000     Ignore    Animal       @Meat
         +_transform_prob_0.5_t/Vitellaria:1
         ^Meat:1:s|0.0001
@@ -823,14 +850,6 @@
         R0.6 S0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
--SpongivoreStarfish                 0.11    0.06   10          5     30   100      Migrate   Animal       @Meat
-        ~D(m:Meat||m:Sponge),<=0.05;0.1;3;0;CONSUME
-        ^Meat:1:s|0.02
-        #Normal:Mountain:Ice:Woods:Growth
-        l93;1000
-        cBlue tMatt sStar
-        C0.5 R0.1 S0.02
 
 -Worm                               0.25    0.04   8           0     35   800      Migrate   Animal       @Meat
         ~m:Detritus;0.05;2;0;CONSUME
