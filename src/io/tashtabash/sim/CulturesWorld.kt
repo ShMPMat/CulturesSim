@@ -72,11 +72,6 @@ open class CulturesWorld : World() {
         initializeMap(actions, AspectResourceTagParser(tags), resourceActionInjectors, proportionCoefficient)
     }
 
-    fun initializeGroups() {
-        for (i in 0 until session.startGroupAmount)
-            addConglomerate(tileForGroup)
-    }
-
     fun addConglomerate(tile: Tile): GroupConglomerate {
         val conglomerate = GroupConglomerate(1, tile)
         conglomerates += conglomerate
@@ -91,17 +86,6 @@ open class CulturesWorld : World() {
 
         return conglomerate
     }
-
-    private val tileForGroup: Tile
-        get() {
-            while (true) {
-                val tile = map.randomTile()
-                if (tile.tagPool.getByType(GROUP_TAG_TYPE).isEmpty()
-                        && tile.type != Tile.Type.Water && tile.type != Tile.Type.Mountain) {
-                    return tile
-                }
-            }
-        }
 
     fun addGroupConglomerate(groupConglomerate: GroupConglomerate) {
         conglomerates.add(groupConglomerate)
