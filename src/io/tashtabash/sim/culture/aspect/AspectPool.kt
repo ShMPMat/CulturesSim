@@ -8,8 +8,9 @@ import kotlin.Boolean
 import kotlin.NoSuchElementException
 import kotlin.String
 
+
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
-    protected val aspectMap = initialAspects.map { it.name to it }.toMap().toMutableMap()
+    protected val aspectMap = initialAspects.associateBy { it.name }.toMutableMap()
     private val _cws = aspects.filterIsInstance<ConverseWrapper>().toMutableSet()
     private val _cwRequirements = _cws
             .map { it.resource }
