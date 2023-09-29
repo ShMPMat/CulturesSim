@@ -40,12 +40,14 @@
         +_evaporate_prob_1.0_f/Vapour:1
 /        +_makeCloud_prob_1.0_f/Cloud:2500
         tTransparent
+        I
 
 -SaltWater                          0       10     inf        -1000  1000 50         Cut       None         @SaltWater
         $liquid
         +_evaporate_prob_1.0_f/Vapour:1
         #Normal:Mountain:Ice:Woods:Growth
         tTransparent
+        I
 
 -Puddle                             0       10     25         0      1000 5          Cut       None         @Water
         $liquid

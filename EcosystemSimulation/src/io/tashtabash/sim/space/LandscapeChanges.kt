@@ -4,11 +4,13 @@ import io.tashtabash.random.randomElement
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.Controller
+import io.tashtabash.sim.SimulationError
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.TileTag
 import io.tashtabash.sim.space.tile.getLakeTag
 import io.tashtabash.sim.space.tile.getRiverTag
+import io.tashtabash.sim.space.tile.updater.FlowUpdater
 import java.lang.Integer.min
 import java.util.*
 import kotlin.math.abs
@@ -54,8 +56,17 @@ fun createRiver(
             }
         }
 
-        currentTile.flow.x = (nextTile.x - currentTile.x) * (0.5 + currentTile.level - nextTile.level)
-        currentTile.flow.y = (nextTile.y - currentTile.y) * (0.5 + currentTile.level - nextTile.level)
+        val flowUpdater = currentTile.findUpdaterOfType(FlowUpdater::class.java)
+            ?: throw SimulationError("Flow updater expected be registered")
+
+        flowUpdater.updatedFlowX = (nextTile.x - currentTile.x) * (0.5 + currentTile.level - nextTile.level)
+        // In comparison to x flow this code checks for world wrapping using a hack; won't work if maxY = 1
+        var yShift = nextTile.y - currentTile.y
+        if (yShift > 1)
+            yShift = -1
+        else if (yShift < -1)
+            yShift = 1
+        flowUpdater.updatedFlowY = yShift * (0.5 + currentTile.level - nextTile.level)
 
         currentTile = nextTile
     }

@@ -234,6 +234,10 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
             distributeLevel()
     }
 
+    fun <E> findUpdaterOfType(type: Class<E>): E? =
+        updaters.filterIsInstance(type)
+            .firstOrNull()
+
     private fun distributeLevel() {
         val tiles = neighbours.toMutableList()
         tiles.sortBy { it.secondLevel }
@@ -254,8 +258,10 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
     override fun hashCode(): Int = 1_000_000 * x + y
 
     override fun toString() = "Tile $posStr, type=$type, temperature=$prettyTemperature, level=$level\n" +
-            "Tags: " + tagPool.all.joinToString("; ") + "\n\nResources:" +
-            _resourcePack.resources.joinToString("\n", "\n", "\n")
+            "Tags: " + tagPool.all.joinToString("; ") +
+            "\nWind: ${wind.affectedTiles.joinToString { "${it.first.x} ${it.first.y}: ${it.second}" }}" +
+            "\nFlow: ${flow.x} ${flow.y}" +
+            "\n\nResources:" + _resourcePack.resources.joinToString("\n", "\n", "\n")
 
     val prettyTemperature: String
         get() = "%.2f".format(temperature)
