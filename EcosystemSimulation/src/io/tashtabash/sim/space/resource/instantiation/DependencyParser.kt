@@ -26,8 +26,7 @@ open class DefaultDependencyParser : DependencyParser {
             "CONSUME" -> ConsumeDependency(
                     parseDeprivationCoefficient(elements[2]),
                     parseIsNecessary(elements[3]),
-                    QuantifiedResourceLabeler(makeResourceLabeler(elements[0]), elements[1].toDouble()),
-                    elements.getOrNull(5)?.toInt() ?: 1
+                    QuantifiedResourceLabeler(makeResourceLabeler(elements[0]), elements[1].toDouble())
             )
             "AVOID" -> AvoidDependency(
                     parseDeprivationCoefficient(elements[2]),

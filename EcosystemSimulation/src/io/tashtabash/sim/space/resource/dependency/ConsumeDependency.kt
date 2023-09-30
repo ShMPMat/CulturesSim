@@ -12,7 +12,7 @@ class ConsumeDependency(
         deprivationCoefficient: Double,
         isNecessary: Boolean,
         labeler: QuantifiedResourceLabeler,
-        val radius: Int
+        var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableSet<String> = consumed.getOrPut(name) {
         HashSet<String>()

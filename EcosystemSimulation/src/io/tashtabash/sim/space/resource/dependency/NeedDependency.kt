@@ -10,7 +10,8 @@ import kotlin.math.min
 class NeedDependency(
         deprivationCoefficient: Double,
         isNecessary: Boolean,
-        labeler: QuantifiedResourceLabeler
+        labeler: QuantifiedResourceLabeler,
+        var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableSet<String> = needed.getOrPut(name) {
         HashSet<String>()
@@ -20,7 +21,7 @@ class NeedDependency(
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
-        loop@for (list in tile.getAccessibleResources())
+        loop@for (list in tile.getAccessibleResources(radius))
             for (res in list) {
                 if (res == resource)
                     continue

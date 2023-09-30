@@ -10,6 +10,7 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagTemplate
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.material.MaterialPool
 import io.tashtabash.sim.space.tile.Tile
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -62,25 +63,25 @@ class ResourceTemplateCreator(
                         if (primaryMaterial == null)
                             primaryMaterial = material
                         else
-                            secondaryMaterials.add(material)
+                            secondaryMaterials += material
                     }
-                    '^' -> parts.add(tag)
-                    'l' -> resourceDependencies.add(LevelRestrictions(
+                    '^' -> parts += tag
+                    'l' -> resourceDependencies += LevelRestrictions(
                             tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
-                    ))
+                    )
                     '~' -> {
                         try {
                             val rDependency = dependencyParser.parseUnsafe(tag)
-                            resourceDependencies.add(rDependency)
+                            resourceDependencies += rDependency
                         } catch (e: ParseException) {
                             throw DataInitializationError("Failed initializing resource '$name': ${e.message}")
                         }
                     }
-                    '#' -> resourceDependencies.add(AvoidTiles(
+                    '#' -> resourceDependencies += AvoidTiles(
                             tag.split(":".toRegex())
-                                    .map { Tile.Type.valueOf(it) }
-                                    .toSet()
-                    ))
+                                .map { Tile.Type.valueOf(it) }
+                                .toSet()
+                    )
                     'R' -> resistance = tag.toDouble()
                     'D' -> danger = tag.toDouble()
                     'U' -> isDesirable = false
@@ -104,7 +105,7 @@ class ResourceTemplateCreator(
                     else -> {
                         val rTag = tagParser.parse(key, tag)
                                 ?: throw DataInitializationError("Unknown resource description command - $key")
-                        resourceTags.add(rTag)
+                        resourceTags += rTag
                     }
                 }
             } catch (e: NoSuchElementException) {
@@ -115,9 +116,9 @@ class ResourceTemplateCreator(
         }
 
         if (tags[4] != "None")
-            resourceDependencies.add(TemperatureMin(tags[4].toInt(), minTempDeprivation))
+            resourceDependencies += TemperatureMin(tags[4].toInt(), minTempDeprivation)
         if (tags[5] != "None")
-            resourceDependencies.add(TemperatureMax(tags[5].toInt(), maxTempDeprivation))
+            resourceDependencies += TemperatureMax(tags[5].toInt(), maxTempDeprivation)
 
         val lifespan =
                 if (tags[3] == "inf")
@@ -130,6 +131,12 @@ class ResourceTemplateCreator(
 
             l.toDouble() to r.toDouble()
         } else tags[2].toDouble().let { it to it }
+
+        for (dependency in resourceDependencies)
+            if (dependency is ConsumeDependency)
+                dependency.radius = max(1.0, speed).toInt()
+            else if (dependency is NeedDependency)
+                dependency.radius = max(1.0, speed).toInt()
 
         var genome = Genome(
                 name = name,
