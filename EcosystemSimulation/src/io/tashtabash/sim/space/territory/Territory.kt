@@ -49,4 +49,10 @@ interface Territory {
                     .map { it to mapper(it) }
                     .maxByOrNull { it.second }
                     ?.first
+
+
+    fun getMostUsefulTileOnOuterBrink(mapper: (Tile) -> Int): Tile? =
+            outerBrink.map { it to mapper(it) }
+                    .maxByOrNull { it.second }
+                    ?.first
 }

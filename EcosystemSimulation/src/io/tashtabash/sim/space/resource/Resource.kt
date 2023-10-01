@@ -1,17 +1,14 @@
 package io.tashtabash.sim.space.resource
 
-import io.tashtabash.random.singleton.RandomSingleton
-import io.tashtabash.random.singleton.chanceOf
-import io.tashtabash.random.singleton.randomElementOrNull
-import io.tashtabash.random.singleton.randomTileOnBrink
+import io.tashtabash.random.singleton.*
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.Taker.*
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.action.ResourceProbabilityAction
 import io.tashtabash.sim.space.resource.tag.ResourceTag
+import io.tashtabash.sim.space.territory.StaticTerritory
 import io.tashtabash.sim.space.tile.Tile
 import java.util.*
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -335,24 +332,36 @@ open class Resource private constructor(
     }
 
     private fun expand(tile: Tile): Boolean = (genome.spreadProbability * amount).chanceOf<Boolean> {
-        val tileList = mutableListOf(tile)
+//        val tileList = mutableListOf(tile)
+//
+//        var newTile = tileList.randomTileOnBrink {
+//            areNecessaryDependenciesSatisfied(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
+//        }
+//        if (newTile == null) {
+//            if (genome.dependencies.all { it.hasNeeded(tile) })
+//                newTile = tile
+//            else {
+//                newTile = tileList.randomTileOnBrink { areNecessaryDependenciesSatisfied(it) }
+//                if (newTile == null)
+//                    newTile = tile
+//            }
+//        }
+        val tiles = StaticTerritory(setOf(tile))
 
-        var newTile = tileList.randomTileOnBrink {
-            areNecessaryDependenciesSatisfied(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
+        val newTile = tiles.getMostUsefulTileOnOuterBrink {
+            genome.dependencies.count { d -> d.hasNeeded(it) }
         }
-        if (newTile == null) {
-            if (genome.dependencies.all { it.hasNeeded(tile) })
-                newTile = tile
-            else {
-                newTile = tileList.randomTileOnBrink { areNecessaryDependenciesSatisfied(it) }
-                if (newTile == null)
-                    newTile = tile
-            }
-        }
+            ?: if (genome.dependencies.all { it.hasNeeded(tile) })
+                tile
+            else 0.2.chanceOf<Tile> {
+                tile
+            } ?: tiles.outerBrink
+                .toList()
+                .randomElement()
 
         val amount = min(genome.defaultAmount, (genome.spreadProbability * amount).toInt())
-        // max(..) ensures that at least one Resource is spawned for small amounts and spreadProbabilities
-        val resource = copy(max(1, amount))
+        // `coerceAtLeast` ensures that at least one Resource is spawned for small amounts and spreadProbabilities
+        val resource = copy(amount.coerceAtLeast(1))
         newTile.addDelayedResource(resource)
 
         return true
