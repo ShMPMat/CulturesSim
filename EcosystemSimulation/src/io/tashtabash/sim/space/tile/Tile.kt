@@ -171,7 +171,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
         _delayedResources.remove(resource)
     }
 
-    fun startUpdate() { //TODO wind blows on 2 neighbour tiles
+    fun startUpdate() {
         resourcePack.resources.forEach { it.takers.clear() }
 
         updateResources()
