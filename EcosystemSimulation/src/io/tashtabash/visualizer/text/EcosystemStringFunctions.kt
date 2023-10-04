@@ -32,7 +32,7 @@ fun aliveResourcesCounter(world: World): String {
         "$colourMark$resourceName: tiles - ${counter.tilesAmount}, amount - ${counter.amount}"
     }
 
-    return chompToLines(lines, 30)
+    return chompToLines(lines, 35)
             .append("\u001b[30m")
             .toString()
 }
@@ -56,7 +56,7 @@ data class ResourceCounter(var amount: Int = 0, var tilesAmount: Int = 0) {
     }
 }
 
-fun outputResource(resource: Resource): String {
+fun outputResourceCharacteristics(resource: Resource): String {
     val actionConversions = resource.genome.conversionCore.allActionConversions.entries
             .joinToString("\n") { (a, v) ->
                 val needClause = if (a.dependencies.isNotEmpty())
@@ -68,10 +68,10 @@ fun outputResource(resource: Resource): String {
             }
 
     val parts = resource.genome.parts.joinToString("\n") { p ->
-        outputResource(p).lines().joinToString("\n") { "--$it" }
+        outputResourceCharacteristics(p).lines().joinToString("\n") { "--$it" }
     }
 
-    return "$resource\n$actionConversions\n\nParts:\n$parts"
+    return "$resource\n\n$actionConversions\n\nParts:\n$parts"
 }
 
 fun outputFoodWeb(resource: Resource, world: World): String {
@@ -99,7 +99,7 @@ fun outputFoodWeb(resource: Resource, world: World): String {
 }
 
 fun printResources(resources: List<Resource>) = resources
-        .joinToString("\n\n\n\n") { outputResource(it) }
+        .joinToString("\n\n\n\n") { outputResourceCharacteristics(it) }
 
 fun printResourcesOnTile(tile: Tile, substring: String) =
         printResources(tile.resourcesWithMoved.filter { it.fullName.contains(substring) })

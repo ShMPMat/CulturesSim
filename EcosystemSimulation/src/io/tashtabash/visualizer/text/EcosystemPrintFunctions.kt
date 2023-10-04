@@ -48,6 +48,6 @@ fun TextEcosystemVisualizer<*>.printResource(resource: Resource) {
             "\u001b[30m\u001b[41m" + tile.resourcePack.getAmount(resource) % 10
         else ""
     }
-    println(outputResource(resource))
+    println(outputResourceCharacteristics(resource))
     println(outputFoodWeb(resource, controller.world))
 }
