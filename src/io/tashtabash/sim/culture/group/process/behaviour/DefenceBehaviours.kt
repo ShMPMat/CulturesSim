@@ -49,10 +49,6 @@ object ManageDefenceB : AbstractGroupBehaviour() {
             resistance = 0.1 + additionalResistance
         }
 
-        if (additionalDanger + additionalResistance > 0) {
-            val f = 0
-        }
-
         return emptyProcessResult
     }
 
