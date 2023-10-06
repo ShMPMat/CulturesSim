@@ -28,7 +28,7 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
 
     protected fun innerAdd(aspect: Aspect) {
         if (!aspectMap.containsKey(aspect.name) && aspect is ConverseWrapper) {
-            _cws.add(aspect)
+            _cws += aspect
             _cwRequirements[aspect.resource] = (_cwRequirements[aspect.resource] ?: 0) + 1
         }
         aspectMap[aspect.name] = aspect
@@ -41,10 +41,7 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
                 ?: return false
 
         if (innerAspect is ConverseWrapper) {
-            _cws.remove(innerAspect)
-            if (_cwRequirements[innerAspect.resource] == null) {
-                val h = 0
-            }
+            _cws -= innerAspect
             if (_cwRequirements[innerAspect.resource] == 1)
                 _cwRequirements.remove(innerAspect.resource)
             else
