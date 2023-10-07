@@ -24,12 +24,12 @@ fun printApplicableResources(aspect: Aspect, resources: Collection<Resource>) = 
 fun outputGroup(group: Group) = "$group"
 
 fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: ConglomeratePrintInfo): String {
-    val conglomeratesToPrint = 5
+    val conglomeratesPrintNumber = 5
+    val printedConglomerates = conglomerates.filter { it.state != GroupConglomerate.State.Dead}
+        .takeLast(conglomeratesPrintNumber)
     val main = StringBuilder()
-    for (group in conglomerates.takeLast(conglomeratesToPrint)) {
+    for (group in printedConglomerates) {
         val stringBuilder = StringBuilder()
-        if (group.state === GroupConglomerate.State.Dead)
-            continue
 
         stringBuilder.append(info.getConglomerateSymbol(group)).append(" ").append(group.name).append(" \u001b[31m")
         val aspects = group.aspects.sortedByDescending { it.usefulness }.take(10)
@@ -50,17 +50,31 @@ fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: Conglomer
             stringBuilder.append("($it ${it.importance})")
         }
         stringBuilder.append(" \u001b[39m\n")
+            .append(makeTraitString(group))
+            .append(makePopulationString(group, info))
 
-        val hasGrown = group.population > (info.populations[group] ?: 0)
-        stringBuilder.append(if (hasGrown) "\u001b[32m" else "\u001b[31m")
-                .append("population=${group.population}")
-                .append(if (hasGrown) "↑" else "↓")
-                .append("\u001b[39m\n\n")
         info.populations[group] = group.population
         main.append(chompToSize(stringBuilder.toString(), 220))
     }
     return main.toString()
 }
+
+private fun makePopulationString(conglomerate: GroupConglomerate, info: ConglomeratePrintInfo): String {
+    val hasGrown = conglomerate.population > (info.populations[conglomerate] ?: 0)
+
+    return (if (hasGrown) "\u001b[32m" else "\u001b[31m") +
+            "\npopulation=${conglomerate.population}" +
+            (if (hasGrown) "↑" else "↓") +
+                    "\u001b[39m\n\n"
+}
+
+private fun makeTraitString(conglomerate: GroupConglomerate) = Trait.values()
+    .joinToString { trait ->
+        val avg = conglomerate.subgroups
+            .map { it.cultureCenter.traitCenter.processedValue(trait) }
+            .average()
+        "${trait.name}: %+.3f".format(avg)
+    }
 
 fun printConglomerateRelations(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) = """
         |${printConglomerateRelation(conglomerate1, conglomerate2)}
