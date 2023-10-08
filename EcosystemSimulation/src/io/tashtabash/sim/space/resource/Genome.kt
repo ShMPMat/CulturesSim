@@ -22,7 +22,6 @@ open class Genome(
         val isMovable: Boolean,
         val behaviour: Behaviour,
         val appearance: Appearance,
-        val isDesirable: Boolean,
         val hasLegacy: Boolean,
         val lifespan: Double,
         val defaultAmount: Int,
@@ -42,7 +41,8 @@ open class Genome(
     val negativeDependencies = dependencies.filter { !it.isPositive }
     val positiveDependencies = dependencies.filter { it.isPositive }
 
-    private val tagsMap = tags.map { it to it }.toMap().toMutableMap()
+    private val tagsMap = tags.associateWith { it }
+        .toMutableMap()
     var tags: Set<ResourceTag> = tagsMap.keys
         private set
 
@@ -66,7 +66,6 @@ open class Genome(
             isMovable: Boolean = this.isMovable,
             behaviour: Behaviour = this.behaviour,
             appearance: Appearance = this.appearance,
-            isDesirable: Boolean = this.isDesirable,
             hasLegacy: Boolean = this.hasLegacy,
             lifespan: Double = this.lifespan,
             defaultAmount: Int = this.defaultAmount,
@@ -88,7 +87,6 @@ open class Genome(
                 isMovable,
                 behaviour,
                 appearance,
-                isDesirable,
                 hasLegacy,
                 lifespan,
                 defaultAmount,
@@ -123,26 +121,25 @@ open class Genome(
         if (primaryMaterial == null && this !is GenomeTemplate) {
             val k = 0//TODO hell
 //            throw new ExceptionInInitializerError("Resource " + getName() + " has no materials.");
-        } else if (primaryMaterial != null) {
+        } else if (primaryMaterial != null)
             computeTags()
-        }
     }
 
     private fun computeTags() {
-        tagsMap.putAll(primaryMaterial!!.tags.filter { !tagsMap.containsKey(it) }.map { it to it }.toMap())
-        for ((tag, labeler, leveler) in data.additionalTags) {
+        tagsMap.putAll(primaryMaterial!!.tags.filter { !tagsMap.containsKey(it) }.associateWith { it })
+        for ((tag, labeler, leveler, wipeOnMismatch) in data.additionalTags) {
             val level = leveler.getLevel(this)
-            if (tagsMap.containsKey(tag)) {
-                val existingTag = tagsMap.getValue(tag)
-
-                tagsMap[tag] = tag.copy(level = max(level, existingTag.level))
-            } else if (labeler.isSuitable(this))
-                tagsMap[tag] = tag.copy(level = level)
+            if (labeler.isSuitable(this))
+                tagsMap[tag] = tag.copy(level = max(level, tagsMap[tag]?.level ?: 0.0))
+            else if (wipeOnMismatch)
+                tagsMap.remove(tag)
         }
         tags = tagsMap.keys
     }
 
-    fun getTagLevel(tag: ResourceTag) = tagsMap[tag]?.level ?: 0.0
+    fun getTagLevel(tag: ResourceTag) =
+            tagsMap[tag]?.level
+                ?: 0.0
 
     val baseName: BaseName = name + legacyPostfix
 

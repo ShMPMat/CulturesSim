@@ -22,7 +22,6 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
                         Behaviour(0.1, 0.05, 0.25, 1.0, OverflowType.Ignore),
                         Appearance(null, null, null),
                         false,
-                        false,
                         50.0,
                         50,
                         null,

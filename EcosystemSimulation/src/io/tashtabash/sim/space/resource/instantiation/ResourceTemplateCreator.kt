@@ -29,7 +29,6 @@ class ResourceTemplateCreator(
         var resistance: Double? = null
         var danger = 0.0
         var isTemplate = false
-        var isDesirable = true
         var desirability = 0
         var minTempDeprivation = 2.0
         var maxTempDeprivation = 2.0
@@ -84,7 +83,6 @@ class ResourceTemplateCreator(
                     )
                     'R' -> resistance = tag.toDouble()
                     'D' -> danger = tag.toDouble()
-                    'U' -> isDesirable = false
                     's' -> shape = ResourceShape.valueOf(tag)
                     'c' -> colour = ResourceColour.valueOf(tag)
                     'C' -> camouflage = tag.toDouble()
@@ -148,7 +146,6 @@ class ResourceTemplateCreator(
                 isMovable = isMovable,
                 behaviour = Behaviour(resistance ?: danger, danger, camouflage, speed, overflowType),
                 appearance = Appearance(colour, texture, shape),
-                isDesirable = isDesirable,
                 hasLegacy = hasLegasy,
                 lifespan = lifespan,
                 defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),

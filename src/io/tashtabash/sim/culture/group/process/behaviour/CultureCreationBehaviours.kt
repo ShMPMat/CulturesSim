@@ -4,6 +4,7 @@ import io.tashtabash.random.SampleSpaceObject
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController
+import io.tashtabash.sim.culture.desirableTag
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.cultureaspect.util.*
 import io.tashtabash.sim.culture.group.process.ProcessResult
@@ -18,7 +19,7 @@ object CreateCultureAspectsB : AbstractGroupBehaviour() {
         val cultureAspect = when (AspectRandom.values().randomElement()) {
             AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
-                            .filter { it.genome.isDesirable }
+                            .filter { it.genome.getTagLevel(desirableTag) > 0 }
                             .filter {
                                 !group.cultureCenter.cultureAspectCenter.aestheticallyPleasingResources.contains(it)
                             }

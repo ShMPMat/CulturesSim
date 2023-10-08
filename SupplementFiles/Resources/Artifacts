@@ -41,7 +41,7 @@
 -HandPlough                         0       0.5    10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         &a(PlantSeed)-m(0.001,hard,sturdy)
-        L U
+        L
 
 -Basket                             0       0.3    10         -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
@@ -70,16 +70,16 @@
 
 -Temple                             0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
-        L U I
+        L I
 
 -Farm                               0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         &a(PlantSeed)-0.5
-        L U I
+        L I
 
 -Road                               0       1000   10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
-        L U I
+        L I
 
 -Dish                               0       0.1    10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         L d5

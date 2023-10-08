@@ -9,8 +9,8 @@ import io.tashtabash.sim.culture.group.cultureaspect.CherishedResource
 import io.tashtabash.sim.culture.group.resource_behaviour.getRandom
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.sim.culture.desirableTag
 import io.tashtabash.sim.culture.thinking.meaning.makeMeme
-import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.EventLog
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
@@ -166,7 +166,7 @@ class CultureCenter(
                 .filter { it.other.parentGroup != group.parentGroup }
 
         return when {
-            !resource.genome.isDesirable -> return 1
+            resource.genome.getTagLevel(desirableTag) == 0.0 -> return 1
             !isResourceDesirable(resource) -> 1
             aspectCenter.aspectPool.producedResources.contains(resource) -> 2
             conglomerate.any { it.resourceCenter.pack.contains(resource) } -> 3

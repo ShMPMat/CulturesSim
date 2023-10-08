@@ -1,10 +1,12 @@
 // Labelers which assign new tags depending on resource properties
 // Grammar:
-//      first name is the new tag
-//      t: - needed tags
-//      >=, <= sizes
-//      mм - isMovable
-//      rs - isResisting
+//      first name is the new tag, then an optional TagLeveler after :
+//          Optional prefix ! shows that the Labeler will delete an already existing tag if its Resource doesn't match
+//      After that any ResourceLabeler is allowed, each divided by whitespaces; examples:
+//          t: - needed tags
+//          >=, <= sizes
+//          mм - isMovable
+//          rs - isResisting
 //
 -goodForClothes                    t:flexible   t:solid       t:soft
 
@@ -38,3 +40,5 @@
 -food:i|1 m:Meat
 
 -composite:i|1 m:rawMineral
+
+-!desirable  !!r:Temple !!r:Farm !!r:Road !!r:HandPlough
