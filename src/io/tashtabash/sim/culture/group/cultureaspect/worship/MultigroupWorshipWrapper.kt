@@ -15,7 +15,6 @@ class MultigroupWorshipWrapper(val worship: Worship): Worship(
 
     override fun use(group: Group) = worship.use(group)
 
-//    override fun adopt(group: Group) = worship.adopt(group)
     override fun adopt(group: Group) = MultigroupWorshipWrapper(worship)
 
     override fun die(group: Group) = worship.die(group)
