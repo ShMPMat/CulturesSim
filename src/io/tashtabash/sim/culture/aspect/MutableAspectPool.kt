@@ -1,5 +1,6 @@
 package io.tashtabash.sim.culture.aspect
 
+
 class MutableAspectPool(initialAspects: MutableSet<Aspect>) : AspectPool(initialAspects) {
     fun add(aspect: Aspect) = innerAdd(aspect)
 
