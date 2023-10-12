@@ -1,10 +1,10 @@
 package io.tashtabash.sim.culture.group
 
+import io.tashtabash.sim.culture.foodTag
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.centers.util.freeze
 import io.tashtabash.sim.culture.group.centers.util.starve
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
-import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 
 /**
@@ -31,12 +31,12 @@ fun getGroupsDifference(g1: Group, g2: Group): Double {
 
 val foodPenalty = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
     starve(pair.first, percent)
-    pair.second.destroyAllResourcesWithTag(ResourceTag("food"))
+    pair.second.destroyAllResourcesWithTag(foodTag)
 }
 
 val foodReward = { pair: Pair<Group, MutableResourcePack>, percent: Double ->
     pair.first.populationCenter.goodConditionsGrow(percent, pair.first.territoryCenter.territory)
-    pair.second.destroyAllResourcesWithTag(ResourceTag("food"))
+    pair.second.destroyAllResourcesWithTag(foodTag)
 }
 
 val warmthPenalty = { pair: Pair<Group, MutableResourcePack>, percent: Double ->

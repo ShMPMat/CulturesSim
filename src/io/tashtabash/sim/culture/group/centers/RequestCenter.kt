@@ -1,8 +1,12 @@
 package io.tashtabash.sim.culture.group.centers
 
+import io.tashtabash.sim.culture.clothesTag
+import io.tashtabash.sim.culture.foodTag
 import io.tashtabash.sim.culture.group.*
 import io.tashtabash.sim.culture.group.request.*
 import io.tashtabash.sim.culture.group.request.RequestType.*
+import io.tashtabash.sim.culture.shelterTag
+import io.tashtabash.sim.culture.warmthTag
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.container.ResourcePack
 import io.tashtabash.sim.space.resource.tag.ResourceTag
@@ -69,29 +73,29 @@ class RequestCenter {
                     }
 
     private fun addClothesRequest(controller: RequestConstructController) {
-        val clothesEvaluator = tagEvaluator(ResourceTag("clothes"))
+        val clothesEvaluator = tagEvaluator(clothesTag)
         val neededClothes = controller.population.toDouble() - clothesEvaluator.evaluatePack(controller.accessibleResources)
         if (neededClothes <= 0)
             return
         val types = setOf(Clothes, Comfort)
-        val request = constructTagRequest(controller, ResourceTag("clothes"), neededClothes, types)
+        val request = constructTagRequest(controller, clothesTag, neededClothes, types)
         _unfinishedRequestMap[request] = MutableResourcePack()
     }
 
     private fun addShelterRequest(controller: RequestConstructController) {
-        val shelterEvaluator = tagEvaluator(ResourceTag("shelter"))
+        val shelterEvaluator = tagEvaluator(shelterTag)
         val neededShelter = controller.population.toDouble() - shelterEvaluator.evaluatePack(controller.accessibleResources)
         if (neededShelter <= 0)
             return
         val types = setOf(Shelter, Comfort)
-        val request = constructTagRequest(controller, ResourceTag("shelter"), neededShelter, types)
+        val request = constructTagRequest(controller, shelterTag, neededShelter, types)
         _unfinishedRequestMap[request] = MutableResourcePack()
     }
 
     private fun constructFoodRequest(controller: RequestConstructController): Request {
         val foodFloor = (controller.population / controller.group.fertility + 1).toDouble()
         return TagRequest(
-                ResourceTag("food"),
+                foodTag,
                 RequestCore(
                         controller.group,
                         foodFloor,
@@ -105,7 +109,7 @@ class RequestCenter {
     }
 
     private fun constructWarmthRequest(controller: RequestConstructController) = TagRequest(
-            ResourceTag("warmth"),
+            warmthTag,
             RequestCore(
                     controller.group,
                     controller.population.toDouble(),
