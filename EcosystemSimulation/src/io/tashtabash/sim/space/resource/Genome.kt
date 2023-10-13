@@ -126,14 +126,11 @@ open class Genome(
     }
 
     private fun computeTags() {
-        tagsMap.putAll(primaryMaterial!!.tags.filter { !tagsMap.containsKey(it) }.associateWith { it })
-        for ((tag, labeler, leveler, wipeOnMismatch) in data.additionalTags) {
-            val level = leveler.getLevel(this)
-            if (labeler.isSuitable(this))
-                tagsMap[tag] = tag.copy(level = max(level, tagsMap[tag]?.level ?: 0.0))
-            else if (wipeOnMismatch)
-                tagsMap.remove(tag)
-        }
+        tagsMap += primaryMaterial!!.tags
+            .filter { !tagsMap.containsKey(it) }
+            .associateWith { it }
+        for (matcher in data.additionalTags)
+            matcher.updateGenome(this, tagsMap)
         tags = tagsMap.keys
     }
 
