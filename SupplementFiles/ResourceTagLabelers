@@ -19,14 +19,17 @@
 -goodForIncrusting                 t:hard       t:sturdy
     <=0.1
 
--goodForFrame                      t:hard       t:solid      t:sturdy
+-!goodForFrame                      t:hard       t:solid      t:sturdy
     >=0.2
+    !!t:composite
 
--goodForTent                       t:soft       t:solid      t:thin        t:flexible
+-!goodForTent                       t:soft       t:solid      t:thin        t:flexible
     >=0.1
+    !!t:composite
 
--goodForMonuments                  t:goodForEngraving
+-!goodForMonuments                  t:goodForEngraving
     >=1
+    !!t:composite
 
 -hasColour
     D(m:Blood||m:Pulp)
