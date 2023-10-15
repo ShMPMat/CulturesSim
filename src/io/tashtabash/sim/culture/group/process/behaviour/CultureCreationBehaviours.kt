@@ -1,10 +1,12 @@
 package io.tashtabash.sim.culture.group.process.behaviour
 
+import io.tashtabash.generator.culture.worldview.toMeme
 import io.tashtabash.random.SampleSpaceObject
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController
 import io.tashtabash.sim.culture.desirableTag
+import io.tashtabash.sim.culture.group.GROUP_TAG_TYPE
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.cultureaspect.util.*
 import io.tashtabash.sim.culture.group.process.ProcessResult
@@ -51,6 +53,21 @@ object CreateCultureAspectsB : AbstractGroupBehaviour() {
     }
 
     override val internalToString = "Create culture aspects"
+}
+
+object PerceiveSurroundingTerritoryB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        val memes = group.territoryCenter
+            .accessibleTerritory
+            .tiles
+            .flatMap { it.tagPool.all }
+            .filter { it.type != GROUP_TAG_TYPE }
+            .map { it.name.toMeme() }
+
+        return ProcessResult(memes)
+    }
+
+    override val internalToString = "Perceive surrounding territory"
 }
 
 

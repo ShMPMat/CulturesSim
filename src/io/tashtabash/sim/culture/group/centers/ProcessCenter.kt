@@ -27,6 +27,7 @@ class ProcessCenter(type: AdministrationType) {
                     .withProbability(1.0) {
                         1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size + 1)
                     },
+            PerceiveSurroundingTerritoryB,
 
             RandomTradeB.times(1, 3),
             RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),

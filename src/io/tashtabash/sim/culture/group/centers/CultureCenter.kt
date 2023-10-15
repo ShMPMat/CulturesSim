@@ -4,7 +4,6 @@ import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.aspect.Aspect
 import io.tashtabash.sim.culture.aspect.hasMeaning
-import io.tashtabash.sim.culture.group.GROUP_TAG_TYPE
 import io.tashtabash.sim.culture.group.cultureaspect.CherishedResource
 import io.tashtabash.sim.culture.group.resource_behaviour.getRandom
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
@@ -16,7 +15,6 @@ import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
-import io.tashtabash.sim.space.territory.Territory
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.log
@@ -47,20 +45,7 @@ class CultureCenter(
     fun update(group: Group) {
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
         cultureAspectCenter.update(group)
-        lookOnTerritory(group.territoryCenter.accessibleTerritory)
         memoryCenter.update(group)
-    }
-
-    private fun lookOnTerritory(accessibleTerritory: Territory) {
-        val tags = accessibleTerritory.tiles.flatMap { it.tagPool.all }
-
-        for (tag in tags) {
-            if (tag.type == GROUP_TAG_TYPE)
-                continue
-
-            memePool.add(Meme(tag.name))
-            memePool.strengthenMeme(Meme(tag.name))
-        }
     }
 
     fun intergroupUpdate(group: Group) {
