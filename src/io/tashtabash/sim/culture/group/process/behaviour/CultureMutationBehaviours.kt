@@ -15,6 +15,8 @@ import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutSimilarTales
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutWorship
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
+import io.tashtabash.sim.event.AspectGaining
+import io.tashtabash.sim.event.CultureAspectGaining
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 
@@ -35,9 +37,7 @@ object MutateAspectsB : AbstractGroupBehaviour() {
                 return emptyProcessResult
 
             if (aspectCenter.addAspectTry(aspect, group))
-                return ProcessResult(
-                    Type.AspectGaining of "${group.name} developed aspect ${aspect.name} by itself"
-                )
+                return ProcessResult(AspectGaining of "${group.name} developed aspect ${aspect.name} by itself")
         }
 
         return emptyProcessResult
@@ -61,7 +61,7 @@ object MutateCultureAspectsB : AbstractGroupBehaviour() {
             this.addCultureAspect(system)
             this.reasonsWithSystems.add(system.reason)
 
-            ProcessResult(Type.CultureAspectGaining of "${group.name} joined similar rituals into $system")
+            ProcessResult(CultureAspectGaining of "${group.name} joined similar rituals into $system")
         }
     }
 
@@ -69,7 +69,7 @@ object MutateCultureAspectsB : AbstractGroupBehaviour() {
         takeOutSimilarTales(aspectPool)?.let { system ->
             addCultureAspect(system)
 
-            ProcessResult(Type.CultureAspectGaining of "${group.name} joined similar tales into $system")
+            ProcessResult(CultureAspectGaining of "${group.name} joined similar tales into $system")
         }
     }
 
@@ -77,7 +77,7 @@ object MutateCultureAspectsB : AbstractGroupBehaviour() {
         takeOutGod(aspectPool, group)?.let { cult ->
             addCultureAspect(cult)
 
-            ProcessResult(Type.CultureAspectGaining of "${group.name} formed ${cult.simpleName}")
+            ProcessResult(CultureAspectGaining of "${group.name} formed ${cult.simpleName}")
         }
     }
 
@@ -85,7 +85,7 @@ object MutateCultureAspectsB : AbstractGroupBehaviour() {
         takeOutWorship(reasonField, aspectPool)?.let { worship ->
             addCultureAspect(worship)
 
-            ProcessResult(Type.CultureAspectGaining of "${group.name} formed ${worship.simpleName}")
+            ProcessResult(CultureAspectGaining of "${group.name} formed ${worship.simpleName}")
         }
     }
 

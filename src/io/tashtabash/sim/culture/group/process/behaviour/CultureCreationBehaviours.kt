@@ -12,6 +12,7 @@ import io.tashtabash.sim.culture.group.cultureaspect.util.*
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.group.reason.constructBetterAspectUseReason
+import io.tashtabash.sim.event.AspectGaining
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 
@@ -48,7 +49,7 @@ object CreateCultureAspectsB : AbstractGroupBehaviour() {
         }
 
         return if (group.cultureCenter.cultureAspectCenter.addCultureAspect(cultureAspect))
-            ProcessResult(Type.AspectGaining of "${group.name} gained a random culture aspect $cultureAspect")
+            ProcessResult(AspectGaining of "${group.name} gained a random culture aspect $cultureAspect")
         else emptyProcessResult
     }
 

@@ -11,8 +11,7 @@ import io.tashtabash.sim.culture.group.process.action.MakeTradeResourcesA
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.group.process.interaction.ChangeRelationsI
 import io.tashtabash.sim.culture.group.process.interaction.TradeI
-import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.*
 import kotlin.math.pow
 
 
@@ -36,7 +35,7 @@ class MakeTradeResourceB(val amount: Int) : AbstractGroupBehaviour() {
         val pack = MakeTradeResourcesA(group, amount).run()
 
         val events = if (pack.isNotEmpty)
-            ProcessResult(Event(Type.Creation, "${group.name} created resources for trade: $pack"))
+            ProcessResult(Event(Creation, "${group.name} created resources for trade: $pack"))
         else emptyProcessResult
 
         group.populationCenter.turnResources.addAll(pack)
@@ -55,7 +54,7 @@ class TradeRelationB(val partner: Group) : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val result = TradeI(group, partner, 1000).run()
 
-        if (result.events.none { it.type == Type.Cooperation })
+        if (result.events.none { it.type == Cooperation })
             fails++
         else
             successes++
@@ -95,14 +94,12 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
         if (!CooperateA(chosenPartner, group, 0.1).run())
             return ChangeRelationsI(group, chosenPartner, -1.0).run() +
                     ProcessResult(Event(
-                            Type.Conflict,
+                            Conflict,
                             "${group.name} tried to make a trade agreement with ${chosenPartner.name}, but got rejected"
                     ))
 
-        return ProcessResult(Event(
-                Type.Cooperation,
-                "${group.name} made a trade agreement with a ${chosenPartner.name}"
-        )) + ProcessResult(TradeRelationB(chosenPartner))
+        return ProcessResult(Cooperation of "${group.name} made a trade agreement with a ${chosenPartner.name}") +
+                ProcessResult(TradeRelationB(chosenPartner))
     }
 
     override val internalToString = "Try to establish trade relations with a random Group"

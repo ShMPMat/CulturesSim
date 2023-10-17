@@ -10,7 +10,8 @@ import io.tashtabash.sim.culture.group.process.action.*
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.group.request.Request
 import io.tashtabash.sim.culture.thinking.meaning.makeResourcePackMemes
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.Conflict
+import io.tashtabash.sim.event.Cooperation
 import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.container.ResourcePromise
 import io.tashtabash.sim.space.resource.container.ResourcePromisePack
@@ -83,12 +84,12 @@ class ReceiveGiftI(
         return acceptanceChance.chanceOf<InteractionResult> {
             ReceiveGroupWideResourcesA(participator, gift.extract(participator.populationCenter.taker)).run()
 
-            ProcessResult(Type.Cooperation of "${participator.name} accepted a gift of $giftStr from ${initiator.name}") +
+            ProcessResult(Cooperation of "${participator.name} accepted a gift of $giftStr from ${initiator.name}") +
                     ProcessResult(makeResourcePackMemes(giftCopy)) +
                     ChangeRelationsI(initiator, participator, 2.0).run() to
                     ProcessResult(makeResourcePackMemes(giftCopy))
         } ?: (ProcessResult(
-                Type.Conflict of "${participator.name} rejected a gift of $giftStr from ${initiator.name} because " +
+                Conflict of "${participator.name} rejected a gift of $giftStr from ${initiator.name} because " +
                         "of low disposition $disposition"
         ) + ChangeRelationsI(initiator, participator, -2.0).run() to emptyProcessResult)
     }

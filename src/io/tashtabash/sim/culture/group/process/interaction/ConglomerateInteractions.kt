@@ -7,8 +7,8 @@ import io.tashtabash.sim.culture.group.centers.toPositiveChange
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.action.GroupTransferA
 import io.tashtabash.sim.culture.group.process.action.pseudo.ActionSequencePA
-import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.IntergroupInteraction
+import io.tashtabash.sim.event.of
 
 
 class GroupTransferWithNegotiationI(
@@ -26,11 +26,10 @@ class GroupTransferWithNegotiationI(
 
         val (transferResultIni, transferResultPart) =
                 if (strikeWarInteraction.warStruck)
-                    ProcessResult(Event(
-                            Type.GroupInteraction,
-                            "Group ${participator.name} objects joining " +
+                    ProcessResult(
+                        IntergroupInteraction of "Group ${participator.name} objects joining " +
                                     "the conglomerate ${initiator.parentGroup.name}"
-                    )) +
+                        ) +
                             ProcessResult(Trait.Peace.toNegativeChange()) to
                             ProcessResult(Trait.Peace.toNegativeChange())
                 else ProcessResult(Trait.Peace.toPositiveChange()) to

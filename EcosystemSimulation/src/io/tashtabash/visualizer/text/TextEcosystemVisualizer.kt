@@ -2,8 +2,7 @@ package io.tashtabash.visualizer.text
 
 import io.tashtabash.sim.Controller
 import io.tashtabash.sim.World
-import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.*
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
@@ -206,7 +205,7 @@ open class TextEcosystemVisualizer<E : World>(
     private fun printedEvents(events: Collection<Event>, printAll: Boolean): StringBuilder {
         val main = StringBuilder()
         for (event in events) {
-            if (printAll || event.type in listOf(Type.Death, Type.ResourceDeath, Type.DisbandResources))
+            if (printAll || event.type in listOf(Death, ResourceDeath, DisbandResources))
                 main.append(event).append("\n")
         }
         return main

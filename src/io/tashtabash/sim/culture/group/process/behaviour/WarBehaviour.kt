@@ -16,6 +16,7 @@ import io.tashtabash.sim.culture.group.process.action.pseudo.decide
 import io.tashtabash.sim.culture.group.process.action.testOn
 import io.tashtabash.sim.culture.group.process.interaction.BattleI
 import io.tashtabash.sim.culture.group.process.interaction.EndWarI
+import io.tashtabash.sim.event.Conflict
 import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.resource.container.ResourcePromisePack
@@ -42,7 +43,7 @@ object RandomWarB : AbstractGroupBehaviour() {
                         1000
                 )
 
-        return ProcessResult(Event(Type.Conflict, "${group.name} declared war to ${opponent.name}")) +
+        return ProcessResult(Event(Conflict, "${group.name} declared war to ${opponent.name}")) +
                 ProcessResult(Trait.Peace.toNegativeChange() * 2.0) +
                 ProcessResult(WarB(
                         opponent,

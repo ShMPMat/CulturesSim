@@ -5,8 +5,9 @@ import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.weaponTag
+import io.tashtabash.sim.event.Conflict
 import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.tag.labeler.BaseNameLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
@@ -27,10 +28,7 @@ object DefenceFromNatureB : AbstractGroupBehaviour() {
                 group.resourceCenter.addNeeded(TagLabeler(weaponTag), decrease * 100)
                 group.resourceCenter.addNeeded(TagLabeler(defenceTag), decrease * 100)
 
-                defenceEvents += Event(
-                    Type.Conflict,
-                    "${group.name} increased defence against ${taker.resource.baseName}"
-                )
+                defenceEvents += Conflict of "${group.name} increased defence against ${taker.resource.baseName}"
             }
 
         return ProcessResult(events = defenceEvents)

@@ -9,7 +9,8 @@ import io.tashtabash.sim.culture.group.GroupTileTag
 import io.tashtabash.sim.culture.group.cultureaspect.CultureAspect
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.generator.culture.worldview.Meme
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.Death
+import io.tashtabash.sim.event.of
 import io.tashtabash.sim.interactionmodel.CulturesMapModel
 import io.tashtabash.sim.space.territory.Territory
 import io.tashtabash.sim.space.tile.Tile
@@ -75,7 +76,7 @@ class Group(
         territoryCenter.die()
         cultureCenter.die(this)
 
-        addEvent(Event(Type.Death, "Group $name died"))
+        addEvent(Death of "Group $name died")
 
         for (group in relationCenter.relatedGroups)
             group.cultureCenter.memePool.addMemeCombination(

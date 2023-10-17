@@ -15,6 +15,7 @@ import io.tashtabash.sim.culture.group.stratum.Person
 import io.tashtabash.sim.culture.group.stratum.Stratum
 import io.tashtabash.sim.culture.group.stratum.StratumPeople
 import io.tashtabash.sim.event.Event
+import io.tashtabash.sim.event.PopulationDecrease
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.resource.OwnershipMarker
 import io.tashtabash.sim.space.resource.Taker
@@ -133,7 +134,7 @@ class PopulationCenter(
 
         reason?.let {
             Controller.session.world.events.add(Event(
-                    Type.PopulationDecrease,
+                    PopulationDecrease,
                     "${actualPopulation.ownershipMarker} population of $population decreased by $actualAmount: $it"
             ))
         }

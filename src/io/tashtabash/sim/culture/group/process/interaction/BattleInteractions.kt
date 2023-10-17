@@ -10,8 +10,8 @@ import io.tashtabash.sim.culture.group.process.action.GatherWarriorsA
 import io.tashtabash.sim.culture.group.process.action.pseudo.*
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.thinking.meaning.makeStratumMemes
-import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.Change
+import io.tashtabash.sim.event.of
 import kotlin.math.pow
 
 
@@ -77,10 +77,7 @@ class ActionBattleI(
         val action = battle.status.decide(initiatorWinAction, participatorWinAction, drawWinAction)
         val actionInternalEvents = action.run()
 
-        val actionEvent = Event(
-                Type.Change,
-                "In the result of battle between ${initiator.name} and ${participator.name}: $action"
-        )
+        val actionEvent = Change of "Result of battle between ${initiator.name} and ${participator.name}: $action"
         return resultIni + actionInternalEvents + ProcessResult(actionEvent) to
                 emptyProcessResult
     }

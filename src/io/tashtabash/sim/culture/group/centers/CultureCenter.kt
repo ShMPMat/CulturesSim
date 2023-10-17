@@ -10,9 +10,7 @@ import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.generator.culture.worldview.Meme
 import io.tashtabash.sim.culture.desirableTag
 import io.tashtabash.sim.culture.thinking.meaning.makeMeme
-import io.tashtabash.sim.event.EventLog
-import io.tashtabash.sim.event.Type
-import io.tashtabash.sim.event.of
+import io.tashtabash.sim.event.*
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import kotlin.math.abs
@@ -61,7 +59,7 @@ class CultureCenter(
             .randomElementOrNull()
 
         if (option == null) {
-            events.add(Type.Fail of "Group ${group.name} couldn't develop an aspect for a need ${need.first}")
+            events.add(Fail of "Group ${group.name} couldn't develop an aspect for a need ${need.first}")
             return
         }
 
@@ -71,14 +69,14 @@ class CultureCenter(
         if (success)
             events.add(
                 if (sourceGroup == null)
-                    Type.AspectGaining of "Group ${group.name} developed aspect ${aspect.name} for a need ${need.first}"
+                    AspectGaining of "Group ${group.name} developed aspect ${aspect.name} for a need ${need.first}"
                 else
-                    Type.AspectGaining of "Group ${group.name} took aspect ${aspect.name}" +
+                    AspectGaining of "Group ${group.name} took aspect ${aspect.name}" +
                             " from group ${sourceGroup.name} for a need ${need.first}"
             )
         else
             events.add(
-                Type.Fail of "Group ${group.name} came up with aspect ${aspect.name} for a need ${need.first}" +
+                Fail of "Group ${group.name} came up with aspect ${aspect.name} for a need ${need.first}" +
                         " but couldn't add it"
             )
     }

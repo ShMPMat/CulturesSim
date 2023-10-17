@@ -14,8 +14,10 @@ import io.tashtabash.sim.culture.group.process.action.pseudo.decide
 import io.tashtabash.sim.culture.group.process.behaviour.Finish
 import io.tashtabash.sim.culture.group.process.behaviour.WarB
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
+import io.tashtabash.sim.event.Conflict
 import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.of
 
 
 class ProbableStrikeWarI(
@@ -36,10 +38,9 @@ class ProbableStrikeWarI(
                 warStruck = true
 
                 decreaseRelationsEvent +
-                    ProcessResult(Event(
-                                Type.Conflict,
-                                "${initiator.name} started a war with ${participator.name}, because $reason"
-                        )) +
+                    ProcessResult(
+                            Conflict of "${initiator.name} started a war with ${participator.name}, because $reason"
+                        ) +
                         ProcessResult(Trait.Peace.toNegativeChange()) +
                         ProcessResult(WarB(participator, firstAction, secondAction, drawAction)) to
                         ProcessResult(Trait.Peace.toNegativeChange())

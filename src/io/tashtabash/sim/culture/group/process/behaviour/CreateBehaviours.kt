@@ -21,6 +21,7 @@ import io.tashtabash.sim.culture.thinking.meaning.constructAndAddSimpleMeme
 import io.tashtabash.sim.culture.thinking.meaning.flattenMemePair
 import io.tashtabash.sim.culture.thinking.meaning.makeResourceMemes
 import io.tashtabash.sim.culture.thinking.meaning.makeResourcePackMemes
+import io.tashtabash.sim.event.Creation
 import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.territory.StaticTerritory
@@ -42,7 +43,7 @@ object RandomArtifactB : AbstractGroupBehaviour() {
         val result = ProduceExactResourceA(group, chosen, 1, 5, setOf(RequestType.Luxury)).run()
         val processResult =
                 if (result.isNotEmpty)
-                    ProcessResult(Event(Type.Creation, "${group.name} created artifacts: $result")) +
+                    ProcessResult(Event(Creation, "${group.name} created artifacts: $result")) +
                             ProcessResult(makeResourcePackMemes(result))
                 else emptyProcessResult
 
@@ -78,7 +79,7 @@ object RandomDepictCaB : AbstractGroupBehaviour() {
 
         val processResult =
                 if (depict == null) emptyProcessResult
-                else ProcessResult(Event(Type.Creation, "${group.name} now has: $depict"))
+                else ProcessResult(Event(Creation, "${group.name} now has: $depict"))
 
         return processResult + ProcessResult(Trait.Creation.toPositiveChange() * 10)
     }
@@ -120,7 +121,7 @@ class BuildRoadB(path: Territory, val projectName: String) : PlanBehaviour() {
                 if (path.isEmpty()) {
                     isFinished = true
 
-                    ProcessResult(event, Event(Type.Creation, "${group.name} finished a road creation"))
+                    ProcessResult(event, Event(Creation, "${group.name} finished a road creation"))
                 } else emptyProcessResult
     }
 

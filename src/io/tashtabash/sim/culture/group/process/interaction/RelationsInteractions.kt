@@ -5,7 +5,7 @@ import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.action.ChangeRelationsA
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.IntergroupInteraction
 
 
 class ChangeRelationsI(
@@ -20,7 +20,7 @@ class ChangeRelationsI(
         val relationTo = initiator.relationCenter.getNormalizedRelation(participator)
         val relationFrom = participator.relationCenter.getNormalizedRelation(initiator)
         return ProcessResult(Event(
-                Type.GroupInteraction,
+                IntergroupInteraction,
                 "Groups ${initiator.name} and ${participator.name} changed their relations by $delta " +
                         "to the general of $relationTo and $relationFrom"
         )) to

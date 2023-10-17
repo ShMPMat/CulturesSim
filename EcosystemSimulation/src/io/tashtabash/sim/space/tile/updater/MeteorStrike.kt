@@ -3,6 +3,7 @@ package io.tashtabash.sim.space.tile.updater
 import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.random.singleton.chanceOfNot
 import io.tashtabash.sim.Controller.Companion.session
+import io.tashtabash.sim.event.Cataclysm
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.Resource
@@ -33,7 +34,7 @@ class MeteorStrike(private val iron: Resource): TileUpdater {
         val ironAmount = (1000 * strength).toInt()
         tile.addDelayedResource(iron.copy(ironAmount))
 
-        session.world.events.add(Type.Cataclysm of "Meteor of strength $strength strikes tile ${tile.posStr}")
+        session.world.events.add(Cataclysm of "Meteor of strength $strength strikes tile ${tile.posStr}")
     }
 
     private fun destroyTileResources(tile: Tile, strength: Double) {

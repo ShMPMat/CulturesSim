@@ -8,8 +8,8 @@ import io.tashtabash.sim.culture.group.centers.*
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.sim.culture.thinking.meaning.makeMeme
-import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.IntergroupInteraction
+import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.OwnershipMarker
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.tile.Tile
@@ -36,10 +36,9 @@ class GroupTransferA(group: Group, private val groupToAdd: Group) : AbstractGrou
         AddGroupA(groupToAdd, group).run()
         ProcessGroupRemovalA(groupToAdd, groupToAdd).run()
 
-        return ProcessResult(Event(
-                Type.GroupInteraction,
-                "${groupToAdd.name} joined to conglomerate ${group.parentGroup.name}"
-        ))
+        return ProcessResult(
+            IntergroupInteraction of "${groupToAdd.name} joined to conglomerate ${group.parentGroup.name}"
+        )
     }
 
     override val internalToString = "Let ${groupToAdd.name} joined to conglomerate ${group.parentGroup.name}"

@@ -2,6 +2,7 @@ package io.tashtabash.sim.culture.group.stratum
 
 import io.tashtabash.sim.Controller
 import io.tashtabash.sim.event.Event
+import io.tashtabash.sim.event.PopulationDecrease
 import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.resource.*
@@ -54,7 +55,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
             return
 
         Controller.session.world.events.add(Event(
-                Type.PopulationDecrease,
+                PopulationDecrease,
                 "$ownershipMarker actual population of $amount decreased by ${result.amount}: taken by $taker"
         ))
     }

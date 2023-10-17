@@ -8,8 +8,7 @@ import io.tashtabash.sim.culture.aspect.dependency.LineDependency
 import io.tashtabash.sim.culture.aspect.labeler.ProducedLabeler
 import io.tashtabash.sim.culture.group.AspectDependencyCalculator
 import io.tashtabash.sim.culture.group.convert
-import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.*
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.resource.tag.phony
@@ -189,10 +188,7 @@ class AspectCenter(aspects: List<Aspect>) {
             }
 
             if (addAspectTry(aspect, group))
-                return listOf(Event(
-                        Type.AspectGaining,
-                        "${group.name} got ${aspect.name} from ${aspectGroup.name}"
-                ))
+                return listOf(AspectGaining of "${group.name} got ${aspect.name} from ${aspectGroup.name}")
         }
         return emptyList()
     }
@@ -214,7 +210,7 @@ class AspectCenter(aspects: List<Aspect>) {
                         changedAspectPool.deleteDependencyOnAspect(aspect)
                         if (aspect !is ConverseWrapper)
                             _potentialConverseWrappers.removeIf { it.aspect == aspect }
-                        group.addEvent(Event(Type.Change, "${group.name} lost aspect ${aspect.name}"))
+                        group.addEvent(Change of "${group.name} lost aspect ${aspect.name}")
                     }
                 }
     }

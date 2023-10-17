@@ -7,7 +7,8 @@ import io.tashtabash.sim.culture.group.process.action.*
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.thinking.meaning.makeResourcePackMemes
 import io.tashtabash.sim.culture.thinking.meaning.makeStratumMemes
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.Cooperation
+import io.tashtabash.sim.event.IntergroupInteraction
 import io.tashtabash.sim.space.resource.container.ResourcePack
 
 
@@ -41,7 +42,7 @@ class TradeI(
         val got = wantedResources.extract(initiator.populationCenter.taker)
         val given = priceInResources.extract(participator.populationCenter.taker)
         var result = ProcessResult(Event(
-                Type.Cooperation,
+                Cooperation,
                 "${initiator.name} and ${participator.name} " +
                         "traded ${got.listResources} - $priceForP for ${given.listResources} - $priceForI"
         ))
@@ -80,7 +81,7 @@ class SwapResourcesI(
         ).run()
 
         return ProcessResult(Event(
-                Type.GroupInteraction,
+                IntergroupInteraction,
                 "${initiator.name} and ${participator.name} begun swapping of $gotPack and $givePack"
         )) +
                 ProcessResult(makeResourcePackMemes(gotPack) + makeResourcePackMemes(givePack)) to
