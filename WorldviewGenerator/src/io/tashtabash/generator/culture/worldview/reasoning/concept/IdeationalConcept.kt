@@ -8,6 +8,8 @@ sealed class IdeationalConcept(
         _oppositeConcepts: () -> List<ReasonConcept>,
         _correspondingConcepts: () -> List<ReasonConcept>
 ) : AbstractKotlinSafeReasonConcept(_oppositeConcepts, _correspondingConcepts) {
+    override fun copy() = this
+
     object Good :          IdeationalConcept(Meme("Good"),          { listOf(Bad) },                  { listOf() })
     object Bad :           IdeationalConcept(Meme("Bad"),           { listOf(Good) },                 { listOf() })
     object NoEvaluation :  IdeationalConcept(Meme("NoEvaluation"),  { listOf(Good, Bad) },            { listOf() })

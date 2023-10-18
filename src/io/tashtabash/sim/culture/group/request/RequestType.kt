@@ -10,6 +10,8 @@ sealed class RequestType: AbstractReasonConcept() {
     override val correspondingConcepts: List<ReasonConcept> = emptyList()
     override val oppositeConcepts: List<ReasonConcept> = emptyList()
 
+    override fun copy() = this
+
     object Food : RequestType()
     object Warmth : RequestType()
     object Clothes : RequestType()

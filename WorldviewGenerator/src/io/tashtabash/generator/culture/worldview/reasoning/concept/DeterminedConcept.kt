@@ -8,6 +8,8 @@ class DeterminedConcept(val objectConcept: ObjectConcept, val ideationalConcept:
     override val oppositeConcepts = objectConcept.oppositeConcepts + ideationalConcept.oppositeConcepts
     override val correspondingConcepts = objectConcept.correspondingConcepts + ideationalConcept.correspondingConcepts
 
+    override fun copy() = DeterminedConcept(objectConcept, ideationalConcept)
+
     override fun substitute(substitutions: Map<ReasonConcept, ReasonConcept>): ReasonConcept {
         val newConcept = DeterminedConcept(
                 substitutions[objectConcept]

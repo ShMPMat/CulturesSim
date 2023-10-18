@@ -9,6 +9,8 @@ sealed class ObjectConcept(
         correspondingConcepts: () -> List<ReasonConcept>
 ) : AbstractKotlinSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
     open class ArbitraryObjectConcept(objectMeme: Meme) : ObjectConcept(objectMeme, { listOf() }, { listOf() }) {
+        override fun copy() = ArbitraryObjectConcept(meme)
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ArbitraryObjectConcept) return false
@@ -22,6 +24,8 @@ sealed class ObjectConcept(
             return meme.hashCode()
         }
     }
+
+    override fun copy() = this
 
     object World : ObjectConcept(Meme("World"), { listOf() }, { listOf() })
     object AllLife : ObjectConcept(Meme("AllLife"), { listOf() }, { listOf() })

@@ -11,6 +11,8 @@ sealed class ActionConcept(
         val ideationalConcept: IdeationalConcept
 ) : AbstractKotlinSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
     open class ArbitraryActionConcept(objectMeme: Meme) : ActionConcept(objectMeme, { listOf() }, { listOf() }, Work) {
+        override fun copy() = ArbitraryActionConcept(meme)
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ArbitraryActionConcept) return false
@@ -24,6 +26,8 @@ sealed class ActionConcept(
             return meme.hashCode()
         }
     }
+
+    override fun copy() = this
 
     object Protect: ActionConcept(Meme("Protect"), { listOf(Abandon) }, { listOf() }, Defence)
     object Abandon: ActionConcept(Meme("Abandon"), { listOf(Protect) }, { listOf() }, Abandonment)
