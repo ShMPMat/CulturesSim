@@ -10,7 +10,7 @@ sealed class ActionConcept(
         correspondingConcepts: () -> List<ReasonConcept>,
         val ideationalConcept: IdeationalConcept
 ) : AbstractKotlinSafeReasonConcept(oppositeConcepts, correspondingConcepts) {
-    open class ArbitraryActionConcept(objectMeme: Meme) : ActionConcept(objectMeme, { listOf() }, { listOf() }, Work) {
+    open class ArbitraryActionConcept(actionMeme: Meme) : ActionConcept(actionMeme, { listOf() }, { listOf() }, Work) {
         override fun copy() = ArbitraryActionConcept(meme)
 
         override fun equals(other: Any?): Boolean {
