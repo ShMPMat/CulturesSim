@@ -108,7 +108,7 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                     splitCommand[2],
                     world.resourcePool
                 )
-                AddGroup -> {
+                AddConglomerate -> {
                     val tile = findTile(splitCommand[2], splitCommand[3])
                             ?: run {
                                 println("No tile with coordinates ${splitCommand[2]}, ${splitCommand[3]} found")
