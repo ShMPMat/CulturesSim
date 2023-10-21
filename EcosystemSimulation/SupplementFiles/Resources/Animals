@@ -413,14 +413,13 @@
         cYellow
         S0
 
-//TODO dependency up to 0.1
 -Caterpillar                        0.0     0.02   3          10     30   400      Migrate   Animal       @Meat
-        ~A(m:PlantFibre),>=0.001;0.01;200;1;CONSUME
+        ~A(m:PlantFibre),>=0.001;0.1;200;1;CONSUME
         +_transform_prob_0.333_t/ButterflyPupa:1
         ^Meat:1:s|0.005
         #Water
         tSemitransparent
-        S0.03
+        S0.03 C0.3
 
 -ButterflyPupa                      0.0     0.03   2          10     30   400      Ignore    Animal       @Meat
         +_transform_prob_0.5_t/Butterfly:1
