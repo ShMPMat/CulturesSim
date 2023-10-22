@@ -17,7 +17,7 @@ class CulturesController(
 
     val startGroupAmount = (20 * proportionCoefficient).toInt()
     val defaultGroupSpreadability = 1.0
-    val defaultGroupTraitSpread = 100.0 //TODO back to 0?
+    val defaultGroupTraitSpread = 100.0
     val defaultGroupMaxPopulation = 100
     val defaultGroupTerritoryRadius = 6
     val defaultGroupReach = defaultGroupTerritoryRadius + 1
