@@ -17,13 +17,13 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
     }
 
     constructor() : this(EnumMap(Trait::class.java)) {
-        Trait.values().forEach {
+        for (trait in Trait.values()) {
             val traitSeed = RandomSingleton.random.nextDouble(-1.0, 1.0)
-            traitMap[it] = TraitValue(traitSeed * session.defaultGroupTraitSpread)
+            traitMap[trait] = TraitValue(traitSeed * session.defaultGroupTraitSpread)
         }
     }
 
-    fun value(trait: Trait) = traitMap.getValue(trait)
+    fun value(trait: Trait): TraitValue = traitMap.getValue(trait)
 
     fun processedValue(trait: Trait): Double = value(trait).value
 
