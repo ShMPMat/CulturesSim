@@ -28,7 +28,7 @@ class RequestCenter {
                 nerfCoefficients[request] ?: 1,
                 1
         ).toDouble()
-        return max(1.0, amount / coefficient)
+        return (amount / coefficient).coerceAtLeast(1.0)
     }
 
     internal fun updateRequests(group: Group) {
