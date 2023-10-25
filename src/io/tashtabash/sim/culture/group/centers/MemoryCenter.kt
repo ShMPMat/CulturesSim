@@ -33,12 +33,10 @@ class MemoryCenter {
             else
                 newResources.add(resource)
 
-        for ((resource, average) in resourceTraction) {
+        for ((resource, average) in resourceTraction)
             average.change(oldResources.getAmount(resource))
-        }
-        for (resource in newResources.resourcesIterator) {
+        for (resource in newResources.resourcesIterator)
             _resourceTraction[resource] = MovingAverage(resource.amount, session.memoryStrengthCoefficient)
-        }
     }
 
     fun fullCopy() = MemoryCenter().apply {
