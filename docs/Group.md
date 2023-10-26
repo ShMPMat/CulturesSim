@@ -5,12 +5,12 @@
 Group consists of centers:
 
 - `ProcessCenter` - handle behaviors;
-- `CultureCenter` - groups other culture-related centers:
-  - `TraitCenter`
+- `CultureCenter` - Group's other culture-related centers:
+  - `TraitCenter` - general character traits for a Group as a whole;
   - `MemoryCenter`
-  - `CultureAspectCenter`
-  - `AspectCenter`
-  - `RequestCenter`
+  - `CultureAspectCenter` - stores CultureAspects;
+  - `AspectCenter` - stores Aspects;
+  - `RequestCenter` - handles Requests;
 - TODO
 
 ## Behaviour classes
