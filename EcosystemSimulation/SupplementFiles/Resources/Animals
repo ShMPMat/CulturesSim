@@ -145,7 +145,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -CrocodileEgg                       0.0     0.06   4          20     40   20       Ignore    Animal       @Meat
-        +_transform_prob_0.25_t/Crocodile:1
+        +_Hatch_prob_0.25_t/Crocodile:1
         ^Meat:1:s|0.04 ^EggShell:1:s|0.05
         #Water
         cWhite
@@ -165,7 +165,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -SnakeEgg                           0.0     0.03   3          15     35   20       Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Snake:1
+        +_Hatch_prob_0.333_t/Snake:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
         #Water
         cWhite
@@ -185,7 +185,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -LizardEgg                          0.0     0.02   3          14     35   20       Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Lizard:1
+        +_Hatch_prob_0.333_t/Lizard:1
         ^Meat:1:s|0.01 ^EggShell:1:s|0.02
         #Water
         cWhite
@@ -204,7 +204,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -SparrowEgg                         0.0     0.03   3          0      30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Sparrow:1
+        +_Hatch_prob_0.333_t/Sparrow:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
         #Water
         cGrey
@@ -224,7 +224,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -HeronEgg                           0.0     0.04   3          0      30   5        Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Heron:1
+        +_Hatch_prob_0.333_t/Heron:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
         #Water
         cWhite
@@ -243,7 +243,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 -HawkEgg                            0.0     0.04   3          0      30   5        Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Hawk:1
+        +_Hatch_prob_0.333_t/Hawk:1
         ^Meat:1:s|0.02 ^EggShell:1:s|0.03
         #Water
         cWhite
@@ -262,7 +262,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -CrabLarva                          0.0     0.002  3          8      30   1000     Migrate   Animal       @Meat
-        +_transform_prob_0.333_t/Crab:1
+        +_Transform_prob_0.333_t/Crab:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
@@ -281,7 +281,7 @@
 
 -LobsterLarva                       0.0     0.002  3          0      30   100      Migrate   Animal       @Meat
         ~A(m:Meat),<=0.001;0.001;200;1;CONSUME
-        +_transform_prob_0.333_t/Lobster:1
+        +_Transform_prob_0.333_t/Lobster:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
@@ -299,7 +299,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -HerbivorousCricketEgg              0.0     0.003  2          0      30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/HerbivorousCricket:1
+        +_Hatch_prob_0.5_t/HerbivorousCricket:1
         ^Meat:1:s|0.003
         #Water
         tSemitransparent
@@ -316,7 +316,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -BuryingBeetleEgg                   0.0     0.003  2          5      30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/BuryingBeetleLarva:1
+        +_Hatch_prob_0.5_t/BuryingBeetleLarva:1
         ^Meat:1:s|0.003
         #Water
         tSemitransparent
@@ -324,7 +324,7 @@
 
 -BuryingBeetleLarva                 0.0     0.01   4          5      30   50       Migrate   Animal       @Chitin
         ~m:Carcass,>=0.001;0.05;100;1;CONSUME
-        +_transform_prob_0.25_t/BuryingBeetle:1
+        +_Transform_prob_0.25_t/BuryingBeetle:1
         ^Meat:1:s|0.01
         #Water
         cWhite
@@ -342,7 +342,7 @@
 
 -MosquitoEgg                        0.0     0.002  2          0      30   1000     Ignore    Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.5_t/MosquitoLarva:1
+        +_Hatch_prob_0.5_t/MosquitoLarva:1
         ^Meat:1:s|0.002
         tSemitransparent
         S0
@@ -350,14 +350,14 @@
 -MosquitoLarva                      0.0     0.005  3          0      30   1000     Ignore    Animal       @Meat
         ~D(A(m:PlantFibre)||A(m:Meat)),<=0.001;0.001;200;1;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.333_t/MosquitoPupa:1
+        +_Transform_prob_0.333_t/MosquitoPupa:1
         ^Meat:1:s|0.005
         tSemitransparent
         S0.01
 
 -MosquitoPupa                       0.0     0.008  2          0      30   1000     Ignore    Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.5_t/Mosquito:1
+        +_Transform_prob_0.5_t/Mosquito:1
         ^Meat:1:s|0.008
         tSemitransparent
         S0
@@ -373,7 +373,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -TickEgg                            0.0     0.0005 2          0      30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/Tick:1
+        +_Hatch_prob_0.5_t/Tick:1
         ^Meat:1:s|0.002
         #Water
         tSemitransparent
@@ -390,7 +390,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -SpiderEgg                          0.0     0.001  2          0      30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/Spider:1
+        +_Hatch_prob_0.5_t/Spider:1
         ^Meat:1:s|0.002
         #Water
         tSemitransparent
@@ -408,7 +408,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -ButterflyEgg                       0.0     0.002  2          10     30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/Caterpillar:1
+        +_Hatch_prob_0.5_t/Caterpillar:1
         ^Meat:1:s|0.002
         #Water
         cYellow
@@ -416,14 +416,14 @@
 
 -Caterpillar                        0.0     0.02   3          10     30   400      Migrate   Animal       @Meat
         ~A(m:PlantFibre),>=0.001;0.1;200;1;CONSUME
-        +_transform_prob_0.333_t/ButterflyPupa:1
+        +_Transform_prob_0.333_t/ButterflyPupa:1
         ^Meat:1:s|0.005
         #Water
         tSemitransparent
         S0.03 C0.3
 
 -ButterflyPupa                      0.0     0.03   2          10     30   400      Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/Butterfly:1
+        +_Transform_prob_0.5_t/Butterfly:1
         ^Meat:1:s|0.008
         #Water
         tSemitransparent
@@ -483,7 +483,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -OctopusSpawn                       0.0     0.01   3          0      30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Octopus:1
+        +_Hatch_prob_0.333_t/Octopus:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -503,7 +503,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -FishSpawn                          0.0     0.01   3          -7     30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Fish:1
+        +_Hatch_prob_0.333_t/Fish:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -522,7 +522,7 @@
 
 -FreshWaterFishSpawn                0.0     0.01   3          -5     30   1000     Ignore    Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.333_t/FreshWaterFish:1
+        +_Hatch_prob_0.333_t/FreshWaterFish:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -541,7 +541,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -ArcticFishSpawn                    0.0     0.01   3          -7     30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/ArcticFish:1
+        +_Hatch_prob_0.333_t/ArcticFish:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -559,7 +559,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -CoralFishSpawn                     0.0     0.01   3          20     30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/CoralFish:1
+        +_Hatch_prob_0.333_t/CoralFish:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -578,7 +578,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -EelSpawn                           0.0     0.01   3          -7     30   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.333_t/Eel:1
+        +_Hatch_prob_0.333_t/Eel:1
         ^Meat:1:s|0.01
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -597,7 +597,7 @@
 
 -Frogspawn                          0.0     0.01   3          5      30   1000     Ignore    Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.333_t/Tadpole:1
+        +_Hatch_prob_0.333_t/Tadpole:1
         ^Meat:1:s|0.01
         tSemitransparent
         S0
@@ -605,7 +605,7 @@
 -Tadpole                            0.0     0.03   3          5      30   1000     Migrate   Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ~m:PlantFibre,<=0.15;0.0025;2;0;CONSUME
-        +_transform_prob_0.333_t_t/Frog:1
+        +_Transform_prob_0.333_t_t/Frog:1
         ^Meat:1:s|0.03
         cBlack
         S0.07
@@ -624,7 +624,7 @@
 
 -LeechEgg                           0.0     0.005  2          0      30   200      Ignore    Animal       @Meat
         ~m:Water,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.333_t/Leech:1
+        +_Hatch_prob_0.333_t/Leech:1
         ^Meat:1:s|0.005
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -644,14 +644,14 @@
 
 -BarnacleNauplius                   0.0     0.001  3          0      35   1000     Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.003;1.25;0;CONSUME
-        +_transform_prob_0.333_t/BarnacleCyprid:1
+        +_Transform_prob_0.333_t/BarnacleCyprid:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
         S0.01
 
 -BarnacleCyprid                     0.0     0.003  3          0      35   1000     Migrate   Animal       @Meat
-        +_transform_prob_0.333_t/Barnacle:1
+        +_Transform_prob_0.333_t/Barnacle:1
         ~r:SaltWater;0.001;200;1;EXIST
         ^Meat:1:s|0.002
         tSemitransparent
@@ -672,7 +672,7 @@
 
 -PolychaetaEgg                      0.0     0.0001 2           -10   35   1000     Ignore    Animal       @Meat
         ~D(r:Water||r:SaltWater),t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.5_t/Trochophore:1
+        +_Transform_prob_0.5_t/Trochophore:1
         ^Meat:1:s|0.0001
         tSemitransparent
         S0
@@ -680,7 +680,7 @@
 -Trochophore                        0.0     0.0005 3           -10   35   1000     Ignore    Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.0005;1.25;0;CONSUME
         ~D(r:Water||r:SaltWater),t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.333_t/Polychaeta:1
+        +_Transform_prob_0.333_t/Polychaeta:1
         ^Meat:1:s|0.0005
         tSemitransparent
         S0.01
@@ -698,7 +698,7 @@
 
 -AcornWormEgg                       0.0     0.0001 2           -10   35   1000     Ignore    Animal       @Meat
         ~r:SaltWater,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.5_t/Tornaria:1
+        +_Hatch_prob_0.5_t/Tornaria:1
         ^Meat:1:s|0.0001
         tSemitransparent
         S0
@@ -706,7 +706,7 @@
 -Tornaria                           0.0     0.0005 3           -10   35   1000     Ignore    Animal       @Meat
         ~D(m:PlantFibre||m:Meat),<=0.001;0.0005;1.25;0;CONSUME
         ~r:SaltWater,t:liquid;0.001;200;1;EXIST
-        +_transform_prob_0.333_t/AcornWorm:1
+        +_Transform_prob_0.333_t/AcornWorm:1
         ^Meat:1:s|0.0005
         tSemitransparent
         S0.01
@@ -724,7 +724,7 @@
 
 -JellyfishLarva                     0.0     0.001  3          5      35   1000     Migrate   Animal       @Meat
         ~m:Meat,<=0.001;0.001;1.25;0;CONSUME
-        +_transform_prob_0.333_t/JellyfishPolyp:1
+        +_Transform_prob_0.333_t/JellyfishPolyp:1
         ~r:SaltWater;0.001;200;1;EXIST
         tSemitransparent
         S0.01
@@ -749,7 +749,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -StarfishEgg                        0.0     0.0001 2           -15   35   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/Brachiolaria:1
+        +_Hatch_prob_0.5_t/Brachiolaria:1
         ^Meat:1:s|0.0001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -757,7 +757,7 @@
 
 -Brachiolaria                       0.0     0.001  2           -15   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
-        +_transform_prob_0.5_t/Starfish:1
+        +_Transform_prob_0.5_t/Starfish:1
         ^Meat:1:s|0.001
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
@@ -776,7 +776,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -SpongivoreStarfishEgg              0.0     0.0001 2           -15   35   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/SpongivoreBrachiolaria:1
+        +_Hatch_prob_0.5_t/SpongivoreBrachiolaria:1
         ^Meat:1:s|0.0001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -784,7 +784,7 @@
 
 -SpongivoreBrachiolaria             0.0     0.001  2           -15   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
-        +_transform_prob_0.5_t/SpongivoreStarfish:1
+        +_Transform_prob_0.5_t/SpongivoreStarfish:1
         ^Meat:1:s|0.001
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
@@ -803,7 +803,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -SeaLilyEgg                         0.0     0.0001 2           -20   35   1000     Ignore    Animal       @Meat
-        +_transform_prob_0.5_t/Vitellaria:1
+        +_Hatch_prob_0.5_t/Vitellaria:1
         ^Meat:1:s|0.0001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
@@ -811,7 +811,7 @@
 
 -Vitellaria                         0.0     0.001  2           -20   30   200      Migrate   Animal       @Meat
         ~m:Meat,<=0.0002;0.001;1.25;0;CONSUME
-        +_transform_prob_0.5_t/SeaLily:1
+        +_Transform_prob_0.5_t/SeaLily:1
         ^Meat:1:s|0.001
         #Normal:Mountain:Ice:Woods:Growth
         l93;1000
@@ -831,7 +831,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 -MusselVeliger                      0.0     0.001  2           10    30   200      Migrate   Animal       @Meat
-        +_transform_prob_0.5_t/Mussel:1
+        +_Transform_prob_0.5_t/Mussel:1
         ^Meat:1:s|0.001
         #Normal:Mountain:Ice:Woods:Growth
         tSemitransparent
