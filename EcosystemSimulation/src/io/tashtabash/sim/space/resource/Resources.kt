@@ -18,6 +18,8 @@ val specialActions = mapOf(
         "Killing" to ResourceAction("Killing", listOf(), listOf()),
 )
 
+val specialActionNames = specialActions.keys
+
 
 internal fun Resource.replaceRecursiveLinks(old: Resource): Resource {
     val newConversionCore = ConversionCore(mapOf())
