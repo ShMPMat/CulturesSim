@@ -9,6 +9,7 @@ import io.tashtabash.sim.culture.aspect.ConverseWrapper
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.stratum.Stratum
 import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.resource.action.ResourceProbabilityAction
 import io.tashtabash.sim.space.resource.container.ResourcePack
 import io.tashtabash.sim.space.resource.dependency.ConsumeDependency
 
@@ -41,8 +42,7 @@ fun makeMeme(resource: Resource) = Meme(resource.fullName)
 
 fun makeMeme(aspect: Aspect) = Meme(aspect.name)
 
-fun makePredicateChain(vararg memes: Meme) = memes.toList()
-        .asReversed()
+fun makePredicateChain(memes: List<Meme>) = memes.asReversed()
         .let {
             if (it.isEmpty())
                 throw ArrayIndexOutOfBoundsException("Non-empty array is expected for a predicate chain")
@@ -51,6 +51,8 @@ fun makePredicateChain(vararg memes: Meme) = memes.toList()
                 prevMeme.addPredicate(meme)
             }
         }
+
+fun makePredicateChain(vararg memes: Meme) = makePredicateChain(memes.toList())
 
 fun makeResourcePackMemes(pack: ResourcePack) = pack.resources
         .map { makeResourceMemes(it).flattenMemePair() }
@@ -98,6 +100,22 @@ private fun makeResourceInfoMemes(resource: Resource): Pair<MutableList<Meme>, M
                 memes.first += subject
                 memes.second += makePredicateChain(makeMeme(resource), Meme("consume"), subject)
             }
+
+    for ((resourceAction, resources) in resource.genome.conversionCore.actionConversions) {
+        if (resourceAction !is ResourceProbabilityAction)
+            continue
+
+        val actionMemeChain = resourceAction.name
+                .split("(?<=[a-z])(?=[A-Z])".toRegex())
+                .map { it.toMeme() }
+
+        for (r in resources) {
+            val fullChain = listOf(makeMeme(resource)) + actionMemeChain + makeMeme(r)
+
+            memes.first += actionMemeChain + makeMeme(r)
+            memes.second += makePredicateChain(fullChain)
+        }
+    }
 
     val predicateMemes = mutableListOf<Meme>()
     // Add appearance
