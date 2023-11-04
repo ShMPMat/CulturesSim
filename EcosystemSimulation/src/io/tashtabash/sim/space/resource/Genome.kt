@@ -8,7 +8,6 @@ import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.pow
 
 
