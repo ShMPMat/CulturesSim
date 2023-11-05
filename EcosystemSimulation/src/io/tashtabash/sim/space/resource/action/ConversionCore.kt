@@ -20,9 +20,9 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>
     internal fun addActionConversion(action: ResourceAction, resources: Resources) {
         if (action is ResourceProbabilityAction) {
             if (resources.isEmpty() && action !in passiveActions)
-                passiveActions.add(action)
+                passiveActions += action
             else if (action !in probabilityActions)
-                probabilityActions.add(action)
+                probabilityActions += action
         }
 
         actionConversions[action] = resources.toMutableList()
