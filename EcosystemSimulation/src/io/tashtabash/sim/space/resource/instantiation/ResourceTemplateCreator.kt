@@ -156,10 +156,10 @@ class ResourceTemplateCreator(
                 secondaryMaterials = secondaryMaterials,
                 conversionCore = ConversionCore(mapOf())
         )
-        if (isTemplate)
-            genome = GenomeTemplate(genome, resourceTags)
+        genome = if (isTemplate)
+            GenomeTemplate(genome, resourceTags)
         else
-            genome = genome.copy(tags = resourceTags.map { it.initialize(genome) }.toSet())
+            genome.copy(tags = resourceTags.map { it.initialize(genome) }.toSet())
         specialActions.values
                 .filter { it.technicalName[0] == '_' }
                 .forEach {
