@@ -1,49 +1,41 @@
 package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.SampleSpaceObject
-import io.tashtabash.random.singleton.chanceOf
-import io.tashtabash.random.singleton.otherwise
 import io.tashtabash.random.singleton.randomElement
-import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController
-import io.tashtabash.sim.culture.aspect.Aspect
-import io.tashtabash.sim.culture.aspect.ConverseWrapper
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutGod
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutSimilarRituals
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutSimilarTales
 import io.tashtabash.sim.culture.group.cultureaspect.util.takeOutWorship
 import io.tashtabash.sim.culture.group.process.ProcessResult
+import io.tashtabash.sim.culture.group.process.action.AddRandomAspectA
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
-import io.tashtabash.sim.event.AspectGaining
 import io.tashtabash.sim.event.CultureAspectGaining
-import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 
 
 object MutateAspectsB : AbstractGroupBehaviour() {
-    override fun run(group: Group): ProcessResult { //TODO separate adding of new aspects and updating old
+    override fun run(group: Group): ProcessResult {
         val aspectCenter = group.cultureCenter.aspectCenter
-        val options = mutableListOf<Aspect>()
 
-        0.1.chanceOf {
-            options += CulturesController.session.world.aspectPool.all.filter { it !in aspectCenter.aspectPool.all }
-        } otherwise {
-            options += aspectCenter.getAllPossibleConverseWrappers(group)
-        }
-
-        options.randomElementOrNull()?.let { aspect ->
-            if (aspect is ConverseWrapper && !aspectCenter.aspectPool.contains(aspect.aspect))
-                return emptyProcessResult
-
-            if (aspectCenter.addAspectTry(aspect, group))
-                return ProcessResult(AspectGaining of "${group.name} developed aspect ${aspect.name} by itself")
-        }
-
-        return emptyProcessResult
+        return AddRandomAspectA(group, aspectCenter.getAllPossibleConverseWrappers(group)).run()
     }
 
-    override val internalToString = "Mutate existing Aspects"
+    override val internalToString = "Mutate the existing Aspects"
+}
+
+
+object CreateAspectsB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        val aspectCenter = group.cultureCenter.aspectCenter
+        val options = CulturesController.session.world.aspectPool.all
+            .filter { it !in aspectCenter.aspectPool.all }
+
+        return AddRandomAspectA(group, options).run()
+    }
+
+    override val internalToString = "Create Aspects"
 }
 
 
