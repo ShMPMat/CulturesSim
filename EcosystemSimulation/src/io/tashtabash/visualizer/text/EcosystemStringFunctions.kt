@@ -109,10 +109,13 @@ fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.til
         .filter { it.first.fullName.contains(substring) }
         .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
 
-fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean) = events
-        .filter { predicate(it) }
-        .takeLast(amount)
+fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean): String {
+    val allEvents = events.filter { predicate(it) }
+    val eventLines = allEvents.takeLast(amount)
         .joinToString("\n")
+
+    return "${allEvents.size}\n$eventLines"
+}
 
 fun printRegexEvents(events: List<Event>, amount: Int, regex: Regex) = printEvents(events, amount) {
         regex.containsMatchIn(it.toString())
