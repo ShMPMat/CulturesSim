@@ -9,6 +9,7 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.instantiation.tag.TagTemplate
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.material.MaterialPool
+import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
@@ -29,7 +30,7 @@ class ResourceTemplateCreator(
         var resistance: Double? = null
         var danger = 0.0
         var isTemplate = false
-        var desirability = 0
+        var baseDesirability = 0
         var minTempDeprivation = 2.0
         var maxTempDeprivation = 2.0
         val resourceTags = mutableListOf<TagTemplate>()
@@ -45,6 +46,12 @@ class ResourceTemplateCreator(
         var speed = if (type == ResourceType.Animal) 1.0 else 0.0
         var hasLegasy = false
         var isMovable = true
+        val spreadProbability = tags[1].toDouble()
+        val defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt())
+        val isMutable = false
+        val legacy = null
+        val resultTags = setOf<ResourceTag>()
+        val conversionCore = ConversionCore(mapOf())
 
         for (i in 9..tags.lastIndex) {
             val key = tags[i][0]
@@ -90,7 +97,7 @@ class ResourceTemplateCreator(
                     't' -> texture = ResourceTexture.valueOf(tag)
                     'L' -> hasLegasy = true
                     'I' -> isMovable = false
-                    'd' -> desirability = tag.toInt()
+                    'd' -> baseDesirability = tag.toInt()
                     'T' -> {
                         val tempBound = tag.take(3)
                         val coefficient = tag.drop(3).toDouble()
@@ -136,25 +143,28 @@ class ResourceTemplateCreator(
             else if (dependency is NeedDependency)
                 dependency.radius = max(1.0, speed).toInt()
 
+        val behaviour = Behaviour(resistance ?: danger, danger, camouflage, speed, overflowType)
+        val appearance = Appearance(colour, texture, shape)
+
         var genome = Genome(
                 name = name,
                 type = type,
                 sizeRange = sizeRange,
-                spreadProbability = tags[1].toDouble(),
-                baseDesirability = desirability,
-                isMutable = false,
+                spreadProbability = spreadProbability,
+                baseDesirability = baseDesirability,
+                isMutable = isMutable,
                 isMovable = isMovable,
-                behaviour = Behaviour(resistance ?: danger, danger, camouflage, speed, overflowType),
-                appearance = Appearance(colour, texture, shape),
+                behaviour = behaviour,
+                appearance = appearance,
                 hasLegacy = hasLegasy,
                 lifespan = lifespan,
-                defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt()),
-                legacy = null,
+                defaultAmount = defaultAmount,
+                legacy = legacy,
                 dependencies = resourceDependencies,
-                tags = setOf(),
+                tags = resultTags,
                 primaryMaterial = primaryMaterial,
                 secondaryMaterials = secondaryMaterials,
-                conversionCore = ConversionCore(mapOf())
+                conversionCore = conversionCore
         )
         genome = if (isTemplate)
             GenomeTemplate(genome, resourceTags)
