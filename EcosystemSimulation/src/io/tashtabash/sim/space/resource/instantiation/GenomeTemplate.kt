@@ -8,28 +8,48 @@ import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 
 
-class GenomeTemplate(genome: Genome, val tagTemplates: List<TagTemplate>) : Genome(
-        genome.name,
-        genome.type,
-        genome.sizeRange,
-        genome.spreadProbability,
-        genome.baseDesirability,
-        genome.isMutable,
-        genome.isMovable,
-        genome.behaviour,
-        genome.appearance,
-        genome.hasLegacy,
-        genome.lifespan,
-        genome.defaultAmount,
-        genome.legacy,
-        genome.dependencies,
-        genome.tags,
-        genome.primaryMaterial,
-        genome.secondaryMaterials,
-        genome.conversionCore
+class GenomeTemplate(
+        name: String,
+        type: ResourceType,
+        sizeRange: Pair<Double, Double>,
+        spreadProbability: Double,
+        baseDesirability: Int,
+        isMutable: Boolean,
+        isMovable: Boolean,
+        behaviour: Behaviour,
+        appearance: Appearance,
+        hasLegacy: Boolean,
+        lifespan: Double,
+        defaultAmount: Int,
+        legacy: BaseName?,
+        dependencies: List<ResourceDependency>,
+        tags: Set<ResourceTag>,
+        primaryMaterial: Material?,
+        secondaryMaterials: List<Material>,
+        conversionCore: ConversionCore,
+        val tagTemplates: List<TagTemplate>
+) : Genome(
+        name,
+        type,
+        sizeRange,
+        spreadProbability,
+        baseDesirability,
+        isMutable,
+        isMovable,
+        behaviour,
+        appearance,
+        hasLegacy,
+        lifespan,
+        defaultAmount,
+        legacy,
+        dependencies,
+        tags,
+        primaryMaterial,
+        secondaryMaterials,
+        conversionCore
 ) {
     init {
-        genome.parts.forEach { addPart(it) }
+        parts.forEach { addPart(it) }
     }
 
     override fun copy(
@@ -52,31 +72,27 @@ class GenomeTemplate(genome: Genome, val tagTemplates: List<TagTemplate>) : Geno
             secondaryMaterials: List<Material>,
             conversionCore: ConversionCore,
             parts: List<Resource>
-    ): GenomeTemplate {
-        val genome = super.copy(
-                name,
-                type,
-                sizeRange,
-                spreadProbability,
-                baseDesirability,
-                isMutable,
-                isMovable,
-                behaviour,
-                appearance,
-                hasLegacy,
-                lifespan,
-                defaultAmount,
-                legacy,
-                dependencies,
-                tags,
-                primaryMaterial,
-                secondaryMaterials,
-                conversionCore,
-                parts
-        )
-
-        return GenomeTemplate(genome, tagTemplates)
-    }
+    ) = GenomeTemplate(
+            name,
+            type,
+            sizeRange,
+            spreadProbability,
+            baseDesirability,
+            isMutable,
+            isMovable,
+            behaviour,
+            appearance,
+            hasLegacy,
+            lifespan,
+            defaultAmount,
+            legacy,
+            dependencies,
+            tags,
+            primaryMaterial,
+            secondaryMaterials,
+            conversionCore,
+            tagTemplates
+    )
 
     private fun toGenome() = Genome(
             name,

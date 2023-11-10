@@ -50,7 +50,6 @@ class ResourceTemplateCreator(
         val defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt())
         val isMutable = false
         val legacy = null
-        val resultTags = setOf<ResourceTag>()
         val conversionCore = ConversionCore(mapOf())
 
         for (i in 9..tags.lastIndex) {
@@ -146,7 +145,8 @@ class ResourceTemplateCreator(
         val behaviour = Behaviour(resistance ?: danger, danger, camouflage, speed, overflowType)
         val appearance = Appearance(colour, texture, shape)
 
-        var genome = Genome(
+        val genome = if (isTemplate)
+            GenomeTemplate(
                 name = name,
                 type = type,
                 sizeRange = sizeRange,
@@ -161,15 +161,37 @@ class ResourceTemplateCreator(
                 defaultAmount = defaultAmount,
                 legacy = legacy,
                 dependencies = resourceDependencies,
-                tags = resultTags,
+                tags = setOf(),
+                primaryMaterial = primaryMaterial,
+                secondaryMaterials = secondaryMaterials,
+                conversionCore = conversionCore,
+                tagTemplates = resourceTags
+            )
+        else
+            Genome(
+                name = name,
+                type = type,
+                sizeRange = sizeRange,
+                spreadProbability = spreadProbability,
+                baseDesirability = baseDesirability,
+                isMutable = isMutable,
+                isMovable = isMovable,
+                behaviour = behaviour,
+                appearance = appearance,
+                hasLegacy = hasLegasy,
+                lifespan = lifespan,
+                defaultAmount = defaultAmount,
+                legacy = legacy,
+                dependencies = resourceDependencies,
+                tags = setOf(),
                 primaryMaterial = primaryMaterial,
                 secondaryMaterials = secondaryMaterials,
                 conversionCore = conversionCore
-        )
-        genome = if (isTemplate)
-            GenomeTemplate(genome, resourceTags)
-        else
-            genome.copy(tags = resourceTags.map { it.initialize(genome) }.toSet())
+            ).let { g ->
+                g.copy(tags = resourceTags.map { it.initialize(g) }.toSet())
+            }
+
+
         specialActions.values
                 .filter { it.technicalName[0] == '_' }
                 .forEach {
