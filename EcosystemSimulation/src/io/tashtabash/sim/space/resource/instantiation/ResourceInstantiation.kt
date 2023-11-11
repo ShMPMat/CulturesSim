@@ -90,7 +90,7 @@ class ResourceInstantiation(
                     l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
             )
         }
-        if (resource.genome.materials.isEmpty())//TODO why is it here? What is it? (is it a GenomeTemplate check?)
+        if (resource.genome is GenomeTemplate)
             return
 
         for ((action, matchers) in actions)
