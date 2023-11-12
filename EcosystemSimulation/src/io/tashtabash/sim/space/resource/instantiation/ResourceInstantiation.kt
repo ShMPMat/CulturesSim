@@ -33,6 +33,9 @@ class ResourceInstantiation(
     )
 
     private val resourceStringTemplates = ArrayList<ResourceStringTemplate>()
+    private val resourceStringTemplateResources by lazy {
+        resourceStringTemplates.map { it.resource }
+    }
 
     fun createPool(): ResourcePool {
         val urls = this::class.java.classLoader.getResources(folderPath).toList()
@@ -55,8 +58,8 @@ class ResourceInstantiation(
 
             addTemplate(resourceTemplateCreator.createResource(tags))
         }
-        resourceStringTemplates.forEach { actualizeLinks(it, listOf()) }
-        resourceStringTemplates.forEach { actualizeParts(it) }
+        resourceStringTemplates.forEach { initConversions(it, listOf()) }
+        resourceStringTemplates.forEach { initParts(it) }
 
         val swappedLegacyResources = mutableListOf<Resource>()
         val endResources = filteredFinalResources.map {
@@ -82,7 +85,7 @@ class ResourceInstantiation(
             .firstOrNull { it.resource.baseName == name }
             ?: throw NoSuchElementException("Cannot find a Resource template with a name '$name'")
 
-    private fun actualizeLinks(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
+    private fun initConversions(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
             resource.genome.conversionCore.addActionConversion(
@@ -93,13 +96,17 @@ class ResourceInstantiation(
         if (resource.genome is GenomeTemplate)
             return
 
+        matchActions(resource)
+    }
+
+    private fun matchActions(resource: Resource) {
         for ((action, matchers) in actions)
             for (matcher in matchers)
                 if (matcher.match(resource))
                     resource.genome.conversionCore.addActionConversion(
-                            action,
-                            matcher.getResults(template, resourceStringTemplates)
-                                    .map { (t, n) -> t.resource.copy(n) }
+                        action,
+                        matcher.getResults(resource, resourceStringTemplateResources)
+                            .map { (r, n) -> r.copy(n) }
                     )
     }
 
@@ -110,7 +117,7 @@ class ResourceInstantiation(
         val conversionResource = conversionPrefix.dropLast(1).firstOrNull { link.resourceName == it.baseName }
                 ?: run {
                     val foundTemplate = getTemplateWithName(link.resourceName)
-                    actualizeLinks(foundTemplate, conversionPrefix)
+                    initConversions(foundTemplate, conversionPrefix)
                     foundTemplate.resource
                 }
         val resource = link.transform(conversionResource)
@@ -124,7 +131,7 @@ class ResourceInstantiation(
         return legacyTemplate.resource.copy(amount)
     }
 
-    private fun actualizeParts(template: ResourceStringTemplate) {
+    private fun initParts(template: ResourceStringTemplate) {
         val (resource, _, parts) = template
         for (part in parts) {
             val link = parseLink(part, conversionParser)
