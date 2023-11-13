@@ -11,6 +11,7 @@
 -Rabbit                             0.2     0.2    10         -5     20   100      Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         +_OnDeath_/Carcass:2
+        +_Jump_prob_0.8_f
         ^Meat:3 ^Fat:2 ^Bone:3:s|0.05 ^Fur:2 ^Blood:5
         #Water
         cWhite
