@@ -28,6 +28,7 @@
 -MountainGoat                       0.15    0.8    20         -10    30   30       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         +_OnDeath_/Carcass:8
+        +_Jump_prob_0.2_f
         ^Meat:8 ^Fat:4 ^Bone:5:s|0.3 ^Fur:2 ^Blood:8 ^Leather:1:s|1
         #Water
         l110;1000
@@ -37,6 +38,7 @@
 -Mouse                              0.5     0.05   5          -10    35   100      Migrate   Animal       @Meat
         ~D(A(m:Seed)||m:Fungus),>=0.003;0.025;3;0;CONSUME
         +_OnDeath_/Carcass:1
+        +_Squeak_prob_0.1_f
         ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:2
         #Water
         cWhite
