@@ -47,6 +47,7 @@
 -BlindMoleRat                       0.4     0.25   5          0      30   30       Migrate   Animal       @Meat
         ~A(m:PlantFibre),>=0.01;0.05;3;0;CONSUME
         +_OnDeath_/Carcass:2
+        +_Dig_prob_0.98_f
         ^Meat:1 ^Fat:2 ^Bone:1:s|0.06 ^Fur:2 ^Blood:4
         #Water
         cBrown
