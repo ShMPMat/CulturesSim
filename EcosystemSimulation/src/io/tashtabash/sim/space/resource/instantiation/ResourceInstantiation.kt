@@ -99,14 +99,14 @@ class ResourceInstantiation(
         matchActions(resource)
     }
 
-    private fun matchActions(resource: Resource) {
+    private fun matchActions(resource: Resource, resourceMapper: (Resource, Int) -> Resource = { r, n -> r.copy(n) }) {
         for ((action, matchers) in actions)
             for (matcher in matchers)
                 if (matcher.match(resource))
                     resource.genome.conversionCore.addActionConversion(
                         action,
                         matcher.getResults(resource, resourceStringTemplateResources)
-                            .map { (r, n) -> r.copy(n) }
+                            .map { (r, n) -> resourceMapper(r, n) }
                     )
     }
 
@@ -180,9 +180,8 @@ class ResourceInstantiation(
             legacyResource: Resource? = null,
             treeStart: List<Resource> = listOf()
     ): Resource {
-        if (!resource.genome.hasLegacy) //TODO there are resources with same name but different sizes
-            swappedLegacyResources.firstOrNull { it.fullName == resource.fullName && it.genome.size == resource.genome.size }
-                    ?.let { return ResourceIdeal(it.genome, resource.amount) }
+        swappedLegacyResources.firstOrNull { it.fullName == resource.fullName && it.genome.size == resource.genome.size }
+                ?.let { return ResourceIdeal(it.genome, resource.amount) }
 
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
@@ -231,6 +230,17 @@ class ResourceInstantiation(
         injectBuildings(newConversionCore)
 
         newResource.genome.conversionCore = newConversionCore
+        // Match actions for legacy Resources, since they were not matched at initConversions(..)
+        matchActions(newResource) { res, n ->
+            swapLegacies(
+                res.injectAppearance(resource),
+                swappedLegacyResources,
+                newResource,
+                treeStart + listOf(newResource)
+            ).copy(n)
+                .let { r -> ResourceIdeal(r.genome, n) }
+        }
+
         return newResource
     }
 
