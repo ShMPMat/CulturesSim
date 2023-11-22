@@ -33,6 +33,8 @@ class ProcessCenter(type: AdministrationType) {
                         1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size * 10 + 1)
                     },
             PerceiveSurroundingTerritoryB,
+            UpdateReasoningsB
+                .withProbability(session.reasoningUpdate),
 
             RandomTradeB.times(1, 3),
             RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),

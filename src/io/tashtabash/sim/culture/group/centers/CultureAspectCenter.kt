@@ -27,19 +27,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
 
     internal fun update(group: Group) {
         useCultureAspects(group)
-        updateReasonings(group)
-    }
-
-    private fun updateReasonings(group: Group) {
-        session.reasoningUpdate.chanceOf {
-            val newReasonings = reasonField.update(listOf(group.name.toMeme()))
-            processReasonings(newReasonings)
-        }
-    }
-
-    private fun processReasonings(reasonings: List<Reasoning>) {
-        reasonings.forEach { addCultureAspect(it.toConcept()) }
-        reasonings.forEach { addCultureAspect(it.toCherishedResource()) }
     }
 
     fun addCultureAspect(cultureAspect: CultureAspect?): Boolean {
