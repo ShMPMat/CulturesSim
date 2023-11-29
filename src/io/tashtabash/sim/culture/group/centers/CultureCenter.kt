@@ -137,8 +137,9 @@ class CultureCenter(
         val base = group.resourceCenter.needLevel(resource)
 
         val isCherished = cultureAspectCenter.aspectPool.cherishedResources.any { it.resource == resource }
-        val cultureValue = if (isCherished) 3
-        else 0
+        val cultureValue =
+            if (isCherished) 3
+            else 0
 
         return (base + 1) * (cultureValue + 1)
     }
@@ -180,7 +181,7 @@ class CultureCenter(
         |$traitCenter
         |
         |
-        |$memoryCenter        |
+        |$memoryCenter
     """.trimMargin()
 }
 
