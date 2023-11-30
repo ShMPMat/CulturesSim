@@ -146,6 +146,7 @@
         ~m:Meat,>=0.01,<=0.2,h:Water;0.2;1.25;1;CONSUME
         ~m:SaltWater,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:10
+        +_Squeal_prob_0.05_f
         ^Meat:8 ^Fat:10 ^Bone:3:s|0.4 ^Fur:8 ^Blood:8 ^Leather:1:s|1.0
         l94;1000
         cBlack
