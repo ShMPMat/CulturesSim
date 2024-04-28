@@ -69,14 +69,14 @@ class CultureCenter(
         if (success)
             events.add(
                 if (sourceGroup == null)
-                    AspectGaining of "Group ${group.name} developed aspect ${aspect.name} for a need ${need.first}"
+                    AspectGaining of "Group ${group.name} developed an aspect ${aspect.name} for a need ${need.first}"
                 else
                     AspectGaining of "Group ${group.name} took aspect ${aspect.name}" +
                             " from group ${sourceGroup.name} for a need ${need.first}"
             )
         else
             events.add(
-                Fail of "Group ${group.name} came up with aspect ${aspect.name} for a need ${need.first}" +
+                Fail of "Group ${group.name} came up with an aspect ${aspect.name} for a need ${need.first}" +
                         " but couldn't add it"
             )
     }
