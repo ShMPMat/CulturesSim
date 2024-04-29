@@ -98,7 +98,7 @@ class AspectStratum(
 
         if (aspect !is MeaningInserter) {
             val oldPopulation = population
-            val evaluator = passingEvaluator
+            val evaluator = resourceEvaluator(aspect.producedResources[0])
             val decreaseCoefficient = SoftValue(workedStraight).value.pow(2)
             val amountToRise = min(
                     freePopulation,
