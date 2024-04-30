@@ -18,7 +18,6 @@ import io.tashtabash.sim.culture.group.process.interaction.BattleI
 import io.tashtabash.sim.culture.group.process.interaction.EndWarI
 import io.tashtabash.sim.event.Conflict
 import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.resource.container.ResourcePromisePack
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -63,7 +62,7 @@ object RandomWarB : AbstractGroupBehaviour() {
 class WarB(
         val opponent: Group,
         private val initiatorWinAction: EventfulGroupPseudoAction,
-        private val participatorWinAction: EventfulGroupPseudoAction,
+        private val opponentWinAction: EventfulGroupPseudoAction,
         private val drawWinAction: EventfulGroupPseudoAction = ActionSequencePA(),
         private val warFinisher: WarFinisher = ProbabilisticWarFinisher()
 ) : PlanBehaviour() {
@@ -79,7 +78,7 @@ class WarB(
             Continue -> emptyProcessResult
             is Finish -> {
                 isFinished = true
-                EndWarI(group, opponent, initiatorWinAction, participatorWinAction, drawWinAction, warStatus)
+                EndWarI(group, opponent, initiatorWinAction, opponentWinAction, drawWinAction, warStatus)
                         .run()
             }
         }
