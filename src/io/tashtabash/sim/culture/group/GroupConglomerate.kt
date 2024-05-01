@@ -180,6 +180,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     }
 
     fun finishUpdate() {
+        if (state == State.Dead)
+            return
         subgroups.forEach { it.finishUpdate() }
         subgroups.forEach { events.joinNewEvents(it.cultureCenter.events) }
     }
