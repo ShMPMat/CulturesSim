@@ -20,9 +20,8 @@ class ActionSequencePA(private val actions: List<GroupPseudoAction>) : EventfulG
             }.flattenPR()
 
     override val internalToString = "Following happened: " +
-            if (this.actions.isNotEmpty())
-                this.actions.joinToString()
-            else "nothing"
+            this.actions.joinToString()
+                .ifEmpty { "nothing" }
 }
 
 class InteractionWrapperPA(
