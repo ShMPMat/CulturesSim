@@ -20,7 +20,6 @@ fun resourceEvaluator(resource: Resource) =
             else 0.0
         }
 
-
 fun simpleResourceEvaluator(resource: Resource) =
         ResourceEvaluator(SimpleNameLabeler(resource.simpleName)) {
             if (it.simpleName == resource.simpleName)
