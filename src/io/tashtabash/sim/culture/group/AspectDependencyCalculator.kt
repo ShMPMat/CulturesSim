@@ -4,16 +4,20 @@ import io.tashtabash.sim.culture.aspect.Aspect
 import io.tashtabash.sim.culture.aspect.AspectPool
 import io.tashtabash.sim.culture.aspect.ConverseWrapper
 import io.tashtabash.sim.culture.aspect.dependency.*
+import io.tashtabash.sim.culture.group.centers.ResourceNeed
 import io.tashtabash.sim.culture.group.request.tagEvaluator
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.territory.Territory
 import io.tashtabash.sim.space.resource.tag.ResourceTag
+import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
+import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
 import io.tashtabash.sim.space.resource.tag.phony
 import java.util.*
 
 
 class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Territory) {
     val dependencies: AspectDependencies = AspectDependencies(mutableMapOf())
+    val needs: MutableMap<ResourceLabeler, ResourceNeed> = mutableMapOf()
 
     fun getAcceptableResources(aspect: Aspect): List<Resource> {
         val allResources = territory.differentResources.toMutableSet()
@@ -62,19 +66,27 @@ class AspectDependencyCalculator(val aspectPool: AspectPool, val territory: Terr
     }
 
     private fun addTagDependencies(requirement: ResourceTag, aspect: Aspect) {
-        for (poolAspect in aspectPool.converseWrappers) {
-            if (poolAspect.producedResources.any { it.tags.contains(requirement) }) {
-                val dependency = AspectDependency(false, poolAspect, tagEvaluator(requirement), aspect)
-                if (dependency.isCycleDependency(poolAspect) || dependency.isCycleDependencyInner(aspect)) continue
-                addDependenciesInMap(setOf(dependency), requirement)
+        val dependencies = mutableSetOf<Dependency>()
+
+        for (converseWrapper in aspectPool.converseWrappers) {
+            if (converseWrapper.producedResources.any { it.tags.contains(requirement) }) {
+                val dependency = AspectDependency(false, converseWrapper, tagEvaluator(requirement), aspect)
+                if (dependency.isCycleDependency(converseWrapper) || dependency.isCycleDependencyInner(aspect))
+                    continue
+                dependencies += dependency
             }
         }
+
+        addDependenciesInMap(dependencies, requirement)
+
+        if (dependencies.isEmpty())
+            needs[TagLabeler(requirement)] = ResourceNeed(1)
     }
 
     private fun addDependenciesInMap(dependencies: Collection<Dependency>, requirement: ResourceTag) {
         if (dependencies.isEmpty()) return
         if (!this.dependencies.map.containsKey(requirement))
             this.dependencies.map[requirement] = HashSet()
-        this.dependencies.map.getValue(requirement).addAll(dependencies)
+        this.dependencies.map.getValue(requirement) += dependencies
     }
 }
