@@ -15,12 +15,12 @@ Group consists of centers:
 
 ## Behaviour classes
 
-- `GroupBehaviour` - base class which is added to `ProcessCenter` to run some logic every turn;
-- `GroupPseudoAction` - TODO
-  - `GroupAction` - encapsulates logic which requires only one `Group`, run inside `Behaviours`;
-- `GroupInteraction` - encapsulates interaction logic between 2 `Groups`, run inside `Behaviours`;
+- `GroupBehaviour`: base class which is added to `ProcessCenter` to run some logic every turn;
+- `GroupPseudoAction`: TODO
+  - `GroupAction`: encapsulates logic which requires only one `Group`, run inside `Behaviours`;
+- `GroupInteraction`: encapsulates interaction logic between 2 `Groups`, run inside `Behaviours`;
   - Returns `ProcessResult` which can be propagated out of wrapping `Behaviour`;
-  - Also internally handles `ProcessResult` for the other `Group` and makes the `Group` consume it.
+  - Internally handles `ProcessResult` for the other `Group` and makes the `Group` consumeit.
 
 ## Culture Aspect Classes
 
