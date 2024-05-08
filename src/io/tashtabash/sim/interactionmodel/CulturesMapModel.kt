@@ -26,9 +26,8 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
 
         world.map.update()
         var groups = world.shuffledConglomerates
-        for (group in groups) {
+        for (group in groups)
             group.update()
-        }
 
         groupTime = System.nanoTime() - groupTime
         othersTime = System.nanoTime()
