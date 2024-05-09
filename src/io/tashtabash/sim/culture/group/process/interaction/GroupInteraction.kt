@@ -28,6 +28,19 @@ abstract class AbstractGroupInteraction(
 
         return initiatorResult + ProcessResult(makeMeme(participator))
     }
+
+    // Passes the initiator result and returns the participator result
+    fun reverseRun(): ProcessResult {
+        val (initiatorResult, participatorResult) = innerRun()
+
+        initiator.processCenter.consumeProcessResult(
+            initiator,
+            initiatorResult + ProcessResult(makeMeme(participator))
+        )
+
+        return participatorResult + ProcessResult(makeMeme(initiator))
+
+    }
 }
 
 typealias InteractionResult = Pair<ProcessResult, ProcessResult>

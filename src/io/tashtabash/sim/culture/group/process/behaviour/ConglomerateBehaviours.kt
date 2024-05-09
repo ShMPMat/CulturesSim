@@ -63,7 +63,7 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
                     opponent,
                     "${initiator.name} objects ${opponent.name} leaving the Conglomerate",
                     ActionSequencePA(conglomerate.subgroups.map { GroupTransferA(initiator, it) })
-            ).run() +
+            ).reverseRun() +
                     ProcessResult(Event(Change, "${opponent.name} diverged to it's own Conglomerate"))
         } else
             ProcessResult(Trait.Consolidation.toPositiveChange())

@@ -2,6 +2,7 @@ package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.random.singleton.randomElementOrNull
+import io.tashtabash.sim.culture.group.GroupError
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.centers.Trait
 import io.tashtabash.sim.culture.group.centers.toNegativeChange
@@ -67,6 +68,9 @@ class WarB(
         private val warFinisher: WarFinisher = ProbabilisticWarFinisher()
 ) : PlanBehaviour() {
     override fun run(group: Group): ProcessResult {
+        if (group == opponent) {
+            throw GroupError("Group ${group.name} cannot wade war against itself")
+        }
         if (isFinished)
             return emptyProcessResult
 
