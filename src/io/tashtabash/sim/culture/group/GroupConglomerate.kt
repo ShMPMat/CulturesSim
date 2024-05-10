@@ -8,7 +8,9 @@ import io.tashtabash.sim.culture.group.cultureaspect.CultureAspect
 import io.tashtabash.generator.culture.worldview.reasoning.ReasonField
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.generator.culture.worldview.Meme
+import io.tashtabash.sim.event.Death
 import io.tashtabash.sim.event.EventLog
+import io.tashtabash.sim.event.of
 import io.tashtabash.sim.interactionmodel.CulturesMapModel
 import io.tashtabash.sim.space.resource.OwnershipMarker
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
@@ -177,6 +179,11 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
             throw RuntimeException("Trying to remove non-child subgroup ${group.name} from Group $name")
 
         group.territoryCenter.territory.tiles.forEach { removeTile(it) }
+
+        if (subgroups.isEmpty()) {
+            die()
+            events += Death of "Conglomerate $name died because the last Group ${group.name} has left it"
+        }
     }
 
     fun finishUpdate() {
