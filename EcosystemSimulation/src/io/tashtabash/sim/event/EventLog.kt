@@ -37,6 +37,9 @@ class EventLog(private val isPurging: Boolean = true, private val isOblivious: B
 //        printImportantEvents(events)
     }
 
+    operator fun plusAssign(event: Event) = add(event)
+    operator fun plusAssign(events: List<Event>) = addAll(events)
+
     fun clearNewEvents() = _newEvents.clear()
 
     fun joinNewEvents(log: EventLog) {
