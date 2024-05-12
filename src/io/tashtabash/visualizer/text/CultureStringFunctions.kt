@@ -25,7 +25,7 @@ fun outputGroup(group: Group) = "$group"
 
 fun printedConglomerates(conglomerates: List<GroupConglomerate>, info: ConglomeratePrintInfo): String {
     val conglomeratesPrintNumber = 5
-    val printedConglomerates = conglomerates.filter { it.state != GroupConglomerate.State.Dead}
+    val printedConglomerates = conglomerates.filter { it.state != GroupConglomerate.State.Dead }
         .takeLast(conglomeratesPrintNumber)
     val main = StringBuilder()
     for (group in printedConglomerates) {
