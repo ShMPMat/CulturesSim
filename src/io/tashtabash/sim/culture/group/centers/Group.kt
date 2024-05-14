@@ -160,6 +160,8 @@ class Group(
         populationCenter.finishUpdate(this)
         resourceCenter.finishUpdate()
         cultureCenter.finishUpdate()
+        if (populationCenter.population == 0)
+            die()
     }
 
     override fun equals(other: Any?): Boolean {
