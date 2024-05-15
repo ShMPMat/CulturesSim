@@ -126,7 +126,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
                 }
             }
 
-        result.isFinished = result.isFinished && satisfyPhonyDependency(controller, dependencies.phony, result.resources)
+        result.isFinished = result.isFinished && satisfyPhonyDependency(controller, result.resources)
 
         return result
     }
@@ -152,7 +152,6 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
 
     private fun satisfyPhonyDependency(
         controller: AspectController,
-        dependencies: Set<Dependency>,
         meaningfulPack: MutableResourcePack
     ): Boolean {
         var amount = controller.evaluator.evaluate(meaningfulPack.resources)
@@ -163,7 +162,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         if (controller.isCeilingExceeded(amount))
             return true
 
-        for (dependency in dependencies) {
+        for (dependency in dependencies.phony) {
             val newDelta = meaningfulPack.getAmount(resource)
             val result = dependency.useDependency(controller.copy(
                 depth = controller.depth + 1,
