@@ -8,7 +8,15 @@ import kotlin.math.pow
 
 
 class DecideWarDeclarationA(group: Group, val opponent: Group): AbstractGroupAction(group) {
-    override fun run(): Boolean {
+    override fun run(): Boolean =
+        EvaluateWarProbabilityA(group, opponent).run().testProbability()
+
+    override val internalToString = "Let ${group.name} decide, whether to declare a war to ${opponent.name}"
+}
+
+
+class EvaluateWarProbabilityA(group: Group, val opponent: Group): AbstractGroupAction(group) {
+    override fun run(): Double {
         val relation = group.relationCenter.getNormalizedRelation(opponent)
         val ownForcesEstimation = EstimateForcesA(group, group).run() + 1
         val opponentForcesEstimation = EstimateForcesA(group, opponent).run() + 1
@@ -17,8 +25,8 @@ class DecideWarDeclarationA(group: Group, val opponent: Group): AbstractGroupAct
         val forcesCoefficient = ownForcesEstimation.pow(0.5) / opponentForcesEstimation.pow(0.5)
         val warlike = 1 - Trait.Peace.get().extract(group.cultureCenter.traitCenter)
 
-        return (warlike * relationCoefficient * forcesCoefficient).testProbability()
+        return warlike * relationCoefficient * forcesCoefficient
     }
 
-    override val internalToString = "Let ${group.name} decide, whether to declare a war to ${opponent.name}"
+    override val internalToString = "Let ${group.name} estimate the war probability with ${opponent.name}"
 }

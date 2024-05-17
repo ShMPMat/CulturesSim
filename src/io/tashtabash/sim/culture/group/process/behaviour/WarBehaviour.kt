@@ -9,6 +9,7 @@ import io.tashtabash.sim.culture.group.centers.toNegativeChange
 import io.tashtabash.sim.culture.group.process.*
 import io.tashtabash.sim.culture.group.process.action.AddGroupA
 import io.tashtabash.sim.culture.group.process.action.ChooseResourcesAndTakeA
+import io.tashtabash.sim.culture.group.process.action.EvaluateWarProbabilityA
 import io.tashtabash.sim.culture.group.process.action.pseudo.ActionSequencePA
 import io.tashtabash.sim.culture.group.process.action.pseudo.ConflictWinner
 import io.tashtabash.sim.culture.group.process.action.pseudo.ConflictWinner.*
@@ -29,9 +30,7 @@ object RandomWarB : AbstractGroupBehaviour() {
         val groups = group.relationCenter.relatedGroups.sortedBy { it.name }
 
         val opponent = groups.randomElementOrNull {
-            val relation = group.relationCenter.getNormalizedRelation(it)
-            val warPower = it.populationCenter.stratumCenter.warriorStratum.cumulativeWorkAblePopulation
-            (1 - relation.pow(2)) / (warPower + 1)
+            EvaluateWarProbabilityA(group, it).run()
         } ?: return emptyProcessResult
 
         val goal =
