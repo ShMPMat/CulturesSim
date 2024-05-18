@@ -141,8 +141,12 @@ fun resourceTypeMapper(type: ResourceType, tile: Tile) =
         if (tile.resourcePack.any { it.genome.type == type }) MARK
         else NOTHING
 
+fun resourceBaseNameMapper(baseName: String, tile: Tile, symbol: String = MARK) =
+        if (tile.resourcesWithMoved.any { it.fullName == baseName && it.isNotEmpty }) symbol
+        else NOTHING
+
 fun resourceSubstringMapper(substring: String, tile: Tile, symbol: String = MARK) =
-        if (tile.resourcesWithMoved.any { it.fullName.contains(substring) and it.isNotEmpty }) symbol
+        if (tile.resourcesWithMoved.any { it.fullName.contains(substring) && it.isNotEmpty }) symbol
         else NOTHING
 
 fun resourceOwnerMapper(ownerSubstring: String, tile: Tile) =

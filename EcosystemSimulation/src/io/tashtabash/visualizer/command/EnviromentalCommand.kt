@@ -22,7 +22,7 @@ enum class EnvironmentCommand(command: String, override val description: String)
     AllPresentResources("rrr( f)?", "Display all resources amounts on the map (f - cluster resources from different owners)"),
     AllPossibleResources("rrrr", "Display all resources which can exist"),
     ResourceDensity("rd", "Display resource density across the map"),
-    PinResources("pin \\w+ .", "Always display the resource on the map"),
+    PinResources("pin!? \\w+ .", "Always display the resource on the map"),
     UnpinResources("unpin \\w+", "Stop displaying the resource on the map"),
     CleanConsumers("cln cons", "Clean resource statistics for consumers and consumed"),
     Events("(\\d+ )?e ?.*", "Display events: [numberOfEvents ]e <query>; default numberOfEvents = 100"),

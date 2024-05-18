@@ -109,6 +109,11 @@ fun briefPrintResourcesWithSubstring(map: WorldMap, substring: String) = map.til
         .filter { it.first.fullName.contains(substring) }
         .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
 
+fun briefPrintResourcesWithBaseName(map: WorldMap, baseName: String) = map.tiles
+        .flatMap { t -> t.resourcesWithMoved.map { r -> r to t } }
+        .filter { it.first.baseName == baseName }
+        .joinToString("\n") { (r, t) -> "${t.posStr}: ${r.fullName} - ${r.amount}, ${r.ownershipMarker}" }
+
 fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean): String {
     val allEvents = events.filter { predicate(it) }
     val eventLines = allEvents.takeLast(amount)

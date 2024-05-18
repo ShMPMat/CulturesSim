@@ -90,9 +90,13 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 }
                 ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
                 PinResources -> {
+                    val isSubstring = splitCommand[0].last() != '!'
                     val resourceQuery = splitCommand[1]
                     val mapperFun = { t: io.tashtabash.sim.space.tile.Tile ->
-                        resourceSubstringMapper(resourceQuery, t, MARK_COLOR + splitCommand[2])
+                        if (isSubstring)
+                            resourceSubstringMapper(resourceQuery, t, MARK_COLOR + splitCommand[2])
+                        else
+                            resourceBaseNameMapper(resourceQuery, t, MARK_COLOR + splitCommand[2])
                     }
                     val minOrder = visualizer.tileMappers
                             .minOfOrNull { it.order }
@@ -101,7 +105,12 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
                     visualizer.addTileMapper(mapper)
                     printMap(mapperFun)
-                    println(briefPrintResourcesWithSubstring(map, splitCommand[1]))
+                    println(
+                        if (isSubstring)
+                            briefPrintResourcesWithSubstring(map, splitCommand[1])
+                        else
+                            briefPrintResourcesWithBaseName(map, splitCommand[1])
+                    )
                     println("Added mapper for this resource")
                 }
                 UnpinResources -> visualizer.removeTileMapperByName("Resource ${splitCommand[1]}")
