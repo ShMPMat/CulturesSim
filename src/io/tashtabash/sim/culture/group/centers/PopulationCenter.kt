@@ -242,6 +242,6 @@ class PopulationCenter(
         |$stratumCenter
         |
         |Circulating resources:
-        |${turnResources.addLinePrefix()}
+        |${turnResources.getResources { it.isNotEmpty }.addLinePrefix()}
         """.trimMargin()
 }
