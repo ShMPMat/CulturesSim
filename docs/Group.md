@@ -15,6 +15,7 @@ Group consists of centers:
 
 ## Behaviour classes
 
+- `GroupAction`: helper class evaluating some value for a group;
 - `GroupBehaviour`: base class which is added to `ProcessCenter` to run some logic every turn;
 - `GroupPseudoAction`: TODO
   - `GroupAction`: encapsulates logic which requires only one `Group`, run inside `Behaviours`;
