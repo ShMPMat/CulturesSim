@@ -456,7 +456,7 @@
         $Pollinator:1
         #Water
         cYellow
-        R0.1 S0.8
+        R0.1 D0.01 S0.8
 
 -BumbleBee                          0.5     0.02   5          10     30   50       Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
