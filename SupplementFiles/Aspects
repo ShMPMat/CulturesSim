@@ -123,7 +123,7 @@
 -Paint                                                                   #colour                 #MEANING
     &t:solid--#MATCHED:1
     C5.0
--Incrust                               $fine_material_work               /goodForIncrusting      #MEANING
-    &t:hard--#MATCHED:1
+-Incrust                               $fine_material_work                                       #MEANING
+    &t:goodForIncrusting--#MATCHED:1
     C5.0
     Shard
