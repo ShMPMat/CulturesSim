@@ -12,6 +12,9 @@ import java.util.*
 import kotlin.math.ceil
 
 
+/**
+ * Used only for phony dependencies and applies the aspect to the acquired resource
+ */
 class LineDependency(
         isPhony: Boolean,
         private var parentConverseWrapper: ConverseWrapper,
