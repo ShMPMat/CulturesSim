@@ -8,5 +8,8 @@ class MutableAspectPool(initialAspects: MutableSet<Aspect>) : AspectPool(initial
 
     fun addAll(aspects: Collection<Aspect>) = aspects.forEach { add(it) }
 
-    fun clear() = aspectMap.clear()
+    fun clear() {
+        aspectMap.clear()
+        _cws.clear()
+    }
 }
