@@ -1,6 +1,5 @@
 package io.tashtabash.sim.culture.group.centers
 
-import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.aspect.Aspect
 import io.tashtabash.sim.culture.aspect.hasMeaning
@@ -26,12 +25,13 @@ class CultureCenter(
         val cultureAspectCenter: CultureAspectCenter,
         val aspectCenter: AspectCenter
 ) {
-
     val requestCenter = RequestCenter()
 
     val events = EventLog()
 
     private val evaluatedMap = mutableMapOf<Resource, ValueEntry>()
+
+    private val importanceToDepthCoefficient = 100
 
     fun addAspiration(labeler: ResourceLabeler) = group.resourceCenter.addNeeded(labeler, 100)
 
@@ -54,31 +54,32 @@ class CultureCenter(
     val meaning: Meme
         get() = memePool.valuableMeme
 
-    fun addNeedAspect(need: Pair<ResourceLabeler, ResourceNeed>) {
-        val option = aspectCenter.findOptions(need.first, group)
-            .randomElementOrNull()
+    fun addNeedAspect(labeler: ResourceLabeler, need: ResourceNeed) {
+        val searchDepth = need.importance / importanceToDepthCoefficient + 1
+        val option = aspectCenter.findRandomOption(labeler, group, searchDepth)
 
-        if (option == null) {
-            events.add(Fail of "Group ${group.name} couldn't develop an aspect for a need ${need.first}")
+        if (option.isEmpty()) {
+            events += Fail of "Group ${group.name} couldn't develop an aspect for a need $labeler"
             return
         }
 
-        val (aspect, sourceGroup) = option
-        val success = aspectCenter.addAspectTry(aspect, group)
+        var success = true
+        for ((aspect) in option.reversed()) {
+            success = aspectCenter.tryAddingAspect(aspect, group)
+            if (!success)
+                break
+        }
+        val (aspect, sourceGroup) = option.first()
 
-        if (success)
-            events.add(
+        events +=
+            if (success)
                 if (sourceGroup == null)
-                    AspectGaining of "Group ${group.name} developed an aspect ${aspect.name} for a need ${need.first}"
+                    AspectGaining of "Group ${group.name} developed an aspect ${aspect.name} for a need $labeler"
                 else
-                    AspectGaining of "Group ${group.name} took aspect ${aspect.name}" +
-                            " from group ${sourceGroup.name} for a need ${need.first}"
-            )
-        else
-            events.add(
-                Fail of "Group ${group.name} came up with an aspect ${aspect.name} for a need ${need.first}" +
-                        " but couldn't add it"
-            )
+                    AspectGaining of "Group ${group.name} took an aspect ${aspect.name} from group ${sourceGroup.name}" +
+                            " for a need $labeler"
+            else
+                Fail of "Group ${group.name} invented an aspect ${aspect.name} for a need $labeler but couldn't add it"
     }
 
     fun finishAspectUpdate(): Set<Aspect> {

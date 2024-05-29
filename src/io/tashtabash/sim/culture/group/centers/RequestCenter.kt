@@ -102,7 +102,7 @@ class RequestCenter {
                         foodFloor + controller.population / 100 + 1,
                         if (controller.isClearEffects) passingReward else foodPenalty,
                         if (controller.isClearEffects) passingReward else foodReward,
-                        100,
+                        99,
                         setOf(Food, Vital)
                 )
         )

@@ -1,12 +1,9 @@
 package io.tashtabash.sim
 
 import io.tashtabash.random.singleton.RandomSingleton
-import io.tashtabash.random.singleton.randomTile
-import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.aspect.*
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependencies
 import io.tashtabash.sim.culture.aspect.labeler.AspectNameLabeler
-import io.tashtabash.sim.culture.group.GROUP_TAG_TYPE
 import io.tashtabash.sim.culture.group.GroupConglomerate
 import io.tashtabash.sim.culture.group.compulsoryAspects
 import io.tashtabash.sim.culture.group.place.StrayPlacesManager
@@ -80,7 +77,7 @@ open class CulturesWorld : World() {
             for (group in conglomerate.subgroups)
                 group.cultureCenter
                     .aspectCenter
-                    .addAspectTry(aspectPool.getValue(aspectName), group)
+                    .tryAddingAspect(aspectPool.getValue(aspectName), group)
 
         conglomerate.finishUpdate()
 

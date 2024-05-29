@@ -39,14 +39,14 @@ fun addGroupAspect(group: Group?, aspect: Aspect) {
         return
     }
     if (aspect is ConverseWrapper) {
-        group.cultureCenter.aspectCenter.addAspectTry(aspect.aspect, group)
+        group.cultureCenter.aspectCenter.tryAddingAspect(aspect.aspect, group)
         val inner = aspect.aspect
         if (!group.cultureCenter.aspectCenter.aspectPool.contains(inner)) {
             System.err.println("Can't add base aspect for the Converse Wrapper.")
             return
         }
     }
-    group.cultureCenter.aspectCenter.addAspectTry(aspect, group)
+    group.cultureCenter.aspectCenter.tryAddingAspect(aspect, group)
 }
 
 fun addGroupAspect(group: Group?, aspectName: String, aspectPool: AspectPool) {

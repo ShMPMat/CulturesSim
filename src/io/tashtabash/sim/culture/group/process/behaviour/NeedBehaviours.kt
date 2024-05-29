@@ -10,7 +10,7 @@ object ResolveResourceNeedB : PlanBehaviour() {
         val need = group.resourceCenter.direNeed
             ?: return emptyProcessResult
 
-        group.cultureCenter.addNeedAspect(need)
+        group.cultureCenter.addNeedAspect(need.first, need.second)
         group.populationCenter.wakeNeedStrata(need)
 
         return emptyProcessResult

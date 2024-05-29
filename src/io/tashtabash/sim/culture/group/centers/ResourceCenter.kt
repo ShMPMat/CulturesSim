@@ -78,7 +78,7 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
         if (neededResourcesMap.containsKey(resourceLabeler))
             neededResourcesMap.getValue(resourceLabeler).importance += importance
         else
-            neededResourcesMap[resourceLabeler] = ResourceNeed(importance, true)
+            neededResourcesMap[resourceLabeler] = ResourceNeed(importance, resourceLabeler)
     }
 
     fun hasDireNeed() = neededResourcesMap.any { it.value.importance >= _direBound }
@@ -149,9 +149,9 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
 }
 
 
-data class ResourceNeed(var importance: Int, var wasUpdated: Boolean = false) {
+data class ResourceNeed(var importance: Int, var resourceLabeler: ResourceLabeler, var wasUpdated: Boolean = true) {
     fun normalize() {
-        if (importance > 100) importance = 100
+        if (importance > 1000) importance = 1000
     }
 
     fun finishUpdate() {

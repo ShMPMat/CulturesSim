@@ -10,6 +10,9 @@ data class AspectDependencies(val map: MutableMap<ResourceTag, MutableSet<Depend
     val phony: MutableSet<Dependency>
         get() = map.getValue(io.tashtabash.sim.space.resource.tag.phony)
 
+    val safePhony: MutableSet<Dependency>?
+        get() = map[io.tashtabash.sim.space.resource.tag.phony]
+
     val nonPhony: Map<ResourceTag, MutableSet<Dependency>>
         get() = map.filter { it.key != io.tashtabash.sim.space.resource.tag.phony }.toMap()
 

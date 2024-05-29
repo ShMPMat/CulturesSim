@@ -11,7 +11,7 @@ import kotlin.String
 
 open class AspectPool(initialAspects: MutableSet<Aspect>) {
     protected val aspectMap = initialAspects.associateBy { it.name }.toMutableMap()
-    private val _cws = aspects.filterIsInstance<ConverseWrapper>().toMutableSet()
+    protected val _cws = aspects.filterIsInstance<ConverseWrapper>().toMutableSet()
     private val _cwRequirements = _cws
             .map { it.resource }
             .groupBy { it }
@@ -48,11 +48,11 @@ open class AspectPool(initialAspects: MutableSet<Aspect>) {
                 _cwRequirements[innerAspect.resource] =
                         _cwRequirements.getValue(innerAspect.resource) - 1
         }
-        deleteDependencyOnAspect(innerAspect)
+        deleteIfDependentOnAspect(innerAspect)
         return true
     }
 
-    fun deleteDependencyOnAspect(aspect: Aspect) {
+    fun deleteIfDependentOnAspect(aspect: Aspect) {
         aspects.forEach {a ->
             a.dependencies.removeIf { it is LineDependency && it.converseWrapper == aspect
                     || it is AspectDependency && it.aspect == aspect}

@@ -18,7 +18,7 @@ class AddRandomAspectA(group: Group, val options: List<Aspect>): AbstractGroupAc
             if (aspect is ConverseWrapper && !aspectCenter.aspectPool.contains(aspect.aspect))
                 return emptyProcessResult
 
-            if (aspectCenter.addAspectTry(aspect, group))
+            if (aspectCenter.tryAddingAspect(aspect, group))
                 return ProcessResult(AspectGaining of "${group.name} developed aspect ${aspect.name} by itself")
         }
 

@@ -9,7 +9,7 @@ import io.tashtabash.sim.culture.group.request.ResourceEvaluator
 import java.util.*
 
 
-class AspectDependency(//TODO what's the difference between this and LineDependency?
+class AspectDependency(
         isPhony: Boolean,
         aspect: ConverseWrapper,
         private val evaluator: ResourceEvaluator,

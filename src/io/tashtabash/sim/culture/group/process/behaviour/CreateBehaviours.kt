@@ -23,7 +23,6 @@ import io.tashtabash.sim.culture.thinking.meaning.makeResourceMemes
 import io.tashtabash.sim.culture.thinking.meaning.makeResourcePackMemes
 import io.tashtabash.sim.event.Creation
 import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.territory.StaticTerritory
 import io.tashtabash.sim.space.territory.Territory
 import io.tashtabash.sim.space.tile.TileTag
@@ -65,7 +64,7 @@ object RandomDepictCaB : AbstractGroupBehaviour() {
         if (meaningAspects.isEmpty()) {
             val aspect = session.world.aspectPool.filter { it.canApplyMeaning }.randomElementOrNull()
                     ?: return emptyProcessResult
-            group.cultureCenter.aspectCenter.addAspectTry(aspect, group)
+            group.cultureCenter.aspectCenter.tryAddingAspect(aspect, group)
             return emptyProcessResult
         }
 

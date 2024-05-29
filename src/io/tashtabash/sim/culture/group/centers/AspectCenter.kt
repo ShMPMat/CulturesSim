@@ -1,15 +1,19 @@
 package io.tashtabash.sim.culture.group.centers
 
 import io.tashtabash.random.singleton.*
+import io.tashtabash.random.toSampleSpaceObject
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.aspect.*
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependencies
+import io.tashtabash.sim.culture.aspect.dependency.AspectDependency
 import io.tashtabash.sim.culture.aspect.dependency.LineDependency
 import io.tashtabash.sim.culture.aspect.labeler.ProducedLabeler
 import io.tashtabash.sim.culture.group.AspectDependencyCalculator
 import io.tashtabash.sim.culture.group.convert
+import io.tashtabash.sim.culture.group.request.tagEvaluator
 import io.tashtabash.sim.event.*
 import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.resource.tag.phony
 import java.util.*
@@ -30,13 +34,13 @@ class AspectCenter(aspects: List<Aspect>) {
         _aspectPool.all.forEach { it.swapDependencies(this) } //TODO will it swap though?
     }
 
-    fun addAspectTry(aspect: Aspect, group: Group): Boolean {
+    fun tryAddingAspect(aspect: Aspect, group: Group): Boolean {
         var currentAspect = aspect
         if (!currentAspect.isValid)
             return false
         if (_aspectPool.contains(currentAspect))
             currentAspect = _aspectPool.getValue(currentAspect.name)
-        val dependencies = calculateDependencies(currentAspect, group)
+        val (dependencies) = calculateDependencies(currentAspect, group)
         if (!currentAspect.isDependenciesOk(dependencies))
             return false
         addAspect(currentAspect, dependencies, group)
@@ -52,12 +56,12 @@ class AspectCenter(aspects: List<Aspect>) {
             currentAspect = aspect.copy(dependencies)
             changedAspectPool.add(currentAspect)
             if (currentAspect !is ConverseWrapper) { //TODO maybe should do the same in straight
-                val allResources = AspectDependencyCalculator(_aspectPool, group.overallTerritory)
+                val allResources = AspectDependencyCalculator(_aspectPool, group.overallTerritory, changedAspectPool)
                         .getAcceptableResources(currentAspect)
 
                 allResources.map { resource -> queueConverseWrapper(currentAspect, resource) }
                         .randomElementOrNull()
-                        ?.let { addAspectTry(it, group) }
+                        ?.let { tryAddingAspect(it, group) }
             }
         }
     }
@@ -67,10 +71,13 @@ class AspectCenter(aspects: List<Aspect>) {
         _aspectPool.add(aspect)
     }
 
-    private fun calculateDependencies(aspect: Aspect, group: Group): AspectDependencies {
-        val calculator = AspectDependencyCalculator(_aspectPool, group.territoryCenter.territory)
+    private fun calculateDependencies(
+        aspect: Aspect,
+        group: Group
+    ): Pair<AspectDependencies, MutableCollection<Pair<ResourceNeed, ResourceTag>>> {
+        val calculator = AspectDependencyCalculator(_aspectPool, group.territoryCenter.territory, changedAspectPool)
         calculator.calculateDependencies(aspect)
-        return calculator.dependencies
+        return calculator.dependencies to calculator.needs.values
     }
 
     private fun queueConverseWrapper(aspect: Aspect, resource: Resource): ConverseWrapper? {
@@ -124,10 +131,11 @@ class AspectCenter(aspects: List<Aspect>) {
             for (converseWrapper in _aspectPool.converseWrappers) {
                 for (tag in newAspect.tags)
                     if (converseWrapper.dependencies.containsDependency(tag))
-                        converseWrapper.dependencies.map[tag]!!.add(LineDependency(
+                        converseWrapper.dependencies.map[tag]!!.add(AspectDependency(
                                 false,
+                                newAspect,
+                                tagEvaluator(tag),
                                 converseWrapper,
-                                newAspect
                         ))
                 if (newAspect.producedResources.any { converseWrapper.resource == it })
                     converseWrapper.dependencies.map.getValue(phony).add(LineDependency(
@@ -138,24 +146,66 @@ class AspectCenter(aspects: List<Aspect>) {
             }
     }
 
-    //TODO implement depth search
-    fun findOptions(labeler: ResourceLabeler, group: Group, depth: Int = 1): List<Pair<Aspect, Group?>> {
-        val options = mutableListOf<Pair<Aspect, Group?>>()
+    private fun findPossibleAspectOptions(labeler: ResourceLabeler, group: Group): Map<Int, List<AspectOption>> {
+        val allOptions = mutableListOf<Pair<ConverseWrapper, Group?>>()
         val aspectLabeler = ProducedLabeler(labeler)
 
         getAllPossibleConverseWrappers(group)
-                .filter { aspectLabeler.isSuitable(it) }
-                .forEach { options.add(it to null) }
-
+            .filter { aspectLabeler.isSuitable(it) }
+            .forEach { allOptions += it to null }
         val aspects = convert(getNewNeighbourAspects(group))
-        for ((aspect, aspectGroup) in aspects) {
-            if (aspectLabeler.isSuitable(aspect)) {
-                val dependencies = calculateDependencies(aspect, group)
-                if (aspect.isDependenciesOk(dependencies))
-                    options.add(aspect.copy(dependencies) to aspectGroup)
+        for ((aspect, aspectGroup) in aspects)
+            if (aspect is ConverseWrapper && aspectLabeler.isSuitable(aspect))
+                allOptions += aspect to aspectGroup
+
+        return allOptions
+            .map { (aspect, sourceGroup) ->
+                val (dependencies, needs) = calculateDependencies(aspect, group)
+
+                AspectOption(aspect, dependencies, sourceGroup, needs)
+            }.groupBy { it.needs.size }
+    }
+
+    private fun insertDependency(aspect: ConverseWrapper, tag: ResourceTag, parentConverseWrapper: ConverseWrapper) {
+        aspect.dependencies.map[tag] = mutableSetOf(
+            if (tag == phony)
+                LineDependency(true, aspect, parentConverseWrapper)
+            else
+                AspectDependency(false, parentConverseWrapper, tagEvaluator(tag), aspect)
+        )
+    }
+
+    // Returns Aspects which, when added, produce a Resource satisfying the labeler
+    // If an aspect has dependencies in the list, they are placed at later indices
+    fun findRandomOption(labeler: ResourceLabeler, group: Group, depth: Int = 1): List<SourcedAspect> {
+        val possibleOptions = findPossibleAspectOptions(labeler, group)
+
+        possibleOptions[0]
+            ?.filter { (aspect, dependencies) -> aspect.isDependenciesOk(dependencies) }
+            ?.randomElementOrNull()
+            ?.let { (aspect, dependencies, sourceGroup) ->
+                return listOf(aspect.copy(dependencies) to sourceGroup)
             }
-        }
-        return options
+
+        if (depth < 2)
+            return emptyList()
+
+        possibleOptions.entries
+            .flatMap { (n, options) -> options.map { it.toSampleSpaceObject(1.0 / n * n) } }
+            .randomUnwrappedElementOrNull()
+            ?.let { (aspect, _, sourceGroup, needs) ->
+                val resultOptions = mutableListOf(aspect to sourceGroup)
+                for ((need, tag) in needs) {
+                    val needOption = findRandomOption(need.resourceLabeler, group, depth - 1)
+                    if (needOption.isNotEmpty()) {
+                        resultOptions += needOption
+                        insertDependency(aspect, tag, needOption[0].first)
+                    } else
+                        return emptyList()
+                }
+                return resultOptions
+            }
+        return emptyList()
     }
 
     private fun getNeighbourAspects(group: Group): List<Pair<Aspect, Group>> {
@@ -187,7 +237,7 @@ class AspectCenter(aspects: List<Aspect>) {
                 max(a.usefulness * group.relationCenter.getNormalizedRelation(g), 0.0) + 1.0
             }
 
-            if (addAspectTry(aspect, group))
+            if (tryAddingAspect(aspect, group))
                 return listOf(AspectGaining of "${group.name} got ${aspect.name} from ${aspectGroup.name}")
         }
         return emptyList()
@@ -204,10 +254,10 @@ class AspectCenter(aspects: List<Aspect>) {
                 ?.takeIf { aspect -> aspect !in aspectPool.converseWrappers.map { it.aspect } }
                 ?.let { aspect ->
                     if (aspect in changedAspectPool.converseWrappers.map { it.aspect })
-                        return@let
+                        return
 
                     if (_aspectPool.remove(aspect)) {
-                        changedAspectPool.deleteDependencyOnAspect(aspect)
+                        changedAspectPool.deleteIfDependentOnAspect(aspect)
                         if (aspect !is ConverseWrapper)
                             _potentialConverseWrappers.removeIf { it.aspect == aspect }
                         group.addEvent(Change of "${group.name} lost aspect ${aspect.name}")
@@ -220,3 +270,14 @@ class AspectCenter(aspects: List<Aspect>) {
         |${aspectPool.all.joinToString("\n\n")}
     """.trimMargin()
 }
+
+
+data class AspectOption(
+    val aspect: ConverseWrapper,
+    val dependencies: AspectDependencies,
+    val group: Group?,
+    val needs: MutableCollection<Pair<ResourceNeed, ResourceTag>>
+)
+
+
+typealias SourcedAspect = Pair<ConverseWrapper, Group?>

@@ -285,7 +285,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
             }
             copy
         } catch (e: Exception) {
-            throw GroupError("Wrong dependencies")
+            throw GroupError("Wrong dependencies: ${e.message}")
         }
     }
 
