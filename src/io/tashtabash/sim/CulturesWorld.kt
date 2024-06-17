@@ -93,5 +93,5 @@ open class CulturesWorld : World() {
     }
 }
 
-private val improvedAspectNames = listOf("Trade", "ShapeMalleable", "Engrave", "Sculpt", "Carve", "Paint", "Incrust")
+private val improvedAspectNames = listOf("Trade", "ShapeMalleable", "Engrave", "Sculpt", "Carve", "Paint", "Encrust")
 private val buildingsNames = listOf("House", "Wigwam", "Yurt")

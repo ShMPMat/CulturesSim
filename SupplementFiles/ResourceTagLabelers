@@ -16,7 +16,7 @@
 
 -goodForEngraving                  t:hard       t:sturdy
 
--goodForIncrusting                 t:hard       t:sturdy
+-goodForEncrusting                 t:hard       t:sturdy
     <=0.1
 
 -!goodForFrame                      t:hard       t:solid      t:sturdy
