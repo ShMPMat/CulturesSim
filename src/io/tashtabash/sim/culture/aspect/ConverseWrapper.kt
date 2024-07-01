@@ -264,7 +264,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
                     .mapIndexed { i, n -> ElementResourceFeature(n, 1000 + i) }
             else emptyList()
 
-    override fun isDependenciesOk(dependencies: AspectDependencies) =
+    override fun checkDependencies(dependencies: AspectDependencies) =
             requirements.size + 1 == dependencies.size
 
     override val isValid: Boolean

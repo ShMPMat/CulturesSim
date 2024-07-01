@@ -41,7 +41,7 @@ class AspectCenter(aspects: List<Aspect>) {
         if (_aspectPool.contains(currentAspect))
             currentAspect = _aspectPool.getValue(currentAspect.name)
         val (dependencies) = calculateDependencies(currentAspect, group)
-        if (!currentAspect.isDependenciesOk(dependencies))
+        if (!currentAspect.checkDependencies(dependencies))
             return false
         addAspect(currentAspect, dependencies, group)
         return true
@@ -181,7 +181,7 @@ class AspectCenter(aspects: List<Aspect>) {
         val possibleOptions = findPossibleAspectOptions(labeler, group)
 
         possibleOptions[0]
-            ?.filter { (aspect, dependencies) -> aspect.isDependenciesOk(dependencies) }
+            ?.filter { (aspect, dependencies) -> aspect.checkDependencies(dependencies) }
             ?.randomElementOrNull()
             ?.let { (aspect, dependencies, sourceGroup) ->
                 return listOf(aspect.copy(dependencies) to sourceGroup)

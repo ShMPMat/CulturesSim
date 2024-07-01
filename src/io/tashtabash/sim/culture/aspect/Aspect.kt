@@ -52,7 +52,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     fun canReturnMeaning() = this is ConverseWrapper && this.canInsertMeaning
 
-    open fun isDependenciesOk(dependencies: AspectDependencies) = requirements.size == dependencies.size
+    open fun checkDependencies(dependencies: AspectDependencies) = requirements.size == dependencies.size
 
     open fun canTakeResources() = false
 
