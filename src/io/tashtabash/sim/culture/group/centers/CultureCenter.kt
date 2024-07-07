@@ -54,9 +54,10 @@ class CultureCenter(
     val meaning: Meme
         get() = memePool.valuableMeme
 
-    fun addNeedAspect(labeler: ResourceLabeler, need: ResourceNeed) {
+    fun addNeedAspect(need: ResourceNeed) {
+        val labeler = need.resourceLabeler
         val searchDepth = need.importance / importanceToDepthCoefficient + 1
-        val option = aspectCenter.findRandomOption(labeler, group, searchDepth)
+        val option = aspectCenter.findRandomOption(need.resourceLabeler, group, searchDepth)
 
         if (option.isEmpty()) {
             events += Fail of "Group ${group.name} couldn't develop an aspect for a need $labeler"
