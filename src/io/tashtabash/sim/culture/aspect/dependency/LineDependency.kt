@@ -6,10 +6,7 @@ import io.tashtabash.sim.culture.aspect.AspectResult
 import io.tashtabash.sim.culture.aspect.ConverseWrapper
 import io.tashtabash.sim.culture.group.centers.AspectCenter
 import io.tashtabash.sim.culture.group.request.resourceEvaluator
-import io.tashtabash.sim.space.resource.Taker
-import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import java.util.*
-import kotlin.math.ceil
 
 
 /**
@@ -17,54 +14,40 @@ import kotlin.math.ceil
  */
 class LineDependency(
         isPhony: Boolean,
+        var converseWrapper: ConverseWrapper,
         private var parentConverseWrapper: ConverseWrapper,
-        var converseWrapper: ConverseWrapper
 ) : AbstractDependency(isPhony) {
     private var isAlreadyUsed = false
     override val name: String
         get() = "from ${converseWrapper.name}"
 
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
-        if (parentConverseWrapper == converseWrapper) return true
-        if (parentConverseWrapper.isCurrentlyUsed) return false
+        if (parentConverseWrapper == converseWrapper)
+            return true
+        if (parentConverseWrapper.isCurrentlyUsed)
+            return false
+
         parentConverseWrapper.isCurrentlyUsed = true
-        val b = converseWrapper == otherAspect
+        val result = converseWrapper == otherAspect
         parentConverseWrapper.isCurrentlyUsed = false
-        return b
+        return result
     }
 
     override fun isCycleDependencyInner(otherAspect: Aspect) = isCycleDependency(otherAspect)
 
     override fun useDependency(controller: AspectController): AspectResult {
-        return try {
-            if (isAlreadyUsed || controller.ceiling <= 0 || !goodForInsertMeaning() && controller.isMeaningNeeded)
-                return AspectResult()
+        if (isAlreadyUsed || controller.ceiling <= 0 || !goodForInsertMeaning() && controller.isMeaningNeeded)
+            return AspectResult()
 
-            val resourcePack = MutableResourcePack()
-            isAlreadyUsed = true
-            val _p = converseWrapper.use(controller.copy(
-                    evaluator = resourceEvaluator(parentConverseWrapper.resource)
-            ))
-            resourcePack.addAll(_p.resources.getResource(parentConverseWrapper.resource).resources.flatMap {
-                        it.applyActionAndConsume(
-                                parentConverseWrapper.aspect.core.resourceAction,
-                                ceil(controller.ceiling).toInt(),
-                                true,
-                                Taker.ResourceTaker(controller.populationCenter.actualPopulation)
-                        )
-                    })
-            resourcePack.addAll(_p.resources)
-            isAlreadyUsed = false
-            AspectResult(resourcePack, null, _p.isFinished)
-        } catch (e: NullPointerException) {
-            isAlreadyUsed = false
-            throw RuntimeException("No such aspect in Group")
-        }
+        isAlreadyUsed = true
+        val result = converseWrapper.use(controller.copy(evaluator = resourceEvaluator(parentConverseWrapper.resource)))
+        isAlreadyUsed = false
+        return result
     }
 
     private fun goodForInsertMeaning() = !isPhony || converseWrapper.canInsertMeaning
 
-    override fun copy() = LineDependency(isPhony, parentConverseWrapper, converseWrapper)
+    override fun copy() = LineDependency(isPhony, converseWrapper, parentConverseWrapper)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         parentConverseWrapper = aspectCenter.aspectPool.getValue(parentConverseWrapper) as ConverseWrapper

@@ -12,6 +12,7 @@ import io.tashtabash.sim.culture.group.request.resourceEvaluator
 import io.tashtabash.sim.culture.group.stratum.StratumPeople
 import io.tashtabash.sim.space.resource.ExternalResourceFeature
 import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.BaseNameLabeler
@@ -164,12 +165,14 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
 
         for (dependency in dependencies.phony) {
             val newDelta = meaningfulPack.getAmount(resource)
-            val result = dependency.useDependency(controller.copy(
+            val dependencyResult = dependency.useDependency(controller.copy(
                 depth = controller.depth + 1,
                 ceiling = controller.ceiling - newDelta,
                 floor = controller.floor - newDelta,
                 isMeaningNeeded = shouldPassMeaningNeed(controller.isMeaningNeeded)
             ))
+            val result = extractPhonyResources(dependencyResult, controller)
+
             if (!result.isFinished)
                 continue
 
@@ -180,6 +183,20 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
                 break
         }
         return true
+    }
+
+    private fun extractPhonyResources(result: AspectResult, controller: AspectController): AspectResult {
+        val resourcePack = MutableResourcePack()
+        resourcePack.addAll(result.resources.getResource(resource).resources.flatMap {
+            it.applyActionAndConsume(
+                aspect.core.resourceAction,
+                ceil(controller.ceiling).toInt(),
+                true,
+                Taker.ResourceTaker(controller.populationCenter.actualPopulation)
+            )
+        })
+        resourcePack.addAll(result.resources)
+        return AspectResult(resourcePack, null, result.isFinished)
     }
 
     private fun getPhonyFromResources(controller: AspectController): List<Resource> {

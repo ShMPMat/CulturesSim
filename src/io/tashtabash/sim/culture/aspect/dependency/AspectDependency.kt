@@ -24,6 +24,9 @@ class AspectDependency(
     override fun isCycleDependency(otherAspect: Aspect): Boolean {
         if (parentAspect.isCurrentlyUsed)
             return false
+        if (aspect == parentAspect)
+            return true
+
         parentAspect.isCurrentlyUsed = true
         val result = otherAspect is ConverseWrapper && this.aspect == otherAspect.aspect
         parentAspect.isCurrentlyUsed = false
@@ -35,7 +38,7 @@ class AspectDependency(
             else isCycleDependency(otherAspect)
 
     override fun useDependency(controller: AspectController): AspectResult {
-        if (isAlreadyUsed || controller.ceiling <= 0)//TODO mb unnecessary
+        if (isAlreadyUsed || controller.ceiling <= 0)
             return AspectResult()
 
         isAlreadyUsed = true

@@ -140,8 +140,8 @@ class AspectCenter(aspects: List<Aspect>) {
                 if (newAspect.producedResources.any { converseWrapper.resource == it })
                     converseWrapper.dependencies.map.getValue(phony).add(LineDependency(
                             true,
+                            newAspect,
                             converseWrapper,
-                            newAspect
                     ))
             }
     }
@@ -166,12 +166,12 @@ class AspectCenter(aspects: List<Aspect>) {
             }.groupBy { it.needs.size }
     }
 
-    private fun insertDependency(aspect: ConverseWrapper, tag: ResourceTag, parentConverseWrapper: ConverseWrapper) {
+    private fun insertDependency(aspect: ConverseWrapper, tag: ResourceTag, dependencyWrapper: ConverseWrapper) {
         aspect.dependencies.map[tag] = mutableSetOf(
             if (tag == phony)
-                LineDependency(true, aspect, parentConverseWrapper)
+                LineDependency(true, dependencyWrapper, aspect)
             else
-                AspectDependency(false, parentConverseWrapper, tagEvaluator(tag), aspect)
+                AspectDependency(false, dependencyWrapper, tagEvaluator(tag), aspect)
         )
     }
 

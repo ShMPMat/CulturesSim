@@ -68,7 +68,7 @@ class AspectDependencyCalculator(
 
     private fun addLinePhony(converseWrapper: ConverseWrapper) = addDependenciesInMap(
         availableConverseWrappers.filter { converseWrapper.resource in it.producedResources }
-                    .map { LineDependency(true, converseWrapper, it) }
+                    .map { LineDependency(true, it, converseWrapper) }
                     .filter { !it.isCycleDependency(converseWrapper) },
             phony
     )
