@@ -9,8 +9,8 @@
 
 -Incinerate
     &t:canBeIgnited--#Fire:1--#Ash:1
--Bake                                  $fire_use                             /burns
--Roast                                 $fire_use                             /burns
+-Bake                                  $fireUse                              /burns
+-Roast                                 $fireUse                              /burns
 
 -MakingFibre                           $clothes
     C3.0
@@ -18,7 +18,7 @@
     C3.0
 -MakeClothes                           $clothes
     C3.0
--Chisel                                $fine_material_work
+-Chisel                                $fineMaterialWork
     C3.0
 
 -BuildHouse                            $building
@@ -108,22 +108,22 @@
     &t:malleable--#MATCHED:1
     C3.0
     Smalleable
--Engrave                               $fine_material_work                                       #MEANING
+-Engrave                               $fineMaterialWork                                         #MEANING
     &t:goodForEngraving--#MATCHED:1
     C3.0
     Shard
--Sculpt                                $fine_material_work                                       #MEANING
+-Sculpt                                $fineMaterialWork                                         #MEANING
     &t:goodForMonuments--#MATCHED:1
     C5.0
     Shard
--Carve                                 $fine_material_work                                       #MEANING
+-Carve                                 $fineMaterialWork                                         #MEANING
     &t:goodForEngraving--#MATCHED:1
     C3.0
     Shard
 -Paint                                                                   #colour                 #MEANING
     &t:solid--#MATCHED:1
     C5.0
--Encrust                               $fine_material_work                                       #MEANING
+-Encrust                               $fineMaterialWork                                         #MEANING
     &t:goodForEncrusting--#MATCHED:1
     C5.0
     Shard
