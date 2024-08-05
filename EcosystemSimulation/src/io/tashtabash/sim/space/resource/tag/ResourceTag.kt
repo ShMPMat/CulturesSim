@@ -22,4 +22,4 @@ open class ResourceTag(var name: String, var level: Double = 1.0) {
     override fun hashCode() = Objects.hash(name)
 }
 
-val phony = ResourceTag("phony")
+val mainDependencyName = ResourceTag("main")

@@ -15,7 +15,7 @@ import io.tashtabash.sim.event.*
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
-import io.tashtabash.sim.space.resource.tag.phony
+import io.tashtabash.sim.space.resource.tag.mainDependencyName
 import java.util.*
 import kotlin.math.max
 
@@ -138,7 +138,7 @@ class AspectCenter(aspects: List<Aspect>) {
                                 converseWrapper,
                         ))
                 if (newAspect.producedResources.any { converseWrapper.resource == it })
-                    converseWrapper.dependencies.map.getValue(phony).add(LineDependency(
+                    converseWrapper.dependencies.map.getValue(mainDependencyName).add(LineDependency(
                             true,
                             newAspect,
                             converseWrapper,
@@ -168,7 +168,7 @@ class AspectCenter(aspects: List<Aspect>) {
 
     private fun insertDependency(aspect: ConverseWrapper, tag: ResourceTag, dependencyWrapper: ConverseWrapper) {
         aspect.dependencies.map[tag] = mutableSetOf(
-            if (tag == phony)
+            if (tag == mainDependencyName)
                 LineDependency(true, dependencyWrapper, aspect)
             else
                 AspectDependency(false, dependencyWrapper, tagEvaluator(tag), aspect)

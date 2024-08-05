@@ -11,10 +11,10 @@ import io.tashtabash.sim.space.resource.Taker
 import java.util.*
 
 class ConversionDependency(
-        isPhony: Boolean,
-        private var aspect: Aspect,
-        private val resource: Resource
-) : AbstractDependency(isPhony) {
+    isMain: Boolean,
+    private var aspect: Aspect,
+    private val resource: Resource
+) : AbstractDependency(isMain) {
     override val name: String
         get() = "${aspect.name} on ${resource.baseName}"
 
@@ -39,7 +39,7 @@ class ConversionDependency(
         return AspectResult(MutableResourcePack(gatheredPack))
     }
 
-    override fun copy() = ConversionDependency(isPhony, aspect, resource)
+    override fun copy() = ConversionDependency(isMain, aspect, resource)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         aspect =  aspectCenter.aspectPool.getValue(aspect)

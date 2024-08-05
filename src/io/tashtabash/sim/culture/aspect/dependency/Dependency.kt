@@ -10,7 +10,7 @@ interface Dependency {
     fun isCycleDependency(otherAspect: Aspect): Boolean
     fun isCycleDependencyInner(otherAspect: Aspect): Boolean
     fun useDependency(controller: AspectController): AspectResult
-    val isPhony: Boolean
+    val isMain: Boolean
     fun copy(): Dependency
     fun swapDependencies(aspectCenter: AspectCenter)
 }

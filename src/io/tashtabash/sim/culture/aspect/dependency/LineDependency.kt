@@ -10,13 +10,13 @@ import java.util.*
 
 
 /**
- * Used only for phony dependencies and applies the aspect to the acquired resource
+ * Used only for main dependencies and applies the aspect to the acquired resource
  */
 class LineDependency(
-        isPhony: Boolean,
-        var converseWrapper: ConverseWrapper,
-        private var parentConverseWrapper: ConverseWrapper,
-) : AbstractDependency(isPhony) {
+    isMain: Boolean,
+    var converseWrapper: ConverseWrapper,
+    private var parentConverseWrapper: ConverseWrapper,
+) : AbstractDependency(isMain) {
     private var isAlreadyUsed = false
     override val name: String
         get() = "from ${converseWrapper.name}"
@@ -45,9 +45,9 @@ class LineDependency(
         return result
     }
 
-    private fun goodForInsertMeaning() = !isPhony || converseWrapper.canInsertMeaning
+    private fun goodForInsertMeaning() = !isMain || converseWrapper.canInsertMeaning
 
-    override fun copy() = LineDependency(isPhony, converseWrapper, parentConverseWrapper)
+    override fun copy() = LineDependency(isMain, converseWrapper, parentConverseWrapper)
 
     override fun swapDependencies(aspectCenter: AspectCenter) {
         parentConverseWrapper = aspectCenter.aspectPool.getValue(parentConverseWrapper) as ConverseWrapper

@@ -7,14 +7,14 @@ data class AspectDependencies(val map: MutableMap<ResourceTag, MutableSet<Depend
     val size: Int
         get() = map.size
 
-    val phony: MutableSet<Dependency>
-        get() = map.getValue(io.tashtabash.sim.space.resource.tag.phony)
+    val mainDependency: MutableSet<Dependency>
+        get() = map.getValue(io.tashtabash.sim.space.resource.tag.mainDependencyName)
 
-    val safePhony: MutableSet<Dependency>?
-        get() = map[io.tashtabash.sim.space.resource.tag.phony]
+    val safeMainDependency: MutableSet<Dependency>?
+        get() = map[io.tashtabash.sim.space.resource.tag.mainDependencyName]
 
-    val nonPhony: Map<ResourceTag, MutableSet<Dependency>>
-        get() = map.filter { it.key != io.tashtabash.sim.space.resource.tag.phony }.toMap()
+    val nonMainDependencies: Map<ResourceTag, MutableSet<Dependency>>
+        get() = map.filter { it.key != io.tashtabash.sim.space.resource.tag.mainDependencyName }.toMap()
 
     fun containsDependency(tag: ResourceTag) = map.containsKey(tag)
 

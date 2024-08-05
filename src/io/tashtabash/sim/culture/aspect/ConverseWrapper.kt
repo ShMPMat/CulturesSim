@@ -17,7 +17,7 @@ import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.BaseNameLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
-import io.tashtabash.sim.space.resource.tag.phony
+import io.tashtabash.sim.space.resource.tag.mainDependencyName
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.min
@@ -68,7 +68,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
     }
 
     private fun _use(controller: AspectController): AspectResult {
-        //TODO put dependency resources only in node; otherwise they may merge with phony
+        //TODO put dependency resources only in node; otherwise they may merge with the main
         if (checkTermination(controller) || isBanned(controller))
             return AspectResult(isFinished = false, node = ResultNode(this))
 
@@ -118,7 +118,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         result.node!!
 
         if (controller.ceiling > 0)
-            for ((key, value) in dependencies.nonPhony.entries) {
+            for ((key, value) in dependencies.nonMainDependencies.entries) {
                 val (isOk, needs) = satisfyRegularDependency(controller, key, value, result.resources, result.node)
                 result.neededResources.addAll(needs)
                 if (!isOk) {
@@ -127,7 +127,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
                 }
             }
 
-        result.isFinished = result.isFinished && satisfyPhonyDependency(controller, result.resources)
+        result.isFinished = result.isFinished && satisfyMainDependency(controller, result.resources)
 
         return result
     }
@@ -151,19 +151,19 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         !it.areNecessaryDependenciesSatisfied(center)
     }
 
-    private fun satisfyPhonyDependency(
+    private fun satisfyMainDependency(
         controller: AspectController,
         meaningfulPack: MutableResourcePack
     ): Boolean {
         var amount = controller.evaluator.evaluate(meaningfulPack.resources)
-        val resourcesPhony = getPhonyFromResources(controller)
-        amount += controller.evaluator.evaluate(resourcesPhony)
-        meaningfulPack.addAll(resourcesPhony)
+        val resourcesMain = getMainFromResources(controller)
+        amount += controller.evaluator.evaluate(resourcesMain)
+        meaningfulPack.addAll(resourcesMain)
 
         if (controller.isCeilingExceeded(amount))
             return true
 
-        for (dependency in dependencies.phony) {
+        for (dependency in dependencies.mainDependency) {
             val newDelta = meaningfulPack.getAmount(resource)
             val dependencyResult = dependency.useDependency(controller.copy(
                 depth = controller.depth + 1,
@@ -171,7 +171,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
                 floor = controller.floor - newDelta,
                 isMeaningNeeded = shouldPassMeaningNeed(controller.isMeaningNeeded)
             ))
-            val result = extractPhonyResources(dependencyResult, controller)
+            val result = extractMainResources(dependencyResult, controller)
 
             if (!result.isFinished)
                 continue
@@ -185,7 +185,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         return true
     }
 
-    private fun extractPhonyResources(result: AspectResult, controller: AspectController): AspectResult {
+    private fun extractMainResources(result: AspectResult, controller: AspectController): AspectResult {
         val resourcePack = MutableResourcePack()
         resourcePack.addAll(result.resources.getResource(resource).resources.flatMap {
             it.applyActionAndConsume(
@@ -199,7 +199,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         return AspectResult(resourcePack, null, result.isFinished)
     }
 
-    private fun getPhonyFromResources(controller: AspectController): List<Resource> {
+    private fun getMainFromResources(controller: AspectController): List<Resource> {
         val pack = resourceEvaluator(resource).pick(controller.populationCenter.turnResources)
         return controller.pickCeilingPart(
             pack.resources,
@@ -275,7 +275,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
     private fun toFeatures(node: ResultNode?): List<ExternalResourceFeature> =
             if (node?.resourceUsed?.isNotEmpty() == true)
                 node.resourceUsed.entries
-                    .filter { it.key.name != phony.name && !it.key.isInstrumental }
+                    .filter { it.key.name != mainDependencyName.name && !it.key.isInstrumental }
                     .flatMap { p -> p.value.resources.map { it.fullName } }
                     .distinct()
                     .mapIndexed { i, n -> ElementResourceFeature(n, 1000 + i) }
@@ -297,7 +297,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         )
         copy.initDependencies(dependencies)
         return try {
-            copy.canInsertMeaning = dependencies.map.getValue(phony).any {
+            copy.canInsertMeaning = dependencies.map.getValue(mainDependencyName).any {
                 it is LineDependency && it.converseWrapper.canInsertMeaning
             }
             copy

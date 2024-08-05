@@ -12,7 +12,7 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.labeler.BaseNameLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
-import io.tashtabash.sim.space.resource.tag.phony
+import io.tashtabash.sim.space.resource.tag.mainDependencyName
 import java.util.*
 
 
@@ -39,22 +39,22 @@ class AspectDependencyCalculator(
 
     fun calculateDependencies(aspect: Aspect): AspectDependencies {
         if (aspect is ConverseWrapper)
-            addPhony(aspect)
-        addNonPhony(aspect)
+            addMain(aspect)
+        addNonMain(aspect)
         return dependencies
     }
 
-    private fun addPhony(converseWrapper: ConverseWrapper) {
+    private fun addMain(converseWrapper: ConverseWrapper) {
         if (converseWrapper.resource.hasApplicationForAction(converseWrapper.aspect.core.resourceAction)) {
-            addTakeablePhony(converseWrapper)
-            addLinePhony(converseWrapper)
+            addTakeableMain(converseWrapper)
+            addLineMain(converseWrapper)
 
-            if (dependencies.safePhony == null)
-                addNeed(BaseNameLabeler(converseWrapper.resource.baseName), phony)
+            if (dependencies.safeMainDependency == null)
+                addNeed(BaseNameLabeler(converseWrapper.resource.baseName), mainDependencyName)
         }
     }
 
-    private fun addTakeablePhony(converseWrapper: ConverseWrapper) {
+    private fun addTakeableMain(converseWrapper: ConverseWrapper) {
         if (converseWrapper.canTakeResources() && territory.differentResources.contains(converseWrapper.resource))
             addDependenciesInMap(
                     setOf(ConversionDependency(
@@ -62,18 +62,18 @@ class AspectDependencyCalculator(
                             converseWrapper.aspect,
                             converseWrapper.resource
                     )),
-                    phony
+                    mainDependencyName
             )
     }
 
-    private fun addLinePhony(converseWrapper: ConverseWrapper) = addDependenciesInMap(
+    private fun addLineMain(converseWrapper: ConverseWrapper) = addDependenciesInMap(
         availableConverseWrappers.filter { converseWrapper.resource in it.producedResources }
                     .map { LineDependency(true, it, converseWrapper) }
                     .filter { !it.isCycleDependency(converseWrapper) },
-            phony
+            mainDependencyName
     )
 
-    private fun addNonPhony(aspect: Aspect) {
+    private fun addNonMain(aspect: Aspect) {
         for (requirement in aspect.requirements)
             addTagDependencies(requirement, aspect)
     }
