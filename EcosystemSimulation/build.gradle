@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.1.20'
+    id 'org.jetbrains.kotlin.jvm' version '2.3.0'
     id 'java'
 }
 
@@ -34,7 +34,7 @@ dependencies {
 tasks.withType(KotlinCompile).configureEach {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_16
-        languageVersion = KotlinVersion.KOTLIN_2_1
-        apiVersion = KotlinVersion.KOTLIN_2_1
+        languageVersion = KotlinVersion.KOTLIN_2_3
+        apiVersion = KotlinVersion.KOTLIN_2_3
     }
 }
