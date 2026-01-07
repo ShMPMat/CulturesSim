@@ -42,7 +42,7 @@ enum class EnvironmentCommand(command: String, override val description: String)
 }
 
 fun registerEnvironmentalCommands(commandManager: CommandManager<out TextEcosystemVisualizer<*>>, handler: CommandExecutor<TextEcosystemVisualizer<*>>) {
-    commandManager.registerCommands(EnvironmentCommand.values().toList())
+    commandManager.registerCommands(EnvironmentCommand.entries)
     commandManager.registerHandler(handler)
     commandManager.defaultCommand = EnvironmentCommand.Turn
 }

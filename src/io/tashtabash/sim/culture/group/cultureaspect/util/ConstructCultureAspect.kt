@@ -60,7 +60,7 @@ fun createTale(group: Group, templateBase: TemplateBase): Tale? {
 fun createSimpleConcept(group: Group, random: Random): Concept? {
     val traitCenter = group.cultureCenter.traitCenter
 
-    val trait = randomElement(Trait.values(), { traitCenter.processedValue(it).absoluteValue + 0.001 }, random)
+    val trait = randomElement(Trait.entries, { traitCenter.processedValue(it).absoluteValue + 0.001 }, random)
     val magnitude = random.nextDouble(0.1, 10.0)
 
     val agitateForChance = traitCenter.processedValue(trait).let { (it.absoluteValue.pow(0.3) * it.sign + 1) / 2 }

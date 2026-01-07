@@ -1,21 +1,23 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    id 'org.jetbrains.kotlin.jvm'// version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.20'
+    id 'java'
+    id 'idea'
 }
 
-version 'unspecified'
-
-apply plugin: 'idea'
-apply plugin: 'java'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+}
 
 sourceSets {
-    main.kotlin.srcDirs += 'src/'
-}
-
-dependencies {
-    implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
-    implementation 'com.github.ShMPMat:GenerationUtils:master-SNAPSHOT' changing true
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    runtimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.4.31'
+    main {
+        kotlin.srcDirs += 'src/'
+    }
 }
 
 repositories {
@@ -23,9 +25,16 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+dependencies {
+    implementation('com.github.ShMPMat:Random:master-SNAPSHOT') { changing = true }
+    implementation('com.github.ShMPMat:GenerationUtils:master-SNAPSHOT') { changing = true }
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:2.1.20'
 }
-//compileTestKotlin {
-//    kotlinOptions.jvmTarget = "1.8"
-//}
+
+tasks.withType(KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_16
+        languageVersion = KotlinVersion.KOTLIN_2_1
+        apiVersion = KotlinVersion.KOTLIN_2_1
+    }
+}

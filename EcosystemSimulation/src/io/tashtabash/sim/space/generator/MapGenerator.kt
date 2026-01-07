@@ -63,12 +63,12 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
     val usedTiles: MutableSet<Tile> = HashSet()
     for (i in 0 until platesAmount) {
         val direction = randomElement(
-                TectonicPlate.Direction.values().toList(),
-                random
+            TectonicPlate.Direction.entries,
+            random
         )
         val type = randomElement(
-                TectonicPlate.Type.values().toList(),
-                random
+            TectonicPlate.Type.entries,
+            random
         )
         val tectonicPlate = TectonicPlate(direction, type)
         val tile = randomTile(map)

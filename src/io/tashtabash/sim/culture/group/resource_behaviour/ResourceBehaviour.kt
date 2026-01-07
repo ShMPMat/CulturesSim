@@ -14,4 +14,4 @@ class ResourceBehaviour(private val placementStrategy: PlacementStrategy) {
 }
 
 fun getRandom() =
-        ResourceBehaviour(PlacementStrategy(PlacementStrategy.Strategy.values().toList().randomElement()))
+        ResourceBehaviour(PlacementStrategy(PlacementStrategy.Strategy.entries.randomElement()))

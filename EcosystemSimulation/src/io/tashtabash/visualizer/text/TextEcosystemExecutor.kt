@@ -1,7 +1,6 @@
 package io.tashtabash.visualizer.text
 
 import io.tashtabash.sim.space.SpaceData.data
-import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.ResourceType
 import io.tashtabash.sim.space.resource.dependency.cleanConsumed
 import io.tashtabash.sim.space.resource.dependency.cleanNeeded
@@ -51,14 +50,17 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         findTile(splitCommand[0], splitCommand[1])!!,
                         splitCommand[3]
                 ))
-                ResourceType ->
-                    if (ResourceType.values().toList().any { it.toString() == splitCommand[1] }) {
-                        val type = ResourceType.valueOf(splitCommand[1])
+                ResourceType -> {
+                    // For whatever reason ResourceType.entries isn't defined here; maybe a compiler error?
+                    val type = enumValues<ResourceType>()
+                            .firstOrNull { it.name == splitCommand[1] }
+                    if (type != null) {
                         printMap { resourceTypeMapper(type, it) }
                     } else {
                         println("Unknown type - " + splitCommand[1])
                         return ExecutionResult.Terminate
                     }
+                }
                 ResourceOwner -> printMap { resourceOwnerMapper(splitCommand[1], it) }
                 AliveResourcesAmount -> println(aliveResourcesCounter(world))
                 AllPresentResources -> println(

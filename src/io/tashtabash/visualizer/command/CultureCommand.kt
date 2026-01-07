@@ -23,6 +23,6 @@ enum class CultureCommand(command: String, override val description: String) : T
 }
 
 fun registerCultureCommands(commandManager: CommandManager<out TextCultureVisualizer>, handler: CommandExecutor<TextCultureVisualizer>) {
-    commandManager.registerCommands(CultureCommand.values().toList())
+    commandManager.registerCommands(CultureCommand.entries)
     commandManager.registerHandler(handler)
 }

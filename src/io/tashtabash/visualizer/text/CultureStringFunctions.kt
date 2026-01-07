@@ -68,7 +68,7 @@ private fun makePopulationString(conglomerate: GroupConglomerate, info: Conglome
                     "\u001b[39m\n\n"
 }
 
-private fun makeTraitString(conglomerate: GroupConglomerate) = Trait.values()
+private fun makeTraitString(conglomerate: GroupConglomerate) = Trait.entries
     .joinToString { trait ->
         val avg = conglomerate.subgroups
             .map { it.cultureCenter.traitCenter.processedValue(trait) }
@@ -133,7 +133,7 @@ fun printGroupStatistics(world: CulturesWorld): String {
 }
 
 fun printGroupCharacterStatistics(conglomerates: List<GroupConglomerate>) =
-        Trait.values().joinToString("\n\n") { trait ->
+        Trait.entries.joinToString("\n\n") { trait ->
             val avgTraits = conglomerates
                     .filter { it.subgroups.isNotEmpty() }
                     .map { c -> c to c.subgroups.map { it.cultureCenter.traitCenter.processedValue(trait) }.average() }

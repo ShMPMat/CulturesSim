@@ -17,7 +17,7 @@ class TraitCenter private constructor(map: EnumMap<Trait, TraitValue>) {
     }
 
     constructor() : this(EnumMap(Trait::class.java)) {
-        for (trait in Trait.values()) {
+        for (trait in Trait.entries) {
             val traitSeed = RandomSingleton.random.nextDouble(-1.0, 1.0)
             traitMap[trait] = TraitValue(traitSeed * session.defaultGroupTraitSpread)
         }

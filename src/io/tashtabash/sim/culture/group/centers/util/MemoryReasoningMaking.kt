@@ -32,7 +32,7 @@ private enum class ReasoningRandom(override val probability: Double) : SampleSpa
 }
 
 private fun takeOutCommonReasonings(memoryCenter: MemoryCenter): ReasonConversionResult =
-        when (values().randomElement()) {
+        when (entries.randomElement()) {
             Requests -> takeOutRequest(memoryCenter.turnRequests)
             MemoryResources -> takeOutResourceTraction(memoryCenter.resourceTraction)
         }

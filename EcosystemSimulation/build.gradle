@@ -1,16 +1,24 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.1.20'
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' //version '1.4.10'
 }
 
-version 'unspecified'
-
-sourceCompatibility = 1.8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+}
 
 sourceSets {
-    main.kotlin.srcDirs += 'src/'
-    main.java.srcDirs += 'src/'
-    main.resources.srcDirs += 'SupplementFiles'
+    main {
+        kotlin.srcDirs += 'src/'
+        java.srcDirs += 'src/'
+        resources.srcDirs += 'SupplementFiles'
+    }
 }
 
 repositories {
@@ -19,15 +27,14 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
-    implementation 'com.github.ShMPMat:GenerationUtils:master-SNAPSHOT' changing true
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation('com.github.ShMPMat:Random:master-SNAPSHOT') { changing = true }
+    implementation('com.github.ShMPMat:GenerationUtils:master-SNAPSHOT') { changing = true }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.withType(KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_16
+        languageVersion = KotlinVersion.KOTLIN_2_1
+        apiVersion = KotlinVersion.KOTLIN_2_1
+    }
 }
-//compileTestKotlin {
-//    kotlinOptions.jvmTarget = "1.8"
-//}

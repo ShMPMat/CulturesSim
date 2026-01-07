@@ -2,8 +2,8 @@ package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.sim.culture.group.centers.Group
+import io.tashtabash.sim.culture.group.centers.Trait
 import io.tashtabash.sim.culture.group.centers.Trait.Consolidation
-import io.tashtabash.sim.culture.group.centers.Trait.values
 import io.tashtabash.sim.culture.group.centers.toChange
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
@@ -24,7 +24,7 @@ object InternalConsolidationB : AbstractGroupBehaviour() {
             val consolidationBond = groupConsolidation + otherGroupConsolidation
 
             (1 + consolidationBond.value).pow(2).chanceOf {
-                for (trait in values()) {
+                for (trait in Trait.entries) {
                     val diff = traitCenter.value(trait) - otherTraitCenter.value(trait)
 
                     traitCenter.changeOn(trait.toChange(-diff / 2.0 * groupConsolidation.positive))

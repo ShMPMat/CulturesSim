@@ -12,7 +12,7 @@ import io.tashtabash.sim.space.resource.Resource
 
 
 fun makeWorshipObject(worship: Worship, group: Group): Resource? {//TODO more complex (resources tangent to worship)
-    val paths = values().toList().shuffled(RandomSingleton.random)
+    val paths = entries.shuffled(RandomSingleton.random)
 
     for (path in paths) {
         val resource = when(path) {

@@ -13,13 +13,12 @@ import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.group.reason.constructBetterAspectUseReason
 import io.tashtabash.sim.event.AspectGaining
-import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 
 
 object CreateCultureAspectsB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
-        val cultureAspect = when (AspectRandom.values().randomElement()) {
+        val cultureAspect = when (AspectRandom.entries.randomElement()) {
             AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
                     group.cultureCenter.aspectCenter.aspectPool.producedResources
                             .filter { it.genome.getTagLevel(desirableTag) > 0 }
