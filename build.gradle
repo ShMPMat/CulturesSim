@@ -35,6 +35,19 @@ dependencies {
     implementation project(':WorldviewGenerator')
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'io.tashtabash.visualizer.text.TextCultureVisualizerMainKt'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+}
+
 tasks.withType(KotlinCompile).configureEach {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_16
