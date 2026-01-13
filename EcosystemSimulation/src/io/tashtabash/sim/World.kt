@@ -12,11 +12,13 @@ import io.tashtabash.sim.space.resource.action.ActionTag
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.instantiation.ResourceActionInjector
 import io.tashtabash.sim.space.resource.instantiation.ResourceInstantiation
+import io.tashtabash.sim.space.resource.instantiation.getResourcePaths
 import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.material.MaterialInstantiation
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.createTagMatchers
 import io.tashtabash.utils.InputDatabase
+import java.util.Collections
 
 
 //Stores all entities in the io.tashtabash.simulation
@@ -25,14 +27,16 @@ open class World {
 
     var events = EventLog()
 
-    private val tagMatchers = createTagMatchers(this::class.java.classLoader.getResources("ResourceTagLabelers"))
+    private val classLoader = Thread.currentThread().contextClassLoader
 
-    val tags = InputDatabase(this::class.java.classLoader.getResources("ResourceTags"))
+    private val tagMatchers = createTagMatchers(classLoader.getResources("ResourceTagLabelers"))
+
+    val tags = InputDatabase(Collections.enumeration(getResourcePaths(classLoader.getResources("ResourceTags/").toList())))
             .readLines()
             .map { ResourceTag(it) }
             .union(tagMatchers.map { it.tag })
 
-    protected val actionTags = InputDatabase(this::class.java.classLoader.getResources("ActionTags"))
+    protected val actionTags = InputDatabase(classLoader.getResources("ActionTags"))
             .readLines()
             .map { ActionTag(it) }
 

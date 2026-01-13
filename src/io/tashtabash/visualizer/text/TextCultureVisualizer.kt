@@ -8,7 +8,7 @@ import io.tashtabash.visualizer.command.CommandManager
 import io.tashtabash.visualizer.command.registerCultureCommands
 import io.tashtabash.visualizer.lastClaimedTiles
 import io.tashtabash.visualizer.printinfo.ConglomeratePrintInfo
-import java.io.FileReader
+import java.io.IOException
 import java.util.*
 
 
@@ -48,10 +48,13 @@ open class TextCultureVisualizer(
             defaultManager.handleCommand(line, this)
 
     private fun readSymbols() {
-        val s = Scanner(FileReader(this::class.java.classLoader.getResource("Symbols/SymbolsLibrary")!!.path))
+        val classLoader = Thread.currentThread().contextClassLoader
+        val resourceUrl = classLoader.getResource("Symbols/SymbolsLibrary")
+                ?: throw IOException("Symbols/SymbolsLibrary not found")
+        val s = Scanner(resourceUrl.openStream())
         val l = mutableListOf<String>()
         while (s.hasNextLine())
-            l.add(s.nextLine())
+            l += s.nextLine()
         groupInfo = ConglomeratePrintInfo(l)
     }
 }

@@ -17,7 +17,6 @@ import io.tashtabash.visualizer.command.ExecutionResult
 import io.tashtabash.visualizer.command.registerEnvironmentalCommands
 import io.tashtabash.visualizer.printinfo.MapPrintInfo
 import java.io.BufferedReader
-import java.io.FileReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
@@ -75,11 +74,14 @@ open class TextEcosystemVisualizer<E : World>(
      * @throws IOException when files with symbols isn't found.
      */
     private fun readSymbols() {
-        val s = Scanner(FileReader(this::class.java.classLoader.getResource("Symbols/SymbolsResourceLibrary")!!.path))
+        val classLoader = Thread.currentThread().contextClassLoader
+        val resourceUrl = classLoader.getResource("Symbols/SymbolsResourceLibrary")
+                ?: throw IOException("Resource Symbols/SymbolsResourceLibrary not found")
+        val s = Scanner(resourceUrl.openStream())
         val symbols = mutableListOf<String>()
 
         while (s.hasNextLine())
-            symbols.add(s.nextLine())
+            symbols += s.nextLine()
         for ((i, resource) in world.resourcePool.all.withIndex())
             resourceSymbols[resource] = symbols[i % symbols.size]
     }

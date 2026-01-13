@@ -10,7 +10,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(16)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -33,7 +33,7 @@ dependencies {
 
 tasks.withType(KotlinCompile).configureEach {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_16
+        jvmTarget = JvmTarget.JVM_25
         languageVersion = KotlinVersion.KOTLIN_2_3
         apiVersion = KotlinVersion.KOTLIN_2_3
     }

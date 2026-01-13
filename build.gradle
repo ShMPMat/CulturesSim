@@ -10,7 +10,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(16)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -28,8 +28,8 @@ sourceSets {
 }
 
 dependencies {
-    implementation('com.github.ShMPMat:Random:master-SNAPSHOT') { changing = true }
-    implementation('com.github.ShMPMat:GenerationUtils:master-SNAPSHOT') { changing = true }
+    implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
+    implementation 'com.github.ShMPMat:GenerationUtils:master-SNAPSHOT' changing true
     implementation 'org.jetbrains.kotlin:kotlin-reflect:2.3.0'
     implementation project(':EcosystemSimulation')
     implementation project(':WorldviewGenerator')
@@ -50,7 +50,7 @@ jar {
 
 tasks.withType(KotlinCompile).configureEach {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_16
+        jvmTarget = JvmTarget.JVM_25
         languageVersion = KotlinVersion.KOTLIN_2_3
         apiVersion = KotlinVersion.KOTLIN_2_3
     }

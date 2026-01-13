@@ -3,6 +3,7 @@ package io.tashtabash.sim.space.resource.material
 import io.tashtabash.utils.InputDatabase
 import io.tashtabash.sim.DataInitializationError
 import io.tashtabash.sim.space.resource.action.ResourceAction
+import io.tashtabash.sim.space.resource.instantiation.getResourcePaths
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.NoSuchElementException
@@ -15,14 +16,18 @@ class MaterialInstantiation(
 ) {
     fun createPool(): MaterialPool {
         val materials = mutableListOf<MaterialTemplate>()
-        val inputDatabase = InputDatabase(this::class.java.classLoader.getResources("Materials"))
+        val classLoader = Thread.currentThread().contextClassLoader
+        val inputDatabase = InputDatabase(Collections.enumeration(getResourcePaths(classLoader.getResources("Materials/").toList())))
         while (true) {
-            val line = inputDatabase.readLine() ?: break
+            val line = inputDatabase.readLine()
+                ?: break
             val tags = line.split("\\s+".toRegex()).toTypedArray()
             materials.add(createMaterial(tags))
         }
         val materialPool = MaterialPool(materials.map { it.material })
-        materials.forEach { actualizeLinks(it, materialPool) }
+        for (it in materials)
+            actualizeLinks(it, materialPool)
+
         return materialPool
     }
 
@@ -44,7 +49,7 @@ class MaterialInstantiation(
                                 tag.substring(tag.indexOf(':') + 1).toDouble()
                         )
                         if (!allowedTags.contains(resourceTag))
-                            throw DataInitializationError("Tag $resourceTag doesnt exist")
+                            throw DataInitializationError("Tag $resourceTag doesn't exist")
                         materialTags.add(resourceTag)
                     }
                 }

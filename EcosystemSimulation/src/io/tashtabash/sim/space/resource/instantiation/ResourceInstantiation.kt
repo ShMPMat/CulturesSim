@@ -10,8 +10,7 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.material.MaterialPool
 import io.tashtabash.sim.space.resource.transformer.ColourTransformer
 import io.tashtabash.sim.space.resource.transformer.TextureTransformer
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.util.*
 
 
 class ResourceInstantiation(
@@ -38,19 +37,15 @@ class ResourceInstantiation(
     }
 
     fun createPool(): ResourcePool {
-        val urls = this::class.java.classLoader.getResources(folderPath).toList()
+        val classLoader = Thread.currentThread().contextClassLoader
+        val folderUrls = classLoader.getResources(folderPath).toList()
 
-        val resourceFilePaths = urls.flatMap {
-            Files.walk(Paths.get(it.toURI()))
-                    .toArray()
-                    .toList()
-                    .drop(1)
-                    .map(Any::toString)
-        }
+        val resourceUrls = getResourcePaths(folderUrls)
 
         var line: String?
         var tags: Array<String>
-        val inputDatabase = InputDatabase(resourceFilePaths)
+        val urlEnumeration = Collections.enumeration(resourceUrls)
+        val inputDatabase = InputDatabase(urlEnumeration)
         while (true) {
             line = inputDatabase.readLine()
                     ?: break
