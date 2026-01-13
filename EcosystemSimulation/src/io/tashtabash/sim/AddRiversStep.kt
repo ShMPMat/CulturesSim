@@ -8,7 +8,7 @@ import io.tashtabash.sim.space.tile.Tile
 import kotlin.random.Random
 
 
-class AddRiversInitStep<E : World>(
+class AddRiversStep<E : World>(
         private val fillCycles: Int,
         private val doTurns: Boolean,
         private val riversAmount: Int,

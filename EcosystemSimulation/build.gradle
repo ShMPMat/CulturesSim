@@ -13,6 +13,11 @@ java {
     }
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
 sourceSets {
     main {
         kotlin.srcDirs += 'src/'
@@ -21,14 +26,22 @@ sourceSets {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven { url "https://jitpack.io" }
-}
-
 dependencies {
     implementation('com.github.ShMPMat:Random:master-SNAPSHOT') { changing = true }
     implementation('com.github.ShMPMat:GenerationUtils:master-SNAPSHOT') { changing = true }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'io.tashtabash.visualizer.text.TextEcosystemVisualizerMainKt'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
 }
 
 tasks.withType(KotlinCompile).configureEach {

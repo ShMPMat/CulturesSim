@@ -19,19 +19,18 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
     val proportionCoefficient = 1.0
 
     private val debugPrint = false
-    private val doLastStabilization = true
 
     protected val initSteps = mutableListOf<ControllerInitStep<E>>(
-            GeologicalTurnsStep(geologyTurns, debugPrint),
-            EcosystemTurnsStep(initialTurns, debugPrint),
-            AddRiversInitStep(
-                    fillCycles,
-                    doTurns,
-                    (5 * proportionCoefficient * proportionCoefficient).toInt(),
-                    stabilizationTurns,
-                    debugPrint,
-                    random
-            )
+        GeologicalTurnsStep(geologyTurns, debugPrint),
+        EcosystemTurnsStep(initialTurns, debugPrint),
+        AddRiversStep(
+            fillCycles,
+            doTurns,
+            (5 * proportionCoefficient * proportionCoefficient).toInt(),
+            stabilizationTurns,
+            debugPrint,
+            random
+        )
     )
 
     init {
