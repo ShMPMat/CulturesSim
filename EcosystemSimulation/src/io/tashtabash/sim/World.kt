@@ -19,7 +19,7 @@ interface World {
     val resourcePool: ResourcePool
     val actionTags: List<ActionTag>
     val lesserTurnNumber: Int
-    fun getTurn(): Int
+    val turn: Int
 
     fun initializeMap(
         actions: Map<ResourceAction, List<ActionMatcher>>,
@@ -31,5 +31,4 @@ interface World {
     fun placeResources()
     fun incrementTurn()
     fun incrementTurnGeology()
-    fun getStringTurn(): String
 }

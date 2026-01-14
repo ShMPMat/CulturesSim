@@ -5,7 +5,7 @@ import io.tashtabash.sim.Controller
 
 //Object storing memory about something that happened in the world.
 open class Event(var type: Type, val description: String) {
-    private val turnString = Controller.session.world?.getStringTurn() ?: "Pre-historic"
+    private val turnString = Controller.session.world?.turn?.toString() ?: "Pre-historic"
     val turn = turnString.toIntOrNull()
 
     override fun toString() = "${type.colourString}$turnString. ${type.javaClass.simpleName}: $description\u001B[37m"

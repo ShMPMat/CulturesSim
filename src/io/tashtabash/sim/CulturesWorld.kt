@@ -34,37 +34,37 @@ open class CulturesWorld(ecosystemWorld: EcosystemWorld) : World by ecosystemWor
         aspectPool = mutableAspectPool
 
         val actions = aspectPool.all
-                .associate { it.core.resourceAction to it.core.matchers }
+            .associate { it.core.resourceAction to it.core.matchers }
         val resourceActionInjectors = listOf(
-                fun(a: ResourceAction, rs: Resources): List<Pair<ResourceAction, Resources>> {
-                    val building = rs.firstOrNull { it.simpleName in buildingsNames }
-                            ?: return listOf()
+            fun(a: ResourceAction, rs: Resources): List<Pair<ResourceAction, Resources>> {
+                val building = rs.firstOrNull { it.simpleName in buildingsNames }
+                    ?: return listOf()
 
-                    val transformers = improvedAspectNames.map { n ->
-                        n to ConcatTransformer(
-                                TagTransformer(AspectImprovementTag(AspectNameLabeler(n), 0.5)),
-                                NameTransformer { n + it }
-                        )
-                    }
-
-                    return transformers.map { (postfix, transformer) ->
-                        val actionName = a.technicalName + postfix
-                        val newAction = a.copy(actionName)
-                        val newResources = rs.map {
-                            if (it != building) it.exactCopy() else transformer.transform(it)
-                        }
-
-                        val oldAspectCore = aspectPool.get(a.technicalName)!!.core
-                        mutableAspectPool.add(
-                                Aspect(
-                                        oldAspectCore.copy(name = actionName, resourceAction = newAction),
-                                        AspectDependencies(mutableMapOf())
-                                )
-                        )
-
-                        newAction to newResources
-                    }
+                val transformers = improvedAspectNames.map { n ->
+                    n to ConcatTransformer(
+                        TagTransformer(AspectImprovementTag(AspectNameLabeler(n), 0.5)),
+                        NameTransformer { n + it }
+                    )
                 }
+
+                return transformers.map { (postfix, transformer) ->
+                    val actionName = a.technicalName + postfix
+                    val newAction = a.copy(actionName)
+                    val newResources = rs.map {
+                        if (it != building) it.exactCopy() else transformer.transform(it)
+                    }
+
+                    val oldAspectCore = aspectPool.get(a.technicalName)!!.core
+                    mutableAspectPool.add(
+                        Aspect(
+                            oldAspectCore.copy(name = actionName, resourceAction = newAction),
+                            AspectDependencies(mutableMapOf())
+                        )
+                    )
+
+                    newAction to newResources
+                }
+            }
         )
 
         initializeMap(actions, AspectResourceTagParser(tags), resourceActionInjectors, proportionCoefficient)

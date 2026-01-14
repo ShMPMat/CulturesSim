@@ -49,14 +49,14 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
     fun territoryPotentialMapper(territory: Territory) = territory.tiles.sumOf { tilePotentialMapper(it) }
 
     private fun evaluateOneTile(tile: Tile): Int {
-        tileEvaluationHash[tile to session.world.getTurn()]?.let {
+        tileEvaluationHash[tile to session.world.turn]?.let {
             return it
         }
 
         val requirements = tileTag.group.cultureCenter.aspectCenter.aspectPool.getResourceRequirements()
         val sum = requirements.sumOf { tile.resourcePack.getAmount(it) }
 
-        tileEvaluationHash[tile to session.world.getTurn()] = 3 * sum
+        tileEvaluationHash[tile to session.world.turn] = 3 * sum
 
         return 3 * sum
     }

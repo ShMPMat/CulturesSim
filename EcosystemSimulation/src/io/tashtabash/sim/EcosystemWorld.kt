@@ -92,8 +92,8 @@ class EcosystemWorld : World {
         RandomSingleton.random
     ).placeResources()
 
-    override fun getStringTurn() = (lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000).toString()
-    override fun getTurn() = lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000
+    override val turn
+        get() = lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000
 
     override fun incrementTurn() {
         lesserTurnNumber++
@@ -115,5 +115,6 @@ class EcosystemWorld : World {
         millionTurns++
     }
 
-    override fun toString() = getStringTurn()
+    override fun toString() =
+        turn.toString()
 }

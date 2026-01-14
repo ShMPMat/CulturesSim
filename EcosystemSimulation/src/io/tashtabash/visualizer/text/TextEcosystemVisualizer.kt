@@ -90,7 +90,7 @@ open class TextEcosystemVisualizer<E : World>(
      * Prints default map and information output.
      */
     override fun print() {
-        println(world.getStringTurn())
+        println(world.turn)
         printMap { "" }
 
         //Results are ignored

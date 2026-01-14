@@ -117,7 +117,7 @@ class CultureCenter(
     fun evaluateResource(resource: Resource): Int {
         val entry = evaluatedMap[resource]
         if (entry != null)
-            if (session.world.getTurn() - entry.creationTime < session.resourceValueRefreshTime)
+            if (session.world.turn - entry.creationTime < session.resourceValueRefreshTime)
                 return entry.value
 
         val base = resource.genome.baseDesirability + 1
@@ -152,7 +152,7 @@ class CultureCenter(
                 .filter { it.other.parentGroup != group.parentGroup }
 
         return when {
-            resource.genome.getTagLevel(desirableTag) == 0.0 -> return 1
+            resource.genome.getTagLevel(desirableTag) == 0.0 -> 1
             !isResourceDesirable(resource) -> 1
             aspectCenter.aspectPool.producedResources.contains(resource) -> 2
             conglomerate.any { it.resourceCenter.pack.contains(resource) } -> 3
@@ -189,5 +189,5 @@ class CultureCenter(
 
 
 private data class ValueEntry(val value: Int) {
-    val creationTime = session.world.getTurn()
+    val creationTime = session.world.turn
 }
