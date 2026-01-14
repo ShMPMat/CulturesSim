@@ -1,5 +1,6 @@
-package io.tashtabash.sim
+package io.tashtabash.sim.init
 
+import io.tashtabash.sim.CulturesWorld
 import io.tashtabash.sim.culture.group.stratum.Person
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.sim.space.SpaceData

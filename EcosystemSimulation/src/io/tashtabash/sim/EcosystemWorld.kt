@@ -2,6 +2,7 @@ package io.tashtabash.sim
 
 import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.event.EventLog
+import io.tashtabash.sim.init.instantiateSpaceData
 import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.generator.MapGeneratorSupplement

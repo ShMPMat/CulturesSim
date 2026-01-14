@@ -1,6 +1,8 @@
 package io.tashtabash.sim
 
 import io.tashtabash.sim.culture.thinking.language.templates.TemplateBase
+import io.tashtabash.sim.init.GroupTurnsStep
+import io.tashtabash.sim.init.RegisterPersonStep
 import io.tashtabash.sim.interactionmodel.InteractionModel
 
 

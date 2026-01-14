@@ -1,5 +1,7 @@
-package io.tashtabash.sim
+package io.tashtabash.sim.init
 
+import io.tashtabash.sim.Controller
+import io.tashtabash.sim.World
 import io.tashtabash.sim.interactionmodel.InteractionModel
 
 
@@ -11,7 +13,7 @@ class GeologicalTurnsStep<E : World>(
         for (i in 1..turnNumber) {
             interactionModel.geologicTurn(world)
             if (debugPrint)
-                Controller.visualizer.print()
+                Controller.Companion.visualizer.print()
         }
     }
 }

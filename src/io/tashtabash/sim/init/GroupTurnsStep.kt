@@ -1,6 +1,9 @@
-package io.tashtabash.sim
+package io.tashtabash.sim.init
 
 import io.tashtabash.random.singleton.randomTile
+import io.tashtabash.sim.Controller
+import io.tashtabash.sim.CulturesController
+import io.tashtabash.sim.CulturesWorld
 import io.tashtabash.sim.culture.group.GROUP_TAG_TYPE
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.sim.space.tile.Tile
@@ -11,13 +14,13 @@ class GroupTurnsStep<E : CulturesWorld>(
         private val debugPrint: Boolean,
 ) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
-        for (i in 0 until CulturesController.session.startGroupAmount)
+        for (i in 0 until CulturesController.Companion.session.startGroupAmount)
             world.addConglomerate(chooseTileForGroup(world))
 
         for (i in 1..turnNumber) {
             interactionModel.turn(world)
             if (debugPrint)
-                Controller.visualizer.print()
+                Controller.Companion.visualizer.print()
         }
     }
 

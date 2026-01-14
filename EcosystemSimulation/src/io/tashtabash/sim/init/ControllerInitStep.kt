@@ -1,5 +1,6 @@
-package io.tashtabash.sim
+package io.tashtabash.sim.init
 
+import io.tashtabash.sim.World
 import io.tashtabash.sim.interactionmodel.InteractionModel
 
 

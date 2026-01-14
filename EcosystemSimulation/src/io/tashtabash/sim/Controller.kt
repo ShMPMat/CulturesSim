@@ -1,6 +1,10 @@
 package io.tashtabash.sim
 
 import io.tashtabash.random.singleton.RandomSingleton
+import io.tashtabash.sim.init.AddRiversStep
+import io.tashtabash.sim.init.ControllerInitStep
+import io.tashtabash.sim.init.EcosystemTurnsStep
+import io.tashtabash.sim.init.GeologicalTurnsStep
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.visualizer.Visualizer
 import kotlin.random.Random

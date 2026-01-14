@@ -1,5 +1,7 @@
-package io.tashtabash.sim
+package io.tashtabash.sim.init
 
+import io.tashtabash.sim.Controller
+import io.tashtabash.sim.World
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.createRivers
@@ -46,7 +48,7 @@ class AddRiversStep<E : World>(
                 for (j in 1..stabilizationTurns) {
                     interactionModel.turn(world)
                     if (debugPrint)
-                        Controller.visualizer.print()
+                        Controller.Companion.visualizer.print()
                 }
                 interactionModel.turn(world)
             }

@@ -1,4 +1,4 @@
-package io.tashtabash.sim
+package io.tashtabash.sim.init
 
 import io.tashtabash.sim.space.Data
 import io.tashtabash.sim.space.SpaceData
