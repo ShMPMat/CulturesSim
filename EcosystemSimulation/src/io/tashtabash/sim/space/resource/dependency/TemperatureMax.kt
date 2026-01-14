@@ -8,7 +8,7 @@ import kotlin.math.sqrt
 
 class TemperatureMax(threshold: Int, deprivationCoefficient: Double) : Temperature(threshold, deprivationCoefficient) {
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
-        var result = (tile.temperature - threshold).toDouble()
+        var result = tile.temperature - threshold
         result = 1 / sqrt(max(0.0, result) + 1)
         return result
     }

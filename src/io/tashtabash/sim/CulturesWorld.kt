@@ -16,7 +16,7 @@ import io.tashtabash.sim.space.tile.Tile
 import java.util.*
 
 
-open class CulturesWorld : World() {
+open class CulturesWorld(ecosystemWorld: EcosystemWorld) : World by ecosystemWorld {
     var conglomerates: MutableList<GroupConglomerate> = ArrayList()
 
     val shuffledConglomerates: List<GroupConglomerate>
