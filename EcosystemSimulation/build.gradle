@@ -24,11 +24,19 @@ sourceSets {
         java.srcDirs += 'src/'
         resources.srcDirs += 'SupplementFiles'
     }
+    test.kotlin.srcDirs += 'test/'
 }
 
 dependencies {
-    implementation('com.github.ShMPMat:Random:master-SNAPSHOT') { changing = true }
-    implementation('com.github.ShMPMat:GenerationUtils:master-SNAPSHOT') { changing = true }
+    implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
+    implementation 'com.github.ShMPMat:GenerationUtils:master-SNAPSHOT' changing true
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {

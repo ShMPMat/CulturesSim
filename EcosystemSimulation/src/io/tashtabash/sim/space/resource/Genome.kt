@@ -37,8 +37,6 @@ open class Genome(
 
     val dependencies = dependencies.toList()
     val necessaryDependencies = dependencies.filter { it.isNecessary }
-    val negativeDependencies = dependencies.filter { !it.isPositive }
-    val positiveDependencies = dependencies.filter { it.isPositive }
 
     private val tagsMap = tags.associateWith { it }
         .toMutableMap()
@@ -153,7 +151,7 @@ open class Genome(
     fun addPart(part: Resource) {
         val i = parts.indexOf(part)
         if (i == -1) {
-            parts.add(part)
+            parts += part
             computePrimaryMaterial()
         } else
             parts[i].addAmount(part.amount)

@@ -29,13 +29,13 @@ open class Resource private constructor(
             else value
         }
 
-    // Precomputed hash.
+    // Precomputed hash for quick comparisons
     private var _hash = 0
 
-    //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death.
+    //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death
     protected var deathOverhead = 0
 
-    //What part of this Resource will be destroyed on the next death.
+    //What part of this Resource will be destroyed on the next death
     protected var deathPart = 1.0
 
     inline val isEmpty: Boolean
