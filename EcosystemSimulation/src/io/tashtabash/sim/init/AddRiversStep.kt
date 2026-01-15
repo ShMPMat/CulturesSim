@@ -45,10 +45,10 @@ class AddRiversStep<E : World>(
                 world.placeResources()
 
             if (i != fillCycles - 1 || stabilizationTurns != 0) {
-                for (j in 1..stabilizationTurns) {
+                repeat(stabilizationTurns) {
                     interactionModel.turn(world)
                     if (debugPrint)
-                        Controller.Companion.visualizer.print()
+                        Controller.visualizer.print()
                 }
                 interactionModel.turn(world)
             }

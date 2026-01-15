@@ -1,6 +1,6 @@
 package io.tashtabash.sim.culture.aspect
 
-import io.tashtabash.sim.CulturesController.Companion.session
+import io.tashtabash.sim.CultureParameters
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependencies
 import io.tashtabash.sim.culture.group.centers.AspectCenter
 import io.tashtabash.sim.culture.group.request.ResourceEvaluator
@@ -23,7 +23,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
     }
 
     private var usedThisTurn = false
-    var usefulness = session.defaultAspectUsefulness
+    var usefulness = CultureParameters.defaultAspectUsefulness
         private set
 
     var isCurrentlyUsed = false
@@ -85,7 +85,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
 
     fun gainUsefulness(amount: Int) {
         if (amount <= 0) return
-        usefulness = max(usefulness + amount, session.defaultAspectUsefulness)
+        usefulness = max(usefulness + amount, CultureParameters.defaultAspectUsefulness)
         usedThisTurn = true
     }
 

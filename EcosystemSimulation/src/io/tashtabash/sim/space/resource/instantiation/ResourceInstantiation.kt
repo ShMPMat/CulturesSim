@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space.resource.instantiation
 
+import io.tashtabash.sim.init.getResourcePaths
 import io.tashtabash.utils.InputDatabase
 import io.tashtabash.sim.space.resource.*
 import io.tashtabash.sim.space.resource.action.ActionMatcher

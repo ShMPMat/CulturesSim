@@ -13,38 +13,20 @@ import io.tashtabash.sim.space.resource.action.ActionTag
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.instantiation.ResourceActionInjector
 import io.tashtabash.sim.space.resource.instantiation.ResourceInstantiation
-import io.tashtabash.sim.space.resource.instantiation.getResourcePaths
 import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.material.MaterialInstantiation
 import io.tashtabash.sim.space.resource.tag.ResourceTag
-import io.tashtabash.sim.space.resource.tag.createTagMatchers
-import io.tashtabash.utils.InputDatabase
-import java.util.Collections
+import io.tashtabash.sim.space.resource.tag.TagMatcher
 
 
-class EcosystemWorld : World {
+class EcosystemWorld(
+    private val tagMatchers: List<TagMatcher>,
+    override val tags: Set<ResourceTag>,
+    override val actionTags: List<ActionTag>
+) : World {
     override lateinit var map: WorldMap
 
     override var events = EventLog()
-
-    private val classLoader = Thread.currentThread().contextClassLoader
-
-    private val tagMatchers = createTagMatchers(classLoader.getResources("ResourceTagLabelers"))
-
-    override val tags = InputDatabase(
-        Collections.enumeration(
-            getResourcePaths(
-                classLoader.getResources("ResourceTags/").toList()
-            )
-        )
-    )
-            .readLines()
-            .map { ResourceTag(it) }
-            .union(tagMatchers.map { it.tag })
-
-    override val actionTags = InputDatabase(classLoader.getResources("ActionTags"))
-            .readLines()
-            .map { ActionTag(it) }
 
     override val resourcePool
         get() = SpaceData.data.resourcePool

@@ -1,13 +1,13 @@
 package io.tashtabash.visualizer.text
 
 import io.tashtabash.sim.Controller
-import io.tashtabash.sim.EcosystemWorld
+import io.tashtabash.sim.init.constructWorld
 import io.tashtabash.sim.interactionmodel.MapModel
 import io.tashtabash.sim.space.resource.instantiation.tag.DefaultTagParser
 
 
 fun main() {
-    val world = EcosystemWorld()
+    val world = constructWorld()
     val controller = Controller(MapModel(), world)
     val textEcosystemVisualizer = TextEcosystemVisualizer(controller)
 

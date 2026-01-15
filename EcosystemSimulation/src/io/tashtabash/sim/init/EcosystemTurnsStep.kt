@@ -10,10 +10,10 @@ class EcosystemTurnsStep<E : World>(
         private val debugPrint: Boolean,
 ) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
-        for (i in 1..turnNumber) {
+        repeat(turnNumber) {
             interactionModel.turn(world)
             if (debugPrint)
-                Controller.Companion.visualizer.print()
+                Controller.visualizer.print()
         }
         world.placeResources()
     }

@@ -3,7 +3,7 @@ package io.tashtabash.sim.space.resource.material
 import io.tashtabash.utils.InputDatabase
 import io.tashtabash.sim.DataInitializationError
 import io.tashtabash.sim.space.resource.action.ResourceAction
-import io.tashtabash.sim.space.resource.instantiation.getResourcePaths
+import io.tashtabash.sim.init.getResourcePaths
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.NoSuchElementException

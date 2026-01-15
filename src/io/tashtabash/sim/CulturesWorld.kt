@@ -16,7 +16,10 @@ import io.tashtabash.sim.space.tile.Tile
 import java.util.*
 
 
-open class CulturesWorld(ecosystemWorld: EcosystemWorld) : World by ecosystemWorld {
+open class CulturesWorld(
+    ecosystemWorld: EcosystemWorld,
+    private val mutableAspectPool: MutableAspectPool
+) : World by ecosystemWorld {
     var conglomerates: MutableList<GroupConglomerate> = ArrayList()
 
     val shuffledConglomerates: List<GroupConglomerate>
@@ -24,15 +27,9 @@ open class CulturesWorld(ecosystemWorld: EcosystemWorld) : World by ecosystemWor
 
     val strayPlacesManager = StrayPlacesManager()
 
-    lateinit var aspectPool: AspectPool
-        private set
+    val aspectPool: AspectPool = mutableAspectPool
 
     fun initializeMap(proportionCoefficient: Double) {
-        val classLoader = Thread.currentThread().contextClassLoader
-        val aspectUrls = classLoader.getResources("Aspects")
-        val mutableAspectPool = AspectInstantiation(tags, actionTags).createPool(aspectUrls)
-        aspectPool = mutableAspectPool
-
         val actions = aspectPool.all
             .associate { it.core.resourceAction to it.core.matchers }
         val resourceActionInjectors = listOf(

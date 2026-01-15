@@ -52,7 +52,6 @@ class CulturesController(
     val minimalStableFreePopulation = 10
     val aspectFalloff = -500
     val worshipFeatureFalloff = 100
-    val defaultAspectUsefulness = 50
 
     val strayPlacesUpdate = 0.01
 
@@ -74,4 +73,13 @@ class CulturesController(
     companion object {
         lateinit var session: CulturesController
     }
+}
+
+
+// Since the bad decision of using a singleton Controller has already been made,
+// I decided to move the parameters here. Here they are at least available through
+// the whole runtime. And since they aren't actually changed yet, I decided to go
+// for an object for the time being
+object CultureParameters {
+    val defaultAspectUsefulness = 50
 }

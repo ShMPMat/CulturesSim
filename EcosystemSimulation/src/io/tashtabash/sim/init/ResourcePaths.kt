@@ -1,4 +1,4 @@
-package io.tashtabash.sim.space.resource.instantiation
+package io.tashtabash.sim.init
 
 import java.net.JarURLConnection
 import java.net.URI
@@ -16,7 +16,7 @@ fun getResourcePaths(folderUrls: List<URL>): List<URL> = folderUrls.flatMap { fo
                 val entryName = jarConnection.entryName
                 val jarFileUrl = jarConnection.jarFileURL
 
-                // Get all relevant resources by checking all of them
+                // Get relevant resources by checking all resources
                 jarFile.entries().asSequence()
                     .filter { it.name.startsWith(entryName) && !it.isDirectory && it.name != entryName }
                     .mapNotNull { jarEntry ->
