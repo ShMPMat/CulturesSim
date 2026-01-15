@@ -24,6 +24,7 @@ fun constructWorld(): EcosystemWorld {
     val actionTags = InputDatabase(classLoader.getResources("ActionTags"))
         .readLines()
         .map { ActionTag(it) }
+    val materialsResources = getResourcePaths(classLoader.getResources("Materials/").toList())
 
-    return EcosystemWorld(tagMatchers, tags, actionTags)
+    return EcosystemWorld(tagMatchers, tags, actionTags, materialsResources)
 }

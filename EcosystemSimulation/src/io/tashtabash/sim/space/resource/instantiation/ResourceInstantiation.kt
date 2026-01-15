@@ -15,12 +15,12 @@ import java.util.*
 
 
 class ResourceInstantiation(
-        private val folderPath: String,
-        private val actions: Map<ResourceAction, List<ActionMatcher>>,
-        materialPool: MaterialPool,
-        amountCoefficient: Int = 1,
-        tagParser: TagParser,
-        private val resourceActionInjectors: List<ResourceActionInjector>
+    private val folderPath: String,
+    private val actions: Map<ResourceAction, List<ActionMatcher>>,
+    materialPool: MaterialPool,
+    amountCoefficient: Int = 1,
+    tagParser: TagParser,
+    private val resourceActionInjectors: List<ResourceActionInjector>
 ) {
     private val dependencyParser = DefaultDependencyParser()
     private val conversionParser = ConversionParser(actions.keys.toList(), dependencyParser)
@@ -40,7 +40,6 @@ class ResourceInstantiation(
     fun createPool(): ResourcePool {
         val classLoader = Thread.currentThread().contextClassLoader
         val folderUrls = classLoader.getResources(folderPath).toList()
-
         val resourceUrls = getResourcePaths(folderUrls)
 
         var line: String?
@@ -250,35 +249,35 @@ class ResourceInstantiation(
 }
 
 data class ResourceStringTemplate(
-        val resource: ResourceIdeal,
-        val actionConversion: TemplateConversions,
-        val parts: MutableList<String>
+    val resource: ResourceIdeal,
+    val actionConversion: TemplateConversions,
+    val parts: MutableList<String>
 )
 
 typealias TemplateConversions = Map<ResourceAction, List<ResourceLink>>
 
 
 val phonyResource = Resource(
-        ResourceCore(
-                Genome(
-                        "Phony",
-                        ResourceType.Animal,
-                        1.6 to 1.6,
-                        0.0,
-                        0,
-                        false,
-                        true,
-                        Behaviour(0.0, 0.00, 0.0, 0.0, OverflowType.Ignore),
-                        Appearance(null, null, null),
-                        false,
-                        0.0,
-                        1,
-                        null,
-                        emptyList(),
-                        emptySet(),
-                        null,
-                        emptyList(),
-                        ConversionCore(mapOf())
-                )
+    ResourceCore(
+        Genome(
+            "Phony",
+            ResourceType.Animal,
+            1.6 to 1.6,
+            0.0,
+            0,
+            false,
+            true,
+            Behaviour(0.0, 0.00, 0.0, 0.0, OverflowType.Ignore),
+            Appearance(null, null, null),
+            false,
+            0.0,
+            1,
+            null,
+            emptyList(),
+            emptySet(),
+            null,
+            emptyList(),
+            ConversionCore(mapOf())
         )
+    )
 )

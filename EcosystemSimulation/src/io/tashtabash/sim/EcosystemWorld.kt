@@ -17,12 +17,14 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.material.MaterialInstantiation
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.TagMatcher
+import java.net.URL
 
 
 class EcosystemWorld(
     private val tagMatchers: List<TagMatcher>,
     override val tags: Set<ResourceTag>,
-    override val actionTags: List<ActionTag>
+    override val actionTags: List<ActionTag>,
+    private val materialResources: List<URL>
 ) : World {
     override lateinit var map: WorldMap
 
@@ -37,7 +39,7 @@ class EcosystemWorld(
         resourceActionInjectors: List<ResourceActionInjector>,
         proportionCoefficient: Double
     ) {
-        val materialPool = MaterialInstantiation(tags, actions.keys.toList()).createPool()
+        val materialPool = MaterialInstantiation(tags, actions.keys.toList(), materialResources).createPool()
 
         instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
 

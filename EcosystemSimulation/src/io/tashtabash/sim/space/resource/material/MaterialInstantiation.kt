@@ -3,21 +3,21 @@ package io.tashtabash.sim.space.resource.material
 import io.tashtabash.utils.InputDatabase
 import io.tashtabash.sim.DataInitializationError
 import io.tashtabash.sim.space.resource.action.ResourceAction
-import io.tashtabash.sim.init.getResourcePaths
 import io.tashtabash.sim.space.resource.tag.ResourceTag
+import java.net.URL
 import java.util.*
 import kotlin.NoSuchElementException
 import kotlin.collections.ArrayList
 
 
 class MaterialInstantiation(
-        private val allowedTags: Collection<ResourceTag>,
-        private val actions: List<ResourceAction>
+    private val allowedTags: Collection<ResourceTag>,
+    private val actions: List<ResourceAction>,
+    private val materialResources: List<URL>
 ) {
     fun createPool(): MaterialPool {
         val materials = mutableListOf<MaterialTemplate>()
-        val classLoader = Thread.currentThread().contextClassLoader
-        val inputDatabase = InputDatabase(Collections.enumeration(getResourcePaths(classLoader.getResources("Materials/").toList())))
+        val inputDatabase = InputDatabase(Collections.enumeration(materialResources))
         while (true) {
             val line = inputDatabase.readLine()
                 ?: break
@@ -41,8 +41,12 @@ class MaterialInstantiation(
             val tag = tags[i].substring(1)
             try {
                 when (key) {
-                    '+' -> aspectConversion[actions.first { a -> a.technicalName == tag.takeWhile { it != ':' } }] =
+                    '+' -> {
+                        val action = actions.firstOrNull { a -> a.technicalName == tag.takeWhile { it != ':' } }
+                            ?: throw NoSuchElementException("No action $tag found for material $name")
+                        aspectConversion[action] =
                             tag.substring(tag.indexOf(':') + 1)
+                    }
                     '-' -> {
                         val resourceTag = ResourceTag(
                                 tag.takeWhile { it != ':' },
