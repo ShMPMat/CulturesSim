@@ -9,7 +9,6 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.instantiation.tag.TagTemplate
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.material.MaterialPool
-import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.max
 import kotlin.math.min
@@ -125,10 +124,10 @@ class ResourceTemplateCreator(
             resourceDependencies += TemperatureMax(tags[5].toInt(), maxTempDeprivation)
 
         val lifespan =
-                if (tags[3] == "inf")
-                    Double.POSITIVE_INFINITY
-                else
-                    tags[3].toDouble()
+            if (tags[3] == "inf")
+                Double.POSITIVE_INFINITY
+            else
+                tags[3].toDouble()
 
         val sizeRange = if (tags[2].contains('~')) {
             val (l, r) = tags[2].split('~')
@@ -193,11 +192,11 @@ class ResourceTemplateCreator(
 
 
         specialActions.values
-                .filter { it.technicalName[0] == '_' }
-                .forEach {
-                    if (!actionConversion.containsKey(it))
-                        actionConversion[it] = listOf()
-                }
+            .filter { it.technicalName[0] == '_' }
+            .forEach {
+                if (!actionConversion.containsKey(it))
+                    actionConversion[it] = listOf()
+            }
 
         return ResourceStringTemplate(ResourceIdeal(genome), actionConversion, parts)
     }

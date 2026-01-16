@@ -7,6 +7,7 @@ import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.container.ResourcePool
 import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
+import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.material.MaterialPool
 import io.tashtabash.sim.space.resource.transformer.ColourTransformer
 import io.tashtabash.sim.space.resource.transformer.TextureTransformer
@@ -271,7 +272,7 @@ val phonyResource = Resource(
             null,
             emptyList(),
             emptySet(),
-            null,
+            Material("Phony", .1, listOf()),
             emptyList(),
             ConversionCore(mapOf())
         )
