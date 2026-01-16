@@ -1,6 +1,7 @@
 package io.tashtabash.sim.space
 
 import io.tashtabash.random.randomElement
+import io.tashtabash.random.randomElementOrNull
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.Controller
@@ -143,7 +144,8 @@ fun createRivers(
         return
 
     repeat(actualAmount) {
-        val tile = randomElement(allTiles, goodSpotProbability, random)
+        val tile = randomElementOrNull(allTiles, goodSpotProbability, random)
+            ?: return
         createRiver(tile, water, goodTilePredicate, random)
     }
 }

@@ -8,7 +8,7 @@ import io.tashtabash.sim.space.resource.container.ResourcePool
 fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
     val finalizedResources = mutableListOf<ResourceIdeal>()
     val resourcesToAdd = mutableListOf<ResourceIdeal>()
-    resourcesToAdd.addAll(startResources)
+    resourcesToAdd += startResources
 
     while (resourcesToAdd.isNotEmpty()) {
         resourcesToAdd.firstOrNull { it.genome is GenomeTemplate }?.let { templateResource ->
@@ -19,18 +19,14 @@ fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
         val lastResources = resourcesToAdd.toList()
         resourcesToAdd.clear()
 
-        resourcesToAdd.addAll(
-                lastResources
-                        .flatMap { it.genome.parts }
-                        .map { ResourceIdeal(it.genome) }
-        )
-        resourcesToAdd.addAll(
-                lastResources
-                        .flatMap { it.genome.conversionCore.actionConversions.values }
-                        .flatten()
-                        .map { r -> r.genome }
-                        .map { ResourceIdeal(it) }
-        )
+        resourcesToAdd += lastResources
+            .flatMap { it.genome.parts }
+            .map { ResourceIdeal(it.genome) }
+        resourcesToAdd += lastResources
+            .flatMap { it.genome.conversionCore.actionConversions.values }
+            .flatten()
+            .map { r -> r.genome }
+            .map { ResourceIdeal(it) }
 
         resourcesToAdd.removeIf { it in finalizedResources }
     }

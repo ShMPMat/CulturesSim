@@ -99,7 +99,7 @@ open class Genome(
     }
 
     private fun computePrimaryMaterial() {
-        if (parts.size == 1)
+        if (primaryMaterial == null && parts.size == 1)
             primaryMaterial = parts[0].genome.primaryMaterial
     }
 
@@ -131,14 +131,14 @@ open class Genome(
     }
 
     fun getTagLevel(tag: ResourceTag) =
-            tagsMap[tag]?.level
-                ?: 0.0
+        tagsMap[tag]?.level
+            ?: 0.0
 
     val baseName: BaseName = name + legacyPostfix
 
     private val legacyPostfix: String
         get() = legacy?.let { "_of_$it" }
-                ?: ""
+            ?: ""
 
     val mass: Double
         get() {

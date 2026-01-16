@@ -26,11 +26,11 @@ class ResourceInstantiation(
     private val dependencyParser = DefaultDependencyParser()
     private val conversionParser = ConversionParser(actions.keys.toList(), dependencyParser)
     private val resourceTemplateCreator = ResourceTemplateCreator(
-            materialPool,
-            amountCoefficient,
-            tagParser,
-            dependencyParser,
-            conversionParser
+        materialPool,
+        amountCoefficient,
+        tagParser,
+        dependencyParser,
+        conversionParser
     )
 
     private val resourceStringTemplates = ArrayList<ResourceStringTemplate>()
