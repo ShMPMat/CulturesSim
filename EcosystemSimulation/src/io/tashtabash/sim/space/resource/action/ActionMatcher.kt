@@ -18,20 +18,20 @@ class ActionMatcher(
     private val resourceNames = results.map { (n) -> n }
 
     fun match(resource: Resource) =
-            if (!resource.genome.conversionCore.actionConversions.keys.map { it.technicalName }.any { it == resourceActionName })
-                if (resource.genome.hasLegacy && resource.simpleName in resourceNames)
-                    false
-                else
-                    labeler.isSuitable(resource.genome)
-            else false
+        if (!resource.genome.conversionCore.actionConversions.keys.map { it.technicalName }.any { it == resourceActionName })
+            if (resource.simpleName in resourceNames) // Don't match Resources which would turn into themselves
+                false
+            else
+                labeler.isSuitable(resource.genome)
+        else false
 
     fun getResults(resource: Resource, resources: List<Resource>): List<Pair<Resource, Int>> =
-            results.map { (name, amount) ->
-                val resultResource =
-                        if (name != "MATCHED")
-                            resources.firstOrNull { it.baseName == name }
-                                    ?: run { resources[0] }
-                        else resource
-                resultResource to amount
-            }
+        results.map { (name, amount) ->
+            val resultResource =
+                if (name != "MATCHED")
+                    resources.firstOrNull { it.baseName == name }
+                        ?: run { resources[0] }
+                else resource
+            resultResource to amount
+        }
 }

@@ -12,24 +12,24 @@ import kotlin.math.pow
 
 
 open class Genome(
-        val name: String,
-        val type: ResourceType,
-        val sizeRange: Pair<Double, Double>,
-        val spreadProbability: Double,
-        val baseDesirability: Int,
-        val isMutable: Boolean,
-        val isMovable: Boolean,
-        val behaviour: Behaviour,
-        val appearance: Appearance,
-        val hasLegacy: Boolean,
-        val lifespan: Double,
-        val defaultAmount: Int,
-        val legacy: BaseName?,
-        dependencies: List<ResourceDependency>,
-        tags: Set<ResourceTag>,
-        var primaryMaterial: Material?,
-        secondaryMaterials: List<Material>,
-        var conversionCore: ConversionCore
+    val name: String,
+    val type: ResourceType,
+    val sizeRange: Pair<Double, Double>,
+    val spreadProbability: Double,
+    val baseDesirability: Int,
+    val isMutable: Boolean,
+    val isMovable: Boolean,
+    val behaviour: Behaviour,
+    val appearance: Appearance,
+    val hasLegacy: Boolean,
+    val lifespan: Double,
+    val defaultAmount: Int,
+    val legacy: BaseName?,
+    dependencies: List<ResourceDependency>,
+    tags: Set<ResourceTag>,
+    var primaryMaterial: Material?,
+    secondaryMaterials: List<Material>,
+    var conversionCore: ConversionCore
 ) {
     val size = (sizeRange.first + sizeRange.second) / 2
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
