@@ -8,8 +8,9 @@ import io.tashtabash.sim.interactionmodel.InteractionModel
 
 class CulturesController(
     interactionModel: InteractionModel<CulturesWorld>,
-    culturesWorld: CulturesWorld
-) : Controller<CulturesWorld>(interactionModel, culturesWorld) {
+    culturesWorld: CulturesWorld,
+    proportionCoefficient: Double
+) : Controller<CulturesWorld>(interactionModel, culturesWorld, proportionCoefficient) {
     var templateBase: TemplateBase
 
     val doPrint = false

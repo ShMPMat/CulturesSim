@@ -10,7 +10,7 @@ import io.tashtabash.visualizer.Visualizer
 import kotlin.random.Random
 
 
-open class Controller<E : World>(val interactionModel: InteractionModel<E>, val world: E) {
+open class Controller<E : World>(val interactionModel: InteractionModel<E>, val world: E, val proportionCoefficient: Double) {
     val random = Random(8565728 + 38)
 
     val doTurns = true
@@ -19,8 +19,6 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
     val initialTurns = 100
     val stabilizationTurns = 100
     val fillCycles = 3
-
-    val proportionCoefficient = 1.0
 
     private val debugPrint = false
 

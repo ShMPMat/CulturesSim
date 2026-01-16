@@ -11,10 +11,12 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 
 
 fun main() {
-    val ecosystemWorld = constructWorld()
+    val proportionCoefficient = 1.0
+
+    val ecosystemWorld = constructWorld(proportionCoefficient)
     val aspectPool = loadAspects(ecosystemWorld.tags, ecosystemWorld.actionTags)
     val world = CulturesWorld(ecosystemWorld, aspectPool)
-    val controller = CulturesController(CulturesMapModel(), world)
+    val controller = CulturesController(CulturesMapModel(), world, proportionCoefficient)
     val textCultureVisualizer = TextCultureVisualizer(controller)
     textCultureVisualizer.initialize()
 

@@ -1,6 +1,5 @@
 package io.tashtabash.sim.space.resource.instantiation
 
-import io.tashtabash.sim.init.getResourcePaths
 import io.tashtabash.utils.InputDatabase
 import io.tashtabash.sim.space.resource.*
 import io.tashtabash.sim.space.resource.action.ActionMatcher
@@ -11,11 +10,12 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagParser
 import io.tashtabash.sim.space.resource.material.MaterialPool
 import io.tashtabash.sim.space.resource.transformer.ColourTransformer
 import io.tashtabash.sim.space.resource.transformer.TextureTransformer
+import java.net.URL
 import java.util.*
 
 
 class ResourceInstantiation(
-    private val folderPath: String,
+    private val resourceResources: List<URL>,
     private val actions: Map<ResourceAction, List<ActionMatcher>>,
     materialPool: MaterialPool,
     amountCoefficient: Int = 1,
@@ -38,13 +38,9 @@ class ResourceInstantiation(
     }
 
     fun createPool(): ResourcePool {
-        val classLoader = Thread.currentThread().contextClassLoader
-        val folderUrls = classLoader.getResources(folderPath).toList()
-        val resourceUrls = getResourcePaths(folderUrls)
-
         var line: String?
         var tags: Array<String>
-        val urlEnumeration = Collections.enumeration(resourceUrls)
+        val urlEnumeration = Collections.enumeration(resourceResources)
         val inputDatabase = InputDatabase(urlEnumeration)
         while (true) {
             line = inputDatabase.readLine()

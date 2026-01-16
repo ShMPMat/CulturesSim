@@ -22,10 +22,10 @@ private var riversCreated = 0
 private var lakesCreated = 0
 
 fun createRiver(
-        tile: Tile,
-        water: Resource,
-        goodTilePredicate: (Tile) -> Boolean,
-        random: Random
+    tile: Tile,
+    water: Resource,
+    goodTilePredicate: (Tile) -> Boolean,
+    random: Random
 ) {
     val nameTag = getRiverTag(riversCreated.toString())
     riversCreated++

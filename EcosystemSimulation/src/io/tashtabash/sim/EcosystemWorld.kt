@@ -2,7 +2,6 @@ package io.tashtabash.sim
 
 import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.event.EventLog
-import io.tashtabash.sim.init.instantiateSpaceData
 import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.generator.MapGeneratorSupplement
@@ -24,7 +23,8 @@ class EcosystemWorld(
     private val tagMatchers: List<TagMatcher>,
     override val tags: Set<ResourceTag>,
     override val actionTags: List<ActionTag>,
-    private val materialResources: List<URL>
+    private val materialResources: List<URL>,
+    private val resourceResources: List<URL>
 ) : World {
     override lateinit var map: WorldMap
 
@@ -41,10 +41,8 @@ class EcosystemWorld(
     ) {
         val materialPool = MaterialInstantiation(tags, actions.keys.toList(), materialResources).createPool()
 
-        instantiateSpaceData(proportionCoefficient, tagMatchers, materialPool)
-
         val initialResources = ResourceInstantiation(
-            "Resources/",
+            resourceResources,
             actions,
             materialPool,
             SpaceData.data.resourceProportionCoefficient,
@@ -52,6 +50,7 @@ class EcosystemWorld(
             resourceActionInjectors
         ).createPool()
 
+        SpaceData.data.materialPool = materialPool
         SpaceData.data.resourcePool = initialResources
 
         map = generateMap(

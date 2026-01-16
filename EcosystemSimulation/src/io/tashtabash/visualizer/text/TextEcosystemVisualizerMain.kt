@@ -7,11 +7,13 @@ import io.tashtabash.sim.space.resource.instantiation.tag.DefaultTagParser
 
 
 fun main() {
-    val world = constructWorld()
-    val controller = Controller(MapModel(), world)
+    val proportionCoefficient = 1.0
+
+    val world = constructWorld(proportionCoefficient)
+    val controller = Controller(MapModel(), world, proportionCoefficient)
     val textEcosystemVisualizer = TextEcosystemVisualizer(controller)
 
-    world.initializeMap(emptyMap(), DefaultTagParser(world.tags), listOf(), controller.proportionCoefficient)
+    world.initializeMap(emptyMap(), DefaultTagParser(world.tags), listOf(), proportionCoefficient)
 
     textEcosystemVisualizer.initialize()
     textEcosystemVisualizer.run()

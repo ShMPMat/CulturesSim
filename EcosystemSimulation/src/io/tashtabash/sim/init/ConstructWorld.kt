@@ -8,7 +8,7 @@ import io.tashtabash.utils.InputDatabase
 import java.util.Collections
 
 
-fun constructWorld(): EcosystemWorld {
+fun constructWorld(proportionCoefficient: Double): EcosystemWorld {
     val classLoader = Thread.currentThread().contextClassLoader
     val tagMatchers = createTagMatchers(classLoader.getResources("ResourceTagLabelers"))
     val tags = InputDatabase(
@@ -25,6 +25,9 @@ fun constructWorld(): EcosystemWorld {
         .readLines()
         .map { ActionTag(it) }
     val materialsResources = getResourcePaths(classLoader.getResources("Materials/").toList())
+    val resourceResources = getResourcePaths(classLoader.getResources("Resources/").toList())
 
-    return EcosystemWorld(tagMatchers, tags, actionTags, materialsResources)
+    instantiateSpaceData(proportionCoefficient, tagMatchers)
+
+    return EcosystemWorld(tagMatchers, tags, actionTags, materialsResources, resourceResources)
 }

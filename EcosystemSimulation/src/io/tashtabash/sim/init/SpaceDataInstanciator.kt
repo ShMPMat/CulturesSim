@@ -2,18 +2,16 @@ package io.tashtabash.sim.init
 
 import io.tashtabash.sim.space.Data
 import io.tashtabash.sim.space.SpaceData
-import io.tashtabash.sim.space.resource.material.MaterialPool
 import io.tashtabash.sim.space.resource.tag.TagMatcher
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 
-fun instantiateSpaceData(proportionFactor: Double, resourceTagMatchers: List<TagMatcher>, materialPool: MaterialPool) {
+fun instantiateSpaceData(proportionFactor: Double, resourceTagMatchers: List<TagMatcher>) {
     val startResourceAmountMin = (40 * proportionFactor * proportionFactor).toInt()
     val defaultData = Data()
 
     SpaceData.data = Data(
-        materialPool = materialPool,
         mapSizeX = (defaultData.mapSizeX * proportionFactor).toInt(),
         mapSizeY = (defaultData.mapSizeY * proportionFactor).toInt(),
         platesAmount = (defaultData.platesAmount * proportionFactor).toInt(),
