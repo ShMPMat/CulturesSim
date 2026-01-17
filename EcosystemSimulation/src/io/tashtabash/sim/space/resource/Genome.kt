@@ -27,13 +27,13 @@ open class Genome(
     val legacy: BaseName?,
     dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
-    var primaryMaterial: Material?,
+    val primaryMaterial: Material?,
     secondaryMaterials: List<Material>,
     var conversionCore: ConversionCore
 ) {
     val size = (sizeRange.first + sizeRange.second) / 2
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
-    val parts: MutableList<Resource> = ArrayList()
+    val parts: MutableList<Resource> = mutableListOf()
 
     val dependencies = dependencies.toList()
     val necessaryDependencies = dependencies.filter { it.isNecessary }
@@ -48,70 +48,60 @@ open class Genome(
     init {
         if (naturalDensity > 1000000000)
             System.err.println("Very high density in Genome $name - $naturalDensity")
-        computePrimaryMaterial()
         computeTagsFromMaterials()
         this.secondaryMaterials = secondaryMaterials.toMutableList()
     }
 
     open fun copy(
-            name: String = this.name,
-            type: ResourceType = this.type,
-            sizeRange: Pair<Double, Double> = this.sizeRange,
-            spreadProbability: Double = this.spreadProbability,
-            baseDesirability: Int = this.baseDesirability,
-            isMutable: Boolean = this.isMutable,
-            isMovable: Boolean = this.isMovable,
-            behaviour: Behaviour = this.behaviour,
-            appearance: Appearance = this.appearance,
-            hasLegacy: Boolean = this.hasLegacy,
-            lifespan: Double = this.lifespan,
-            defaultAmount: Int = this.defaultAmount,
-            legacy: BaseName? = this.legacy,
-            dependencies: List<ResourceDependency> = this.dependencies,
-            tags: Set<ResourceTag> = this.tags,
-            primaryMaterial: Material? = this.primaryMaterial,
-            secondaryMaterials: List<Material> = this.secondaryMaterials,
-            conversionCore: ConversionCore = this.conversionCore.copy(),
-            parts: List<Resource> = this.parts
+        name: String = this.name,
+        type: ResourceType = this.type,
+        sizeRange: Pair<Double, Double> = this.sizeRange,
+        spreadProbability: Double = this.spreadProbability,
+        baseDesirability: Int = this.baseDesirability,
+        isMutable: Boolean = this.isMutable,
+        isMovable: Boolean = this.isMovable,
+        behaviour: Behaviour = this.behaviour,
+        appearance: Appearance = this.appearance,
+        hasLegacy: Boolean = this.hasLegacy,
+        lifespan: Double = this.lifespan,
+        defaultAmount: Int = this.defaultAmount,
+        legacy: BaseName? = this.legacy,
+        dependencies: List<ResourceDependency> = this.dependencies,
+        tags: Set<ResourceTag> = this.tags,
+        primaryMaterial: Material? = this.primaryMaterial,
+        secondaryMaterials: List<Material> = this.secondaryMaterials,
+        conversionCore: ConversionCore = this.conversionCore.copy(),
+        parts: List<Resource> = this.parts
     ): Genome {
         val genome = Genome(
-                name,
-                type,
-                sizeRange,
-                spreadProbability,
-                baseDesirability,
-                isMutable,
-                isMovable,
-                behaviour,
-                appearance,
-                hasLegacy,
-                lifespan,
-                defaultAmount,
-                legacy,
-                dependencies,
-                tags,
-                primaryMaterial,
-                secondaryMaterials,
-                conversionCore
+            name,
+            type,
+            sizeRange,
+            spreadProbability,
+            baseDesirability,
+            isMutable,
+            isMovable,
+            behaviour,
+            appearance,
+            hasLegacy,
+            lifespan,
+            defaultAmount,
+            legacy,
+            dependencies,
+            tags,
+            primaryMaterial,
+            secondaryMaterials,
+            conversionCore
         )
         parts.forEach { genome.addPart(it) }
         return genome
     }
 
-    private fun computePrimaryMaterial() {
-        if (primaryMaterial == null && parts.size == 1)
-            primaryMaterial = parts[0].genome.primaryMaterial
-    }
-
     val materials: List<Material>
         get() {
-            val materials = mutableListOf<Material>()
-            val material = primaryMaterial//TODO remove when primaryMaterial is val
-            if (material != null) {
-                materials.add(material)
-                materials.addAll(secondaryMaterials)
-            }
-            return materials
+            return if (primaryMaterial != null)
+                secondaryMaterials + primaryMaterial
+            else listOf()
         }
 
     fun computeTagsFromMaterials() {
@@ -143,16 +133,15 @@ open class Genome(
     val mass: Double
         get() {
             val material = primaryMaterial
-                    ?: return 0.0
+                ?: return 0.0
             return material.density * size.pow(3)
         }
 
     fun addPart(part: Resource) {
         val i = parts.indexOf(part)
-        if (i == -1) {
+        if (i == -1)
             parts += part
-            computePrimaryMaterial()
-        } else
+        else
             parts[i].addAmount(part.amount)
     }
 

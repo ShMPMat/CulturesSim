@@ -26,5 +26,5 @@ open class DefaultTagParser(private val allowedTags: Collection<ResourceTag>) : 
     }
 
     protected fun wrapInTemplate(resourceTag: ResourceTag, levelString: String) =
-            TagTemplate(resourceTag, makeResourceLeveler(levelString))
+        TagTemplate(resourceTag, makeResourceLeveler(levelString))
 }
