@@ -63,8 +63,8 @@ class ResourceInstantiation(
 
     private val filteredFinalResources
         get() = resourceStringTemplates
-                .map { (r) -> r }
-                .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
+            .map { (r) -> r }
+            .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
 
     private fun addTemplate(template: ResourceStringTemplate) {
         if (resourceStringTemplates.any { it.resource.baseName == template.resource.baseName })
@@ -74,8 +74,8 @@ class ResourceInstantiation(
     }
 
     private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceStringTemplates
-            .firstOrNull { it.resource.baseName == name }
-            ?: throw NoSuchElementException("Cannot find a Resource template with a name '$name'")
+        .firstOrNull { it.resource.baseName == name }
+        ?: throw NoSuchElementException("Cannot find a Resource template with a name '$name'")
 
     private fun initConversions(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
         val (resource, actionConversion, _) = template
@@ -107,18 +107,18 @@ class ResourceInstantiation(
             return manageLegacyConversion(template.resource, link.amount)
 
         val conversionResource = conversionPrefix.dropLast(1).firstOrNull { link.resourceName == it.baseName }
-                ?: run {
-                    val foundTemplate = getTemplateWithName(link.resourceName)
-                    initConversions(foundTemplate, conversionPrefix)
-                    foundTemplate.resource
-                }
+            ?: run {
+                val foundTemplate = getTemplateWithName(link.resourceName)
+                initConversions(foundTemplate, conversionPrefix)
+                foundTemplate.resource
+            }
         val resource = link.transform(conversionResource)
         return resource.copy(link.amount)
     }
 
     private fun manageLegacyConversion(resource: ResourceIdeal, amount: Int): Resource {
         val legacy = resource.genome.legacy
-                ?: return phonyResource.copy(amount)
+            ?: return phonyResource.copy(amount)
         val legacyTemplate = getTemplateWithName(legacy)
         return legacyTemplate.resource.copy(amount)
     }
@@ -173,7 +173,7 @@ class ResourceInstantiation(
             treeStart: List<Resource> = listOf()
     ): Resource {
         swappedLegacyResources.firstOrNull { it.fullName == resource.fullName && it.genome.size == resource.genome.size }
-                ?.let { return ResourceIdeal(it.genome, resource.amount) }
+            ?.let { return ResourceIdeal(it.genome, resource.amount) }
 
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
@@ -181,22 +181,22 @@ class ResourceInstantiation(
             else oldGenome
         }
         val newResource = ResourceIdeal(newGenome.copy(
-                legacy = legacyResource?.baseName?.takeIf { newGenome.hasLegacy },
-                parts = listOf(),
-                primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial!!
+            legacy = legacyResource?.baseName?.takeIf { newGenome.hasLegacy },
+            parts = listOf(),
+            primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial!!
         ), resource.amount)
 
         swappedLegacyResources += newResource
 
         val newParts = resource.genome.parts.map {
             swapLegacies(
-                    it.injectAppearance(resource),
-                    swappedLegacyResources,
-                    newResource,
-                    treeStart + listOf(newResource)
+                it.injectAppearance(resource),
+                swappedLegacyResources,
+                newResource,
+                treeStart + listOf(newResource)
             )
-                    .copy(it.amount)
-                    .let { r -> ResourceIdeal(r.genome, it.amount) }
+                .copy(it.amount)
+                .let { r -> ResourceIdeal(r.genome, it.amount) }
         }.toMutableList()
 
         newParts.forEach {
@@ -211,10 +211,10 @@ class ResourceInstantiation(
                     resource -> newResource
                     phonyResource -> treeStart[0]
                     else -> swapLegacies(
-                            r.injectAppearance(resource),
-                            swappedLegacyResources,
-                            newResource,
-                            treeStart + listOf(newResource)
+                        r.injectAppearance(resource),
+                        swappedLegacyResources,
+                        newResource,
+                        treeStart + listOf(newResource)
                     )
                 }.let{ ResourceIdeal(it.genome, r.amount) }
             }

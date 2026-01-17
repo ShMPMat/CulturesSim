@@ -28,7 +28,7 @@ open class Genome(
     dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
     val primaryMaterial: Material?,
-    secondaryMaterials: List<Material>,
+    val secondaryMaterials: List<Material>,
     var conversionCore: ConversionCore
 ) {
     val size = (sizeRange.first + sizeRange.second) / 2
@@ -43,13 +43,10 @@ open class Genome(
     var tags: Set<ResourceTag> = tagsMap.keys
         private set
 
-    val secondaryMaterials: List<Material>
-
     init {
         if (naturalDensity > 1000000000)
             System.err.println("Very high density in Genome $name - $naturalDensity")
         computeTagsFromMaterials()
-        this.secondaryMaterials = secondaryMaterials.toMutableList()
     }
 
     open fun copy(
