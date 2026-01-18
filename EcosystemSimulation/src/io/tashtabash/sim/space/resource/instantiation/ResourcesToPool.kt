@@ -5,7 +5,7 @@ import io.tashtabash.sim.space.resource.ResourceIdeal
 import io.tashtabash.sim.space.resource.container.ResourcePool
 
 
-fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
+fun listAllResources(startResources: List<ResourceIdeal>): MutableList<ResourceIdeal> {
     val finalizedResources = mutableListOf<ResourceIdeal>()
     val resourcesToAdd = mutableListOf<ResourceIdeal>()
     resourcesToAdd += startResources
@@ -31,5 +31,9 @@ fun finalizePool(startResources: List<ResourceIdeal>): ResourcePool {
         resourcesToAdd.removeIf { it in finalizedResources }
     }
 
-    return ResourcePool(finalizedResources.sortedBy { it.baseName }.distinctBy { it.baseName }.map { it.core })
+    return finalizedResources
 }
+
+fun finalizePool(finalizedResources: List<ResourceIdeal>) = ResourcePool(
+    finalizedResources.sortedBy { it.baseName }.distinctBy { it.baseName }.map { it.core }
+)

@@ -22,11 +22,11 @@ class ResourcePool(val cores: List<ResourceCore>) {
 
     fun getBaseName(name: String): Resource =
             getBaseNameOrNull(name)
-                    ?: throw NoSuchElementException("No resource with name $name")
+                ?: throw NoSuchElementException("No resource with name $name")
 
     fun getSimpleName(name: String): Resource =
             get { it.genome.name == name }
-                    ?: throw NoSuchElementException("No resource with name $name")
+                ?: throw NoSuchElementException("No resource with name $name")
 
     val all: List<Resource> = cores.map { it.largeSample }
 }

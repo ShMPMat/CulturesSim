@@ -58,7 +58,8 @@ class ResourceInstantiation(
             swapLegacies(it, swappedLegacyResources) as ResourceIdeal
         }
 
-        return finalizePool(endResources)
+        val allResources = listAllResources(endResources)
+        return finalizePool(allResources)
     }
 
     private val filteredFinalResources
