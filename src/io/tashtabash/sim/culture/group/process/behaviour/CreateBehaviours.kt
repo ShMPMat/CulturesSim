@@ -12,7 +12,7 @@ import io.tashtabash.sim.culture.group.centers.toPositiveChange
 import io.tashtabash.sim.culture.group.cultureaspect.util.createDepictObject
 import io.tashtabash.sim.culture.group.place.StaticPlace
 import io.tashtabash.sim.culture.group.process.ProcessResult
-import io.tashtabash.sim.culture.group.process.action.ProduceExactResourceA
+import io.tashtabash.sim.culture.group.process.action.ProduceResourceA
 import io.tashtabash.sim.culture.group.process.action.ProduceSimpleResourceA
 import io.tashtabash.sim.culture.group.process.action.ReceiveGroupWideResourcesA
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
@@ -35,16 +35,16 @@ object RandomArtifactB : AbstractGroupBehaviour() {
             return emptyProcessResult
 
         val resourcesWithMeaning = group.cultureCenter.aspectCenter.aspectPool.producedResources
-                .filter { it.hasMeaning }
+            .filter { it.hasMeaning }
         val chosen = resourcesWithMeaning.randomElementOrNull()
-                ?: return emptyProcessResult
+            ?: return emptyProcessResult
 
-        val result = ProduceExactResourceA(group, chosen, 1, 5, setOf(RequestType.Luxury)).run()
+        val result = ProduceResourceA(group, chosen, 1, 5, setOf(RequestType.Luxury)).run()
         val processResult =
-                if (result.isNotEmpty)
-                    ProcessResult(Event(Creation, "${group.name} created artifacts: $result")) +
-                            ProcessResult(makeResourcePackMemes(result))
-                else emptyProcessResult
+            if (result.isNotEmpty)
+                ProcessResult(Event(Creation, "${group.name} created artifacts: $result")) +
+                        ProcessResult(makeResourcePackMemes(result))
+            else emptyProcessResult
 
         ReceiveGroupWideResourcesA(group, result).run()
 
@@ -63,22 +63,22 @@ object RandomDepictCaB : AbstractGroupBehaviour() {
 
         if (meaningAspects.isEmpty()) {
             val aspect = session.world.aspectPool.filter { it.canApplyMeaning }.randomElementOrNull()
-                    ?: return emptyProcessResult
+                ?: return emptyProcessResult
             group.cultureCenter.aspectCenter.tryAddingAspect(aspect, group)
             return emptyProcessResult
         }
 
         val depict = createDepictObject(
-                meaningAspects,
-                constructAndAddSimpleMeme(group.cultureCenter.memePool),
-                null
+            meaningAspects,
+            constructAndAddSimpleMeme(group.cultureCenter.memePool),
+            null
         )
 
         group.cultureCenter.cultureAspectCenter.addCultureAspect(depict)
 
         val processResult =
-                if (depict == null) emptyProcessResult
-                else ProcessResult(Event(Creation, "${group.name} now has: $depict"))
+            if (depict == null) emptyProcessResult
+            else ProcessResult(Event(Creation, "${group.name} now has: $depict"))
 
         return processResult + ProcessResult(Trait.Creation.toPositiveChange() * 10)
     }
@@ -96,8 +96,8 @@ class BuildRoadB(path: Territory, val projectName: String) : PlanBehaviour() {
 
         val roadExample = session.world.resourcePool.getSimpleName("Road")
         val roadResource = ProduceSimpleResourceA(group, roadExample, 1, 50).run()
-                .resources.getOrNull(0)
-                ?: return emptyProcessResult
+            .resources.getOrNull(0)
+            ?: return emptyProcessResult
 
         if (roadResource.isEmpty)
             return emptyProcessResult
@@ -111,8 +111,8 @@ class BuildRoadB(path: Territory, val projectName: String) : PlanBehaviour() {
         path.removeAt(path.lastIndex)
 
         val event = RoadCreationEvent(
-                "${group.name} created a road on a tile ${tile.posStr}",
-                place
+            "${group.name} created a road on a tile ${tile.posStr}",
+            place
         )
 
         return ProcessResult(roadMemes) +
@@ -140,20 +140,20 @@ class ManageRoadsB : AbstractGroupBehaviour() {
 
         for (roadPlace in roadPlaces) {
             val needed = roadPlace.getLacking().lastOrNull()
-                    ?: continue
+                ?: continue
             val types = setOf(RequestType.Improvement)
-            val lackingPack = ProduceExactResourceA(group, needed, needed.amount, 75, types).run()
+            val lackingPack = ProduceResourceA(group, needed, needed.amount, 75, types).run()
 
             roadPlace.addResources(lackingPack)
         }
 
         val processResult = roadConstruction?.run(group)
-                ?: emptyProcessResult
+            ?: emptyProcessResult
 
         roadPlaces.addAll(
-                processResult.events
-                        .filterIsInstance<RoadCreationEvent>()
-                        .map { it.place }
+            processResult.events
+                .filterIsInstance<RoadCreationEvent>()
+                .map { it.place }
         )
 
         return processResult
@@ -161,7 +161,7 @@ class ManageRoadsB : AbstractGroupBehaviour() {
 
     private fun makeNewProject(group: Group) {
         val placeMap = getAllPlaceLocations(group)
-                .groupBy { it in roadPlaces }
+            .groupBy { it in roadPlaces }
         val connected = placeMap[true] ?: emptyList()
         val disconnected = (placeMap[false] ?: emptyList()).toMutableList()
 
@@ -171,18 +171,18 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         val finish = disconnected.randomElement().tile
 
         val startPlace = roadPlaces
+            .minByOrNull { getDistance(it.tile, finish) }
+            ?: disconnected
+                .filter { it.tile != finish }
                 .minByOrNull { getDistance(it.tile, finish) }
-                ?: disconnected
-                        .filter { it.tile != finish }
-                        .minByOrNull { getDistance(it.tile, finish) }
-                ?: throw SimulationError("IMPOSSIBLE")
+            ?: throw SimulationError("IMPOSSIBLE")
         val start = startPlace.tile
 
         val path = group.territoryCenter.makePath(start, finish)
-                ?: return
+            ?: return
         roadConstruction = BuildRoadB(
-                StaticTerritory(path.toSet()),
-                "${group.name} road $projectsDone"
+            StaticTerritory(path.toSet()),
+            "${group.name} road $projectsDone"
         )
         projectsDone++
     }
@@ -191,21 +191,21 @@ class ManageRoadsB : AbstractGroupBehaviour() {
         var places = mutableListOf<StaticPlace>()
         for (subgroup in group.parentGroup.subgroups) {
             places.addAll(
-                    group.populationCenter.stratumCenter.strata.flatMap { it.places }
+                group.populationCenter.stratumCenter.strata.flatMap { it.places }
             )
             places.addAll(
-                    group.cultureCenter.cultureAspectCenter.aspectPool.worships
-                            .flatMap { it.placeSystem.places }
-                            .map { it.staticPlace }
+                group.cultureCenter.cultureAspectCenter.aspectPool.worships
+                    .flatMap { it.placeSystem.places }
+                    .map { it.staticPlace }
             )
         }
         places = places
-                .filter { it.owned.isNotEmpty }
-                .toMutableList()
+            .filter { it.owned.isNotEmpty }
+            .toMutableList()
         places.addAll(group.parentGroup.subgroups.flatMap { it.territoryCenter.places })
         places = places
-                .distinctBy { it.tile }
-                .toMutableList()
+            .distinctBy { it.tile }
+            .toMutableList()
 
         return places
     }

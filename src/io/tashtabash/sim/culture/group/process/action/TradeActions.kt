@@ -26,7 +26,7 @@ class MakeTradeResourcesA(group: Group, val amount: Int) : AbstractGroupAction(g
         val chosenResource = resources.randomElementOrNull()
                 ?: return ResourcePack()
 
-        return ProduceExactResourceA(group, chosenResource, amount, 20, setOf(RequestType.Trade)).run()
+        return ProduceResourceA(group, chosenResource, amount, 20, setOf(RequestType.Trade)).run()
     }
 
     override val internalToString = "Let ${group.name} to try make Resources for Trade"
