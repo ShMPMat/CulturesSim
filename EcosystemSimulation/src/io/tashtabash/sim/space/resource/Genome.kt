@@ -40,7 +40,7 @@ open class Genome(
 
     private val tagsMap = tags.associateWith { it }
         .toMutableMap()
-    var tags: Set<ResourceTag> = tagsMap.keys
+    var tags: Set<ResourceTag> = tagsMap.keys // Caching tags makes a turn ~3 times faster
         private set
 
     init {
