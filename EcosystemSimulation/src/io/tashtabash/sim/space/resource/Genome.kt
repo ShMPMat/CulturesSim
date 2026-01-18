@@ -38,8 +38,11 @@ open class Genome(
     val dependencies = dependencies.toList()
     val necessaryDependencies = dependencies.filter { it.isNecessary }
 
-    private val tagsMap = tags.associateWith { it }
-        .toMutableMap()
+    var tagsMap = tags.associateWith { it }
+        private set(value) {
+            field = value
+            tags = value.keys
+        }
     var tags: Set<ResourceTag> = tagsMap.keys // Caching tags makes a turn ~3 times faster
         private set
 
@@ -109,12 +112,13 @@ open class Genome(
     }
 
     private fun computeTags() {
-        tagsMap += primaryMaterial!!.tags
-            .filter { !tagsMap.containsKey(it) }
+        val newTags = tagsMap.toMutableMap()
+        newTags += primaryMaterial!!.tags
+            .filter { !newTags.containsKey(it) }
             .associateWith { it }
         for (matcher in data.additionalTags)
-            matcher.updateGenome(this, tagsMap)
-        tags = tagsMap.keys
+            matcher.updateGenome(this, newTags)
+        tagsMap = newTags
     }
 
     fun getTagLevel(tag: ResourceTag) =
