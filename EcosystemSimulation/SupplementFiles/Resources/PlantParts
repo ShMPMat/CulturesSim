@@ -53,7 +53,7 @@
         ^Pulp:4  ^Seed:5
         L
 -Drupe                              0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
-        +_Burst_prob_0.2_t/Seed:1
+        +_Burst_prob_0.2_t/Seed:1:s|0.02
         ^Pulp:4  ^Seed:1:s|0.02
         L
 

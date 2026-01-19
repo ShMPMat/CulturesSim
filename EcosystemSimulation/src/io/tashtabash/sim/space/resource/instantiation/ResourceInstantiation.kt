@@ -173,8 +173,8 @@ class ResourceInstantiation(
         legacyResource: Resource? = null,
         treeStart: List<Resource> = listOf()
     ): Resource {
-        swappedLegacyResources.firstOrNull { it.fullName == resource.fullName && it.genome.size == resource.genome.size }
-            ?.let { return ResourceIdeal(it.genome, resource.amount) }
+        swappedLegacyResources.firstOrNull { it.fullName == resource.fullName }
+            ?.let { return ResourceIdeal(it.genome, resource.amount) } // Return already handled Resources w/o legacy
 
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)

@@ -17,8 +17,10 @@
         L
 
 -EggShell                           0       0.05   80         -500   500  100000000  Ignore    None         @EggShell
+        L
 
 -Chitin                             0       0.02   1000       -500   500  100000000  Ignore    None         @Chitin
+        L
 
 -Fur                                0       0.1    50         -500   500  100000000  Ignore    None         @Fur
         +MakeClothes/FurClothes:1
