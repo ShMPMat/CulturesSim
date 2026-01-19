@@ -39,19 +39,15 @@ class ResourceInstantiation(
     }
 
     fun createPool(): ResourcePool {
-        var line: String?
-        var tags: Array<String>
-        val urlEnumeration = Collections.enumeration(resourceResources)
-        val inputDatabase = InputDatabase(urlEnumeration)
-        while (true) {
-            line = inputDatabase.readLine()
-                    ?: break
-            tags = line.split("\\s+".toRegex()).toTypedArray()
-
+        val inputDatabase = InputDatabase(Collections.enumeration(resourceResources))
+        for (line in inputDatabase.readLines()) {
+            val tags = line.split("\\s+".toRegex())
             addTemplate(resourceTemplateCreator.createResource(tags))
         }
-        resourceStringTemplates.forEach { initConversions(it, listOf()) }
-        resourceStringTemplates.forEach { initParts(it) }
+        for (it in resourceStringTemplates)
+            initConversions(it, listOf())
+        for (it in resourceStringTemplates)
+            initParts(it)
 
         val swappedLegacyResources = mutableListOf<Resource>()
         val endResources = filteredFinalResources.map {
@@ -82,8 +78,8 @@ class ResourceInstantiation(
         val (resource, actionConversion, _) = template
         for ((a, l) in actionConversion.entries) {
             resource.genome.conversionCore.addActionConversion(
-                    a,
-                    l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
+                a,
+                l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
             )
         }
         if (resource.genome is GenomeTemplate)
@@ -103,7 +99,11 @@ class ResourceInstantiation(
                     )
     }
 
-    private fun readConversion(template: ResourceStringTemplate, link: ResourceLink, conversionPrefix: List<Resource>): Resource {
+    private fun readConversion(
+        template: ResourceStringTemplate,
+        link: ResourceLink,
+        conversionPrefix: List<Resource>
+    ): Resource {
         if (link.resourceName == "LEGACY")
             return manageLegacyConversion(template.resource, link.amount)
 
@@ -168,10 +168,10 @@ class ResourceInstantiation(
     }
 
     private fun swapLegacies(
-            resource: Resource,
-            swappedLegacyResources: MutableList<Resource>,
-            legacyResource: Resource? = null,
-            treeStart: List<Resource> = listOf()
+        resource: Resource,
+        swappedLegacyResources: MutableList<Resource>,
+        legacyResource: Resource? = null,
+        treeStart: List<Resource> = listOf()
     ): Resource {
         swappedLegacyResources.firstOrNull { it.fullName == resource.fullName && it.genome.size == resource.genome.size }
             ?.let { return ResourceIdeal(it.genome, resource.amount) }
@@ -181,11 +181,14 @@ class ResourceInstantiation(
                 oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
             else oldGenome
         }
-        val newResource = ResourceIdeal(newGenome.copy(
-            legacy = legacyResource?.baseName?.takeIf { newGenome.hasLegacy },
-            parts = listOf(),
-            primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial!!
-        ), resource.amount)
+        val newResource = ResourceIdeal(
+            newGenome.copy(
+                legacy = legacyResource?.baseName?.takeIf { newGenome.hasLegacy },
+                parts = listOf(),
+                primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial!!
+            ),
+            resource.amount
+        )
 
         swappedLegacyResources += newResource
 
@@ -217,7 +220,7 @@ class ResourceInstantiation(
                         newResource,
                         treeStart + listOf(newResource)
                     )
-                }.let{ ResourceIdeal(it.genome, r.amount) }
+                }.let { ResourceIdeal(it.genome, r.amount) }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
         injectBuildings(newConversionCore)

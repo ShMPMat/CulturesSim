@@ -21,7 +21,7 @@ class ResourceTemplateCreator(
         private val dependencyParser: DependencyParser,
         private val conversionParser: ConversionParser
 ) {
-    fun createResource(tags: Array<String>): ResourceStringTemplate {
+    fun createResource(tags: List<String>): ResourceStringTemplate {
         val name = tags.getOrNull(0)
                 ?: throw DataInitializationError("Tags for Resource are empty")
         val type = ResourceType.valueOf(tags[8])

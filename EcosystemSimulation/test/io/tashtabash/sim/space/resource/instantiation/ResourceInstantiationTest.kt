@@ -56,5 +56,11 @@ class ResourceInstantiationTest {
         assertTrue {
             resources.all.all { it.genome !is GenomeTemplate }
         }
+        assertNull(
+            resources.all.firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } },
+            "Resource with parts w/o legacy: \n" + resources.all
+                .firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } }
+                ?.let { "$it\n" + it.genome.parts.joinToString("\n") }
+        )
     }
 }
