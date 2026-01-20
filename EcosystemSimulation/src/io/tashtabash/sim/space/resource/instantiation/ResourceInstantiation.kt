@@ -49,7 +49,7 @@ class ResourceInstantiation(
         for (it in resourceStringTemplates)
             initParts(it)
 
-        val swappedLegacyResources = mutableListOf<Resource>()
+        val swappedLegacyResources = mutableListOf<Pair<Resource, Resource?>>()
         val endResources = filteredFinalResources.map {
             swapLegacies(it, swappedLegacyResources) as ResourceIdeal
         }
@@ -169,13 +169,11 @@ class ResourceInstantiation(
 
     private fun swapLegacies(
         resource: Resource,
-        swappedLegacyResources: MutableList<Resource>,
+        swappedLegacyResources: MutableList<Pair<Resource, Resource?>>,
         legacyResource: Resource? = null,
         treeStart: List<Resource> = listOf()
     ): Resource {
-        swappedLegacyResources.firstOrNull { it.fullName == resource.fullName }
-            ?.let { return ResourceIdeal(it.genome, resource.amount) } // Return already handled Resources w/o legacy
-
+        val legacy = legacyResource?.takeIf { resource.genome.hasLegacy }
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
                 oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
@@ -183,14 +181,15 @@ class ResourceInstantiation(
         }
         val newResource = ResourceIdeal(
             newGenome.copy(
-                legacy = legacyResource?.baseName?.takeIf { newGenome.hasLegacy },
-                parts = listOf(),
-                primaryMaterial = newGenome.primaryMaterial ?: legacyResource?.genome?.primaryMaterial!!
+                legacy = legacy?.baseName,
+                parts = listOf()
             ),
             resource.amount
         )
 
-        swappedLegacyResources += newResource
+        swappedLegacyResources.firstOrNull { it.first == newResource && it.second == legacy }
+            ?.let { return ResourceIdeal(it.first.genome, resource.amount) } // Has has already been handled
+        swappedLegacyResources += newResource to legacy
 
         val newParts = resource.genome.parts.map {
             swapLegacies(
@@ -227,14 +226,16 @@ class ResourceInstantiation(
 
         newResource.genome.conversionCore = newConversionCore
         // Match actions for legacy Resources, since they were not matched at initConversions(..)
-        matchActions(newResource) { res, n ->
-            swapLegacies(
-                res.injectAppearance(resource),
-                swappedLegacyResources,
-                newResource,
-                treeStart + listOf(newResource)
-            ).copy(n)
-                .let { r -> ResourceIdeal(r.genome, n) }
+        matchActions(newResource) { r, n ->
+            when (r) {
+                newResource -> newResource
+                else -> swapLegacies(
+                    r.injectAppearance(resource),
+                    swappedLegacyResources,
+                    newResource,
+                    treeStart + listOf(newResource)
+                )
+            }.let { ResourceIdeal(it.genome, n) }
         }
 
         return newResource

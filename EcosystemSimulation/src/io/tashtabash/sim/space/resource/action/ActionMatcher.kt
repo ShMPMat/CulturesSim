@@ -6,9 +6,9 @@ import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 
 
 class ActionMatcher(
-        private val labeler: ResourceLabeler,
-        private val results: List<Pair<String, Int>>,
-        private val resourceActionName: String
+    private val labeler: ResourceLabeler,
+    private val results: List<Pair<String, Int>>,
+    private val resourceActionName: String
 ) {
     init {
         if (results.isEmpty())

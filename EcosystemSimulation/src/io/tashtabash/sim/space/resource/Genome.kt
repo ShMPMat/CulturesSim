@@ -133,18 +133,14 @@ open class Genome(
 
     val mass: Double
         get() {
-            val material = primaryMaterial
-                ?: return 0.0
-            return material.density * size.pow(3)
+            primaryMaterial ?: throw ExceptionInInitializerError("Resource $name has no material")
+            return primaryMaterial.density * size.pow(3)
         }
 
-    fun addPart(part: Resource) {
-        val i = parts.indexOf(part)
-        if (i == -1)
+    fun addPart(part: Resource) =
+        if (!parts.contains(part))
             parts += part
-        else
-            parts[i].addAmount(part.amount)
-    }
+        else throw ExceptionInInitializerError("Resource $name already has part ${part.baseName}")
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

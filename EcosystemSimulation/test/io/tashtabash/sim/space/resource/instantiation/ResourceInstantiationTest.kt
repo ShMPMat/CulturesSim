@@ -2,10 +2,13 @@ package io.tashtabash.sim.space.resource.instantiation
 
 import io.tashtabash.sim.init.getResourcePaths
 import io.tashtabash.sim.space.resource.ResourceIdeal
+import io.tashtabash.sim.space.resource.action.ActionMatcher
+import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.instantiation.tag.DefaultTagParser
 import io.tashtabash.sim.space.resource.material.MaterialInstantiation
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.createTagMatchers
+import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
 import io.tashtabash.utils.InputDatabase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -38,7 +41,15 @@ class ResourceInstantiationTest {
         val materialPool = instantiation.createPool()
         val resourceInstantiation = ResourceInstantiation(
             resourceResources,
-            mapOf(),
+            mapOf(
+                ResourceAction("Incinerate", listOf(), listOf()) to listOf(
+                    ActionMatcher(
+                        TagLabeler(ResourceTag("canBeIgnited")),
+                        listOf("Ash" to 2, "MATCHED" to 1),
+                        "Incinerate"
+                    )
+                )
+            ),
             materialPool,
             1,
             DefaultTagParser(tags),

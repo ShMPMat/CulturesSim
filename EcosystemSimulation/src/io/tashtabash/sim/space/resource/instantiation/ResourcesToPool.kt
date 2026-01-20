@@ -5,7 +5,7 @@ import io.tashtabash.sim.space.resource.ResourceIdeal
 import io.tashtabash.sim.space.resource.container.ResourcePool
 
 
-fun listAllResources(startResources: List<ResourceIdeal>): MutableList<ResourceIdeal> {
+fun listAllResources(startResources: List<ResourceIdeal>): List<ResourceIdeal> {
     val finalizedResources = mutableListOf<ResourceIdeal>()
     val resourcesToAdd = mutableListOf<ResourceIdeal>()
     resourcesToAdd += startResources
@@ -15,7 +15,7 @@ fun listAllResources(startResources: List<ResourceIdeal>): MutableList<ResourceI
             throw DataInitializationError("Template Resource in the final Resources - ${templateResource.baseName}")
         }
 
-        finalizedResources.addAll(resourcesToAdd)
+        finalizedResources += resourcesToAdd
         val lastResources = resourcesToAdd.toList()
         resourcesToAdd.clear()
 
@@ -31,9 +31,9 @@ fun listAllResources(startResources: List<ResourceIdeal>): MutableList<ResourceI
         resourcesToAdd.removeIf { it in finalizedResources }
     }
 
-    return finalizedResources
+    return finalizedResources.distinctBy { it.baseName }
 }
 
 fun finalizePool(finalizedResources: List<ResourceIdeal>) = ResourcePool(
-    finalizedResources.sortedBy { it.baseName }.distinctBy { it.baseName }.map { it.core }
+    finalizedResources.sortedBy { it.baseName }.map { it.core }
 )
