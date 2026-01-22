@@ -60,9 +60,10 @@ class ResourceTemplateCreator(
                         val (action, result) = conversionParser.parse(tag)
                         actionConversion[action] = result
                     }
-                    '@' -> if (tag == "TEMPLATE")
+                    '@' -> if (tag == "TEMPLATE") {
                         isTemplate = true
-                    else {
+                        hasLegasy = true
+                    } else {
                         val material = materialPool.get(tag)
                         if (primaryMaterial == null)
                             primaryMaterial = material
@@ -73,14 +74,13 @@ class ResourceTemplateCreator(
                     'l' -> resourceDependencies += LevelRestrictions(
                             tag.split(";".toRegex())[0].toInt(), tag.split(";".toRegex())[1].toInt()
                     )
-                    '~' -> {
+                    '~' ->
                         try {
                             val rDependency = dependencyParser.parseUnsafe(tag)
                             resourceDependencies += rDependency
                         } catch (e: ParseException) {
                             throw DataInitializationError("Failed initializing resource '$name': ${e.message}")
                         }
-                    }
                     '#' -> resourceDependencies += AvoidTiles(
                             tag.split(":".toRegex())
                                 .map { Tile.Type.valueOf(it) }

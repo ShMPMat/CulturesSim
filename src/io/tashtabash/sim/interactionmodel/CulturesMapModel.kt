@@ -8,17 +8,14 @@ import io.tashtabash.sim.event.EventLog
 class CulturesMapModel : InteractionModel<CulturesWorld> {
     override val eventLog = EventLog(isOblivious = false)
 
-    var overallTime: Long = 0
-    var groupTime: Long = 0
-    var othersTime: Long = 0
     var groupMainTime: Long = 0
     var groupOthersTime: Long = 0
     var groupMigrationTime: Long = 0
     var groupInnerOtherTime: Long = 0
 
     override fun turn(world: CulturesWorld) {
-        overallTime = System.nanoTime()
-        groupTime = System.nanoTime()
+        var overallTime = System.nanoTime()
+        var groupTime = System.nanoTime()
         groupMainTime = 0
         groupOthersTime = 0
         groupInnerOtherTime = 0
@@ -30,7 +27,7 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
             group.update()
 
         groupTime = System.nanoTime() - groupTime
-        othersTime = System.nanoTime()
+        var othersTime = System.nanoTime()
 
         groups = world.shuffledConglomerates
         for (group in groups)
@@ -52,11 +49,16 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
         if (world.lesserTurnNumber % 100 == 0)
             world.clearDeadConglomerates()
 
+        val nsToS = 1000_000_000.0
         println(
-                "Overall - $overallTime Groups - $groupTime Others - $othersTime Groups to others - "
-                        + groupTime.toDouble() / othersTime.toDouble() +
-                        " main update to others - " + groupMainTime.toDouble() / groupOthersTime.toDouble() +
-                        " current test to others - " + groupMigrationTime.toDouble() / groupInnerOtherTime.toDouble()
+            buildString {
+                append("Overall - ${"%.3f".format(overallTime / nsToS)}s ")
+                append("Groups - ${"%.3f".format(groupTime / nsToS)}s ")
+                append("Others - ${"%.3f".format(othersTime / nsToS)}s ")
+                append("Groups to others - ${"%.3f".format(groupTime.toDouble() / othersTime)} ")
+                append("main update to others - ${"%.3f".format(groupMainTime.toDouble() / groupOthersTime)} ")
+                append("test to others - ${"%.3f".format(groupMigrationTime.toDouble() / groupInnerOtherTime)}")
+            }
         )
     }
 

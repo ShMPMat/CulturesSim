@@ -8,10 +8,10 @@ import java.util.*
 
 //Contains all general information about all Resources with the same name.
 class ResourceCore(
-        val genome: Genome,
-        externalFeatures: List<ExternalResourceFeature> = listOf(),
-        val ownershipMarker: OwnershipMarker = freeMarker,
-        val resourceBuilder: (ResourceCore, Int) -> Resource = { c, a -> Resource(c, a) }
+    val genome: Genome,
+    externalFeatures: List<ExternalResourceFeature> = listOf(),
+    val ownershipMarker: OwnershipMarker = freeMarker,
+    internal val resourceBuilder: (ResourceCore, Int) -> Resource = { c, a -> Resource(c, a) }
 ) {
     val externalFeatures = externalFeatures.sortedBy { it.index }
 
@@ -30,23 +30,23 @@ class ResourceCore(
     val wrappedSample by lazy { listOf(sample) }
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
-            if (genome is GenomeTemplate)
-                throw SpaceError("Can't make a full copy of a template")
-            else resourceBuilder(ResourceCore(genome.copy(), externalFeatures, ownershipMarker), genome.defaultAmount)
+        if (genome is GenomeTemplate)
+            throw SpaceError("Can't make a full copy of a template")
+        else resourceBuilder(ResourceCore(genome.copy(), externalFeatures, ownershipMarker), genome.defaultAmount)
 
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = ResourceCore(
-            genome.copy(),
-            features
+        genome.copy(),
+        features
     )
 
     fun copy(
-            genome: Genome = this.genome,
-            externalFeatures: List<ExternalResourceFeature> = this.externalFeatures,
-            ownershipMarker: OwnershipMarker = this.ownershipMarker
+        genome: Genome = this.genome,
+        externalFeatures: List<ExternalResourceFeature> = this.externalFeatures,
+        ownershipMarker: OwnershipMarker = this.ownershipMarker
     ) = ResourceCore(
-            genome,
-            externalFeatures,
-            ownershipMarker
+        genome,
+        externalFeatures,
+        ownershipMarker
     )
 
     override fun equals(other: Any?): Boolean {

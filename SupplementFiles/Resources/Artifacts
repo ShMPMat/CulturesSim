@@ -41,67 +41,66 @@
 -HandPlough                         0       0.5    10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         &a(PlantSeed)-m(0.001,hard,sturdy)
-        L
 
 -Basket                             0       0.3    10         -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         &a(Take)-0.01
-        L d10
+        d10
 
 -Bloomery                           0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
         $furnace
-        L d10
+        d10
 
 -House                              0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         $shelter:3
-        L d10 I
+        d10 I
 
 -Wigwam                             0       3      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         $shelter:2
-        L d10 I
+        d10 I
 
 -Yurt                               0       3      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         $shelter:2
-        L d10
+        d10
 
 -Temple                             0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
-        L I
+        I
 
 -Farm                               0       5      10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
         &a(PlantSeed)-0.5
-        L I
+        I
 
 -Road                               0       1000   10000      -500   500  100000000  Ignore    Building     @TEMPLATE
         $composite
-        L I
+        I
 
 -Dish                               0       0.1    10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
-        L d5
+        d5
 
 -Boat                               0       2      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite
-        L d5
+        d5
 
 -Spear                              0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite  $weapon:m(0.03,hard,sturdy)
         &a(Killing)-m(0.03,hard,sturdy)
-        L d5
+        d5
 
 -Shield                             0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite $defence:m(0.1,hard,sturdy)
         &a(Killing)-m(0.02,hard,sturdy)
-        L d5
+        d5
 -RingMail                           0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite $defence:m(0.2,hard,sturdy)
         &a(Killing)-m(0.05,hard,sturdy)
-        L d5
+        d5
 
 -Dye                                0       0.05   10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $colour:3
-        L d5
+        d5
