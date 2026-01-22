@@ -3,9 +3,9 @@ package io.tashtabash.sim.event
 import io.tashtabash.sim.Controller
 
 
-//Object storing memory about something that happened in the world.
+// A message about something that happened in the World
 open class Event(var type: Type, val description: String) {
-    private val turnString = Controller.session.world?.turn?.toString() ?: "Pre-historic"
+    private val turnString = Controller.session.world.turn.toString()
     val turn = turnString.toIntOrNull()
 
     override fun toString() = "${type.colourString}$turnString. ${type.javaClass.simpleName}: $description\u001B[37m"
@@ -29,4 +29,4 @@ object PopulationDecrease : Type("")
 object Other : Type("")
 
 infix fun Type.of(description: String) =
-        Event(this, description)
+    Event(this, description)

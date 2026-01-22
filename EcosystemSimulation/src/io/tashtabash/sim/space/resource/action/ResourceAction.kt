@@ -26,6 +26,8 @@ open class ResourceAction(
             dependencies: List<ResourceDependency> = this.dependencies,
             name: String = this.name
     ) = ResourceAction(technicalName, tags, dependencies, name)
+
+    override fun toString() = name
 }
 
 

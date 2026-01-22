@@ -76,16 +76,11 @@ class ResourceInstantiation(
 
     private fun initConversions(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
         val (resource, actionConversion, _) = template
-        for ((a, l) in actionConversion.entries) {
+        for ((a, l) in actionConversion.entries)
             resource.genome.conversionCore.addActionConversion(
                 a,
                 l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
             )
-        }
-        if (resource.genome is GenomeTemplate)
-            return
-
-        matchActions(resource)
     }
 
     private fun matchActions(resource: Resource, resourceMapper: (Resource, Int) -> Resource = { r, n -> r.copy(n) }) {
@@ -222,7 +217,6 @@ class ResourceInstantiation(
                 }.let { ResourceIdeal(it.genome, r.amount) }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
-        injectBuildings(newConversionCore)
 
         newResource.genome.conversionCore = newConversionCore
         // Match actions for legacy Resources, since they were not matched at initConversions(..)
@@ -237,11 +231,12 @@ class ResourceInstantiation(
                 )
             }.let { ResourceIdeal(it.genome, n) }
         }
+        applyActionInjectors(newConversionCore)
 
         return newResource
     }
 
-    private fun injectBuildings(conversionCore: ConversionCore) {
+    private fun applyActionInjectors(conversionCore: ConversionCore) {
         conversionCore.actionConversions.flatMap { (a, rs) ->
             resourceActionInjectors.flatMap { i -> i(a, rs) }
         }.forEach { (a, rs) ->
@@ -259,7 +254,7 @@ data class ResourceStringTemplate(
 typealias TemplateConversions = Map<ResourceAction, List<ResourceLink>>
 
 
-val phonyResource = Resource(
+private val phonyResource = Resource(
     ResourceCore(
         Genome(
             "Phony",

@@ -2,6 +2,7 @@ package io.tashtabash.sim.space.resource.instantiation
 
 import io.tashtabash.sim.init.getResourcePaths
 import io.tashtabash.sim.space.resource.ResourceIdeal
+import io.tashtabash.sim.space.resource.Resources
 import io.tashtabash.sim.space.resource.action.ActionMatcher
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.instantiation.tag.DefaultTagParser
@@ -9,6 +10,7 @@ import io.tashtabash.sim.space.resource.material.MaterialInstantiation
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.resource.tag.createTagMatchers
 import io.tashtabash.sim.space.resource.tag.labeler.TagLabeler
+import io.tashtabash.sim.space.resource.transformer.NameTransformer
 import io.tashtabash.utils.InputDatabase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -53,11 +55,25 @@ class ResourceInstantiationTest {
             materialPool,
             1,
             DefaultTagParser(tags),
-            listOf()
+            listOf(
+                fun(a: ResourceAction, rs: Resources): List<Pair<ResourceAction, Resources>> {
+                    val ash = rs.firstOrNull { it.simpleName == "Ash" }
+                        ?: return listOf()
+
+                    val actionName = "Ultra" + a.technicalName
+                    val newAction = a.copy(actionName)
+                    val newResources = rs.map {
+                        if (it != ash) it.exactCopy() else NameTransformer { "HotAsh" }.transform(it)
+                    }
+
+                    return listOf(newAction to newResources)
+                }
+            )
         )
 
         val resources = resourceInstantiation.createPool()
 
+        // Check that there are no half-baked Resources
         assertTrue {
             resources.all.all { it.genome.primaryMaterial != null }
         }
@@ -73,5 +89,12 @@ class ResourceInstantiationTest {
                 .firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } }
                 ?.let { "$it\n" + it.genome.parts.joinToString("\n") }
         )
+        // Check that the injector was applied
+        assertTrue {
+            resources.all.any {
+                it.genome.conversionCore.actionConversions.keys
+                    .any { a -> a.technicalName == "UltraIncinerate" }
+            }
+        }
     }
 }
