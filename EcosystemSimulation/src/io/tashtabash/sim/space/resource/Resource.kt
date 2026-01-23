@@ -14,10 +14,10 @@ import kotlin.math.pow
 
 
 open class Resource private constructor(
-        val core: ResourceCore,
-        amount: Int = core.genome.defaultAmount,
-        hash: Int?,
-        protected var deathTurn: Int = 0
+    val core: ResourceCore,
+    amount: Int = core.genome.defaultAmount,
+    hash: Int?,
+    protected var deathTurn: Int = 0
 ) : Comparable<Resource> {
     constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount) : this(core, amount, null)
 
@@ -35,7 +35,7 @@ open class Resource private constructor(
     //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death
     protected var deathOverhead = 0
 
-    //What part of this Resource will be destroyed on the next death
+    //What part of this Resource will be destroyed on the next death event
     protected var deathPart = 1.0
 
     inline val isEmpty: Boolean
@@ -164,13 +164,7 @@ open class Resource private constructor(
     fun exactCopy() = copy(amount)
 
     open fun copy(amount: Int = genome.defaultAmount, deathTurn: Int = 0) =
-            Resource(core, amount, _hash, deathTurn)
-
-    fun copyAndDestroy(amount: Int = genome.defaultAmount): Resource {
-        val result = copy(amount)
-        destroy()
-        return result
-    }
+        Resource(core, amount, _hash, deathTurn)
 
     fun fullCopy() = core.fullCopy()
 
@@ -181,7 +175,7 @@ open class Resource private constructor(
     }
 
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) =
-            copyWithExternalFeatures(externalFeatures + features)
+        copyWithExternalFeatures(externalFeatures + features)
 
     open fun update(tile: Tile): ResourceUpdateResult {
         val result = mutableListOf<TiledResource>()
@@ -239,8 +233,8 @@ open class Resource private constructor(
             expectedValue.chanceOf<Double> { 1.0 } ?: 0.0
         else expectedValue
         val satisfactionCoefficient = action.dependencies
-                .minOfOrNull { it.satisfactionPercent(tile, this) }
-                ?: 1.0
+            .minOfOrNull { it.satisfactionPercent(tile, this) }
+            ?: 1.0
         val part = (maxPart * satisfactionCoefficient).toInt()
 
         val result = if (action.isWasting)
@@ -249,8 +243,8 @@ open class Resource private constructor(
             applyAction(action, part)
         val targetTile = if (action.canChooseTile)
             (tile.neighbours + tile).filter { isAcceptable(it) }
-                    .randomElementOrNull()
-                    ?: tile
+                .randomElementOrNull()
+                ?: tile
         else tile
 
         return result.map { targetTile to it }
@@ -271,15 +265,15 @@ open class Resource private constructor(
         when (genome.behaviour.overflowType) {
             OverflowType.Migrate -> {
                 val tiles = tile.getNeighbours { areNecessaryDependenciesSatisfied(it) }
-                        .sortedBy { it.resourcePack.getAmount(this) }
+                    .sortedBy { it.resourcePack.getAmount(this) }
 
                 for (neighbour in tiles) {
                     if (amount <= genome.naturalDensity / 2)
                         break
 
                     var part = min(
-                            amount - genome.naturalDensity / 2,
-                            genome.naturalDensity - neighbour.resourcePack.getAmount(this)
+                        amount - genome.naturalDensity / 2,
+                        genome.naturalDensity - neighbour.resourcePack.getAmount(this)
                     )
                     part = if (part <= 0)
                         (amount - genome.naturalDensity / 2) / tiles.size
@@ -288,6 +282,7 @@ open class Resource private constructor(
                     neighbour.addDelayedResource(getCleanPart(part, SeparationTaker))
                 }
             }
+
             OverflowType.Cut -> amount = genome.naturalDensity
             OverflowType.Ignore -> {
             }
@@ -307,11 +302,11 @@ open class Resource private constructor(
     }
 
     fun applyActionUnsafe(action: ResourceAction) = genome.conversionCore.actionConversions[action]
-            ?: core.wrappedSample
+        ?: core.wrappedSample
 
     fun applyActionOrEmpty(action: ResourceAction, part: Int = 1): List<Resource> {
         val result = genome.conversionCore.applyAction(action)
-                ?: listOf()
+            ?: listOf()
         result.forEach { it.amount *= part }
         return result
     }
@@ -325,8 +320,8 @@ open class Resource private constructor(
 
     fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): Resources {
         val resourcePart =
-                if (isClean) getCleanPart(part, taker)
-                else getPart(part, taker)
+            if (isClean) getCleanPart(part, taker)
+            else getPart(part, taker)
 
         return resourcePart.applyAction(action, resourcePart.amount)
     }
@@ -368,10 +363,10 @@ open class Resource private constructor(
     } ?: false
 
     override fun equals(other: Any?) =
-            fullEquals(other)
+        fullEquals(other)
 
     fun fullEquals(o: Any?) =
-            equalsWithoutOwnership(o) && core.ownershipMarker == (o as Resource).core.ownershipMarker
+        equalsWithoutOwnership(o) && core.ownershipMarker == (o as Resource).core.ownershipMarker
 
     fun equalsWithoutOwnership(o: Any?): Boolean {
         if (this === o) return true

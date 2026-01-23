@@ -36,7 +36,7 @@ class ResourceTemplateCreator(
         val resourceDependencies: MutableList<ResourceDependency> = ArrayList()
         var primaryMaterial: Material? = null
         val secondaryMaterials: MutableList<Material> = ArrayList()
-        val actionConversion = mutableMapOf<ResourceAction, List<ResourceLink>>()
+        val actionConversion = mutableMapOf<ResourceAction, List<ResourceTemplateLink>>()
         val parts = mutableListOf<String>()
         var colour: ResourceColour? = null
         var texture: ResourceTexture? = null

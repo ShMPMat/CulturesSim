@@ -8,7 +8,7 @@ class ConversionParser(val actions: List<ResourceAction>, val dependencyParser: 
     private val conversionPrefix = "~"
     private val dependencySeparator = '/'
 
-    fun parse(conversionStr: String): Pair<ResourceAction, List<ResourceLink>> {
+    fun parse(conversionStr: String): Pair<ResourceAction, List<ResourceTemplateLink>> {
         val nameEndIndex = conversionStr.indexOf(dependencySeparator)
                 .takeIf { it != -1 }
                 ?: conversionStr.length

@@ -96,7 +96,7 @@ class ResourceInstantiation(
 
     private fun readConversion(
         template: ResourceStringTemplate,
-        link: ResourceLink,
+        link: ResourceTemplateLink,
         conversionPrefix: List<Resource>
     ): Resource {
         if (link.resourceName == "LEGACY")
@@ -251,7 +251,7 @@ data class ResourceStringTemplate(
     val parts: MutableList<String>
 )
 
-typealias TemplateConversions = Map<ResourceAction, List<ResourceLink>>
+typealias TemplateConversions = Map<ResourceAction, List<ResourceTemplateLink>>
 
 
 private val phonyResource = Resource(
