@@ -49,6 +49,8 @@ class ResourceInstantiation(
         for (it in resourceStringTemplates)
             initParts(it)
 
+        val filteredFinalResources = resourceStringTemplates.map { (r) -> r }
+            .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
         val swappedLegacyResources = mutableListOf<Pair<Resource, Resource?>>()
         val endResources = filteredFinalResources.map {
             swapLegacies(it, swappedLegacyResources) as ResourceIdeal
@@ -57,11 +59,6 @@ class ResourceInstantiation(
         val allResources = listAllResources(endResources)
         return finalizePool(allResources)
     }
-
-    private val filteredFinalResources
-        get() = resourceStringTemplates
-            .map { (r) -> r }
-            .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
 
     private fun addTemplate(template: ResourceStringTemplate) {
         if (resourceStringTemplates.any { it.resource.baseName == template.resource.baseName })
