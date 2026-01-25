@@ -30,7 +30,7 @@ class ActionMatcher(
             val resultResource =
                 if (name != "MATCHED")
                     resources.firstOrNull { it.baseName == name }
-                        ?: run { resources[0] }
+                        ?: throw DataInitializationError("No resource '$name' found")
                 else resource
             resultResource to amount
         }
