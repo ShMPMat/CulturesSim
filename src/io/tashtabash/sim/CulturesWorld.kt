@@ -48,7 +48,10 @@ open class CulturesWorld(
                     val actionName = a.technicalName + postfix
                     val newAction = a.copy(actionName)
                     val newResources = rs.map {
-                        if (it != building) it.exactCopy() else transformer.transform(it)
+                        if (it != building)
+                            it.exactCopy()
+                        else
+                            transformer.transform(it)
                     }
 
                     val oldAspectCore = aspectPool.get(a.technicalName)!!.core

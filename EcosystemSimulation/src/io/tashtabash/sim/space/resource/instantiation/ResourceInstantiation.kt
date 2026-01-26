@@ -43,6 +43,10 @@ class ResourceInstantiation(
         for (line in inputDatabase.readLines()) {
             val tags = line.split("\\s+".toRegex())
             addTemplate(resourceTemplateCreator.createResource(tags))
+            // I'm confused (remember, whatever you do, you'll have non-instantiated resources)
+            // Turning parts with hasLegacy into templates - ok
+            // moving templates to another folder - will have to move the parts too? sounds fine
+            // But having the instantiation at the last step as rn is dumb, I'll have to handle both cases until then
         }
         for (it in resourceStringTemplates)
             initConversions(it, listOf())
@@ -87,7 +91,7 @@ class ResourceInstantiation(
                     resource.genome.conversionCore.addActionConversion(
                         action,
                         matcher.getResults(resource, resourceStringTemplateResources)
-                            .map { (r, n) -> resourceMapper(r, n) }
+                            .map { (r, n) -> resourceMapper(instantiateGenomeTemplate(r, resource), n) }
                     )
     }
 
@@ -106,7 +110,7 @@ class ResourceInstantiation(
                 foundTemplate.resource
             }
         val resource = link.transform(conversionResource)
-        return resource.copy(link.amount)
+        return instantiateGenomeTemplate(resource.copy(link.amount), conversionPrefix.last())
     }
 
     private fun manageLegacyConversion(resource: ResourceIdeal, amount: Int): Resource {
@@ -165,6 +169,9 @@ class ResourceInstantiation(
         legacyResource: Resource? = null,
         treeStart: List<Resource> = listOf()
     ): Resource {
+        if (resource.genome is GenomeTemplate) {
+            throw ParseException("Templates are not allowed")
+        }
         val legacy = legacyResource?.takeIf { resource.genome.hasLegacy }
         val newGenome = resource.genome.let { oldGenome ->
             if (oldGenome is GenomeTemplate)
@@ -275,3 +282,16 @@ private val phonyResource = Resource(
         )
     )
 )
+
+fun instantiateGenomeTemplate(resource: Resource, legacy: Resource): Resource =
+    resource.genome.let { genome ->
+        if (genome !is GenomeTemplate)
+            return resource
+        if (legacy.genome is GenomeTemplate)
+            throw ParseException("Can't instantiate ${resource.baseName} as part of Template ${legacy.baseName}")
+
+        return ResourceIdeal(
+            genome.getInstantiatedGenome(legacy.genome),
+            resource.amount
+        )
+    }
