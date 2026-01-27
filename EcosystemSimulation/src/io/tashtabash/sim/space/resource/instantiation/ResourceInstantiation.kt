@@ -129,8 +129,6 @@ class ResourceInstantiation(
 
             resource.genome.addPart(partResource)
         }
-
-        addTakeApartAction(template)
     }
 
     private fun Resource.injectAppearance(referenceResource: Resource): Resource {
@@ -148,18 +146,17 @@ class ResourceInstantiation(
         return result
     }
 
-    private fun addTakeApartAction(template: ResourceStringTemplate) {
+    private fun addTakeApartAction(genome: Genome) {
         val takeApart = specialActions.getValue("TakeApart")
         val killing = specialActions.getValue("Killing")
-        val (resource, actionConversion, _) = template
 
-        if (resource.genome.parts.isNotEmpty()) {
-            val result = resource.genome.parts.toList()
+        if (genome.parts.isNotEmpty()) {
+            val result = genome.parts.toList()
 
-            if (!actionConversion.containsKey(takeApart) && !resource.genome.behaviour.isResisting)
-                resource.genome.conversionCore.addActionConversion(takeApart, result)
-            else if (!actionConversion.containsKey(killing) && resource.genome.behaviour.isResisting)
-                resource.genome.conversionCore.addActionConversion(killing, result)
+            if (!genome.conversionCore.actionConversions.containsKey(takeApart) && !genome.behaviour.isResisting)
+                genome.conversionCore.addActionConversion(takeApart, result)
+            else if (!genome.conversionCore.actionConversions.containsKey(killing) && genome.behaviour.isResisting)
+                genome.conversionCore.addActionConversion(killing, result)
         }
     }
 
@@ -236,6 +233,7 @@ class ResourceInstantiation(
             }.let { ResourceIdeal(it.genome, n) }
         }
         applyActionInjectors(newConversionCore)
+        addTakeApartAction(newResource.genome)
 
         return newResource
     }
