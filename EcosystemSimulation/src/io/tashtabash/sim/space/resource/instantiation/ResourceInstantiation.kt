@@ -80,7 +80,7 @@ class ResourceInstantiation(
         for ((a, l) in actionConversion.entries)
             resource.genome.conversionCore.addActionConversion(
                 a,
-                l.map { readConversion(template, it, conversionPrefix + listOf(resource)) }
+                l.map { readConversion(it, conversionPrefix + listOf(resource)) }
             )
     }
 
@@ -95,29 +95,18 @@ class ResourceInstantiation(
                     )
     }
 
-    private fun readConversion(
-        template: ResourceStringTemplate,
-        link: ResourceTemplateLink,
-        conversionPrefix: List<Resource>
-    ): Resource {
+    private fun readConversion(link: ResourceTemplateLink, conversionPrefix: List<Resource>): Resource {
         if (link.resourceName == "LEGACY")
-            return manageLegacyConversion(template.resource, link.amount)
+            return phonyResource.copy(link.amount) // The legacy isn't computed yet, put a mock resource fot now
 
         val conversionResource = conversionPrefix.dropLast(1).firstOrNull { link.resourceName == it.baseName }
             ?: run {
-                val foundTemplate = getTemplateWithName(link.resourceName)
-                initConversions(foundTemplate, conversionPrefix)
-                foundTemplate.resource
+                val template = getTemplateWithName(link.resourceName)
+                initConversions(template, conversionPrefix)
+                template.resource
             }
         val resource = link.transform(conversionResource)
         return instantiateGenomeTemplate(resource.copy(link.amount), conversionPrefix.last())
-    }
-
-    private fun manageLegacyConversion(resource: ResourceIdeal, amount: Int): Resource {
-        val legacy = resource.genome.legacy
-            ?: return phonyResource.copy(amount)
-        val legacyTemplate = getTemplateWithName(legacy)
-        return legacyTemplate.resource.copy(amount)
     }
 
     private fun initParts(template: ResourceStringTemplate) {
