@@ -160,7 +160,9 @@ class ResourceInstantiation(
         )
 
         swappedLegacyResources.firstOrNull { it.first == newResource && it.second == legacy }
-            ?.let { return ResourceIdeal(it.first.genome, resource.amount) } // Has has already been handled
+            ?.let {
+                return ResourceIdeal(it.first.genome, resource.amount) // Has already been handled
+            }
         swappedLegacyResources += newResource to legacy
 
         val newParts = resource.genome.parts.map {
@@ -172,14 +174,11 @@ class ResourceInstantiation(
             )
                 .copy(it.amount)
                 .let { r -> ResourceIdeal(r.genome, it.amount) }
-        }.toMutableList()
-
-        newParts.forEach {
-            newResource.genome.addPart(it)
         }
+        for (it in newParts)
+            newResource.genome.addPart(it)
 
         val newConversionCore = ConversionCore(mutableMapOf())
-
         resource.genome.conversionCore.actionConversions.map { (action, results) ->
             action to results.map { r ->
                 when (r) {
@@ -194,8 +193,8 @@ class ResourceInstantiation(
                 }.let { ResourceIdeal(it.genome, r.amount) }
             }
         }.forEach { (a, r) -> newConversionCore.addActionConversion(a, r) }
-
         newResource.genome.conversionCore = newConversionCore
+
         // Match actions for legacy Resources, since they were not matched at initConversions(..)
         matchActions(newResource) { r, n ->
             when (r) {
