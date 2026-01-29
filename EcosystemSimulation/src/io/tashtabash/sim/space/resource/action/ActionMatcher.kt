@@ -2,7 +2,10 @@ package io.tashtabash.sim.space.resource.action
 
 import io.tashtabash.sim.DataInitializationError
 import io.tashtabash.sim.space.resource.Resource
+import io.tashtabash.sim.space.resource.instantiation.ResourceStringTemplate
+import io.tashtabash.sim.space.resource.instantiation.instantiateTemplate
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
+import java.util.ArrayList
 
 
 class ActionMatcher(
@@ -25,11 +28,13 @@ class ActionMatcher(
                 labeler.isSuitable(resource.genome)
         else false
 
-    fun getResults(resource: Resource, resources: List<Resource>): List<Pair<Resource, Int>> =
+    fun getResults(resource: Resource, resources: ArrayList<ResourceStringTemplate>): List<Pair<Resource, Int>> =
         results.map { (name, amount) ->
             val resultResource =
                 if (name != "MATCHED")
-                    resources.firstOrNull { it.baseName == name }
+                    resources.firstOrNull { it.genomeTemplate.baseName == name }
+                        ?.genomeTemplate
+                        ?.let { instantiateTemplate(it, resource.genome) }
                         ?: throw DataInitializationError("No resource '$name' found")
                 else resource
             resultResource to amount

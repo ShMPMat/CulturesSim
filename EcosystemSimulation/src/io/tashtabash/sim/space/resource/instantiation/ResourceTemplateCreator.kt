@@ -145,50 +145,54 @@ class ResourceTemplateCreator(
         val appearance = Appearance(colour, texture, shape)
 
         val genome = if (isTemplate)
-            GenomeTemplate(
-                name = name,
-                type = type,
-                sizeRange = sizeRange,
-                spreadProbability = spreadProbability,
-                baseDesirability = baseDesirability,
-                isMutable = isMutable,
-                isMovable = isMovable,
-                behaviour = behaviour,
-                appearance = appearance,
-                hasLegacy = hasLegasy,
-                lifespan = lifespan,
-                defaultAmount = defaultAmount,
-                legacy = legacy,
-                dependencies = resourceDependencies,
-                tags = setOf(),
-                primaryMaterial = primaryMaterial,
-                secondaryMaterials = secondaryMaterials,
-                conversionCore = conversionCore,
-                tagTemplates = resourceTags
+            ResourceTemplate.Template(
+                GenomeTemplate(
+                    name = name,
+                    type = type,
+                    sizeRange = sizeRange,
+                    spreadProbability = spreadProbability,
+                    baseDesirability = baseDesirability,
+                    isMutable = isMutable,
+                    isMovable = isMovable,
+                    behaviour = behaviour,
+                    appearance = appearance,
+                    hasLegacy = hasLegasy,
+                    lifespan = lifespan,
+                    defaultAmount = defaultAmount,
+                    legacy = legacy,
+                    dependencies = resourceDependencies,
+                    tags = setOf(),
+                    primaryMaterial = primaryMaterial,
+                    secondaryMaterials = secondaryMaterials,
+                    conversionCore = conversionCore,
+                    tagTemplates = resourceTags
+                )
             )
         else
-            Genome(
-                name = name,
-                type = type,
-                sizeRange = sizeRange,
-                spreadProbability = spreadProbability,
-                baseDesirability = baseDesirability,
-                isMutable = isMutable,
-                isMovable = isMovable,
-                behaviour = behaviour,
-                appearance = appearance,
-                hasLegacy = hasLegasy,
-                lifespan = lifespan,
-                defaultAmount = defaultAmount,
-                legacy = legacy,
-                dependencies = resourceDependencies,
-                tags = setOf(),
-                primaryMaterial = primaryMaterial,
-                secondaryMaterials = secondaryMaterials,
-                conversionCore = conversionCore
-            ).let { g ->
-                g.copy(tags = resourceTags.map { it.initialize(g) }.toSet())
-            }
+            ResourceTemplate.Ready(
+                Genome(
+                    name = name,
+                    type = type,
+                    sizeRange = sizeRange,
+                    spreadProbability = spreadProbability,
+                    baseDesirability = baseDesirability,
+                    isMutable = isMutable,
+                    isMovable = isMovable,
+                    behaviour = behaviour,
+                    appearance = appearance,
+                    hasLegacy = hasLegasy,
+                    lifespan = lifespan,
+                    defaultAmount = defaultAmount,
+                    legacy = legacy,
+                    dependencies = resourceDependencies,
+                    tags = setOf(),
+                    primaryMaterial = primaryMaterial,
+                    secondaryMaterials = secondaryMaterials,
+                    conversionCore = conversionCore
+                ).let { g ->
+                    g.copy(tags = resourceTags.map { it.initialize(g) }.toSet())
+                }
+            )
 
 
         specialActions.values
@@ -198,6 +202,6 @@ class ResourceTemplateCreator(
                     actionConversion[it] = listOf()
             }
 
-        return ResourceStringTemplate(ResourceIdeal(genome), actionConversion, parts)
+        return ResourceStringTemplate(genome, actionConversion, parts)
     }
 }

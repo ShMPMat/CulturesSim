@@ -10,70 +10,28 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 
 // A template which should be instantiated by a legacy Resource before it becomes a resource (like a house)
 class GenomeTemplate(
-    name: String,
-    type: ResourceType,
-    sizeRange: Pair<Double, Double>,
-    spreadProbability: Double,
-    baseDesirability: Int,
-    isMutable: Boolean,
-    isMovable: Boolean,
-    behaviour: Behaviour,
-    appearance: Appearance,
-    hasLegacy: Boolean,
-    lifespan: Double,
-    defaultAmount: Int,
-    legacy: BaseName?,
-    dependencies: List<ResourceDependency>,
-    tags: Set<ResourceTag>,
-    primaryMaterial: Material?,
-    secondaryMaterials: List<Material>,
-    conversionCore: ConversionCore,
-    val tagTemplates: List<TagTemplate>
-) : Genome(
-    name,
-    type,
-    sizeRange,
-    spreadProbability,
-    baseDesirability,
-    isMutable,
-    isMovable,
-    behaviour,
-    appearance,
-    hasLegacy,
-    lifespan,
-    defaultAmount,
-    legacy,
-    dependencies,
-    tags,
-    primaryMaterial,
-    secondaryMaterials,
-    conversionCore
+    val name: String,
+    val type: ResourceType,
+    val sizeRange: Pair<Double, Double>,
+    val spreadProbability: Double,
+    val baseDesirability: Int,
+    val isMutable: Boolean,
+    val isMovable: Boolean,
+    val behaviour: Behaviour,
+    val appearance: Appearance,
+    val hasLegacy: Boolean,
+    val lifespan: Double,
+    val defaultAmount: Int,
+    val legacy: BaseName?,
+    val dependencies: List<ResourceDependency>,
+    val tags: Set<ResourceTag>,
+    val primaryMaterial: Material?,
+    val secondaryMaterials: List<Material>,
+    val conversionCore: ConversionCore,
+    val tagTemplates: List<TagTemplate>,
+    val parts: MutableList<Resource> = mutableListOf()
 ) {
-    init {
-        parts.forEach { addPart(it) }
-    }
-
-    override fun copy(
-        name: String,
-        type: ResourceType,
-        sizeRange: Pair<Double, Double>,
-        spreadProbability: Double,
-        baseDesirability: Int,
-        isMutable: Boolean,
-        isMovable: Boolean,
-        behaviour: Behaviour,
-        appearance: Appearance,
-        hasLegacy: Boolean,
-        lifespan: Double,
-        defaultAmount: Int,
-        legacy: BaseName?,
-        dependencies: List<ResourceDependency>,
-        tags: Set<ResourceTag>,
-        primaryMaterial: Material?,
-        secondaryMaterials: List<Material>,
-        conversionCore: ConversionCore,
-        parts: List<Resource>
-    ) = GenomeTemplate(
+    fun getInstantiatedGenome(legacyGenome: Genome) = Genome(
         name,
         type,
         sizeRange,
@@ -84,45 +42,15 @@ class GenomeTemplate(
         behaviour,
         appearance,
         hasLegacy,
-        lifespan,
+        legacyGenome.lifespan,
         defaultAmount,
-        legacy,
+        legacyGenome.baseName,
         dependencies,
-        tags,
-        primaryMaterial,
-        secondaryMaterials,
-        conversionCore,
-        tagTemplates
-    )
-
-    private fun toGenome() = Genome(
-        name,
-        type,
-        sizeRange,
-        spreadProbability,
-        baseDesirability,
-        isMutable,
-        isMovable,
-        behaviour,
-        appearance,
-        hasLegacy,
-        lifespan,
-        defaultAmount,
-        legacy,
-        dependencies,
-        tags,
-        primaryMaterial,
+        legacyGenome.tags + tags.filter { it !in legacyGenome.tags },
+        legacyGenome.primaryMaterial,
         secondaryMaterials,
         conversionCore
-    )
-
-
-    fun getInstantiatedGenome(legacyGenome: Genome) = copy(
-        lifespan = legacyGenome.lifespan,
-        legacy = legacyGenome.baseName,
-        primaryMaterial = legacyGenome.primaryMaterial,
-        tags = legacyGenome.tags + this.tags.filter { it !in legacyGenome.tags }
     ).let {
-        it.copy(tags = it.tags + tagTemplates.map { t -> t.initialize(it) }).toGenome()
+        it.copy(tags = it.tags + tagTemplates.map { t -> t.initialize(it) })
     }
 }

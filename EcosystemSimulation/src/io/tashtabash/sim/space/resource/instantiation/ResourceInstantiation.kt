@@ -34,19 +34,12 @@ class ResourceInstantiation(
     )
 
     private val resourceStringTemplates = ArrayList<ResourceStringTemplate>()
-    private val resourceStringTemplateResources by lazy {
-        resourceStringTemplates.map { it.resource }
-    }
 
     fun createPool(): ResourcePool {
         val inputDatabase = InputDatabase(Collections.enumeration(resourceResources))
         for (line in inputDatabase.readLines()) {
             val tags = line.split("\\s+".toRegex())
             addTemplate(resourceTemplateCreator.createResource(tags))
-            // I'm confused (remember, whatever you do, you'll have non-instantiated resources)
-            // Turning parts with hasLegacy into templates - ok
-            // moving templates to another folder - will have to move the parts too? sounds fine
-            // But having the instantiation at the last step as rn is dumb, I'll have to handle both cases until then
         }
         for (it in resourceStringTemplates)
             initConversions(it, listOf())
@@ -54,10 +47,11 @@ class ResourceInstantiation(
             initParts(it)
 
         val filteredFinalResources = resourceStringTemplates.map { (r) -> r }
-            .filter { it.genome !is GenomeTemplate && !it.genome.hasLegacy }
+            .filterIsInstance<ResourceTemplate.Ready>()
+            .filter { !it.genome.hasLegacy }
         val swappedLegacyResources = mutableListOf<Pair<Resource, Resource?>>()
         val endResources = filteredFinalResources.map {
-            swapLegacies(it, swappedLegacyResources) as ResourceIdeal
+            swapLegacies(ResourceIdeal(it.genome), swappedLegacyResources) as ResourceIdeal
         }
 
         val allResources = listAllResources(endResources)
@@ -65,24 +59,15 @@ class ResourceInstantiation(
     }
 
     private fun addTemplate(template: ResourceStringTemplate) {
-        if (resourceStringTemplates.any { it.resource.baseName == template.resource.baseName })
-            throw ParseException("Resource with name ${template.resource.baseName} is already being created")
+        if (resourceStringTemplates.any { it.genomeTemplate.baseName == template.genomeTemplate.baseName })
+            throw ParseException("Resource with name ${template.genomeTemplate.baseName} is already being created")
 
         resourceStringTemplates += template
     }
 
     private fun getTemplateWithName(name: String): ResourceStringTemplate = resourceStringTemplates
-        .firstOrNull { it.resource.baseName == name }
+        .firstOrNull { it.genomeTemplate.baseName == name }
         ?: throw NoSuchElementException("Cannot find a Resource template with a name '$name'")
-
-    private fun initConversions(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
-        val (resource, actionConversion, _) = template
-        for ((a, l) in actionConversion.entries)
-            resource.genome.conversionCore.addActionConversion(
-                a,
-                l.map { readConversion(it, conversionPrefix + listOf(resource)) }
-            )
-    }
 
     private fun matchActions(resource: Resource, resourceMapper: (Resource, Int) -> Resource = { r, n -> r.copy(n) }) {
         for ((action, matchers) in actions)
@@ -90,9 +75,18 @@ class ResourceInstantiation(
                 if (matcher.match(resource))
                     resource.genome.conversionCore.addActionConversion(
                         action,
-                        matcher.getResults(resource, resourceStringTemplateResources)
-                            .map { (r, n) -> resourceMapper(instantiateGenomeTemplate(r, resource), n) }
+                        matcher.getResults(resource, resourceStringTemplates)
+                            .map { (r, n) -> resourceMapper(r, n) }
                     )
+    }
+
+    private fun initConversions(template: ResourceStringTemplate, conversionPrefix: List<Resource>) {
+        val (genome, actionConversion, _) = template
+        for ((a, l) in actionConversion.entries)
+            genome.conversionCore.addActionConversion(
+                a,
+                l.map { readConversion(it, conversionPrefix + listOf(createResource(template.genomeTemplate))) }
+            )
     }
 
     private fun readConversion(link: ResourceTemplateLink, conversionPrefix: List<Resource>): Resource {
@@ -103,20 +97,21 @@ class ResourceInstantiation(
             ?: run {
                 val template = getTemplateWithName(link.resourceName)
                 initConversions(template, conversionPrefix)
-                template.resource
+                instantiateTemplate(template.genomeTemplate, conversionPrefix.last().genome)
             }
         val resource = link.transform(conversionResource)
-        return instantiateGenomeTemplate(resource.copy(link.amount), conversionPrefix.last())
+        return resource.copy(link.amount)
     }
 
     private fun initParts(template: ResourceStringTemplate) {
-        val (resource, _, parts) = template
+        val (genome, _, parts) = template
         for (part in parts) {
             val link = parseLink(part, conversionParser)
             val partTemplate = getTemplateWithName(link.resourceName)
-            val partResource = link.transform(partTemplate.resource)
+            val instantiatedResource = createResource(partTemplate.genomeTemplate)
+            val partResource = link.transform(instantiatedResource)
 
-            resource.genome.addPart(partResource)
+            genome.addPart(partResource)
         }
     }
 
@@ -155,17 +150,9 @@ class ResourceInstantiation(
         legacyResource: Resource? = null,
         treeStart: List<Resource> = listOf()
     ): Resource {
-        if (resource.genome is GenomeTemplate) {
-            throw ParseException("Templates are not allowed")
-        }
         val legacy = legacyResource?.takeIf { resource.genome.hasLegacy }
-        val newGenome = resource.genome.let { oldGenome ->
-            if (oldGenome is GenomeTemplate)
-                oldGenome.getInstantiatedGenome(legacyResource?.genome!!)//TODO make it safe
-            else oldGenome
-        }
         val newResource = ResourceIdeal(
-            newGenome.copy(
+            resource.genome.copy(
                 legacy = legacy?.baseName,
                 parts = listOf()
             ),
@@ -237,10 +224,31 @@ class ResourceInstantiation(
 }
 
 data class ResourceStringTemplate(
-    val resource: ResourceIdeal,
+//    val resource: ResourceIdeal,
+    val genomeTemplate: ResourceTemplate,
     val actionConversion: TemplateConversions,
     val parts: MutableList<String>
 )
+
+sealed class ResourceTemplate {
+    abstract val baseName: String
+    abstract val conversionCore: ConversionCore
+    abstract fun addPart(part: Resource)
+
+    class Ready(val genome: Genome): ResourceTemplate() {
+        override val baseName = genome.baseName
+        override val conversionCore = genome.conversionCore
+        override fun addPart(part: Resource) = genome.addPart(part)
+    }
+
+    class Template(val genome: GenomeTemplate): ResourceTemplate() {
+        override val baseName = genome.name
+        override val conversionCore = genome.conversionCore
+        override fun addPart(part: Resource) {
+            genome.parts += part
+        }
+    }
+}
 
 typealias TemplateConversions = Map<ResourceAction, List<ResourceTemplateLink>>
 
@@ -270,15 +278,17 @@ private val phonyResource = Resource(
     )
 )
 
-fun instantiateGenomeTemplate(resource: Resource, legacy: Resource): Resource =
-    resource.genome.let { genome ->
-        if (genome !is GenomeTemplate)
-            return resource
-        if (legacy.genome is GenomeTemplate)
-            throw ParseException("Can't instantiate ${resource.baseName} as part of Template ${legacy.baseName}")
+fun createResource(template: ResourceTemplate) =
+    if (template is ResourceTemplate.Ready)
+        ResourceIdeal(template.genome)
+    else throw ParseException("No templates allowed")
 
-        return ResourceIdeal(
-            genome.getInstantiatedGenome(legacy.genome),
-            resource.amount
-        )
-    }
+fun instantiateTemplate(resourceTemplate: ResourceTemplate, legacy: Genome) =
+    ResourceIdeal(
+        when (resourceTemplate) {
+            is ResourceTemplate.Template ->
+                resourceTemplate.genome.getInstantiatedGenome(legacy)
+            is ResourceTemplate.Ready ->
+                resourceTemplate.genome
+        }
+    )
