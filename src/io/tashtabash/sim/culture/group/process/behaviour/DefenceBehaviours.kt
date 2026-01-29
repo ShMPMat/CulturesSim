@@ -17,7 +17,7 @@ object DefenceFromNatureB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val defenceEvents = mutableListOf<Event>()
 
-        group.populationCenter.actualPopulation.takers
+        group.populationCenter.populationResource.takers
             .filter { it.first is Taker.ResourceTaker && it.second > 0 }
             .forEach { (taker, decrease) ->
                 val hostileResource = (taker as Taker.ResourceTaker).resource
@@ -43,7 +43,7 @@ object ManageDefenceB : AbstractGroupBehaviour() {
         val additionalDanger = group.resourceCenter.pack.getTagPresence(weaponTag) / 1000
         val additionalResistance = group.resourceCenter.pack.getTagPresence(defenceTag) / 1000
 
-        group.populationCenter.actualPopulation.genome.behaviour.apply {
+        group.populationCenter.populationResource.genome.behaviour.apply {
             danger = 0.05 + additionalDanger
             resistance = 0.1 + additionalResistance
         }

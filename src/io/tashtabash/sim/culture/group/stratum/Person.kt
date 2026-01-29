@@ -1,9 +1,8 @@
 package io.tashtabash.sim.culture.group.stratum
 
 import io.tashtabash.sim.Controller
-import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.PopulationDecrease
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.resource.*
 import io.tashtabash.sim.space.resource.action.ConversionCore
@@ -11,34 +10,34 @@ import java.lang.Integer.min
 
 
 class Person(ownershipMarker: OwnershipMarker) : Resource(
-        ResourceCore(
-                Genome(
-                        "Person",
-                        ResourceType.Animal,
-                        1.6 to 1.6,
-                        0.0,
-                        0,
-                        false,
-                        true,
-                        Behaviour(0.1, 0.05, 0.25, 1.0, OverflowType.Ignore),
-                        Appearance(null, null, null),
-                        false,
-                        50.0,
-                        50,
-                        null,
-                        emptyList(),
-                        emptySet(),
-                        SpaceData.data.materialPool.get("Meat"),
-                        emptyList(),
-                        ConversionCore(mapOf())
-                ),
-                ownershipMarker = ownershipMarker,
-                resourceBuilder = { c, a ->
-                    Person(c.ownershipMarker).apply {
-                        amount = a
-                    }
-                }
-        )
+    ResourceCore(
+        Genome(
+            "Person",
+            ResourceType.Animal,
+            1.6 to 1.6,
+            0.0,
+            0,
+            false,
+            true,
+            Behaviour(0.1, 0.05, 0.25, 1.0, OverflowType.Ignore),
+            Appearance(null, null, null),
+            false,
+            50.0,
+            50,
+            null,
+            emptyList(),
+            emptySet(),
+            SpaceData.data.materialPool.get("Meat"),
+            emptyList(),
+            ConversionCore(mapOf())
+        ),
+        ownershipMarker = ownershipMarker,
+        resourceBuilder = { c, a ->
+            Person(c.ownershipMarker).apply {
+                amount = a
+            }
+        }
+    )
 ) {
     private var toDie = 0
 
@@ -54,10 +53,11 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
         if (result.isEmpty || taker == Taker.SelfTaker)
             return
 
-        Controller.session.world.events.add(Event(
-                PopulationDecrease,
-                "$ownershipMarker actual population of $amount decreased by ${result.amount}: taken by $taker"
-        ))
+        val oldPopulation = amount + result.amount
+        Controller.session.world.events.add(
+            PopulationDecrease of
+                    "$ownershipMarker population of $oldPopulation decreased by ${result.amount}: taken by $taker"
+        )
     }
 
     override fun copy(amount: Int, deathTurn: Int) = Person(ownershipMarker).apply {

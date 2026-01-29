@@ -16,7 +16,6 @@ import io.tashtabash.sim.culture.group.stratum.Stratum
 import io.tashtabash.sim.culture.group.stratum.StratumPeople
 import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.PopulationDecrease
-import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.space.resource.OwnershipMarker
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
@@ -31,32 +30,32 @@ import kotlin.math.min
 
 
 class PopulationCenter(
-        population: Int,
-        private val maxPopulation: Int,
-        private val minPopulation: Int,
-        ownershipMarker: OwnershipMarker,
-        initTile: Tile,
-        initResources: ResourcePack
+    population: Int,
+    private val maxPopulation: Int,
+    private val minPopulation: Int,
+    ownershipMarker: OwnershipMarker,
+    initTile: Tile,
+    initResources: ResourcePack
 ) {
     var population = population
-        set(value) {
-            if (value != actualPopulation.amount) {
+        private set(value) {
+            if (value != populationResource.amount) {
                 val diff = value - field
 
                 if (diff > 0)
-                    actualPopulation.addAmount(diff, 0.0)
+                    populationResource.addAmount(diff, 0.0)
                 else if (diff < 0)
-                    actualPopulation.getCleanPart(-diff, Taker.SelfTaker)
+                    populationResource.getCleanPart(-diff, Taker.SelfTaker)
             }
 
             field = value
         }
 
-    val actualPopulation = Person(ownershipMarker).copy(population)
-    val taker = Taker.ResourceTaker(actualPopulation)
+    val populationResource = Person(ownershipMarker).copy(population)
+    val taker = Taker.ResourceTaker(populationResource)
 
     init {
-        initTile.addDelayedResource(actualPopulation)
+        initTile.addDelayedResource(populationResource)
     }
 
     val stratumCenter = StratumCenter(initTile)
@@ -124,28 +123,27 @@ class PopulationCenter(
         if (delta > 0)
             for (stratum in stratumCenter.strata) {
                 val part = min(
-                        (actualAmount * (stratum.population.toDouble() / population) + 1).toInt(),
-                        stratum.population
+                    (actualAmount * (stratum.population.toDouble() / population) + 1).toInt(),
+                    stratum.population
                 )
                 stratum.decreaseAmount(part)
             }
 
         population -= actualAmount
 
-        reason?.let {
+        if (reason != null)
             Controller.session.world.events.add(Event(
-                    PopulationDecrease,
-                    "${actualPopulation.ownershipMarker} population of $population decreased by $actualAmount: $it"
+                PopulationDecrease,
+                "${populationResource.ownershipMarker} population of $population decreased by $actualAmount: $reason"
             ))
-        }
     }
 
     fun update(accessibleTerritory: Territory, group: Group) {
-        if (actualPopulation.amount < population) {
-            val decrease = population - actualPopulation.amount
+        if (populationResource.amount < population) {
+            val decrease = population - populationResource.amount
             decreasePopulation(
-                    decrease,
-                    "WARNING unexpected populationCenter update, actual population is bigger than expected"
+                decrease,
+                "WARNING unexpected populationCenter update, actual population is bigger than expected"
             )
         }
 
@@ -237,7 +235,7 @@ class PopulationCenter(
     }
 
     override fun toString() = """
-        |${actualPopulation.genome.behaviour}
+        |${populationResource.genome.behaviour}
         |Free - $freePopulation
         |$stratumCenter
         |
