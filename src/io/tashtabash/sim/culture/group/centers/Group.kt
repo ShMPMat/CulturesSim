@@ -110,7 +110,7 @@ class Group(
         cultureCenter.update(this)
         processCenter.update(this)
 
-        if (populationCenter.population == 0)
+        if (populationCenter.amount == 0)
             die()
         session.interactionModel.let {
             if (it is CulturesMapModel)
@@ -160,7 +160,7 @@ class Group(
         populationCenter.finishUpdate(this)
         resourceCenter.finishUpdate()
         cultureCenter.finishUpdate()
-        if (populationCenter.population == 0)
+        if (populationCenter.amount == 0)
             die()
     }
 
@@ -179,7 +179,7 @@ class Group(
 
     override fun toString() = chompToSize(
             """
-        |Group $name is $state, population = ${populationCenter.population}, parent - ${parentGroup.name}
+        |Group $name is $state, population = ${populationCenter.amount}, parent - ${parentGroup.name}
         |
         |$cultureCenter
         |

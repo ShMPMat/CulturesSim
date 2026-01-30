@@ -98,7 +98,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         val newCenter = migrationTile
             ?: return false
 
-        val population = tileTag.group.populationCenter.populationResource
+        val population = tileTag.group.populationCenter.population
         territory.center?.removeResource(population)
         territory.center?.addDelayedResource(population)
 

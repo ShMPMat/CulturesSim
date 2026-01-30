@@ -34,7 +34,7 @@ class RequestCenter {
     internal fun updateRequests(group: Group) {
         turnRequests = constructRequests(RequestConstructController(
                 group,
-                group.populationCenter.population,
+                group.populationCenter.amount,
                 group.resourceCenter.pack,
                 turnRequests
         ))

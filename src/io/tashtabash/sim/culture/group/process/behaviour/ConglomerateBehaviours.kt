@@ -19,7 +19,7 @@ import io.tashtabash.sim.culture.group.process.interaction.ProbableStrikeWarI
 import io.tashtabash.sim.event.Change
 import io.tashtabash.sim.event.Creation
 import io.tashtabash.sim.event.Event
-import io.tashtabash.sim.event.Type
+import io.tashtabash.sim.event.of
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -64,7 +64,7 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
                     "${initiator.name} objects ${opponent.name} leaving the Conglomerate",
                     ActionSequencePA(conglomerate.subgroups.map { GroupTransferA(initiator, it) })
             ).reverseRun() +
-                    ProcessResult(Event(Change, "${opponent.name} diverged to it's own Conglomerate"))
+                    ProcessResult(Change of "${opponent.name} diverged to its own Conglomerate")
         } else
             ProcessResult(Trait.Consolidation.toPositiveChange())
     }
@@ -88,7 +88,7 @@ object SplitGroupB : AbstractGroupBehaviour() {
 
         Add(newGroup).execute(group.parentGroup)
 
-        return ProcessResult(Event(Creation, "${group.name} made a new group ${newGroup.name}")) +
+        return ProcessResult(Creation of "${group.name} made a new group ${newGroup.name}") +
                 ProcessResult(Trait.Expansion.toPositiveChange())
     }
 

@@ -8,7 +8,7 @@ import io.tashtabash.sim.space.resource.container.ResourcePack
 class Fetish(resource: Resource) : WorshipResourceFeature(resource) {
     override fun doUse(group: Group, parent: Worship) = true
 
-    override fun getNeededAmount(group: Group, parent: Worship) = group.populationCenter.population -
+    override fun getNeededAmount(group: Group, parent: Worship) = group.populationCenter.amount -
             group.resourceCenter.getResource(resource).amount
 
     override fun processResources(pack: ResourcePack, group: Group, parent: Worship) =

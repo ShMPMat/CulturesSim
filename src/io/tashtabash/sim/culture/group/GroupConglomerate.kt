@@ -156,7 +156,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
 
     private fun computePopulation() {
         population = subgroups
-                .map { it.populationCenter.population }
+                .map { it.populationCenter.amount }
                 .foldRight(0, Int::plus)
     }
 
@@ -174,7 +174,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
             ?: Int.MAX_VALUE
 
     fun removeGroup(group: Group) {
-        population -= group.populationCenter.population
+        population -= group.populationCenter.amount
         if (!_subgroups.remove(group))
             throw RuntimeException("Trying to remove non-child subgroup ${group.name} from Group $name")
 

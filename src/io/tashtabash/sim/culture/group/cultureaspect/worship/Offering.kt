@@ -25,7 +25,7 @@ class Offering(resource: Resource, val type: OfferingType, val interval: Int) : 
         } else false
     }
 
-    override fun getNeededAmount(group: Group, parent: Worship) = group.populationCenter.population
+    override fun getNeededAmount(group: Group, parent: Worship) = group.populationCenter.amount
 
     override fun processResources(pack: ResourcePack, group: Group, parent: Worship) {
         when(type) {

@@ -27,7 +27,7 @@ class ConversionDependency(
         if (controller.ceiling <= 0)
             return AspectResult()
 
-        val taker = Taker.ResourceTaker(controller.populationCenter.populationResource)
+        val taker = Taker.ResourceTaker(controller.populationCenter.population)
 
         val gatheredPack = controller.pickCeilingPart(
                 controller.territory.getResourceInstances(resource),

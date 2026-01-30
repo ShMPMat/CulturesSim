@@ -192,7 +192,7 @@ open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
                 aspect.core.resourceAction,
                 ceil(controller.ceiling).toInt(),
                 true,
-                Taker.ResourceTaker(controller.populationCenter.populationResource)
+                Taker.ResourceTaker(controller.populationCenter.population)
             )
         })
         resourcePack.addAll(result.resources)

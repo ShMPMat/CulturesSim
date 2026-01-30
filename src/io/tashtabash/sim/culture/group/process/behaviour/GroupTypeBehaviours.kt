@@ -12,7 +12,7 @@ object ManageOwnType : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         if (group.parentGroup.subgroups.none { it.processCenter.type == AdministrationType.Main }) {
             group.processCenter.type = AdministrationType.Main
-            return ProcessResult(Change of "${group.name} became a main Group in it's own Conglomerate")
+            return ProcessResult(Change of "${group.name} became a main Group in its own Conglomerate")
         }
 
         return emptyProcessResult

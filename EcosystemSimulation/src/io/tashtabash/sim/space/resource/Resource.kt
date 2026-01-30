@@ -289,7 +289,7 @@ open class Resource private constructor(
         }
     }
 
-    open fun addAmount(otherAmount: Int, otherDeathPart: Double = 1.0) {
+    open fun addAmount(otherAmount: Int, otherDeathPart: Double = 0.0) {
         if (otherAmount > 0)
             deathPart = (amount * deathPart + otherAmount * otherDeathPart) / (amount + otherAmount)
         this.amount += otherAmount

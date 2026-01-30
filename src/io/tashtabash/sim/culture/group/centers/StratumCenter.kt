@@ -10,21 +10,18 @@ import io.tashtabash.sim.space.territory.Territory
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.tile.Tile
 
-class StratumCenter(initTile: Tile) {
-    private val _strata = mutableListOf<Stratum>()
+class StratumCenter(strata: List<Stratum>) {
+    private val _strata = strata.toMutableList()
     val strata: List<Stratum> = _strata
 
-    init {
-        _strata.add(WarriorStratum(initTile))
-        _strata.add(TraderStratum(initTile))
+    val traderStratum: TraderStratum by lazy {
+        strata.filterIsInstance<TraderStratum>()
+            .first()
     }
-
-    val traderStratum: TraderStratum = strata
-            .filterIsInstance<TraderStratum>()
+    val warriorStratum: WarriorStratum by lazy {
+        strata.filterIsInstance<WarriorStratum>()
             .first()
-    val warriorStratum: WarriorStratum = strata
-            .filterIsInstance<WarriorStratum>()
-            .first()
+    }
 
     private val cultStrata = mutableMapOf<String, CultStratum>()
     private val aspectStrata = mutableMapOf<ConverseWrapper, AspectStratum>()
