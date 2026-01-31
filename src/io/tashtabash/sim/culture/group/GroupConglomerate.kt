@@ -40,17 +40,17 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
 
     init {
         claimTile(root)
-        for (i in 0 until numberOfSubGroups) {
+        repeat(numberOfSubGroups) {
             val name = newName
             val memoryCenter = MemoryCenter()
             val aspectCenter = AspectCenter(emptyList())
             val populationCenter = PopulationCenter(
-                    population / numberOfSubGroups,
-                    CulturesController.session.defaultGroupMaxPopulation,
-                    CulturesController.session.defaultGroupMinPopulationPerTile,
-                    OwnershipMarker(name),
-                    root,
-                    ResourcePack()
+                population / numberOfSubGroups,
+                CulturesController.session.defaultGroupMaxPopulation,
+                CulturesController.session.defaultGroupMinPopulationPerTile,
+                OwnershipMarker(name),
+                root,
+                ResourcePack()
             )
 
             addGroup(Group(

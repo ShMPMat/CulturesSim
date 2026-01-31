@@ -13,14 +13,13 @@ class Offering(resource: Resource, val type: OfferingType, val interval: Int) : 
         isFunctioning = true
     }
 
-    private var turnsPassed = 0;
+    private var turnsPassed = 0
 
     override fun doUse(group: Group, parent: Worship): Boolean {
         turnsPassed++
 
         return if (turnsPassed == interval) {
             turnsPassed = 0
-
             true
         } else false
     }
@@ -35,20 +34,20 @@ class Offering(resource: Resource, val type: OfferingType, val interval: Int) : 
                         .firstOrNull { it.staticPlace.getResource(templeResource).amount > 0 }
 
                 place?.staticPlace?.addResources(pack)
-                isFunctioning = if (place == null) {
-                    group.resourceCenter.addAll(pack)
-
-                    false
-                } else true
+                isFunctioning =
+                    if (place == null) {
+                        group.resourceCenter.addAll(pack)
+                        false
+                    } else true
             }
             CultPractitioners -> {
                 parent.cult?.findStratum(group, parent)?.ego?.place?.current?.addResources(pack)
 
-                isFunctioning = if (parent.cult == null) {
-                    group.resourceCenter.addAll(pack)
-
-                    false
-                } else true
+                isFunctioning =
+                    if (parent.cult == null) {
+                        group.resourceCenter.addAll(pack)
+                        false
+                    } else true
             }
         }
     }

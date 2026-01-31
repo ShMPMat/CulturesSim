@@ -18,7 +18,6 @@ import io.tashtabash.sim.culture.group.process.interaction.GroupTransferWithNego
 import io.tashtabash.sim.culture.group.process.interaction.ProbableStrikeWarI
 import io.tashtabash.sim.event.Change
 import io.tashtabash.sim.event.Creation
-import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.event.of
 import kotlin.math.pow
 import kotlin.math.sqrt
