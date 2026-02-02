@@ -53,7 +53,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                 ResourcePack()
             )
 
-            addGroup(Group(
+            addGroup(
+                Group(
                     ProcessCenter(AdministrationType.Main),
                     ResourceCenter(MutableResourcePack(), root, name),
                     this,
@@ -65,10 +66,10 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                         (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
                     CultureAspectCenter(
-                            ReasonField(
-                                    generateCultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter),
-                                    listOf(generateCommonReasonings(name))
-                            )
+                        ReasonField(
+                            generateCultureConversions(memoryCenter, aspectCenter, populationCenter.stratumCenter),
+                            listOf(generateCommonReasonings(name))
+                        )
                     ),
                     TraitCenter(),
                     root,
@@ -77,15 +78,16 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     GroupMemes(),
                     emptyList(),
                     CulturesController.session.defaultGroupSpreadability
-            ))
+                )
+            )
         }
     }
 
     constructor(numberOfSubgroups: Int, root: Tile) : this(
-            CulturesController.session.vacantGroupName,
-            100 + CulturesController.session.random.nextInt(100),
-            numberOfSubgroups,
-            root
+        CulturesController.session.vacantGroupName,
+        100 + CulturesController.session.random.nextInt(100),
+        numberOfSubgroups,
+        root
     )
 
     /**
@@ -94,32 +96,32 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
      */
     val aspects: Set<Aspect>
         get() = subgroups
-                .flatMap { it.cultureCenter.aspectCenter.aspectPool.all }
-                .toSet()
+            .flatMap { it.cultureCenter.aspectCenter.aspectPool.all }
+            .toSet()
 
     /**
      * @return all CultureAspects of child Groups.
      */
     val cultureAspects: Set<CultureAspect>
         get() = subgroups
-                .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.all }
-                .toSet()
+            .flatMap { it.cultureCenter.cultureAspectCenter.aspectPool.all }
+            .toSet()
 
     /**
      * @return all Memes of child Groups.
      */
     val memes: List<Meme>
         get() = subgroups
-                .map { it.cultureCenter.memePool.all }
-                .foldRight(mutableMapOf()) { x: List<Meme>, y: MutableMap<Meme, Meme> ->
-                    for (meme in x) {
-                        if (meme !in y)
-                            y[meme] = meme.copy()
-                        else
-                            y[meme]?.increaseImportance(max(meme.importance - y.getValue(meme).importance, 0))
-                    }
-                    y
-                }.values.toList()
+            .map { it.cultureCenter.memePool.all }
+            .foldRight(mutableMapOf()) { x: List<Meme>, y: MutableMap<Meme, Meme> ->
+                for (meme in x) {
+                    if (meme !in y)
+                        y[meme] = meme.copy()
+                    else
+                        y[meme]?.increaseImportance(max(meme.importance - y.getValue(meme).importance, 0))
+                }
+                y
+            }.values.toList()
 
     private fun die() {
         state = State.Dead
@@ -133,19 +135,13 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         _subgroups.removeIf { it.state == Group.State.Dead }
         shuffledSubgroups.forEach { it.update() }
 
-        CulturesController.session.interactionModel.let {
-            if (it is CulturesMapModel)
-                it.groupMainTime += System.nanoTime() - mainTime
-        }
+        (CulturesController.session.interactionModel as CulturesMapModel).groupMainTime += System.nanoTime() - mainTime
         val othersTime = System.nanoTime()
         updatePopulation()
         if (state == State.Dead)
             return
         shuffledSubgroups.forEach { it.intergroupUpdate() }
-        CulturesController.session.interactionModel.let {
-            if (it is CulturesMapModel)
-                it.groupOthersTime += System.nanoTime() - othersTime
-        }
+        (CulturesController.session.interactionModel as CulturesMapModel).groupOthersTime += System.nanoTime() - othersTime
     }
 
     private fun updatePopulation() {
@@ -156,8 +152,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
 
     private fun computePopulation() {
         population = subgroups
-                .map { it.populationCenter.amount }
-                .foldRight(0, Int::plus)
+            .map { it.populationCenter.amount }
+            .foldRight(0, Int::plus)
     }
 
     fun claimTile(tile: Tile?) = territory.add(tile)
@@ -170,8 +166,8 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     }
 
     fun getClosestInnerGroupDistance(tile: Tile) = subgroups
-            .minOfOrNull { getClosest(tile, setOf(it.territoryCenter.center)).second }
-            ?: Int.MAX_VALUE
+        .minOfOrNull { getClosest(tile, setOf(it.territoryCenter.center)).second }
+        ?: Int.MAX_VALUE
 
     fun removeGroup(group: Group) {
         population -= group.populationCenter.amount
@@ -187,11 +183,9 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     }
 
     fun finishUpdate() {
-        if (state == State.Dead) {
-            subgroups.forEach { events.joinNewEvents(it.cultureCenter.events) }
-            return
-        }
-        subgroups.forEach { it.finishUpdate() }
+        if (state != State.Dead)
+            subgroups.forEach { it.finishUpdate() }
+
         subgroups.forEach { events.joinNewEvents(it.cultureCenter.events) }
     }
 
@@ -213,7 +207,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         for (subgroup in subgroups.take(10))
             stringBuilder = addToRight(stringBuilder.toString(), subgroup.toString(), false)
         if (subgroups.size > 10) stringBuilder.append(
-                subgroups.joinToString(",", "\n all:") { it.name }
+            subgroups.joinToString(",", "\n all:") { it.name }
         )
         return stringBuilder.toString()
     }

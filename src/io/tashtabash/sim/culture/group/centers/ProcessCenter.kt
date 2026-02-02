@@ -9,63 +9,58 @@ import io.tashtabash.sim.interactionmodel.CulturesMapModel
 import kotlin.math.pow
 
 
-class ProcessCenter(type: AdministrationType) {
-    var type = type
-        set(value) {
-            field = value
-        }
-
+class ProcessCenter(var type: AdministrationType) {
     private var _behaviours: MutableList<GroupBehaviour> = mutableListOf(
-            RandomArtifactB.withTrait(Trait.Creation.get().pow(0.25)),
-            RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
-                1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
+        RandomArtifactB.withTrait(Trait.Creation.get().pow(0.25)),
+        RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
+            1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
+        },
+        MutateCultureAspectsB.withProbability(session.groupCultureAspectCollapse),
+        CreateCultureAspectsB.withTrait(Trait.Creation.get()),
+        MutateAspectsB
+            .withTrait(Trait.Discovery.get() * 3)
+            .withProbability(1.0) {
+                1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size + 1)
             },
-            MutateCultureAspectsB.withProbability(session.groupCultureAspectCollapse),
-            CreateCultureAspectsB.withTrait(Trait.Creation.get()),
-            MutateAspectsB
-                    .withTrait(Trait.Discovery.get() * 3)
-                    .withProbability(1.0) {
-                        1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size + 1)
-                    },
-            CreateAspectsB
-                    .withTrait(Trait.Discovery.get() * 3)
-                    .withProbability(1.0) {
-                        1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size * 10 + 1)
-                    },
-            PerceiveSurroundingTerritoryB,
-            UpdateReasoningsB
-                .withProbability(session.reasoningUpdate),
+        CreateAspectsB
+            .withTrait(Trait.Discovery.get() * 3)
+            .withProbability(1.0) {
+                1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size * 10 + 1)
+            },
+        PerceiveSurroundingTerritoryB,
+        UpdateReasoningsB
+            .withProbability(session.reasoningUpdate),
 
-            RandomTradeB.times(1, 3),
-            RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),
-            MakeTradeResourceB(5).times(
-                    0,
-                    1,
-                    minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
-            ),
-            TurnRequestsHelpB,
-            GiveGiftB.withTrait(Trait.Peace.get() * 0.2),
-            SplitGroupB.withProbability(session.defaultGroupDiverge) {
-                session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
+        RandomTradeB.times(1, 3),
+        RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),
+        MakeTradeResourceB(5).times(
+            0,
+            1,
+            minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
+        ),
+        TurnRequestsHelpB,
+        GiveGiftB.withTrait(Trait.Peace.get() * 0.2),
+        SplitGroupB.withProbability(session.defaultGroupDiverge) {
+            session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
+        },
+        TryDivergeWithNegotiationB
+            .withTrait(Trait.Consolidation.getNegative() * 2)
+            .withProbability(session.defaultGroupExiting) {
+                it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
+                        session.defaultGroupExiting /
+                        it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)
             },
-            TryDivergeWithNegotiationB
-                    .withTrait(Trait.Consolidation.getNegative() * 2)
-                    .withProbability(session.defaultGroupExiting) {
-                        it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
-                                session.defaultGroupExiting /
-                                it.relationCenter.getAvgConglomerateRelation(it.parentGroup).pow(2)
-                    },
-            ManageOwnType.withProbability(session.defaultTypeRenewal) {
-                session.defaultTypeRenewal / it.parentGroup.subgroups.size
-            },
-            EstablishTradeRelationsB.withProbability(0.0) {
-                it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
-            },
-            RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive()),
-            InternalConsolidationB.withTrait(Trait.Consolidation.getPositive()),
-            DefenceFromNatureB,
-            ManageDefenceB,
-            ResolveResourceNeedB
+        ManageOwnType.withProbability(session.defaultTypeRenewal) {
+            session.defaultTypeRenewal / it.parentGroup.subgroups.size
+        },
+        EstablishTradeRelationsB.withProbability(0.0) {
+            it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
+        },
+        RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive()),
+        InternalConsolidationB.withTrait(Trait.Consolidation.getPositive()),
+        DefenceFromNatureB,
+        ManageDefenceB,
+        ResolveResourceNeedB
     )
 
     val behaviours: List<GroupBehaviour> = _behaviours
@@ -73,21 +68,19 @@ class ProcessCenter(type: AdministrationType) {
     private val addedBehaviours = mutableListOf<GroupBehaviour>()
 
     fun addBehaviour(behaviour: GroupBehaviour) =
-            addedBehaviours.add(behaviour)
+        addedBehaviours.add(behaviour)
 
     private fun addBehaviours(behaviours: List<GroupBehaviour>) =
-            behaviours.forEach { addBehaviour(it) }
+        behaviours.forEach { addBehaviour(it) }
 
     private fun updateBehaviours(group: Group) {
         _behaviours = _behaviours
-                .mapNotNull { it.update(group) }
-                .toMutableList()
+            .mapNotNull { it.update(group) }
+            .toMutableList()
 
         when (type) {
             AdministrationType.Main -> AddAdministrativeBehaviours(group)
-            else -> {
-
-            }
+            else -> {}
         }
     }
 
@@ -101,10 +94,7 @@ class ProcessCenter(type: AdministrationType) {
             updateBehaviours(group)
 
         runBehaviours(group)
-        session.interactionModel.let {
-            if (it is CulturesMapModel)
-                it.groupMigrationTime += System.nanoTime() - main
-        }
+        (session.interactionModel as CulturesMapModel).groupMigrationTime += System.nanoTime() - main
     }
 
     private fun AddAdministrativeBehaviours(group: Group) {
@@ -152,6 +142,7 @@ enum class AdministrationType {
 
 fun AdministrationType.getSubordinates(group: Group) = when (this) {
     AdministrationType.Main -> group.parentGroup.subgroups
-            .filter { it.processCenter.type == AdministrationType.Subordinate }
+        .filter { it.processCenter.type == AdministrationType.Subordinate }
+
     AdministrationType.Subordinate -> listOf()
 }

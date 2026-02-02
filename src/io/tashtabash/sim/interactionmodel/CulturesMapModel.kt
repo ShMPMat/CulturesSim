@@ -36,9 +36,8 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
         world.strayPlacesManager.update()
 
         eventLog.joinNewEvents(world.events)
-        groups.forEach {
-            eventLog.joinNewEvents(it.events)
-        }
+        for (group in groups)
+            eventLog.joinNewEvents(group.events)
         eventLog.clearNewEvents()
 
         othersTime = System.nanoTime() - othersTime

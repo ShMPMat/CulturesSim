@@ -1,11 +1,11 @@
 package io.tashtabash.sim.culture.group.process.behaviour
 
-import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.action.GroupAction
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.event.IntergroupInteraction
+import io.tashtabash.sim.event.of
 
 
 class DelayedB(val action: GroupAction, val delay: Int) : PlanBehaviour() {
@@ -17,7 +17,7 @@ class DelayedB(val action: GroupAction, val delay: Int) : PlanBehaviour() {
 
         var processResult = emptyProcessResult
         if (timePassed == 0)
-            processResult += ProcessResult(Event(IntergroupInteraction, "${group.name} started $action"))
+            processResult += ProcessResult(IntergroupInteraction of "${group.name} started $action")
 
         timePassed++
 
@@ -28,7 +28,7 @@ class DelayedB(val action: GroupAction, val delay: Int) : PlanBehaviour() {
         isFinished = true
 
         return processResult +
-                ProcessResult(Event(IntergroupInteraction, "${group.name} ended $action after $timePassed"))
+                ProcessResult(IntergroupInteraction of "${group.name} ended $action after $timePassed turns")
     }
 
     override val internalToString: String
