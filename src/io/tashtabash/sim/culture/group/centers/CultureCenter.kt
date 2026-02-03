@@ -43,7 +43,6 @@ class CultureCenter(
     fun update(group: Group) {
         aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
         cultureAspectCenter.update(group)
-        memoryCenter.update(group)
     }
 
     fun intergroupUpdate(group: Group) {
@@ -115,10 +114,10 @@ class CultureCenter(
     }
 
     fun evaluateResource(resource: Resource): Int {
-        val entry = evaluatedMap[resource]
-        if (entry != null)
-            if (session.world.turn - entry.creationTime < session.resourceValueRefreshTime)
-                return entry.value
+        evaluatedMap[resource]?.let {
+            if (session.world.turn - it.creationTime < session.resourceValueRefreshTime)
+                return it.value
+        }
 
         val base = resource.genome.baseDesirability + 1
         val meaningPart = if (resource.hasMeaning) 3 else 1

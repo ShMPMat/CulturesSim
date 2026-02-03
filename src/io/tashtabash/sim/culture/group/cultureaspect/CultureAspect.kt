@@ -4,7 +4,7 @@ import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.request.Request
 
 
-interface  CultureAspect {
+interface CultureAspect {
     fun getRequest(group: Group): Request?
 
     fun use(group: Group)

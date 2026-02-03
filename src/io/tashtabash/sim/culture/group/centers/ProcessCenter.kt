@@ -60,7 +60,8 @@ class ProcessCenter(var type: AdministrationType) {
         InternalConsolidationB.withTrait(Trait.Consolidation.getPositive()),
         DefenceFromNatureB,
         ManageDefenceB,
-        ResolveResourceNeedB
+        ResolveResourceNeedB,
+        UpdateMemoryB
     )
 
     val behaviours: List<GroupBehaviour> = _behaviours

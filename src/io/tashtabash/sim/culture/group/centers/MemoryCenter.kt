@@ -1,6 +1,5 @@
 package io.tashtabash.sim.culture.group.centers
 
-import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.group.request.RequestPool
 import io.tashtabash.sim.space.resource.Resource
@@ -9,19 +8,15 @@ import io.tashtabash.sim.space.resource.container.ResourcePack
 import io.tashtabash.utils.MovingAverage
 
 
-class MemoryCenter {
-    var turnRequests = RequestPool(mapOf())
+class MemoryCenter(
+    private val _resourceTraction: MutableMap<Resource, MovingAverage> = mutableMapOf(),
+    turnRequests: RequestPool = RequestPool(mapOf())
+) {
+    var turnRequests = turnRequests
         internal set
 
-    private val _resourceTraction = mutableMapOf<Resource, MovingAverage>()
     val resourceTraction: Map<Resource, MovingAverage>
         get() = _resourceTraction
-
-    fun update(group: Group) {
-        session.memoryUpdateProb.chanceOf {
-            updateResourceTraction(group.territoryCenter.territory.allResourcesPack)
-        }
-    }
 
     fun updateResourceTraction(resourcePack: ResourcePack) {
         val newResources = MutableResourcePack()
@@ -39,19 +34,14 @@ class MemoryCenter {
             _resourceTraction[resource] = MovingAverage(resource.amount, session.memoryStrengthCoefficient)
     }
 
-    fun fullCopy() = MemoryCenter().apply {
-        this.turnRequests = turnRequests
-        this._resourceTraction.forEach { (r, ma) ->
-            _resourceTraction[r] = MovingAverage(ma.value, ma.coefficient)
-        }
-    }
+    fun fullCopy() = MemoryCenter(resourceTraction.toMutableMap(), turnRequests)
 
     override fun toString() = "$turnRequests\n" +
             "\n" +
             "Resources awareness\n" +
             resourceTraction.entries.sortedByDescending { it.value.value.actualValue }
-                    .take(20)
-                    .joinToString("\n") { (r, ma) ->
-                        "${r.fullName} - ${ma.value.actualValue}"
-                    }
+                .take(20)
+                .joinToString("\n") { (r, ma) ->
+                    "${r.fullName} - ${ma.value.actualValue}"
+                }
 }
