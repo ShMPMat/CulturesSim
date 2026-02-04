@@ -11,6 +11,9 @@ import kotlin.math.pow
 
 class ProcessCenter(var type: AdministrationType) {
     private var _behaviours: MutableList<GroupBehaviour> = mutableListOf(
+        ForgetUnusedAspectsB,
+        UseCultureAspectsB,
+
         RandomArtifactB.withTrait(Trait.Creation.get().pow(0.25)),
         RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
             1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)

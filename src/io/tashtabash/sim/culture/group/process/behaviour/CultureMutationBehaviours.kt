@@ -41,12 +41,12 @@ object CreateAspectsB : AbstractGroupBehaviour() {
 
 object MutateCultureAspectsB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult =
-            when (ChangeRandom.entries.randomElement()) {
-                ChangeRandom.RitualSystem -> joinSimilarRituals(group)
-                ChangeRandom.TaleSystem -> joinSimilarTales(group)
-                ChangeRandom.Worship -> makeWorship(group)
-                ChangeRandom.God -> makeGod(group)
-            } ?: emptyProcessResult
+        when (ChangeRandom.entries.randomElement()) {
+            ChangeRandom.RitualSystem -> joinSimilarRituals(group)
+            ChangeRandom.TaleSystem -> joinSimilarTales(group)
+            ChangeRandom.Worship -> makeWorship(group)
+            ChangeRandom.God -> makeGod(group)
+        } ?: emptyProcessResult
 
     private fun joinSimilarRituals(group: Group) = with(group.cultureCenter.cultureAspectCenter) {
         takeOutSimilarRituals(aspectPool)?.let { system ->

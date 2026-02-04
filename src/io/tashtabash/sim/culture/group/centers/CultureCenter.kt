@@ -40,11 +40,6 @@ class CultureCenter(
             getRandom()
     ))
 
-    fun update(group: Group) {
-        aspectCenter.update(cultureAspectCenter.aspectPool.cwDependencies, group)
-        cultureAspectCenter.update(group)
-    }
-
     fun intergroupUpdate(group: Group) {
         events.addAll(aspectCenter.adoptAspects(group))
         cultureAspectCenter.adoptCultureAspects(group)

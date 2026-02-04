@@ -7,7 +7,6 @@ import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.centers.util.toCherishedResource
 import io.tashtabash.sim.culture.group.centers.util.toConcept
 import io.tashtabash.sim.culture.group.process.ProcessResult
-import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.event.CultureAspectGaining
 import io.tashtabash.sim.event.of
 
@@ -45,8 +44,8 @@ object UpdateMemoryB : AbstractGroupBehaviour() {
             )
         }
 
-        return emptyProcessResult
+        return ProcessResult()
     }
 
-    override val internalToString = "Update reasonings"
+    override val internalToString = "Update memory"
 }

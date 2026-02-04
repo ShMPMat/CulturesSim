@@ -25,11 +25,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
 
     val reasonsWithSystems: MutableSet<Reason> = HashSet()
 
-    internal fun update(group: Group) {
-        for (aspect in aspectPool.all)
-            aspect.use(group)
-    }
-
     fun addCultureAspect(cultureAspect: CultureAspect?): Boolean {
         cultureAspect
                 ?: return false

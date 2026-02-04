@@ -20,30 +20,33 @@ object CreateCultureAspectsB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         val cultureAspect = when (AspectRandom.entries.randomElement()) {
             AspectRandom.AestheticallyPleasing -> createAestheticallyPleasingObject(
-                    group.cultureCenter.aspectCenter.aspectPool.producedResources
-                            .filter { it.genome.getTagLevel(desirableTag) > 0 }
-                            .filter {
-                                !group.cultureCenter.cultureAspectCenter.aestheticallyPleasingResources.contains(it)
-                            }
-                            .filter { it.genome.baseDesirability > 0 }
-                            .randomElementOrNull { it.genome.baseDesirability.toDouble() }
+                group.cultureCenter.aspectCenter.aspectPool.producedResources
+                    .filter { it.genome.getTagLevel(desirableTag) > 0 }
+                    .filter {
+                        !group.cultureCenter.cultureAspectCenter.aestheticallyPleasingResources.contains(it)
+                    }
+                    .filter { it.genome.baseDesirability > 0 }
+                    .randomElementOrNull { it.genome.baseDesirability.toDouble() }
             )
+
             AspectRandom.Ritual -> createRitual(//TODO recursively go in dependencies;
-                    constructBetterAspectUseReason(
-                            group.cultureCenter.aspectCenter.aspectPool.converseWrappers.sortedBy { it.name },
-                            group.cultureCenter.cultureAspectCenter.reasonsWithSystems,
-                            CulturesController.session.random
-                    ),
-                    group,
+                constructBetterAspectUseReason(
+                    group.cultureCenter.aspectCenter.aspectPool.converseWrappers.sortedBy { it.name },
+                    group.cultureCenter.cultureAspectCenter.reasonsWithSystems,
                     CulturesController.session.random
+                ),
+                group,
+                CulturesController.session.random
             )
+
             AspectRandom.Tale -> createTale(
-                    group,
-                    CulturesController.session.templateBase
+                group,
+                CulturesController.session.templateBase
             )
+
             AspectRandom.Concept -> createSimpleConcept(
-                    group,
-                    CulturesController.session.random
+                group,
+                CulturesController.session.random
             )
         }
 

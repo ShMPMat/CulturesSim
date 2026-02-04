@@ -20,12 +20,12 @@ import java.util.*
 import kotlin.math.max
 
 
-class AspectCenter(aspects: List<Aspect>) {
+class AspectCenter(aspects: List<Aspect> = listOf()) {
     private val _aspectPool = MutableAspectPool(HashSet())
     val aspectPool: AspectPool = _aspectPool
 
     //    Aspects added on the current turn
-    private val changedAspectPool = MutableAspectPool(HashSet())
+    val changedAspectPool = MutableAspectPool(HashSet())
     private val _potentialConverseWrappers = mutableSetOf<ConverseWrapper>()
     private val _lastResourcesForCw = mutableSetOf<Resource>()
 
@@ -243,26 +243,16 @@ class AspectCenter(aspects: List<Aspect>) {
         return emptyList()
     }
 
-    fun update(crucialAspects: Collection<Aspect>, group: Group) {
-        val unimportantAspects = aspectPool.all
-                .filter { it.usefulness < session.aspectFalloff }
-                .filter { it !in crucialAspects }
-        if (unimportantAspects.isEmpty())
-            return
+    fun remove(aspect: Aspect): Boolean {
+        val isRemoved = _aspectPool.remove(aspect)
 
-        unimportantAspects.randomElementOrNull()
-                ?.takeIf { aspect -> aspect !in aspectPool.converseWrappers.map { it.aspect } }
-                ?.let { aspect ->
-                    if (aspect in changedAspectPool.converseWrappers.map { it.aspect })
-                        return
+        if (isRemoved) {
+            changedAspectPool.deleteIfDependentOnAspect(aspect)
+            if (aspect !is ConverseWrapper)
+                _potentialConverseWrappers.removeIf { it.aspect == aspect }
+        }
 
-                    if (_aspectPool.remove(aspect)) {
-                        changedAspectPool.deleteIfDependentOnAspect(aspect)
-                        if (aspect !is ConverseWrapper)
-                            _potentialConverseWrappers.removeIf { it.aspect == aspect }
-                        group.addEvent(Change of "${group.name} lost aspect ${aspect.name}")
-                    }
-                }
+        return isRemoved
     }
 
     override fun toString() = """
