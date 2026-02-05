@@ -66,17 +66,17 @@ class PopulationCenter(
     val turnResources = MutableResourcePack(initResources)
 
     val freePopulation: Int
-        get() = this.amount - stratumCenter.strata.sumOf { it.population }
+        get() = amount - stratumCenter.strata.sumOf { it.population }
 
     fun getMaxPopulation(controlledTerritory: Territory) = controlledTerritory.size * maxPopulation
 
-    fun isMaxReached(controlledTerritory: Territory) = getMaxPopulation(controlledTerritory) <= this.amount
+    fun isMaxReached(controlledTerritory: Territory) = getMaxPopulation(controlledTerritory) <= amount
 
-    fun maxPopulationPart(controlledTerritory: Territory) = this.amount.toDouble() / getMaxPopulation(controlledTerritory)
+    fun maxPopulationPart(controlledTerritory: Territory) = amount.toDouble() / getMaxPopulation(controlledTerritory)
 
     fun getMinPopulation(controlledTerritory: Territory) = controlledTerritory.size * minPopulation
 
-    fun isMinPassed(controlledTerritory: Territory) = getMinPopulation(controlledTerritory) <= this.amount
+    fun isMinPassed(controlledTerritory: Territory) = getMinPopulation(controlledTerritory) <= amount
 
     fun getPeopleByAspect(aspect: ConverseWrapper, amount: Int) =
             getStratumPeople(stratumCenter.getByAspect(aspect), amount)
@@ -104,46 +104,45 @@ class PopulationCenter(
 
     fun die() {
         stratumCenter.die()
-        this.amount = 0
+        amount = 0
     }
 
     fun goodConditionsGrow(fraction: Double, territory: Territory) {
-        this.amount += (fraction * this.amount).toInt() / 5 + 1
+        amount += (fraction * amount).toInt() / 5 + 1
         if (isMaxReached(territory))
             decreasePopulation(
-                    this.amount - getMaxPopulation(territory),
+                    amount - getMaxPopulation(territory),
                     "Growth exceeded the max population"
             )
     }
 
-    fun decreasePopulation(amount: Int, reason: String? = null) {
-        var actualAmount = amount
+    fun decreasePopulation(delta: Int, reason: String? = null) {
         if (freePopulation < 0)
             throw GroupError("Negative population in a PopulationCenter")
 
-        actualAmount = min(this.amount, actualAmount)
-        val delta = actualAmount - freePopulation
-        if (delta > 0)
+        val actualDelta = min(amount, delta)
+        val strataDecrease = actualDelta - freePopulation
+        if (strataDecrease > 0)
             for (stratum in stratumCenter.strata) {
                 val part = min(
-                    (actualAmount * (stratum.population.toDouble() / this.amount) + 1).toInt(),
+                    (actualDelta * (stratum.population.toDouble() / amount) + 1).toInt(),
                     stratum.population
                 )
                 stratum.decreaseAmount(part)
             }
 
-        this.amount -= actualAmount
+        amount -= actualDelta
 
         if (reason != null)
             Controller.session.world.events.add(Event(
                 PopulationDecrease,
-                "${population.ownershipMarker} population of ${this.amount} decreased by $actualAmount: $reason"
+                "${population.ownershipMarker} population of $amount decreased by $actualDelta: $reason"
             ))
     }
 
     fun update(accessibleTerritory: Territory, group: Group) {
-        if (population.amount < this.amount) // This is expected, wild animals may decrease the population
-            decreasePopulation(this.amount - population.amount)
+        if (population.amount < amount) // This is expected, wild animals may decrease the population
+            decreasePopulation(amount - population.amount)
 
         stratumCenter.update(accessibleTerritory, group, turnResources)
 
@@ -208,7 +207,7 @@ class PopulationCenter(
     }
 
     fun getPart(fraction: Double, newTile: Tile, ownershipMarker: OwnershipMarker): PopulationCenter {
-        val populationPart = (fraction * this.amount).toInt()
+        val populationPart = (fraction * amount).toInt()
         decreasePopulation(populationPart, "Part taken by $ownershipMarker")
 
         val pack = MutableResourcePack()

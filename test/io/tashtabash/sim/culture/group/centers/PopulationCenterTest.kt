@@ -43,4 +43,20 @@ internal class PopulationCenterTest {
         center.decreasePopulation(100)
         assertEquals(0, center.amount, "Population should not drop below zero")
     }
+
+    @Test
+    fun `die() wipes the population`() {
+        val center = PopulationCenter(
+            50,
+            10,
+            1,
+            mockMarker,
+            mockTile,
+            mockResources,
+            listOf()
+        )
+
+        center.die()
+        assertEquals(0, center.amount)
+    }
 }
