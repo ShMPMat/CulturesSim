@@ -103,18 +103,11 @@ class Group(
             return
 
         move()
-        if (populationCenter.isMinPassed(territoryCenter.territory))
-            territoryCenter.expand()
-        else
-            territoryCenter.shrink()
         processCenter.update(this)
 
         if (populationCenter.amount == 0)
             die()
-        session.interactionModel.let {
-            if (it is CulturesMapModel)
-                it.groupInnerOtherTime += System.nanoTime() - others
-        }
+        (session.interactionModel as CulturesMapModel).groupInnerOtherTime += System.nanoTime() - others
     }
 
     private fun move() {
@@ -138,17 +131,17 @@ class Group(
 
     fun intergroupUpdate() {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
-            var toUpdate = overallTerritory
+            var neighbourGroups = overallTerritory
                     .outerBrink //TODO dont like territory checks in Group
                     .flatMap { it.tagPool.getByType("Group") }
                     .map { (it as GroupTileTag).group }
                     .toMutableList()
-            toUpdate.addAll(parentGroup.subgroups)
-            toUpdate = toUpdate
+            neighbourGroups.addAll(parentGroup.subgroups)
+            neighbourGroups = neighbourGroups
                     .distinct()
                     .toMutableList()
-            toUpdate.remove(this)
-            relationCenter.updateRelations(toUpdate, this)
+            neighbourGroups.remove(this)
+            relationCenter.updateRelations(neighbourGroups, this)
         }
         cultureCenter.intergroupUpdate(this)
     }

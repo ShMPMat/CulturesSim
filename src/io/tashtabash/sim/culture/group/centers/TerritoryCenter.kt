@@ -1,6 +1,5 @@
 package io.tashtabash.sim.culture.group.centers
 
-import io.tashtabash.random.singleton.chanceOfNot
 import io.tashtabash.random.singleton.randomTile
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.group.*
@@ -105,6 +104,11 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         territory.center = newCenter
         claimTile(newCenter)
         leaveTiles(territory.filter { !isTileReachable(it) })
+        tileTag.group.addEvent(ClaimTileEvent(
+            "Group ${tileTag.group.name} moved to a new tile ${newCenter.posStr}",
+            tileTag.group,
+            newCenter
+        ))
         return true
     }
 
@@ -164,39 +168,15 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         else -> pair.second <= reachDistance
     }
 
-    fun expand(): Boolean {
-        spreadAbility.chanceOfNot {
-            return false
-        }
+    fun isTileReachable(tile: Tile) = getDistance(tile, center) < session.defaultGroupTerritoryRadius
 
-        claimTile(territory.getMostUsefulTileOnOuterBrink(
-                { canSettleAndNoGroup(it) && isTileReachable(it) },
-                this::tilePotentialMapper
-        ))
-        return true
-    }
-
-    fun shrink() {
-        if (territory.size <= 1)
-            return
-        leaveTile(territory.getMostUselessTile(this::tilePotentialMapper))
-    }
-
-    private fun isTileReachable(tile: Tile) = getDistance(tile, center) < session.defaultGroupTerritoryRadius
-
-    fun claimTile(tile: Tile?) {
-        if (tile == null) return
+    fun claimTile(tile: Tile) {
         if (!tile.tagPool.contains(tileTag) && hasResidingGroup(tile))
             throw RuntimeException()
 
         tileTag.group.parentGroup.claimTile(tile)
         tile.tagPool.add(tileTag)
         territory.add(tile)
-        tileTag.group.addEvent(ClaimTileEvent(
-                "Group ${tileTag.group.name} claimed tile ${tile.posStr}",
-                tileTag.group,
-                tile
-        ))
     }
 
     fun die() {
@@ -204,10 +184,7 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             tile.tagPool.remove(tileTag)
     }
 
-    private fun leaveTile(tile: Tile?) {
-        if (tile == null)
-            return
-
+    fun leaveTile(tile: Tile) {
         tile.tagPool.remove(tileTag)
         territory.remove(tile)
         tileTag.group.parentGroup.removeTile(tile)

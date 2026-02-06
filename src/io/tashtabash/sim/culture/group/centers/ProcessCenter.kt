@@ -11,6 +11,7 @@ import kotlin.math.pow
 
 class ProcessCenter(var type: AdministrationType) {
     private var _behaviours: MutableList<GroupBehaviour> = mutableListOf(
+        ManageTerritoryB,
         ForgetUnusedAspectsB,
         UseCultureAspectsB,
 
