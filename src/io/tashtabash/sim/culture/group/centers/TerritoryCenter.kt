@@ -93,9 +93,9 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         }
     }
 
-    fun migrate(): Boolean {
+    fun migrate(): Tile? {
         val newCenter = migrationTile
-            ?: return false
+            ?: return null
 
         val population = tileTag.group.populationCenter.population
         territory.center?.removeResource(population)
@@ -104,12 +104,8 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
         territory.center = newCenter
         claimTile(newCenter)
         leaveTiles(territory.filter { !isTileReachable(it) })
-        tileTag.group.addEvent(ClaimTileEvent(
-            "Group ${tileTag.group.name} moved to a new tile ${newCenter.posStr}",
-            tileTag.group,
-            newCenter
-        ))
-        return true
+
+        return newCenter
     }
 
     private val migrationTile: Tile?

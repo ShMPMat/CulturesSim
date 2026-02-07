@@ -102,7 +102,6 @@ class Group(
         if (state == State.Dead)
             return
 
-        move()
         processCenter.update(this)
 
         if (populationCenter.amount == 0)
@@ -110,15 +109,7 @@ class Group(
         (session.interactionModel as CulturesMapModel).groupInnerOtherTime += System.nanoTime() - others
     }
 
-    private fun move() {
-        if (shouldMigrate())
-            if (territoryCenter.migrate()) {
-                resourceCenter.moveToNewStorage(territoryCenter.center)
-                populationCenter.movePopulation(territoryCenter.center)
-            }
-    }
-
-    private fun shouldMigrate(): Boolean {
+    fun shouldMigrate(): Boolean {
         0.9.chanceOf {
             return false
         }
@@ -132,7 +123,7 @@ class Group(
     fun intergroupUpdate() {
         if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
             var neighbourGroups = overallTerritory
-                    .outerBrink //TODO dont like territory checks in Group
+                    .outerBrink //TODO don't like territory checks in Group
                     .flatMap { it.tagPool.getByType("Group") }
                     .map { (it as GroupTileTag).group }
                     .toMutableList()

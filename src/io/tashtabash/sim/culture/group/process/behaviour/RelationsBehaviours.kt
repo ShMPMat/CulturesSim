@@ -25,7 +25,7 @@ class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
                 break
 
             val reducedRequest = request.reducedAmountCopy(amountLeft)
-            val newProcessResult = RequestHelpI(relation.owner, relation.other, reducedRequest).run()
+            val newProcessResult = RequestHelpI(group, relation.other, reducedRequest).run()
 
             amountLeft = amount -
                     newProcessResult.events

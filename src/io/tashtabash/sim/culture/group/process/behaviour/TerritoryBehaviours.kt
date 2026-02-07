@@ -52,3 +52,22 @@ object LeaveTileB : AbstractGroupBehaviour() {
 
     override val internalToString = "Leave some territory"
 }
+
+
+object MigrateB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        if (!group.shouldMigrate())
+            return ProcessResult()
+
+        group.territoryCenter.migrate()?.let { tile ->
+            group.resourceCenter.moveToNewStorage(group.territoryCenter.center)
+            group.populationCenter.movePopulation(group.territoryCenter.center)
+
+            return ProcessResult(ClaimTileEvent("Group ${group.name} migrated to ${tile.posStr}", group, tile))
+        }
+
+        return ProcessResult()
+    }
+
+    override val internalToString = "Migrate if necessary"
+}

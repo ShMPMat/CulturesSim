@@ -64,14 +64,15 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     }
 
     private fun updateRelations() {
-        val dead: MutableList<Group> = ArrayList()
+        val dead = mutableListOf<Group>()
         for (relation in relationsMap.values) {
             if (relation.other.state == Group.State.Dead)
-                dead.add(relation.other)
+                dead += relation.other
             else
                 relation.positive = hostilityCalculator(relation)
         }
-        dead.forEach { relationsMap.remove(it) }
+        for (it in dead)
+            relationsMap.remove(it)
     }
 
     private fun addMirrorRelation(relation: Relation): Relation {
