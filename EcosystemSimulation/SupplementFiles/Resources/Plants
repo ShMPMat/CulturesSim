@@ -150,12 +150,12 @@
         #Water
         cGreen
 
--WindPollinatedPlant                0.0     0.1    5          5      30   100        Cut        Plant        @PlantFibre
+-Ragweed                            0.0     0.1    5          5      30   100        Cut        Plant        @PlantFibre
         ~r:Vapour;0.000001;1.25;1;CONSUME
         ~r:Detritus;0.1;2;0;CONSUME
         +_Drop_prob_0.2_f/Seed:10
         +_OnDeath_/Detritus:1
-        ^Leaf:3   ^Flower:1:c|Brown
+        ^Leaf:3   ^Flower:50:c|Yellow#s|0.003
         #Water
         cGreen
 
