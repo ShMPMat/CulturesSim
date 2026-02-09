@@ -31,5 +31,5 @@ object ForgetUnusedAspectsB : AbstractGroupBehaviour() {
         return ProcessResult()
     }
 
-    override val internalToString = "Practice culture"
+    override val internalToString = "Forget useless aspects"
 }
