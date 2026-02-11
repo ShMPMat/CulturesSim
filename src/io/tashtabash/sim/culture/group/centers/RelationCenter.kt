@@ -1,6 +1,5 @@
 package io.tashtabash.sim.culture.group.centers
 
-import io.tashtabash.utils.getTruncated
 import io.tashtabash.sim.culture.group.GroupConglomerate
 import io.tashtabash.sim.culture.group.GroupError
 import io.tashtabash.sim.culture.group.intergroup.Relation
@@ -31,12 +30,6 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
         return if (result.isNaN()) 1.0
         else result
     }
-
-    fun getMinConglomerateRelation(conglomerate: GroupConglomerate) =
-            getConglomerateGroups(conglomerate).minOfOrNull { it.normalized } ?: 1.0
-
-    fun getMaxConglomerateRelation(conglomerate: GroupConglomerate) =
-            getConglomerateGroups(conglomerate).maxOfOrNull { it.normalized } ?: 1.0
 
     fun getNormalizedRelation(group: Group) = relationsMap[group]?.normalized ?: 0.5
 
@@ -82,12 +75,6 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
         return newRelation
     }
 
-    override fun toString() = relations
-            .map { it.other.parentGroup }
-            .distinct()
-            .joinToString("\n") {
-                "${it.name} average - ${getTruncated(getAvgConglomerateRelation(it), 4)}, " +
-                        "min - ${getTruncated(getMinConglomerateRelation(it), 4)}, " +
-                        "max - ${getTruncated(getMaxConglomerateRelation(it), 4)}\n"
-            }
+    override fun toString() =
+        relations.joinToString("\n")
 }

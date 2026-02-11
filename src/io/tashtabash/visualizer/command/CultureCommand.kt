@@ -7,7 +7,7 @@ enum class CultureCommand(command: String, override val description: String) : T
     Conglomerate("^G\\d+_?\\d*", "Display the conglomerate info"),
     ConglomerateTileReach("^G\\d+ r", "Display the territory accessible to the conglomerate"),
     ConglomerateProduced("^G\\d+ p", "Display the resources produced be the conglomerate"),
-    GroupRelations("^G\\d+ G\\d+", "Display relations between two conglomerates"),
+    GroupRelations("^G\\d+_\\d+ G\\d+_\\d+", "Display relations between two groups"),
     ConglomeratePotentials("^G\\d+ p \\d+", "Display tile potentials for the conglomerate"),
     MeaningfulResources("meaning", "Display resources with meaning on the map"),
     ArtificialResources("artificial", "Display artificial resources on the map"),

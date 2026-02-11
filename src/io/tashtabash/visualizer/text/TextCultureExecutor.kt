@@ -43,12 +43,12 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                     println(chompToSize(printProduced(conglomerate), 150))
                 }
                 GroupRelations -> {
-                    val c1 = getConglomerate(splitCommand[0])
-                    val c2 = getConglomerate(splitCommand[1])
-                    if (c1 == null || c2 == null)
+                    val g1 = getGroup(splitCommand[0])
+                    val g2 = getGroup(splitCommand[1])
+                    if (g1 == null || g2 == null)
                         return ExecutionResult.Invalid
 
-                    println(printConglomerateRelations(c1, c2))
+                    println(printGroupRelations(g1, g2))
                 }
                 ConglomeratePotentials -> {
                     val conglomerate = getConglomerate(splitCommand[0])
@@ -133,4 +133,12 @@ object TextCultureExecutor : CommandExecutor<TextCultureVisualizer> {
                 if (this == null)
                     println("Conglomerate '$name' not found")
             }
+
+    private fun TextCultureVisualizer.getGroup(name: String) = controller.world.conglomerates
+        .flatMap { it.subgroups }
+        .firstOrNull { it.name == name }
+        .apply {
+            if (this == null)
+                println("Group '$name' not found")
+        }
 }

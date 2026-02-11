@@ -76,23 +76,13 @@ private fun makeTraitString(conglomerate: GroupConglomerate) = Trait.entries
         "${trait.name}: %+.3f".format(avg)
     }
 
-fun printConglomerateRelations(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) = """
-        |${printConglomerateRelation(conglomerate1, conglomerate2)}
-        |
-        |
-        |${printConglomerateRelation(conglomerate2, conglomerate1)}
+fun printGroupRelations(group1: Group, group2: Group) = """
+        |${printGroupRelation(group1, group2)}
+        |${printGroupRelation(group2, group1)}
         """.trimMargin()
 
-fun printConglomerateRelation(conglomerate1: GroupConglomerate, conglomerate2: GroupConglomerate) =
-        conglomerate1.subgroups.joinToString("\n\n") { g ->
-            """${g.name} - ${g.processCenter.type}:
-                |average - ${g.relationCenter.getAvgConglomerateRelation(conglomerate2)}
-                |min -     ${g.relationCenter.getMinConglomerateRelation(conglomerate2)}
-                |max -     ${g.relationCenter.getMaxConglomerateRelation(conglomerate2)}
-                |In particular:
-                |${g.relationCenter.getConglomerateGroups(conglomerate2).joinToString("\n")}
-                |""".trimMargin()
-        }
+fun printGroupRelation(group1: Group, group2: Group) =
+    "${group1.name} - ${group1.processCenter.type}: ${group1.relationCenter.getRelation(group2)}"
 
 fun printGroupStatistics(world: CulturesWorld): String {
     val conglomerates = world.conglomerates.filter { it.state == GroupConglomerate.State.Live }
