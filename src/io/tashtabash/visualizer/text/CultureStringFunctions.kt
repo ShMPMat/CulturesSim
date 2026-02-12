@@ -5,6 +5,7 @@ import io.tashtabash.sim.culture.aspect.Aspect
 import io.tashtabash.sim.culture.group.GroupConglomerate
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.centers.Trait
+import io.tashtabash.sim.culture.group.intergroup.Relation
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.utils.chompToSize
 import io.tashtabash.visualizer.printinfo.ConglomeratePrintInfo
@@ -86,6 +87,11 @@ fun printGroupRelation(group1: Group, group2: Group) =
 
 fun printGroupStatistics(world: CulturesWorld): String {
     val conglomerates = world.conglomerates.filter { it.state == GroupConglomerate.State.Live }
+    val clusters = clusterRelations(
+        world.conglomerates.flatMap { it.subgroups }
+            .flatMap { it.relationCenter.relations },
+        0.6
+    )
 
     return """CONGLOMERATES:
              |
@@ -119,6 +125,11 @@ fun printGroupStatistics(world: CulturesWorld): String {
                 }
     }
              |
+             |Relation clusters
+             |${
+                 clusters.sortedBy { c -> c.minOf { it.name } }
+                     .joinToString(separator = "\n") { c -> c.sortedBy { it.name }.joinToString { it.name } }
+             }
              |""".trimMargin()
 }
 
@@ -133,3 +144,40 @@ fun printGroupCharacterStatistics(conglomerates: List<GroupConglomerate>) =
 
             maxStr + "\n" + minStr
         }
+
+fun clusterRelations(relations: List<Relation>, threshold: Double = 0.75): List<Set<Group>> {
+    val allGroups = relations.flatMap { listOf(it.owner, it.other) }.toSet()
+    val clusters = allGroups.map { mutableSetOf(it) }.toMutableList()
+
+    // Create a lookup using smallerHash to largerHash to treat relations as undirected
+    val scores = mutableMapOf<Pair<Group, Group>, Double>()
+    for (rel in relations) {
+        val pair = if (rel.owner.hashCode() < rel.other.hashCode())
+            rel.owner to rel.other
+        else
+            rel.other to rel.owner
+
+        // If asymmetrical, take the average positivity
+        val current = scores.getOrDefault(pair, 0.0)
+        scores[pair] = if (current == 0.0) rel.normalized else (current + rel.normalized) / 2
+    }
+
+    val sortedRelations = scores.entries
+        .filter { it.value >= threshold }
+        .sortedByDescending { it.value }
+
+    // Merge
+    for (entry in sortedRelations) {
+        val (g1, g2) = entry.key
+        val cluster1 = clusters.firstOrNull { g1 in it }
+        val cluster2 = clusters.firstOrNull { g2 in it }
+
+        if (cluster1 != null && cluster2 != null && cluster1 != cluster2) {
+            cluster1 += cluster2
+            clusters -= cluster2
+        }
+    }
+
+    return clusters
+}
+

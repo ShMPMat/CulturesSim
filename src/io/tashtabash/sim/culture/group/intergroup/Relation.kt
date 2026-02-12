@@ -2,13 +2,10 @@ package io.tashtabash.sim.culture.group.intergroup
 
 import io.tashtabash.sim.culture.group.centers.Group
 
-class Relation(var owner: Group, var other: Group, var status: Status = Status.None) {
+class Relation(var owner: Group, var other: Group) {
     var positive = 0.0
         set(value) {
-            field = value
-            if (positive > 1.0) field = 1.0
-            if (positive < -1.0) field = -1.0
-            if (field <= 0.00001) status = Status.War
+            field = value.coerceIn(-1.0, 1.0)
         }
 
     var positiveInteractions = 0.0
@@ -19,9 +16,4 @@ class Relation(var owner: Group, var other: Group, var status: Status = Status.N
         get() = (positive + 1) / 2
 
     override fun toString() = "${other.name} is %.3f, $positiveInteractions positive interactions".format(positive)
-}
-
-enum class Status {
-    None,
-    War
 }
