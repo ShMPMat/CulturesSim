@@ -13,7 +13,6 @@ import io.tashtabash.sim.culture.group.process.action.GroupTransferA
 import io.tashtabash.sim.culture.group.process.action.MakeSplitGroupA
 import io.tashtabash.sim.culture.group.process.action.TryDivergeA
 import io.tashtabash.sim.culture.group.process.action.pseudo.ActionSequencePA
-import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.group.process.interaction.GroupTransferWithNegotiationI
 import io.tashtabash.sim.culture.group.process.interaction.ProbableStrikeWarI
 import io.tashtabash.sim.event.Change
@@ -74,13 +73,13 @@ object TryDivergeWithNegotiationB : AbstractGroupBehaviour() {
 object SplitGroupB : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         if (!session.groupMultiplication)
-            return emptyProcessResult
+            return ProcessResult()
 
         val tiles = group.overallTerritory.filterOuterBrink {
             group.territoryCenter.canSettleAndNoGroup(it) && group.parentGroup.getClosestInnerGroupDistance(it) > 2
         }
         if (tiles.isEmpty())
-            return emptyProcessResult
+            return ProcessResult()
 
         val tile = tiles.sortedBy { group.territoryCenter.tilePotentialMapper(it) }[0]
         val newGroup = MakeSplitGroupA(group, tile).run()

@@ -2,8 +2,8 @@ package io.tashtabash.sim.culture.group.intergroup
 
 import io.tashtabash.sim.culture.group.centers.Group
 
-class Relation(var owner: Group, var other: Group) {
-    var positive = 0.0
+class Relation(var owner: Group, var other: Group, positive: Double = 0.0) {
+    var positive = positive
         set(value) {
             field = value.coerceIn(-1.0, 1.0)
         }

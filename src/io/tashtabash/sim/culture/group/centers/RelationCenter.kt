@@ -49,11 +49,13 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
             throw GroupError("Incoherent owner for relations")
 
         for (group in groups)
-            if (!relationsMap.containsKey(group)) {
-                val relation = Relation(owner, group)
-                relation.pair = group.relationCenter.addMirrorRelation(relation)
-                relationsMap[relation.other] = relation
-            }
+            if (!relationsMap.containsKey(group))
+                addRelation(Relation(owner, group))
+    }
+
+    fun addRelation(relation: Relation) {
+        relation.pair = relation.other.relationCenter.addMirrorRelation(relation)
+        relationsMap[relation.other] = relation
     }
 
     private fun updateRelations() {
@@ -69,7 +71,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     }
 
     private fun addMirrorRelation(relation: Relation): Relation {
-        val newRelation = Relation(relation.other, relation.owner)
+        val newRelation = Relation(relation.other, relation.owner, relation.positive)
         newRelation.pair = relation
         relationsMap[relation.owner] = newRelation
         return newRelation
