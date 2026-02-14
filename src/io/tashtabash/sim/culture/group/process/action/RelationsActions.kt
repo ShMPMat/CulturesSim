@@ -5,38 +5,41 @@ import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.centers.Trait
 import io.tashtabash.sim.culture.group.process.get
 import io.tashtabash.sim.culture.group.process.interaction.ChangeRelationsI
+import io.tashtabash.sim.culture.group.process.plus
 
 
 class ChangeRelationsA(
-        group: Group,
-        private val target: Group,
-        private val delta: Double
+    group: Group,
+    private val target: Group,
+    private val delta: Double
 ) : AbstractGroupAction(group) {
     override fun run() {
         changeRelationsOneGroup(group, delta)
 
         if (target.parentGroup != group.parentGroup)
             group.parentGroup.subgroups
-                    .filter { it != group }
-                    .forEach { changeRelationsOneGroup(it, delta / 3) }
+                .filter { it != group }
+                .forEach { changeRelationsOneGroup(it, delta / 3) }
     }
 
-    private fun changeRelationsOneGroup(currentGroup: Group, currentDelta: Double) =
-        group.relationCenter.getRelation(target)?.let {
-            it.positiveInteractions += delta
-        }
+    private fun changeRelationsOneGroup(currentGroup: Group, currentDelta: Double) {
+        currentGroup.relationCenter.getRelationOrCreate(target)
+            .positiveInteractions += currentDelta
+    }
 
     override val internalToString = "Change relations of ${group.name} and ${target.name} on $delta"
 }
 
 class CooperateA(
-        group: Group,
-        private val target: Group,
-        private val helpAmount: Double //range - 0-1
+    group: Group,
+    private val target: Group,
+    private val helpAmount: Double //range - 0-1
 ) : AbstractGroupAction(group) {
     override fun run(): Boolean {
-        val probability = (1 - helpAmount) * group.relationCenter.getNormalizedRelation(group)
-        val answer = probability.testProbability() && Trait.Peace.get() testOn group
+        val relations = group.relationCenter.getRelationValue(target) * 0.95
+        // + is used to make the help almost guaranteed on good relations, but * 0.95 leaves some probability to reject
+        val probability = (1 - helpAmount) + relations
+        val answer = probability.testProbability() && Trait.Peace.get() + relations testOn group
 
         val relationsChange = 1.0 * if (answer) 1 else -1
         ChangeRelationsI(group, target, relationsChange).run()
@@ -45,5 +48,5 @@ class CooperateA(
     }
 
     override val internalToString =
-            "Let ${group.name} decide whether to cooperate with ${target.name}, help amount - $helpAmount"
+        "Let ${group.name} decide whether to cooperate with ${target.name}, help amount - $helpAmount"
 }

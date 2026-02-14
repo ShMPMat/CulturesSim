@@ -29,6 +29,10 @@ operator fun TraitExtractor.times(other: TraitExtractor): TraitExtractor =
             extract(center) * other.extract(center)
         }
 
+operator fun TraitExtractor.plus(t: Double): TraitExtractor = WrapperExtractor("$this + $t") { center ->
+    extract(center) + t
+}
+
 operator fun TraitExtractor.times(t: Double): TraitExtractor = WrapperExtractor("$this * $t") { center ->
     extract(center) * t
 }

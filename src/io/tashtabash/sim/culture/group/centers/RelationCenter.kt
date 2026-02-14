@@ -33,7 +33,19 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
 
     fun getNormalizedRelation(group: Group) = relationsMap[group]?.normalized ?: 0.5
 
+    fun getRelationValue(group: Group) = relationsMap[group]?.positive ?: 0.0
+
     fun getRelation(group: Group) = relationsMap[group]
+
+    fun getRelationOrCreate(group: Group): Relation {
+        relationsMap[group]?.let {
+            return it
+        }
+
+        val relation = Relation(relations.first().owner, group)
+        addRelation(relation)// Unsafe, but Relations must be refactored to not contain owner
+        return relation
+    }
 
     fun evaluateTile(tile: Tile) = relations.map {
         (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.center)).toInt()
