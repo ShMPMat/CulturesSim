@@ -121,20 +121,26 @@ class Group(
     }
 
     fun intergroupUpdate() {
-        if (session.isTime(session.groupTurnsBetweenBorderCheck)) {
-            var neighbourGroups = overallTerritory
-                    .outerBrink //TODO don't like territory checks in Group
-                    .flatMap { it.tagPool.getByType("Group") }
-                    .map { (it as GroupTileTag).group }
-                    .toMutableList()
-            neighbourGroups.addAll(parentGroup.subgroups)
-            neighbourGroups = neighbourGroups
-                    .distinct()
-                    .toMutableList()
-            neighbourGroups.remove(this)
-            relationCenter.updateRelations(neighbourGroups, this)
-        }
+        updateRelations()
         cultureCenter.intergroupUpdate(this)
+    }
+
+    fun updateRelations() {
+        if (!session.isTime(session.groupTurnsBetweenBorderCheck))
+            return
+
+        var neighbourGroups = territoryCenter
+            .territory
+            .outerBrink //TODO don't like territory checks in Group
+            .flatMap { it.tagPool.getByType("Group") }
+            .map { (it as GroupTileTag).group }
+            .toMutableList()
+        neighbourGroups.addAll(parentGroup.subgroups)
+        neighbourGroups = neighbourGroups
+            .distinct()
+            .toMutableList()
+        neighbourGroups.remove(this)
+        relationCenter.updateRelations(neighbourGroups, this)
     }
 
     fun finishUpdate() {
