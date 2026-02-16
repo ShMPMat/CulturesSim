@@ -20,7 +20,7 @@ class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
 
         val amount = request.ceiling
         var amountLeft = amount
-        for (relation in group.relationCenter.relations.sortedByDescending { it.positive }) {
+        for (relation in group.relationCenter.relations.sortedByDescending { it.value }) {
             if (!relation.normalized.pow(2).testProbability())
                 break
 

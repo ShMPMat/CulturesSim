@@ -33,7 +33,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
 
     fun getNormalizedRelation(group: Group) = relationsMap[group]?.normalized ?: 0.5
 
-    fun getRelationValue(group: Group) = relationsMap[group]?.positive ?: 0.0
+    fun getRelationValue(group: Group) = relationsMap[group]?.value ?: 0.0
 
     fun getRelation(group: Group) = relationsMap[group]
 
@@ -48,7 +48,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     }
 
     fun evaluateTile(tile: Tile) = relations.map {
-        (it.positive * evaluationFactor / getDistance(tile, it.other.territoryCenter.center)).toInt()
+        (it.value * evaluationFactor / getDistance(tile, it.other.territoryCenter.center)).toInt()
     }.fold(0, Int::plus)
 
     internal fun updateRelations(groups: Collection<Group>, owner: Group) {
@@ -66,7 +66,7 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
     }
 
     fun addRelation(relation: Relation) {
-        relation.pair = relation.other.relationCenter.addMirrorRelation(relation)
+        relation.other.relationCenter.addMirrorRelation(relation)
         relationsMap[relation.other] = relation
     }
 
@@ -76,15 +76,14 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
             if (relation.other.state == Group.State.Dead)
                 dead += relation.other
             else
-                relation.positive = hostilityCalculator(relation)
+                relation.value = hostilityCalculator(relation)
         }
         for (it in dead)
             relationsMap.remove(it)
     }
 
     private fun addMirrorRelation(relation: Relation): Relation {
-        val newRelation = Relation(relation.other, relation.owner, relation.positive)
-        newRelation.pair = relation
+        val newRelation = Relation(relation.other, relation.owner, relation.value, relation.positiveInteractions)
         relationsMap[relation.owner] = newRelation
         return newRelation
     }

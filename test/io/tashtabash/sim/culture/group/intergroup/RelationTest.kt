@@ -10,16 +10,18 @@ class RelationTest {
     @Test
     fun `value can't go larger than 1`() {
         val relation = Relation(mockk<Group>(), mockk<Group>())
-        relation.positive += 100_000_000
+        relation.value += 100_000_000
 
-        assertTrue(relation.positive == 1.0)
+        assertTrue(relation.value == 1.0)
+        assertTrue(relation.normalized == 1.0)
     }
 
     @Test
     fun `value can't go lower than -1`() {
         val relation = Relation(mockk<Group>(), mockk<Group>())
-        relation.positive -= 100_000_000
+        relation.value -= 100_000_000
 
-        assertTrue(relation.positive == -1.0)
+        assertTrue(relation.value == -1.0)
+        assertTrue(relation.normalized == 0.0)
     }
 }

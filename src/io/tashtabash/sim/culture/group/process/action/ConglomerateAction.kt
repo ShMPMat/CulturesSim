@@ -138,8 +138,8 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
                 group.territoryCenter.spreadAbility
         ).apply { // Copy existing relations and add a Relation to the source group
             for (relation in group.relationCenter.relations)
-                relationCenter.addRelation(Relation(this, relation.other, relation.positive))
-            relationCenter.addRelation(Relation(this, group, 1.0))
+                relationCenter.addRelation(Relation(this, relation.other, relation.value, relation.positiveInteractions))
+            relationCenter.addRelation(Relation(this, group, 1.0, 10.0)) // 10.0 is pure magic
         }
     }
 
