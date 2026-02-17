@@ -14,16 +14,16 @@ class ChangeRelationsA(
     private val delta: Double
 ) : AbstractGroupAction(group) {
     override fun run() {
-        changeRelationsOneGroup(group, delta)
+        changeRelations(group, delta)
 
         if (target.parentGroup != group.parentGroup)
             group.parentGroup.subgroups
                 .filter { it != group }
-                .forEach { changeRelationsOneGroup(it, delta / 3) }
+                .forEach { changeRelations(it, delta / 3) }
     }
 
-    private fun changeRelationsOneGroup(currentGroup: Group, currentDelta: Double) {
-        currentGroup.relationCenter.getRelationOrCreate(target)
+    private fun changeRelations(currentGroup: Group, currentDelta: Double) {
+        currentGroup.relationCenter.getRelationOrCreate(target, currentGroup)
             .positiveInteractions += currentDelta
     }
 

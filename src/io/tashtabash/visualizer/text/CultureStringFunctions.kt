@@ -89,7 +89,7 @@ fun printGroupStatistics(world: CulturesWorld): String {
     val conglomerates = world.conglomerates.filter { it.state == GroupConglomerate.State.Live }
     val clusters = clusterRelations(
         world.conglomerates.flatMap { it.subgroups }
-            .flatMap { it.relationCenter.relations },
+            .flatMap { it.relationCenter.relations.map { r -> Relation(it, r.other, r.value, r.positiveInteractions) } },
         0.6
     )
 

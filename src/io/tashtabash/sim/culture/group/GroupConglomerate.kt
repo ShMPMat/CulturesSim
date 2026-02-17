@@ -60,10 +60,10 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
                     this,
                     name,
                     populationCenter,
-                    RelationCenter {
-                        val difference = getGroupsDifference(it.owner, it.other)
+                    RelationCenter { owner, relation ->
+                        val difference = getGroupsDifference(owner, relation.other)
                         val weakRelationsMultiplier = difference * difference * difference / 10
-                        (difference + it.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
+                        (difference + relation.positiveInteractions * weakRelationsMultiplier - 0.5) * 2
                     },
                     CultureAspectCenter(
                         ReasonField(

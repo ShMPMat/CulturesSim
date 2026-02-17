@@ -5,7 +5,7 @@ import io.tashtabash.sim.CulturesController
 import io.tashtabash.sim.culture.group.GroupConglomerate
 import io.tashtabash.sim.culture.group.Transfer
 import io.tashtabash.sim.culture.group.centers.*
-import io.tashtabash.sim.culture.group.intergroup.Relation
+import io.tashtabash.sim.culture.group.intergroup.OutgoingRelation
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.sim.culture.thinking.meaning.makeMeme
@@ -138,8 +138,8 @@ class MakeSplitGroupA(group: Group, private val startTile: Tile) : AbstractGroup
                 group.territoryCenter.spreadAbility
         ).apply { // Copy existing relations and add a Relation to the source group
             for (relation in group.relationCenter.relations)
-                relationCenter.addRelation(Relation(this, relation.other, relation.value, relation.positiveInteractions))
-            relationCenter.addRelation(Relation(this, group, 1.0, 10.0)) // 10.0 is pure magic
+                relationCenter.addRelation(OutgoingRelation(relation.other, relation.value, relation.positiveInteractions), this)
+            relationCenter.addRelation(OutgoingRelation(group, 1.0, 10.0), this) // 10.0 is pure magic
         }
     }
 

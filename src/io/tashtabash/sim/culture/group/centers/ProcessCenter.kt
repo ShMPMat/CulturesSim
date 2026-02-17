@@ -66,7 +66,8 @@ class ProcessCenter(var type: AdministrationType) {
         DefenceFromNatureB,
         ManageDefenceB,
         ResolveResourceNeedB,
-        UpdateMemoryB
+        UpdateMemoryB,
+        ReevaluateRelationsB
     )
 
     val behaviours: List<GroupBehaviour> = _behaviours

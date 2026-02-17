@@ -1,22 +1,47 @@
 package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.singleton.testProbability
+import io.tashtabash.sim.CulturesController.Companion.session
+import io.tashtabash.sim.culture.group.GroupTileTag
 import io.tashtabash.sim.culture.group.HelpEvent
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.process.ProcessResult
-import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.culture.group.process.flatMapPR
 import io.tashtabash.sim.culture.group.process.interaction.RequestHelpI
 import io.tashtabash.sim.culture.group.request.Request
 import kotlin.math.pow
 
 
+object ReevaluateRelationsB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        if (!session.isTime(session.groupTurnsBetweenBorderCheck))
+            return ProcessResult()
+
+        var neighbourGroups = group.territoryCenter
+            .territory
+            .outerBrink
+            .flatMap { it.tagPool.getByType("Group") }
+            .map { (it as GroupTileTag).group }
+            .toMutableList()
+        neighbourGroups += group.parentGroup.subgroups
+        neighbourGroups = neighbourGroups
+            .distinct()
+            .toMutableList()
+        neighbourGroups -= group
+        group.relationCenter.updateRelations(neighbourGroups, group)
+
+        return ProcessResult()
+    }
+
+    override val internalToString = "Reevaluate relations with neighbours"
+}
+
 class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
     override fun run(group: Group): ProcessResult {
         if (request.ceiling <= 0)
-            return emptyProcessResult
+            return ProcessResult()
 
-        var processResult = emptyProcessResult
+        var processResult = ProcessResult()
 
         val amount = request.ceiling
         var amountLeft = amount
@@ -29,9 +54,9 @@ class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
 
             amountLeft = amount -
                     newProcessResult.events
-                            .filterIsInstance<HelpEvent>()
-                            .map { it.helpValue }
-                            .foldRight(0.0, Double::plus)
+                        .filterIsInstance<HelpEvent>()
+                        .map { it.helpValue }
+                        .foldRight(0.0, Double::plus)
 
             processResult += newProcessResult
             if (amountLeft <= 0)
@@ -46,9 +71,9 @@ class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
 
 object TurnRequestsHelpB : AbstractGroupBehaviour() {
     override fun run(group: Group) = group.cultureCenter.requestCenter.turnRequests.requests
-            .flatMapPR { (request, pack) ->
-                RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack))).run(group)
-            }
+        .flatMapPR { (request, pack) ->
+            RequestHelpB(request.reducedAmountCopy(request.amountLeft(pack))).run(group)
+        }
 
     override val internalToString = "Ask help from all neighbours with all base request if needed"
 }

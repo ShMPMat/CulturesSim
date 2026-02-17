@@ -1,22 +1,21 @@
 package io.tashtabash.sim.culture.group.centers
 
 import io.tashtabash.sim.culture.group.GroupConglomerate
-import io.tashtabash.sim.culture.group.GroupError
-import io.tashtabash.sim.culture.group.intergroup.Relation
+import io.tashtabash.sim.culture.group.intergroup.OutgoingRelation
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.getDistance
 import java.util.*
 import kotlin.math.max
 
 
-class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
-    private val relationsMap: MutableMap<Group, Relation> = HashMap()
+class RelationCenter(internal val hostilityCalculator: (Group, OutgoingRelation) -> Double) {
+    private val relationsMap: MutableMap<Group, OutgoingRelation> = HashMap()
     private val evaluationFactor = 10_000
 
     val relatedGroups: Set<Group>
         get() = relationsMap.keys
 
-    val relations: Collection<Relation>
+    val relations: Collection<OutgoingRelation>
         get() = relationsMap.values
 
     fun getConglomerateGroups(conglomerate: GroupConglomerate) =
@@ -37,13 +36,13 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
 
     fun getRelation(group: Group) = relationsMap[group]
 
-    fun getRelationOrCreate(group: Group): Relation {
+    fun getRelationOrCreate(group: Group, owner: Group): OutgoingRelation {
         relationsMap[group]?.let {
             return it
         }
 
-        val relation = Relation(relations.first().owner, group)
-        addRelation(relation)// Unsafe, but Relations must be refactored to not contain owner
+        val relation = OutgoingRelation(group)
+        addRelation(relation, owner)
         return relation
     }
 
@@ -53,39 +52,35 @@ class RelationCenter(internal val hostilityCalculator: (Relation) -> Double) {
 
     internal fun updateRelations(groups: Collection<Group>, owner: Group) {
         updateNewConnections(groups, owner)
-        updateRelations()
+        updateRelations(owner)
     }
 
     private fun updateNewConnections(groups: Collection<Group>, owner: Group) {
-        if (relations.map { it.owner }.any { it != owner })
-            throw GroupError("Incoherent owner for relations")
-
         for (group in groups)
             if (!relationsMap.containsKey(group))
-                addRelation(Relation(owner, group))
+                addRelation(OutgoingRelation(group), owner)
     }
 
-    fun addRelation(relation: Relation) {
-        relation.other.relationCenter.addMirrorRelation(relation)
+    fun addRelation(relation: OutgoingRelation, owner: Group) {
+        relation.other.relationCenter.addMirrorRelation(relation, owner)
         relationsMap[relation.other] = relation
     }
 
-    private fun updateRelations() {
+    private fun updateRelations(owner: Group) {
         val dead = mutableListOf<Group>()
         for (relation in relationsMap.values) {
             if (relation.other.state == Group.State.Dead)
                 dead += relation.other
             else
-                relation.value = hostilityCalculator(relation)
+                relation.value = hostilityCalculator(owner, relation)
         }
         for (it in dead)
             relationsMap.remove(it)
     }
 
-    private fun addMirrorRelation(relation: Relation): Relation {
-        val newRelation = Relation(relation.other, relation.owner, relation.value, relation.positiveInteractions)
-        relationsMap[relation.owner] = newRelation
-        return newRelation
+    private fun addMirrorRelation(relation: OutgoingRelation, group: Group) {
+        val newRelation = OutgoingRelation(group, relation.value, relation.positiveInteractions)
+        relationsMap[group] = newRelation
     }
 
     override fun toString() =

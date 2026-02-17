@@ -5,7 +5,6 @@ import io.tashtabash.utils.chompToSize
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.event.Event
 import io.tashtabash.sim.culture.group.GroupConglomerate
-import io.tashtabash.sim.culture.group.GroupTileTag
 import io.tashtabash.sim.culture.group.cultureaspect.CultureAspect
 import io.tashtabash.sim.culture.thinking.meaning.GroupMemes
 import io.tashtabash.generator.culture.worldview.Meme
@@ -121,26 +120,7 @@ class Group(
     }
 
     fun intergroupUpdate() {
-        updateRelations()
         cultureCenter.intergroupUpdate(this)
-    }
-
-    fun updateRelations() {
-        if (!session.isTime(session.groupTurnsBetweenBorderCheck))
-            return
-
-        var neighbourGroups = territoryCenter
-            .territory
-            .outerBrink //TODO don't like territory checks in Group
-            .flatMap { it.tagPool.getByType("Group") }
-            .map { (it as GroupTileTag).group }
-            .toMutableList()
-        neighbourGroups.addAll(parentGroup.subgroups)
-        neighbourGroups = neighbourGroups
-            .distinct()
-            .toMutableList()
-        neighbourGroups.remove(this)
-        relationCenter.updateRelations(neighbourGroups, this)
     }
 
     fun finishUpdate() {
