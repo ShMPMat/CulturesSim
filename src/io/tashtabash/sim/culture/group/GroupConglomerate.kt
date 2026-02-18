@@ -125,7 +125,6 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
 
     private fun die() {
         state = State.Dead
-        population = 0
     }
 
     fun update() {
@@ -140,7 +139,6 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         updatePopulation()
         if (state == State.Dead)
             return
-        shuffledSubgroups.forEach { it.intergroupUpdate() }
         (CulturesController.session.interactionModel as CulturesMapModel).groupOthersTime += System.nanoTime() - othersTime
     }
 
@@ -151,9 +149,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     }
 
     private fun computePopulation() {
-        population = subgroups
-            .map { it.populationCenter.amount }
-            .foldRight(0, Int::plus)
+        population = subgroups.sumOf { it.populationCenter.amount }
     }
 
     fun claimTile(tile: Tile?) = territory.add(tile)

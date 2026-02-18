@@ -40,11 +40,6 @@ class CultureCenter(
             getRandom()
     ))
 
-    fun intergroupUpdate(group: Group) {
-        events.addAll(aspectCenter.adoptAspects(group))
-        cultureAspectCenter.adoptCultureAspects(group)
-    }
-
     val meaning: Meme
         get() = memePool.valuableMeme
 

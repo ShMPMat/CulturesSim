@@ -119,10 +119,6 @@ class Group(
         return _direNeedTurns > 5 + territoryCenter.notMoved / 10
     }
 
-    fun intergroupUpdate() {
-        cultureCenter.intergroupUpdate(this)
-    }
-
     fun finishUpdate() {
         resourceCenter.addAll(cultureCenter.requestCenter.turnRequests.finish())
         populationCenter.manageNewAspects(cultureCenter.finishAspectUpdate(), territoryCenter.center)

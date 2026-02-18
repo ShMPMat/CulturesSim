@@ -4,7 +4,6 @@ import io.tashtabash.generator.culture.worldview.reasoning.*
 import io.tashtabash.generator.culture.worldview.reasoning.concept.IdeationalConcept
 import io.tashtabash.generator.culture.worldview.reasoning.concept.ObjectConcept
 import io.tashtabash.random.singleton.*
-import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.group.centers.util.*
 import io.tashtabash.sim.culture.group.cultureaspect.*
 import io.tashtabash.generator.culture.worldview.reasoning.convertion.*
@@ -46,10 +45,6 @@ class CultureAspectCenter(val reasonField: ReasonField) {
             getNeighbourCultureAspects(group).filter { (f) -> predicate(f) }
 
     fun adoptCultureAspects(group: Group) {
-        session.groupAspectAdoptionProb.chanceOfNot {
-            return
-        }
-
         val aspect = getNeighbourCultureAspects(group) { !aspectPool.contains(it) }
                 .randomElementOrNull { (_, g) -> group.relationCenter.getNormalizedRelation(g) }
                 ?.first

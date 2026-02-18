@@ -32,6 +32,9 @@ class ProcessCenter(var type: AdministrationType) {
             .withProbability(1.0) {
                 1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size * 10 + 1)
             },
+        AdoptAspectsB
+            .withTrait(Trait.Discovery.get() * 3)
+            .withProbability(session.groupAspectAdoptionProb),
         PerceiveSurroundingTerritoryB,
         UpdateReasoningsB
             .withProbability(session.reasoningUpdate),

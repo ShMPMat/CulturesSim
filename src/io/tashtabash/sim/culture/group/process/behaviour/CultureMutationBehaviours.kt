@@ -84,6 +84,17 @@ object MutateCultureAspectsB : AbstractGroupBehaviour() {
     override val internalToString = "Mutate existing culture aspects"
 }
 
+object AdoptAspectsB : AbstractGroupBehaviour() {
+    override fun run(group: Group): ProcessResult {
+        val events = group.cultureCenter.aspectCenter.adoptAspects(group)
+        group.cultureCenter.cultureAspectCenter.adoptCultureAspects(group)
+
+        return ProcessResult(events = events)
+    }
+
+    override val internalToString = "Adopt aspects from neighbours"
+}
+
 
 private enum class ChangeRandom(override val probability: Double) : SampleSpaceObject {
     RitualSystem(3.0),

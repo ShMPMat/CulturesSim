@@ -2,7 +2,6 @@ package io.tashtabash.sim.culture.group.centers
 
 import io.tashtabash.random.singleton.*
 import io.tashtabash.random.toSampleSpaceObject
-import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.aspect.*
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependencies
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependency
@@ -211,11 +210,9 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
     private fun getNeighbourAspects(group: Group): List<Pair<Aspect, Group>> {
         val allExistingAspects = mutableListOf<Pair<Aspect, Group>>()
         for (neighbour in group.relationCenter.relatedGroups) {
-            allExistingAspects.addAll(
-                    neighbour.cultureCenter.aspectCenter._aspectPool.all
-                            .filter { (it !is ConverseWrapper || _aspectPool.contains(it.aspect)) }
-                            .map { it to neighbour }
-            )
+            allExistingAspects += neighbour.cultureCenter.aspectCenter._aspectPool.all
+                .filter { (it !is ConverseWrapper || _aspectPool.contains(it.aspect)) }
+                .map { it to neighbour }
         }
         return allExistingAspects
     }
@@ -227,10 +224,6 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
             .filter { (a) -> predicate(a) }
 
     fun adoptAspects(group: Group): List<Event> {
-        session.groupAspectAdoptionProb.chanceOfNot {
-            return emptyList()
-        }
-
         val allExistingAspects = getNeighbourAspects(group) { !changedAspectPool.contains(it) }
         if (allExistingAspects.isNotEmpty()) {
             val (aspect, aspectGroup) = allExistingAspects.randomElement { (a, g) ->
