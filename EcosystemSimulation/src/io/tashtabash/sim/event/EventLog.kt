@@ -37,8 +37,8 @@ class EventLog(private val isPurging: Boolean = true, private val isOblivious: B
 
         if (isPurging && _lastEvents.size >= maxEvents) {
             _lastEvents = _lastEvents
-                    .takeLast(maxEvents / 2)
-                    .toMutableList()
+                .takeLast(maxEvents / 2)
+                .toMutableList()
         }
     }
 }

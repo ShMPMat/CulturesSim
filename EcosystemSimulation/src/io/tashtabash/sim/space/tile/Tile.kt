@@ -30,9 +30,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
     private val _delayedResources: MutableList<Resource> = ArrayList()
 
     val resourceDensity
-        get() = resourcePack.resources
-                .map { it.amount * it.genome.size.pow(3) }
-                .foldRight(0.0, Double::plus) / data.tileResourceCapacity
+        get() = resourcePack.resources.sumOf { it.amount * it.genome.size.pow(3) } / data.tileResourceCapacity
 
     var level = 0
         internal set

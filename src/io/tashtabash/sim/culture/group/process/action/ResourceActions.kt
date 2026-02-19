@@ -36,8 +36,7 @@ class ReceiveRequestResourcesA(
 
 class EvaluateResourcesA(group: Group, val pack: ResourcePack) : AbstractGroupAction(group) {
     override fun run() = pack.resources
-        .map { group.cultureCenter.evaluateResource(it) }
-        .foldRight(0, Int::plus)
+        .sumOf { group.cultureCenter.evaluateResource(it) }
         .toDouble()
 
     override val internalToString = "Let ${group.name} evaluate ${pack.listResources}"

@@ -23,7 +23,7 @@ import java.util.*
 import kotlin.math.max
 
 
-class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups: Int, root: Tile) {
+class GroupConglomerate(val name: String, startPopulation: Int, numberOfSubGroups: Int, root: Tile) {
     private val _subgroups = mutableListOf<Group>()
     val subgroups: List<Group>
         get() = _subgroups
@@ -38,6 +38,9 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
     val territory: MutableTerritory = BrinkInvariantTerritory()
     private var namesScore = 0
 
+    val population: Int
+        get() = subgroups.sumOf { it.populationCenter.amount }
+
     init {
         claimTile(root)
         repeat(numberOfSubGroups) {
@@ -45,7 +48,7 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
             val memoryCenter = MemoryCenter()
             val aspectCenter = AspectCenter(emptyList())
             val populationCenter = PopulationCenter(
-                population / numberOfSubGroups,
+                startPopulation / numberOfSubGroups,
                 CulturesController.session.defaultGroupMaxPopulation,
                 CulturesController.session.defaultGroupMinPopulationPerTile,
                 OwnershipMarker(name),
@@ -136,27 +139,15 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
 
         (CulturesController.session.interactionModel as CulturesMapModel).groupMainTime += System.nanoTime() - mainTime
         val othersTime = System.nanoTime()
-        updatePopulation()
-        if (state == State.Dead)
-            return
-        (CulturesController.session.interactionModel as CulturesMapModel).groupOthersTime += System.nanoTime() - othersTime
-    }
-
-    private fun updatePopulation() {
-        computePopulation()
         if (population == 0)
             die()
-    }
-
-    private fun computePopulation() {
-        population = subgroups.sumOf { it.populationCenter.amount }
+        (CulturesController.session.interactionModel as CulturesMapModel).groupOthersTime += System.nanoTime() - othersTime
     }
 
     fun claimTile(tile: Tile?) = territory.add(tile)
 
     fun addGroup(group: Group) {
         _subgroups.add(group)
-        computePopulation()
         group.territoryCenter.territory.tiles.forEach { claimTile(it) }
         group.parentGroup = this
     }
@@ -166,7 +157,6 @@ class GroupConglomerate(val name: String, var population: Int, numberOfSubGroups
         ?: Int.MAX_VALUE
 
     fun removeGroup(group: Group) {
-        population -= group.populationCenter.amount
         if (!_subgroups.remove(group))
             throw RuntimeException("Trying to remove non-child subgroup ${group.name} from Group $name")
 

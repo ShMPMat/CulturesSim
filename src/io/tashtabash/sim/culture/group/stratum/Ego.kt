@@ -48,7 +48,7 @@ class Ego(tile: Tile, name: String) {
         place.current.addResources(best.map { it.second })
         val allGoodProduced = group.cultureCenter.aspectCenter.aspectPool.producedResources
                 .asSequence()
-                .map { it.toSampleSpaceObject(group.cultureCenter.evaluateResource(it).toDouble()) }
+                .map { it.withProb(group.cultureCenter.evaluateResource(it).toDouble()) }
                 .filter { it.probability > 3.0 }
                 .toList()
 

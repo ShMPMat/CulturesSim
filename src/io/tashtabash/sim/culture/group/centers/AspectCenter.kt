@@ -1,7 +1,7 @@
 package io.tashtabash.sim.culture.group.centers
 
 import io.tashtabash.random.singleton.*
-import io.tashtabash.random.toSampleSpaceObject
+import io.tashtabash.random.withProb
 import io.tashtabash.sim.culture.aspect.*
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependencies
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependency
@@ -190,7 +190,7 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
             return emptyList()
 
         possibleOptions.entries
-            .flatMap { (n, options) -> options.map { it.toSampleSpaceObject(1.0 / n * n) } }
+            .flatMap { (n, options) -> options.map { it.withProb(1.0 / n * n) } }
             .randomUnwrappedElementOrNull()
             ?.let { (aspect, _, sourceGroup, needs) ->
                 val resultOptions = mutableListOf(aspect to sourceGroup)

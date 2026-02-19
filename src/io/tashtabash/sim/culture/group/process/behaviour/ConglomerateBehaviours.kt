@@ -1,7 +1,7 @@
 package io.tashtabash.sim.culture.group.process.behaviour
 
 import io.tashtabash.random.singleton.randomUnwrappedElementOrNull
-import io.tashtabash.random.toSampleSpaceObject
+import io.tashtabash.random.withProb
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.group.Add
 import io.tashtabash.sim.culture.group.centers.AdministrationType
@@ -32,7 +32,7 @@ object RandomGroupSeizureB : AbstractGroupBehaviour() {
 
         val options = group.territoryCenter.getAllNearGroups(group)
                 .filter { it.parentGroup !== group.parentGroup }
-                .map { it.toSampleSpaceObject(groupValueMapper(it)) }
+                .map { it.withProb(groupValueMapper(it)) }
                 .filter { it.probability > 0 }
 
         return options.randomUnwrappedElementOrNull()

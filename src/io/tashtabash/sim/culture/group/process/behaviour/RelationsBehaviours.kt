@@ -52,11 +52,7 @@ class RequestHelpB(val request: Request) : AbstractGroupBehaviour() {
             val reducedRequest = request.reducedAmountCopy(amountLeft)
             val newProcessResult = RequestHelpI(group, relation.other, reducedRequest).run()
 
-            amountLeft = amount -
-                    newProcessResult.events
-                        .filterIsInstance<HelpEvent>()
-                        .map { it.helpValue }
-                        .foldRight(0.0, Double::plus)
+            amountLeft = amount - newProcessResult.events.filterIsInstance<HelpEvent>().sumOf { it.helpValue }
 
             processResult += newProcessResult
             if (amountLeft <= 0)

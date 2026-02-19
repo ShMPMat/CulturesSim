@@ -2,6 +2,7 @@ package io.tashtabash.sim.culture.group.centers
 
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.sim.CulturesController.Companion.session
+import io.tashtabash.sim.culture.group.centers.Trait.*
 import io.tashtabash.sim.culture.group.cultureaspect.DepictObject
 import io.tashtabash.sim.culture.group.process.*
 import io.tashtabash.sim.culture.group.process.behaviour.*
@@ -16,43 +17,43 @@ class ProcessCenter(var type: AdministrationType) {
         ForgetUnusedAspectsB,
         UseCultureAspectsB,
 
-        RandomArtifactB.withTrait(Trait.Creation.get().pow(0.25)),
-        RandomDepictCaB.withTrait(Trait.Creation.get() / 10).withProbability(1.0) {
+        RandomArtifactB.withTrait(Creation.get().pow(0.25)),
+        RandomDepictCaB.withTrait(Creation.get() / 10).withProbability(1.0) {
             1.0 / (it.cultureCenter.cultureAspectCenter.aspectPool.all.filterIsInstance<DepictObject>().size + 1)
         },
         MutateCultureAspectsB.withProbability(session.groupCultureAspectCollapse),
-        CreateCultureAspectsB.withTrait(Trait.Creation.get()),
+        CreateCultureAspectsB.withTrait(Creation.get()),
         MutateAspectsB
-            .withTrait(Trait.Discovery.get() * 3)
+            .withTrait(Discovery.get() * 3)
             .withProbability(1.0) {
                 1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size + 1)
             },
         CreateAspectsB
-            .withTrait(Trait.Discovery.get() * 3)
+            .withTrait(Discovery.get() * 3)
             .withProbability(1.0) {
                 1.0 / (it.cultureCenter.aspectCenter.aspectPool.all.size * 10 + 1)
             },
         AdoptAspectsB
-            .withTrait(Trait.Discovery.get() * 3)
+            .withTrait(Discovery.get() * 3)
             .withProbability(session.groupAspectAdoptionProb),
         PerceiveSurroundingTerritoryB,
         UpdateReasoningsB
             .withProbability(session.reasoningUpdate),
 
         RandomTradeB.times(1, 3),
-        RandomGroupSeizureB.withTrait(Trait.Expansion.get() * 0.04),
+        RandomGroupSeizureB.withTrait(Expansion.get() * 0.04),
         MakeTradeResourceB(5).times(
             0,
             1,
             minUpdate = { g -> g.populationCenter.stratumCenter.traderStratum.population / 30 }
         ),
         TurnRequestsHelpB,
-        GiveGiftB.withTrait(Trait.Peace.get() * 0.2),
+        GiveGiftB.withTrait(Peace.get() * 0.2),
         SplitGroupB.withProbability(session.defaultGroupDiverge) {
             session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
         },
         TryDivergeWithNegotiationB
-            .withTrait(Trait.Consolidation.getNegative() * 2)
+            .withTrait(Consolidation.getNegative() * 2)
             .withProbability(session.defaultGroupExiting) {
                 it.populationCenter.maxPopulationPart(it.territoryCenter.territory) *
                         session.defaultGroupExiting /
@@ -64,8 +65,8 @@ class ProcessCenter(var type: AdministrationType) {
         EstablishTradeRelationsB.withProbability(0.0) {
             it.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation / 100.0
         },
-        RandomWarB.withTrait(Trait.Peace.getNegative() * Trait.Expansion.getPositive()),
-        InternalConsolidationB.withTrait(Trait.Consolidation.getPositive()),
+        RandomWarB.withTrait(Peace.getNegative() * Expansion.getPositive()),
+        InternalConsolidationB.withTrait(Consolidation.getPositive()),
         DefenceFromNatureB,
         ManageDefenceB,
         ResolveResourceNeedB,

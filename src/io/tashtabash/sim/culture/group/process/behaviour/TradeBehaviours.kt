@@ -3,7 +3,7 @@ package io.tashtabash.sim.culture.group.process.behaviour
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.random.singleton.randomUnwrappedElementOrNull
-import io.tashtabash.random.toSampleSpaceObject
+import io.tashtabash.random.withProb
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.process.ProcessResult
 import io.tashtabash.sim.culture.group.process.action.CooperateA
@@ -80,9 +80,9 @@ object EstablishTradeRelationsB : AbstractGroupBehaviour() {
         val groupsToChances = group.relationCenter.relations
                 .filter { it.other !in existingTrades }
                 .map {
-                    it.other.toSampleSpaceObject(
-                            it.normalized *
-                                    it.other.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation
+                    it.other.withProb(
+                        it.normalized *
+                                it.other.populationCenter.stratumCenter.traderStratum.cumulativeWorkAblePopulation
                     )
                 }
                 .filter { it.probability > 0.0 }
