@@ -7,38 +7,44 @@ import io.tashtabash.sim.space.tile.Tile
 
 
 class MapPrintInfo {
-    var cut = 0
+    var cut = 0 // Set in a way to minimize the number of land being divided by a map border in the view
 
     fun computeCut(map: WorldMap) {
         if (!data.yMapLooping) return
-        var gapStart = 0
-        var gapFinish = 0
-        var start = -1
-        var finish = 0
+
+        var bestGapLand = Int.MAX_VALUE
+        var bestGapStart = 0
+        var bestGapWidth = 0
+
+        var currentGapStart = 0
+        var currentGapWidth = 0
 
         for (y in 0 until data.mapSizeY) {
-            var isLineClear = true
-            for (x in 0 until data.mapSizeX) {
+            val landInThisLine = (0 until data.mapSizeX).count { x ->
                 val tile = map[x, y]
-                        ?: throw SimulationError("Incoherent map size")
-                if (tile.type != Tile.Type.Water && tile.type != Tile.Type.Ice) {
-                    isLineClear = false
-                    break
-                }
+                    ?: throw SimulationError("Incoherent map size")
+                tile.type != Tile.Type.Water && tile.type != Tile.Type.Ice
             }
-            if (isLineClear) {
-                if (start == -1)
-                    start = y
-                finish = y
-            } else if (start != -1) {
-                if (finish - start > gapFinish - gapStart) {
-                    gapStart = start
-                    gapFinish = finish
+
+            if (landInThisLine < bestGapLand) {
+                bestGapLand = landInThisLine
+                currentGapStart = y
+                currentGapWidth = 1
+                bestGapStart = y
+                bestGapWidth = 1
+            } else if (landInThisLine == bestGapLand) {
+                currentGapWidth++
+                if (currentGapWidth > bestGapWidth) {
+                    bestGapWidth = currentGapWidth
+                    bestGapStart = currentGapStart
                 }
-                start = -1
+            } else {
+                // Reset current streak
+                currentGapWidth = 0
+                currentGapStart = y + 1
             }
         }
 
-        cut = (gapStart + gapFinish) / 2
+        cut = bestGapStart + (bestGapWidth / 2)
     }
 }

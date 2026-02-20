@@ -80,15 +80,13 @@ class TerritoryCenter(group: Group, val spreadAbility: Double, tile: Tile) {
             tileTag.group.die()
             return
         }
-        if (!territory.contains(territory.center)) {
+        if (!territory.contains(territory.center))
             territory.center = territory.randomTile()
-            territory.add(center)
-        }
         notMoved++
         if (settled && center.tagPool.getByType(SETTLE_TAG).isEmpty()) {
             _places.add(StaticPlace(
-                    center,
-                    TileTag(SETTLE_TAG + _places.count { it.tileTag.type == SETTLE_TAG }, SETTLE_TAG)
+                center,
+                TileTag(SETTLE_TAG + _places.count { it.tileTag.type == SETTLE_TAG }, SETTLE_TAG)
             ))
         }
     }

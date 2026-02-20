@@ -250,7 +250,7 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
 
     override fun toString() = """
         |Aspects:
-        |${aspectPool.all.joinToString("\n\n")}
+        |${aspectPool.all.sortedBy { -it.usefulness }.joinToString("\n\n")}
     """.trimMargin()
 }
 

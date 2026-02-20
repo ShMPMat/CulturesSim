@@ -36,9 +36,7 @@ class MemoryCenter(
 
     fun fullCopy() = MemoryCenter(resourceTraction.toMutableMap(), turnRequests)
 
-    override fun toString() = "$turnRequests\n" +
-            "\n" +
-            "Resources awareness\n" +
+    override fun toString() = "Resources awareness\n" +
             resourceTraction.entries.sortedByDescending { it.value.value.actualValue }
                 .take(20)
                 .joinToString("\n") { (r, ma) ->
