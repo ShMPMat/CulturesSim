@@ -21,7 +21,7 @@ Group consists of centers:
   - `GroupAction`: encapsulates logic which requires only one `Group`, run inside `Behaviours`;
 - `GroupInteraction`: encapsulates interaction logic between 2 `Groups`, run inside `Behaviours`;
   - Returns `ProcessResult` which can be propagated out of wrapping `Behaviour`;
-  - Internally handles `ProcessResult` for the other `Group` and makes the `Group` consumeit.
+  - Internally handles `ProcessResult` for the other `Group` and makes the `Group` consume it.
 
 ## Culture Aspect Classes
 

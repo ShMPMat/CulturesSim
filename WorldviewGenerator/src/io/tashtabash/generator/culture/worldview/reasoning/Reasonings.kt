@@ -110,7 +110,7 @@ class ActionReasoning(val objectConcept: ReasonConcept, val actionConcept: Actio
                 objectConcept.substitute(substitutions) ?: return null,
                 actionConcept.substitute(substitutions)
                         ?.takeIf { it is ActionConcept }
-                        as ActionConcept?
+                        as? ActionConcept?
                         ?: return null
         )
     }

@@ -49,6 +49,7 @@ class ProcessCenter(var type: AdministrationType) {
         ),
         TurnRequestsHelpB,
         GiveGiftB.withTrait(Peace.get() * 0.2),
+
         SplitGroupB.withProbability(session.defaultGroupDiverge) {
             session.defaultGroupDiverge / (it.parentGroup.subgroups.size + 1)
         },
@@ -67,6 +68,7 @@ class ProcessCenter(var type: AdministrationType) {
         },
         RandomWarB.withTrait(Peace.getNegative() * Expansion.getPositive()),
         InternalConsolidationB.withTrait(Consolidation.getPositive()),
+
         DefenceFromNatureB,
         ManageDefenceB,
         ResolveResourceNeedB,

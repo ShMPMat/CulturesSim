@@ -12,7 +12,7 @@ import io.tashtabash.sim.space.resource.container.ResourcePack
 import kotlin.math.max
 
 
-data class AspectController constructor(
+data class AspectController(
         val depth: Int,
         var ceiling: Double,
         var floor: Double,
