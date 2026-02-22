@@ -162,10 +162,10 @@ class PopulationCenter(
         strataForRequest.sortedByDescending { it.aspect.usefulness }
 
         val pack = evaluator.pick(
-                        request.ceiling,
-                        turnResources.resources,
-                        { it.core.wrappedSample }
-                ) { r, p -> listOf(r.getCleanPart(p, taker)) }
+            request.ceiling,
+            turnResources.resources,
+            { it.core.wrappedSample }
+        ) { r, p -> listOf(r.getCleanPart(p, taker)) }
         var amount = evaluator.evaluate(pack)
 
         for (stratum in strataForRequest) {

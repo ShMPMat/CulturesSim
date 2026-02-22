@@ -3,8 +3,6 @@ package io.tashtabash.sim.culture.group.centers
 import io.tashtabash.random.singleton.randomElement
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.SimulationError
-import io.tashtabash.sim.culture.aspect.AspectResult
-import io.tashtabash.sim.culture.aspect.ResultNode
 import io.tashtabash.sim.culture.group.place.MovablePlace
 import io.tashtabash.sim.culture.group.request.RequestType
 import io.tashtabash.sim.space.resource.Resource
@@ -38,12 +36,10 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
 
     val mostImportantNeed: Pair<ResourceLabeler, ResourceNeed>?
         get() {
-            neededResources.forEach { it.value.normalize() }
-
             val max = neededResources.entries
-                    .maxByOrNull { it.value.importance }
-                    ?.value?.importance
-                    ?: return null
+                .maxByOrNull { it.value.importance }
+                ?.value?.importance
+                ?: return null
 
             return neededResources.filter { it.value.importance == max }.toList().randomElement()
         }
@@ -75,10 +71,8 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
     fun moveToNewStorage(newStorageTile: Tile) = place.move(newStorageTile)
 
     fun addNeeded(resourceLabeler: ResourceLabeler, importance: Int = 1) {
-        if (neededResourcesMap.containsKey(resourceLabeler))
-            neededResourcesMap.getValue(resourceLabeler).importance += importance
-        else
-            neededResourcesMap[resourceLabeler] = ResourceNeed(importance, resourceLabeler)
+        val need = neededResourcesMap.getOrPut(resourceLabeler) { ResourceNeed(0, resourceLabeler) }
+        need.importance += importance
     }
 
     fun hasDireNeed() = neededResourcesMap.any { it.value.importance >= _direBound }
@@ -149,13 +143,13 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
 }
 
 
-data class ResourceNeed(var importance: Int, var resourceLabeler: ResourceLabeler, var wasUpdated: Boolean = true) {
-    fun normalize() {
-        if (importance > 1000) importance = 1000
-    }
+class ResourceNeed(startImportance: Int, var resourceLabeler: ResourceLabeler, var wasUpdated: Boolean = true) {
+    var importance: Int = startImportance
+        set(value) {
+            field = value.coerceIn(0, 1000)
+        }
 
     fun finishUpdate() {
-        normalize()
         if (!wasUpdated) importance /= 2
         else wasUpdated = false
     }
