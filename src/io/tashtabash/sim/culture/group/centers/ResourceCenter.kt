@@ -85,13 +85,13 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
         }
         _resourcesToAdd.clear()
         neededResourcesMap.values.forEach(ResourceNeed::finishUpdate)
-        neededResourcesMap.entries.removeIf { it.value.importance <= 0 }
+        neededResourcesMap.entries.removeIf { it.value.importance == 0 }
 
         if (session.isTime(500))
             pack.clearEmpty()
     }
 
-    private fun printedNeeds() = neededResources.entries.joinToString("\n") {
+    private fun printedNeeds() = neededResourcesMap.entries.joinToString("\n") {
         "${it.key} - importance ${it.value.importance}"
     }
 

@@ -36,8 +36,8 @@ class CultureCenter(
     fun addAspiration(labeler: ResourceLabeler) = group.resourceCenter.addNeeded(labeler, 100)
 
     fun addResourceWant(resource: Resource) = cultureAspectCenter.addCultureAspect(CherishedResource(
-            resource,
-            getRandom()
+        resource,
+        getRandom()
     ))
 
     val meaning: Meme

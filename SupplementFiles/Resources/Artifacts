@@ -1,10 +1,10 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
 -Fibre                              0       0.5    100        -500   500  100000000  Ignore    None         @Fibre
-        +Weaving:Cloth:1
+        +Weaving/Cloth:1
         L d1
 -Cloth                              0       0.5    100        -500   500  100000000  Ignore    Artifact     @Cloth
         $clothes:m(0.01,soft,flexible)
-        +MakeClothes:Clothes:1
+        +MakeClothes/Clothes:1
         L d2
 
 -Iron                            0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Iron
