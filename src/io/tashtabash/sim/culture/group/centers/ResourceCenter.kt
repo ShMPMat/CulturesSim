@@ -44,13 +44,6 @@ class ResourceCenter(cherishedResources: MutableResourcePack, storageTile: Tile,
             return neededResources.filter { it.value.importance == max }.toList().randomElement()
         }
 
-    val direNeed: Pair<ResourceLabeler, ResourceNeed>?
-        get() {
-            val result = mostImportantNeed
-            return if (result != null && result.second.importance >= _direBound) result
-            else null
-        }
-
     private val _resourcesToAdd = mutableListOf<Resource>()
 
     fun takeResource(resource: Resource, amount: Int, taker: Taker) =
