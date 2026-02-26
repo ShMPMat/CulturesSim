@@ -5,6 +5,7 @@ import io.tashtabash.random.singleton.randomElementOrNull
 import io.tashtabash.sim.CulturesController.Companion.session
 import io.tashtabash.sim.culture.group.centers.Group
 import io.tashtabash.sim.culture.group.process.ProcessResult
+import io.tashtabash.sim.culture.group.process.action.AddNeedAspectA
 import io.tashtabash.sim.culture.group.process.emptyProcessResult
 import io.tashtabash.sim.event.Change
 import io.tashtabash.sim.event.of
@@ -19,10 +20,10 @@ object ResolveResourceNeedB : PlanBehaviour() {
             return emptyProcessResult
         }
 
-        group.cultureCenter.addNeedAspect(need.second)
+        val aspectResult = AddNeedAspectA(group, need.second).run()
         group.populationCenter.wakeNeedStrata(need)
 
-        return emptyProcessResult
+        return aspectResult
     }
 
     override val internalToString: String

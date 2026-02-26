@@ -31,8 +31,6 @@ class CultureCenter(
 
     private val evaluatedMap = mutableMapOf<Resource, ValueEntry>()
 
-    private val importanceToDepthCoefficient = 100
-
     fun addAspiration(labeler: ResourceLabeler) = group.resourceCenter.addNeeded(labeler, 100)
 
     fun addResourceWant(resource: Resource) = cultureAspectCenter.addCultureAspect(CherishedResource(
@@ -42,35 +40,6 @@ class CultureCenter(
 
     val meaning: Meme
         get() = memePool.valuableMeme
-
-    fun addNeedAspect(need: ResourceNeed) {
-        val labeler = need.resourceLabeler
-        val searchDepth = need.importance / importanceToDepthCoefficient + 1
-        val option = aspectCenter.findRandomOption(need.resourceLabeler, group, searchDepth)
-
-        if (option.isEmpty()) {
-            events += Fail of "Group ${group.name} couldn't develop an aspect for a need $labeler"
-            return
-        }
-
-        var success = true
-        for ((aspect) in option.reversed()) {
-            success = aspectCenter.tryAddingAspect(aspect, group)
-            if (!success)
-                break
-        }
-        val (aspect, sourceGroup) = option.first()
-
-        events +=
-            if (success)
-                if (sourceGroup == null)
-                    AspectGaining of "Group ${group.name} developed an aspect ${aspect.name} for a need $labeler"
-                else
-                    AspectGaining of "Group ${group.name} took an aspect ${aspect.name} from group ${sourceGroup.name}" +
-                            " for a need $labeler"
-            else
-                Fail of "Group ${group.name} invented an aspect ${aspect.name} for a need $labeler but couldn't add it"
-    }
 
     fun finishAspectUpdate(): Set<Aspect> {
         val aspects = aspectCenter.finishUpdate()
