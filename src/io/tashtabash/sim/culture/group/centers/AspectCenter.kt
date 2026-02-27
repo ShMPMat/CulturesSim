@@ -2,6 +2,7 @@ package io.tashtabash.sim.culture.group.centers
 
 import io.tashtabash.random.singleton.*
 import io.tashtabash.random.withProb
+import io.tashtabash.sim.CulturesController
 import io.tashtabash.sim.culture.aspect.*
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependencies
 import io.tashtabash.sim.culture.aspect.dependency.AspectDependency
@@ -80,16 +81,20 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
     }
 
     private fun queueConverseWrapper(aspect: Aspect, resource: Resource): ConverseWrapper? {
+        val wrapper = createConverseWrapper(aspect, resource)
+        if (wrapper != null)
+            _potentialConverseWrappers.add(wrapper)
+
+        return wrapper
+    }
+
+    private fun createConverseWrapper(aspect: Aspect, resource: Resource): ConverseWrapper? {
         val wrapper = if (aspect.canApplyMeaning)
             MeaningInserter(aspect, resource)
         else
             ConverseWrapper(aspect, resource)
 
-        if (!wrapper.isValid)
-            return null
-
-        _potentialConverseWrappers.add(wrapper)
-        return wrapper
+        return wrapper.takeIf { it.isValid }
     }
 
     fun getAllPossibleConverseWrappers(group: Group): List<ConverseWrapper> {
@@ -157,12 +162,11 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
             if (aspect is ConverseWrapper && aspectLabeler.isSuitable(aspect))
                 allOptions += aspect to aspectGroup
 
-        return allOptions
-            .map { (aspect, sourceGroup) ->
-                val (dependencies, needs) = calculateDependencies(aspect, group)
+        return allOptions.map { (aspect, sourceGroup) ->
+            val (dependencies, needs) = calculateDependencies(aspect, group)
 
-                AspectOption(aspect, dependencies, sourceGroup, needs)
-            }.groupBy { it.needs.size }
+            AspectOption(aspect, dependencies, sourceGroup, needs)
+        }.groupBy { it.needs.size }
     }
 
     private fun insertDependency(aspect: ConverseWrapper, tag: ResourceTag, dependencyWrapper: ConverseWrapper) {
@@ -175,10 +179,9 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
     }
 
     // Returns Aspects which, when added, produce a Resource satisfying the labeler
-    // If an aspect has dependencies in the list, they are placed at later indices
+    // If an aspect has dependencies, they are placed at later indices in the list
     fun findRandomOption(labeler: ResourceLabeler, group: Group, depth: Int = 1): List<SourcedAspect> {
         val possibleOptions = findPossibleAspectOptions(labeler, group)
-
         possibleOptions[0]
             ?.filter { (aspect, dependencies) -> aspect.checkDependencies(dependencies) }
             ?.randomElementOrNull()
@@ -188,22 +191,49 @@ class AspectCenter(aspects: List<Aspect> = listOf()) {
 
         if (depth < 2)
             return emptyList()
-
+        // Try to satisfy unsatisfied dependencies
         possibleOptions.entries
             .flatMap { (n, options) -> options.map { it.withProb(1.0 / n * n) } }
             .randomUnwrappedElementOrNull()
             ?.let { (aspect, _, sourceGroup, needs) ->
-                val resultOptions = mutableListOf(aspect to sourceGroup)
+                val resultOptions = mutableListOf<SourcedAspect>(aspect to sourceGroup)
                 for ((need, tag) in needs) {
                     val needOption = findRandomOption(need.resourceLabeler, group, depth - 1)
                     if (needOption.isNotEmpty()) {
                         resultOptions += needOption
-                        insertDependency(aspect, tag, needOption[0].first)
+                        val option = needOption[0].first
+                        if (option is ConverseWrapper)
+                            insertDependency(aspect, tag, option)
                     } else
                         return emptyList()
                 }
                 return resultOptions
             }
+
+        if (depth < 3)
+            return emptyList()
+        // Try to find new Aspects by looking at what can be done with available resources
+        val resources = _aspectPool.producedResources
+        val acceptableResourceActions = resources
+            .flatMap { r -> r.genome.conversionCore.actionConversions.entries.map { r to it } }
+            .filter { (_, a) -> a.value.any { labeler.isSuitable(it.genome) } }
+            .map { (r, a) -> r to a.key }
+        if (acceptableResourceActions.isNotEmpty()) {
+            val (resource, resourceAction) = acceptableResourceActions.randomElement()
+            val aspect = CulturesController.session.world.aspectPool.all
+                .filter { it.core.resourceAction == resourceAction }
+                .randomElementOrNull()
+                ?: return emptyList()
+            val converseWrapper = createConverseWrapper(aspect, resource)
+                ?: return emptyList()
+
+            val resultOptions = mutableListOf<SourcedAspect>(
+                converseWrapper to null,
+                aspect to null
+            )
+            return resultOptions
+        }
+
         return emptyList()
     }
 
@@ -263,4 +293,4 @@ data class AspectOption(
 )
 
 
-typealias SourcedAspect = Pair<ConverseWrapper, Group?>
+typealias SourcedAspect = Pair<Aspect, Group?>
