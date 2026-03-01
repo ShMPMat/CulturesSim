@@ -69,7 +69,7 @@ open class Aspect(var core: AspectCore, dependencies: AspectDependencies) {
         }
     }
 
-    open fun copy(dependencies: AspectDependencies) = core.makeAspect(dependencies)
+    open fun copy(dependencies: AspectDependencies) = Aspect(core, dependencies)
 
     fun calculateNeededWorkers(evaluator: ResourceEvaluator, amount: Double) = ceil(max(
             evaluator.getSatisfiableAmount(amount, producedResources) * core.standardComplexity,
