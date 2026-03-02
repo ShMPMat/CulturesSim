@@ -31,11 +31,11 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 Resource ->
                     try {
                         val resource = world.resourcePool.getBaseNameOrNull(splitCommand[1])
-                                ?: world.resourcePool.all.first {
-                                    it.baseName.lowercase() == splitCommand[1].lowercase()
-                                }
+                            ?: world.resourcePool.all.first {
+                                it.baseName.equals(splitCommand[1], ignoreCase = true)
+                            }
                         printResource(resource)
-                    } catch (e: NoSuchElementException) {
+                    } catch (_: NoSuchElementException) {
                         resourceSymbols.entries
                                 .filter { it.value == splitCommand[1] }
                                 .map { it.key }
@@ -140,7 +140,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                                 amount,
                                 regexp
                         ))
-                    } catch (e: PatternSyntaxException) {
+                    } catch (_: PatternSyntaxException) {
                         println("Invalid regex pattern")
                         return ExecutionResult.Invalid
                     }

@@ -74,6 +74,13 @@ fun outputResourceCharacteristics(resource: Resource): String {
     return "$resource\n\n$actionConversions\n\nParts:\n$parts"
 }
 
+fun outputAmount(resource: Resource, world: World): String {
+    val totalAmount = world.map.tiles.flatMap { it.resourcesWithMoved }
+        .filter { it.baseName == resource.baseName && it.isNotEmpty }
+        .sumOf { it.amount }
+    return "Amount on map: $totalAmount"
+}
+
 fun outputFoodWeb(resource: Resource, world: World): String {
     val consumers = world.resourcePool.all
             .asSequence()
