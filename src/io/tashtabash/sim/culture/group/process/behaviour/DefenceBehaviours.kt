@@ -51,5 +51,5 @@ object ManageDefenceB : AbstractGroupBehaviour() {
         return emptyProcessResult
     }
 
-    override val internalToString = "Monitor surrounding dangers and confront them"
+    override val internalToString = "Update defence stats"
 }
