@@ -78,7 +78,7 @@ fun outputAmount(resource: Resource, world: World): String {
     val totalAmount = world.map.tiles.flatMap { it.resourcesWithMoved }
         .filter { it.baseName == resource.baseName && it.isNotEmpty }
         .sumOf { it.amount }
-    return "Amount on map: $totalAmount"
+    return "Amount on map: %,d".format(totalAmount)
 }
 
 fun outputFoodWeb(resource: Resource, world: World): String {
