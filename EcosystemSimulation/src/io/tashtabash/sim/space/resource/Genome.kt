@@ -3,7 +3,6 @@ package io.tashtabash.sim.space.resource
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.dependency.ResourceDependency
-import io.tashtabash.sim.space.resource.instantiation.GenomeTemplate
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
@@ -27,7 +26,7 @@ open class Genome(
     val legacy: BaseName?,
     dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
-    val primaryMaterial: Material?,
+    val primaryMaterial: Material,
     val secondaryMaterials: List<Material>,
     var conversionCore: ConversionCore
 ) {
@@ -49,7 +48,7 @@ open class Genome(
     init {
         if (naturalDensity > 1000000000)
             System.err.println("Very high density in Genome $name - $naturalDensity")
-        computeTagsFromMaterials()
+        computeTags()
     }
 
     open fun copy(
@@ -68,7 +67,7 @@ open class Genome(
         legacy: BaseName? = this.legacy,
         dependencies: List<ResourceDependency> = this.dependencies,
         tags: Set<ResourceTag> = this.tags,
-        primaryMaterial: Material? = this.primaryMaterial,
+        primaryMaterial: Material = this.primaryMaterial,
         secondaryMaterials: List<Material> = this.secondaryMaterials,
         conversionCore: ConversionCore = this.conversionCore.copy(),
         parts: List<Resource> = this.parts
@@ -98,22 +97,11 @@ open class Genome(
     }
 
     val materials: List<Material>
-        get() {
-            return if (primaryMaterial != null)
-                secondaryMaterials + primaryMaterial
-            else listOf()
-        }
-
-    fun computeTagsFromMaterials() {
-        if (primaryMaterial == null && this !is GenomeTemplate)
-            throw ExceptionInInitializerError("Resource $name has no materials")
-        else if (primaryMaterial != null)
-            computeTags()
-    }
+        get() = secondaryMaterials + primaryMaterial
 
     private fun computeTags() {
         val newTags = tagsMap.toMutableMap()
-        newTags += primaryMaterial!!.tags
+        newTags += primaryMaterial.tags
             .filter { !newTags.containsKey(it) }
             .associateWith { it }
         for (matcher in data.additionalTags)
@@ -131,11 +119,7 @@ open class Genome(
         get() = legacy?.let { "_of_$it" }
             ?: ""
 
-    val mass: Double
-        get() {
-            primaryMaterial ?: throw ExceptionInInitializerError("Resource $name has no material")
-            return primaryMaterial.density * size.pow(3)
-        }
+    val mass: Double = primaryMaterial.density * size.pow(3)
 
     fun addPart(part: Resource) =
         if (!parts.contains(part))

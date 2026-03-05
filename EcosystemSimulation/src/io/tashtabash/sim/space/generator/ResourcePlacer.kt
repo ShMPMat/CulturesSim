@@ -86,6 +86,4 @@ class ResourcePlacer(
             resource.genome.type in listOf(ResourceType.Plant, ResourceType.Animal)
                     && previous.none { resource.simpleName == it.simpleName }
                     && resource.simpleName != rootResource?.simpleName
-                    && resource.genome.primaryMaterial != null
-
 }

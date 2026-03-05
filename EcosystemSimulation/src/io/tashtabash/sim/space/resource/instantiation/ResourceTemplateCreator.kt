@@ -186,7 +186,8 @@ class ResourceTemplateCreator(
                     legacy = legacy,
                     dependencies = resourceDependencies,
                     tags = setOf(),
-                    primaryMaterial = primaryMaterial,
+                    primaryMaterial = primaryMaterial
+                        ?: throw DataInitializationError("Resource $name must have a material"),
                     secondaryMaterials = secondaryMaterials,
                     conversionCore = conversionCore
                 ).let { g ->

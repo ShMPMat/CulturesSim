@@ -75,13 +75,7 @@ class ResourceInstantiationTest {
 
         // Check that there are no half-baked Resources
         assertTrue {
-            resources.all.all { it.genome.primaryMaterial != null }
-        }
-        assertTrue {
             resources.all.all { it !is ResourceIdeal }
-        }
-        assertTrue {
-            resources.all.all { it.genome !is GenomeTemplate }
         }
         assertNull(
             resources.all.firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } },

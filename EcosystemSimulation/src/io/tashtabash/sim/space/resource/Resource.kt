@@ -327,20 +327,6 @@ open class Resource private constructor(
     }
 
     private fun expand(tile: Tile): Boolean = (genome.spreadProbability * amount).chanceOf<Boolean> {
-//        val tileList = mutableListOf(tile)
-//
-//        var newTile = tileList.randomTileOnBrink {
-//            areNecessaryDependenciesSatisfied(it) && genome.dependencies.all { d -> d.hasNeeded(it) }
-//        }
-//        if (newTile == null) {
-//            if (genome.dependencies.all { it.hasNeeded(tile) })
-//                newTile = tile
-//            else {
-//                newTile = tileList.randomTileOnBrink { areNecessaryDependenciesSatisfied(it) }
-//                if (newTile == null)
-//                    newTile = tile
-//            }
-//        }
         val tiles = StaticTerritory(setOf(tile))
 
         val newTile = tiles.getMostUsefulTileOnOuterBrink {
@@ -383,7 +369,7 @@ open class Resource private constructor(
     override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}," +
             " spread probability - ${genome.spreadProbability}, mass - ${genome.mass}," +
             " lifespan - ${genome.lifespan}, default amount - ${genome.defaultAmount}, amount - $amount," +
-            " material - ${genome.primaryMaterial},${genome.appearance}, ownership - ${core.ownershipMarker}" +
+            " material - ${genome.primaryMaterial}, ${genome.appearance}, ownership - ${core.ownershipMarker}" +
             "\n${genome.behaviour}, tags: " +
             tags.joinToString(" ")
 

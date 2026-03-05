@@ -29,11 +29,11 @@ import kotlin.math.pow
  */
 open class ConverseWrapper(var aspect: Aspect, val resource: Resource) : Aspect(
         aspect.core.copy(
-                name = aspect.name + "On" + resource.baseName,
-                tags = getReducedTags(resource, aspect),
-                requirements = ArrayList(aspect.requirements),
-                applyMeaning = false,
-                standardComplexity = aspect.core.getPrecomputedComplexity(resource)
+            name = aspect.name + "On" + resource.baseName,
+            tags = getReducedTags(resource, aspect),
+            requirements = ArrayList(aspect.requirements),
+            applyMeaning = false,
+            standardComplexity = aspect.core.getPrecomputedComplexity(resource)
         ),
         AspectDependencies(mutableMapOf())
 ) {
