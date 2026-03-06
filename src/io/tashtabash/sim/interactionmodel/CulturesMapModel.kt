@@ -15,13 +15,13 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
 
     override fun turn(world: CulturesWorld) {
         var overallTime = System.nanoTime()
-        var groupTime = System.nanoTime()
         groupMainTime = 0
         groupOthersTime = 0
         groupInnerOtherTime = 0
         groupMigrationTime = 0
 
         world.map.update()
+        var groupTime = System.nanoTime()
         var groups = world.shuffledConglomerates
         for (group in groups)
             group.update()
