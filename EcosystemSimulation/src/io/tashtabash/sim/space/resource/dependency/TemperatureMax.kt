@@ -14,4 +14,6 @@ class TemperatureMax(threshold: Int, deprivationCoefficient: Double) : Temperatu
     }
 
     override fun hasNeeded(tile: Tile) = tile.temperature >= threshold
+
+    override fun toString() = "Temperature is lower than $threshold"
 }

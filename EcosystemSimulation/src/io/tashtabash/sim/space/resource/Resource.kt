@@ -336,12 +336,10 @@ open class Resource private constructor(
                 tile
             else 0.2.chanceOf<Tile> {
                 tile
-            } ?: tiles.outerBrink
-                .toList()
-                .randomElement()
+            } ?: tile.neighbours.randomElement()
 
         val amount = min(genome.defaultAmount, (genome.spreadProbability * amount).toInt())
-        // `coerceAtLeast` ensures that at least one Resource is spawned for small amounts and spreadProbabilities
+        // Ensure that at least one Resource is spawned for small amounts and spreadProbabilities
         val resource = copy(amount.coerceAtLeast(1))
         newTile.addDelayedResource(resource)
 

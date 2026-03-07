@@ -16,4 +16,6 @@ class AvoidTiles(var badTypes: Set<Tile.Type?>) : ResourceDependency {
     override val isResourceNeeded = false
 
     override fun hasNeeded(tile: Tile) = !badTypes.contains(tile.type)
+
+    override fun toString() = "Avoid " + badTypes.joinToString()
 }

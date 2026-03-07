@@ -66,12 +66,12 @@ fun outputResourceCharacteristics(resource: Resource): String {
                 a.technicalName + needClause + ": " +
                         v.joinToString { it.fullName + ":" + it.amount }
             }
-
+    val dependencies = resource.genome.dependencies.joinToString("\n")
     val parts = resource.genome.parts.joinToString("\n") { p ->
         outputResourceCharacteristics(p).lines().joinToString("\n") { "--$it" }
     }
 
-    return "$resource\n\n$actionConversions\n\nParts:\n$parts"
+    return "$resource\n\n$dependencies\n\n$actionConversions\n\nParts:\n$parts"
 }
 
 fun outputAmount(resource: Resource, world: World): String {
