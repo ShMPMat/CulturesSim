@@ -30,8 +30,7 @@ interface Territory {
         get() = allResources.distinct()
 
     val minTemperature: Double?
-        get() = tiles.map(Tile::temperature)
-                .minOrNull()
+        get() = tiles.minOfOrNull(Tile::temperature)
 
     fun filter(predicate: (Tile) -> Boolean) = tiles.filter(predicate)
     fun filterOuterBrink(predicate: (Tile) -> Boolean) = outerBrink.filter(predicate)
@@ -40,19 +39,18 @@ interface Territory {
     operator fun contains(tile: Tile?) = tiles.contains(tile)
 
     fun getResourceInstances(resource: Resource) = tiles
-            .flatMap { it.resourcePack.getResource(resource).resources }
+        .flatMap { it.resourcePack.getResource(resource).resources }
 
     fun getMostUselessTile(mapper: (Tile) -> Int): Tile? = tiles.minByOrNull { mapper(it) }
 
     fun getMostUsefulTileOnOuterBrink(predicate: (Tile) -> Boolean, mapper: (Tile) -> Int): Tile? =
-            filterOuterBrink(predicate)
-                    .map { it to mapper(it) }
-                    .maxByOrNull { it.second }
-                    ?.first
-
+        filterOuterBrink(predicate)
+            .map { it to mapper(it) }
+            .maxByOrNull { it.second }
+            ?.first
 
     fun getMostUsefulTileOnOuterBrink(mapper: (Tile) -> Int): Tile? =
-            outerBrink.map { it to mapper(it) }
-                    .maxByOrNull { it.second }
-                    ?.first
+        outerBrink.map { it to mapper(it) }
+            .maxByOrNull { it.second }
+            ?.first
 }
