@@ -1,5 +1,6 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials
 -Fibre                              0       0.5    100        -500   500  100000000  Ignore    None         @Fibre
+        $clothes:m(0.001,soft,flexible)
         +Weaving/Cloth:1
         L d1
 -Cloth                              0       0.5    100        -500   500  100000000  Ignore    Artifact     @Cloth
@@ -18,7 +19,7 @@
 
 
 -Clothes                            0       0.5    100        -500   500  100000000  Ignore    Artifact     @Cloth
-        $clothes:m(0.02,soft,flexible)
+        $clothes:m(0.05,soft,flexible)
         $composite
         L d3
 
