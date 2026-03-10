@@ -18,4 +18,6 @@ class LevelRestrictions(private val min: Int, private val max: Int) : ResourceDe
     override val isResourceNeeded = false
 
     override fun hasNeeded(tile: Tile) = tile.level in min..max
+
+    override fun toString() = "Elevation is not less than $min and not higher than $max"
 }
