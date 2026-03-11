@@ -10,7 +10,7 @@ import kotlin.math.ceil
 import kotlin.math.pow
 
 
-open class Genome(
+class Genome(
     val name: String,
     val type: ResourceType,
     val sizeRange: Pair<Double, Double>,
@@ -24,20 +24,19 @@ open class Genome(
     val lifespan: Double,
     val defaultAmount: Int,
     val legacy: BaseName?,
-    dependencies: List<ResourceDependency>,
+    val dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
     val primaryMaterial: Material,
     val secondaryMaterials: List<Material>,
-    var conversionCore: ConversionCore
+    var conversionCore: ConversionCore,
+    val parts: MutableList<Resource> = mutableListOf()
 ) {
     val size = (sizeRange.first + sizeRange.second) / 2
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
-    val parts: MutableList<Resource> = mutableListOf()
 
-    val dependencies = dependencies.toList()
     val necessaryDependencies = dependencies.filter { it.isNecessary }
 
-    var tagsMap = tags.associateWith { it }
+    var tagsMap: Map<ResourceTag, ResourceTag> = tags.associateWith { it }
         private set(value) {
             field = value
             tags = value.keys
@@ -46,12 +45,10 @@ open class Genome(
         private set
 
     init {
-        if (naturalDensity > 1000000000)
-            System.err.println("Very high density in Genome $name - $naturalDensity")
         computeTags()
     }
 
-    open fun copy(
+    fun copy(
         name: String = this.name,
         type: ResourceType = this.type,
         sizeRange: Pair<Double, Double> = this.sizeRange,
@@ -71,30 +68,27 @@ open class Genome(
         secondaryMaterials: List<Material> = this.secondaryMaterials,
         conversionCore: ConversionCore = this.conversionCore.copy(),
         parts: List<Resource> = this.parts
-    ): Genome {
-        val genome = Genome(
-            name,
-            type,
-            sizeRange,
-            spreadProbability,
-            baseDesirability,
-            isMutable,
-            isMovable,
-            behaviour,
-            appearance,
-            hasLegacy,
-            lifespan,
-            defaultAmount,
-            legacy,
-            dependencies,
-            tags,
-            primaryMaterial,
-            secondaryMaterials,
-            conversionCore
-        )
-        parts.forEach { genome.addPart(it) }
-        return genome
-    }
+    ) = Genome(
+        name,
+        type,
+        sizeRange,
+        spreadProbability,
+        baseDesirability,
+        isMutable,
+        isMovable,
+        behaviour,
+        appearance,
+        hasLegacy,
+        lifespan,
+        defaultAmount,
+        legacy,
+        dependencies,
+        tags,
+        primaryMaterial,
+        secondaryMaterials,
+        conversionCore,
+        parts.toMutableList()
+    )
 
     val materials: List<Material>
         get() = secondaryMaterials + primaryMaterial

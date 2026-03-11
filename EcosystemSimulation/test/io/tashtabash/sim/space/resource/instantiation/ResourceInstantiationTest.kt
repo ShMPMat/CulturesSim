@@ -83,6 +83,16 @@ class ResourceInstantiationTest {
                 .firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } }
                 ?.let { "$it\n" + it.genome.parts.joinToString("\n") }
         )
+        // Check that there are no Resources with weird properties
+        assertTrue {
+            resources.all.all { it.genome.naturalDensity < 1000000000 }
+        }
+        assertNull(
+            resources.all.firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } },
+            "Resource with parts w/o legacy: \n" + resources.all
+                .firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } }
+                ?.let { "$it\n" + it.genome.parts.joinToString("\n") }
+        )
         // Check that the injector was applied
         assertTrue {
             resources.all.any {
