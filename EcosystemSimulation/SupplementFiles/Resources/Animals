@@ -557,7 +557,7 @@
         tSemitransparent
         S0
 
--ArcticFish                         0.0     0.1    10         -30    -5   50       Migrate   Animal       @Meat
+-ArcticFish                         0.0     0.1    10         -30    0    50       Migrate   Animal       @Meat
         ~m:PlantFibre,>=0.01;0.1;10;0;CONSUME
         +_OnDeath_/Carcass:1
         +_LayEggs_prob_0.03_t/ArcticFishSpawn:25
