@@ -34,7 +34,6 @@ class Data(
     val resourceDenseCoefficient: Double = tileScale,
     val windPropagation: Double = 0.025,
     val coriolisEffect: Double = 0.1,
-    val windFillIn: Double = 0.1,
     val temperatureBaseStart: Double = -15.0,
     val temperatureBaseFinish: Double = 29.0,
     val startResourceAmountMin: Int = 40,
@@ -49,7 +48,8 @@ class Data(
     val additionalTags: List<TagMatcher> = listOf(),
     val xMapLooping: Boolean = false,
     val yMapLooping: Boolean = true,
-    val clearSpan: Double = 0.05
+    val clearSpan: Double = 0.05,
+    val yearDuration: Int = 25
 ) {
     init {
         if (resourceSizeEffect !in 0.0..1.0)

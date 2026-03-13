@@ -86,11 +86,14 @@ open class TextEcosystemVisualizer<E : World>(
             resourceSymbols[resource] = symbols[i % symbols.size]
     }
 
+    private fun computeDateString() =
+        "Year %,d, turn %d".format(world.turn / data.yearDuration, world.turn % data.yearDuration)
+
     /**
      * Prints default map and information output.
      */
     override fun print() {
-        println(world.turn)
+        println(computeDateString())
         printMap { "" }
 
         //Results are ignored
