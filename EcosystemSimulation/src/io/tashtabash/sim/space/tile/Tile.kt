@@ -86,9 +86,9 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
 
         for (i in 0 until radius - 1) {
             outer = outer.flatMap { it.neighbours }
-                    .filter { !tiles.contains(it) }
-                    .toSet()
-            tiles.addAll(outer)
+                .filter { !tiles.contains(it) }
+                .toSet()
+            tiles += outer
         }
 
         return tiles
@@ -229,14 +229,14 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
 
     fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop growing
         for (i in 0 until if (type == Type.Water) 4 else if (level in 106..119) 5 else 1)
-            distributeLevel()
+            erode()
     }
 
     fun <E> findUpdaterOfType(type: Class<E>): E? =
         updaters.filterIsInstance(type)
             .firstOrNull()
 
-    private fun distributeLevel() {
+    private fun erode() {
         val tiles = neighbours.toMutableList()
         tiles.sortBy { it.secondLevel }
         val lowest = tiles[0]
