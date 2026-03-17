@@ -1,6 +1,8 @@
 package io.tashtabash.visualizer.text
 
+import io.tashtabash.sim.World
 import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.ResourceType
 import io.tashtabash.sim.space.resource.dependency.cleanConsumed
 import io.tashtabash.sim.space.resource.dependency.cleanNeeded
@@ -30,18 +32,19 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 TileTag -> printMap { tileTagMapper(splitCommand[1], it) }
                 Resource ->
                     try {
-                        val resource = world.resourcePool.getBaseNameOrNull(splitCommand[1])
-                            ?: world.resourcePool.all.first {
-                                it.baseName.equals(splitCommand[1], ignoreCase = true)
-                            }
-                        printResource(resource)
+                        printResource(findResource(world, splitCommand[1]))
                     } catch (_: NoSuchElementException) {
                         resourceSymbols.entries
-                                .filter { it.value == splitCommand[1] }
-                                .map { it.key }
-                                .firstOrNull()
-                                ?.let { printResource(it) }
+                            .filter { it.value == splitCommand[1] }
+                            .map { it.key }
+                            .firstOrNull()
+                            ?.let { printResource(it) }
                     }
+                AcceptableResourceTiles -> {
+                    val resource = findResource(world, splitCommand[1])
+                    printAcceptableResourceTiles(resource)
+                    println(resource.genome.dependencies.joinToString("\n"))
+                }
                 ResourceSubstring -> {
                     printMap { resourceSubstringMapper(splitCommand[1], it) }
                     println(briefPrintResourcesWithSubstring(map, splitCommand[1]))
@@ -198,5 +201,13 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
         // This return is reached on a successful execution
         return ExecutionResult.Success
+    }
+
+    private fun findResource(world: World, name: String): Resource {
+        val resource = world.resourcePool.getBaseNameOrNull(name)
+            ?: world.resourcePool.all.first {
+                it.baseName.equals(name, ignoreCase = true)
+            }
+        return resource
     }
 }

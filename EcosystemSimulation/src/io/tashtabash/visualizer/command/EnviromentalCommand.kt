@@ -12,8 +12,10 @@ enum class EnvironmentCommand(command: String, override val description: String)
     Wind("wind", "Display wind directions across the map"),
     Flow("flow", "Display flow directions across the map"),
     TerrainLevel("level", "Display terrain level across the map"),
+
     Vapour("vapour", "Display vapour amount across the map"),
     Resource("r \\w+", "Display resource description"),
+    AcceptableResourceTiles("rs \\w+", "Show tiles on which all resource dependencies are satisfied"),
     ResourceSubstring("r' \\w+", "Display all resources containing the given substring"),
     ResourceSubstringOnTile("\\d+ \\d+ r' \\w+", "Display all resources containing the given substring on this tile"),
     ResourceType("rt \\w+", "Display resources of the given type across the map"),
@@ -25,6 +27,7 @@ enum class EnvironmentCommand(command: String, override val description: String)
     PinResources("pin!? \\w+ .", "Always display the resource on the map"),
     UnpinResources("unpin \\w+", "Stop displaying the resource on the map"),
     CleanConsumers("cln cons", "Clean resource statistics for consumers and consumed"),
+
     Events("(\\d+ )?e ?.*", "Display events: [numberOfEvents ]e <query>; default numberOfEvents = 100"),
     ShowMap("[mM]", "Display map"),
     LegendOn("legend on", "Enable displaying legend"),

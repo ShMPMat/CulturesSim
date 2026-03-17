@@ -7,7 +7,6 @@ import io.tashtabash.sim.space.resource.ResourceType
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.abs
 import kotlin.math.ceil
-import kotlin.math.max
 
 
 const val MARK_COLOR = "\u001b[31m"
@@ -65,7 +64,11 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
 }
 
 
-fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1): String {
+/**
+ * @param showStep if true, output the step value, if false, output the number of 1/10
+ * between the current and the next step.
+ */
+fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1, showStep: Boolean = false): String {
     val result = mapper(tile)
     val colour = when {
         result < start -> NOTHING
@@ -78,7 +81,10 @@ fun hotnessMapper(step: Int, tile: Tile, mapper: (Tile) -> Int, start: Int = 1):
     }
 
     return if (result >= start)
-        "\u001b[90m" + colour + abs(((result - start) % step) / (ceil(step.toDouble() / 10).toInt()))
+        if (showStep)
+            "\u001b[90m" + colour + (result - start)
+        else
+            "\u001b[90m" + colour + ((result - start) % step) / (ceil(step.toDouble() / 10).toInt())
     else NOTHING
 }
 
@@ -119,7 +125,7 @@ fun windMapper(tile: Tile): String {
         level > 1 -> "\u001b[46m"
         else -> "\u001b[44m"
     }
-    if (tile.wind.affectedTiles.size >= 1) {
+    if (tile.wind.affectedTiles.isNotEmpty()) {
         val affected = tile.wind.affectedTiles.sortedByDescending { it.second }[0].first
         direction += when {
             affected.x - tile.x == 1 && affected.y - tile.y == 1 -> "J"

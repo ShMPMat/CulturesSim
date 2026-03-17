@@ -12,7 +12,6 @@ fun TextEcosystemVisualizer<*>.printTile(tile: Tile) {
 fun TextEcosystemVisualizer<*>.printTiles(tiles: Collection<Tile>) {
     if (tiles.isEmpty()) {
         print("No such Tiles")
-
         return
     }
 
@@ -51,4 +50,10 @@ fun TextEcosystemVisualizer<*>.printResource(resource: Resource) {
     println(outputAmount(resource, controller.world))
     println(outputResourceCharacteristics(resource))
     println(outputFoodWeb(resource, controller.world))
+}
+
+fun TextEcosystemVisualizer<*>.printAcceptableResourceTiles(resource: Resource) {
+    printMap { tile: Tile ->
+        hotnessMapper(1, tile, { resource.genome.dependencies.count { it.hasNeeded(tile) } }, 0, showStep = true)
+    }
 }

@@ -39,7 +39,7 @@ class WindCenter internal constructor() {
 
     fun middleUpdate(x: Int, y: Int, map: WorldMap) {
         val host = map[x, y]
-                ?: return
+            ?: return
 
         host.neighbours.forEach { setWindByTemperature(it, host) }
 
