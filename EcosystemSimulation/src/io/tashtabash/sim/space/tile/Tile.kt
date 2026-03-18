@@ -13,7 +13,7 @@ import kotlin.math.max
 import kotlin.math.pow
 
 
-class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater>) {
+class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = mutableListOf()) {
     val tagPool = MutableTileTagPool()
 
     var type: Type? = null
