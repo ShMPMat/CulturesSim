@@ -84,13 +84,12 @@ open class Resource private constructor(
     open fun getPart(part: Int, taker: Taker): Resource {
         val accessiblePart = amount * calculateAccessiblePart(taker)
         val result = when {
-            part <= accessiblePart -> min(amount, part)
-            accessiblePart + 1 < amount -> accessiblePart.toInt() + 1
-            else -> amount
+            part <= accessiblePart -> part
+            else -> min(amount, accessiblePart.toInt() + 1) // Round up (or do +1, it doesn't matter)
         }
 
         amount -= result
-        takers.add(taker to result)
+        takers += taker to result
 
         hurtTaker(result, taker)
 
@@ -314,7 +313,7 @@ open class Resource private constructor(
     fun hasApplicationForAction(action: ResourceAction) = genome.conversionCore.hasApplication(action)
 
     fun destroy() {
-        takers.add(DeathTaker to amount)
+        takers += DeathTaker to amount
         amount = 0
     }
 
