@@ -35,3 +35,6 @@ fun createTestGenome(
         conversionCore = ConversionCore(actions)
     )
 }
+
+fun createTestResource(): Resource =
+    ResourceCore(createTestGenome()).fullCopy()
