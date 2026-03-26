@@ -10,9 +10,10 @@ fun createTestGenome(
     name: String = "Plant",
     legacy: String? = null,
     sizeRange: Pair<Double, Double> = 1.0 to 1.0,
-    primaryMaterial: Material = Material("Fibre", 0.1, listOf()),
+    primaryMaterial: Material = Material("Fibre", .1, listOf()),
     tags: Set<ResourceTag> = emptySet(),
-    actions: Map<ResourceAction, MutableList<Resource>> = mapOf()
+    actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
+    behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut)
 ): Genome {
     return Genome(
         name = name,
@@ -22,7 +23,7 @@ fun createTestGenome(
         baseDesirability = 10,
         isMutable = false,
         isMovable = false,
-        behaviour = Behaviour(0.0, 0.0, 0.0, 0.0, OverflowType.Cut),
+        behaviour = behaviour,
         appearance = Appearance(null, null, null),
         hasLegacy = legacy != null,
         lifespan = 100.0,
@@ -36,5 +37,14 @@ fun createTestGenome(
     )
 }
 
-fun createTestResource(): Resource =
-    ResourceCore(createTestGenome()).fullCopy()
+fun createTestResource(
+    name: String = "Plant",
+    legacy: String? = null,
+    sizeRange: Pair<Double, Double> = 1.0 to 1.0,
+    primaryMaterial: Material = Material("Fibre", .1, listOf()),
+    tags: Set<ResourceTag> = emptySet(),
+    actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
+    behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut)
+): Resource =
+    ResourceCore(createTestGenome(name, legacy, sizeRange, primaryMaterial, tags, actions, behaviour))
+        .fullCopy()

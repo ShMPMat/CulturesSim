@@ -97,19 +97,19 @@ open class Resource private constructor(
     }
 
     private fun calculateAccessiblePart(taker: Taker): Double {
-        var prob = RandomSingleton.random.nextDouble().pow(2) * 0.9
+        var prob = RandomSingleton.random.nextDouble().pow(2) * .9
 
         prob -= genome.behaviour.camouflage + genome.behaviour.resistance + genome.behaviour.danger
         if (taker is ResourceTaker) {
             prob += taker.resource.genome.behaviour
                 .let { it.danger + it.camouflage }
 
-            prob -= if (taker.resource.genome.behaviour.speed == 0.0)
+            prob -= if (taker.resource.genome.behaviour.speed == .0)
                 genome.behaviour.speed
             else (genome.behaviour.speed / taker.resource.genome.behaviour.speed - 1).coerceAtMost(0.9)
         }
 
-        return prob.coerceIn(0.0, 1.0)
+        return prob.coerceIn(.0, .99)
     }
 
     private fun hurtTaker(amount: Int, taker: Taker) {
@@ -129,7 +129,7 @@ open class Resource private constructor(
         val result = min(amount, part)
         amount -= result
 
-        takers.add(taker to result)
+        takers += taker to result
 
         return copy(result, deathTurn)
     }
