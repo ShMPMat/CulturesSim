@@ -261,7 +261,7 @@
         S0
 
 -Hawk                               0.0     0.12   11         0      30   5        Migrate   Animal       @Meat
-        ~m:Meat,<=0.05,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME
+        ~m:Meat,<=0.09,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME
         +_OnDeath_/Carcass:1
         +_LayEggs_prob_0.07_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/HawkEgg:5
         ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
