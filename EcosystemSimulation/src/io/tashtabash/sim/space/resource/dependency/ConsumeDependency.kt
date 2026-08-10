@@ -14,8 +14,8 @@ class ConsumeDependency(
         labeler: QuantifiedResourceLabeler,
         var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
-    fun lastConsumed(name: String): MutableSet<String> = consumed.getOrPut(name) {
-        HashSet<String>()
+    fun lastConsumed(name: String): MutableMap<String, Int> = consumed.getOrPut(name) {
+        HashMap()
     }
 
     var currentAmount = 0
@@ -47,7 +47,9 @@ class ConsumeDependency(
                                     resource
                             )
                             if (part.isNotEmpty) {
-                                lastConsumed(resource.baseName) += part.fullName
+                                val consumedAmounts = lastConsumed(resource.baseName)
+                                consumedAmounts[part.fullName] =
+                                        (consumedAmounts[part.fullName] ?: 0) + part.amount
                                 currentAmount += part.amount * oneResourceWorth(res)
                             }
 
@@ -77,6 +79,6 @@ class ConsumeDependency(
     override fun toString() = "Consume " + super.toString()
 }
 
-private val consumed = mutableMapOf<String, MutableSet<String>>()
+private val consumed = mutableMapOf<String, MutableMap<String, Int>>()
 
 fun cleanConsumed() = consumed.forEach { it.value.clear() }

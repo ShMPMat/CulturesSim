@@ -3,7 +3,6 @@ package io.tashtabash.sim.space.resource.dependency
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.tile.Tile
-import java.util.HashSet
 import kotlin.math.min
 
 
@@ -13,8 +12,8 @@ class NeedDependency(
         labeler: QuantifiedResourceLabeler,
         var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
-    fun lastConsumed(name: String): MutableSet<String> = needed.getOrPut(name) {
-        HashSet<String>()
+    fun lastConsumed(name: String): MutableMap<String, Int> = needed.getOrPut(name) {
+        HashMap()
     }
 
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
@@ -29,8 +28,11 @@ class NeedDependency(
                 if (isResourceDependency(res)) {
                     currentAmount += res.amount * oneResourceWorth(res)
 
-                    if (res.isNotEmpty && !isSafe)
-                        lastConsumed(resource.baseName).add(res.fullName)
+                    if (res.isNotEmpty && !isSafe) {
+                        val neededAmounts = lastConsumed(resource.baseName)
+                        val worth = res.amount * oneResourceWorth(res)
+                        neededAmounts[res.fullName] = (neededAmounts[res.fullName] ?: 0) + worth
+                    }
 
                     if (currentAmount >= actualAmount)
                         break@loop
@@ -49,6 +51,6 @@ class NeedDependency(
 }
 
 
-private val needed = mutableMapOf<String, MutableSet<String>>()
+private val needed = mutableMapOf<String, MutableMap<String, Int>>()
 
 fun cleanNeeded() = needed.forEach { it.value.clear() }

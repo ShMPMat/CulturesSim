@@ -7,6 +7,7 @@ import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.ResourceType
 import io.tashtabash.sim.space.resource.container.ResourcePack
 import io.tashtabash.sim.space.resource.dependency.ConsumeDependency
+import io.tashtabash.sim.space.resource.dependency.LabelerDependency
 import io.tashtabash.sim.space.resource.dependency.NeedDependency
 import io.tashtabash.sim.space.resource.free
 import io.tashtabash.sim.space.tile.Tile
@@ -74,35 +75,95 @@ fun outputResourceCharacteristics(resource: Resource): String {
     return "$resource\n\n$dependencies\n\n$actionConversions\n\nParts:\n$parts"
 }
 
-fun outputAmount(resource: Resource, world: World): String {
-    val totalAmount = world.map.tiles.flatMap { it.resourcesWithMoved }
+fun getAmount(resource: Resource, world: World): Int =
+    world.map.tiles.flatMap { it.resourcesWithMoved }
         .filter { it.baseName == resource.baseName && it.isNotEmpty }
         .sumOf { it.amount }
-    return "Amount on map: %,d".format(totalAmount)
-}
+
+fun outputAmount(resource: Resource, world: World) =
+    "Amount on map: %,d".format(getAmount(resource, world))
 
 fun outputFoodWeb(resource: Resource, world: World): String {
-    val consumers = world.resourcePool.all
-            .asSequence()
-            .filter {
-                it.genome.dependencies.filterIsInstance<ConsumeDependency>()
-                    .any { r -> r.lastConsumed(it.baseName).contains(resource.baseName) }
-            }
-            .map { it.baseName }
-            .distinct()
-            .joinToString("\n")
+    fun matchesTarget(fullName: String) =
+        fullName == resource.baseName || fullName.startsWith("${resource.baseName}_")
+    val resourceAmount = getAmount(resource, world)
+        .toDouble()
 
-    val consumed = resource.genome.dependencies
+    var totalConsumedByConsumers = .0
+    val consumerLines = world.resourcePool.all.mapNotNull { consumer ->
+        val amount = consumer.genome.dependencies
             .filterIsInstance<ConsumeDependency>()
-            .flatMap { it.lastConsumed(resource.baseName) }
-            .joinToString("\n")
+            .sumOf { dep ->
+                dep.lastConsumed(consumer.baseName).entries
+                    .filter { (fullName, _) -> matchesTarget(fullName) }
+                    .sumOf { it.value }
+            }
+            .toDouble()
+        if (amount <= 0) return@mapNotNull null
+        totalConsumedByConsumers += amount
+        val percent = if (resourceAmount > 0) amount * 100.0 / resourceAmount else 0.0
+        "${consumer.baseName}: ${formatStatAmount(amount)} / ${formatStatAmount(resourceAmount)} (%.1f%%)"
+            .format(percent)
+    }
+    val consumerTotalPercent =
+        if (resourceAmount > 0)
+            totalConsumedByConsumers * 100.0 / resourceAmount
+        else .0
+    val consumers = (consumerLines + "Total: ${formatStatAmount(totalConsumedByConsumers)} / ${formatStatAmount(resourceAmount)} (%.1f%%)"
+        .format(consumerTotalPercent)).joinToString("\n")
 
-    val needed = resource.genome.dependencies
-            .filterIsInstance<NeedDependency>()
-            .flatMap { it.lastConsumed(resource.baseName) }
-            .joinToString("\n")
+    val consumed = formatConsumptionStats(
+        resource.genome.dependencies.filterIsInstance<ConsumeDependency>(),
+        resourceAmount
+    ) { it.lastConsumed(resource.baseName) }
+
+    val needed = formatConsumptionStats(
+        resource.genome.dependencies.filterIsInstance<NeedDependency>(),
+        resourceAmount
+    ) { it.lastConsumed(resource.baseName) }
 
     return "Consumers:\n$consumers\n\nConsumed:\n$consumed\n\nNeeded:\n$needed"
+}
+
+private fun <E: LabelerDependency> formatConsumptionStats(
+    dependencies: Iterable<E>,
+    resourceNumber: Double,
+    lastConsumedFor: (E) -> Map<String, Int>
+): String {
+    var totalAmount = .0
+    var totalRequired = .0
+    val lines = dependencies.flatMap { dep ->
+        val required = dep.amount * resourceNumber
+        totalRequired += required
+        val amounts = lastConsumedFor(dep)
+        if (amounts.isEmpty())
+            listOf("${dep.labeler}: 0 / ${formatStatAmount(required)} (0.0%)")
+        else
+            amounts.entries.map { (name, amount) ->
+                val amountValue = amount.toDouble()
+                totalAmount += amountValue
+                val percent =
+                    if (required > 0)
+                        amountValue * 100.0 / required
+                    else .0
+                "$name: ${formatStatAmount(amountValue)} / ${formatStatAmount(required)} (%.1f%%)".format(percent)
+            }
+    }
+    val totalPercent =
+        if (totalRequired > 0)
+            totalAmount * 100.0 / totalRequired
+        else 100.0
+    val totalLine = "Total: ${formatStatAmount(totalAmount)} / ${formatStatAmount(totalRequired)} (%.1f%%)".format(totalPercent)
+
+    return (lines.sorted() + totalLine).joinToString("\n")
+}
+
+private fun formatStatAmount(value: Double): String = when {
+    value >= 1_000_000_000 -> "%.2fG".format(value / 1_000_000_000)
+    value >= 1_000_000 -> "%.2fM".format(value / 1_000_000)
+    value >= 10_000 -> "%.2fK".format(value / 1_000)
+    value >= 100 -> "%.0f".format(value)
+    else -> "%.2f".format(value)
 }
 
 fun printResources(resources: List<Resource>) = resources
