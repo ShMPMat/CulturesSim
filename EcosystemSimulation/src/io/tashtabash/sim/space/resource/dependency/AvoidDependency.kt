@@ -7,35 +7,30 @@ import kotlin.math.min
 
 
 class AvoidDependency(
-        deprivationCoefficient: Double,
-        isNecessary: Boolean,
-        labeler: QuantifiedResourceLabeler
+    deprivationCoefficient: Double,
+    isNecessary: Boolean,
+    labeler: QuantifiedResourceLabeler
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     var lastConsumed = mutableSetOf<String>()
 
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
-        val result: Double
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
-        loop@for (list in tile.getAccessibleResources())
-            for (res in list) {
-                if (res == resource)
-                    continue
+        tile.forEachAccessibleResource { res ->
+            if (res.isEmpty || res == resource || !super.isResourceDependency(res))
+                return@forEachAccessibleResource false
 
-                if (super.isResourceDependency(res)) {
-                    currentAmount += res.amount * oneResourceWorth(res)
-                    if (currentAmount >= actualAmount)
-                        break@loop
-                }
-            }
-        result = min(currentAmount.toDouble() / actualAmount, 1.0)
+            currentAmount += res.amount * oneResourceWorth(res)
 
-        return 1 - result
+            currentAmount >= actualAmount
+        }
+
+        return 1 - min(currentAmount.toDouble() / actualAmount, 1.0)
     }
 
     override fun hasNeeded(tile: Tile) =
-            tile.getAccessibleResources().any { it.asSequence().any { r -> isResourceDependency(r) } }
+        tile.forEachAccessibleResource { isResourceDependency(it) }
 
     override fun isResourceDependency(resource: Resource) = false
 

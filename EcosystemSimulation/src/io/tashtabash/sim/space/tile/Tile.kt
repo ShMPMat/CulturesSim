@@ -75,6 +75,19 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
         return accessibleResources + neighbours.map { it._resourcePack.resourcesIterator }
     }
 
+    inline fun forEachAccessibleResource(radius: Int = 1, action: (Resource) -> Boolean): Boolean {
+        for (res in resourcePack.resourcesIterator)
+            if (action(res))
+                return true
+
+        for (neighbour in getTilesInRadius(radius))
+            for (res in neighbour.resourcePack.resourcesIterator)
+                if (action(res))
+                    return true
+
+        return false
+    }
+
     fun getNeighbours(predicate: (Tile) -> Boolean) = neighbours.filter(predicate)
 
     fun getTilesInRadius(radius: Int): Set<Tile> {

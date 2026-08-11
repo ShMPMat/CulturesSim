@@ -9,10 +9,10 @@ import kotlin.math.min
 
 
 class ConsumeDependency(
-        deprivationCoefficient: Double,
-        isNecessary: Boolean,
-        labeler: QuantifiedResourceLabeler,
-        var radius: Int = 1
+    deprivationCoefficient: Double,
+    isNecessary: Boolean,
+    labeler: QuantifiedResourceLabeler,
+    var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableMap<String, Int> = consumed.getOrPut(name) {
         HashMap()
@@ -32,40 +32,32 @@ class ConsumeDependency(
         val oldAmount = currentAmount
 
         if (currentAmount < neededAmount)
-            loop@for (list in tile.getAccessibleResources(radius))
-                for (res in list) {
-                    if (res == resource)
-                        continue
+            tile.forEachAccessibleResource(radius) { res ->
+                if (res.isEmpty || res == resource || !isResourceDependency(res))
+                    return@forEachAccessibleResource false
 
-                    if (isResourceDependency(res)) {
-                        if (isSafe) {
-                           currentAmount += res.amount * oneResourceWorth(res)
-                        } else {
-                            val expectedAmount = partByResource(res, neededAmount - currentAmount)
-                            val part = res.getPart(
-                                    expectedAmount,
-                                    resource
-                            )
-                            if (part.isNotEmpty) {
-                                val consumedAmounts = lastConsumed(resource.baseName)
-                                consumedAmounts[part.fullName] =
-                                        (consumedAmounts[part.fullName] ?: 0) + part.amount
-                                currentAmount += part.amount * oneResourceWorth(res)
-                            }
-
-                            part.destroy()
-                        }
-
-                        if (currentAmount >= neededAmount)
-                            break@loop
+                if (isSafe) {
+                    currentAmount += res.amount * oneResourceWorth(res)
+                } else {
+                    val expectedAmount = partByResource(res, neededAmount - currentAmount)
+                    val part = res.getPart(expectedAmount, resource)
+                    if (part.isNotEmpty) {
+                        val consumedAmounts = lastConsumed(resource.baseName)
+                        consumedAmounts[part.fullName] =
+                            (consumedAmounts[part.fullName] ?: 0) + part.amount
+                        currentAmount += part.amount * oneResourceWorth(res)
                     }
+
+                    part.destroy()
                 }
+
+                return@forEachAccessibleResource currentAmount >= neededAmount
+            }
 
         result = min(currentAmount.toDouble() / neededAmount, 1.0)
 
-        if (isSafe) {
+        if (isSafe)
             currentAmount = oldAmount
-        }
 
         if (currentAmount >= neededAmount)
             currentAmount -= ceil(neededAmount).toInt()

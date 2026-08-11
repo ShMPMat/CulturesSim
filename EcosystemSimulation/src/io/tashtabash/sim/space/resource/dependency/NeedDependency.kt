@@ -7,10 +7,10 @@ import kotlin.math.min
 
 
 class NeedDependency(
-        deprivationCoefficient: Double,
-        isNecessary: Boolean,
-        labeler: QuantifiedResourceLabeler,
-        var radius: Int = 1
+    deprivationCoefficient: Double,
+    isNecessary: Boolean,
+    labeler: QuantifiedResourceLabeler,
+    var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableMap<String, Int> = needed.getOrPut(name) {
         HashMap()
@@ -20,30 +20,26 @@ class NeedDependency(
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
-        loop@for (list in tile.getAccessibleResources(radius))
-            for (res in list) {
-                if (res == resource)
-                    continue
+        tile.forEachAccessibleResource(radius) { res ->
+            if (res.isEmpty || res == resource || !isResourceDependency(res))
+                return@forEachAccessibleResource false
 
-                if (isResourceDependency(res)) {
-                    currentAmount += res.amount * oneResourceWorth(res)
+            val worth = res.amount * oneResourceWorth(res)
+            currentAmount += worth
 
-                    if (res.isNotEmpty && !isSafe) {
-                        val neededAmounts = lastConsumed(resource.baseName)
-                        val worth = res.amount * oneResourceWorth(res)
-                        neededAmounts[res.fullName] = (neededAmounts[res.fullName] ?: 0) + worth
-                    }
-
-                    if (currentAmount >= actualAmount)
-                        break@loop
-                }
+            if (!isSafe) {
+                val neededAmounts = lastConsumed(resource.baseName)
+                neededAmounts[res.fullName] = (neededAmounts[res.fullName] ?: 0) + worth
             }
+
+            currentAmount >= actualAmount
+        }
 
         return min(currentAmount.toDouble() / actualAmount, 1.0)
     }
 
     override fun hasNeeded(tile: Tile) =
-            tile.getAccessibleResources().any { it.asSequence().any { r -> isResourceDependency(r) } }
+        tile.forEachAccessibleResource { isResourceDependency(it) }
 
     override val isPositive = true
 
