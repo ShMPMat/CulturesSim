@@ -141,7 +141,7 @@ open class Resource private constructor(
         if (this === resource)
             return this
 
-        addAmount(resource.amount, resource.deathPart)
+        addAmount(resource.amount, resource.deathPart * (resource.deathOverhead + resource.deathTurn) / genome.lifespan)
         resource.destroy()
         return this
     }
@@ -283,8 +283,7 @@ open class Resource private constructor(
             }
 
             OverflowType.Cut -> amount = genome.naturalDensity
-            OverflowType.Ignore -> {
-            }
+            OverflowType.Ignore -> {}
         }
     }
 
@@ -333,7 +332,7 @@ open class Resource private constructor(
         }
             ?: if (genome.dependencies.all { it.hasNeeded(tile) })
                 tile
-            else 0.2.chanceOf<Tile> {
+            else .2.chanceOf<Tile> {
                 tile
             } ?: tile.neighbours.randomElement()
 
