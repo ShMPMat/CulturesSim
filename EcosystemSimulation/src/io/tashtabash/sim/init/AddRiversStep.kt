@@ -11,12 +11,12 @@ import kotlin.random.Random
 
 
 class AddRiversStep<E : World>(
-        private val fillCycles: Int,
-        private val doTurns: Boolean,
-        private val riversAmount: Int,
-        private val stabilizationTurns: Int,
-        private val debugPrint: Boolean,
-        private val random: Random
+    private val fillCycles: Int,
+    private val doTurns: Boolean,
+    private val riversAmount: Int,
+    private val stabilizationTurns: Int,
+    private val debugPrint: Boolean,
+    private val random: Random
 ) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
         val water = world.resourcePool.getBaseName("Water")
@@ -30,12 +30,12 @@ class AddRiversStep<E : World>(
                     water,
                     { t ->
                         if (t.level >= riverCreationThreshold
-                                && t.resourcePack.any(::riverResourcePredicate)
-                                && t.getTilesInRadius(2) { it.resourcesWithMoved.contains(water) }.isEmpty()
+                            && t.resourcePack.any(::riverResourcePredicate)
+                            && t.getTilesInRadius(2) { it.resourcesWithMoved.contains(water) }.isEmpty()
                         )
                             (t.temperature - SpaceData.data.temperatureBaseStart + 1) *
                                     (t.level + 1 - riverCreationThreshold)
-                        else 0.0
+                        else .0
                     },
                     { it.type !== Tile.Type.Ice },
                     random
@@ -60,6 +60,6 @@ class AddRiversStep<E : World>(
     }
 
     private fun riverResourcePredicate(r: Resource): Boolean =
-            r.tags.any { it.name in listOf("liquid", "solid") }
-                    && r.genome.materials.any { it.name == "Water" }
+        r.tags.any { it.name in listOf("liquid", "solid") }
+                && r.genome.materials.any { it.name == "Water" }
 }
