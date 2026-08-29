@@ -13,7 +13,8 @@ fun createTestGenome(
     primaryMaterial: Material = Material("Fibre", .1, listOf()),
     tags: Set<ResourceTag> = emptySet(),
     actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
-    behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut)
+    behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut),
+    lifespan: Double = 100.0,
 ): Genome {
     return Genome(
         name = name,
@@ -26,7 +27,7 @@ fun createTestGenome(
         behaviour = behaviour,
         appearance = Appearance(null, null, null),
         hasLegacy = legacy != null,
-        lifespan = 100.0,
+        lifespan = lifespan,
         defaultAmount = 10,
         legacy = legacy,
         dependencies = emptyList(),
@@ -44,7 +45,8 @@ fun createTestResource(
     primaryMaterial: Material = Material("Fibre", .1, listOf()),
     tags: Set<ResourceTag> = emptySet(),
     actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
-    behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut)
+    behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut),
+    lifespan: Double = 100.0,
 ): Resource =
-    ResourceCore(createTestGenome(name, legacy, sizeRange, primaryMaterial, tags, actions, behaviour))
+    ResourceCore(createTestGenome(name, legacy, sizeRange, primaryMaterial, tags, actions, behaviour, lifespan))
         .fullCopy()
