@@ -9,28 +9,31 @@ import io.tashtabash.sim.space.resource.action.ConversionCore
 import java.lang.Integer.min
 
 
+private val personGenome = Genome(
+    "Person",
+    ResourceType.Animal,
+    1.6 to 1.6,
+    .0,
+    0,
+    false,
+    true,
+    Behaviour(0.1, 0.05, 0.25, SpaceData.data.computeTileSpeed(1.0), OverflowType.Ignore),
+    Appearance(null, null, null),
+    false,
+    50.0,
+    50,
+    null,
+    emptyList(),
+    emptySet(),
+    SpaceData.data.materialPool.get("Meat"),
+    emptyList(),
+    ConversionCore()
+)
+
+
 class Person(ownershipMarker: OwnershipMarker) : Resource(
     ResourceCore(
-        Genome(
-            "Person",
-            ResourceType.Animal,
-            1.6 to 1.6,
-            0.0,
-            0,
-            false,
-            true,
-            Behaviour(0.1, 0.05, 0.25, 1.0, OverflowType.Ignore),
-            Appearance(null, null, null),
-            false,
-            50.0,
-            50,
-            null,
-            emptyList(),
-            emptySet(),
-            SpaceData.data.materialPool.get("Meat"),
-            emptyList(),
-            ConversionCore(mapOf())
-        ),
+        personGenome,
         ownershipMarker = ownershipMarker,
         resourceBuilder = { c, a ->
             Person(c.ownershipMarker).apply {

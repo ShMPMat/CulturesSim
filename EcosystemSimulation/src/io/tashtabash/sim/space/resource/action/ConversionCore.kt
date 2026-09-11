@@ -4,7 +4,7 @@ import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Resources
 
 
-class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>>) {
+class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>> = mapOf()) {
     val actionConversions = mutableMapOf<ResourceAction, MutableList<Resource>>()
     internal val probabilityActions = mutableListOf<ResourceProbabilityAction>()
     internal val passiveActions = mutableListOf<ResourceProbabilityAction>()
