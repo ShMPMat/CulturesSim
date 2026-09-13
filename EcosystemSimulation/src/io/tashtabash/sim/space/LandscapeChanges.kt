@@ -136,9 +136,9 @@ fun createRivers(
         random: Random
 ) {
     val allTiles = map.tiles
-            .map { it to goodSpotProbability(it) }
-            .filter { it.second > 0.0 }
-            .map { it.first }
+        .map { it to goodSpotProbability(it) }
+        .filter { it.second > 0.0 }
+        .map { it.first }
     val actualAmount = min(amount, allTiles.size)
     if (actualAmount == 0)
         return

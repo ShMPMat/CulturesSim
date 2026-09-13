@@ -22,7 +22,7 @@ class ConsumeDependency(
 
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
         if (resource.amount == 0)
-            return 0.0
+            return .0
 
         if (currentAmount < 0)
             currentAmount = 0

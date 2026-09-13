@@ -80,9 +80,9 @@ class TraderStratum(tile: Tile) : NonAspectStratum(tile, "Stratum of traders", "
 
     fun tradeStockUpdate(group: Group) {
         val valuableResources = group.populationCenter.turnResources.resources
-                .map { it to group.cultureCenter.evaluateResource(it) }
-                .filter { (r, n) -> r.genome.isMovable && n >= 10 }
-                .map { (r, _) -> ResourcePromise(r) }
+            .map { it to group.cultureCenter.evaluateResource(it) }
+            .filter { (r, n) -> r.genome.isMovable && n >= 10 }
+            .map { (r, _) -> ResourcePromise(r) }
         stock = ResourcePromisePack(valuableResources)
     }
 

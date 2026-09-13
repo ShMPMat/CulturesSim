@@ -3,7 +3,6 @@ package io.tashtabash.sim.space.resource.container
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.tag.ResourceTag
-import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.min
 
 
@@ -68,11 +67,6 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
         val result = getResourcesUnpacked(predicate)
         removeAll(result)
         return result
-    }
-
-    fun disbandOnTile(tile: Tile) {
-        tile.addDelayedResources(resources.filter { it.genome.isMovable })
-        resourceMap.clear()
     }
 
     // Returns true if the Resource was merged
