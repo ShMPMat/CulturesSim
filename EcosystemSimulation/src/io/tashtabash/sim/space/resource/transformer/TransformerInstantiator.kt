@@ -46,6 +46,6 @@ class TransformerInstantiator(private val conversionParser: ConversionParser) {
                     makeResourceLabeler(labelerTags)
             )
         }
-        else -> throw RuntimeException("Wrong tag for a transformer")
+        else -> throw RuntimeException("Wrong tag for a transformer - '$key'")
     }
 }
