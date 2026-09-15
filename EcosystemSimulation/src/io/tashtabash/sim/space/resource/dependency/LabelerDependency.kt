@@ -37,10 +37,10 @@ abstract class LabelerDependency(
 
     private val genomeHash = mutableMapOf<Genome, Boolean>()
 
-    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumOf(Resource::amount)
+    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumOf { it.amount }
 
     fun partByResource(resource: Resource, amount: Double) = ceil(
-            amount / labeler.actualMatches(resource.core.sample).sumOf(Resource::amount)
+            amount / labeler.actualMatches(resource.core.sample).sumOf { it.amount }
     ).toInt()
 
     override fun toString() = "$labeler of $amount"
