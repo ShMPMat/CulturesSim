@@ -198,13 +198,6 @@ open class Resource private constructor(
 
         expand(tile)
 
-        if (simpleName == "Vapour") {
-            if (tile.temperature < 0) {
-                tile.addDelayedResource(data.resourcePool.getBaseName("Snow").copy(amount / 2))
-                amount -= amount / 2
-            }
-        }
-
         distribute(tile)
 
         return ResourceUpdateResult(true, result)
@@ -229,7 +222,7 @@ open class Resource private constructor(
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = amount * action.probability
         val maxPart = if (expectedValue < 1.0)
-            expectedValue.chanceOf<Double> { 1.0 } ?: 0.0
+            expectedValue.chanceOf<Double> { 1.0 } ?: .0
         else expectedValue
         val satisfactionCoefficient = action.dependencies
             .minOfOrNull { it.satisfactionPercent(tile, this) }

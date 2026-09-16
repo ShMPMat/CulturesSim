@@ -28,21 +28,23 @@
         tMatt
 
 -Vapour                             0       0.0001 inf        -1000  1000 50         Migrate   None         @Water
-        +_condence_prob_0.00000002_f/Puddle:1
+        +_condense_prob_0.00000002_t/Puddle:1
+        +_freeze_prob_0.5_t/~-1;1000000000;MAXTEMP/Snow:1
         tTransparent
 
 -Snow                               0       0.1    inf        -1000  0    100000000  Migrate   None         @Water
         #Water
         cWhite
+        +_melt_prob_0.5_t/~-1;10000000;MINTEMP/Puddle:1
 
--Water                              0       10     inf        -1000  1000 50         Cut       None         @Water
+-Water                              0       1000   inf        -1000  1000 50         Cut       None         @Water
         $liquid
         +_evaporate_prob_1.0_f/Vapour:1
 /        +_makeCloud_prob_1.0_f/Cloud:2500
         tTransparent
         I
 
--SaltWater                          0       10     inf        -1000  1000 50         Cut       None         @SaltWater
+-SaltWater                          0       1000   inf        -1000  1000 50         Cut       None         @SaltWater
         $liquid
         +_evaporate_prob_1.0_f/Vapour:1
         #Normal:Mountain:Ice:Woods:Growth

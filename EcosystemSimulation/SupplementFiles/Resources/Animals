@@ -44,6 +44,15 @@
         cWhite
         D0.02 S0.5
 
+-Shrew                              0.6     0.04   4          -15    35   100      Migrate   Animal       @Meat
+        ~D(A(m:Seed)||m:Chitin||m:Meat),>=0.001,<=0.003;0.04;3;0;CONSUME
+        +_OnDeath_/Carcass:1
+        +_Sniff_prob_0.1_f
+        ^Meat:1 ^Bone:1:s|0.02 ^Fur:1 ^Blood:1
+        #Water
+        cGrey
+        D0.02 S0.5
+
 -BlindMoleRat                       0.4     0.25   5          0      30   30       Migrate   Animal       @Meat
         ~A(m:PlantFibre),>=0.01;0.05;3;0;CONSUME
         +_OnDeath_/Carcass:2
@@ -140,7 +149,7 @@
         ^Meat:12 ^Fat:12 ^Bone:4:s|0.5 ^Fur:6 ^Blood:10 ^Leather:1:s|1.3
         #Water
         cWhite
-        C0.3 R0.2 D0.1 S3
+        C0.3 R0.2 D0.1 S2
 
 -SeaOtter                           0.2     1      15         -20    10   40       Migrate   Animal       @Meat
         ~m:Meat,>=0.01,<=0.2,h:Water;0.2;1.25;1;CONSUME
@@ -220,13 +229,13 @@
         cGrey
         tMatt
         S0
-
+//TODO different consumed are printed as one
 //TODO actually plant food
--Sparrow                            0.0     0.07   10         0      30   100      Migrate   Animal       @Meat
+-Sparrow                            0.0     0.07   10         0      20   100      Migrate   Animal       @Meat
         ~m:Chitin;1;2;0;CONSUME
         +_LayEggs_prob_0.12_t/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/SparrowEgg:5
         +_OnDeath_/Carcass:1
-        ^Meat:2 ^Fat:1 ^Bone:1:s|0.04 ^Feather:10 ^Blood:3
+        ^Meat:1:s|0.04 ^Bone:1:s|0.04 ^Feather:8:s|0.01 ^Blood:1
         #Water
         cBrown
         D0.03 S4
@@ -246,7 +255,7 @@
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:5
         +_LayEggs_prob_0.21_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1:s|0.3/HeronEgg:5
-        ^Meat:4 ^Fat:1 ^Bone:2:s|0.04 ^Feather:10 ^Blood:3
+        ^Meat:2 ^Bone:2:s|0.04 ^Feather:10 ^Blood:2
         #Water
         cWhite
         D0.4 S3
@@ -264,7 +273,7 @@
         ~m:Meat,<=0.09,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME
         +_OnDeath_/Carcass:1
         +_LayEggs_prob_0.07_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/HawkEgg:5
-        ^Meat:2 ^Fat:1 ^Bone:1:s|0.5 ^Feather:10 ^Blood:3
+        ^Meat:1 ^Bone:1:s|0.03 ^Feather:10 ^Blood:2
         #Water
         cBrown
         R0.15 D0.4 S5
@@ -450,7 +459,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
--Bee                                0.6     0.01   5          10     30   200      Migrate   Animal       @Chitin
+-Bee                                0.9     0.01   5          10     30   200      Migrate   Animal       @Chitin
         ~P(r:Flower);1.25;1.1;0;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         $Pollinator:1
@@ -467,7 +476,7 @@
         R0.1 S0.8
 
 -WaterStrider                       0.3     0.01   6          2      30   500      Migrate   Animal       @Chitin
-        ~P(m:Meat),>=0.0005,<=0.03;0.01;2;0;CONSUME
+        ~P(m:Chitin),>=0.0005,<=0.03;0.01;2;0;CONSUME
         ~m:Water,t:liquid;0.001;200;1;EXIST
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01
         cGrey

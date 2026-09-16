@@ -75,6 +75,7 @@
         ^SoftBranch:3   ^Seed:2   ^SoftRoot:5
         #Water
         cGreen
+        R0.8
 
 -Oak                                0.09    5      40         0      30   100        Cut        Plant        @Wood
         ~r:Vapour;0.001;2;1;CONSUME
@@ -119,6 +120,15 @@
         +_Drop_prob_0.2_f/Seed:20
         +_OnDeath_/Detritus:1
         ^Leaf:3:s|0.1 ^Seed:3
+        #Water
+        cGreen
+
+-Clover                             0.0     0.1    5          5      30   800        Cut        Plant        @PlantFibre
+        ~r:Vapour;0.000001;2;1;CONSUME
+        ~r:Detritus;0.1;2;0;CONSUME
+        +_Drop_prob_0.2_f/Seed:10
+        +_OnDeath_/Detritus:1
+        ^Leaf:4:s|0.02 ^Flower:1:c|White ^SoftRoot:2 ^Seed:3
         #Water
         cGreen
 

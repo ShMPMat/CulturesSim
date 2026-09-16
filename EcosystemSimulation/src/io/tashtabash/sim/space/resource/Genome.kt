@@ -105,7 +105,7 @@ class Genome(
 
     fun getTagLevel(tag: ResourceTag) =
         tagsMap[tag]?.level
-            ?: 0.0
+            ?: .0
 
     val baseName: BaseName = name + legacyPostfix
 
@@ -113,7 +113,15 @@ class Genome(
         get() = legacy?.let { "_of_$it" }
             ?: ""
 
-    val mass: Double = primaryMaterial.density * size.pow(3)
+    val volume: Double = size.pow(3)
+
+    val mass: Double by lazy { // Assuming that the first mass call will be made after all addPart(..)
+        if (parts.isEmpty())
+            primaryMaterial.density * volume
+        else
+            parts.sumOf { it.genome.mass * it.amount }
+    }
+
 
     fun addPart(part: Resource) =
         if (!parts.contains(part))

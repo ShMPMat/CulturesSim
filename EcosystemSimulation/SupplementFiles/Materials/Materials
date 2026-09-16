@@ -1,44 +1,45 @@
-/Name         Density   Tags with levels
--PlantFibre    100       -soft:1     -flexible:5      -thin:1               -solid:1   -canBeIgnited:1
--Wood          800       -hard:2     -sturdy:3                              -solid:1   -canBeIgnited:1
--Pulp          80        -soft:1                                            -mass:1
--Nut           700       -hard:1     -sturdy:3                              -solid:1
--Seed          25000     -hard:2     -sturdy:5                              -solid:1
--Fungus        100       -springy:1                                         -solid:1
--Coral         600       -hard:2     -sturdy:1                              -solid:1
--Sponge        700       -springy:1  -flexible:1                            -solid:1
--SeaShell      1100      -hard:3     -sturdy:4                              -solid:1
--EggShell      800       -hard:1     -sturdy:1                              -solid:1
--Meat          300       -springy:2  -flexible:1                            -solid:1                 +Bake:RoastedMeat
--Mesoglea      200       -springy:5  -flexible:4                            -solid:1
--Fat           300       -soft:1     -flexible:1                            -mass:1
--Bone          1000      -hard:3     -sturdy:4                              -solid:1
--Chitin        1000      -hard:3     -sturdy:4                              -solid:1
--Fur           200       -soft:3     -flexible:5                            -solid:1
--Feather       200       -soft:2     -flexible:5                            -solid:1
--Blood         200                                                          -liquid:1
--Ink           200                                                          -liquid:1
--Web           100       -soft:2     -flexible:10                           -mass:1
--Leather       500       -soft:1     -flexible:7      -thin:2    -sturdy:1  -solid:1
+/Name          Density (kg * m^3) Tags with levels
+-PlantFibre    800                -soft:1     -flexible:5      -thin:1               -solid:1   -canBeIgnited:1
+-Wood          700                -hard:2     -sturdy:3                              -solid:1   -canBeIgnited:1
+-Pulp          750                -soft:1                                            -mass:1
+-Nut           630                -hard:1     -sturdy:3                              -solid:1
+-Seed          620                -hard:2     -sturdy:5                              -solid:1
+-Fungus        400                -springy:1                                         -solid:1
+-SeaShell      2900               -hard:3     -sturdy:4                              -solid:1
+-EggShell      2900               -hard:1     -sturdy:1                              -solid:1
+-Meat          1000               -springy:2  -flexible:1                            -solid:1   +Bake:RoastedMeat
+-Mesoglea      1000               -springy:5  -flexible:4                            -solid:1
+-Fat           700                -soft:1     -flexible:1                            -mass:1
+-Bone          1500               -hard:3     -sturdy:4                              -solid:1
+-Chitin        1370               -hard:3     -sturdy:4                              -solid:1
+-Fur           1300               -soft:3     -flexible:5                            -solid:1
+-Feather       1300               -soft:2     -flexible:5                            -solid:1
+-Web           1100                -soft:2     -flexible:10                           -mass:1
+-Blood         1000                                                                  -liquid:1
+-Ink           1000                                                                  -liquid:1
+-Leather       900                -soft:1     -flexible:7      -thin:2    -sturdy:1  -solid:1
+/I'm just assuming sponges and corals are similar, the data is tricky to find
+-Coral         2700               -hard:2     -sturdy:1                              -solid:1
+-Sponge        2700               -springy:1  -flexible:1                            -solid:1
 
--Detritus      500       -soft:1     -flexible:7      -thin:2               -solid:1
--Carcass       300       -springy:1  -flexible:1                            -solid:1
+-Detritus      950                -soft:1     -flexible:7      -thin:2               -solid:1
+-Carcass       950                -springy:1  -flexible:1                            -solid:1
 
 
--RoastedMeat   400       -springy:1  -flexible:1                            -solid:1
+-RoastedMeat   950                -springy:1  -flexible:1                            -solid:1
 
--Clay          2000      -soft:1     -malleable:2                           -mass:1                   +Bake:Ceramics
--Ceramics      2000      -hard:5     -fragile:1                             -solid:1
--Iron          10000     -hard:10    -sturdy:10     -malleable:7            -solid:1
--Copper        10000     -hard:5     -sturdy:5      -malleable:10           -solid:1
--Tin           10000     -hard:6     -sturdy:6      -malleable:10           -solid:1
+-Clay          1600               -soft:1     -malleable:2                           -mass:1    +Bake:Ceramics
+-Ceramics      4000               -hard:5     -fragile:1                             -solid:1
+-Iron          7860               -hard:10    -sturdy:10     -malleable:7            -solid:1
+-Copper        8944               -hard:5     -sturdy:5      -malleable:10           -solid:1
+-Tin           7260               -hard:6     -sturdy:6      -malleable:10           -solid:1
 
--Stone         2500      -hard:7     -sturdy:7                              -solid:1
--Ruby          2500      -hard:8     -sturdy:8                              -solid:1
--Pearl         2000      -hard:5     -sturdy:5                              -solid:1
+-Stone         2600               -hard:7     -sturdy:7                              -solid:1
+-Ruby          4000               -hard:8     -sturdy:8                              -solid:1
+-Pearl         2720               -hard:5     -sturdy:5                              -solid:1
 
--Flame         10        -burns:1                                 -warmth:1 -gas:1
--Ash           80        -soft:2     -powder:1                              -mass:1
--Water         1                                                            -gas:1
--SaltWater     1                                                            -gas:1
-/-Cloud         1                                                            -gas:1
+-Flame         1                  -burns:1                                 -warmth:1 -gas:1
+-Ash           500                -soft:2     -powder:1                              -mass:1
+-Water         1000                                                                  -gas:1
+-SaltWater     1000                                                                  -gas:1
+/-Cloud         1                                                                     -gas:1

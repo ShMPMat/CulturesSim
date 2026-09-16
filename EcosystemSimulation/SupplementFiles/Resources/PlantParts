@@ -8,23 +8,23 @@
         L
 
 -SoftBranch                         0       0.2    5          -500   500  100000000  Ignore    None         @PlantFibre
-        ^PlantFibre:3
+        ^PlantFibre:2
         +Weaving/Basket:1
         cGreen
         L
 
 -Leaf                               0       0.03   3          -500   500  100000000  Ignore    None         @PlantFibre
-        ^PlantFibre:1
+        ^PlantFibre:1:s|0.03
         cGreen
         L
 
 -PineNeedle                         0       0.02   3          -500   500  100000000  Ignore    None         @PlantFibre
-        ^PlantFibre:1
+        ^PlantFibre:1:s|0.02
         cGreen
         L
 
 -Flower                             0       0.05   3          -500   500  100000000  Ignore    None         @PlantFibre
-        ^PlantFibre:1
+        ^PlantFibre:1:s|0.05
         cWhite
         L
 
@@ -38,11 +38,11 @@
         cGreen
         L
 
--Pulp                               0       0.01   5          -500   500  100000000  Ignore    None         @Pulp
+-Pulp                               0       0.03   5          -500   500  100000000  Ignore    None         @Pulp
         L
 
 -Samara                             0       0.03   5          -500   500  100000000  Ignore    None         @PlantFibre
-        ^PlantFibre:1 ^Seed:1
+        ^PlantFibre:1:s|0.03 ^Seed:1
         L
 -Nut                                0       0.02   5          -500   500  100000000  Ignore    None         @Nut
         cBrown
@@ -50,7 +50,7 @@
         L
 -Pome                               0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
         +_Burst_prob_0.2_t/Seed:5
-        ^Pulp:4  ^Seed:5
+        ^Pulp:8  ^Seed:5
         L
 -Drupe                              0       0.05   5          -500   500  100000000  Ignore    None         @Pulp
         +_Burst_prob_0.2_t/Seed:1:s|0.02
@@ -63,14 +63,14 @@
         cBrown
         L
 
--Seed                               0       0.03   25         -500   500  100000000  Migrate   None         @Seed
+-Seed                               0       0.01   25         -500   500  100000000  Migrate   None         @Seed
         +PlantSeed/LEGACY:1
         +_Grow_prob_0.05_t/LEGACY:1
         cBrown
         sRound
         L
 
--PlantFibre                         0       0.5    5          -500   500  100000000  Ignore    None         @PlantFibre
+-PlantFibre                         0       0.1    5          -500   500  100000000  Ignore    None         @PlantFibre
         +MakingFibre/Fibre:1
         +Weaving/Basket:1
         cGreen

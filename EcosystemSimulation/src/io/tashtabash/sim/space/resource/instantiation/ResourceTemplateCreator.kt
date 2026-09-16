@@ -1,6 +1,7 @@
 package io.tashtabash.sim.space.resource.instantiation
 
 import io.tashtabash.sim.DataInitializationError
+import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.*
 import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.action.ResourceAction
@@ -42,7 +43,7 @@ class ResourceTemplateCreator(
         var texture: ResourceTexture? = null
         var shape: ResourceShape? = null
         var camouflage = 0.0
-        var speed = if (type == ResourceType.Animal) 1.0 else 0.0
+        var speedMs = if (type == ResourceType.Animal) 1.0 else 0.0
         var hasLegasy = false
         var isMovable = true
         val spreadProbability = tags[1].toDouble()
@@ -91,7 +92,7 @@ class ResourceTemplateCreator(
                     's' -> shape = ResourceShape.valueOf(tag)
                     'c' -> colour = ResourceColour.valueOf(tag)
                     'C' -> camouflage = tag.toDouble()
-                    'S' -> speed = tag.toDouble()
+                    'S' -> speedMs = tag.toDouble()
                     't' -> texture = ResourceTexture.valueOf(tag)
                     'L' -> hasLegasy = true
                     'I' -> isMovable = false
@@ -134,6 +135,8 @@ class ResourceTemplateCreator(
 
             l.toDouble() to r.toDouble()
         } else tags[2].toDouble().let { it to it }
+
+        val speed = data.computeTileSpeed(speedMs)
 
         for (dependency in resourceDependencies)
             if (dependency is ConsumeDependency)

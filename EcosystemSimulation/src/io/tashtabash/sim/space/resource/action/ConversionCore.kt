@@ -29,9 +29,9 @@ class ConversionCore(actionConversion: Map<ResourceAction, MutableList<Resource>
     }
 
     fun applyAction(action: ResourceAction): Resources? = actionConversions[action]
-            ?.map { r ->
-                r.copy(r.amount)
-            }
+        ?.map { r ->
+            r.copy(r.amount)
+        }
 
     fun copy() = ConversionCore(actionConversions)
 

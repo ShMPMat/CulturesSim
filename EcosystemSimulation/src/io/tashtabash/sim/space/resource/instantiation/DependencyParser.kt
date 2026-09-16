@@ -5,6 +5,8 @@ import io.tashtabash.sim.space.resource.dependency.AvoidDependency
 import io.tashtabash.sim.space.resource.dependency.ConsumeDependency
 import io.tashtabash.sim.space.resource.dependency.NeedDependency
 import io.tashtabash.sim.space.resource.dependency.ResourceDependency
+import io.tashtabash.sim.space.resource.dependency.TemperatureMax
+import io.tashtabash.sim.space.resource.dependency.TemperatureMin
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.makeResourceLabeler
 
@@ -20,9 +22,8 @@ interface DependencyParser {
 open class DefaultDependencyParser : DependencyParser {
     override fun parse(tag: String): ResourceDependency? {
         val elements = tag.split(";")
-                .toTypedArray()
 
-        return when (elements[4]) {
+        return when (elements.last()) {
             "CONSUME" -> ConsumeDependency(
                     parseDeprivationCoefficient(elements[2]),
                     parseIsNecessary(elements[3]),
@@ -38,6 +39,8 @@ open class DefaultDependencyParser : DependencyParser {
                     parseIsNecessary(elements[3]),
                     QuantifiedResourceLabeler(makeResourceLabeler(elements[0]), elements[1].toDouble())
             )
+            "MAXTEMP" -> TemperatureMax(elements[0].toInt(), parseDeprivationCoefficient(elements[1]))
+            "MINTEMP" -> TemperatureMin(elements[0].toInt(), parseDeprivationCoefficient(elements[1]))
             else -> null
         }
     }
