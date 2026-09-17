@@ -30,7 +30,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
     private val _delayedResources: MutableList<Resource> = ArrayList()
 
     val resourceDensity
-        get() = resourcePack.resources.sumOf { it.amount * it.genome.size.pow(3) } / data.tileResourceCapacity
+        get() = resourcePack.resources.sumOf { it.amount * it.genome.volume } / data.tileResourceCapacity
 
     var level = 0
         internal set
@@ -272,7 +272,13 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
             "Tags: " + tagPool.all.joinToString("; ") +
             "\nWind: ${wind.affectedTiles.joinToString { "${it.first.x} ${it.first.y}: ${it.second}" }}" +
             "\nFlow: ${flow.x} ${flow.y}" +
-            "\n\nResources:" + _resourcePack.resources.joinToString("\n", "\n", "\n")
+            "\n\nResources:" + _resourcePack.resources.joinToString("\n", "\n", "\n") +
+            "\n" +
+            "\n Area: ${data.tileSizeKm.pow(2)}km^2" +
+            "\n Covered area: ${resourcesWithMoved.sumOf { it.genome.size.x * it.genome.size.y * it.amount }}" +
+            "\n ${// Assume everything is in the 1st 10 meters above ground
+                ((data.tileSizeKm * 1000).pow(2)) * 10 / resourcesWithMoved.sumOf { it.genome.volume * it.amount } * 100
+            }%"
 
     val prettyTemperature: String
         get() = "%.2f".format(temperature)

@@ -12,7 +12,7 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 class GenomeTemplate(
     val name: String,
     val type: ResourceType,
-    val sizeRange: Pair<Double, Double>,
+    val sizeRange: Pair<Size, Size>,
     val spreadProbability: Double,
     val baseDesirability: Int,
     val isMutable: Boolean,

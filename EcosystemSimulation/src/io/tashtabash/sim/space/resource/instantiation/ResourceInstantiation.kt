@@ -257,22 +257,20 @@ private val phonyResource = Resource(
         Genome(
             "Phony",
             ResourceType.Animal,
-            1.6 to 1.6,
-            0.0,
+            Size(1.0) to Size(1.0),
+            .0,
             0,
             false,
             true,
-            Behaviour(0.0, 0.00, 0.0, 0.0, OverflowType.Ignore),
+            Behaviour(.0, .0, .0, .0, OverflowType.Ignore),
             Appearance(null, null, null),
             false,
-            0.0,
+            .0,
             1,
             null,
             emptyList(),
             emptySet(),
             Material("Phony", .1, listOf()),
-            emptyList(),
-            ConversionCore(mapOf())
         )
     )
 )

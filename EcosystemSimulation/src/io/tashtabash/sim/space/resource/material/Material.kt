@@ -5,18 +5,14 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
 
 
-class Material(val name: String, val density: Double, val tags: List<ResourceTag>) {
+class Material(val name: String, val density: Double, val tags: List<ResourceTag>, val porosity: Double = 0.0) {
     private val actionConversion: MutableMap<ResourceAction, Material> = HashMap()
+
+    val overallDensity = density * (1 - porosity)
 
     fun addActionConversion(action: ResourceAction, material: Material) {
         actionConversion[action] = material
     }
-
-    fun applyAction(action: ResourceAction): Material = actionConversion[action] ?: this
-
-    fun hasTagWithName(name: String) = tags.any { it.name == name }
-
-    fun hasApplication(action: ResourceAction) = actionConversion.containsKey(action)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

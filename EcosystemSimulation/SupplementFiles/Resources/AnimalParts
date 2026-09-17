@@ -7,8 +7,13 @@
         cWhite
         L
 
--Bone                               0       0.1    1000       -500   500  100000000  Ignore    None         @Bone
+-Bone                               0       .1x.02x.02 1000   -500   500  100000000  Ignore    None         @Bone
         cWhite
+        tMatt
+        L
+
+-Antler                             0       .3x.04x.04 1000   -500   500  100000000  Ignore    None         @Bone
+        cBrown
         tMatt
         L
 
@@ -29,7 +34,7 @@
 -Spike                              0       0.05   60         -500   500  100000000  Ignore    None         @Fur
         L
 
--Feather                            0       0.05   50         -500   500  100000000  Ignore    None         @Feather
+-Feather                            0       .05x.02x.0005 50  -500   500  100000000  Ignore    None         @Feather
         L
 
 -Blood                              0       0.05   50         -500   500  100000000  Ignore    None         @Blood
@@ -42,6 +47,6 @@
         tSemitransparent
         L
 
--Leather                            0       1.0    50         -500   500  100000000  Ignore    None         @Leather
+-Leather                            0       1x1.0x.01 50      -500   500  100000000  Ignore    None         @Leather
         +MakeClothes/LeatherClothes:1
         L

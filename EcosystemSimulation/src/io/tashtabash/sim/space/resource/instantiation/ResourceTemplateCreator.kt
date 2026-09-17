@@ -28,7 +28,7 @@ class ResourceTemplateCreator(
         val type = ResourceType.valueOf(tags[8])
         val overflowType = OverflowType.valueOf(tags[7])
         var resistance: Double? = null
-        var danger = 0.0
+        var danger = .0
         var isTemplate = false
         var baseDesirability = 0
         var minTempDeprivation = 2.0
@@ -42,9 +42,9 @@ class ResourceTemplateCreator(
         var colour: ResourceColour? = null
         var texture: ResourceTexture? = null
         var shape: ResourceShape? = null
-        var camouflage = 0.0
-        var speedMs = if (type == ResourceType.Animal) 1.0 else 0.0
-        var hasLegasy = false
+        var camouflage = .0
+        var speedMs = if (type == ResourceType.Animal) 1.0 else .0
+        var hasLegacy = false
         var isMovable = true
         val spreadProbability = tags[1].toDouble()
         val defaultAmount = min(tags[6].toInt() * amountCoefficient, 10e7.toInt())
@@ -63,7 +63,7 @@ class ResourceTemplateCreator(
                     }
                     '@' -> if (tag == "TEMPLATE") {
                         isTemplate = true
-                        hasLegasy = true
+                        hasLegacy = true
                     } else {
                         val material = materialPool.get(tag)
                         if (primaryMaterial == null)
@@ -94,7 +94,7 @@ class ResourceTemplateCreator(
                     'C' -> camouflage = tag.toDouble()
                     'S' -> speedMs = tag.toDouble()
                     't' -> texture = ResourceTexture.valueOf(tag)
-                    'L' -> hasLegasy = true
+                    'L' -> hasLegacy = true
                     'I' -> isMovable = false
                     'd' -> baseDesirability = tag.toInt()
                     'T' -> {
@@ -108,7 +108,7 @@ class ResourceTemplateCreator(
                     }
                     else -> {
                         val rTag = tagParser.parse(key, tag)
-                                ?: throw DataInitializationError("Unknown resource description command - $key")
+                            ?: throw DataInitializationError("Unknown resource description command - $key")
                         resourceTags += rTag
                     }
                 }
@@ -130,11 +130,7 @@ class ResourceTemplateCreator(
             else
                 tags[3].toDouble()
 
-        val sizeRange = if (tags[2].contains('~')) {
-            val (l, r) = tags[2].split('~')
-
-            l.toDouble() to r.toDouble()
-        } else tags[2].toDouble().let { it to it }
+        val sizeRange = parseSizeRange(tags[2])
 
         val speed = data.computeTileSpeed(speedMs)
 
@@ -159,7 +155,7 @@ class ResourceTemplateCreator(
                     isMovable = isMovable,
                     behaviour = behaviour,
                     appearance = appearance,
-                    hasLegacy = hasLegasy,
+                    hasLegacy = hasLegacy,
                     lifespan = lifespan,
                     defaultAmount = defaultAmount,
                     legacy = legacy,
@@ -183,7 +179,7 @@ class ResourceTemplateCreator(
                     isMovable = isMovable,
                     behaviour = behaviour,
                     appearance = appearance,
-                    hasLegacy = hasLegasy,
+                    hasLegacy = hasLegacy,
                     lifespan = lifespan,
                     defaultAmount = defaultAmount,
                     legacy = legacy,
@@ -208,4 +204,16 @@ class ResourceTemplateCreator(
 
         return ResourceStringTemplate(genome, actionConversion, parts)
     }
+
+    private fun parseSizeRange(sizeRangeTag: String): Pair<Size, Size> =
+        if (sizeRangeTag.contains('~')) {
+            val (l, r) = sizeRangeTag.split('~')
+            parseSize(l) to parseSize(r)
+        } else sizeRangeTag.let { parseSize(it) to parseSize(it) }
+
+    private fun parseSize(sizeTag: String) =
+        if (sizeTag.contains('x')) {
+            val (x, y, z) = sizeTag.split('x')
+            Size(x.toDouble(), y.toDouble(), z.toDouble())
+        } else Size(sizeTag.toDouble())
 }

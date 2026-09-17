@@ -9,7 +9,7 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 fun createTestGenome(
     name: String = "Plant",
     legacy: String? = null,
-    sizeRange: Pair<Double, Double> = 1.0 to 1.0,
+    sizeRange: Pair<Size, Size> = Size(1.0) to Size(1.0),
     primaryMaterial: Material = Material("Fibre", .1, listOf()),
     tags: Set<ResourceTag> = emptySet(),
     actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
@@ -41,7 +41,7 @@ fun createTestGenome(
 fun createTestResource(
     name: String = "Plant",
     legacy: String? = null,
-    sizeRange: Pair<Double, Double> = 1.0 to 1.0,
+    sizeRange: Pair<Size, Size> = Size(1.0) to Size(1.0),
     primaryMaterial: Material = Material("Fibre", .1, listOf()),
     tags: Set<ResourceTag> = emptySet(),
     actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),

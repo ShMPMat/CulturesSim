@@ -3,7 +3,7 @@
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         +_OnDeath_/Carcass:20
         +_Moo_prob_0.1_f
-        ^Meat:10 ^Fat:5 ^Bone:5:s|0.5 ^Fur:3 ^Blood:10 ^Leather:1:s|2
+        ^Meat:50 ^Fat:5 ^Bone:10:s|0.5 ^Fur:10 ^Blood:10 ^Leather:1:s|2
         #Water
         cWhite
         R0.1
@@ -20,7 +20,7 @@
 -Deer                               0.11    2      22         -10     5   15       Migrate   Animal       @Meat
         ~D(m:PlantFibre||m:Fungus),>=0.03;0.05;2;0;CONSUME
         +_OnDeath_/Carcass:22
-        ^Meat:12 ^Fat:7 ^Bone:7:s|0.5 ^Fur:5 ^Blood:10 ^Leather:2:s|2.5
+        ^Meat:60 ^Fat:7 ^Bone:7:s|0.5 ^Fur:10 ^Blood:10 ^Leather:2:s|2.5 ^Antler:2
         #Water
         cBrown
         R0.3 D0.1 S2
@@ -29,7 +29,7 @@
         ~m:PlantFibre,>=0.03;0.2;2;0;CONSUME
         +_OnDeath_/Carcass:8
         +_Jump_prob_0.2_f
-        ^Meat:8 ^Fat:4 ^Bone:5:s|0.3 ^Fur:2 ^Blood:8 ^Leather:1:s|1
+        ^Meat:18 ^Fat:4 ^Bone:5:s|0.3 ^Fur:2 ^Blood:8 ^Leather:1:s|1
         #Water
         l110;1000
         cWhite
@@ -39,7 +39,7 @@
         ~D(A(m:Seed)||m:Fungus),>=0.003;0.025;3;0;CONSUME
         +_OnDeath_/Carcass:1
         +_Squeak_prob_0.1_f
-        ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:2
+        ^Meat:1 ^Fat:1 ^Bone:1:s|0.03 ^Fur:1 ^Blood:1
         #Water
         cWhite
         D0.02 S0.5
@@ -57,7 +57,7 @@
         ~A(m:PlantFibre),>=0.01;0.05;3;0;CONSUME
         +_OnDeath_/Carcass:2
         +_Dig_prob_0.98_f
-        ^Meat:1 ^Fat:2 ^Bone:1:s|0.06 ^Fur:2 ^Blood:4
+        ^Meat:1 ^Fat:2 ^Bone:1:s|0.06 ^Fur:2 ^Blood:3
         #Water
         cBrown
         R0.8 D0.02 S0.2
@@ -235,7 +235,7 @@
         ~m:Chitin;1;2;0;CONSUME
         +_LayEggs_prob_0.12_t/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/SparrowEgg:5
         +_OnDeath_/Carcass:1
-        ^Meat:1:s|0.04 ^Bone:1:s|0.04 ^Feather:8:s|0.01 ^Blood:1
+        ^Meat:1:s|0.04 ^Bone:1:s|0.04 ^Feather:300:s|0.01 ^Blood:1
         #Water
         cBrown
         D0.03 S4
@@ -255,7 +255,7 @@
         ~m:Water,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:5
         +_LayEggs_prob_0.21_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1:s|0.3/HeronEgg:5
-        ^Meat:2 ^Bone:2:s|0.04 ^Feather:10 ^Blood:2
+        ^Meat:2 ^Bone:2:s|0.04 ^Feather:1000 ^Blood:2
         #Water
         cWhite
         D0.4 S3
@@ -273,7 +273,7 @@
         ~m:Meat,<=0.09,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME
         +_OnDeath_/Carcass:1
         +_LayEggs_prob_0.07_f/~m:PlantFibre,<=0.4;0.15;200;0;CONSUME/BirdNest:1/HawkEgg:5
-        ^Meat:1 ^Bone:1:s|0.03 ^Feather:10 ^Blood:2
+        ^Meat:1:s|0.09 ^Bone:1:s|0.03 ^Feather:1000 ^Blood:2
         #Water
         cBrown
         R0.15 D0.4 S5

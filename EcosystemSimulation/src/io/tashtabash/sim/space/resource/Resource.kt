@@ -73,7 +73,7 @@ open class Resource private constructor(
         _hash = hash ?: computeHash()
     }
 
-    fun getTagPresence(tag: ResourceTag) = amount * getTagLevel(tag) * genome.size.pow(data.resourceSizeEffect)
+    fun getTagPresence(tag: ResourceTag) = amount * getTagLevel(tag) * genome.volume.pow(data.resourceSizeEffect)
 
     fun getTagLevel(tag: ResourceTag) = genome.getTagLevel(tag)
 

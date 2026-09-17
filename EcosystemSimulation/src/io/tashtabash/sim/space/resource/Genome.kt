@@ -7,13 +7,14 @@ import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import java.util.*
 import kotlin.math.ceil
-import kotlin.math.pow
+import kotlin.math.max
+import kotlin.math.min
 
 
 class Genome(
     val name: String,
     val type: ResourceType,
-    val sizeRange: Pair<Double, Double>,
+    val sizeRange: Pair<Size, Size>,
     val spreadProbability: Double,
     val baseDesirability: Int,
     val isMutable: Boolean,
@@ -27,11 +28,11 @@ class Genome(
     val dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
     val primaryMaterial: Material,
-    val secondaryMaterials: List<Material>,
-    var conversionCore: ConversionCore,
+    val secondaryMaterials: List<Material> = listOf(),
+    var conversionCore: ConversionCore = ConversionCore(),
     val parts: MutableList<Resource> = mutableListOf()
 ) {
-    val size = (sizeRange.first + sizeRange.second) / 2
+    val size = sizeRange.first.avg(sizeRange.second)
     val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
 
     val necessaryDependencies = dependencies.filter { it.isNecessary }
@@ -51,7 +52,7 @@ class Genome(
     fun copy(
         name: String = this.name,
         type: ResourceType = this.type,
-        sizeRange: Pair<Double, Double> = this.sizeRange,
+        sizeRange: Pair<Size, Size> = this.sizeRange,
         spreadProbability: Double = this.spreadProbability,
         baseDesirability: Int = this.baseDesirability,
         isMutable: Boolean = this.isMutable,
@@ -113,11 +114,11 @@ class Genome(
         get() = legacy?.let { "_of_$it" }
             ?: ""
 
-    val volume: Double = size.pow(3)
+    val volume: Double = size.x * size.y * size.z
 
     val mass: Double by lazy { // Assuming that the first mass call will be made after all addPart(..)
         if (parts.isEmpty())
-            primaryMaterial.density * volume
+            primaryMaterial.overallDensity * volume
         else
             parts.sumOf { it.genome.mass * it.amount }
     }
@@ -139,3 +140,14 @@ class Genome(
 }
 
 typealias BaseName = String
+
+data class Size(val x: Double, val y: Double, val z: Double) {
+    constructor(dimension: Double) : this(dimension, dimension, dimension)
+
+    val max = max(x, max(y, z))
+    val min = min(x, min(y, z))
+
+    operator fun times(other: Double) = Size(x * other, y * other, z * other)
+
+    fun avg(other: Size) = Size((x + other.x) / 2, (y + other.y) / 2, (z + other.z) / 2)
+}

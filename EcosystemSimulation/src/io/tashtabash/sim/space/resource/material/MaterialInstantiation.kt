@@ -36,6 +36,7 @@ class MaterialInstantiation(
         val name = tags[0]
         val density = tags[1].toDouble()
         val materialTags = ArrayList<ResourceTag>()
+        var porosity = .0
         for (i in 2 until tags.size) {
             val key = tags[i][0]
             val tag = tags[i].substring(1)
@@ -43,34 +44,34 @@ class MaterialInstantiation(
                 when (key) {
                     '+' -> {
                         val action = actions.firstOrNull { a -> a.technicalName == tag.takeWhile { it != ':' } }
-                            ?: throw NoSuchElementException("No action $tag found for material $name")
+                            ?: throw NoSuchElementException("No action '$tag' found for material '$name'")
                         aspectConversion[action] =
                             tag.substring(tag.indexOf(':') + 1)
                     }
                     '-' -> {
                         val resourceTag = ResourceTag(
-                                tag.takeWhile { it != ':' },
-                                tag.substring(tag.indexOf(':') + 1).toDouble()
+                            tag.takeWhile { it != ':' },
+                            tag.substring(tag.indexOf(':') + 1).toDouble()
                         )
                         if (!allowedTags.contains(resourceTag))
-                            throw DataInitializationError("Tag $resourceTag doesn't exist")
-                        materialTags.add(resourceTag)
+                            throw DataInitializationError("Tag '$resourceTag' doesn't exist")
+                        materialTags += resourceTag
                     }
+                    'P' -> porosity = tag.toDouble()
                 }
             } catch (e: NoSuchElementException) {
-                println(e.message)
+                println("Error processing material '$name': ${e.message}")
             }
         }
         return MaterialTemplate(
-                Material(name, density, materialTags),
-                aspectConversion
+            Material(name, density, materialTags, porosity),
+            aspectConversion
         )
     }
 
     private fun actualizeLinks(template: MaterialTemplate, materialPool: MaterialPool) {
-        template.actionConversion.forEach {
+        for (it in template.actionConversion)
             template.material.addActionConversion(it.key, materialPool.get(it.value))
-        }
     }
 }
 

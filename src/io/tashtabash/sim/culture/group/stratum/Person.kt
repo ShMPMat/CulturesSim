@@ -5,19 +5,18 @@ import io.tashtabash.sim.event.PopulationDecrease
 import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.resource.*
-import io.tashtabash.sim.space.resource.action.ConversionCore
 import java.lang.Integer.min
 
 
 private val personGenome = Genome(
     "Person",
     ResourceType.Animal,
-    1.6 to 1.6,
+    Size(1.5, .4, .2) to Size(1.6, .5, .3),
     .0,
     0,
     false,
     true,
-    Behaviour(0.1, 0.05, 0.25, SpaceData.data.computeTileSpeed(1.0), OverflowType.Ignore),
+    Behaviour(.1, .05, .25, SpaceData.data.computeTileSpeed(1.0), OverflowType.Ignore),
     Appearance(null, null, null),
     false,
     50.0,
@@ -26,8 +25,6 @@ private val personGenome = Genome(
     emptyList(),
     emptySet(),
     SpaceData.data.materialPool.get("Meat"),
-    emptyList(),
-    ConversionCore()
 )
 
 

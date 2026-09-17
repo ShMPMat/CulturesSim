@@ -8,13 +8,13 @@
         +MakeClothes/Clothes:1
         L d2
 
--Iron                            0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Iron
+-Iron                            0       0.001~.5 100000      -500   500  1000       Ignore    Artifact      @Iron
         cWhite
 
--Copper                          0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Copper
+-Copper                          0       0.001~.5 100000      -500   500  1000       Ignore    Artifact      @Copper
         cWhite
 
--Tin                             0       0.001~30 100000      -500   500  1000       Ignore    Artifact      @Tin
+-Tin                             0       0.001~.5 100000      -500   500  1000       Ignore    Artifact      @Tin
         cWhite
 
 
@@ -93,11 +93,11 @@
         &a(Killing)-m(0.03,hard,sturdy)
         d5
 
--Shield                             0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
+-Shield                             0       1x.5x.02 10000    -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite $defence:m(0.1,hard,sturdy)
         &a(Killing)-m(0.02,hard,sturdy)
         d5
--RingMail                           0       1      10000      -500   500  100000000  Ignore    Artifact     @TEMPLATE
+-RingMail                           0       11x.5x.01 10000   -500   500  100000000  Ignore    Artifact     @TEMPLATE
         $composite $defence:m(0.2,hard,sturdy)
         &a(Killing)-m(0.05,hard,sturdy)
         d5
