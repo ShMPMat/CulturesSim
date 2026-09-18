@@ -48,8 +48,10 @@ class Data(
     val additionalTags: List<TagMatcher> = listOf(),
     val xMapLooping: Boolean = false,
     val yMapLooping: Boolean = true,
-    val clearSpan: Double = 0.05,
-    val yearDuration: Int = 25,
+    val clearSpan: Double = .05,
+    val yearDurationDays: Int = 300,
+    val dayDurationSeconds: Int = 24 * 60 * 60,
+    val tickDurationDays: Int = 10,
     val tileSizeKm: Double = 50.0,
 ) {
     init {
@@ -57,11 +59,13 @@ class Data(
             throw DataInitializationError("resourceSizeEffect value $resourceSizeEffect is not in 0..1 range")
     }
 
+    val yearDurationTicks = yearDurationDays.toDouble() / tickDurationDays
+    private val yearDurationSeconds = dayDurationSeconds * yearDurationDays
+
     fun computeTileSpeed(speedMs: Double): Double {
         val metresPerTile = tileSizeKm * 1000.0
-        return speedMs * SECONDS_PER_YEAR / (metresPerTile * yearDuration) / REST_COEFFICIENT
+        return speedMs * yearDurationSeconds / (metresPerTile * yearDurationTicks) / REST_COEFFICIENT
     }
 }
 
-private const val SECONDS_PER_YEAR = 31_557_600.0
 private const val REST_COEFFICIENT = 25.0 // Assume that entities can't move at their usual speed all the time
