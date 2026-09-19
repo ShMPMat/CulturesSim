@@ -156,12 +156,9 @@ class ResourceTemplateCreator(
                     behaviour = behaviour,
                     appearance = appearance,
                     hasLegacy = hasLegacy,
-                    lifespan = lifespan,
                     defaultAmount = defaultAmount,
-                    legacy = legacy,
                     dependencies = resourceDependencies,
                     tags = setOf(),
-                    primaryMaterial = primaryMaterial,
                     secondaryMaterials = secondaryMaterials,
                     conversionCore = conversionCore,
                     tagTemplates = resourceTags
