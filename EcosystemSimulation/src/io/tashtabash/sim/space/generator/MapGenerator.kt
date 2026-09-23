@@ -25,9 +25,9 @@ fun generateMap(x: Int, y: Int, platesAmount: Int, resourcePool: ResourcePool, r
         )
     setTileNeighbours(map)
     val tectonicPlates = randomPlates(
-            platesAmount,
-            map,
-            random
+        platesAmount,
+        map,
+        random
     )
     tectonicPlates.forEach { map.addPlate(it) }
     fill(map)
@@ -38,18 +38,18 @@ private fun setTileNeighbours(map: WorldMap) {
     for (i in 0 until map.maxX)
         for (j in 0 until map.maxY)
             map[i, j]?.neighbours = arrayOf(
-                    map[i, j + 1],
-                    map[i, j - 1],
-                    map[i + 1, j],
-                    map[i - 1, j]
+                map[i, j + 1],
+                map[i, j - 1],
+                map[i + 1, j],
+                map[i - 1, j],
             ).filterNotNull()
 }
 
 private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool): List<List<Tile>> {
     val map: MutableList<List<Tile>> = ArrayList()
     val updaters = listOf(
-            TypeUpdater(resourcePool.getBaseName("Water")),
-            MeteorStrike(resourcePool.getBaseName("RawIron"))
+        TypeUpdater(resourcePool.getBaseName("Water")),
+        MeteorStrike(resourcePool.getBaseName("RawIron"))
     )
 
     for (i in 0 until x)
