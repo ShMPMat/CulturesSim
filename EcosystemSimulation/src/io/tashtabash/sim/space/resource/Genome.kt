@@ -23,7 +23,7 @@ class Genome(
     val appearance: Appearance,
     val hasLegacy: Boolean,
     val lifespan: Double,
-    val defaultAmount: Int,
+    val defaultAmount: Int, // Per km^2
     val legacy: BaseName?,
     val dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
@@ -33,7 +33,7 @@ class Genome(
     val parts: MutableList<Resource> = mutableListOf()
 ) {
     val size = sizeRange.first.avg(sizeRange.second)
-    val naturalDensity = ceil(data.resourceDenseCoefficient * defaultAmount).toInt()
+    val naturalDensity = ceil(data.tileSizeKm * data.tileSizeKm / 2500 * defaultAmount).toInt()
 
     val necessaryDependencies = dependencies.filter { it.isNecessary }
 
