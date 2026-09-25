@@ -16,7 +16,7 @@ import kotlin.math.pow
 class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = mutableListOf()) {
     val tagPool = MutableTileTagPool()
 
-    var type: Type? = null
+    var type: Type = Type.Water // It's Water in order for init {..} to set Normal correctly
         internal set
 
     var plate: TectonicPlate? = null
@@ -25,8 +25,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
     val resourcePack: ResourcePack
         get() = _resourcePack
 
-    //Resources added on this Tile on a last turn. They are
-    //stored here before the end of the turn.
+    //Resources added on this Tile on the last turn. They are stored here before the end of the turn.
     private val _delayedResources: MutableList<Resource> = ArrayList()
 
     val resourceDensity
@@ -108,8 +107,8 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
     }
 
     fun getTilesInRadius(radius: Int, predicate: (Tile) -> Boolean) = getTilesInRadius(radius)
-            .filter(predicate)
-            .toSet()
+        .filter(predicate)
+        .toSet()
 
     fun setType(type: Type, updateLevel: Boolean) {
         if (type == this.type)
@@ -156,21 +155,17 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
     }
 
     private fun addResource(resource: Resource) {
-        if (resource.isEmpty)
-            return
         _resourcePack.add(resource)
     }
 
     /**
      * Adds resources which will be available on this Tile on the next turn.
-     *
-     * @param resource resource which will be added.
      */
     fun addDelayedResource(resource: Resource) {
         if (resource.isEmpty)
             return
 
-        _delayedResources.add(resource)
+        _delayedResources += resource
     }
 
     fun addDelayedResources(resources: Collection<Resource>) = resources.forEach { addDelayedResource(it) }
@@ -225,7 +220,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
     }
 
     private fun updateResources() {
-        val deletedResources: MutableList<Resource> = ArrayList()
+        val deletedResources = mutableListOf<Resource>()
 
         for (resource in _resourcePack.resources) {
             val result = resource.update(this)
