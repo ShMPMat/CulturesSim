@@ -1,6 +1,7 @@
 package io.tashtabash.sim
 
 import io.tashtabash.sim.event.EventLog
+import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.action.ActionMatcher
 import io.tashtabash.sim.space.resource.action.ActionTag
@@ -20,6 +21,12 @@ interface World {
     val actionTags: List<ActionTag>
     val lesserTurnNumber: Int
     val turn: Int
+
+    val year: Int
+        get() = (turn / data.yearDurationTicks).toInt()
+
+    val day: Int
+        get() = ((turn % data.yearDurationTicks) * data.tickDurationDays).toInt() + 1
 
     fun initializeMap(
         actions: Map<ResourceAction, List<ActionMatcher>>,
