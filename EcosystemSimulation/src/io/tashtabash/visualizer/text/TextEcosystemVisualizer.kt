@@ -2,7 +2,6 @@ package io.tashtabash.visualizer.text
 
 import io.tashtabash.sim.Controller
 import io.tashtabash.sim.World
-import io.tashtabash.sim.event.*
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
@@ -23,9 +22,9 @@ import java.util.*
 
 
 open class TextEcosystemVisualizer<E : World>(
-        open val controller: Controller<E>,
-        private val defaultManager: CommandManager<TextEcosystemVisualizer<E>> = CommandManager(TextPassExecutor()),
-        private val commandManager: CommandManager<out TextEcosystemVisualizer<E>> = defaultManager
+    open val controller: Controller<E>,
+    private val defaultManager: CommandManager<TextEcosystemVisualizer<E>> = CommandManager(TextPassExecutor()),
+    private val commandManager: CommandManager<out TextEcosystemVisualizer<E>> = defaultManager
 ) : Visualizer {
     /**
      * Symbols for representation of resources on the Map.
@@ -76,7 +75,7 @@ open class TextEcosystemVisualizer<E : World>(
     private fun readSymbols() {
         val classLoader = Thread.currentThread().contextClassLoader
         val resourceUrl = classLoader.getResource("Symbols/SymbolsResourceLibrary")
-                ?: throw IOException("Resource Symbols/SymbolsResourceLibrary not found")
+            ?: throw IOException("Resource Symbols/SymbolsResourceLibrary not found")
         val s = Scanner(resourceUrl.openStream())
         val symbols = mutableListOf<String>()
 
@@ -198,7 +197,7 @@ open class TextEcosystemVisualizer<E : World>(
         val resources = StringBuilder()
         for (resource in world.resourcePool.all)
             resources.append("\u001b[31m").append(resourceSymbols[resource]).append(" - ")
-                    .append(resource.baseName).append("\n")
+                .append(resource.baseName).append("\n")
 
         resourcesPrinted = resources
 
@@ -206,15 +205,6 @@ open class TextEcosystemVisualizer<E : World>(
     }
 
     private var resourcesPrinted: StringBuilder? = null
-
-    private fun printedEvents(events: Collection<Event>, printAll: Boolean): StringBuilder {
-        val main = StringBuilder()
-        for (event in events) {
-            if (printAll || event.type in listOf(Death, ResourceDeath, DisbandResources))
-                main.append(event).append("\n")
-        }
-        return main
-    }
 
     fun launchTurner(turnAmount: Int) {
         currentTurner = Turner(turnAmount, printTurnStep, controller)
@@ -258,9 +248,8 @@ open class TextEcosystemVisualizer<E : World>(
             }
         } catch (t: Throwable) {
             System.err.println(t.toString())
-            for (stackTraceElement in t.stackTrace) {
+            for (stackTraceElement in t.stackTrace)
                 System.err.println(stackTraceElement)
-            }
         }
     }
 
