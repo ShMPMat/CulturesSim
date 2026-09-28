@@ -6,7 +6,6 @@ import io.tashtabash.sim.space.resource.Taker.*
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.action.ResourceProbabilityAction
 import io.tashtabash.sim.space.resource.tag.ResourceTag
-import io.tashtabash.sim.space.territory.StaticTerritory
 import io.tashtabash.sim.space.tile.Tile
 import java.util.*
 import kotlin.math.min
@@ -77,11 +76,7 @@ open class Resource private constructor(
 
     fun getTagLevel(tag: ResourceTag) = genome.getTagLevel(tag)
 
-    /**
-     * @return Copy of this Resource with amount equal or less than requested.
-     * Subtracts returned amount from the resource amount;
-     */
-    open fun getPart(part: Int, taker: Taker): Resource {
+    open fun getPartInt(part: Int, taker: Taker): Int {
         val accessiblePart = amount * calculateAccessiblePart(taker)
         val result = when {
             part <= accessiblePart -> part
@@ -93,8 +88,17 @@ open class Resource private constructor(
 
         hurtTaker(result, taker)
 
-        return copy(result, deathTurn)
+        return result
     }
+
+    fun getPartInt(part: Int, resource: Resource) = getPartInt(part, ResourceTaker(resource))
+
+    /**
+     * @return Copy of this Resource with amount equal or less than requested.
+     * Subtracts returned amount from the resource amount;
+     */
+    open fun getPart(part: Int, taker: Taker): Resource =
+        copy(getPartInt(part, taker), deathTurn)
 
     private fun calculateAccessiblePart(taker: Taker): Double {
         var prob = RandomSingleton.random.nextDouble().pow(2) * .9
@@ -118,21 +122,25 @@ open class Resource private constructor(
 
         val strength = genome.behaviour.danger / taker.resource.genome.behaviour.resistance
         val hurtPart = amount * strength
+        if (hurtPart == .0)
+            return
 
-        taker.resource.getCleanPart(hurtPart.toInt(), ResourceTaker(this)).destroy()
+        taker.resource.getCleanPartInt(hurtPart.toInt(), ResourceTaker(this))
     }
 
 
     fun getPart(part: Int, resource: Resource) = getPart(part, ResourceTaker(resource))
 
-    open fun getCleanPart(part: Int, taker: Taker): Resource {
+    open fun getCleanPartInt(part: Int, taker: Taker): Int {
         val result = min(amount, part)
         amount -= result
-
         takers += taker to result
 
-        return copy(result, deathTurn)
+        return result
     }
+
+    open fun getCleanPart(part: Int, taker: Taker): Resource =
+        copy(getCleanPartInt(part, taker), deathTurn)
 
     open fun merge(resource: Resource): Resource {
         if (resource.baseName != baseName)
@@ -183,21 +191,20 @@ open class Resource private constructor(
 
         val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it, tile) }
         if (resources.any { (t, r) -> r.isAcceptable(t) })
-            result.addAll(resources)
+            result += resources
 
         for (dependency in genome.dependencies) {
             val satisfaction = dependency.satisfactionPercent(tile, this)
             deathOverhead += ((1 - satisfaction) * genome.lifespan).toInt()
         }
 
-        result.addAll(naturalDeath().map { tile to it })
+        result += naturalDeath().map { tile to it }
 
         if (amount <= 0)
             ResourceUpdateResult(false, result)
         deathTurn++
 
         expand(tile)
-
         distribute(tile)
 
         return ResourceUpdateResult(true, result)
@@ -209,7 +216,7 @@ open class Resource private constructor(
             return emptyList()
 
         val deadAmount = calculateDeadAmount()
-        takers.add(DeathTaker to deadAmount)
+        takers += DeathTaker to deadAmount
         amount -= deadAmount
         deathTurn = 0
         deathOverhead = 0
@@ -222,12 +229,15 @@ open class Resource private constructor(
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = amount * action.probability
         val maxPart = if (expectedValue < 1.0)
-            expectedValue.chanceOf<Double> { 1.0 } ?: .0
+            expectedValue.chanceOf<Double> { 1.0 }
+                ?: return emptyList()
         else expectedValue
         val satisfactionCoefficient = action.dependencies
             .minOfOrNull { it.satisfactionPercent(tile, this) }
             ?: 1.0
         val part = (maxPart * satisfactionCoefficient).toInt()
+        if (part == 0)
+            return emptyList()
 
         val result = if (action.isWasting)
             applyActionAndConsume(action, part, true, SelfTaker)
@@ -318,11 +328,8 @@ open class Resource private constructor(
     }
 
     private fun expand(tile: Tile): Boolean = (genome.spreadProbability * amount).chanceOf<Boolean> {
-        val tiles = StaticTerritory(setOf(tile))
-
-        val newTile = tiles.getMostUsefulTileOnOuterBrink {
-            genome.dependencies.count { d -> d.hasNeeded(it) }
-        }
+        val newTile = tile.neighbours.filter { t -> genome.dependencies.all { it.hasNeeded(t) } }
+            .randomElementOrNull()
             ?: if (genome.dependencies.all { it.hasNeeded(tile) })
                 tile
             else .2.chanceOf<Tile> {

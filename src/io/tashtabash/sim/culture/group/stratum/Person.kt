@@ -41,22 +41,21 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
 ) {
     private var toDie = 0
 
-    override fun getPart(part: Int, taker: Taker) = super.getPart(part, taker).also {
+    override fun getPartInt(part: Int, taker: Taker) = super.getPartInt(part, taker).also {
         logGetPart(it, taker)
     }
 
-    override fun getCleanPart(part: Int, taker: Taker) = super.getCleanPart(part, taker).also {
+    override fun getCleanPartInt(part: Int, taker: Taker) = super.getCleanPartInt(part, taker).also {
         logGetPart(it, taker)
     }
 
-    private fun logGetPart(result: Resource, taker: Taker) {
-        if (result.isEmpty || taker == Taker.SelfTaker)
+    private fun logGetPart(result: Int, taker: Taker) {
+        if (result == 0 || taker == Taker.SelfTaker)
             return
 
-        val oldPopulation = amount + result.amount
+        val oldPopulation = amount + result
         Controller.session.world.events.add(
-            PopulationDecrease of
-                    "$ownershipMarker population of $oldPopulation decreased by ${result.amount}: taken by $taker"
+            PopulationDecrease of "$ownershipMarker population of $oldPopulation decreased by $result: taken by $taker"
         )
     }
 
@@ -70,7 +69,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
             val deadAmount = min(amount, (toDie / genome.lifespan).toInt() + 1)
             toDie -= deadAmount
 
-            takers.add(Taker.DeathTaker to deadAmount)
+            takers += Taker.DeathTaker to deadAmount
             amount -= deadAmount
             deathTurn = 0
             deathOverhead = 0

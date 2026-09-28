@@ -30,25 +30,22 @@ class ConsumeDependency(
         val result: Double
         val neededAmount = amount * resource.amount
         val oldAmount = currentAmount
+        val consumedAmounts = lastConsumed(resource.baseName)
 
         if (currentAmount < neededAmount)
             tile.forEachAccessibleResource(radius) { res ->
                 if (res.isEmpty || res == resource || !isResourceDependency(res))
                     return@forEachAccessibleResource false
 
-                if (isSafe) {
+                if (isSafe)
                     currentAmount += res.amount * oneResourceWorth(res)
-                } else {
+                else {
                     val expectedAmount = partByResource(res, neededAmount - currentAmount)
-                    val part = res.getPart(expectedAmount, resource)
-                    if (part.isNotEmpty) {
-                        val consumedAmounts = lastConsumed(resource.baseName)
-                        consumedAmounts[part.fullName] =
-                            (consumedAmounts[part.fullName] ?: 0) + part.amount
-                        currentAmount += part.amount * oneResourceWorth(res)
+                    val part = res.getPartInt(expectedAmount, resource)
+                    if (part != 0) {
+                        consumedAmounts[res.fullName] = consumedAmounts.getOrDefault(res.fullName, 0) + part
+                        currentAmount += part * oneResourceWorth(res)
                     }
-
-                    part.destroy()
                 }
 
                 return@forEachAccessibleResource currentAmount >= neededAmount

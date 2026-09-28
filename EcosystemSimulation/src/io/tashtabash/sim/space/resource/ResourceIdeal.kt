@@ -18,12 +18,12 @@ class ResourceIdeal(
                 ?: super.copy(amount, deathTurn)
     }
 
-    override fun getPart(part: Int, taker: Taker): Resource {
-        throw OperationNotSupportedException("ResourceIdeal doesn't support getPart(..)")
+    override fun getPartInt(part: Int, taker: Taker): Int {
+        throw OperationNotSupportedException("ResourceIdeal doesn't support getPartInt(..)")
     }
 
-    override fun getCleanPart(part: Int, taker: Taker): Resource {
-        throw OperationNotSupportedException("ResourceIdeal doesn't support applyActionAndConsume(..)")
+    override fun getCleanPartInt(part: Int, taker: Taker): Int {
+        throw OperationNotSupportedException("ResourceIdeal doesn't support getCleanPartInt(..)")
     }
 
     override fun merge(resource: Resource): Resource {

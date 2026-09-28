@@ -17,8 +17,9 @@ class NeedDependency(
     }
 
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
-        val actualAmount = amount * resource.amount
+        val neededAmount = amount * resource.amount
         var currentAmount = 0
+        val neededAmounts = lastConsumed(resource.baseName)
 
         tile.forEachAccessibleResource(radius) { res ->
             if (res.isEmpty || res == resource || !isResourceDependency(res))
@@ -27,15 +28,13 @@ class NeedDependency(
             val worth = res.amount * oneResourceWorth(res)
             currentAmount += worth
 
-            if (!isSafe) {
-                val neededAmounts = lastConsumed(resource.baseName)
-                neededAmounts[res.fullName] = (neededAmounts[res.fullName] ?: 0) + worth
-            }
+            if (!isSafe)
+                neededAmounts[res.fullName] = neededAmounts.getOrDefault(res.fullName, 0) + worth
 
-            currentAmount >= actualAmount
+            currentAmount >= neededAmount
         }
 
-        return min(currentAmount.toDouble() / actualAmount, 1.0)
+        return min(currentAmount.toDouble() / neededAmount, 1.0)
     }
 
     override fun hasNeeded(tile: Tile) =
