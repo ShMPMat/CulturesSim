@@ -5,7 +5,6 @@ import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.dependency.ResourceDependency
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.tag.ResourceTag
-import java.util.*
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -136,7 +135,7 @@ class Genome(
         return baseName == genome.baseName
     }
 
-    override fun hashCode(): Int = Objects.hash(baseName)
+    override fun hashCode(): Int = baseName.hashCode()
 }
 
 typealias BaseName = String

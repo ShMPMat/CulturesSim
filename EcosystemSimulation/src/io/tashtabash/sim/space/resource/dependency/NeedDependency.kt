@@ -22,10 +22,13 @@ class NeedDependency(
         val neededAmounts = lastConsumed(resource.baseName)
 
         tile.forEachAccessibleResource(radius) { res ->
-            if (res.isEmpty || res == resource || !isResourceDependency(res))
+            if (res.isEmpty)
+                return@forEachAccessibleResource false
+            val oneWorth = oneResourceWorth(res)
+            if (oneWorth == NOT_DEPENDENCY || res == resource)
                 return@forEachAccessibleResource false
 
-            val worth = res.amount * oneResourceWorth(res)
+            val worth = res.amount * oneWorth
             currentAmount += worth
 
             if (!isSafe)

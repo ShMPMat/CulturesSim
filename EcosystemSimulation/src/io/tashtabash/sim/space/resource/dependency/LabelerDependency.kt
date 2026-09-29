@@ -4,13 +4,14 @@ import io.tashtabash.sim.space.resource.Genome
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.tile.Tile
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
 
 
 abstract class LabelerDependency(
-        deprivationCoefficient: Double,
-        override val isNecessary: Boolean,
-        quantifiedResourceLabeler: QuantifiedResourceLabeler
+    deprivationCoefficient: Double,
+    override val isNecessary: Boolean,
+    quantifiedResourceLabeler: QuantifiedResourceLabeler
 ) : CoefficientDependency(deprivationCoefficient) {
     override val isResourceNeeded = true
 
@@ -21,27 +22,21 @@ abstract class LabelerDependency(
 
     fun isResourceGood(resource: Resource) = isResourceDependency(resource)
 
-    open fun isResourceDependency(resource: Resource): Boolean {
-        if (resource.isEmpty)
-            return false
+    open fun isResourceDependency(resource: Resource): Boolean =
+        resource.isNotEmpty && oneResourceWorth(resource) != NOT_DEPENDENCY
 
-        genomeHash[resource.genome]?.let {
-            return it
-        }
+    private val worthCache = ConcurrentHashMap<Genome, Int>()
 
-        val isDependency = labeler.isSuitable(resource.genome)
-        genomeHash[resource.genome] = isDependency
-
-        return isDependency
+    fun oneResourceWorth(resource: Resource): Int = worthCache.getOrPut(resource.genome) {
+        if (labeler.isSuitable(resource.genome))
+            labeler.actualMatches(resource.core.sample).sumOf { it.amount }
+        else
+            NOT_DEPENDENCY
     }
 
-    private val genomeHash = mutableMapOf<Genome, Boolean>()
-
-    fun oneResourceWorth(resource: Resource) = labeler.actualMatches(resource.core.sample).sumOf { it.amount }
-
-    fun partByResource(resource: Resource, amount: Double) = ceil(
-            amount / labeler.actualMatches(resource.core.sample).sumOf { it.amount }
-    ).toInt()
+    fun partByResource(worth: Int, amount: Double) = ceil(amount / worth).toInt()
 
     override fun toString() = "$labeler of $amount"
 }
+
+const val NOT_DEPENDENCY = -1

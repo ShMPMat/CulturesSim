@@ -18,10 +18,13 @@ class AvoidDependency(
         var currentAmount = 0
 
         tile.forEachAccessibleResource { res ->
-            if (res.isEmpty || res == resource || !super.isResourceDependency(res))
+            if (res.isEmpty)
+                return@forEachAccessibleResource false
+            val oneWorth = oneResourceWorth(res)
+            if (oneWorth == NOT_DEPENDENCY || res == resource)
                 return@forEachAccessibleResource false
 
-            currentAmount += res.amount * oneResourceWorth(res)
+            currentAmount += res.amount * oneWorth
 
             currentAmount >= actualAmount
         }
