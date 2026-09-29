@@ -181,7 +181,6 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
         resourcePack.resources.forEach { it.takers.clear() }
 
         updateResources()
-        windCenter.startUpdate()
         windCenter.useWind(_resourcePack.resources)
         updateTemperature()
 

@@ -11,39 +11,29 @@ class Wind {
         get() = affectedTiles.isEmpty()
 
     val maxLevel: Double
-        get() = affectedTiles
-                .map { (_, t) -> t }
-                .maxOrNull()
-                ?: 0.0
-
-    val sumLevel: Double
-        get() = affectedTiles.sumOf { (_, t) -> t }
+        get() = affectedTiles.maxOfOrNull { (_, t) -> t }
+            ?: 0.0
 
     fun changeLevelOnTile(tile: Tile, change: Double) {
         for (i in affectedTiles.indices) {
-            var pair = affectedTiles[i]
-            if (pair.first == tile) {
-                pair = pair.first to min(change + pair.second, data.maximalWind)
-                if (pair.second <= 0)
+            val (affectedTile, level) = affectedTiles[i]
+            if (affectedTile == tile) {
+                val newLevel = min(change + level, data.maxWind)
+                if (newLevel <= 0)
                     affectedTiles.removeAt(i)
+                else
+                    affectedTiles[i] = tile to newLevel
                 return
             }
         }
         if (change <= 0)
             return
 
-        affectedTiles.add(Pair(tile, change))
+        affectedTiles.add(Pair(tile, min(change, data.maxWind)))
     }
 
-    fun getLevelByTile(tile: Tile): Double {
-        affectedTiles
-                .firstOrNull { (t) -> t == tile }
-                ?.let { (_, t) -> return t }
-
-        return affectedTiles
-                .filter { (t) -> t == tile }
-                .map { (_, t) -> t }
-                .firstOrNull()
-                ?: 0.0
-    }
+    fun getLevelByTile(tile: Tile): Double = affectedTiles
+            .firstOrNull { (t) -> t == tile }
+            ?.second
+            ?: 0.0
 }

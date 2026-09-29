@@ -20,6 +20,7 @@ fun instantiateSpaceData(proportionFactor: Double, resourceTagMatchers: List<Tag
         minTectonicRise = ceil(defaultData.minTectonicRise.toDouble() / proportionFactor).toInt(),
         startResourceAmountMin = (startResourceAmountMin * proportionFactor * proportionFactor).toInt(),
         startResourceAmountMax = ((startResourceAmountMin + 30) * proportionFactor * proportionFactor).toInt(),
-        seabedLevel = (defaultData.seabedLevel - (proportionFactor - 1) * 10).toInt()
+        seabedLevel = (defaultData.seabedLevel - (proportionFactor - 1) * 10).toInt(),
+        windFriction = defaultData.windFriction / proportionFactor,
     )
 }

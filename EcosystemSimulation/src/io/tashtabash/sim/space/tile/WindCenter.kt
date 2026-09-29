@@ -6,7 +6,6 @@ import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.freeMarker
 import kotlin.math.max
-import kotlin.math.pow
 
 
 class WindCenter internal constructor() {
@@ -15,32 +14,29 @@ class WindCenter internal constructor() {
 
     private var _newWind = Wind()
 
-    fun startUpdate() {
-        _newWind = Wind()
-    }
-
     fun useWind(resources: List<Resource>) {
-        for (resource in resources)
-            for ((tile, t) in wind.affectedTiles) {
-                val part = (resource.amount * t.pow(1) / wind.sumLevel * getFlyCoefficient(resource)).toInt()
+        _newWind = Wind()
+        for (resource in resources) {
+            // Take the amount before the loop, so that the share doesn't depend on the order of affectedTiles
+            val amount = resource.amount
+            for ((tile, level) in wind.affectedTiles) {
+                val part = (amount * level / data.maxWind * getFlyCoefficient(resource)).toInt()
 
                 if (part > 0)
                     tile.addDelayedResource(resource.getCleanPart(part, Taker.WindTaker))
             }
+        }
     }
 
-    private fun getFlyCoefficient(resource: Resource) = .0001 /
+    private fun getFlyCoefficient(resource: Resource) = .00001 /
             resource.genome.mass /
-            if (resource.core.ownershipMarker == freeMarker) 1 else 10
+            (if (resource.core.ownershipMarker == freeMarker) 1 else 10)
 
     fun middleUpdate(x: Int, y: Int, map: WorldMap) {
         val host = map[x, y]
             ?: return
 
         host.neighbours.forEach { setWindByTemperature(it, host) }
-
-        if (!_newWind.isStill)
-            return
 
         propagateWindStraight(map[x - 1, y], map[x + 1, y], host)
         propagateWindStraight(map[x + 1, y], map[x - 1, y], host)
@@ -74,7 +70,7 @@ class WindCenter internal constructor() {
         tile ?: return
         target ?: return
 
-        val level = tile.wind.getLevelByTile(master) - data.windPropagation
+        val level = tile.wind.getLevelByTile(master) * (1 - data.windFriction) - data.windPropagationDrag
         if (level > 0)
             _newWind.changeLevelOnTile(target, level)
     }
