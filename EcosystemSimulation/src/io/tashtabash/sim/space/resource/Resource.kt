@@ -296,7 +296,9 @@ open class Resource private constructor(
         when (genome.behaviour.overflowType) {
             OverflowType.Migrate -> {
                 val tiles = tile.getNeighbours { areNecessaryDependenciesSatisfied(it) }
-                    .sortedBy { it.resourcePack.getAmount(this) }
+                    .map { it to it.resourcePack.getAmount(this) } // Cache amounts
+                    .sortedBy { it.second }
+                    .map { it.first }
 
                 for (neighbour in tiles) {
                     if (amount <= genome.naturalDensity / 2)
@@ -357,8 +359,8 @@ open class Resource private constructor(
     }
 
     private fun expand(tile: Tile): Boolean = (genome.spreadProbability * amount).chanceOf<Boolean> {
-        val newTile = tile.neighbours.filter { t -> genome.dependencies.all { it.hasNeeded(t) } }
-            .randomElementOrNull()
+        val newTile = tile.neighbours.shuffled(RandomSingleton.random)
+            .firstOrNull { t -> genome.dependencies.all { it.hasNeeded(t) } }
             ?: if (genome.dependencies.all { it.hasNeeded(tile) })
                 tile
             else .2.chanceOf<Tile> {
