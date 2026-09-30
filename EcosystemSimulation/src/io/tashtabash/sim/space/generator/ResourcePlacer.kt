@@ -12,10 +12,10 @@ import kotlin.random.Random
 
 
 class ResourcePlacer(
-        val map: WorldMap,
-        val resourcePool: ResourcePool,
-        val supplement: MapGeneratorSupplement,
-        val random: Random
+    val map: WorldMap,
+    val resourcePool: ResourcePool,
+    val supplement: MapGeneratorSupplement,
+    val random: Random
 ) {
     fun placeResources() {
         val startTime = System.nanoTime()
@@ -27,8 +27,8 @@ class ResourcePlacer(
 
         for (resource in resourcesToScatter)
             scatter(
-                    resource,
-                    random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last)
+                resource,
+                random.nextInt(supplement.startResourceAmountRange.first, supplement.startResourceAmountRange.last)
             )
         println("End spread")
         println((System.nanoTime() - startTime).toDouble() / 1000 / 1000 / 1000)
@@ -42,8 +42,8 @@ class ResourcePlacer(
 
         for (i in 0 until n) {
             val tile: Tile = idealTiles.randomElementOrNull()
-                    ?: goodTiles.randomElementOrNull()
-                    ?: randomTile(map)
+                ?: goodTiles.randomElementOrNull()
+                ?: randomTile(map)
 
             tile.addDelayedResource(resource.copy())
             addDependencies(dependencyResources, tile)
@@ -63,8 +63,8 @@ class ResourcePlacer(
 
                     if (dependency is LabelerDependency)
                         nextResources += resourcePool
-                                .getAll { dependency.isResourceDependency(it.largeSample) }
-                                .filter { filterDependencyResources(it, dependencyResources, resource) }
+                            .getAll { dependency.isResourceDependency(it.largeSample) }
+                            .filter { filterDependencyResources(it, dependencyResources, resource) }
                 }
             }
             resourcesQueue.clear()
@@ -79,7 +79,7 @@ class ResourcePlacer(
     private fun addDependencies(resources: List<Resource>, tile: Tile) {
         for (dependencyResource in resources)
             if (dependencyResource.areNecessaryDependenciesSatisfied(tile))
-                tile.addDelayedResource(dependencyResource)
+                tile.addDelayedResource(dependencyResource.exactCopy())
     }
 
     private fun filterDependencyResources(resource: Resource, previous: List<Resource>, rootResource: Resource? = null) =
