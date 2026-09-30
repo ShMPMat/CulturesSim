@@ -3,6 +3,11 @@ package io.tashtabash.sim.space
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.setTags
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
+import kotlin.math.max
 
 
 class WorldMap(val linedTiles: List<List<Tile>>) {
@@ -60,22 +65,88 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
             .flatten()
             .filter(predicate)
 
-    @Synchronized
-    fun update() { //TODO parallel
-        for (line in linedTiles)
-            for (tile in line)
-                tile.startUpdate()
+    fun update() {
+        if (tileUpdateOrder == null) {
+            for (line in linedTiles)
+                for (tile in line)
+                    tile.startUpdate()
 
-        for (line in linedTiles)
-            for (tile in line)
-                tile.middleUpdate(this)
+            for (line in linedTiles)
+                for (tile in line)
+                    tile.middleUpdate(this)
+        } else tileUpdateOrder?.let {
+            runOnMap(it) { tile ->
+                tile.startUpdate()
+            }
+            runOnMap(it) { tile ->
+                tile.middleUpdate(this@WorldMap)
+            }
+        }
     }
 
-    @Synchronized
+    inline fun runOnMap(order: List<List<TilesBatch>>, crossinline operation: (Tile) -> Unit) {
+        runBlocking(Dispatchers.Default) {
+            for (batchGroup in order)
+                batchGroup.map { batch ->
+                    async {
+                        for (tile in batch)
+                            operation(tile)
+                    }
+                }.awaitAll()
+        }
+    }
+
     fun finishUpdate() {
         for (line in linedTiles)
             for (tile in line)
                 tile.finishUpdate()
+    }
+
+    private typealias TilesBatch = List<Tile>
+    var tileUpdateOrder: List<List<TilesBatch>>? = null
+
+    // Splits the map into blocks at least 2 * margin wide and colours them as a 2x2 checkerboard.
+    // Like this
+    // 1 2 1 2
+    // 3 4 3 4
+    // 1 2 1 2
+    // 3 4 3 4
+    // Blocks of the same colour are separated by a whole block of another colour, so the areas
+    // within (margin - 1) of two same-coloured blocks never intersect.
+    // Returns a TileBatch List per colour (up to 4), each TileBatch List can be handled async
+    fun calculateTileUpdateOrder(margin: Int): List<List<TilesBatch>> {
+        require(margin > 0) { "Margin must be positive, got $margin" }
+
+        val xBlocks = splitIntoBlocks(maxX, 2 * margin, data.xMapLooping)
+        val yBlocks = splitIntoBlocks(maxY, 2 * margin, data.yMapLooping)
+
+        return (0 until 4).map { colourIdx ->
+            xBlocks.filterIndexed { i, _ -> i % 2 == colourIdx / 2 }.flatMap { xRange ->
+                yBlocks.filterIndexed { j, _ -> j % 2 == colourIdx % 2 }.map { yRange ->
+                    xRange.flatMap { x -> yRange.map { y -> linedTiles[x][y] } }
+                }
+            }
+        }.filter { it.isNotEmpty() }
+    }
+
+    // Splits map dimensions into consecutive ranges at least minWidth wide.
+    // On a looping axis the number of ranges must be even, otherwise the first and
+    // the last ranges would get the same colour while being adjacent through the loop.
+    private fun splitIntoBlocks(size: Int, minSize: Int, isLooping: Boolean): List<IntRange> {
+        var numberOfRanges = max(1, size / minSize)
+        if (isLooping && numberOfRanges % 2 == 1 && numberOfRanges > 1)
+            numberOfRanges--
+
+        val baseWidth = size / numberOfRanges
+        val remainder = size % numberOfRanges
+        var start = 0
+
+        return List(numberOfRanges) { i ->
+            val width = baseWidth + if (i < remainder) 1 else 0
+
+            (start until start + width)
+                .also { start += width }
+        }
     }
 
     fun geologicUpdate() {

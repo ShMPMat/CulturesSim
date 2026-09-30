@@ -30,6 +30,7 @@ sourceSets {
 dependencies {
     implementation 'com.github.ShMPMat:Random:master-SNAPSHOT' changing true
     implementation 'com.github.ShMPMat:GenerationUtils:master-SNAPSHOT' changing true
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
