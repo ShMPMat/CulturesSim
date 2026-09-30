@@ -5,6 +5,7 @@ import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.Taker.*
 import io.tashtabash.sim.space.resource.action.ResourceAction
 import io.tashtabash.sim.space.resource.action.ResourceProbabilityAction
+import io.tashtabash.sim.space.resource.dependency.ConsumeDependency
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.tile.Tile
 import java.util.*
@@ -36,6 +37,29 @@ open class Resource private constructor(
 
     //What part of this Resource will be destroyed on the next death event
     protected var deathPart = 1.0
+
+    // Food left over by ConsumeDependencies; create later to not stress short-lived Resource copies
+    private var consumeBuffers: IdentityHashMap<ConsumeDependency, Int>? = null
+
+    internal fun getConsumeBuffer(dependency: ConsumeDependency): Int =
+        consumeBuffers?.get(dependency) ?: 0
+
+    internal fun setConsumeBuffer(dependency: ConsumeDependency, amount: Int) {
+        if (amount <= 0)
+            consumeBuffers?.remove(dependency)
+        else
+            (consumeBuffers ?: IdentityHashMap<ConsumeDependency, Int>(2).also { consumeBuffers = it })[dependency] =
+                amount
+    }
+
+    private fun moveConsumeBuffers(from: Resource) {
+        val otherBuffers = from.consumeBuffers
+            ?: return
+        from.consumeBuffers = null
+
+        for ((dependency, amount) in otherBuffers)
+            setConsumeBuffer(dependency, getConsumeBuffer(dependency) + amount)
+    }
 
     inline val isEmpty: Boolean
         get() = amount == 0
@@ -150,6 +174,7 @@ open class Resource private constructor(
             return this
 
         addAmount(resource.amount, resource.deathPart * (resource.deathOverhead + resource.deathTurn) / genome.lifespan)
+        moveConsumeBuffers(resource)
         resource.destroy()
         return this
     }
@@ -160,7 +185,9 @@ open class Resource private constructor(
 
         destroy()
 
+        // The same population under a new owner keeps its food
         return core.resourceBuilder(core, currentAmount)
+            .also { it.moveConsumeBuffers(this) }
     }
 
     fun copyWithOwnership(ownershipMarker: OwnershipMarker): Resource {
@@ -177,6 +204,8 @@ open class Resource private constructor(
 
     fun copyWithExternalFeatures(features: List<ExternalResourceFeature>): Resource {
         val resource = core.resourceBuilder(core.copyWithNewExternalFeatures(features), amount)
+        // The same population with new features keeps its food
+        resource.moveConsumeBuffers(this)
         destroy()
         return resource
     }

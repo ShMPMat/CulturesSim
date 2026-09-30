@@ -18,15 +18,13 @@ class ConsumeDependency(
         ConcurrentHashMap()
     }
 
-    var currentAmount = 0
-
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
         if (resource.amount == 0)
             return .0
 
         val neededAmount = amount * resource.amount
         val consumedAmounts = lastConsumed(resource.baseName)
-        var gatheredAmount = currentAmount
+        var gatheredAmount = resource.getConsumeBuffer(this)
 
         if (gatheredAmount < neededAmount)
             tile.forEachAccessibleResource(radius) { res ->
@@ -53,7 +51,7 @@ class ConsumeDependency(
         val result = min(gatheredAmount.toDouble() / neededAmount, 1.0)
 
         if (!isSafe)
-            currentAmount = (gatheredAmount - ceil(neededAmount).toInt()).coerceAtLeast(0)
+            resource.setConsumeBuffer(this, gatheredAmount - ceil(neededAmount).toInt())
 
         return result
     }
