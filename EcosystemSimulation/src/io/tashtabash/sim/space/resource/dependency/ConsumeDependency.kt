@@ -3,7 +3,7 @@ package io.tashtabash.sim.space.resource.dependency
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.tile.Tile
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -15,7 +15,7 @@ class ConsumeDependency(
     var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableMap<String, Int> = consumed.getOrPut(name) {
-        HashMap()
+        ConcurrentHashMap()
     }
 
     var currentAmount = 0
@@ -24,15 +24,11 @@ class ConsumeDependency(
         if (resource.amount == 0)
             return .0
 
-        if (currentAmount < 0)
-            currentAmount = 0
-
-        val result: Double
         val neededAmount = amount * resource.amount
-        val oldAmount = currentAmount
         val consumedAmounts = lastConsumed(resource.baseName)
+        var gatheredAmount = currentAmount
 
-        if (currentAmount < neededAmount)
+        if (gatheredAmount < neededAmount)
             tile.forEachAccessibleResource(radius) { res ->
                 if (res.isEmpty)
                     return@forEachAccessibleResource false
@@ -41,26 +37,23 @@ class ConsumeDependency(
                     return@forEachAccessibleResource false
 
                 if (isSafe)
-                    currentAmount += res.amount * oneWorth
+                    gatheredAmount += res.amount * oneWorth
                 else {
-                    val expectedAmount = partByResource(oneWorth, neededAmount - currentAmount)
+                    val expectedAmount = partByResource(oneWorth, neededAmount - gatheredAmount)
                     val part = res.getPartInt(expectedAmount, resource)
                     if (part != 0) {
-                        consumedAmounts[res.fullName] = consumedAmounts.getOrDefault(res.fullName, 0) + part
-                        currentAmount += part * oneWorth
+                        consumedAmounts.merge(res.fullName, part, Int::plus)
+                        gatheredAmount += part * oneWorth
                     }
                 }
 
-                return@forEachAccessibleResource currentAmount >= neededAmount
+                return@forEachAccessibleResource gatheredAmount >= neededAmount
             }
 
-        result = min(currentAmount.toDouble() / neededAmount, 1.0)
+        val result = min(gatheredAmount.toDouble() / neededAmount, 1.0)
 
-        if (isSafe)
-            currentAmount = oldAmount
-
-        if (currentAmount >= neededAmount)
-            currentAmount -= ceil(neededAmount).toInt()
+        if (!isSafe)
+            currentAmount = (gatheredAmount - ceil(neededAmount).toInt()).coerceAtLeast(0)
 
         return result
     }
@@ -71,6 +64,7 @@ class ConsumeDependency(
     override fun toString() = "Consume " + super.toString()
 }
 
-private val consumed = mutableMapOf<String, MutableMap<String, Int>>()
+// Concurrent since Tiles are updated in parallel
+private val consumed = ConcurrentHashMap<String, MutableMap<String, Int>>()
 
 fun cleanConsumed() = consumed.forEach { it.value.clear() }

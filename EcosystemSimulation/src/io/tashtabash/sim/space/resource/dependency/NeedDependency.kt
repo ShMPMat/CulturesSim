@@ -3,6 +3,7 @@ package io.tashtabash.sim.space.resource.dependency
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.tile.Tile
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.min
 
 
@@ -13,7 +14,7 @@ class NeedDependency(
     var radius: Int = 1
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableMap<String, Int> = needed.getOrPut(name) {
-        HashMap()
+        ConcurrentHashMap()
     }
 
     override fun satisfaction(tile: Tile, resource: Resource, isSafe: Boolean): Double {
@@ -32,7 +33,7 @@ class NeedDependency(
             currentAmount += worth
 
             if (!isSafe)
-                neededAmounts[res.fullName] = neededAmounts.getOrDefault(res.fullName, 0) + worth
+                neededAmounts.merge(res.fullName, worth, Int::plus)
 
             currentAmount >= neededAmount
         }
@@ -49,6 +50,7 @@ class NeedDependency(
 }
 
 
-private val needed = mutableMapOf<String, MutableMap<String, Int>>()
+// Concurrent since Tiles are updated in parallel
+private val needed = ConcurrentHashMap<String, MutableMap<String, Int>>()
 
 fun cleanNeeded() = needed.forEach { it.value.clear() }
