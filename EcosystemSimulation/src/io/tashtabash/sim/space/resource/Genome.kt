@@ -1,6 +1,5 @@
 package io.tashtabash.sim.space.resource
 
-import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.dependency.ResourceDependency
@@ -34,8 +33,8 @@ class Genome(
 ) {
     val size = sizeRange.first.avg(sizeRange.second)
     // The amount per tile after which the Resource starts overflowing
-    fun naturalDensity(scale: Scale): Int =
-        ceil(scale.tileAreaKm2 / DENSITY_REFERENCE_AREA_KM2 * defaultAmount).toInt()
+    fun naturalDensity(area: Double): Int =
+        ceil(area / DENSITY_REFERENCE_AREA_KM2 * defaultAmount).toInt()
 
     val necessaryDependencies = dependencies.filter { it.isNecessary }
 

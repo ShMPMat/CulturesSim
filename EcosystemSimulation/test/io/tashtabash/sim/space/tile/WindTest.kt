@@ -9,7 +9,7 @@ class WindTest {
     @Test
     fun `changeLevelOnTile accumulates the level on an existing Tile`() {
         val wind = Wind()
-        val tile = Tile(0, 0)
+        val tile = createTestTile(0, 0)
 
         wind.changeLevelOnTile(tile, 1.0)
         wind.changeLevelOnTile(tile, 2.0)
@@ -21,7 +21,7 @@ class WindTest {
     @Test
     fun `changeLevelOnTile removes a Tile when the level drops to zero`() {
         val wind = Wind()
-        val tile = Tile(0, 0)
+        val tile = createTestTile(0, 0)
 
         wind.changeLevelOnTile(tile, 1.0)
         wind.changeLevelOnTile(tile, -1.0)
@@ -33,8 +33,8 @@ class WindTest {
     @Test
     fun `changeLevelOnTile caps the level at maximalWind`() {
         val wind = Wind()
-        val tile = Tile(0, 0)
-        val otherTile = Tile(0, 1)
+        val tile = createTestTile(0, 0)
+        val otherTile = createTestTile(0, 1)
 
         wind.changeLevelOnTile(tile, data.maxWind * 2)
         wind.changeLevelOnTile(otherTile, data.maxWind - 1)
@@ -48,8 +48,8 @@ class WindTest {
     fun `changeLevelOnTile ignores non-positive changes on a new Tile`() {
         val wind = Wind()
 
-        wind.changeLevelOnTile(Tile(0, 0), -1.0)
-        wind.changeLevelOnTile(Tile(0, 1), 0.0)
+        wind.changeLevelOnTile(createTestTile(0, 0), -1.0)
+        wind.changeLevelOnTile(createTestTile(0, 1), 0.0)
 
         assertTrue(wind.isStill)
     }

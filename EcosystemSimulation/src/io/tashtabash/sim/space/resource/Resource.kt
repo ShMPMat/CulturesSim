@@ -294,7 +294,7 @@ open class Resource private constructor(
     }
 
     private fun distribute(tile: Tile) {
-        val naturalDensity = genome.naturalDensity(tile.scale)
+        val naturalDensity = genome.naturalDensity(tile.area)
         if (amount <= naturalDensity)
             return
 
@@ -372,7 +372,7 @@ open class Resource private constructor(
                 tile
             } ?: tile.neighbours.randomElement()
 
-        val amount = min(genome.defaultAmount, (genome.spreadProbability * amount).toInt())
+        val amount = min(genome.naturalDensity(newTile.area), (genome.spreadProbability * amount).toInt())
         // Ensure that at least one Resource is spawned for small amounts and spreadProbabilities
         val resource = copy(amount.coerceAtLeast(1))
         newTile.addDelayedResource(resource)

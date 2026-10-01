@@ -28,15 +28,15 @@ class ScaleTest {
     fun `naturalDensity equals defaultAmount on the reference tile size`() {
         val genome = createTestGenome()
 
-        assertEquals(genome.defaultAmount, genome.naturalDensity(defaultScale))
+        assertEquals(genome.defaultAmount, genome.naturalDensity(defaultScale.tileAreaKm2))
     }
 
     @Test
     fun `naturalDensity is proportional to the tile area and rounds up`() {
         val genome = createTestGenome() // defaultAmount = 10
 
-        assertEquals(1, genome.naturalDensity(Scale(5.0, TEN_DAYS)))
-        assertEquals(40, genome.naturalDensity(Scale(100.0, TEN_DAYS)))
+        assertEquals(1, genome.naturalDensity(Scale(5.0, TEN_DAYS).tileAreaKm2))
+        assertEquals(40, genome.naturalDensity(Scale(100.0, TEN_DAYS).tileAreaKm2))
     }
 }
 

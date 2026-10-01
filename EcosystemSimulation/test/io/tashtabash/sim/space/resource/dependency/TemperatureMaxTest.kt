@@ -2,7 +2,7 @@ package io.tashtabash.sim.space.resource.dependency
 
 import io.tashtabash.sim.space.resource.ResourceCore
 import io.tashtabash.sim.space.resource.createTestGenome
-import io.tashtabash.sim.space.tile.Tile
+import io.tashtabash.sim.space.tile.createTestTile
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class TemperatureMaxTest {
     @Test
     fun `hasNeeded returns true if the temperature is lower than the threshold`() {
-        val tile = Tile(0, 0)
+        val tile = createTestTile(0, 0)
         val resource = ResourceCore(createTestGenome()).fullCopy()
         val temperatureMax = TemperatureMax(tile.temperature.toInt() + 10, 0.5)
 
@@ -20,7 +20,7 @@ class TemperatureMaxTest {
 
     @Test
     fun `hasNeeded returns false if the temperature is higher than the threshold`() {
-        val tile = Tile(0, 0)
+        val tile = createTestTile(0, 0)
         val resource = ResourceCore(createTestGenome()).fullCopy()
         val temperatureMax = TemperatureMax(tile.temperature.toInt() - 2, 0.5)
 

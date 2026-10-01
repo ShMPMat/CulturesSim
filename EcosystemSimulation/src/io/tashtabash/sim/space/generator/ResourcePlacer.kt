@@ -45,7 +45,7 @@ class ResourcePlacer(
                 ?: goodTiles.randomElementOrNull()
                 ?: randomTile(map)
 
-            tile.addDelayedResource(resource.copy())
+            tile.addDelayedResource(resource.copy(resource.genome.naturalDensity(tile.area)))
             addDependencies(dependencyResources, tile)
         }
     }

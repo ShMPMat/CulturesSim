@@ -6,7 +6,7 @@ import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.createTestResource
 import io.tashtabash.sim.space.resource.tag.labeler.BaseNameLabeler
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
-import io.tashtabash.sim.space.tile.Tile
+import io.tashtabash.sim.space.tile.createTestTile
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -22,7 +22,7 @@ class ConsumeDependencyTest {
     fun `safe satisfaction doesn't spend the stored food`() {
         val consumer = createConsumer(25)
 
-        val result = dependency.satisfaction(Tile(0, 0), consumer, true)
+        val result = dependency.satisfaction(createTestTile(0, 0), consumer, true)
 
         assertEquals(1.0, result)
         assertEquals(25, consumer.getConsumeBuffer(dependency))
@@ -32,7 +32,7 @@ class ConsumeDependencyTest {
     fun `safe satisfaction doesn't change partially stored food`() {
         val consumer = createConsumer(4)
 
-        val result = dependency.satisfaction(Tile(0, 0), consumer, true)
+        val result = dependency.satisfaction(createTestTile(0, 0), consumer, true)
 
         assertEquals(0.4, result)
         assertEquals(4, consumer.getConsumeBuffer(dependency))
@@ -42,7 +42,7 @@ class ConsumeDependencyTest {
     fun `satisfied call spends the needed food and keeps the surplus`() {
         val consumer = createConsumer(25)
 
-        val result = dependency.satisfaction(Tile(0, 0), consumer, false)
+        val result = dependency.satisfaction(createTestTile(0, 0), consumer, false)
 
         assertEquals(1.0, result)
         assertEquals(15, consumer.getConsumeBuffer(dependency))
@@ -51,7 +51,7 @@ class ConsumeDependencyTest {
     @Test
     fun `partially satisfied call spends the food instead of counting it again`() {
         val consumer = createConsumer(4)
-        val tile = Tile(0, 0)
+        val tile = createTestTile(0, 0)
 
         val first = dependency.satisfaction(tile, consumer, false)
         val second = dependency.satisfaction(tile, consumer, false)
@@ -66,8 +66,8 @@ class ConsumeDependencyTest {
         val fed = createConsumer(25)
         val hungry = createConsumer(0)
 
-        dependency.satisfaction(Tile(0, 0), fed, false)
-        val result = dependency.satisfaction(Tile(1, 0), hungry, false)
+        dependency.satisfaction(createTestTile(0, 0), fed, false)
+        val result = dependency.satisfaction(createTestTile(1, 0), hungry, false)
 
         assertEquals(0.0, result)
         assertEquals(15, fed.getConsumeBuffer(dependency))
@@ -79,7 +79,7 @@ class ConsumeDependencyTest {
         val otherDependency = ConsumeDependency(1.0, true, QuantifiedResourceLabeler(BaseNameLabeler("Water"), 1.0))
         val consumer = createConsumer(25)
 
-        otherDependency.satisfaction(Tile(0, 0), consumer, false)
+        otherDependency.satisfaction(createTestTile(0, 0), consumer, false)
 
         assertEquals(25, consumer.getConsumeBuffer(dependency))
         assertEquals(0, consumer.getConsumeBuffer(otherDependency))

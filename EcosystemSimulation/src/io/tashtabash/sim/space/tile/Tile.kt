@@ -13,7 +13,13 @@ import java.util.*
 import kotlin.math.max
 
 
-class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = mutableListOf(), val scale: Scale) {
+class Tile(
+    val x: Int,
+    val y: Int,
+    val updaters: MutableList<TileUpdater> = mutableListOf(),
+    val scale: Scale,
+    val area: Double = scale.tileAreaKm2
+) {
     val tagPool = MutableTileTagPool()
 
     var type: Type = Type.Water // It's Water in order for init {..} to set Normal correctly
@@ -29,7 +35,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
     private val _delayedResources: MutableList<Resource> = ArrayList()
 
     val resourceDensity
-        get() = resourcePack.resources.sumOf { it.amount * it.genome.volume } / data.tileResourceCapacity
+        get() = resourcePack.resources.sumOf { it.amount * it.genome.volume } / (data.resourceCapacityPerKm2 * area)
 
     var level = 0
         internal set
@@ -270,13 +276,12 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
 
     override fun hashCode(): Int = 1_000_000 * x + y
 
-    override fun toString() = "Tile $posStr, type=$type, temperature=$prettyTemperature, level=$level\n" +
-            "Tags: " + tagPool.all.joinToString("; ") +
+    override fun toString() = "Tile $posStr, type=$type, temperature=$prettyTemperature, level=$level" +
+            "\nTags: " + tagPool.all.joinToString("; ") +
             "\nWind: ${wind.affectedTiles.joinToString { "${it.first.x} ${it.first.y}: ${it.second}" }}" +
             "\nFlow: ${flow.x} ${flow.y}" +
             "\n\nResources:" + _resourcePack.resources.joinToString("\n", "\n", "\n") +
-            "\n" +
-            "\n Area: ${scale.tileAreaKm2}km^2"
+            "\n\nArea: ${area}km^2"
 
     val prettyTemperature: String
         get() = "%.2f".format(temperature)

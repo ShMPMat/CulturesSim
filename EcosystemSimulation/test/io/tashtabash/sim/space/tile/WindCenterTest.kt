@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 class WindCenterTest {
     // A land map with a lake in the middle, to create temperature differences
     private fun createMap(sizeX: Int, sizeY: Int): WorldMap {
-        val map = WorldMap(List(sizeX) { x -> List(sizeY) { y -> Tile(x, y) } })
+        val map = WorldMap(List(sizeX) { x -> List(sizeY) { y -> createTestTile(x, y) } })
         setTileNeighbours(map)
         for (x in sizeX / 3 until 2 * sizeX / 3)
             for (y in sizeY / 3 until 2 * sizeY / 3)
@@ -44,8 +44,8 @@ class WindCenterTest {
 
     @Test
     fun `useWind splits a light resource between directions by level`() {
-        val strongTarget = Tile(0, 0)
-        val weakTarget = Tile(0, 1)
+        val strongTarget = createTestTile(0, 0)
+        val weakTarget = createTestTile(0, 1)
         val windCenter = WindCenter()
         windCenter.wind = windOf(strongTarget to data.maxWind / 2, weakTarget to data.maxWind / 4)
         val vapour = createTestResource(sizeRange = Size(.0001) to Size(.0001))
@@ -62,7 +62,7 @@ class WindCenterTest {
     fun `useWind blows away less of a heavier resource in weaker wind`() {
         fun blownAmount(level: Double): Int {
             val windCenter = WindCenter()
-            windCenter.wind = windOf(Tile(0, 0) to level)
+            windCenter.wind = windOf(createTestTile(0, 0) to level)
             val resource = createTestResource(sizeRange = Size(.05) to Size(.05))
             resource.addAmount(1_000_000 - resource.amount)
 

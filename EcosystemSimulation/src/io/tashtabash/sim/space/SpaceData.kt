@@ -25,7 +25,7 @@ object SpaceData {
 class Data(
     var resourcePool: ResourcePool = ResourcePool(listOf()),
     var materialPool: MaterialPool = MaterialPool(listOf()),
-    val tileResourceCapacity: Double = 10000.0,
+    val resourceCapacityPerKm2: Double = 4.0, // Volume of Resources expected on 1 km^2
     val tectonicRange: Int = 2,
     val minTectonicRise: Int = 5,
     val temperatureToWind: Int = 2,

@@ -1,7 +1,7 @@
 package io.tashtabash.sim.space.resource
 
 import io.tashtabash.random.singleton.RandomSingleton
-import io.tashtabash.sim.space.tile.Tile
+import io.tashtabash.sim.space.tile.createTestTile
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -34,7 +34,7 @@ internal class ResourceTest {
         if (RandomSingleton.safeRandom == null)
             RandomSingleton.safeRandom = Random(1)
 
-        val tile = Tile(0, 0)
+        val tile = createTestTile(0, 0)
         val oldResource = createTestResource(lifespan = 1.0)
         val newResource = createTestResource(lifespan = 1.0)
         oldResource.update(tile)

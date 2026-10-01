@@ -93,7 +93,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
                     printTiles(tiles)
                 }
-                ResourceDensity -> printMap { resourceDensityMapper(data.tileResourceCapacity, it) }
+                ResourceDensity -> printMap { resourceDensityMapper(data.resourceCapacityPerKm2 * data.defaultScale.tileAreaKm2, it) }
                 PinResources -> {
                     val isSubstring = splitCommand[0].last() != '!'
                     val resourceQuery = splitCommand[1]
@@ -139,9 +139,9 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
                         val regexp = regexString.toRegex()
                         println(printRegexEvents(
-                                controller.interactionModel.eventLog.lastEvents,
-                                amount,
-                                regexp
+                            controller.interactionModel.eventLog.lastEvents,
+                            amount,
+                            regexp
                         ))
                     } catch (_: PatternSyntaxException) {
                         println("Invalid regex pattern")
