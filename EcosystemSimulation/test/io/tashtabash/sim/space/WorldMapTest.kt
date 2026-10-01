@@ -1,10 +1,14 @@
 package io.tashtabash.sim.space
 
+import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.space.generator.setTileNeighbours
 import io.tashtabash.sim.space.tile.Tile
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.random.Random
 
 
 class WorldMapTest {
@@ -54,6 +58,39 @@ class WorldMapTest {
                     }
                 }
         }
+    }
+
+    @Test
+    fun `runOnMap gives every Tile the same random numbers on each run with the same seed`() {
+        val map = createMap(45, 60)
+        val order = map.calculateTileUpdateOrder(3)
+
+        fun drawPerTile(seed: Int): Map<Tile, List<Int>> {
+            RandomSingleton.safeRandom = Random(seed)
+            val draws = ConcurrentHashMap<Tile, List<Int>>()
+            map.runOnMap(order) { tile ->
+                draws[tile] = List(5) { RandomSingleton.random.nextInt() }
+            }
+            return draws
+        }
+
+        val first = drawPerTile(42)
+        val second = drawPerTile(42)
+
+        assertEquals(map.tiles.size, first.size)
+        assertEquals(first, second)
+        assertNotEquals(first, drawPerTile(43))
+    }
+
+    @Test
+    fun `runOnMap doesn't leave the batch Random bound after it finishes`() {
+        val map = createMap(20, 26)
+        val global = Random(1)
+        RandomSingleton.safeRandom = global
+
+        map.runOnMap(map.calculateTileUpdateOrder(3)) { RandomSingleton.random.nextInt() }
+
+        assertSame(global, RandomSingleton.random)
     }
 
     @ParameterizedTest

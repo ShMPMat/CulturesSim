@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space
 
+import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.setTags
@@ -8,6 +9,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlin.math.max
+import kotlin.random.Random
 
 
 class WorldMap(val linedTiles: List<List<Tile>>) {
@@ -85,12 +87,16 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
     }
 
     inline fun runOnMap(order: List<List<TilesBatch>>, crossinline operation: (Tile) -> Unit) {
+        val seeds = order.map { batchGroup -> batchGroup.map { RandomSingleton.random.nextLong() } }
+
         runBlocking(Dispatchers.Default) {
-            for (batchGroup in order)
-                batchGroup.map { batch ->
+            for ((batchGroup, groupSeeds) in order.zip(seeds))
+                batchGroup.zip(groupSeeds).map { (batch, seed) ->
                     async {
-                        for (tile in batch)
-                            operation(tile)
+                        RandomSingleton.withRandom(Random(seed)) {
+                            for (tile in batch)
+                                operation(tile)
+                        }
                     }
                 }.awaitAll()
         }

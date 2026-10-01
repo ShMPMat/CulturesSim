@@ -7,10 +7,10 @@ import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.container.ResourcePool
-import io.tashtabash.sim.space.tile.updater.MeteorStrike
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.updater.FlowTransferUpdater
 import io.tashtabash.sim.space.tile.updater.FlowUpdater
+import io.tashtabash.sim.space.tile.updater.MeteorStrike
 import io.tashtabash.sim.space.tile.updater.TypeUpdater
 import java.util.*
 import kotlin.math.ceil
@@ -41,10 +41,14 @@ fun generateMap(
     )
     tectonicPlates.forEach { map.addPlate(it) }
     fill(map)
+
+    val maxSpeed = resourcePool.all.maxOf { it.genome.behaviour.tileSpeed(scale) }
+    map.tileUpdateOrder = map.calculateTileUpdateOrder(ceil(maxSpeed + 1).toInt())
+
     return map
 }
 
-private fun setTileNeighbours(map: WorldMap) {
+internal fun setTileNeighbours(map: WorldMap) {
     for (i in 0 until map.maxX)
         for (j in 0 until map.maxY)
             map[i, j]?.neighbours = arrayOf(

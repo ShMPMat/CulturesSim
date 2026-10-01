@@ -14,11 +14,11 @@ import java.lang.Integer.min
 
 class MeteorStrike(private val iron: Resource): TileUpdater {
     override fun update(tile: Tile) {
-        0.000001.chanceOfNot {
+        .000001.chanceOfNot {
             return
         }
 
-        val strength = RandomSingleton.random.nextDouble(0.0, 5 * session.proportionCoefficient)
+        val strength = RandomSingleton.random.nextDouble(.0, 1 * session.proportionCoefficient)
         val oldTiles = mutableSetOf<Tile>()
         var currentStrength = strength
         var currentTiles = listOf(tile)
@@ -39,7 +39,7 @@ class MeteorStrike(private val iron: Resource): TileUpdater {
 
     private fun destroyTileResources(tile: Tile, strength: Double) {
         for (resource in tile.resourcesWithMoved) {
-            val deadPart = resource.amount * strength * RandomSingleton.random.nextDouble(0.8, 1.2)
+            val deadPart = resource.amount * strength * RandomSingleton.random.nextDouble(.8, 1.2)
 
             resource.getCleanPart(min(resource.amount, deadPart.toInt()), Taker.CataclysmTaker)
         }
