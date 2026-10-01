@@ -89,21 +89,29 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
 
     fun getNeighbours(predicate: (Tile) -> Boolean) = neighbours.filter(predicate)
 
-    fun getTilesInRadius(radius: Int): Set<Tile> {
-        val tiles = mutableSetOf<Tile>()
-        var outer = setOf<Tile>()
+    private val radiusCache = arrayOfNulls<List<Tile>>(10).also {
+        it[0] = listOf()
+    }
 
-        if (radius > 0)
-            tiles.addAll(neighbours)
+    fun getTilesInRadius(radius: Int): List<Tile> {
+        radiusCache.getOrNull(radius)
+            ?.let { return it }
 
-        for (i in 0 until radius - 1) {
+        val tiles = neighbours.toMutableSet()
+        var outer = neighbours.toSet()
+
+        repeat(radius - 1) {
             outer = outer.flatMap { it.neighbours }
                 .filter { !tiles.contains(it) }
                 .toSet()
             tiles += outer
         }
 
-        return tiles
+        tiles -= this
+
+        return tiles.toList().also {
+            radiusCache[radius] = it
+        }
     }
 
     fun getTilesInRadius(radius: Int, predicate: (Tile) -> Boolean) = getTilesInRadius(radius)
