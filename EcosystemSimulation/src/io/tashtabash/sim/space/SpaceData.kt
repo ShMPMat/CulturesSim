@@ -25,10 +25,10 @@ object SpaceData {
 class Data(
     var resourcePool: ResourcePool = ResourcePool(listOf()),
     var materialPool: MaterialPool = MaterialPool(listOf()),
-    val temperatureToWindCoefficient: Int = 1,
     val tileResourceCapacity: Double = 10000.0,
     val tectonicRange: Int = 2,
     val minTectonicRise: Int = 5,
+    val temperatureToWind: Int = 2,
     val maxWind: Double = 10.0,
     val windPropagationDrag: Double = .05, // How much wind is lost when moving to the next tile as an absolute value
     val windFriction: Double = .1,         // How much wind is lost when moving to the next tile as a fraction

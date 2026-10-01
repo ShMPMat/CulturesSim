@@ -6,21 +6,27 @@ import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.freeMarker
 import kotlin.math.max
+import kotlin.math.min
 
 
 class WindCenter internal constructor() {
     var wind = Wind()
-        private set
+        internal set
 
     private var _newWind = Wind()
 
     fun useWind(resources: List<Resource>) {
         _newWind = Wind()
+        if (wind.isStill)
+            return
+
         for (resource in resources) {
             // Take the amount before the loop, so that the share doesn't depend on the order of affectedTiles
             val amount = resource.amount
+            // The strongest direction defines how much is blown away, the rest is split
+            val blownShare = min(1.0, wind.maxLevel / data.maxWind * getFlyCoefficient(resource))
             for ((tile, level) in wind.affectedTiles) {
-                val part = (amount * level / data.maxWind * getFlyCoefficient(resource)).toInt()
+                val part = (amount * blownShare * level / wind.sumLevel).toInt()
 
                 if (part > 0)
                     tile.addDelayedResource(resource.getCleanPart(part, Taker.WindTaker))
@@ -55,13 +61,13 @@ class WindCenter internal constructor() {
     private fun setWindByTemperature(tile: Tile?, master: Tile) {
         tile ?: return
 
-        var change = data.temperatureToWindCoefficient
+        var change = data.temperatureToWind
         if (tile.level + 2 < master.level)
             change *= 5
         if (tile.type == master.type)
             change *= 5
 
-        val level = max(tile.temperature - 1 - master.temperature, 0.0) / change
+        val level = max(tile.temperature - master.temperature, 0.0) / change
         if (level > 0)
             _newWind.changeLevelOnTile(tile, level)
     }

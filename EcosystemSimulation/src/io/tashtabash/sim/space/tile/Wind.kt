@@ -14,6 +14,9 @@ class Wind {
         get() = affectedTiles.maxOfOrNull { (_, t) -> t }
             ?: 0.0
 
+    val sumLevel: Double
+        get() = affectedTiles.sumOf { (_, t) -> t }
+
     fun changeLevelOnTile(tile: Tile, change: Double) {
         for (i in affectedTiles.indices) {
             val (affectedTile, level) = affectedTiles[i]
