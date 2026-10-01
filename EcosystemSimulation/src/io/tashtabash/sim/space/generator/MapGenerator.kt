@@ -67,7 +67,7 @@ private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool, scale: Scale
     )
 
     for (i in 0 until x)
-        map.add((0 until y).map { j -> Tile(i, j, updaters.toMutableList(), scale) })
+        map += (0 until y).map { j -> Tile(i * y + j, i, j, updaters.toMutableList(), scale) }
 
     return map
 }

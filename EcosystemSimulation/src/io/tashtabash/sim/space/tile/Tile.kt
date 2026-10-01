@@ -14,6 +14,7 @@ import kotlin.math.max
 
 
 class Tile(
+    val id: Int,
     val x: Int,
     val y: Int,
     val updaters: MutableList<TileUpdater> = mutableListOf(),
@@ -271,12 +272,12 @@ class Tile(
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val tile = other as Tile
-        return x == tile.x && y == tile.y
+        return id == tile.id
     }
 
-    override fun hashCode(): Int = 1_000_000 * x + y
+    override fun hashCode(): Int = id
 
-    override fun toString() = "Tile $posStr, type=$type, temperature=$prettyTemperature, level=$level" +
+    override fun toString() = "Tile at $posStr, type=$type, temperature=$prettyTemperature, level=$level" +
             "\nTags: " + tagPool.all.joinToString("; ") +
             "\nWind: ${wind.affectedTiles.joinToString { "${it.first.x} ${it.first.y}: ${it.second}" }}" +
             "\nFlow: ${flow.x} ${flow.y}" +

@@ -16,6 +16,11 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
     val maxX = linedTiles.size
     val maxY = linedTiles[0].size
 
+    init {
+        val ids = linedTiles.flatten().map { it.id }
+        require(ids.size == ids.distinct().size) { "Tile ids must be unique" }
+    }
+
     val tectonicPlates = mutableListOf<TectonicPlate>()
 
     fun addPlate(plate: TectonicPlate) {
@@ -80,11 +85,13 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
             runOnMap(it) { tile ->
                 tile.startUpdate()
             }
-            runOnMap(it) { tile ->
+            runOnMap(middleUpdateOrder) { tile ->
                 tile.middleUpdate(this@WorldMap)
             }
         }
     }
+
+    private val middleUpdateOrder: List<List<TilesBatch>> = listOf(linedTiles)
 
     inline fun runOnMap(order: List<List<TilesBatch>>, crossinline operation: (Tile) -> Unit) {
         val seeds = order.map { batchGroup -> batchGroup.map { RandomSingleton.random.nextLong() } }
