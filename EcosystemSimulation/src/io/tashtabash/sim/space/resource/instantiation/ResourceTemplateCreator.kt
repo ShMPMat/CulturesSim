@@ -1,7 +1,6 @@
 package io.tashtabash.sim.space.resource.instantiation
 
 import io.tashtabash.sim.DataInitializationError
-import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.*
 import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.action.ResourceAction
@@ -11,7 +10,6 @@ import io.tashtabash.sim.space.resource.instantiation.tag.TagTemplate
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.material.MaterialPool
 import io.tashtabash.sim.space.tile.Tile
-import kotlin.math.max
 import kotlin.math.min
 
 
@@ -132,15 +130,8 @@ class ResourceTemplateCreator(
 
         val sizeRange = parseSizeRange(tags[2])
 
-        val speed = data.computeTileSpeed(speedMs)
+        val behaviour = Behaviour(resistance ?: danger, danger, camouflage, speedMs, overflowType)
 
-        for (dependency in resourceDependencies)
-            if (dependency is ConsumeDependency)
-                dependency.radius = max(1.0, speed).toInt()
-            else if (dependency is NeedDependency)
-                dependency.radius = max(1.0, speed).toInt()
-
-        val behaviour = Behaviour(resistance ?: danger, danger, camouflage, speed, overflowType)
         val appearance = Appearance(colour, texture, shape)
 
         val genome = if (isTemplate)

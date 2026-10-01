@@ -6,6 +6,7 @@ import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.tile.Tile
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
+import kotlin.math.max
 
 
 abstract class LabelerDependency(
@@ -35,6 +36,10 @@ abstract class LabelerDependency(
     }
 
     fun partByResource(worth: Int, amount: Double) = ceil(amount / worth).toInt()
+
+    // How far the resource can reach in one tick, in tiles
+    protected fun accessRadius(tile: Tile, resource: Resource) =
+        max(1.0, resource.genome.behaviour.tileSpeed(tile.scale)).toInt()
 
     override fun toString() = "$labeler of $amount"
 }

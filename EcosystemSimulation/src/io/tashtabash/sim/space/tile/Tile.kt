@@ -1,6 +1,7 @@
 package io.tashtabash.sim.space.tile
 
 import io.tashtabash.sim.DataInitializationError
+import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
 import io.tashtabash.sim.space.WorldMap
@@ -10,10 +11,9 @@ import io.tashtabash.sim.space.resource.container.ResourcePack
 import io.tashtabash.sim.space.tile.updater.TileUpdater
 import java.util.*
 import kotlin.math.max
-import kotlin.math.pow
 
 
-class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = mutableListOf()) {
+class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = mutableListOf(), val scale: Scale) {
     val tagPool = MutableTileTagPool()
 
     var type: Type = Type.Water // It's Water in order for init {..} to set Normal correctly
@@ -276,11 +276,7 @@ class Tile(val x: Int, val y: Int, val updaters: MutableList<TileUpdater> = muta
             "\nFlow: ${flow.x} ${flow.y}" +
             "\n\nResources:" + _resourcePack.resources.joinToString("\n", "\n", "\n") +
             "\n" +
-            "\n Area: ${data.tileSizeKm.pow(2)}km^2" +
-            "\n Covered area: ${resourcesWithMoved.sumOf { it.genome.size.x * it.genome.size.y * it.amount }}" +
-            "\n ${// Assume everything is in the 1st 10 meters above ground
-                ((data.tileSizeKm * 1000).pow(2)) * 10 / resourcesWithMoved.sumOf { it.genome.volume * it.amount } * 100
-            }%"
+            "\n Area: ${scale.tileAreaKm2}km^2"
 
     val prettyTemperature: String
         get() = "%.2f".format(temperature)

@@ -132,9 +132,13 @@ open class Resource private constructor(
             prob += taker.resource.genome.behaviour
                 .let { it.danger + it.camouflage }
 
-            prob -= if (taker.resource.genome.behaviour.speed == .0)
-                genome.behaviour.speed
-            else (genome.behaviour.speed / taker.resource.genome.behaviour.speed - 1).coerceAtMost(0.9)
+            val speed = genome.behaviour.speedMs
+            val takerSpeed = taker.resource.genome.behaviour.speedMs
+            prob -= when {
+                takerSpeed != .0 -> (speed / takerSpeed - 1).coerceAtMost(.9)
+                speed != .0 -> .9
+                else -> .0
+            }
         }
 
         return prob.coerceIn(.0, .99)
@@ -290,7 +294,8 @@ open class Resource private constructor(
     }
 
     private fun distribute(tile: Tile) {
-        if (amount <= genome.naturalDensity)
+        val naturalDensity = genome.naturalDensity(tile.scale)
+        if (amount <= naturalDensity)
             return
 
         when (genome.behaviour.overflowType) {
@@ -301,22 +306,22 @@ open class Resource private constructor(
                     .map { it.first }
 
                 for (neighbour in tiles) {
-                    if (amount <= genome.naturalDensity / 2)
+                    if (amount <= naturalDensity / 2)
                         break
 
                     var part = min(
-                        amount - genome.naturalDensity / 2,
-                        genome.naturalDensity - neighbour.resourcePack.getAmount(this)
+                        amount - naturalDensity / 2,
+                        naturalDensity - neighbour.resourcePack.getAmount(this)
                     )
                     part = if (part <= 0)
-                        (amount - genome.naturalDensity / 2) / tiles.size
+                        (amount - naturalDensity / 2) / tiles.size
                     else part
 
                     neighbour.addDelayedResource(getCleanPart(part, SeparationTaker))
                 }
             }
 
-            OverflowType.Cut -> amount = genome.naturalDensity
+            OverflowType.Cut -> amount = naturalDensity
             OverflowType.Ignore -> {}
         }
     }
@@ -393,7 +398,7 @@ open class Resource private constructor(
 
     override fun hashCode() = _hash
 
-    override fun toString() = "Resource $fullName, natural density - ${genome.naturalDensity}," +
+    override fun toString() = "Resource $fullName," +
             " spread probability - ${genome.spreadProbability}, mass - ${genome.mass}," +
             " lifespan - ${genome.lifespan}, default amount - ${genome.defaultAmount}, amount - $amount," +
             " material - ${genome.primaryMaterial}, ${genome.appearance}, ownership - ${core.ownershipMarker}" +

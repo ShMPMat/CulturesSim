@@ -2,6 +2,8 @@ package io.tashtabash.sim.space.generator
 
 import io.tashtabash.random.randomElement
 import io.tashtabash.random.randomTile
+import io.tashtabash.sim.space.Scale
+import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.container.ResourcePool
@@ -11,11 +13,19 @@ import io.tashtabash.sim.space.tile.updater.FlowTransferUpdater
 import io.tashtabash.sim.space.tile.updater.FlowUpdater
 import io.tashtabash.sim.space.tile.updater.TypeUpdater
 import java.util.*
+import kotlin.math.ceil
 import kotlin.random.Random
 
 
-fun generateMap(x: Int, y: Int, platesAmount: Int, resourcePool: ResourcePool, random: Random): WorldMap {
-    val tiles = createTiles(x, y, resourcePool)
+fun generateMap(
+    x: Int,
+    y: Int,
+    platesAmount: Int,
+    resourcePool: ResourcePool,
+    random: Random,
+    scale: Scale = data.defaultScale
+): WorldMap {
+    val tiles = createTiles(x, y, resourcePool, scale)
     val map = WorldMap(tiles)
     val flowTransferUpdater = FlowTransferUpdater(map, resourcePool.getBaseName("Water"))
     for (tile in tiles.flatten())
@@ -45,7 +55,7 @@ private fun setTileNeighbours(map: WorldMap) {
             ).filterNotNull()
 }
 
-private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool): List<List<Tile>> {
+private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool, scale: Scale): List<List<Tile>> {
     val map: MutableList<List<Tile>> = ArrayList()
     val updaters = listOf(
         TypeUpdater(resourcePool.getBaseName("Water")),
@@ -53,7 +63,7 @@ private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool): List<List<T
     )
 
     for (i in 0 until x)
-        map.add((0 until y).map { j -> Tile(i, j, updaters.toMutableList()) })
+        map.add((0 until y).map { j -> Tile(i, j, updaters.toMutableList(), scale) })
 
     return map
 }

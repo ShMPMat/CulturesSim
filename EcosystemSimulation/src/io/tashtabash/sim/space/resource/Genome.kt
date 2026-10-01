@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space.resource
 
+import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.action.ConversionCore
 import io.tashtabash.sim.space.resource.dependency.ResourceDependency
@@ -22,7 +23,7 @@ class Genome(
     val appearance: Appearance,
     val hasLegacy: Boolean,
     val lifespan: Double,
-    val defaultAmount: Int, // Per km^2
+    val defaultAmount: Int, // The amount spawned at once; also the natural amount per DENSITY_REFERENCE_AREA_KM2
     val legacy: BaseName?,
     val dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
@@ -32,7 +33,9 @@ class Genome(
     val parts: MutableList<Resource> = mutableListOf()
 ) {
     val size = sizeRange.first.avg(sizeRange.second)
-    val naturalDensity = ceil(data.tileSizeKm * data.tileSizeKm / 2500 * defaultAmount).toInt()
+    // The amount per tile after which the Resource starts overflowing
+    fun naturalDensity(scale: Scale): Int =
+        ceil(scale.tileAreaKm2 / DENSITY_REFERENCE_AREA_KM2 * defaultAmount).toInt()
 
     val necessaryDependencies = dependencies.filter { it.isNecessary }
 
@@ -139,6 +142,8 @@ class Genome(
 }
 
 typealias BaseName = String
+
+const val DENSITY_REFERENCE_AREA_KM2 = 2500.0
 
 data class Size(val x: Double, val y: Double, val z: Double) {
     constructor(dimension: Double) : this(dimension, dimension, dimension)

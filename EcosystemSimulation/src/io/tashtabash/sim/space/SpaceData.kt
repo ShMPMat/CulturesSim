@@ -51,7 +51,7 @@ class Data(
     val yearDurationDays: Int = 300,
     val dayDurationSeconds: Int = 24 * 60 * 60,
     val tickDurationDays: Int = 10,
-    val tileSizeKm: Double = 50.0,
+    val defaultTileSizeKm: Double = 50.0,
 ) {
     init {
         if (resourceSizeEffect !in 0.0..1.0)
@@ -59,12 +59,6 @@ class Data(
     }
 
     val yearDurationTicks = yearDurationDays.toDouble() / tickDurationDays
-    private val yearDurationSeconds = dayDurationSeconds * yearDurationDays
 
-    fun computeTileSpeed(speedMs: Double): Double {
-        val metresPerTile = tileSizeKm * 1000.0
-        return speedMs * yearDurationSeconds / (metresPerTile * yearDurationTicks) / REST_COEFFICIENT
-    }
+    val defaultScale = Scale(defaultTileSizeKm, tickDurationDays.toDouble() * dayDurationSeconds)
 }
-
-private const val REST_COEFFICIENT = 25.0 // Assume that entities can't move at their usual speed all the time

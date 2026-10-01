@@ -11,8 +11,7 @@ import kotlin.math.min
 class ConsumeDependency(
     deprivationCoefficient: Double,
     isNecessary: Boolean,
-    labeler: QuantifiedResourceLabeler,
-    var radius: Int = 1
+    labeler: QuantifiedResourceLabeler
 ) : LabelerDependency(deprivationCoefficient, isNecessary, labeler) {
     fun lastConsumed(name: String): MutableMap<String, Int> = consumed.getOrPut(name) {
         ConcurrentHashMap()
@@ -27,7 +26,7 @@ class ConsumeDependency(
         var gatheredAmount = resource.getConsumeBuffer(this)
 
         if (gatheredAmount < neededAmount)
-            tile.forEachAccessibleResource(radius) { res ->
+            tile.forEachAccessibleResource(accessRadius(tile, resource)) { res ->
                 if (res.isEmpty)
                     return@forEachAccessibleResource false
                 val oneWorth = oneResourceWorth(res)

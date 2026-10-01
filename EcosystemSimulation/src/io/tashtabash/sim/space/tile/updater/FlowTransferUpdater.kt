@@ -14,7 +14,7 @@ class FlowTransferUpdater(val map: WorldMap, val water: Resource): TileUpdater {
         val flow = tile.flow
 
         for (resource in tile.resourcePack.resourcesIterator) {
-            val speedDiff = flow.strength - resource.genome.behaviour.speed
+            val speedDiff = flow.strength - resource.genome.behaviour.tileSpeed(tile.scale)
 
             if (!resource.genome.isMovable && speedDiff > 0)
                 continue

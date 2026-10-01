@@ -1,6 +1,7 @@
 package io.tashtabash.sim.space.resource.instantiation
 
 import io.tashtabash.sim.init.getResourcePaths
+import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.resource.ResourceIdeal
 import io.tashtabash.sim.space.resource.Resources
 import io.tashtabash.sim.space.resource.action.ActionMatcher
@@ -85,7 +86,7 @@ class ResourceInstantiationTest {
         )
         // Check that there are no Resources with weird properties
         assertTrue {
-            resources.all.all { it.genome.naturalDensity < 1000000000 }
+            resources.all.all { it.genome.naturalDensity(data.defaultScale) < 1000000000 }
         }
         assertNull(
             resources.all.firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } },

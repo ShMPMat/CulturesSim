@@ -16,7 +16,7 @@ private val personGenome = Genome(
     0,
     false,
     true,
-    Behaviour(.1, .05, .25, SpaceData.data.computeTileSpeed(1.0), OverflowType.Ignore),
+    Behaviour(.1, .05, .25, 1.0, OverflowType.Ignore),
     Appearance(null, null, null),
     false,
     50.0,
