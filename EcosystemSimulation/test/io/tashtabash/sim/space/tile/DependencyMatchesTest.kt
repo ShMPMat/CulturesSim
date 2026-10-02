@@ -1,7 +1,6 @@
 package io.tashtabash.sim.space.tile
 
 import io.tashtabash.random.singleton.RandomSingleton
-import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.Genome
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
@@ -22,7 +21,6 @@ class DependencyMatchesTest {
     private val dependency = NeedDependency(1.0, true, QuantifiedResourceLabeler(foodLabeler, 1.0))
 
     private val tile = createTestTile(0, 0)
-    private val map = WorldMap(listOf(listOf(tile)))
 
     @BeforeEach
     fun setUp() {

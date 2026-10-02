@@ -19,9 +19,9 @@ class MapPrintInfo {
         var currentGapStart = 0
         var currentGapWidth = 0
 
-        for (y in 0 until data.mapSizeY) {
-            val landInThisLine = (0 until data.mapSizeX).count { x ->
-                val tile = map[x, y]
+        for (y in 0 until map.maxY) {
+            val landInThisLine = (0 until map.maxX).count { x ->
+                val tile = map.getMainTile(x, y)
                     ?: throw SimulationError("Incoherent map size")
                 tile.type != Tile.Type.Water && tile.type != Tile.Type.Ice
             }

@@ -13,14 +13,27 @@ import kotlin.math.max
 import kotlin.random.Random
 
 
-class WorldMap(val linedTiles: List<List<Tile>>) {
-    val maxX = linedTiles.size
-    val maxY = linedTiles[0].size
+class WorldMap(val tiles: List<Tile>, val maxX: Int, val maxY: Int) {
+    // The Tiles of each cell, in the order of tiles
+    private val cells: List<List<List<Tile>>>
 
-    init {
-        val ids = linedTiles.flatten().map { it.id }
+    init { // Cache tiles into a grid
+        val ids = tiles.map { it.id }
         require(ids.size == ids.distinct().size) { "Tile ids must be unique" }
+
+        val newCells = List(maxX) { List(maxY) { mutableListOf<Tile>() } }
+        for (tile in tiles) {
+            require(tile.x in 0 until maxX && tile.y in 0 until maxY) {
+                "Tile ${tile.id} at ${tile.posStr} is outside of the map"
+            }
+            newCells[tile.x][tile.y] += tile
+        }
+        require(newCells.all { line -> line.all { it.isNotEmpty() } }) { "Every cell must have a Tile" }
+
+        cells = newCells
     }
+
+    val lines: List<List<Tile>> = cells.map { it.flatten() }
 
     val tectonicPlates = mutableListOf<TectonicPlate>()
 
@@ -28,26 +41,33 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
         tectonicPlates.add(plate)
     }
 
-    operator fun get(_x: Int, _y: Int): Tile? {
-        var curX = _x
-        var curY = _y
+    fun tilesAt(x: Int, y: Int): List<Tile> {
+        val curX = cutCoordinate(x, maxX, data.xMapLooping)
+            ?: return listOf()
+        val curY = cutCoordinate(y, maxY, data.yMapLooping)
+            ?: return listOf()
 
-        if (data.xMapLooping)
-            curX = cutCoordinate(curX, maxX)
-        else if (!checkCoordinate(curX, maxX))
-            return null
-
-        if (data.yMapLooping)
-            curY = cutCoordinate(curY, maxY)
-        else if (!checkCoordinate(curY, maxY))
-            return null
-
-        return linedTiles[curX][curY]
+        return cells[curX][curY]
     }
 
-    fun getValue(_x: Int, _y: Int) = get(_x, _y)!!
+     // Only for coordinates which can't hold several Tiles
+    operator fun get(x: Int, y: Int): Tile? {
+        val cellTiles = tilesAt(x, y)
+        check(cellTiles.size <= 1) { "Cell $x $y has ${cellTiles.size} Tiles, use tilesAt(..)" }
 
-    private fun cutCoordinate(coordinate: Int, max: Int): Int {
+        return cellTiles.firstOrNull()
+    }
+
+    fun getValue(x: Int, y: Int) = get(x, y)
+        ?: throw IllegalArgumentException("Tile $x $y has no tiles")
+
+    fun getMainTile(x: Int, y: Int): Tile? =
+        tilesAt(x, y).maxByOrNull { it.area }
+
+    private fun cutCoordinate(coordinate: Int, max: Int, isLooping: Boolean): Int? {
+        if (!isLooping)
+            return coordinate.takeIf { it in 0 until max }
+
         var curCoordinate = coordinate
 
         if (curCoordinate < 0)
@@ -55,8 +75,6 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
 
         return curCoordinate % max
     }
-
-    private fun checkCoordinate(coordinate: Int, max: Int) = coordinate in 0 until max
 
     /**
      * @return the Direction in which `to` lies from `from`, taking map looping into account;
@@ -84,21 +102,15 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
                 name++
     }
 
-    val tiles = linedTiles.flatten()
-
-    fun getTiles(predicate: (Tile) -> Boolean) = linedTiles
-            .flatten()
-            .filter(predicate)
+    fun getTiles(predicate: (Tile) -> Boolean) = tiles.filter(predicate)
 
     fun update() {
         if (tileUpdateOrder == null) {
-            for (line in linedTiles)
-                for (tile in line)
-                    tile.startUpdate()
+            for (tile in tiles)
+                tile.startUpdate()
 
-            for (line in linedTiles)
-                for (tile in line)
-                    tile.middleUpdate()
+            for (tile in tiles)
+                tile.middleUpdate()
         } else tileUpdateOrder?.let {
             runOnMap(it) { tile ->
                 tile.startUpdate()
@@ -109,7 +121,7 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
         }
     }
 
-    private val middleUpdateOrder: List<List<TilesBatch>> = listOf(linedTiles)
+    private val middleUpdateOrder: List<List<TilesBatch>> = listOf(lines)
 
     inline fun runOnMap(order: List<List<TilesBatch>>, crossinline operation: (Tile) -> Unit) {
         val seeds = order.map { batchGroup -> batchGroup.map { RandomSingleton.random.nextLong() } }
@@ -128,9 +140,8 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
     }
 
     fun finishUpdate() {
-        for (line in linedTiles)
-            for (tile in line)
-                tile.finishUpdate()
+        for (tile in tiles)
+            tile.finishUpdate()
     }
 
     private typealias TilesBatch = List<Tile>
@@ -144,6 +155,7 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
     // 3 4 3 4
     // Blocks of the same colour are separated by a whole block of another colour, so the areas
     // within (margin - 1) of two same-coloured blocks never intersect.
+    // All Tiles of a cell get into the same block.
     // Returns a TileBatch List per colour (up to 4), each TileBatch List can be handled async
     fun calculateTileUpdateOrder(margin: Int): List<List<TilesBatch>> {
         require(margin > 0) { "Margin must be positive, got $margin" }
@@ -154,7 +166,7 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
         return (0 until 4).map { colourIdx ->
             xBlocks.filterIndexed { i, _ -> i % 2 == colourIdx / 2 }.flatMap { xRange ->
                 yBlocks.filterIndexed { j, _ -> j % 2 == colourIdx % 2 }.map { yRange ->
-                    xRange.flatMap { x -> yRange.map { y -> linedTiles[x][y] } }
+                    xRange.flatMap { x -> yRange.flatMap { y -> cells[x][y] } }
                 }
             }
         }.filter { it.isNotEmpty() }
@@ -181,9 +193,8 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
     }
 
     fun geologicUpdate() {
-        for (line in linedTiles)
-            for (tile in line)
-                tile.levelUpdate()
+        for (tile in tiles)
+            tile.levelUpdate()
 
         platesUpdate()
     }

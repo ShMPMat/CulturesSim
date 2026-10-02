@@ -5,7 +5,7 @@ import io.tashtabash.sim.space.tile.Tile
 
 
 fun TextEcosystemVisualizer<*>.printTile(tile: Tile) {
-    printMap { if (it == tile) "\u001b[31m\u001b[41mX" else "" }
+    printMap { if (it.x == tile.x && it.y == tile.y) "\u001b[31m\u001b[41mX" else "" }
     println(tile)
 }
 

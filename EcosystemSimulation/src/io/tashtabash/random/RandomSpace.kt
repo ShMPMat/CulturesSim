@@ -8,9 +8,9 @@ import io.tashtabash.sim.space.territory.StaticTerritory
 import io.tashtabash.sim.space.tile.Tile
 
 
-fun randomTile(territory: Territory) = territory.tiles.sortedBy { it.x * 1000000 + it.y }.randomElementOrNull()
+fun randomTile(territory: Territory) = territory.tiles.sortedBy { it.id }.randomElementOrNull()
 
-fun randomTile(map: WorldMap): Tile = map.linedTiles.randomElement().randomElement()
+fun randomTile(map: WorldMap): Tile = map.tiles.randomElement()
 
 /**
  *

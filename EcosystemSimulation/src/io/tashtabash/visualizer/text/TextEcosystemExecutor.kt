@@ -70,10 +70,10 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                         allResourcesCounter(world, splitCommand.getOrNull(1) == "f")
                 )
                 AllPossibleResources -> println(visualizer.printedResources())
-                Tile -> findTile(splitCommand[0], splitCommand[1])
-                        ?.let {
-                            printTile(it)
-                        } ?: run {
+                Tile -> findTiles(splitCommand[0], splitCommand[1])
+                        .takeIf { it.isNotEmpty() }
+                        ?.forEach { printTile(it) }
+                        ?: run {
                             print("No such Tile")
                             return ExecutionResult.Terminate
                         }
@@ -87,9 +87,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
                     for (i in top..bottom)
                         for (j in left..right)
-                            findTile(i, j)?.let {
-                                tiles += it
-                            }
+                            tiles += findTiles(i, j)
 
                     printTiles(tiles)
                 }
@@ -156,7 +154,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                     return ExecutionResult.Terminate
                 }
                 AddResource -> addResourceOnTile(
-                        map[splitCommand[0].toInt(), splitCommand[1].toInt()],
+                        map.getMainTile(splitCommand[0].toInt(), splitCommand[1].toInt()),
                         splitCommand[2],
                         world.resourcePool
                 )

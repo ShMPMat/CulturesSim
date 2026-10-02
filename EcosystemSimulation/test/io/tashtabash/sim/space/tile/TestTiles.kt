@@ -11,5 +11,6 @@ fun createTestTile(
     x: Int = 0,
     y: Int = 0,
     scale: Scale = data.defaultScale,
+    area: Double = scale.tileAreaKm2,
     id: Int = nextTestTileId.getAndIncrement()
-) = Tile(id, x, y, scale = scale)
+) = Tile(id, x, y, scale = scale, area = area)

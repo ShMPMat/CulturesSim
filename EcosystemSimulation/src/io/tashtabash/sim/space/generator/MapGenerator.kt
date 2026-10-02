@@ -27,9 +27,9 @@ fun generateMap(
     scale: Scale = data.defaultScale
 ): WorldMap {
     val tiles = createTiles(x, y, resourcePool, scale)
-    val map = WorldMap(tiles)
+    val map = WorldMap(tiles, x, y)
     val flowTransferUpdater = FlowTransferUpdater(resourcePool.getBaseName("Water"))
-    for (tile in tiles.flatten())
+    for (tile in tiles)
         tile.updaters += listOf(
             flowTransferUpdater,
             FlowUpdater()
@@ -64,17 +64,18 @@ internal fun setTileNeighbours(map: WorldMap) {
             }
 }
 
-private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool, scale: Scale): List<List<Tile>> {
-    val map: MutableList<List<Tile>> = ArrayList()
+private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool, scale: Scale): List<Tile> {
+    val tiles = mutableListOf<Tile>()
     val updaters = listOf(
         TypeUpdater(resourcePool.getBaseName("Water")),
         MeteorStrike(resourcePool.getBaseName("RawIron"))
     )
 
     for (i in 0 until x)
-        map += (0 until y).map { j -> Tile(i * y + j, i, j, updaters.toMutableList(), scale) }
+        for (j in 0 until y)
+            tiles += Tile(i * y + j, i, j, updaters.toMutableList(), scale)
 
-    return map
+    return tiles
 }
 
 private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List<TectonicPlate> {

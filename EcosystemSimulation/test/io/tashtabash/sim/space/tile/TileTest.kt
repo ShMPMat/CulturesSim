@@ -42,7 +42,7 @@ class TileTest {
     @Test
     fun `WorldMap rejects duplicate Tile ids`() {
         assertThrows<IllegalArgumentException> {
-            WorldMap(listOf(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale))))
+            WorldMap(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale)), 1, 2)
         }
     }
 }

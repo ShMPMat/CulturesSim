@@ -111,7 +111,7 @@ open class TextEcosystemVisualizer<E : World>(
         val printedMap = printedMap(condition)
 
         val resultPrint = if (showLegend) {
-            val printedResources = chompToLines(printedResources(), map.linedTiles.size + 2)
+            val printedResources = chompToLines(printedResources(), map.maxX + 2)
 
             addToRight(printedMap, printedResources, true)
         } else printedMap
@@ -128,22 +128,22 @@ open class TextEcosystemVisualizer<E : World>(
         val main = StringBuilder("  ")
         val worldMap = map
 
-        for (i in worldMap.linedTiles[0].indices)
+        for (i in 0 until worldMap.maxY)
             main.append(if (i < 100) " " else i / 100 % 100)
         main.append("\n").append("  ")
-        for (i in worldMap.linedTiles[0].indices)
+        for (i in 0 until worldMap.maxY)
             main.append(if (i < 10) " " else i / 10 % 10)
         main.append("\n").append("  ")
-        for (i in worldMap.linedTiles[0].indices)
+        for (i in 0 until worldMap.maxY)
             main.append(i % 10)
         main.append("\n")
 
         val map = StringBuilder()
-        for (i in 0 until data.mapSizeX) {
+        for (i in 0 until worldMap.maxX) {
             var token: String
             map.append(if (i < 10) " $i" else i)
-            for (j in 0 until data.mapSizeY) {
-                val tile = worldMap.getValue(i, j + mapPrintInfo.cut)
+            for (j in 0 until worldMap.maxY) {
+                val tile = worldMap.getMainTile(i, j + mapPrintInfo.cut)!!
                 token = mapper(tile).takeIf { it != "" } ?: applyMappers(tile)
                 if (token == " ") {
                     token = ""
@@ -277,6 +277,13 @@ open class TextEcosystemVisualizer<E : World>(
     fun findTile(x: String, y: String) =
         findTile(x.toInt(), y.toInt())
 
+    // The largest Tile of the cell
     fun findTile(x: Int, y: Int) =
-        controller.world.map[x, y + mapPrintInfo.cut]
+        controller.world.map.getMainTile(x, y + mapPrintInfo.cut)
+
+    fun findTiles(x: String, y: String) =
+        findTiles(x.toInt(), y.toInt())
+
+    fun findTiles(x: Int, y: Int) =
+        controller.world.map.tilesAt(x, y + mapPrintInfo.cut)
 }

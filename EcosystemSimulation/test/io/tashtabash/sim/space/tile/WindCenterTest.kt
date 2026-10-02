@@ -2,7 +2,7 @@ package io.tashtabash.sim.space.tile
 
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
-import io.tashtabash.sim.space.generator.setTileNeighbours
+import io.tashtabash.sim.space.createTestMap
 import io.tashtabash.sim.space.resource.Size
 import io.tashtabash.sim.space.resource.createTestResource
 import org.junit.jupiter.api.Assertions.*
@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test
 class WindCenterTest {
     // A land map with a lake in the middle, to create temperature differences
     private fun createMap(sizeX: Int, sizeY: Int): WorldMap {
-        val map = WorldMap(List(sizeX) { x -> List(sizeY) { y -> createTestTile(x, y) } })
-        setTileNeighbours(map)
+        val map = createTestMap(sizeX, sizeY)
         for (x in sizeX / 3 until 2 * sizeX / 3)
             for (y in sizeY / 3 until 2 * sizeY / 3)
                 map.getValue(x, y).setType(Tile.Type.Water, true)

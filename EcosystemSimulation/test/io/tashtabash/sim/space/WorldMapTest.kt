@@ -1,9 +1,7 @@
 package io.tashtabash.sim.space
 
 import io.tashtabash.random.singleton.RandomSingleton
-import io.tashtabash.sim.space.generator.setTileNeighbours
 import io.tashtabash.sim.space.tile.Tile
-import io.tashtabash.sim.space.tile.createTestTile
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -13,11 +11,7 @@ import kotlin.random.Random
 
 
 class WorldMapTest {
-    private fun createMap(sizeX: Int, sizeY: Int): WorldMap {
-        val map = WorldMap(List(sizeX) { x -> List(sizeY) { y -> createTestTile(x, y) } })
-        setTileNeighbours(map)
-        return map
-    }
+    private fun createMap(sizeX: Int, sizeY: Int) = createTestMap(sizeX, sizeY)
 
     private fun tilesInRadius(tiles: Collection<Tile>, radius: Int): Set<Tile> {
         val result = tiles.toMutableSet()
