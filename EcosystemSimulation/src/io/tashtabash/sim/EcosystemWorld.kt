@@ -53,13 +53,7 @@ class EcosystemWorld(
         SpaceData.data.materialPool = materialPool
         SpaceData.data.resourcePool = initialResources
 
-        map = generateMap(
-            SpaceData.data.mapSizeX,
-            SpaceData.data.mapSizeY,
-            SpaceData.data.platesAmount,
-            initialResources,
-            RandomSingleton.random
-        )
+        map = generateMap(SpaceData.data.generation, initialResources, RandomSingleton.random)
     }
 
 

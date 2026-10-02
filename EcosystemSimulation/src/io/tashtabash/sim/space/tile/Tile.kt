@@ -185,7 +185,9 @@ class Tile(
         tiles -= this
 
         return tiles.toList().also {
-            radiusCache[radius] = it
+            // Large radii are rare and their lists are big, so they aren't cached
+            if (radius < radiusCache.size)
+                radiusCache[radius] = it
         }
     }
 

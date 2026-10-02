@@ -1,11 +1,13 @@
 package io.tashtabash.sim.space.tile
 
 import io.tashtabash.sim.space.Scale
+import io.tashtabash.sim.space.createTestMap
 import io.tashtabash.sim.space.WorldMap
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.math.abs
 
 
 class TileTest {
@@ -22,6 +24,17 @@ class TileTest {
 
         assertEquals(100.0, tile.area)
         assertEquals(50.0, tile.scale.tileSizeKm)
+    }
+
+    @Test
+    fun `getTilesInRadius works for radii which aren't cached`() {
+        val map = createTestMap(30, 30)
+        val tile = map.getValue(15, 15)
+
+        // Within 12 steps on a grid: a diamond of 2 * 12 * 13 Tiles
+        val expected = map.tiles.filter { it != tile && abs(it.x - 15) + abs(it.y - 15) <= 12 }
+        assertEquals(2 * 12 * 13, expected.size)
+        assertEquals(expected.toSet(), tile.getTilesInRadius(12).toSet())
     }
 
     @Test

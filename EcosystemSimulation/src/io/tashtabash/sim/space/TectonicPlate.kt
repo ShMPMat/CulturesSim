@@ -3,13 +3,18 @@ package io.tashtabash.sim.space
 import io.tashtabash.random.singleton.RandomSingleton.random
 import io.tashtabash.random.singleton.chanceOf
 import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.generator.GenerationParameters
 import io.tashtabash.sim.space.territory.BrinkInvariantTerritory
 import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.abs
 
 
-class TectonicPlate(val direction: Direction, var type: Type) : BrinkInvariantTerritory() {
+class TectonicPlate(
+    val direction: Direction,
+    var type: Type,
+    private val parameters: GenerationParameters
+) : BrinkInvariantTerritory() {
     init {
         require(direction != Direction.Here) { "TectonicPlate must move to a side" }
     }
@@ -70,9 +75,9 @@ class TectonicPlate(val direction: Direction, var type: Type) : BrinkInvariantTe
         return if (x == 0 && y == 0)
             0
         else if (x <= 1 && y <= 1)
-            data.tectonicRange / 2
+            parameters.tectonicRange / 2
         else
-            data.tectonicRange
+            parameters.tectonicRange
     }
 
     /**
@@ -84,7 +89,7 @@ class TectonicPlate(val direction: Direction, var type: Type) : BrinkInvariantTe
                 return
             }
 
-        val rise = data.minTectonicRise
+        val rise = parameters.minTectonicRise
         for ((tile, p) in affectedTiles) {
             p.chanceOf {
                 tile.setLevel(

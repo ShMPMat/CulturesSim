@@ -3,7 +3,6 @@ package io.tashtabash.sim.space.generator
 import io.tashtabash.random.randomElement
 import io.tashtabash.random.randomTile
 import io.tashtabash.sim.space.Scale
-import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.container.ResourcePool
@@ -18,16 +17,10 @@ import kotlin.math.ceil
 import kotlin.random.Random
 
 
-fun generateMap(
-    x: Int,
-    y: Int,
-    platesAmount: Int,
-    resourcePool: ResourcePool,
-    random: Random,
-    scale: Scale = data.defaultScale
-): WorldMap {
-    val tiles = createTiles(x, y, resourcePool, scale)
-    val map = WorldMap(tiles, x, y)
+fun generateMap(parameters: GenerationParameters, resourcePool: ResourcePool, random: Random): WorldMap {
+    val scale = parameters.scale
+    val tiles = createTiles(parameters.sizeX, parameters.sizeY, resourcePool, scale)
+    val map = WorldMap(tiles, parameters.sizeX, parameters.sizeY)
     val flowTransferUpdater = FlowTransferUpdater(resourcePool.getBaseName("Water"))
     for (tile in tiles)
         tile.updaters += listOf(
@@ -35,11 +28,7 @@ fun generateMap(
             FlowUpdater()
         )
     setTileNeighbours(map)
-    val tectonicPlates = randomPlates(
-        platesAmount,
-        map,
-        random
-    )
+    val tectonicPlates = randomPlates(parameters, map, random)
     tectonicPlates.forEach { map.addPlate(it) }
     fill(map)
 
@@ -78,10 +67,10 @@ private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool, scale: Scale
     return tiles
 }
 
-private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List<TectonicPlate> {
+private fun randomPlates(parameters: GenerationParameters, map: WorldMap, random: Random): List<TectonicPlate> {
     val tectonicPlates: MutableList<TectonicPlate> = ArrayList()
     val usedTiles: MutableSet<Tile> = HashSet()
-    for (i in 0 until platesAmount) {
+    for (i in 0 until parameters.platesAmount) {
         val direction = randomElement(
             Direction.sides.asList(),
             random
@@ -90,7 +79,7 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
             TectonicPlate.Type.entries,
             random
         )
-        val tectonicPlate = TectonicPlate(direction, type)
+        val tectonicPlate = TectonicPlate(direction, type, parameters)
         val tile = randomTile(map)
 
         tectonicPlate.add(tile)
