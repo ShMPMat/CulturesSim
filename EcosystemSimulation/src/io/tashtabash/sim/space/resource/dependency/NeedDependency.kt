@@ -21,12 +21,9 @@ class NeedDependency(
         var currentAmount = 0
         val neededAmounts = lastConsumed(resource.baseName)
 
-        tile.forEachAccessibleResource(accessRadius(tile, resource)) { res ->
-            if (res.isEmpty)
-                return@forEachAccessibleResource false
-            val oneWorth = oneResourceWorth(res)
-            if (oneWorth == NOT_DEPENDENCY || res == resource)
-                return@forEachAccessibleResource false
+        tile.forEachAccessibleMatch(this, accessRadius(tile, resource)) { res, oneWorth ->
+            if (res.isEmpty || res == resource)
+                return@forEachAccessibleMatch false
 
             val worth = res.amount * oneWorth
             currentAmount += worth
@@ -41,7 +38,7 @@ class NeedDependency(
     }
 
     override fun hasNeeded(tile: Tile) =
-        tile.forEachAccessibleResource { isResourceDependency(it) }
+        tile.forEachAccessibleMatch(this) { res, _ -> res.isNotEmpty }
 
     override val isPositive = true
 

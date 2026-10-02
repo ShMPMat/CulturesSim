@@ -19,9 +19,7 @@ abstract class LabelerDependency(
     val labeler = quantifiedResourceLabeler.resourceLabeler
     val amount = quantifiedResourceLabeler.amount
 
-    override fun hasNeeded(tile: Tile) = tile.resourcePack.any { isResourceGood(it) }
-
-    fun isResourceGood(resource: Resource) = isResourceDependency(resource)
+    override fun hasNeeded(tile: Tile) = tile.getDependencyMatches(this).any { res, _ -> res.isNotEmpty }
 
     open fun isResourceDependency(resource: Resource): Boolean =
         resource.isNotEmpty && oneResourceWorth(resource) != NOT_DEPENDENCY

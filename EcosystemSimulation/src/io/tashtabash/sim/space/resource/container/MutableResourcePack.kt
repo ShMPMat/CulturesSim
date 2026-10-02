@@ -76,7 +76,7 @@ class MutableResourcePack(resources: Collection<Resource> = emptyList()) : Resou
 
     fun addAll(resourcePack: ResourcePack) = addAll(resourcePack.resources)
 
-    fun remove(resource: Resource) = resourceMap.remove(resource)
+    fun remove(resource: Resource) = removeResource(resource)
 
     fun removeAll(resources: Collection<Resource>) = resources.forEach { this.remove(it) }
 

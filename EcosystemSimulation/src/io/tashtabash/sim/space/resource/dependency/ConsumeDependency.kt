@@ -26,12 +26,9 @@ class ConsumeDependency(
         var gatheredAmount = resource.getConsumeBuffer(this)
 
         if (gatheredAmount < neededAmount)
-            tile.forEachAccessibleResource(accessRadius(tile, resource)) { res ->
-                if (res.isEmpty)
-                    return@forEachAccessibleResource false
-                val oneWorth = oneResourceWorth(res)
-                if (oneWorth == NOT_DEPENDENCY || res == resource)
-                    return@forEachAccessibleResource false
+            tile.forEachAccessibleMatch(this, accessRadius(tile, resource)) { res, oneWorth ->
+                if (res.isEmpty || res == resource)
+                    return@forEachAccessibleMatch false
 
                 if (isSafe)
                     gatheredAmount += res.amount * oneWorth
@@ -44,7 +41,7 @@ class ConsumeDependency(
                     }
                 }
 
-                return@forEachAccessibleResource gatheredAmount >= neededAmount
+                return@forEachAccessibleMatch gatheredAmount >= neededAmount
             }
 
         val result = min(gatheredAmount.toDouble() / neededAmount, 1.0)

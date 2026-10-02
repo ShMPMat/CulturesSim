@@ -8,6 +8,8 @@ import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.container.ResourcePack
+import io.tashtabash.sim.space.resource.dependency.LabelerDependency
+import io.tashtabash.sim.space.resource.dependency.NOT_DEPENDENCY
 import io.tashtabash.sim.space.tile.updater.TileUpdater
 import java.util.*
 import kotlin.math.max
@@ -94,6 +96,41 @@ class Tile(
         return false
     }
 
+    private val dependencyMatches = HashMap<LabelerDependency, DependencyMatches>()
+
+    fun getDependencyMatches(dependency: LabelerDependency): DependencyMatches {
+        val keysVersion = _resourcePack.keysVersion
+        dependencyMatches[dependency]?.let {
+            if (it.keysVersion == keysVersion)
+                return it
+        }
+
+        // No relevant cache found, [re]build
+        val matches = DependencyMatches(keysVersion)
+        for (res in _resourcePack.resourcesIterator) {
+            val worth = dependency.oneResourceWorth(res)
+            if (worth != NOT_DEPENDENCY)
+                matches.add(res, worth)
+        }
+
+        return matches.also { dependencyMatches[dependency] = it }
+    }
+
+    inline fun forEachAccessibleMatch(
+        dependency: LabelerDependency,
+        radius: Int = 1,
+        action: (Resource, Int) -> Boolean
+    ): Boolean {
+        if (getDependencyMatches(dependency).any(action))
+            return true
+
+        for (neighbour in getTilesInRadius(radius))
+            if (neighbour.getDependencyMatches(dependency).any(action))
+                return true
+
+        return false
+    }
+
     fun getNeighbours(predicate: (Tile) -> Boolean) = neighbours.filter(predicate)
 
     private val radiusCache = arrayOfNulls<List<Tile>>(10).also {
@@ -170,12 +207,25 @@ class Tile(
     }
 
     private fun addResource(resource: Resource) {
+        val oldKeysVersion = _resourcePack.keysVersion
         _resourcePack.add(resource)
+        val keysVersion = _resourcePack.keysVersion
+        if (keysVersion == oldKeysVersion)
+            return
+
+        // Try to cache the new Resource instead of rebuilding DependencyMatches later
+        for ((dependency, matches) in dependencyMatches) {
+            if (matches.keysVersion != oldKeysVersion)
+                continue
+
+            val worth = dependency.oneResourceWorth(resource)
+            if (worth != NOT_DEPENDENCY)
+                matches.add(resource, worth)
+            matches.keysVersion = keysVersion
+        }
     }
 
-    /**
-     * Adds resources which will be available on this Tile on the next turn.
-     */
+     // Adds resources which will be available on this Tile on the next turn.
     fun addDelayedResource(resource: Resource) {
         if (resource.isEmpty)
             return
@@ -246,7 +296,19 @@ class Tile(
                 t.addDelayedResource(r)
         }
 
+        if (deletedResources.isEmpty())
+            return
+
+        val oldKeysVersion = _resourcePack.keysVersion
         _resourcePack.removeAll(deletedResources)
+        val keysVersion = _resourcePack.keysVersion
+
+        // Try to remove the cached Resource instead of rebuilding DependencyMatches later
+        for (matches in dependencyMatches.values)
+            if (matches.keysVersion == oldKeysVersion) {
+                matches.removeAll(deletedResources)
+                matches.keysVersion = keysVersion
+            }
     }
 
     fun levelUpdate() { //TODO works bad on Ice; wind should affect mountains mb they will stop growing

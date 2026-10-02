@@ -7,12 +7,18 @@ import java.util.*
 
 open class ResourcePack private constructor(resources: Collection<Resource>, doSafeAdd: Boolean) {
     protected var resourceMap = TreeMap<Resource, Resource>()
+    // Same content as resourceMap for O(1) lookups
+    private val resourceIndex = HashMap<Resource, Resource>()
+
+    // Changes whenever a Resource is added to or removed from the pack, but not on amount changes
+    var keysVersion = 0
+        private set
 
     init {
         if (doSafeAdd)
             resources.forEach { internalAdd(it) }
         else
-            resources.forEach{ resourceMap[it] = it }
+            resources.forEach { putResource(it) }
     }
 
     constructor(resources: Collection<Resource> = listOf()): this(resources, true)
@@ -37,10 +43,10 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
         if (resource.amount == 0)
             return false
 
-        val internal = resourceMap[resource]
+        val internal = resourceIndex[resource]
 
         return if (internal == null) {
-            resourceMap[resource] = resource
+            putResource(resource)
             false
         } else {
             internal.merge(resource)
@@ -48,46 +54,60 @@ open class ResourcePack private constructor(resources: Collection<Resource>, doS
         }
     }
 
+    private fun putResource(resource: Resource) {
+        resourceMap[resource] = resource
+        resourceIndex[resource] = resource
+        keysVersion++
+    }
+
+    protected fun removeResource(resource: Resource): Resource? {
+        val removed = resourceMap.remove(resource)
+            ?: return null
+        resourceIndex.remove(resource)
+        keysVersion++
+        return removed
+    }
+
     fun getResourcesUnpacked(predicate: (Resource) -> Boolean) =
-            resourceMap.navigableKeySet().filter(predicate)
+        resourceMap.navigableKeySet().filter(predicate)
 
     fun getTaggedResourcesUnpacked(tag: ResourceTag) =
-            resourceMap.navigableKeySet().filter { it.genome.getTagLevel(tag) > 0 }
+        resourceMap.navigableKeySet().filter { it.genome.getTagLevel(tag) > 0 }
 
     fun getResources(predicate: (Resource) -> Boolean) =
-            ResourcePack(getResourcesUnpacked(predicate), false)
+        ResourcePack(getResourcesUnpacked(predicate), false)
 
     fun getResource(resource: Resource): ResourcePack {
-        val resourceInMap = resourceMap[resource]
-                ?: return ResourcePack()
+        val resourceInMap = resourceIndex[resource]
+            ?: return ResourcePack()
         return ResourcePack(listOf(resourceInMap), false)
     }
 
-    fun getUnpackedResource(resource: Resource): Resource = resourceMap[resource] ?: resource.copy(0)
+    fun getUnpackedResource(resource: Resource): Resource = resourceIndex[resource] ?: resource.copy(0)
 
     fun getTagPresence(tag: ResourceTag) = getTaggedResourcesUnpacked(tag)
-            .sumOf { it.getTagPresence(tag) }
+        .sumOf { it.getTagPresence(tag) }
 
     fun getAmount(tag: ResourceTag) = getTaggedResourcesUnpacked(tag).sumOf { it.amount }
 
-    fun getAmount(resource: Resource) = resourceMap[resource]?.amount ?: 0
+    fun getAmount(resource: Resource) = resourceIndex[resource]?.amount ?: 0
 
     fun getAmount(predicate: (Resource) -> Boolean) = getResourcesUnpacked(predicate).sumOf { it.amount }
 
     fun clearEmpty() = resourceMap.entries
-            .filter { it.value.amount == 0 }
-            .forEach { resourceMap.remove(it.key) }
+        .filter { it.value.amount == 0 }
+        .forEach { removeResource(it.key) }
 
     fun any(predicate: (Resource) -> Boolean) = resourceMap.navigableKeySet().any(predicate)
 
-    fun contains(resource: Resource) = resourceMap[resource] != null
+    fun contains(resource: Resource) = resourceIndex.containsKey(resource)
 
     fun containsAll(resources: Collection<Resource>) = resources.all { contains(it) }
 
     fun containsAll(pack: ResourcePack) = containsAll(pack.resourceMap.navigableKeySet())
 
     override fun toString() =
-            resourceMap.navigableKeySet().joinToString("\n") { "${it.fullName} ${it.amount};" }
+        resourceMap.navigableKeySet().joinToString("\n") { "${it.fullName} ${it.amount};" }
 
     val listResources
         get() = resourceMap.navigableKeySet().joinToString { "${it.fullName} ${it.amount};" }

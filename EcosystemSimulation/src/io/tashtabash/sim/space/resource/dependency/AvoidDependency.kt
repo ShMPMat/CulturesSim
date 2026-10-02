@@ -17,12 +17,9 @@ class AvoidDependency(
         val actualAmount = amount * resource.amount
         var currentAmount = 0
 
-        tile.forEachAccessibleResource { res ->
-            if (res.isEmpty)
-                return@forEachAccessibleResource false
-            val oneWorth = oneResourceWorth(res)
-            if (oneWorth == NOT_DEPENDENCY || res == resource)
-                return@forEachAccessibleResource false
+        tile.forEachAccessibleMatch(this) { res, oneWorth ->
+            if (res.isEmpty || res == resource)
+                return@forEachAccessibleMatch false
 
             currentAmount += res.amount * oneWorth
 
@@ -32,8 +29,7 @@ class AvoidDependency(
         return 1 - min(currentAmount.toDouble() / actualAmount, 1.0)
     }
 
-    override fun hasNeeded(tile: Tile) =
-        tile.forEachAccessibleResource { isResourceDependency(it) }
+    override fun hasNeeded(tile: Tile) = false
 
     override fun isResourceDependency(resource: Resource) = false
 
