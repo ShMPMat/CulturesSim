@@ -7,6 +7,7 @@ import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.container.ResourcePool
+import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.updater.FlowTransferUpdater
 import io.tashtabash.sim.space.tile.updater.FlowUpdater
@@ -27,11 +28,11 @@ fun generateMap(
 ): WorldMap {
     val tiles = createTiles(x, y, resourcePool, scale)
     val map = WorldMap(tiles)
-    val flowTransferUpdater = FlowTransferUpdater(map, resourcePool.getBaseName("Water"))
+    val flowTransferUpdater = FlowTransferUpdater(resourcePool.getBaseName("Water"))
     for (tile in tiles.flatten())
         tile.updaters += listOf(
             flowTransferUpdater,
-            FlowUpdater(map)
+            FlowUpdater()
         )
     setTileNeighbours(map)
     val tectonicPlates = randomPlates(
@@ -51,12 +52,16 @@ fun generateMap(
 internal fun setTileNeighbours(map: WorldMap) {
     for (i in 0 until map.maxX)
         for (j in 0 until map.maxY)
-            map[i, j]?.neighbours = arrayOf(
-                map[i, j + 1],
-                map[i, j - 1],
-                map[i + 1, j],
-                map[i - 1, j],
-            ).filterNotNull()
+            map[i, j]?.let { tile ->
+                val neighbours = listOfNotNull(
+                    map[i, j + 1],
+                    map[i, j - 1],
+                    map[i + 1, j],
+                    map[i - 1, j],
+                ).distinct()
+
+                tile.setNeighbours(neighbours.map { it to map.direction(tile, it)!! })
+            }
 }
 
 private fun createTiles(x: Int, y: Int, resourcePool: ResourcePool, scale: Scale): List<List<Tile>> {
@@ -77,7 +82,7 @@ private fun randomPlates(platesAmount: Int, map: WorldMap, random: Random): List
     val usedTiles: MutableSet<Tile> = HashSet()
     for (i in 0 until platesAmount) {
         val direction = randomElement(
-            TectonicPlate.Direction.entries,
+            Direction.sides.asList(),
             random
         )
         val type = randomElement(

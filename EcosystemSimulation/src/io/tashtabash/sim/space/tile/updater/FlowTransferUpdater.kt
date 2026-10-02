@@ -1,12 +1,12 @@
 package io.tashtabash.sim.space.tile.updater
 
-import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
+import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 
 
-class FlowTransferUpdater(val map: WorldMap, val water: Resource): TileUpdater {
+class FlowTransferUpdater(val water: Resource): TileUpdater {
     override fun update(tile: Tile) {
         if (tile.flow.strength == 0.0)
             return
@@ -23,18 +23,25 @@ class FlowTransferUpdater(val map: WorldMap, val water: Resource): TileUpdater {
 
             if (overallPart > 0) {
                 if (flow.x > 0)
-                    moveResources(map[tile.x + 1, tile.y], resource, overallPart, flow.x / flow.strength)
+                    moveResources(tile, Direction.XPlus, resource, overallPart, flow.x / flow.strength)
                 if (flow.x < 0)
-                    moveResources(map[tile.x - 1, tile.y], resource, overallPart, -flow.x / flow.strength)
+                    moveResources(tile, Direction.XMinus, resource, overallPart, -flow.x / flow.strength)
                 if (flow.y > 0)
-                    moveResources(map[tile.x, tile.y + 1], resource, overallPart, flow.y / flow.strength)
+                    moveResources(tile, Direction.YPlus, resource, overallPart, flow.y / flow.strength)
                 if (flow.y < 0)
-                    moveResources(map[tile.x, tile.y - 1], resource, overallPart, -flow.y / flow.strength)
+                    moveResources(tile, Direction.YMinus, resource, overallPart, -flow.y / flow.strength)
             }
         }
     }
 
-    private fun moveResources(tile: Tile?, resource: Resource, part: Int, flowPart: Double) {
-        tile?.addDelayedResource(resource.getCleanPart((part * flowPart).toInt(), Taker.FlowTaker))
+    private fun moveResources(from: Tile, direction: Direction, resource: Resource, part: Int, flowPart: Double) {
+        val neighboursCount = from.countNeighboursIn(direction)
+        if (neighboursCount == 0)
+            return
+
+        val neighbourPart = (part * flowPart).toInt() / neighboursCount
+        from.forEachNeighbourIn(direction) { //Split evenly
+            it.addDelayedResource(resource.getCleanPart(neighbourPart, Taker.FlowTaker))
+        }
     }
 }

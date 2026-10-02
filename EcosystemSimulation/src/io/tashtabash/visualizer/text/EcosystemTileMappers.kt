@@ -4,6 +4,7 @@ import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.ResourceType
+import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -55,10 +56,11 @@ fun platesMapper(plates: List<TectonicPlate>, tile: Tile): String {
     if (affectedTiles.contains(tile))
         return "\u001b[" + (30 + ord) + "mX"
     val direction = when (plate.direction) {
-        TectonicPlate.Direction.D -> "v"
-        TectonicPlate.Direction.L -> "<"
-        TectonicPlate.Direction.R -> ">"
-        TectonicPlate.Direction.U -> "^"
+        Direction.XPlus -> "v"
+        Direction.YMinus -> "<"
+        Direction.YPlus -> ">"
+        Direction.XMinus -> "^"
+        Direction.Here -> "o"
     }
     return "\u001b[" + (30 + ord) + "m" + direction
 }

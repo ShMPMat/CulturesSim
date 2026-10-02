@@ -1,11 +1,11 @@
 package io.tashtabash.sim.space.tile.updater
 
-import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.abs
 
 
-class FlowUpdater(val map: WorldMap): TileUpdater {
+class FlowUpdater : TileUpdater {
     var updatedFlowX = 0.0
     var updatedFlowY = 0.0
 
@@ -22,26 +22,25 @@ class FlowUpdater(val map: WorldMap): TileUpdater {
 
         windEffectX = 0.0
         windEffectY = 0.0
-        for ((affectedTile, strength) in tile.wind.affectedTiles) {
-            if (affectedTile == map[tile.x + 1, tile.y])
-                windEffectX += strength / windDecreaseCoefficient
-            if (affectedTile == map[tile.x - 1, tile.y])
-                windEffectX -= strength / windDecreaseCoefficient
-            if (affectedTile == map[tile.x, tile.y + 1])
-                windEffectY += strength / windDecreaseCoefficient
-            if (affectedTile == map[tile.x, tile.y - 1])
-                windEffectY -= strength / windDecreaseCoefficient
-        }
+        for ((affectedTile, strength) in tile.wind.affectedTiles)
+            when (tile.directionOf(affectedTile)) {
+                Direction.XPlus -> windEffectX += strength / windDecreaseCoefficient
+                Direction.XMinus -> windEffectX -= strength / windDecreaseCoefficient
+                Direction.YPlus -> windEffectY += strength / windDecreaseCoefficient
+                Direction.YMinus -> windEffectY -= strength / windDecreaseCoefficient
+                Direction.Here, null -> {}
+            }
 
-        propagateFlow(map[tile.x + 1, tile.y]?.flow?.x?.coerceAtMost(0.0) ?: 0.0, 0.0)
-        propagateFlow(map[tile.x - 1, tile.y]?.flow?.x?.coerceAtLeast(0.0)  ?: 0.0, 0.0)
-        propagateFlow(0.0, map[tile.x, tile.y + 1]?.flow?.y?.coerceAtMost(0.0) ?: 0.0)
-        propagateFlow(0.0, map[tile.x, tile.y - 1]?.flow?.y?.coerceAtLeast(0.0)  ?: 0.0)
+        // Take the flow coming towards this Tile
+        tile.forEachNeighbourIn(Direction.XPlus) { propagateFlow(it.flow.x.coerceAtMost(0.0), 0.0) }
+        tile.forEachNeighbourIn(Direction.XMinus) { propagateFlow(it.flow.x.coerceAtLeast(0.0), 0.0) }
+        tile.forEachNeighbourIn(Direction.YPlus) { propagateFlow(0.0, it.flow.y.coerceAtMost(0.0)) }
+        tile.forEachNeighbourIn(Direction.YMinus) { propagateFlow(0.0, it.flow.y.coerceAtLeast(0.0)) }
 
-        divertFlow(map[tile.x + 1, tile.y], 1, 0)
-        divertFlow(map[tile.x - 1, tile.y], -1, 0)
-        divertFlow(map[tile.x, tile.y + 1], 0, 1)
-        divertFlow(map[tile.x, tile.y - 1], 0, -1)
+        divertFlow(isWaterIn(tile, Direction.XPlus), 1, 0)
+        divertFlow(isWaterIn(tile, Direction.XMinus), -1, 0)
+        divertFlow(isWaterIn(tile, Direction.YPlus), 0, 1)
+        divertFlow(isWaterIn(tile, Direction.YMinus), 0, -1)
 
 
         if (abs(updatedFlowX) + abs(updatedFlowY) < abs(windEffectX))
@@ -57,8 +56,12 @@ class FlowUpdater(val map: WorldMap): TileUpdater {
         }
     }
 
-    private fun divertFlow(nextTile: Tile?, xShift: Int, yShift: Int) {
-        if (nextTile != null && nextTile.type == Tile.Type.Water)
+    private fun isWaterIn(tile: Tile, direction: Direction) =
+        tile.anyNeighbourIn(direction) { it.type == Tile.Type.Water }
+
+    // Turns the flow aside if it runs into a shore or the map edge
+    private fun divertFlow(isWaterAhead: Boolean, xShift: Int, yShift: Int) {
+        if (isWaterAhead)
             return
 
         if (updatedFlowX > 0 && xShift > 0) {

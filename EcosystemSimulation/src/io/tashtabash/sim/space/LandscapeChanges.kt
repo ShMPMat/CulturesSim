@@ -60,25 +60,21 @@ fun createRiver(
         val flowUpdater = currentTile.findUpdaterOfType(FlowUpdater::class.java)
             ?: throw SimulationError("Flow updater expected be registered")
 
-        flowUpdater.updatedFlowX = (nextTile.x - currentTile.x) * (0.5 + currentTile.level - nextTile.level)
-        // In comparison to x flow this code checks for world wrapping using a hack; won't work if maxY = 1
-        var yShift = nextTile.y - currentTile.y
-        if (yShift > 1)
-            yShift = -1
-        else if (yShift < -1)
-            yShift = 1
-        flowUpdater.updatedFlowY = yShift * (0.5 + currentTile.level - nextTile.level)
+        val direction = currentTile.directionOf(nextTile)
+            ?: throw SimulationError("River Tiles ${currentTile.posStr} and ${nextTile.posStr} aren't adjacent")
+        flowUpdater.updatedFlowX = direction.dx * (0.5 + currentTile.level - nextTile.level)
+        flowUpdater.updatedFlowY = direction.dy * (0.5 + currentTile.level - nextTile.level)
 
         currentTile = nextTile
     }
 }
 
 fun createLake(
-        tile: Tile,
-        water: Resource,
-        goodTilePredicate: (Tile) -> Boolean,
-        previousRiverTag: TileTag,
-        random: Random
+    tile: Tile,
+    water: Resource,
+    goodTilePredicate: (Tile) -> Boolean,
+    previousRiverTag: TileTag,
+    random: Random
 ) {
     val nameTag = getLakeTag(lakesCreated.toString())
     lakesCreated++
@@ -88,8 +84,8 @@ fun createLake(
     queue.add(tile)
     while (true) {
         val goodTiles = queue.poll()
-                ?.getNeighbours(goodTilePredicate)
-                ?: break
+            ?.getNeighbours(goodTilePredicate)
+            ?: break
         val tiles = goodTiles.filter { it.level == tile.level }
         outflowTiles += goodTiles.filter { it.level < tile.level && tile.type != Tile.Type.Water }
         for (t in tiles)
@@ -128,12 +124,12 @@ fun createLake(
 }
 
 fun createRivers(
-        map: WorldMap,
-        amount: Int,
-        water: Resource,
-        goodSpotProbability: (Tile) -> Double,
-        goodTilePredicate: (Tile) -> Boolean,
-        random: Random
+    map: WorldMap,
+    amount: Int,
+    water: Resource,
+    goodSpotProbability: (Tile) -> Double,
+    goodTilePredicate: (Tile) -> Boolean,
+    random: Random
 ) {
     val allTiles = map.tiles
         .map { it to goodSpotProbability(it) }
@@ -192,7 +188,7 @@ private fun makeRiverPath(start: Tile, finish: Tile, allowedTiles: Set<Tile>, ra
 }
 
 private fun unwind(start: Tile, cur: Tile, map: Map<Tile, Tile>): List<Tile> =
-        (if (cur == start) emptyList() else unwind(start, map.getValue(cur), map)) + listOf(cur)
+    (if (cur == start) emptyList() else unwind(start, map.getValue(cur), map)) + listOf(cur)
 
 private fun distance(start: Tile, finish: Tile): Int {
     if (finish.resourcePack.any { it.simpleName == "Water" })

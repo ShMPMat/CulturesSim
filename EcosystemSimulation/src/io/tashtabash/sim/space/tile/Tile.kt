@@ -4,7 +4,6 @@ import io.tashtabash.sim.DataInitializationError
 import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.TectonicPlate
-import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.container.ResourcePack
@@ -51,11 +50,43 @@ class Tile(
         private set
 
     var neighbours = listOf<Tile>()
-        set(value) {
-            if (field.isNotEmpty())
-                throw DataInitializationError("Neighbours are already set")
-            field = value
-        }
+        private set
+
+    @PublishedApi // In the order of neighbours
+    internal var neighbourDirections = arrayOf<Direction>()
+        private set
+
+    fun setNeighbours(tiles: List<Pair<Tile, Direction>>) {
+        if (neighbours.isNotEmpty())
+            throw DataInitializationError("Neighbours are already set")
+
+        neighbours = tiles.map { it.first }
+        neighbourDirections = tiles.map { it.second }.toTypedArray()
+    }
+
+    // null if the Tile isn't a neighbour
+    fun directionOf(tile: Tile): Direction? {
+        val i = neighbours.indexOf(tile)
+        return if (i != -1)
+            neighbourDirections[i]
+        else null
+    }
+
+    inline fun forEachNeighbourIn(direction: Direction, action: (Tile) -> Unit) {
+        for (i in neighbours.indices)
+            if (neighbourDirections[i] == direction)
+                action(neighbours[i])
+    }
+
+    inline fun anyNeighbourIn(direction: Direction, predicate: (Tile) -> Boolean): Boolean {
+        for (i in neighbours.indices)
+            if (neighbourDirections[i] == direction && predicate(neighbours[i]))
+                return true
+
+        return false
+    }
+
+    fun countNeighboursIn(direction: Direction) = neighbourDirections.count { it == direction }
 
     init {
         updateTemperature()
@@ -253,10 +284,10 @@ class Tile(
             updater.update(this)
     }
 
-    fun middleUpdate(map: WorldMap) {
+    fun middleUpdate() {
         _delayedResources.forEach { addResource(it) }
         _delayedResources.clear()
-        windCenter.middleUpdate(x, y, map)
+        windCenter.middleUpdate(this)
     }
 
     fun finishUpdate() {
@@ -270,7 +301,7 @@ class Tile(
     private fun updateTemperature() {
         val start = data.temperatureBaseStart
         val finish = data.temperatureBaseFinish
-        val size = data.mapSizeX
+        val scaledSize = data.worldSizeXKm / scale.tileSizeKm
         var levelShift = 0
         if (type == Type.Water || type == Type.Ice) {
             levelShift -= 2
@@ -280,7 +311,7 @@ class Tile(
             val elevation = max(level - data.defaultWaterLevel, 0)
             levelShift -= elevation / 3
         }
-        temperature = start + x * (finish - start) / size + levelShift
+        temperature = start + x * (finish - start) / scaledSize + levelShift
     }
 
     private fun updateResources() {

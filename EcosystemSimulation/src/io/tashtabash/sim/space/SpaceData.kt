@@ -60,5 +60,7 @@ class Data(
 
     val yearDurationTicks = yearDurationDays.toDouble() / tickDurationDays
 
+    val worldSizeXKm = mapSizeX * defaultTileSizeKm
+
     val defaultScale = Scale(defaultTileSizeKm, tickDurationDays.toDouble() * dayDurationSeconds)
 }

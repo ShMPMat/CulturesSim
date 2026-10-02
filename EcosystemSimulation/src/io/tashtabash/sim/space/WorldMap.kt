@@ -2,6 +2,7 @@ package io.tashtabash.sim.space
 
 import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.space.SpaceData.data
+import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.setTags
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,23 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
 
     private fun checkCoordinate(coordinate: Int, max: Int) = coordinate in 0 until max
 
+    /**
+     * @return the Direction in which `to` lies from `from`, taking map looping into account;
+     * null if `to` isn't adjacent to `from`.
+     */
+    fun direction(from: Tile, to: Tile): Direction? = Direction.of(
+        shortestOffset(to.x - from.x, maxX, data.xMapLooping),
+        shortestOffset(to.y - from.y, maxY, data.yMapLooping)
+    )
+
+    // On a looping axis, picks the shorter way around
+    private fun shortestOffset(offset: Int, max: Int, isLooping: Boolean) = when {
+        !isLooping -> offset
+        offset > max / 2 -> offset - max
+        offset < -max / 2 -> offset + max
+        else -> offset
+    }
+
     fun setTags() {
         var name = 0
         val allTiles = tiles
@@ -80,13 +98,13 @@ class WorldMap(val linedTiles: List<List<Tile>>) {
 
             for (line in linedTiles)
                 for (tile in line)
-                    tile.middleUpdate(this)
+                    tile.middleUpdate()
         } else tileUpdateOrder?.let {
             runOnMap(it) { tile ->
                 tile.startUpdate()
             }
             runOnMap(middleUpdateOrder) { tile ->
-                tile.middleUpdate(this@WorldMap)
+                tile.middleUpdate()
             }
         }
     }

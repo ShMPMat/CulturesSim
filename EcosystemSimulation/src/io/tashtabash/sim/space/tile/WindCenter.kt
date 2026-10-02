@@ -1,7 +1,6 @@
 package io.tashtabash.sim.space.tile
 
 import io.tashtabash.sim.space.SpaceData.data
-import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
 import io.tashtabash.sim.space.resource.freeMarker
@@ -38,18 +37,18 @@ class WindCenter internal constructor() {
             resource.genome.mass /
             (if (resource.core.ownershipMarker == freeMarker) 1 else 10)
 
-    fun middleUpdate(x: Int, y: Int, map: WorldMap) {
-        val host = map[x, y]
-            ?: return
-
+    fun middleUpdate(host: Tile) {
         host.neighbours.forEach { setWindByTemperature(it, host) }
 
-        propagateWindStraight(map[x - 1, y], map[x + 1, y], host)
-        propagateWindStraight(map[x + 1, y], map[x - 1, y], host)
-        propagateWindStraight(map[x, y - 1], map[x, y + 1], host)
-        propagateWindStraight(map[x, y + 1], map[x, y - 1], host)
+        // Here neighbours have no opposite side, so the wind doesn't pass straight through them
+        for (direction in Direction.sides)
+            host.forEachNeighbourIn(direction) { target ->
+                host.forEachNeighbourIn(direction.opposite) { source ->
+                    propagateWindStraight(target, source, host)
+                }
+            }
 
-        map[x, y - 1]?.let {
+        host.forEachNeighbourIn(Direction.YMinus) {
             _newWind.changeLevelOnTile(it, data.coriolisEffect)
         }
     }
@@ -58,9 +57,7 @@ class WindCenter internal constructor() {
         wind = _newWind
     }
 
-    private fun setWindByTemperature(tile: Tile?, master: Tile) {
-        tile ?: return
-
+    private fun setWindByTemperature(tile: Tile, master: Tile) {
         var change = data.temperatureToWind
         if (tile.level + 2 < master.level)
             change *= 5
@@ -72,10 +69,7 @@ class WindCenter internal constructor() {
             _newWind.changeLevelOnTile(tile, level)
     }
 
-    private fun propagateWindStraight(target: Tile?, tile: Tile?, master: Tile) {
-        tile ?: return
-        target ?: return
-
+    private fun propagateWindStraight(target: Tile, tile: Tile, master: Tile) {
         val level = tile.wind.getLevelByTile(master) * (1 - data.windFriction) - data.windPropagationDrag
         if (level > 0)
             _newWind.changeLevelOnTile(target, level)

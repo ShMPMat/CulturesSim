@@ -31,7 +31,7 @@ class DependencyMatchesTest {
 
     private fun addResources(vararg resources: Resource) {
         resources.forEach { tile.addDelayedResource(it) }
-        tile.middleUpdate(map)
+        tile.middleUpdate()
     }
 
     // What a full rebuild would return
