@@ -127,7 +127,7 @@ class Tile(
         return false
     }
 
-    private val dependencyMatches = HashMap<LabelerDependency, DependencyMatches>()
+    private val dependencyMatches = IdentityHashMap<LabelerDependency, DependencyMatches>()
 
     fun getDependencyMatches(dependency: LabelerDependency): DependencyMatches {
         val keysVersion = _resourcePack.keysVersion
@@ -195,6 +195,14 @@ class Tile(
         .filter(predicate)
         .toSet()
 
+    // Sets the terrain as it is, e.g. one derived from finer Tiles
+    internal fun setTerrain(type: Type, level: Int, secondLevel: Int) {
+        this.type = type
+        this.level = level
+        this.secondLevel = secondLevel
+        updateTemperature()
+    }
+
     fun setType(type: Type, updateLevel: Boolean) {
         if (type == this.type)
             return
@@ -224,19 +232,19 @@ class Tile(
         }
     }
 
-    fun setLevel(level: Int) {
-        this.level = level
-        secondLevel = level
-        type = Type.Normal
+    fun setLevel(newLevel: Int) {
+        val wasWater = type == Type.Water
+        level = newLevel
+        secondLevel = newLevel
 
-        if (level >= 110)
-            type = Type.Mountain
-        if (level < data.defaultWaterLevel) {
-            if (type != Type.Water)
-                addDelayedResource(data.resourcePool.getBaseName("SaltWater"))
-
-            type = Type.Water
+        type = when {
+            newLevel < data.defaultWaterLevel -> Type.Water
+            newLevel >= 110 -> Type.Mountain
+            else -> Type.Normal
         }
+
+        if (type == Type.Water && !wasWater)
+            addDelayedResource(data.resourcePool.getBaseName("SaltWater"))
     }
 
     private fun addResource(resource: Resource) {
