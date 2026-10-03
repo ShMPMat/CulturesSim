@@ -4,9 +4,10 @@ import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.tile.Tile
 
 
-fun TextEcosystemVisualizer<*>.printTile(tile: Tile) {
-    printMap { if (it.x == tile.x && it.y == tile.y) "\u001b[31m\u001b[41mX" else "" }
-    println(tile)
+fun TextEcosystemVisualizer<*>.printTilesByOne(tiles: List<Tile>) {
+    printMap { t -> if (t.x in tiles.map { it.x } && t.y in tiles.map { it.y }) "\u001b[31m\u001b[41mX" else "" }
+    for (tile in tiles)
+        println("$tile\n\n\n")
 }
 
 fun TextEcosystemVisualizer<*>.printTiles(tiles: Collection<Tile>) {

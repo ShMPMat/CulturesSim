@@ -72,7 +72,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
                 AllPossibleResources -> println(visualizer.printedResources())
                 Tile -> findTiles(splitCommand[0], splitCommand[1])
                         .takeIf { it.isNotEmpty() }
-                        ?.forEach { printTile(it) }
+                        ?.let { printTilesByOne(it) }
                         ?: run {
                             print("No such Tile")
                             return ExecutionResult.Terminate
