@@ -214,8 +214,8 @@ class Tile(
 
         when (type) {
             Type.Mountain -> {
-                level = 110
-                secondLevel = 110
+                level = MOUNTAIN_LEVEL
+                secondLevel = MOUNTAIN_LEVEL
             }
             Type.Normal -> {
                 level = 100
@@ -239,7 +239,7 @@ class Tile(
 
         type = when {
             newLevel < data.defaultWaterLevel -> Type.Water
-            newLevel >= 110 -> Type.Mountain
+            newLevel >= MOUNTAIN_LEVEL -> Type.Mountain
             else -> Type.Normal
         }
 
@@ -396,3 +396,5 @@ class Tile(
         Normal, Mountain, Water, Ice, Woods, Growth
     }
 }
+
+const val MOUNTAIN_LEVEL = 110
