@@ -1,7 +1,6 @@
 package io.tashtabash.visualizer.printinfo
 
 import io.tashtabash.sim.SimulationError
-import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.tile.Tile
 
@@ -10,7 +9,8 @@ class MapPrintInfo {
     var cut = 0 // Set in a way to minimize the number of land being divided by a map border in the view
 
     fun computeCut(map: WorldMap) {
-        if (!data.yMapLooping) return
+        if (!map.extent.isYLooping || map.maxY != map.extent.sizeY)
+            return
 
         var bestGapLand = Int.MAX_VALUE
         var bestGapStart = 0
@@ -19,8 +19,8 @@ class MapPrintInfo {
         var currentGapStart = 0
         var currentGapWidth = 0
 
-        for (y in 0 until map.maxY) {
-            val landInThisLine = (0 until map.maxX).count { x ->
+        for (y in map.yCoordinates) {
+            val landInThisLine = map.xCoordinates.count { x ->
                 val tile = map.getMainTile(x, y)
                     ?: throw SimulationError("Incoherent map size")
                 tile.type != Tile.Type.Water && tile.type != Tile.Type.Ice

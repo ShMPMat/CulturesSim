@@ -143,7 +143,7 @@ open class TextEcosystemVisualizer<E : World>(
             var token: String
             map.append(if (i < 10) " $i" else i)
             for (j in 0 until worldMap.maxY) {
-                val tile = worldMap.getMainTile(i, j + mapPrintInfo.cut)!!
+                val tile = findTile(i, j)!!
                 token = mapper(tile).takeIf { it != "" } ?: applyMappers(tile)
                 if (token == " ") {
                     token = ""
@@ -277,13 +277,23 @@ open class TextEcosystemVisualizer<E : World>(
     fun findTile(x: String, y: String) =
         findTile(x.toInt(), y.toInt())
 
+    // Relative to the map origin and shifted by the cut
+    private fun globalCellCoordinates(x: Int, y: Int): Pair<Int, Int>? {
+        val map = controller.world.map
+        val globalX = map.xCoordinates.getOrNull(x)
+            ?: return null
+
+        return globalX to map.yCoordinates[(y + mapPrintInfo.cut).mod(map.maxY)]
+    }
+
     // The largest Tile of the cell
     fun findTile(x: Int, y: Int) =
-        controller.world.map.getMainTile(x, y + mapPrintInfo.cut)
+        globalCellCoordinates(x, y)?.let { (globalX, globalY) -> controller.world.map.getMainTile(globalX, globalY) }
 
     fun findTiles(x: String, y: String) =
         findTiles(x.toInt(), y.toInt())
 
     fun findTiles(x: Int, y: Int) =
-        controller.world.map.tilesAt(x, y + mapPrintInfo.cut)
+        globalCellCoordinates(x, y)?.let { (globalX, globalY) -> controller.world.map.tilesAt(globalX, globalY) }
+            ?: listOf()
 }

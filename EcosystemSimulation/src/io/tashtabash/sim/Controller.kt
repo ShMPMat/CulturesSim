@@ -2,6 +2,7 @@ package io.tashtabash.sim
 
 import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.init.AddRiversStep
+import io.tashtabash.sim.init.CondenseStep
 import io.tashtabash.sim.init.ControllerInitStep
 import io.tashtabash.sim.init.EcosystemTurnsStep
 import io.tashtabash.sim.init.GeologicalTurnsStep
@@ -24,6 +25,7 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
 
     protected val initSteps = mutableListOf<ControllerInitStep<E>>(
         GeologicalTurnsStep(geologyTurns, debugPrint),
+        CondenseStep(),
         EcosystemTurnsStep(initialTurns, debugPrint),
         AddRiversStep(
             fillCycles,

@@ -3,6 +3,7 @@ package io.tashtabash.sim.space.tile
 import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.createTestMap
 import io.tashtabash.sim.space.WorldMap
+import io.tashtabash.sim.space.mockWorldExtent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -55,7 +56,7 @@ class TileTest {
     @Test
     fun `WorldMap rejects duplicate Tile ids`() {
         assertThrows<IllegalArgumentException> {
-            WorldMap(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale)), 1, 2)
+            WorldMap(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale)), mockWorldExtent(1, 2))
         }
     }
 }

@@ -1,7 +1,6 @@
 package io.tashtabash.sim.space
 
 import io.tashtabash.random.singleton.RandomSingleton
-import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import io.tashtabash.sim.space.tile.setTags
@@ -13,41 +12,74 @@ import kotlin.math.max
 import kotlin.random.Random
 
 
-class WorldMap(val tiles: List<Tile>, val maxX: Int, val maxY: Int) {
-    // The Tiles of each cell, in the order of tiles
+class WorldMap(
+    val tiles: List<Tile>, // Have the global coordinates of the Extent
+    val extent: Extent,
+    val originX: Int = 0,
+    val originY: Int = 0,
+    val maxX: Int = extent.sizeX,
+    val maxY: Int = extent.sizeY,
+) {
+    // The Tiles of each cell stored in local coordinates
     private val cells: List<List<List<Tile>>>
 
-    init { // Cache tiles into a grid
+    init {
         val ids = tiles.map { it.id }
         require(ids.size == ids.distinct().size) { "Tile ids must be unique" }
+        require(isRectangleInside(originX, maxX, extent.sizeX, extent.isXLooping)
+                && isRectangleInside(originY, maxY, extent.sizeY, extent.isYLooping)) {
+            "Map $originX $originY ${maxX}x$maxY isn't inside the $extent"
+        }
 
+        // Cache tiles into a grid
         val newCells = List(maxX) { List(maxY) { mutableListOf<Tile>() } }
         for (tile in tiles) {
-            require(tile.x in 0 until maxX && tile.y in 0 until maxY) {
-                "Tile ${tile.id} at ${tile.posStr} is outside of the map"
+            require(extent.cutX(tile.x) == tile.x && extent.cutY(tile.y) == tile.y) {
+                "Tile ${tile.id} at ${tile.posStr} has coordinates outside of the $extent"
             }
-            newCells[tile.x][tile.y] += tile
+            val x = localX(tile.x)
+            val y = localY(tile.y)
+            require(x != null && y != null) { "Tile ${tile.id} at ${tile.posStr} is outside of the map" }
+            newCells[x][y] += tile
         }
         require(newCells.all { line -> line.all { it.isNotEmpty() } }) { "Every cell must have a Tile" }
 
         cells = newCells
     }
 
+    // The global coordinates of the covered cells
+    val xCoordinates: List<Int> = (0 until maxX).map { extent.cutX(originX + it)!! }
+    val yCoordinates: List<Int> = (0 until maxY).map { extent.cutY(originY + it)!! }
+
     val lines: List<List<Tile>> = cells.map { it.flatten() }
 
     val tectonicPlates = mutableListOf<TectonicPlate>()
 
     fun addPlate(plate: TectonicPlate) {
-        tectonicPlates.add(plate)
+        tectonicPlates += plate
     }
 
+    // The coordinate in the local coordinate space
+    private fun localX(x: Int) = local(extent.cutX(x), originX, this@WorldMap.maxX, extent.sizeX)
+    private fun localY(y: Int) = local(extent.cutY(y), originY, this@WorldMap.maxY, extent.sizeY)
+
+    private fun local(coordinate: Int?, origin: Int, size: Int, extentSize: Int): Int? {
+        coordinate ?: return null
+
+        return (coordinate - origin).mod(extentSize)
+            .takeIf { it < size }
+    }
+
+    fun isCovered(x: Int, y: Int) = localX(x) != null && localY(y) != null
+
+    // Empty for the cells which aren't covered
     fun tilesAt(x: Int, y: Int): List<Tile> {
-        val curX = cutCoordinate(x, maxX, data.xMapLooping)
+        val localX = localX(x)
             ?: return listOf()
-        val curY = cutCoordinate(y, maxY, data.yMapLooping)
+        val localY = localY(y)
             ?: return listOf()
 
-        return cells[curX][curY]
+        return cells[localX][localY]
     }
 
      // Only for coordinates which can't hold several Tiles
@@ -64,34 +96,10 @@ class WorldMap(val tiles: List<Tile>, val maxX: Int, val maxY: Int) {
     fun getMainTile(x: Int, y: Int): Tile? =
         tilesAt(x, y).maxByOrNull { it.area }
 
-    private fun cutCoordinate(coordinate: Int, max: Int, isLooping: Boolean): Int? {
-        if (!isLooping)
-            return coordinate.takeIf { it in 0 until max }
 
-        var curCoordinate = coordinate
+    fun direction(from: Tile, to: Tile): Direction? = extent.direction(from, to)
 
-        if (curCoordinate < 0)
-            curCoordinate = curCoordinate % max + max
-
-        return curCoordinate % max
-    }
-
-    /**
-     * @return the Direction in which `to` lies from `from`, taking map looping into account;
-     * null if `to` isn't adjacent to `from`.
-     */
-    fun direction(from: Tile, to: Tile): Direction? = Direction.of(
-        shortestOffset(to.x - from.x, maxX, data.xMapLooping),
-        shortestOffset(to.y - from.y, maxY, data.yMapLooping)
-    )
-
-    // On a looping axis, picks the shorter way around
-    private fun shortestOffset(offset: Int, max: Int, isLooping: Boolean) = when {
-        !isLooping -> offset
-        offset > max / 2 -> offset - max
-        offset < -max / 2 -> offset + max
-        else -> offset
-    }
+    fun distance(from: Tile, to: Tile) = extent.distance(from, to)
 
     fun setTags() {
         var name = 0
@@ -160,8 +168,9 @@ class WorldMap(val tiles: List<Tile>, val maxX: Int, val maxY: Int) {
     fun calculateTileUpdateOrder(margin: Int): List<List<TilesBatch>> {
         require(margin > 0) { "Margin must be positive, got $margin" }
 
-        val xBlocks = splitIntoBlocks(maxX, 2 * margin, data.xMapLooping)
-        val yBlocks = splitIntoBlocks(maxY, 2 * margin, data.yMapLooping)
+        // The map loops only along an axis it covers completely
+        val xBlocks = splitIntoBlocks(maxX, 2 * margin, extent.isXLooping && maxX == extent.sizeX)
+        val yBlocks = splitIntoBlocks(maxY, 2 * margin, extent.isYLooping && maxY == extent.sizeY)
 
         return (0 until 4).map { colourIdx ->
             xBlocks.filterIndexed { i, _ -> i % 2 == colourIdx / 2 }.flatMap { xRange ->
@@ -204,3 +213,7 @@ class WorldMap(val tiles: List<Tile>, val maxX: Int, val maxY: Int) {
             plate.move()
     }
 }
+
+// Whether the range starting at the origin fits into the extent; it can cross the edge of a looping axis
+private fun isRectangleInside(origin: Int, size: Int, extentSize: Int, isLooping: Boolean) =
+    origin in 0 until extentSize && size in 1..extentSize && (isLooping || origin + size <= extentSize)

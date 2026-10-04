@@ -47,6 +47,7 @@ class Data(
     val yearDurationDays: Int = 300,
     val dayDurationSeconds: Int = 24 * 60 * 60,
     val tickDurationDays: Int = 10,
+    val condensationFactor: Int = 1, // The generated map is condensed into cells this many times larger
     val generation: GenerationParameters = GenerationParameters(
         scale = Scale(50.0, tickDurationDays.toDouble() * dayDurationSeconds),
         sizeX = 45,
