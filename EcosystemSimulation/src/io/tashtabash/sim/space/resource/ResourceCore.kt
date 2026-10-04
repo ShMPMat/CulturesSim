@@ -1,8 +1,6 @@
 package io.tashtabash.sim.space.resource
 
 import io.tashtabash.sim.SimulationError
-import io.tashtabash.sim.space.SpaceError
-import io.tashtabash.sim.space.resource.instantiation.GenomeTemplate
 import java.util.*
 
 
@@ -15,10 +13,9 @@ class ResourceCore(
 ) {
     val externalFeatures = externalFeatures.sortedBy { it.index }
 
-    val fullName = genome.baseName +
-            if (externalFeatures.isNotEmpty())
-                externalFeatures.joinToString("_", "_") { it.name }
-            else ""
+    // Interned, so that comparing the names usually stops at the identity check; remove if too much mem is used
+    val fullName = (genome.baseName + externalFeatures.joinToString { "_${it.name}" })
+        .intern()
 
     init {
         if (externalFeatures.groupBy { it.index }.map { it.value.size }.any { it != 1 })
@@ -30,9 +27,7 @@ class ResourceCore(
     val wrappedSample by lazy { listOf(sample) }
 
     internal fun fullCopy(ownershipMarker: OwnershipMarker = this.ownershipMarker) =
-        if (genome is GenomeTemplate)
-            throw SpaceError("Can't make a full copy of a template")
-        else resourceBuilder(ResourceCore(genome.copy(), externalFeatures, ownershipMarker), genome.defaultAmount)
+        resourceBuilder(ResourceCore(genome.copy(), externalFeatures, ownershipMarker), genome.defaultAmount)
 
     fun copyWithNewExternalFeatures(features: List<ExternalResourceFeature>) = ResourceCore(
         genome.copy(),
