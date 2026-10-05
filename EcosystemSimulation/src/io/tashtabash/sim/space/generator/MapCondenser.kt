@@ -61,20 +61,21 @@ fun condenseRegion(
             val split = splitCell(cellTiles, sliverThreshold)
             for (partTiles in split) {
                 // A single part covers the whole cell, slivers included
-                val condensedTile = createPart(condensedTiles.size, x, y, partTiles, coarseScale, createUpdaters)
+                val allTileTiles = if (split.size == 1) partTiles.copy(tiles = cellTiles) else partTiles
+                val condensedTile = createPart(condensedTiles.size, x, y, allTileTiles, coarseScale, createUpdaters)
                 if (moveResources)
-                    moveResources(partTiles.tiles, condensedTile)
+                    moveResources(allTileTiles.tiles, condensedTile)
                 condensedTiles += condensedTile
             }
         }
 
-    val map = WorldMap(condensedTiles, extent, region.x, region.y, region.sizeX, region.sizeY)
+    val map = WorldMap(condensedTiles, extent, coarseScale, region.x, region.y, region.sizeX, region.sizeY)
     linkTiles(map)
 
     return map
 }
 
-private class PartTiles(val tiles: List<Tile>, val isWater: Boolean)
+private data class PartTiles(val tiles: List<Tile>, val isWater: Boolean)
 
 private fun Tile.isWater() = type == Tile.Type.Water || type == Tile.Type.Ice
 
