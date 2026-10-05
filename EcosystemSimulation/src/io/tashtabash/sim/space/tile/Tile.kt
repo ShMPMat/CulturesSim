@@ -316,7 +316,7 @@ class Tile(
         if (type == Type.Water || type == Type.Ice) {
             levelShift -= 2
             val deepness = max(data.defaultWaterLevel - secondLevel, 0)
-            levelShift -= deepness / 2
+            levelShift -= deepness * 5 / (data.defaultWaterLevel - data.seabedLevel) // max -5
         } else {
             val elevation = max(level - data.defaultWaterLevel, 0)
             levelShift -= elevation / 3
