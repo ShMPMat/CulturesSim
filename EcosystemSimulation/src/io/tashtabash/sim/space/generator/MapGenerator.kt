@@ -23,12 +23,14 @@ import kotlin.random.Random
 fun generateMap(parameters: GenerationParameters, resourcePool: ResourcePool, random: Random): WorldMap {
     val scale = parameters.scale
     val tiles = createTiles(parameters.sizeX, parameters.sizeY, scale) { createTileUpdaters(resourcePool) }
-    val map = WorldMap(tiles, Extent(parameters.sizeX, parameters.sizeY, data.xMapLooping, data.yMapLooping))
+    val map = WorldMap(tiles, Extent(parameters.sizeX, parameters.sizeY, data.xMapLooping, data.yMapLooping), scale)
     setTileNeighbours(map)
+    println("Start generating plates")
     val tectonicPlates = randomPlates(parameters, map, random)
+    println("Finished generating plates")
     tectonicPlates.forEach { map.addPlate(it) }
     fill(map)
-    setUpParallelUpdate(map, resourcePool, scale)
+    setUpParallelUpdate(map, resourcePool)
 
     return map
 }
@@ -40,8 +42,8 @@ fun createTileUpdaters(resourcePool: ResourcePool): MutableList<TileUpdater> = m
     FlowUpdater()
 )
 
-internal fun setUpParallelUpdate(map: WorldMap, resourcePool: ResourcePool, scale: Scale) {
-    val maxSpeed = resourcePool.all.maxOf { it.genome.behaviour.tileSpeed(scale) }
+internal fun setUpParallelUpdate(map: WorldMap, resourcePool: ResourcePool) {
+    val maxSpeed = resourcePool.all.maxOf { it.genome.behaviour.tileSpeed(map.scale) }
     map.tileUpdateOrder = map.calculateTileUpdateOrder(ceil(maxSpeed + 1).toInt())
 }
 

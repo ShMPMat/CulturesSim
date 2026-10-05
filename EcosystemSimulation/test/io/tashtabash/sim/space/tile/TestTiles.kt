@@ -10,7 +10,7 @@ private val nextTestTileId = AtomicInteger()
 fun createTestTile(
     x: Int = 0,
     y: Int = 0,
-    scale: Scale = data.defaultScale,
+    scale: Scale = data.generation.scale,
     area: Double = scale.tileAreaKm2,
     id: Int = nextTestTileId.getAndIncrement()
 ) = Tile(id, x, y, scale = scale, area = area)

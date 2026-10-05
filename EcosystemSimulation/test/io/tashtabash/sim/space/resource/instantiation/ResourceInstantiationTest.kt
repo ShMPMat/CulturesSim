@@ -86,7 +86,7 @@ class ResourceInstantiationTest {
         )
         // Check that there are no Resources with weird properties
         assertTrue {
-            resources.all.all { it.genome.naturalDensity(data.defaultScale.tileAreaKm2) < 1000000000 }
+            resources.all.all { it.genome.naturalDensity(data.generation.scale.tileAreaKm2) < 1000000000 }
         }
         assertNull(
             resources.all.firstOrNull { it.genome.parts.any { p -> p.genome.hasLegacy && !p.fullName.contains(it.fullName) } },

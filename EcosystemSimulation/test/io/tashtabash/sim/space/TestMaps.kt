@@ -12,10 +12,10 @@ fun createTestMap(
     sizeX: Int,
     sizeY: Int,
     withNeighbours: Boolean = true,
-    scale: Scale = data.defaultScale
+    scale: Scale = data.generation.scale
 ): WorldMap {
     val tiles = (0 until sizeX).flatMap { x -> (0 until sizeY).map { y -> createTestTile(x, y, scale) } }
-    val map = WorldMap(tiles, mockWorldExtent(sizeX, sizeY))
+    val map = WorldMap(tiles, mockWorldExtent(sizeX, sizeY), scale)
 
     if (withNeighbours)
         setTileNeighbours(map)

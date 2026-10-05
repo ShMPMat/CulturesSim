@@ -1,6 +1,7 @@
 package io.tashtabash.sim.space.tile
 
 import io.tashtabash.sim.space.Scale
+import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.createTestMap
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.mockWorldExtent
@@ -56,7 +57,7 @@ class TileTest {
     @Test
     fun `WorldMap rejects duplicate Tile ids`() {
         assertThrows<IllegalArgumentException> {
-            WorldMap(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale)), mockWorldExtent(1, 2))
+            WorldMap(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale)), mockWorldExtent(1, 2), data.generation.scale)
         }
     }
 }

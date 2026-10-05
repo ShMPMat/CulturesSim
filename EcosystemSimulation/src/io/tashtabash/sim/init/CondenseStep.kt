@@ -12,10 +12,15 @@ class CondenseStep<E : World>(private val factor: Int = data.condensationFactor)
     override fun run(world: E, interactionModel: InteractionModel<E>) {
         val fine = world.map
         val map = condenseMap(fine, factor, { createTileUpdaters(world.resourcePool) })
-        setUpParallelUpdate(map, world.resourcePool, map.tiles.first().scale)
+        setUpParallelUpdate(map, world.resourcePool)
         world.map = map
 
         val splitCells = map.tiles.size - map.maxX * map.maxY
-        println("Condensed ${fine.tiles.size} Tiles into ${map.tiles.size}, $splitCells cells are split")
+        println(
+            "Condensed ${fine.tiles.size} Tiles into ${map.tiles.size} " +
+                    "(${fine.maxX}x${fine.maxY} -> ${map.maxX}x${map.maxY}), " +
+                    "$splitCells cells are split, " +
+                    "map size is ${map.maxX * map.scale.tileSizeKm}x${map.maxY * map.scale.tileSizeKm} km"
+        )
     }
 }

@@ -50,7 +50,7 @@ class Data(
     val condensationFactor: Int = 1, // The generated map is condensed into cells this many times larger
     val generation: GenerationParameters = GenerationParameters(
         scale = Scale(50.0, tickDurationDays.toDouble() * dayDurationSeconds),
-        sizeX = 45,
+        sizeX = 60,
         sizeY = 60,
         platesAmount = 10,
         tectonicRange = 2,
@@ -63,9 +63,6 @@ class Data(
     }
 
     val yearDurationTicks = yearDurationDays.toDouble() / tickDurationDays
-
-    val defaultScale: Scale
-        get() = generation.scale
 
     val worldSizeXKm = generation.sizeX * generation.scale.tileSizeKm
 }

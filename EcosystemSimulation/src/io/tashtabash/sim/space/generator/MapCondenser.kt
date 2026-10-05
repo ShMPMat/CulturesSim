@@ -43,7 +43,7 @@ fun condenseRegion(
 ): WorldMap {
     require(sliverThreshold in 0.0..0.5) { "Sliver threshold must be in 0..0.5, got $sliverThreshold" }
 
-    val fineScale = fine.tiles.first().scale
+    val fineScale = fine.scale
     val coarseScale = Scale(fineScale.tileSizeKm * factor, fineScale.tickDurationSeconds)
     val extent = fine.extent.coarsen(factor)
     val condensedTiles = mutableListOf<Tile>()

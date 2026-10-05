@@ -15,6 +15,7 @@ import kotlin.random.Random
 class WorldMap(
     val tiles: List<Tile>, // Have the global coordinates of the Extent
     val extent: Extent,
+    val scale: Scale,
     val originX: Int = 0,
     val originY: Int = 0,
     val maxX: Int = extent.sizeX,
@@ -30,6 +31,7 @@ class WorldMap(
                 && isRectangleInside(originY, maxY, extent.sizeY, extent.isYLooping)) {
             "Map $originX $originY ${maxX}x$maxY isn't inside the $extent"
         }
+        require(tiles.all { it.scale == scale }) { "All Tiles must have the same scale $scale" }
 
         // Cache tiles into a grid
         val newCells = List(maxX) { List(maxY) { mutableListOf<Tile>() } }

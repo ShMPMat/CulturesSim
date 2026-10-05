@@ -91,7 +91,7 @@ class TextEcosystemExecutor : CommandExecutor<TextEcosystemVisualizer<*>> {
 
                     printTiles(tiles)
                 }
-                ResourceDensity -> printMap { resourceDensityMapper(data.resourceCapacityPerKm2 * data.defaultScale.tileAreaKm2, it) }
+                ResourceDensity -> printMap { resourceDensityMapper(data.resourceCapacityPerKm2 * map.scale.tileAreaKm2, it) }
                 PinResources -> {
                     val isSubstring = splitCommand[0].last() != '!'
                     val resourceQuery = splitCommand[1]
