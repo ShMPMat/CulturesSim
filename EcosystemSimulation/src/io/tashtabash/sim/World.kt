@@ -15,6 +15,7 @@ import io.tashtabash.sim.space.resource.tag.ResourceTag
 //Stores all entities in the simulation
 interface World {
     var map: WorldMap
+    var baseMap: WorldMap
     val events: EventLog
     val tags: Set<ResourceTag>
     val resourcePool: ResourcePool

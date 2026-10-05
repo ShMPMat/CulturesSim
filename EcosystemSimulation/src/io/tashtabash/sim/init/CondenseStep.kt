@@ -10,15 +10,14 @@ import io.tashtabash.sim.space.generator.setUpParallelUpdate
 
 class CondenseStep<E : World>(private val factor: Int = data.condensationFactor) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
-        val fine = world.map
-        val map = condenseMap(fine, factor, { createTileUpdaters(world.resourcePool) })
+        val map = condenseMap(world.baseMap, factor, { createTileUpdaters(world.resourcePool) })
         setUpParallelUpdate(map, world.resourcePool)
         world.map = map
 
         val splitCells = map.tiles.size - map.maxX * map.maxY
         println(
-            "Condensed ${fine.tiles.size} Tiles into ${map.tiles.size} " +
-                    "(${fine.maxX}x${fine.maxY} -> ${map.maxX}x${map.maxY}), " +
+            "Condensed ${world.baseMap.tiles.size} Tiles into ${map.tiles.size} " +
+                    "(${world.baseMap.maxX}x${world.baseMap.maxY} -> ${map.maxX}x${map.maxY}), " +
                     "$splitCells cells are split, " +
                     "map size is ${map.maxX * map.scale.tileSizeKm}x${map.maxY * map.scale.tileSizeKm} km"
         )

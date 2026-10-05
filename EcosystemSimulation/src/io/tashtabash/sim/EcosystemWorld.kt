@@ -27,6 +27,7 @@ class EcosystemWorld(
     private val resourceResources: List<URL>
 ) : World {
     override lateinit var map: WorldMap
+    override lateinit var baseMap: WorldMap
 
     override var events = EventLog()
 
@@ -54,6 +55,7 @@ class EcosystemWorld(
         SpaceData.data.resourcePool = initialResources
 
         map = generateMap(SpaceData.data.generation, initialResources, RandomSingleton.random)
+        baseMap = map
     }
 
 
