@@ -294,6 +294,6 @@ open class TextEcosystemVisualizer<E : World>(
         findTiles(x.toInt(), y.toInt())
 
     fun findTiles(x: Int, y: Int) =
-        globalCellCoordinates(x, y)?.let { (globalX, globalY) -> controller.world.map.tilesAt(globalX, globalY) }
+        globalCellCoordinates(x, y)?.let { (globalX, globalY) -> controller.world.map.getTilesAt(globalX, globalY) }
             ?: listOf()
 }

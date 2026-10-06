@@ -58,7 +58,7 @@ class MapCondenserTest {
         makeWater(tiles.take(10))
         tiles.drop(10).take(5).forEach { it.setLevel(115) }
 
-        val (land, water) = condense().tilesAt(1, 1)
+        val (land, water) = condense().getTilesAt(1, 1)
 
         assertEquals(Tile.Type.Normal, land.type)
         assertEquals((10 * 100 + 5 * 115) / 15, land.level)
@@ -101,9 +101,9 @@ class MapCondenserTest {
 
         val map = condenseMap(fine, factor, { mutableListOf() }, sliverThreshold = .0)
 
-        assertEquals(1, map.tilesAt(0, 0).size)
-        assertEquals(2, map.tilesAt(1, 1).size)
-        assertEquals(cellArea / 25, map.tilesAt(1, 1)[1].area, 1e-9)
+        assertEquals(1, map.getTilesAt(0, 0).size)
+        assertEquals(2, map.getTilesAt(1, 1).size)
+        assertEquals(cellArea / 25, map.getTilesAt(1, 1)[1].area, 1e-9)
     }
 
     @Test
@@ -115,7 +115,7 @@ class MapCondenserTest {
 
         for (x in 0 until sizeX)
             for (y in 0 until sizeY)
-                assertEquals(cellArea, map.tilesAt(x, y).sumOf { it.area }, 1e-9)
+                assertEquals(cellArea, map.getTilesAt(x, y).sumOf { it.area }, 1e-9)
     }
 
     @Test
@@ -126,7 +126,7 @@ class MapCondenserTest {
         val map = condense()
         assertValidTopology(map)
 
-        val (land, water) = map.tilesAt(1, 1)
+        val (land, water) = map.getTilesAt(1, 1)
         assertEquals(Direction.Here, land.directionOf(water))
         assertEquals(5, land.neighbours.size)
         val adjacent = map.getValue(1, 2)
@@ -136,7 +136,7 @@ class MapCondenserTest {
 
         // Across the looping axis
         val acrossSeam = map.getValue(0, 0)
-        assertTrue(acrossSeam.neighbours.containsAll(map.tilesAt(0, sizeY - 1)))
+        assertTrue(acrossSeam.neighbours.containsAll(map.getTilesAt(0, sizeY - 1)))
     }
 
     @Test
@@ -146,7 +146,7 @@ class MapCondenserTest {
         val map = condense()
 
         assertEquals(map.tiles.indices.toList(), map.tiles.map { it.id })
-        val (land, water) = map.tilesAt(1, 1)
+        val (land, water) = map.getTilesAt(1, 1)
         assertTrue(land.id < water.id)
         assertEquals(Tile.Type.Water, water.type)
     }
@@ -164,7 +164,7 @@ class MapCondenserTest {
         tiles.take(10).forEach { it.addDelayedResource(salt.copy(5)) }
         tiles.drop(10).forEach { it.addDelayedResource(plant.copy(3)) }
 
-        val (land, water) = condense().tilesAt(1, 1)
+        val (land, water) = condense().getTilesAt(1, 1)
 
         assertEquals(50, water.amountOf(salt))
         assertEquals(0, water.amountOf(plant))
@@ -234,7 +234,7 @@ class MapCondenserTest {
         val parts = condenseRegion(region).tiles
         val whole = condense()
 
-        val expected = (1..2).flatMap { x -> (1..3).flatMap { y -> whole.tilesAt(x, y) } }
+        val expected = (1..2).flatMap { x -> (1..3).flatMap { y -> whole.getTilesAt(x, y) } }
         assertEquals(expected.map { it.description() }, parts.map { it.description() })
     }
 
@@ -251,7 +251,7 @@ class MapCondenserTest {
             for (neighbour in part.neighbours)
                 assertEquals(part.directionOf(neighbour)?.opposite, neighbour.directionOf(part))
 
-            val wholePart = whole.tilesAt(part.x, part.y).first { it.description() == part.description() }
+            val wholePart = whole.getTilesAt(part.x, part.y).first { it.description() == part.description() }
             val expectedNeighbours = wholePart.neighbours
                 .filter { it.x in 1..2 && it.y in 1..3 }
                 .map { it.description() }
@@ -278,7 +278,7 @@ class MapCondenserTest {
         assertEquals(listOf(sizeY - 1, 0), map.yCoordinates)
         assertValidTopology(map)
         for (part in map.tiles)
-            assertTrue(whole.tilesAt(part.x, part.y).any { it.description() == part.description() })
+            assertTrue(whole.getTilesAt(part.x, part.y).any { it.description() == part.description() })
         assertEquals(Direction.YPlus, map.getValue(2, sizeY - 1).directionOf(map.getValue(2, 0)))
     }
 

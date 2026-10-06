@@ -38,8 +38,8 @@ fun condenseRegion(
     factor: Int,
     region: Region, // Can cross the edge of a looping axis
     createUpdaters: () -> MutableList<TileUpdater>,
-    sliverThreshold: Double,
-    moveResources: Boolean
+    sliverThreshold: Double = .0,
+    moveResources: Boolean = false
 ): WorldMap {
     require(sliverThreshold in 0.0..0.5) { "Sliver threshold must be in 0..0.5, got $sliverThreshold" }
 
@@ -54,7 +54,7 @@ fun condenseRegion(
             require(x != null && y != null) { "Region isn't inside the $extent" }
 
             val cellTiles = (x * factor until (x + 1) * factor).flatMap { fineX ->
-                (y * factor until (y + 1) * factor).flatMap { fineY -> fine.tilesAt(fineX, fineY) }
+                (y * factor until (y + 1) * factor).flatMap { fineY -> fine.getTilesAt(fineX, fineY) }
             }
             require(cellTiles.isNotEmpty()) { "The fine map doesn't cover the cell $x $y" }
 
@@ -122,9 +122,9 @@ private fun moveResources(tiles: List<Tile>, part: Tile) {
 private fun linkTiles(map: WorldMap) {
     for (x in map.xCoordinates)
         for (y in map.yCoordinates)
-            for (tile in map.tilesAt(x, y)) {
+            for (tile in map.getTilesAt(x, y)) {
                 val adjacentCells = listOf(x to y + 1, x to y - 1, x + 1 to y, x - 1 to y)
-                val neighbours = (adjacentCells.flatMap { (nx, ny) -> map.tilesAt(nx, ny) } + map.tilesAt(x, y))
+                val neighbours = (adjacentCells.flatMap { (nx, ny) -> map.getTilesAt(nx, ny) } + map.getTilesAt(x, y))
                     .distinct()
                     .filter { it != tile }
 

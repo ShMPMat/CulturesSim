@@ -75,7 +75,7 @@ class WorldMap(
     fun isCovered(x: Int, y: Int) = localX(x) != null && localY(y) != null
 
     // Empty for the cells which aren't covered
-    fun tilesAt(x: Int, y: Int): List<Tile> {
+    fun getTilesAt(x: Int, y: Int): List<Tile> {
         val localX = localX(x)
             ?: return listOf()
         val localY = localY(y)
@@ -86,7 +86,7 @@ class WorldMap(
 
      // Only for coordinates which can't hold several Tiles
     operator fun get(x: Int, y: Int): Tile? {
-        val cellTiles = tilesAt(x, y)
+        val cellTiles = getTilesAt(x, y)
         check(cellTiles.size <= 1) { "Cell $x $y has ${cellTiles.size} Tiles, use tilesAt(..)" }
 
         return cellTiles.firstOrNull()
@@ -96,7 +96,7 @@ class WorldMap(
         ?: throw IllegalArgumentException("Tile $x $y has no tiles")
 
     fun getMainTile(x: Int, y: Int): Tile? =
-        tilesAt(x, y).maxByOrNull { it.area }
+        getTilesAt(x, y).maxByOrNull { it.area }
 
 
     fun direction(from: Tile, to: Tile): Direction? = extent.direction(from, to)
