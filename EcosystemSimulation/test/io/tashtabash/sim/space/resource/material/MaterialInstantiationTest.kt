@@ -43,7 +43,7 @@ internal class MaterialInstantiationTest {
 
         val output = outputStream.toString().trim()
 
-        assertTrue(output.contains("No action Burn:Ash found for material Wood"),
+        assertTrue(output.contains("No action 'Burn:Ash' found for material 'Wood'"),
             "No error message found in the console output. Actual: $output")
     }
 }
