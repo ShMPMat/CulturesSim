@@ -33,18 +33,10 @@ class TectonicPlate(
 
         val tiles = mutableListOf<Tile>()
         for (tile in startTiles) {
-            val neighbours = mutableListOf<Tile>()
-            val newTiles = mutableListOf<Tile>()
-            val plate = tile.plate ?: error("Plate for ${tile.x} ${tile.y} isn't set")
-            neighbours += tile
-            newTiles += tile
-            for (i in 0 until getInteractionCoefficient(plate)) {
-                for (n in neighbours)
-                    newTiles += n.getNeighbours { !newTiles.contains(it) }
-                neighbours.clear()
-                neighbours += newTiles
-            }
-            tiles += neighbours
+            val plate = tile.plate
+                ?: error("Plate for ${tile.x} ${tile.y} isn't set")
+            tiles += tile
+            tiles += tile.getTilesInRadius(getInteractionCoefficient(plate))
         }
 
         tiles.map { it to (random.nextDouble() + .1) / 1.1 }
@@ -80,9 +72,6 @@ class TectonicPlate(
             parameters.tectonicRange
     }
 
-    /**
-     * Moves plate in its direction and changes landscape.
-     */
     fun move() {
         if (isMoved)
             .7.chanceOf {
