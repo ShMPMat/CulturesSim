@@ -54,7 +54,6 @@ class Data(
         sizeY = 60,
         platesAmount = 10,
         tectonicRange = 2,
-        minTectonicRise = 5,
     ),
 ) {
     init {

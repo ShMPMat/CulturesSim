@@ -9,5 +9,4 @@ class GenerationParameters(
     val sizeY: Int,
     val platesAmount: Int,
     val tectonicRange: Int,
-    val minTectonicRise: Int,
 )
