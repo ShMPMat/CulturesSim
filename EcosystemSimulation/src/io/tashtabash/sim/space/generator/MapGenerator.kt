@@ -78,7 +78,7 @@ private fun randomPlates(parameters: GenerationParameters, map: WorldMap, random
     val tectonicPlates = mutableListOf<TectonicPlate>()
     val usedTiles = mutableSetOf<Tile>()
     for (i in 0 until parameters.platesAmount) {
-        val direction = randomElement(Direction.sides.asList(), random)
+        val direction = randomElement(Direction.entries, random)
         val type = randomElement(TectonicPlate.Type.entries, random)
         val tectonicPlate = TectonicPlate(direction, type, parameters)
         val tile = randomTile(map)

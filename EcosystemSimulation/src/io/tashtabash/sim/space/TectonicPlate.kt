@@ -8,6 +8,7 @@ import io.tashtabash.sim.space.territory.BrinkInvariantTerritory
 import io.tashtabash.sim.space.tile.Direction
 import io.tashtabash.sim.space.tile.Tile
 import kotlin.math.abs
+import kotlin.math.max
 
 
 class TectonicPlate(
@@ -15,23 +16,13 @@ class TectonicPlate(
     var type: Type,
     private val parameters: GenerationParameters
 ) : BrinkInvariantTerritory() {
-    init {
-        require(direction != Direction.Here) { "TectonicPlate must move to a side" }
-    }
-
-    // Whether it was ever moved.
-    private var isMoved = false
-
-    /**
-     * Which Tiles are affected by this Plate movement.
-     */
     val affectedTiles: List<Pair<Tile, Double>> by lazy {
         // The Tiles in front of the Plate in the direction of its movement
         val startTiles = filterOuterBrink { tile: Tile ->
             tile.anyNeighbourIn(direction.opposite) { it.plate === this }
         }
 
-        val tiles = mutableListOf<Tile>()
+        val tiles = mutableSetOf<Tile>()
         for (tile in startTiles) {
             val plate = tile.plate
                 ?: error("Plate for ${tile.x} ${tile.y} isn't set")
@@ -57,39 +48,35 @@ class TectonicPlate(
 
     override fun add(tile: Tile?) {
         super.add(tile)
-        tile!!.plate = this
+        tile?.plate = this
     }
 
     private fun getInteractionCoefficient(tectonicPlate: TectonicPlate): Int {
         val x = abs(direction.dx - tectonicPlate.direction.dx)
         val y = abs(direction.dy - tectonicPlate.direction.dy)
 
-        return if (x == 0 && y == 0)
+        val vectorCoefficient = if (x == 0 && y == 0)
             0
         else if (x <= 1 && y <= 1)
             parameters.tectonicRange / 2
         else
             parameters.tectonicRange
+
+        return if (type != tectonicPlate.type)
+            max(1, vectorCoefficient / 2)
+        else
+            vectorCoefficient
     }
 
     fun move() {
-        if (isMoved)
-            .7.chanceOf {
-                return
-            }
-
-        val rise = parameters.minTectonicRise
-        for ((tile, p) in affectedTiles) {
-            p.chanceOf {
-                tile.setLevel(
-                    if (isMoved)
-                        tile.level + 1
-                    else
-                        tile.level + rise + random.nextInt(rise)
-                )
-            }
+        .7.chanceOf {
+            return
         }
-        isMoved = true
+
+        for ((tile, p) in affectedTiles)
+            p.chanceOf {
+                tile.setLevel(tile.level + 1)
+            }
     }
 
     enum class Type {
