@@ -63,7 +63,6 @@ open class TextEcosystemVisualizer<E : World>(
         println()
 
         controller.runInitSteps()
-
         mapPrintInfo.computeCut(map)
     }
 
