@@ -1,6 +1,7 @@
 package io.tashtabash.sim.space.generator
 
 import io.tashtabash.random.randomElement
+import io.tashtabash.random.randomElementOrNull
 import io.tashtabash.random.randomTile
 import io.tashtabash.sim.space.Extent
 import io.tashtabash.sim.space.Scale
@@ -15,9 +16,9 @@ import io.tashtabash.sim.space.tile.updater.FlowUpdater
 import io.tashtabash.sim.space.tile.updater.MeteorStrike
 import io.tashtabash.sim.space.tile.updater.TileUpdater
 import io.tashtabash.sim.space.tile.updater.TypeUpdater
-import java.util.*
 import kotlin.math.ceil
 import kotlin.random.Random
+import kotlin.time.measureTime
 
 
 fun generateMap(parameters: GenerationParameters, resourcePool: ResourcePool, random: Random): WorldMap {
@@ -26,9 +27,10 @@ fun generateMap(parameters: GenerationParameters, resourcePool: ResourcePool, ra
     val map = WorldMap(tiles, Extent(parameters.sizeX, parameters.sizeY, data.xMapLooping, data.yMapLooping), scale)
     setTileNeighbours(map)
     println("Start generating plates")
-    val tectonicPlates = randomPlates(parameters, map, random)
-    println("Finished generating plates")
-    tectonicPlates.forEach { map.addPlate(it) }
+    println("Finished generating plates in:" + measureTime {
+        val tectonicPlates = randomPlates(parameters, map, random)
+        tectonicPlates.forEach { map.addPlate(it) }
+    })
     fill(map)
     setUpParallelUpdate(map, resourcePool)
 
@@ -73,38 +75,34 @@ private fun createTiles(x: Int, y: Int, scale: Scale, createUpdaters: () -> Muta
 }
 
 private fun randomPlates(parameters: GenerationParameters, map: WorldMap, random: Random): List<TectonicPlate> {
-    val tectonicPlates: MutableList<TectonicPlate> = ArrayList()
-    val usedTiles: MutableSet<Tile> = HashSet()
+    val tectonicPlates = mutableListOf<TectonicPlate>()
+    val usedTiles = mutableSetOf<Tile>()
     for (i in 0 until parameters.platesAmount) {
-        val direction = randomElement(
-            Direction.sides.asList(),
-            random
-        )
-        val type = randomElement(
-            TectonicPlate.Type.entries,
-            random
-        )
+        val direction = randomElement(Direction.sides.asList(), random)
+        val type = randomElement(TectonicPlate.Type.entries, random)
         val tectonicPlate = TectonicPlate(direction, type, parameters)
         val tile = randomTile(map)
 
         tectonicPlate.add(tile)
-        tectonicPlates.add(tectonicPlate)
-        usedTiles.add(tile)
+        tectonicPlates += tectonicPlate
+        usedTiles += tile
     }
-    var sw = true
-    while (sw) {
-        sw = false
-        for (territory in tectonicPlates) {
-            val brink = territory.filterOuterBrink { !usedTiles.contains(it) }
+    val growingPlates = tectonicPlates.toMutableList()
+    while (growingPlates.isNotEmpty()) {
+        var i = 0
+        while (i < growingPlates.size) {
+            val territory = growingPlates[i]
+            val tile = randomElementOrNull(territory.outerBrink.toList(), random) // Try getting the next tile for cheap
+                .takeIf { it !in usedTiles }
+                ?: randomElementOrNull(territory.filterOuterBrink { !usedTiles.contains(it) }, random) // Ok, expensive
+                ?: run { // This plate won't grow anymore
+                    growingPlates.removeAt(i)
+                    continue
+                }
 
-            if (brink.isEmpty())
-                continue
-
-            val tile = randomElement(brink, random)
             territory.add(tile)
-            usedTiles.add(tile)
-
-            sw = true
+            usedTiles += tile
+            i++
         }
     }
     return tectonicPlates
@@ -123,5 +121,7 @@ private fun fill(map: WorldMap) {
         }
         plate.initialize()
     }
-    map.platesUpdate()
+    println("Moved plates in:" + measureTime {
+        map.platesUpdate()
+    })
 }
