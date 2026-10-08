@@ -219,9 +219,9 @@ open class Resource private constructor(
         copyWithExternalFeatures(externalFeatures + features)
 
     open fun update(tile: Tile): ResourceUpdateResult {
-        val result = mutableListOf<TiledResource>()
         if (amount <= 0)
-            return ResourceUpdateResult(false, result)
+            return ResourceUpdateResult(false, emptyList())
+        val result = mutableListOf<TiledResource>()
 
         val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it, tile) }
         if (resources.any { (t, r) -> r.isAcceptable(t) })
@@ -235,7 +235,7 @@ open class Resource private constructor(
         result += naturalDeath().map { tile to it }
 
         if (amount <= 0)
-            ResourceUpdateResult(false, result)
+            return ResourceUpdateResult(false, result)
         deathTurn++
 
         expand(tile)
@@ -351,8 +351,12 @@ open class Resource private constructor(
 
     fun hasApplicationForAction(action: ResourceAction) = genome.conversionCore.hasApplication(action)
 
-    fun destroy() {
+    fun die() {
         takers += DeathTaker to amount
+        destroy()
+    }
+
+    fun destroy() {
         amount = 0
     }
 
@@ -392,9 +396,11 @@ open class Resource private constructor(
         if (o == null) return false
         val resource = o as Resource
 
-        return if (_hash == resource._hash)
-            fullName == resource.fullName
-        else false
+        if (_hash != resource._hash)
+            return false
+
+        // Check core ref first, which is cheaper
+        return core === resource.core || fullName == resource.fullName
     }
 
     override fun hashCode() = _hash
