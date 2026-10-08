@@ -303,9 +303,6 @@ class Tile(
     fun finishUpdate() {
         windCenter.finishUpdate()
 
-        // [Un]comment if it will help the performance
-//        if (testProbability(data.clearSpan, data.random))
-//            resourcePack.clearEmpty()
     }
 
     private fun updateTemperature() {

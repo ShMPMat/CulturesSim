@@ -43,7 +43,6 @@ class Data(
     val additionalTags: List<TagMatcher> = listOf(),
     val xMapLooping: Boolean = false,
     val yMapLooping: Boolean = true,
-    val clearSpan: Double = .05,
     val yearDurationDays: Int = 300,
     val dayDurationSeconds: Int = 24 * 60 * 60,
     val tickDurationDays: Int = 10,
