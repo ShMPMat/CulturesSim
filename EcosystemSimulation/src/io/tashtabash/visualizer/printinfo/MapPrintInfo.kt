@@ -9,7 +9,7 @@ class MapPrintInfo {
     var cut = 0 // Set in a way to minimize the number of land being divided by a map border in the view
 
     fun computeCut(map: WorldMap) {
-        if (!map.extent.isYLooping || map.maxY != map.extent.sizeY)
+        if (!map.extent.isYLooping || map.coveredRegion.sizeY != map.extent.sizeY)
             return
 
         var bestGapLand = Int.MAX_VALUE

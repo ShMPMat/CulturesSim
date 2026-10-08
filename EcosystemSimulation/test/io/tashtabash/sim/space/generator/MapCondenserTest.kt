@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space.generator
 
+import io.tashtabash.sim.space.Region
 import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
@@ -214,8 +215,8 @@ class MapCondenserTest {
     fun `condensed cells are factor times larger`() {
         val map = condense()
 
-        assertEquals(sizeX, map.maxX)
-        assertEquals(sizeY, map.maxY)
+        assertEquals(sizeX, map.coveredRegion.sizeX)
+        assertEquals(sizeY, map.coveredRegion.sizeY)
         assertEquals(data.generation.scale.tileSizeKm, map.getValue(0, 0).scale.tileSizeKm, 1e-9)
     }
 

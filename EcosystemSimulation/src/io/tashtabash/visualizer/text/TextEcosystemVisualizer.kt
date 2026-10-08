@@ -110,7 +110,7 @@ open class TextEcosystemVisualizer<E : World>(
         val printedMap = printedMap(condition)
 
         val resultPrint = if (showLegend) {
-            val printedResources = chompToLines(printedResources(), map.maxX + 2)
+            val printedResources = chompToLines(printedResources(), map.coveredRegion.sizeX + 2)
 
             addToRight(printedMap, printedResources, true)
         } else printedMap
@@ -127,21 +127,21 @@ open class TextEcosystemVisualizer<E : World>(
         val main = StringBuilder("  ")
         val worldMap = map
 
-        for (i in 0 until worldMap.maxY)
+        for (i in 0 until worldMap.coveredRegion.sizeY)
             main.append(if (i < 100) " " else i / 100 % 100)
         main.append("\n").append("  ")
-        for (i in 0 until worldMap.maxY)
+        for (i in 0 until worldMap.coveredRegion.sizeY)
             main.append(if (i < 10) " " else i / 10 % 10)
         main.append("\n").append("  ")
-        for (i in 0 until worldMap.maxY)
+        for (i in 0 until worldMap.coveredRegion.sizeY)
             main.append(i % 10)
         main.append("\n")
 
         val map = StringBuilder()
-        for (i in 0 until worldMap.maxX) {
+        for (i in 0 until worldMap.coveredRegion.sizeX) {
             var token: String
             map.append(if (i < 10) " $i" else i)
-            for (j in 0 until worldMap.maxY) {
+            for (j in 0 until worldMap.coveredRegion.sizeY) {
                 val tile = findTile(i, j)!!
                 token = mapper(tile).takeIf { it != "" } ?: applyMappers(tile)
                 if (token == " ") {
@@ -282,7 +282,7 @@ open class TextEcosystemVisualizer<E : World>(
         val globalX = map.xCoordinates.getOrNull(x)
             ?: return null
 
-        return globalX to map.yCoordinates[(y + mapPrintInfo.cut).mod(map.maxY)]
+        return globalX to map.yCoordinates[(y + mapPrintInfo.cut).mod(map.coveredRegion.sizeY)]
     }
 
     // The largest Tile of the cell

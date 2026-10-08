@@ -16,10 +16,7 @@ class WorldMap(
     val tiles: List<Tile>, // Have the global coordinates of the Extent
     val extent: Extent,
     val scale: Scale,
-    val originX: Int = 0,
-    val originY: Int = 0,
-    val maxX: Int = extent.sizeX,
-    val maxY: Int = extent.sizeY,
+    val coveredRegion: Region = Region(0, 0, extent.sizeX, extent.sizeY)
 ) {
     // The Tiles of each cell stored in local coordinates
     private val cells: List<List<List<Tile>>>
@@ -27,14 +24,14 @@ class WorldMap(
     init {
         val ids = tiles.map { it.id }
         require(ids.size == ids.distinct().size) { "Tile ids must be unique" }
-        require(isRectangleInside(originX, maxX, extent.sizeX, extent.isXLooping)
-                && isRectangleInside(originY, maxY, extent.sizeY, extent.isYLooping)) {
-            "Map $originX $originY ${maxX}x$maxY isn't inside the $extent"
+        require(isRectangleInside(coveredRegion.x, coveredRegion.sizeX, extent.sizeX, extent.isXLooping)
+                && isRectangleInside(coveredRegion.y, coveredRegion.sizeY, extent.sizeY, extent.isYLooping)) {
+            "Map $coveredRegion isn't inside the $extent"
         }
         require(tiles.all { it.scale == scale }) { "All Tiles must have the same scale $scale" }
 
         // Cache tiles into a grid
-        val newCells = List(maxX) { List(maxY) { mutableListOf<Tile>() } }
+        val newCells = List(coveredRegion.sizeX) { List(coveredRegion.sizeY) { mutableListOf<Tile>() } }
         for (tile in tiles) {
             require(extent.cutX(tile.x) == tile.x && extent.cutY(tile.y) == tile.y) {
                 "Tile ${tile.id} at ${tile.posStr} has coordinates outside of the $extent"
@@ -50,8 +47,8 @@ class WorldMap(
     }
 
     // The global coordinates of the covered cells
-    val xCoordinates: List<Int> = (0 until maxX).map { extent.cutX(originX + it)!! }
-    val yCoordinates: List<Int> = (0 until maxY).map { extent.cutY(originY + it)!! }
+    val xCoordinates: List<Int> = (0 until coveredRegion.sizeX).map { extent.cutX(coveredRegion.x + it)!! }
+    val yCoordinates: List<Int> = (0 until coveredRegion.sizeY).map { extent.cutY(coveredRegion.y + it)!! }
 
     val lines: List<List<Tile>> = cells.map { it.flatten() }
 
@@ -62,8 +59,8 @@ class WorldMap(
     }
 
     // The coordinate in the local coordinate space
-    private fun localX(x: Int) = local(extent.cutX(x), originX, this@WorldMap.maxX, extent.sizeX)
-    private fun localY(y: Int) = local(extent.cutY(y), originY, this@WorldMap.maxY, extent.sizeY)
+    private fun localX(x: Int) = local(extent.cutX(x), coveredRegion.x, this@WorldMap.coveredRegion.sizeX, extent.sizeX)
+    private fun localY(y: Int) = local(extent.cutY(y), coveredRegion.y, this@WorldMap.coveredRegion.sizeY, extent.sizeY)
 
     private fun local(coordinate: Int?, origin: Int, size: Int, extentSize: Int): Int? {
         coordinate ?: return null
@@ -171,8 +168,16 @@ class WorldMap(
         require(margin > 0) { "Margin must be positive, got $margin" }
 
         // The map loops only along an axis it covers completely
-        val xBlocks = splitIntoBlocks(maxX, 2 * margin, extent.isXLooping && maxX == extent.sizeX)
-        val yBlocks = splitIntoBlocks(maxY, 2 * margin, extent.isYLooping && maxY == extent.sizeY)
+        val xBlocks = splitIntoBlocks(
+            coveredRegion.sizeX,
+            2 * margin,
+            extent.isXLooping && coveredRegion.sizeX == extent.sizeX
+        )
+        val yBlocks = splitIntoBlocks(
+            coveredRegion.sizeY,
+            2 * margin,
+            extent.isYLooping && coveredRegion.sizeY == extent.sizeY
+        )
 
         return (0 until 4).map { colourIdx ->
             xBlocks.filterIndexed { i, _ -> i % 2 == colourIdx / 2 }.flatMap { xRange ->

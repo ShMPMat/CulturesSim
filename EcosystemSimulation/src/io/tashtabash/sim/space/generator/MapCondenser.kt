@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space.generator
 
+import io.tashtabash.sim.space.Region
 import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.tile.MOUNTAIN_LEVEL
@@ -18,19 +19,13 @@ fun condenseMap(
     createUpdaters: () -> MutableList<TileUpdater>,
     sliverThreshold: Double = .0 // If a Tile Type takes lesser than this fraction, these Tiles will be discarded
 ): WorldMap {
-    require(listOf(fine.originX, fine.originY, fine.maxX, fine.maxY).all { it % factor == 0 }) {
-        "${fine.originX} ${fine.originY} ${fine.maxX}x${fine.maxY} can't be condensed by $factor, " +
-                "its origin & dimensions aren't divisible"
-    }
-    val region = Region(fine.originX / factor, fine.originY / factor, fine.maxX / factor, fine.maxY / factor)
+    require(listOf(fine.coveredRegion.x, fine.coveredRegion.y, fine.coveredRegion.sizeX, fine.coveredRegion.sizeY)
+        .all { it % factor == 0 }) {
+            "${fine.coveredRegion} can't be condensed by $factor, its origin & dimensions aren't divisible"
+        }
+    val region = fine.coveredRegion / factor
 
     return condenseRegion(fine, factor, region, createUpdaters, sliverThreshold, moveResources = true)
-}
-
-class Region(val x: Int, val y: Int, val sizeX: Int, val sizeY: Int) {
-    init {
-        require(sizeX > 0 && sizeY > 0) { "Region must have cells, got ${sizeX}x$sizeY" }
-    }
 }
 
 fun condenseRegion(
@@ -69,7 +64,7 @@ fun condenseRegion(
             }
         }
 
-    val map = WorldMap(condensedTiles, extent, coarseScale, region.x, region.y, region.sizeX, region.sizeY)
+    val map = WorldMap(condensedTiles, extent, coarseScale, region)
     linkTiles(map)
 
     return map
@@ -77,7 +72,7 @@ fun condenseRegion(
 
 private data class PartTiles(val tiles: List<Tile>, val isWater: Boolean)
 
-private fun Tile.isWater() = type == Tile.Type.Water || type == Tile.Type.Ice
+fun Tile.isWater() = type == Tile.Type.Water || type == Tile.Type.Ice
 
 private fun splitCell(tiles: List<Tile>, sliverThreshold: Double): List<PartTiles> {
     val (water, land) = tiles.partition { it.isWater() }

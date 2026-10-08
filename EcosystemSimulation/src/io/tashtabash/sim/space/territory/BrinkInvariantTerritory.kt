@@ -27,7 +27,7 @@ open class BrinkInvariantTerritory(tiles: Collection<Tile> = listOf()): MutableT
         tile ?: return
 
         if (!_tiles.contains(tile)) {
-            _tiles.add(tile)
+            _tiles += tile
             _outerBrink.remove(tile)
             tile.neighbours.forEach { addToOuterBrink(it) }
         }
@@ -54,6 +54,6 @@ open class BrinkInvariantTerritory(tiles: Collection<Tile> = listOf()): MutableT
 
     private fun addToOuterBrink(tile: Tile) {
         if (!tiles.contains(tile))
-            _outerBrink.add(tile)
+            _outerBrink += tile
     }
 }

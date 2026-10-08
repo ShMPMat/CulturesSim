@@ -14,12 +14,12 @@ class CondenseStep<E : World>(private val factor: Int = data.condensationFactor)
         setUpParallelUpdate(map, world.resourcePool)
         world.map = map
 
-        val splitCells = map.tiles.size - map.maxX * map.maxY
+        val splitCells = map.tiles.size - map.coveredRegion.sizeX * map.coveredRegion.sizeY
+        val scale = "${map.coveredRegion.sizeX * map.scale.tileSizeKm}x${map.coveredRegion.sizeY * map.scale.tileSizeKm}"
         println(
             "Condensed ${world.baseMap.tiles.size} Tiles into ${map.tiles.size} " +
-                    "(${world.baseMap.maxX}x${world.baseMap.maxY} -> ${map.maxX}x${map.maxY}), " +
-                    "$splitCells cells are split, " +
-                    "map size is ${map.maxX * map.scale.tileSizeKm}x${map.maxY * map.scale.tileSizeKm} km"
+                    "(${world.baseMap.coveredRegion} -> ${map.coveredRegion}), " +
+                    "$splitCells cells are split, map size is $scale km"
         )
     }
 }
