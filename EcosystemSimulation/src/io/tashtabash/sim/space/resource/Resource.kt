@@ -159,15 +159,16 @@ open class Resource private constructor(
 
     fun getPart(part: Int, resource: Resource) = getPart(part, ResourceTaker(resource))
 
-    open fun getCleanPartInt(part: Int, taker: Taker): Int {
+    open fun getCleanPartInt(part: Int, taker: Taker?): Int {
         val result = min(amount, part)
         amount -= result
-        takers += taker to result
+        if (taker != null)
+            takers += taker to result
 
         return result
     }
 
-    open fun getCleanPart(part: Int, taker: Taker): Resource =
+    open fun getCleanPart(part: Int, taker: Taker?): Resource =
         copy(getCleanPartInt(part, taker), deathTurn)
 
     open fun merge(resource: Resource): Resource {

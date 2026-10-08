@@ -22,7 +22,7 @@ class ResourceIdeal(
         throw OperationNotSupportedException("ResourceIdeal doesn't support getPartInt(..)")
     }
 
-    override fun getCleanPartInt(part: Int, taker: Taker): Int {
+    override fun getCleanPartInt(part: Int, taker: Taker?): Int {
         throw OperationNotSupportedException("ResourceIdeal doesn't support getCleanPartInt(..)")
     }
 

@@ -45,12 +45,12 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
         logGetPart(it, taker)
     }
 
-    override fun getCleanPartInt(part: Int, taker: Taker) = super.getCleanPartInt(part, taker).also {
+    override fun getCleanPartInt(part: Int, taker: Taker?) = super.getCleanPartInt(part, taker).also {
         logGetPart(it, taker)
     }
 
-    private fun logGetPart(result: Int, taker: Taker) {
-        if (result == 0 || taker == Taker.SelfTaker)
+    private fun logGetPart(result: Int, taker: Taker?) {
+        if (result == 0 || taker == Taker.SelfTaker || taker == null)
             return
 
         val oldPopulation = amount + result
