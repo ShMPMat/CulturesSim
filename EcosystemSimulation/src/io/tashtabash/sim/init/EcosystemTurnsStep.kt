@@ -5,12 +5,9 @@ import io.tashtabash.sim.World
 import io.tashtabash.sim.interactionmodel.InteractionModel
 
 
-class EcosystemTurnsStep<E : World>(
-        private val turnNumber: Int,
-        private val debugPrint: Boolean,
-) : ControllerInitStep<E> {
+class EcosystemTurnsStep<E : World>(private val turns: Int, private val debugPrint: Boolean) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
-        repeat(turnNumber) {
+        repeat(turns) {
             interactionModel.turn(world)
             if (debugPrint)
                 Controller.visualizer.print()

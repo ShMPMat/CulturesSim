@@ -5,12 +5,9 @@ import io.tashtabash.sim.World
 import io.tashtabash.sim.interactionmodel.InteractionModel
 
 
-class GeologicalTurnsStep<E : World>(
-        private val turnNumber: Int,
-        private val debugPrint: Boolean,
-) : ControllerInitStep<E> {
+class GeologicalTurnsStep<E : World>(private val turns: Int, private val debugPrint: Boolean) : ControllerInitStep<E> {
     override fun run(world: E, interactionModel: InteractionModel<E>) {
-        repeat(turnNumber) {
+        repeat(turns) {
             interactionModel.geologicTurn(world)
             if (debugPrint)
                 Controller.visualizer.print()
