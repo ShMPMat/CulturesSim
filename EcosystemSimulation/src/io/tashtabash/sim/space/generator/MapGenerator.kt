@@ -80,7 +80,7 @@ private fun randomPlates(parameters: GenerationParameters, map: WorldMap, random
     for (i in 0 until parameters.platesAmount) {
         val direction = randomElement(Direction.entries, random)
         val type = randomElement(TectonicPlate.Type.entries, random)
-        val tectonicPlate = TectonicPlate(direction, type, parameters)
+        val tectonicPlate = TectonicPlate(direction, type, parameters, i.toByte())
         val tile = randomTile(map)
 
         tectonicPlate.add(tile)

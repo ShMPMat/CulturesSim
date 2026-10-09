@@ -27,7 +27,7 @@ class EcosystemWorld(
     private val resourceResources: List<URL>
 ) : World {
     override lateinit var map: WorldMap
-    override lateinit var baseMap: WorldMap
+    override lateinit var baseMap: LandscapeData
 
     override var events = EventLog()
 
@@ -55,9 +55,8 @@ class EcosystemWorld(
         SpaceData.data.resourcePool = initialResources
 
         map = generateMap(SpaceData.data.generation, initialResources, RandomSingleton.random)
-        baseMap = map
+        stripBaseMap()
     }
-
 
     //How many turns passed from the beginning of the io.tashtabash.simulation.
     override var lesserTurnNumber = 0

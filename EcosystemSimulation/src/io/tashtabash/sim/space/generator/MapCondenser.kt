@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space.generator
 
+import io.tashtabash.sim.space.Extent
 import io.tashtabash.sim.space.Region
 import io.tashtabash.sim.space.Scale
 import io.tashtabash.sim.space.WorldMap
@@ -9,12 +10,19 @@ import io.tashtabash.sim.space.tile.updater.TileUpdater
 import kotlin.math.roundToInt
 
 
+data class LandscapeData(
+    val coveredRegion: Region,
+    val scale: Scale,
+    val extent: Extent,
+    val getTilesAt: (x: Int, y: Int) -> List<Tile>
+)
+
 /**
  * Condenses the fine map into a map with cells `factor` times larger.
  * Tiles on one coordinate are neighbours with each other and all tiles in the 4 directions
  */
 fun condenseMap(
-    fine: WorldMap,
+    fine: LandscapeData,
     factor: Int,
     createUpdaters: () -> MutableList<TileUpdater>,
     sliverThreshold: Double = .0 // If a Tile Type takes lesser than this fraction, these Tiles will be discarded
@@ -29,7 +37,7 @@ fun condenseMap(
 }
 
 fun condenseRegion(
-    fine: WorldMap,
+    fine: LandscapeData,
     factor: Int,
     region: Region, // Can cross the edge of a looping axis
     createUpdaters: () -> MutableList<TileUpdater>,

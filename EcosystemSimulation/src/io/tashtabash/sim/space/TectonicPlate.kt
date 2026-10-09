@@ -14,7 +14,8 @@ import kotlin.math.max
 class TectonicPlate(
     val direction: Direction,
     var type: Type,
-    private val parameters: GenerationParameters
+    private val parameters: GenerationParameters,
+    val id: Byte
 ) : BrinkInvariantTerritory() {
     val affectedTiles: List<Pair<Tile, Double>> by lazy {
         // The Tiles in front of the Plate in the direction of its movement
