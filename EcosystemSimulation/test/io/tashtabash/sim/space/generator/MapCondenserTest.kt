@@ -33,7 +33,7 @@ class MapCondenserTest {
     private fun makeWater(tiles: List<Tile>) = tiles.forEach { it.setType(Tile.Type.Water, true) }
 
     private fun condense(fine: WorldMap = this.fine, factor: Int = this.factor) =
-        condenseMap(fine, factor, { mutableListOf() }, sliverThreshold = .1)
+        condenseMap(LandscapeData(fine.coveredRegion, fine.scale, fine.extent, fine::getTilesAt), factor, { mutableListOf() }, sliverThreshold = .1)
 
     @Test
     fun `condensing with factor 1 reproduces the map`() {
@@ -100,7 +100,7 @@ class MapCondenserTest {
     fun `cell of one kind makes a single part without a sliver threshold`() {
         makeWater(cellTiles(1, 1).take(1))
 
-        val map = condenseMap(fine, factor, { mutableListOf() }, sliverThreshold = .0)
+        val map = condenseMap(LandscapeData(fine.coveredRegion, fine.scale, fine.extent, fine::getTilesAt), factor, { mutableListOf() }, sliverThreshold = .0)
 
         assertEquals(1, map.getTilesAt(0, 0).size)
         assertEquals(2, map.getTilesAt(1, 1).size)
@@ -221,7 +221,7 @@ class MapCondenserTest {
     }
 
     private fun condenseRegion(region: Region, moveResources: Boolean = false) =
-        condenseRegion(fine, factor, region, { mutableListOf() }, .1, moveResources)
+        condenseRegion(LandscapeData(fine.coveredRegion, fine.scale, fine.extent, fine::getTilesAt), factor, region, { mutableListOf() }, .1, moveResources)
 
     // What identifies a part apart from its id
     private fun Tile.description() = listOf(x, y, type, level, secondLevel, area, prettyTemperature)
