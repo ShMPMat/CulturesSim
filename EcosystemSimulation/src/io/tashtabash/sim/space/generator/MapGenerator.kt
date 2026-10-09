@@ -109,18 +109,11 @@ private fun randomPlates(parameters: GenerationParameters, map: WorldMap, random
 }
 
 private fun fill(map: WorldMap) {
-    var sw = true
-    var ssw = true
-    for (plate in map.tectonicPlates) {
-        if (sw) {
-            plate.type = TectonicPlate.Type.Terrain
-            sw = false
-        } else if (ssw) {
-            plate.type = TectonicPlate.Type.Oceanic
-            ssw = false
-        }
+    map.tectonicPlates.getOrNull(0)?.type = TectonicPlate.Type.Terrain
+    map.tectonicPlates.getOrNull(1)?.type = TectonicPlate.Type.Oceanic
+
+    for (plate in map.tectonicPlates)
         plate.initialize()
-    }
     println("Moved plates in:" + measureTime {
         map.platesUpdate()
     })
