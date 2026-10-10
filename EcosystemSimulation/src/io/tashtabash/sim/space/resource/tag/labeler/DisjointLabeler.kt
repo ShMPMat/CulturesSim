@@ -4,7 +4,7 @@ import io.tashtabash.sim.space.resource.Genome
 import io.tashtabash.sim.space.resource.Resource
 
 
-open class DisjointLabeler(private val labelers: List<ResourceLabeler>) : ResourceLabeler {
+open class DisjointLabeler(private val labelers: List<ResourceLabeler>) : ResourceLabeler() {
     // It's actually faster than built-in "any {...}" (maybe)
     override fun isSuitable(genome: Genome): Boolean {
         for (labeler in labelers) {

@@ -24,14 +24,7 @@ abstract class LabelerDependency(
     open fun isResourceDependency(resource: Resource): Boolean =
         resource.isNotEmpty && oneResourceWorth(resource) != NOT_DEPENDENCY
 
-    private val worthCache = ConcurrentHashMap<Genome, Int>()
-
-    fun oneResourceWorth(resource: Resource): Int = worthCache.getOrPut(resource.genome) {
-        if (labeler.isSuitable(resource.genome))
-            labeler.actualMatches(resource.core.sample).sumOf { it.amount }
-        else
-            NOT_DEPENDENCY
-    }
+    fun oneResourceWorth(resource: Resource): Int = labeler.oneResourceWorth(resource)
 
     fun partByResource(worth: Int, amount: Double) = ceil(amount / worth).toInt()
 

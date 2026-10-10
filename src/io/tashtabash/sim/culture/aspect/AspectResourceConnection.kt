@@ -28,7 +28,7 @@ private fun Set<ResourceTag>.getAspectImprovement(aspect: Aspect) = filterIsInst
         .filter { it.labeler.isSuitable(aspect) }
         .sumOf { it.improvement }
 
-class AspectImprovementLabeler(val aspect: Aspect) : ResourceLabeler {
+class AspectImprovementLabeler(val aspect: Aspect) : ResourceLabeler() {
     override fun isSuitable(genome: Genome) = genome.tags.getAspectImprovement(aspect) > 0
 
     override fun toString() = "Resource improves Aspect ${aspect.name}"

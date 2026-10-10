@@ -15,7 +15,7 @@ import kotlin.random.Random
 
 
 class DependencyMatchesTest {
-    private val foodLabeler = object : ResourceLabeler {
+    private val foodLabeler = object : ResourceLabeler() {
         override fun isSuitable(genome: Genome) = genome.name.startsWith("Food")
     }
     private val dependency = NeedDependency(1.0, true, QuantifiedResourceLabeler(foodLabeler, 1.0))

@@ -3,7 +3,7 @@ package io.tashtabash.sim.space.resource.tag.labeler
 import io.tashtabash.sim.space.resource.Genome
 
 
-class IsMovableLabeler : ResourceLabeler {
+class IsMovableLabeler : ResourceLabeler() {
     override fun isSuitable(genome: Genome) = genome.isMovable
 
     override fun equals(other: Any?): Boolean {

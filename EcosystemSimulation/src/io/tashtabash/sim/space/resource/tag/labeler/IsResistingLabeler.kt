@@ -3,7 +3,7 @@ package io.tashtabash.sim.space.resource.tag.labeler
 import io.tashtabash.sim.space.resource.Genome
 
 
-class IsResistingLabeler : ResourceLabeler {
+class IsResistingLabeler : ResourceLabeler() {
     override fun isSuitable(genome: Genome) = genome.behaviour.isResisting
 
     override fun equals(other: Any?): Boolean {

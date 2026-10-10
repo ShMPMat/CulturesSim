@@ -4,7 +4,7 @@ import io.tashtabash.sim.space.resource.Genome
 import io.tashtabash.sim.space.resource.Resource
 
 
-data class AnyPartLabeler(private val labeler: ResourceLabeler) : ResourceLabeler {
+data class AnyPartLabeler(private val labeler: ResourceLabeler) : ResourceLabeler() {
     override fun isSuitable(genome: Genome): Boolean = genome.parts
             .any { labeler.isSuitable(it.genome) || isSuitable(it.genome) }
 
