@@ -295,14 +295,18 @@ class Tile(
     }
 
     fun middleUpdate() {
-        _delayedResources.forEach { addResource(it) }
-        _delayedResources.clear()
+        flushDelayedResources()
         windCenter.middleUpdate(this)
     }
 
     fun finishUpdate() {
         windCenter.finishUpdate()
 
+    }
+
+    fun flushDelayedResources() {
+        _delayedResources.forEach { addResource(it) }
+        _delayedResources.clear()
     }
 
     private fun updateTemperature() {
