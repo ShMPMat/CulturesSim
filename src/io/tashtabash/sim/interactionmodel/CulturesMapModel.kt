@@ -60,12 +60,4 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
             }
         )
     }
-
-    override fun geologicTurn(world: CulturesWorld) {
-        world.map.geologicUpdate()
-
-        eventLog.joinNewEvents(world.events)
-
-        world.incrementTurnGeology()
-    }
 }

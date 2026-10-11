@@ -17,12 +17,4 @@ class MapModel : InteractionModel<World> {
 
         world.incrementTurn()
     }
-
-    override fun geologicTurn(world: World) {
-        world.map.geologicUpdate()
-
-        eventLog.joinNewEvents(world.events)
-
-        world.incrementTurnGeology()
-    }
 }

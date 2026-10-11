@@ -213,6 +213,9 @@ class WorldMap(
             tile.levelUpdate()
 
         platesUpdate()
+
+        for (tile in tiles)
+            tile.flushDelayedResources()
     }
 
     fun platesUpdate() {

@@ -9,6 +9,12 @@ import io.tashtabash.sim.event.EventLog
  */
 interface InteractionModel<in E : World> {
     fun turn(world: E)
-    fun geologicTurn(world: E)
+
+    fun geologicTurn(world: E) {
+        world.map.geologicUpdate()
+        eventLog.joinNewEvents(world.events)
+        world.incrementTurnGeology()
+    }
+
     val eventLog: EventLog
 }
