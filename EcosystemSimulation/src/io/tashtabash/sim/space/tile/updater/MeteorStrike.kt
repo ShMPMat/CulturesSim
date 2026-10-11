@@ -18,7 +18,7 @@ class MeteorStrike(private val iron: Resource): TileUpdater {
             return
         }
 
-        val strength = RandomSingleton.random.nextDouble(.0, 1 * session.proportionCoefficient)
+        val strength = RandomSingleton.random.nextDouble(.1, 50.0) // Shouldn't be more than a concurrent chunk in km
         val oldTiles = mutableSetOf<Tile>()
         var currentStrength = strength
         var currentTiles = listOf(tile)
@@ -26,7 +26,7 @@ class MeteorStrike(private val iron: Resource): TileUpdater {
             for (currentTile in currentTiles)
                 destroyTileResources(currentTile, currentStrength)
 
-            currentStrength -= 1
+            currentStrength -= tile.scale.tileSizeKm
             oldTiles += currentTiles
             currentTiles = currentTiles.flatMap { it.neighbours } - oldTiles
         }
@@ -39,9 +39,9 @@ class MeteorStrike(private val iron: Resource): TileUpdater {
 
     private fun destroyTileResources(tile: Tile, strength: Double) {
         for (resource in tile.resourcesWithMoved) {
-            val deadPart = resource.amount * strength * RandomSingleton.random.nextDouble(.8, 1.2)
+            val deadPart = resource.amount * strength * RandomSingleton.random.nextDouble(.8, 1.2) / 50
 
-            resource.getCleanPart(min(resource.amount, deadPart.toInt()), Taker.CataclysmTaker)
+            resource.getCleanPartInt(min(resource.amount, deadPart.toInt()), Taker.CataclysmTaker)
         }
     }
 }
