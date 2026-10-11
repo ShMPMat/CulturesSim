@@ -118,7 +118,7 @@ private fun createPart(
 
 private fun moveResources(tiles: List<Tile>, part: Tile) {
     for (tile in tiles)
-        for (resource in tile.resourcesWithMoved)
+        for (resource in tile.resourcePack.resources) // Assume that all resources were flushed
             part.addDelayedResource(resource)
 }
 

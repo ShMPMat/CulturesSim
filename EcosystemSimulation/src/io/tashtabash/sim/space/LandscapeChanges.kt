@@ -37,13 +37,14 @@ fun createRiver(
             break
         }
         currentTile.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt()))
+        currentTile.flushDelayedResources()
         currentTile.tagPool.add(nameTag)
         val minLevel = min(
                 currentTile.level,
                 currentTile.getNeighbours(goodTilePredicate).minByOrNull { it.level }?.level ?: -1
         )
         val tiles = currentTile.getNeighbours { it.level == minLevel }
-        var nextTile = tiles.filter { it.resourcesWithMoved.contains(water) }
+        var nextTile = tiles.filter { it.resourcePack.contains(water) }
             .randomElementOrNull()
 
         if (nextTile == null) {
@@ -108,7 +109,10 @@ fun createLake(
                     break
             }
             path?.let { tiles ->
-                tiles.forEach { it.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt())) }
+                tiles.forEach {
+                    it.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt()))
+                    it.flushDelayedResources()
+                }
                 tiles.forEach { it.tagPool.add(previousRiverTag) }
                 createRiver(tiles.last(), water, goodTilePredicate, random)
                 return
@@ -116,7 +120,10 @@ fun createLake(
         }
     }
 
-    lakeTiles.forEach { it.addDelayedResource(water.copy((4000 * Controller.session.proportionCoefficient).toInt())) }
+    lakeTiles.forEach {
+        it.addDelayedResource(water.copy((4000 * Controller.session.proportionCoefficient).toInt()))
+        it.flushDelayedResources()
+    }
     lakeTiles.forEach { it.tagPool.add(nameTag) }
     outflowTiles.forEach {
         createRiver(it, water, goodTilePredicate, random)

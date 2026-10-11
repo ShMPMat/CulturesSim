@@ -164,6 +164,7 @@ class MapCondenserTest {
         makeWater(tiles.take(10))
         tiles.take(10).forEach { it.addDelayedResource(salt.copy(5)) }
         tiles.drop(10).forEach { it.addDelayedResource(plant.copy(3)) }
+        tiles.forEach { it.flushDelayedResources() }
 
         val (land, water) = condense().getTilesAt(1, 1)
 
@@ -179,6 +180,7 @@ class MapCondenserTest {
         tiles.forEach { it.addDelayedResource(plant.copy(3)) }
         tiles.forEach { it.middleUpdate() } // Some resources are in the pack, some are delayed
         tiles.take(5).forEach { it.addDelayedResource(plant.copy(1)) }
+        tiles.forEach { it.flushDelayedResources() }
 
         val part = condense().getValue(1, 1)
         part.middleUpdate()
@@ -191,6 +193,7 @@ class MapCondenserTest {
         val sliver = cellTiles(2, 2).take(2)
         makeWater(sliver)
         sliver.forEach { it.addDelayedResource(salt.copy(5)) }
+        sliver.forEach { it.flushDelayedResources() }
 
         val part = condense().getValue(2, 2)
 
@@ -205,6 +208,7 @@ class MapCondenserTest {
         for ((i, tile) in fine.tiles.withIndex())
             tile.addDelayedResource(plant.copy(i % 4 + 1))
         val fineAmount = fine.tiles.sumOf { it.amountOf(plant) }
+        fine.tiles.forEach { it.flushDelayedResources() }
 
         val map = condense()
 
