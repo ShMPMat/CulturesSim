@@ -9,6 +9,7 @@ import io.tashtabash.sim.space.resource.container.MutableResourcePack
 import io.tashtabash.sim.space.resource.container.ResourcePack
 import io.tashtabash.sim.space.resource.dependency.LabelerDependency
 import io.tashtabash.sim.space.resource.dependency.NOT_DEPENDENCY
+import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import io.tashtabash.sim.space.tile.updater.TileUpdater
 import java.util.*
 import kotlin.math.max
@@ -127,11 +128,11 @@ class Tile(
         return false
     }
 
-    private val dependencyMatches = IdentityHashMap<LabelerDependency, DependencyMatches>()
+    private val dependencyMatches = HashMap<ResourceLabeler, DependencyMatches>()
 
     fun getDependencyMatches(dependency: LabelerDependency): DependencyMatches {
         val keysVersion = _resourcePack.keysVersion
-        dependencyMatches[dependency]?.let {
+        dependencyMatches[dependency.labeler]?.let {
             if (it.keysVersion == keysVersion)
                 return it
         }
@@ -144,7 +145,7 @@ class Tile(
                 matches.add(res, worth)
         }
 
-        return matches.also { dependencyMatches[dependency] = it }
+        return matches.also { dependencyMatches[dependency.labeler] = it }
     }
 
     inline fun forEachAccessibleMatch(
@@ -255,11 +256,11 @@ class Tile(
             return
 
         // Try to cache the new Resource instead of rebuilding DependencyMatches later
-        for ((dependency, matches) in dependencyMatches) {
+        for ((labeler, matches) in dependencyMatches) {
             if (matches.keysVersion != oldKeysVersion)
                 continue
 
-            val worth = dependency.oneResourceWorth(resource)
+            val worth = labeler.oneResourceWorth(resource)
             if (worth != NOT_DEPENDENCY)
                 matches.add(resource, worth)
             matches.keysVersion = keysVersion
