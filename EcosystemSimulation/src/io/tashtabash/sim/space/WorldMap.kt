@@ -112,19 +112,11 @@ class WorldMap(
     fun getTiles(predicate: (Tile) -> Boolean) = tiles.filter(predicate)
 
     fun update() {
-        if (tileUpdateOrder == null) {
-            for (tile in tiles)
-                tile.startUpdate()
-
-            for (tile in tiles)
-                tile.middleUpdate()
-        } else tileUpdateOrder?.let {
-            runOnMap(it) { tile ->
-                tile.startUpdate()
-            }
-            runOnMap(middleUpdateOrder) { tile ->
-                tile.middleUpdate()
-            }
+        runOnMap(tileUpdateOrder) { tile ->
+            tile.startUpdate()
+        }
+        runOnMap(middleUpdateOrder) { tile ->
+            tile.middleUpdate()
         }
     }
 
@@ -152,7 +144,7 @@ class WorldMap(
     }
 
     private typealias TilesBatch = List<Tile>
-    var tileUpdateOrder: List<List<TilesBatch>>? = null
+    var tileUpdateOrder: List<List<TilesBatch>> = listOf(listOf(tiles))
 
     // Splits the map into blocks at least 2 * margin wide and colours them as a 2x2 checkerboard.
     // Like this
