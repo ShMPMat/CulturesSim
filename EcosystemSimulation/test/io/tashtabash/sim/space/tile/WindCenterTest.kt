@@ -1,5 +1,6 @@
 package io.tashtabash.sim.space.tile
 
+import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.createTestMap
@@ -7,6 +8,7 @@ import io.tashtabash.sim.space.resource.Size
 import io.tashtabash.sim.space.resource.createTestResource
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 
 
 class WindCenterTest {
@@ -26,6 +28,8 @@ class WindCenterTest {
 
     @Test
     fun `Wind doesn't grow to maximalWind over time`() {
+        if (RandomSingleton.safeRandom == null)
+            RandomSingleton.safeRandom = Random(1)
         val map = createMap(15, 20)
 
         repeat(500) { map.tick() }
@@ -39,7 +43,7 @@ class WindCenterTest {
             changeLevelOnTile(tile, level)
     }
 
-    private fun Tile.movedAmount() = resourcesWithMoved.sumOf { it.amount }
+    private fun Tile.movedAmount() = resourcePack.resources.sumOf { it.amount }
 
     @Test
     fun `useWind splits a light resource between directions by level`() {
@@ -51,6 +55,8 @@ class WindCenterTest {
         vapour.addAmount(3000 - vapour.amount)
 
         windCenter.useWind(listOf(vapour))
+        strongTarget.flushDelayedResources()
+        weakTarget.flushDelayedResources()
 
         assertEquals(0, vapour.amount)
         assertEquals(2000, strongTarget.movedAmount())
