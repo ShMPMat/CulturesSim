@@ -251,9 +251,13 @@ class Tile(
     private fun addResource(resource: Resource) {
         val oldKeysVersion = _resourcePack.keysVersion
         _resourcePack.add(resource)
+        updateDependencyMatches(oldKeysVersion, resource)
+    }
+
+    private fun updateDependencyMatches(oldKeysVersion: Int, resource: Resource) {
         val keysVersion = _resourcePack.keysVersion
         if (keysVersion == oldKeysVersion)
-            return
+            return // Nothing changed
 
         // Try to cache the new Resource instead of rebuilding DependencyMatches later
         for ((labeler, matches) in dependencyMatches) {
@@ -267,7 +271,7 @@ class Tile(
         }
     }
 
-     // Adds resources which will be available on this Tile on the next turn.
+    // Adds resources which will be available on this Tile on the next turn.
     fun addDelayedResource(resource: Resource) {
         if (resource.isEmpty)
             return
