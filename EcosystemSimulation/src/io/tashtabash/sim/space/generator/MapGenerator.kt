@@ -76,33 +76,41 @@ private fun createTiles(x: Int, y: Int, scale: Scale, createUpdaters: () -> Muta
 
 private fun randomPlates(parameters: GenerationParameters, map: WorldMap, random: Random): List<TectonicPlate> {
     val tectonicPlates = mutableListOf<TectonicPlate>()
-    val usedTiles = mutableSetOf<Tile>()
+    val frontiers = mutableListOf<PlateFrontier>()
     for (i in 0 until parameters.platesAmount) {
         val direction = randomElement(Direction.entries, random)
         val type = randomElement(TectonicPlate.Type.entries, random)
         val tectonicPlate = TectonicPlate(direction, type, parameters, i.toByte())
-        val tile = randomTile(map)
+        var tile = randomTile(map)
+        while (tile.plate != null)
+            tile = randomTile(map)
 
         tectonicPlate.add(tile)
         tectonicPlates += tectonicPlate
-        usedTiles += tile
+        frontiers += PlateFrontier()
     }
-    val growingPlates = tectonicPlates.toMutableList()
-    while (growingPlates.isNotEmpty()) {
-        var i = 0
-        while (i < growingPlates.size) {
-            val territory = growingPlates[i]
-            val tile = randomElementOrNull(territory.outerBrink.toList(), random) // Try getting the next tile for cheap
-                .takeIf { it !in usedTiles }
-                ?: randomElementOrNull(territory.filterOuterBrink { !usedTiles.contains(it) }, random) // Ok, expensive
-                ?: run { // This plate won't grow anymore
-                    growingPlates.removeAt(i)
-                    continue
-                }
+    for (i in tectonicPlates.indices)
+        for (neighbour in tectonicPlates[i].center?.neighbours ?: listOf())
+            frontiers[i].add(neighbour)
 
-            territory.add(tile)
-            usedTiles += tile
-            i++
+    val growingIndices = tectonicPlates.indices.toMutableList()
+    while (growingIndices.isNotEmpty()) {
+        var g = 0
+        while (g < growingIndices.size) {
+            val i = growingIndices[g]
+            val tile = frontiers[i].random(random)
+            if (tile == null) {
+                growingIndices.removeAt(g)
+                continue
+            }
+
+            for (f in frontiers)
+                f.remove(tile)
+
+            tectonicPlates[i].add(tile)
+            for (neighbour in tile.neighbours)
+                frontiers[i].add(neighbour)
+            g++
         }
     }
     return tectonicPlates
@@ -117,4 +125,31 @@ private fun fill(map: WorldMap) {
     println("Moved plates in:" + measureTime {
         map.platesUpdate()
     })
+}
+
+private class PlateFrontier {
+    private val tiles = mutableListOf<Tile>()
+    private val index = mutableMapOf<Tile, Int>()
+
+    fun add(tile: Tile) {
+        if (tile.plate != null || tile in index)
+            return
+
+        index[tile] = tiles.size
+        tiles += tile
+    }
+
+    fun remove(tile: Tile) {
+        val i = index.remove(tile)
+            ?: return
+
+        val last = tiles.removeAt(tiles.lastIndex) // swap w/ the last to not change the list for O(n)
+        if (i < tiles.size) {
+            tiles[i] = last
+            index[last] = i
+        }
+    }
+
+    fun random(random: Random): Tile? =
+        randomElementOrNull(tiles, random)
 }
