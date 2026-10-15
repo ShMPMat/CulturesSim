@@ -26,26 +26,26 @@ fun createRiver(
     tile: Tile,
     water: Resource,
     goodTilePredicate: (Tile) -> Boolean,
-    random: Random
+    random: Random,
+    nameTag: TileTag = getRiverTag(riversCreated.toString())
 ) {
-    val nameTag = getRiverTag(riversCreated.toString())
     riversCreated++
-    var currentTile = tile
+    val riverTiles = mutableListOf(tile)
     val iterations = (200 * Controller.session.proportionCoefficient).toInt()
     for (i in 1..iterations) {
-        if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water)) {
+        val currentTile = riverTiles.last()
+        if (currentTile.type == Tile.Type.Water || currentTile.resourcePack.contains(water))
             break
-        }
         currentTile.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt()))
         currentTile.flushDelayedResources()
         currentTile.tagPool.add(nameTag)
         val minLevel = min(
-                currentTile.level,
-                currentTile.getNeighbours(goodTilePredicate).minByOrNull { it.level }?.level ?: -1
+            currentTile.level,
+            currentTile.getNeighbours(goodTilePredicate).minOfOrNull { it.level } ?: -1
         )
-        val tiles = currentTile.getNeighbours { it.level == minLevel }
+        val tiles = currentTile.getNeighbours { it.level == minLevel  && it !in riverTiles }
         var nextTile = tiles.filter { it.resourcePack.contains(water) }
-            .randomElementOrNull()
+            .randomElementOrNull() // If there's a water Tile nearby, flow into it
 
         if (nextTile == null) {
             if (minLevel == currentTile.level && tiles.size >= 3) {
@@ -63,10 +63,10 @@ fun createRiver(
 
         val direction = currentTile.directionOf(nextTile)
             ?: throw SimulationError("River Tiles ${currentTile.posStr} and ${nextTile.posStr} aren't adjacent")
-        flowUpdater.updatedFlowX = direction.dx * (0.5 + currentTile.level - nextTile.level)
-        flowUpdater.updatedFlowY = direction.dy * (0.5 + currentTile.level - nextTile.level)
+        flowUpdater.updatedFlowX = direction.dx * (.5 + currentTile.level - nextTile.level)
+        flowUpdater.updatedFlowY = direction.dy * (.5 + currentTile.level - nextTile.level)
 
-        currentTile = nextTile
+        riverTiles += nextTile
     }
 }
 
@@ -109,12 +109,12 @@ fun createLake(
                     break
             }
             path?.let { tiles ->
-                tiles.forEach {
+                tiles.dropLast(1).forEach {
                     it.addDelayedResource(water.copy((1000 * Controller.session.proportionCoefficient).toInt()))
                     it.flushDelayedResources()
                 }
-                tiles.forEach { it.tagPool.add(previousRiverTag) }
-                createRiver(tiles.last(), water, goodTilePredicate, random)
+                tiles.dropLast(1).forEach { it.tagPool.add(previousRiverTag) }
+                createRiver(tiles.last(), water, goodTilePredicate, random, previousRiverTag)
                 return
             }
         }
@@ -138,9 +138,8 @@ fun createRivers(
     goodTilePredicate: (Tile) -> Boolean,
     random: Random
 ) {
-    val allTiles = map.tiles
-        .map { it to goodSpotProbability(it) }
-        .filter { it.second > 0.0 }
+    val allTiles = map.tiles.map { it to goodSpotProbability(it) }
+        .filter { it.second > .0 }
         .map { it.first }
     val actualAmount = min(amount, allTiles.size)
     if (actualAmount == 0)
@@ -153,10 +152,8 @@ fun createRivers(
     }
 }
 
-
-
 private fun makeRiverPath(start: Tile, finish: Tile, allowedTiles: Set<Tile>, random: Random): List<Tile>? {
-    val h = {t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) + random.nextInt(-2, 2) }
+    val h = { t: Tile -> abs(t.x - finish.x) + abs(t.y - finish.y) + random.nextInt(-2, 2) }
     val g = mutableMapOf<Tile, Int>()
     val f = mutableMapOf<Tile, Int>()
     val prev = mutableMapOf<Tile, Tile>()
