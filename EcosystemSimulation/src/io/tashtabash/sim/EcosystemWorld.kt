@@ -46,7 +46,7 @@ class EcosystemWorld(
             resourceResources,
             actions,
             materialPool,
-            SpaceData.data.resourceProportionCoefficient,
+            1,
             tagParser,
             resourceActionInjectors
         ).createPool()
