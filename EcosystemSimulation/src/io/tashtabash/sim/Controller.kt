@@ -9,6 +9,7 @@ import io.tashtabash.sim.init.GeologicalTurnsStep
 import io.tashtabash.sim.interactionmodel.InteractionModel
 import io.tashtabash.visualizer.Visualizer
 import kotlin.random.Random
+import kotlin.time.measureTime
 
 
 open class Controller<E : World>(val interactionModel: InteractionModel<E>, val world: E, val proportionCoefficient: Double) {
@@ -44,8 +45,11 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
 
     fun runInitSteps() {
         for (initStep in initSteps) {
-            initStep.run(world, interactionModel)
-            println()
+            println("Run init step ${initStep.javaClass.simpleName}")
+            val time = measureTime {
+                initStep.run(world, interactionModel)
+            }
+            println("Finished init step ${initStep.javaClass.simpleName} in: $time\n")
         }
     }
 
