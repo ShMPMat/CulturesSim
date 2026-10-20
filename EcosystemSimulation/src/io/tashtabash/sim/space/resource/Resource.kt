@@ -9,6 +9,7 @@ import io.tashtabash.sim.space.resource.dependency.ConsumeDependency
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import io.tashtabash.sim.space.tile.Tile
 import java.util.*
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -17,9 +18,12 @@ open class Resource private constructor(
     val core: ResourceCore,
     amount: Int = core.genome.defaultAmount,
     hash: Int?,
-    protected var deathTurn: Int = 0
+    deathTurn: Int = 0
 ) : Comparable<Resource> {
     constructor(core: ResourceCore, amount: Int = core.genome.defaultAmount) : this(core, amount, null)
+
+    var deathTurn = deathTurn
+        protected set
 
     open var amount = amount
         protected set(value) {
@@ -33,7 +37,7 @@ open class Resource private constructor(
     private var _hash = 0
 
     //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death
-    protected var deathOverhead = 0
+    protected var deathOverhead = .0
 
     //What part of this Resource will be destroyed on the next death event
     protected var deathPart = 1.0
@@ -168,7 +172,7 @@ open class Resource private constructor(
         return result
     }
 
-    open fun getCleanPart(part: Int, taker: Taker?): Resource =
+    fun getCleanPart(part: Int, taker: Taker?): Resource =
         copy(getCleanPartInt(part, taker), deathTurn)
 
     open fun merge(resource: Resource): Resource {
@@ -222,38 +226,35 @@ open class Resource private constructor(
         if (amount <= 0)
             return ResourceUpdateResult(false, emptyList())
         val result = mutableListOf<TiledResource>()
+        deathTurn++
+
+        for (dependency in genome.dependencies) {
+            val satisfaction = dependency.satisfactionPercent(tile, this)
+            deathOverhead += (1 - satisfaction) * genome.lifespan
+        }
 
         val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it, tile) }
         if (resources.any { (t, r) -> r.isAcceptable(t) })
             result += resources
 
-        for (dependency in genome.dependencies) {
-            val satisfaction = dependency.satisfactionPercent(tile, this)
-            deathOverhead += ((1 - satisfaction) * genome.lifespan).toInt()
-        }
-
-        result += naturalDeath().map { tile to it }
-
-        if (amount <= 0)
-            return ResourceUpdateResult(false, result)
-        deathTurn++
-
         expand(tile)
         distribute(tile)
 
-        return ResourceUpdateResult(true, result)
+        result += naturalDeath().map { tile to it }
+
+        return ResourceUpdateResult(amount > 0, result)
     }
 
     protected open fun naturalDeath(): List<Resource> {
         val shouldDie = deathTurn + deathOverhead >= genome.lifespan
-        if (!shouldDie && (genome.lifespan != Double.POSITIVE_INFINITY || deathOverhead != Int.MAX_VALUE))
+        if (!shouldDie)
             return emptyList()
 
         val deadAmount = calculateDeadAmount()
         takers += DeathTaker to deadAmount
         amount -= deadAmount
         deathTurn = 0
-        deathOverhead = 0
+        deathOverhead = .0
         deathPart = 1.0
         return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
     }
@@ -261,7 +262,7 @@ open class Resource private constructor(
     protected open fun calculateDeadAmount() = (deathPart * amount).toInt()
 
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
-        val expectedValue = amount * action.probability
+        val expectedValue = activeAmount * action.probability
         val maxPart = if (expectedValue < 1.0)
             expectedValue.chanceOf<Double> { 1.0 }
                 ?: return emptyList()
@@ -368,7 +369,16 @@ open class Resource private constructor(
         return resourcePart.applyAction(action, resourcePart.amount)
     }
 
-    private fun expand(tile: Tile): Boolean = (genome.spreadProbability * amount).chanceOf<Boolean> {
+    private val activePart: Double
+        get() =
+            if (genome.lifespan != Double.POSITIVE_INFINITY)
+                    (genome.lifespan - deathOverhead) / genome.lifespan
+            else 1.0
+
+    private val activeAmount: Double
+        get() = max(1.0, amount * activePart)
+
+    private fun expand(tile: Tile): Boolean = (genome.spreadProbability * activeAmount).chanceOf<Boolean> {
         val newTile = tile.neighbours.shuffled(RandomSingleton.random)
             .firstOrNull { t -> genome.dependencies.all { it.hasNeeded(t) } }
             ?: if (genome.dependencies.all { it.hasNeeded(tile) })
@@ -377,10 +387,13 @@ open class Resource private constructor(
                 tile
             } ?: tile.neighbours.randomElement()
 
-        val amount = min(genome.naturalDensity(newTile.area), (genome.spreadProbability * amount).toInt())
-        // Ensure that at least one Resource is spawned for small amounts and spreadProbabilities
+        val amount = min(
+            genome.naturalDensity(newTile.area) - newTile.resourcePack.getAmount(this), // Don't overflow
+            (genome.spreadProbability * amount).toInt()
+        )
+        // At least one Resource is spawned for small amounts and spreadProbabilities (even if there's too many already)
         val resource = copy(amount.coerceAtLeast(1))
-        newTile.addDelayedResource(resource)
+        newTile.addDelayedResource(resource) // Add a copy w/o any deathTurn
 
         return true
     } ?: false

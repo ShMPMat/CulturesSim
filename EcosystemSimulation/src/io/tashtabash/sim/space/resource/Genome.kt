@@ -27,7 +27,7 @@ class Genome(
     val dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
     val primaryMaterial: Material,
-    val secondaryMaterials: List<Material> = listOf(),
+    val secondaryMaterials: List<Material> = emptyList(),
     var conversionCore: ConversionCore = ConversionCore(),
     val parts: MutableList<Resource> = mutableListOf()
 ) {

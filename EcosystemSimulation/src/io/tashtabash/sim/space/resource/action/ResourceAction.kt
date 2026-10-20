@@ -37,7 +37,7 @@ class ResourceProbabilityAction(
     val isWasting: Boolean,
     val canChooseTile: Boolean,
     dependencies: List<ResourceDependency>
-) : ResourceAction("_${baseName}_prob_${probability}", listOf(), dependencies, baseName) {
+) : ResourceAction("_${baseName}_prob_${probability}", emptyList(), dependencies, baseName) {
     fun copy(
         baseName: String = this.name,
         probability: Double = this.probability,

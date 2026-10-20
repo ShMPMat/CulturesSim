@@ -43,7 +43,7 @@ fun createRiver(
             currentTile.level,
             currentTile.getNeighbours(goodTilePredicate).minOfOrNull { it.level } ?: -1
         )
-        val tiles = currentTile.getNeighbours { it.level == minLevel  && it !in riverTiles }
+        val tiles = currentTile.getNeighbours { it.level == minLevel && it !in riverTiles }
         var nextTile = tiles.filter { it.resourcePack.contains(water) }
             .randomElementOrNull() // If there's a water Tile nearby, flow into it
 

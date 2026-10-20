@@ -72,7 +72,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
             takers += Taker.DeathTaker to deadAmount
             amount -= deadAmount
             deathTurn = 0
-            deathOverhead = 0
+            deathOverhead = .0
             deathPart = 1.0
             return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
         }
