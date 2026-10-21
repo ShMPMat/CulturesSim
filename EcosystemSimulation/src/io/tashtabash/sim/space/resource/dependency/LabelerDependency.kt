@@ -1,17 +1,15 @@
 package io.tashtabash.sim.space.resource.dependency
 
-import io.tashtabash.sim.space.resource.Genome
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.QuantifiedResourceLabeler
 import io.tashtabash.sim.space.tile.Tile
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
 import kotlin.math.max
 
 
 abstract class LabelerDependency(
     deprivationCoefficient: Double,
-    override val isNecessary: Boolean,
+    override val isNecessary: Boolean,//TODO never used
     quantifiedResourceLabeler: QuantifiedResourceLabeler
 ) : CoefficientDependency(deprivationCoefficient) {
     override val isResourceNeeded = true
@@ -30,7 +28,7 @@ abstract class LabelerDependency(
 
     // How far the resource can reach in one tick, in tiles
     protected fun accessRadius(tile: Tile, resource: Resource) =
-        max(1.0, resource.genome.behaviour.tileSpeed(tile.scale)).toInt()
+        max(0.0, ceil(resource.genome.behaviour.tileSpeed(tile.scale))).toInt()
 
     override fun toString() = "$labeler of $amount"
 }
