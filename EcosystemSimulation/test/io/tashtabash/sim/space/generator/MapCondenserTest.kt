@@ -178,12 +178,12 @@ class MapCondenserTest {
     fun `equal resources merge in the part`() {
         val tiles = cellTiles(1, 1)
         tiles.forEach { it.addDelayedResource(plant.copy(3)) }
-        tiles.forEach { it.middleUpdate() } // Some resources are in the pack, some are delayed
+        tiles.forEach { it.flushDelayedResources() } // Some resources are in the pack, some are delayed
         tiles.take(5).forEach { it.addDelayedResource(plant.copy(1)) }
         tiles.forEach { it.flushDelayedResources() }
 
         val part = condense().getValue(1, 1)
-        part.middleUpdate()
+        part.flushDelayedResources()
 
         assertEquals(listOf(25 * 3 + 5), part.resourcePack.resources.map { it.amount })
     }
