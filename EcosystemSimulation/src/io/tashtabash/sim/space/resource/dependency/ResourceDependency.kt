@@ -6,7 +6,7 @@ import io.tashtabash.sim.space.tile.Tile
 
 interface ResourceDependency {
     fun satisfactionPercent(tile: Tile, resource: Resource, isSafe: Boolean = false): Double
-    val isNecessary: Boolean
+    val isNecessary: Boolean // Affects initial Resource placement
     val isPositive: Boolean
     val isResourceNeeded: Boolean
 

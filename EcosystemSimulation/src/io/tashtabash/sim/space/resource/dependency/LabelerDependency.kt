@@ -9,7 +9,7 @@ import kotlin.math.max
 
 abstract class LabelerDependency(
     deprivationCoefficient: Double,
-    override val isNecessary: Boolean,//TODO never used
+    override val isNecessary: Boolean,
     quantifiedResourceLabeler: QuantifiedResourceLabeler
 ) : CoefficientDependency(deprivationCoefficient) {
     override val isResourceNeeded = true
