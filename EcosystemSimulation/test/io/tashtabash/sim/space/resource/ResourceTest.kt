@@ -28,18 +28,4 @@ internal class ResourceTest {
             assertTrue(resource.getPart(100_000, fastResource).amount != amount)
         }
     }
-
-    @Test
-    fun `merge of Resource with less deathTurn results in less deathPart`() {
-        if (RandomSingleton.safeRandom == null)
-            RandomSingleton.safeRandom = Random(1)
-
-        val tile = createTestTile(0, 0)
-        val oldResource = createTestResource(lifespan = 1.0)
-        val newResource = createTestResource(lifespan = 1.0)
-        oldResource.update(tile)
-        oldResource.merge(newResource)
-        oldResource.update(tile)
-        assertTrue(oldResource.amount > 0)
-    }
 }

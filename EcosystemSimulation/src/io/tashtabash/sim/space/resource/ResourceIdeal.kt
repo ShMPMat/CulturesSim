@@ -34,7 +34,7 @@ class ResourceIdeal(
         throw OperationNotSupportedException("ResourceIdeal doesn't support update(..)")
     }
 
-    override fun addAmount(otherAmount: Int, otherDeathPart: Double) {
+    override fun addAmount(otherAmount: Int) {
         throw OperationNotSupportedException("ResourceIdeal doesn't support addAmount(..)")
     }
 }

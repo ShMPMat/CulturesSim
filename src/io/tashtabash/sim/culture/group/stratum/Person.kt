@@ -39,8 +39,6 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
         }
     )
 ) {
-    private var toDie = 0
-
     override fun getPartInt(part: Int, taker: Taker) = super.getPartInt(part, taker).also {
         logGetPart(it, taker)
     }
@@ -65,22 +63,17 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
     }
 
     override fun naturalDeath(): List<Resource> {
+        val toDie = calculateDeadAmount().toInt()
         if (toDie > 0) {
             val deadAmount = min(amount, (toDie / genome.lifespan).toInt() + 1)
-            toDie -= deadAmount
 
             takers += Taker.DeathTaker to deadAmount
             amount -= deadAmount
             deathTurn = 0
             deathOverhead = .0
-            deathPart = 1.0
             return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
         }
 
-        if (deathTurn + deathOverhead < genome.lifespan)
-            return emptyList()
-
-        toDie = (deathPart * amount).toInt()
-        return if (toDie != 0) naturalDeath() else emptyList()
+        return emptyList()
     }
 }

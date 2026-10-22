@@ -36,11 +36,8 @@ open class Resource private constructor(
     // Precomputed hash for quick comparisons
     private var _hash = 0
 
-    //How many additional years added to this Resource due to bad environment. Large numbers results in sooner death
+    //How many additional years added to this Resource due to bad environment.
     protected var deathOverhead = .0
-
-    //What part of this Resource will be destroyed on the next death event
-    protected var deathPart = 1.0
 
     // Food left over by ConsumeDependencies; create later to not stress short-lived Resource copies
     private var consumeBuffers: IdentityHashMap<ConsumeDependency, Int>? = null
@@ -182,7 +179,7 @@ open class Resource private constructor(
         if (this === resource)
             return this
 
-        addAmount(resource.amount, resource.deathPart * (resource.deathOverhead + resource.deathTurn) / genome.lifespan)
+        addAmount(resource.amount)
         moveConsumeBuffers(resource)
         resource.destroy()
         return this
@@ -246,20 +243,21 @@ open class Resource private constructor(
     }
 
     protected open fun naturalDeath(): List<Resource> {
-        val shouldDie = deathTurn + deathOverhead >= genome.lifespan
+        val deadAmount = calculateDeadAmount()
+        val shouldDie = deadAmount >= 1.0 || deadAmount.testProbability()
         if (!shouldDie)
             return emptyList()
 
-        val deadAmount = calculateDeadAmount()
-        takers += DeathTaker to deadAmount
-        amount -= deadAmount
+        val deadNumber = deadAmount.coerceAtLeast(1.0).toInt()
+        takers += DeathTaker to deadNumber
+        amount -= deadNumber
         deathTurn = 0
         deathOverhead = .0
-        deathPart = 1.0
-        return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadAmount)
+        return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadNumber)
     }
 
-    protected open fun calculateDeadAmount() = (deathPart * amount).toInt()
+    protected open fun calculateDeadAmount() = // deathTurn isn't used for now
+        ((deathOverhead + 1) / genome.lifespan).coerceAtMost(1.0) * amount
 
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = activeAmount * action.probability
@@ -328,9 +326,7 @@ open class Resource private constructor(
         }
     }
 
-    open fun addAmount(otherAmount: Int, otherDeathPart: Double = 0.0) {
-        if (otherAmount > 0)
-            deathPart = (amount * deathPart + otherAmount * otherDeathPart) / (amount + otherAmount)
+    open fun addAmount(otherAmount: Int) {
         this.amount += otherAmount
     }
 
@@ -345,7 +341,7 @@ open class Resource private constructor(
 
     fun applyActionOrEmpty(action: ResourceAction, part: Int = 1): List<Resource> {
         val result = genome.conversionCore.applyAction(action)
-            ?: listOf()
+            ?: emptyList()
         result.forEach { it.amount *= part }
         return result
     }
@@ -362,11 +358,11 @@ open class Resource private constructor(
     }
 
     fun applyActionAndConsume(action: ResourceAction, part: Int, isClean: Boolean, taker: Taker): Resources {
-        val resourcePart =
-            if (isClean) getCleanPart(part, taker)
-            else getPart(part, taker)
+        val resourceAmount =
+            if (isClean) getCleanPartInt(part, taker)
+            else getPartInt(part, taker)
 
-        return resourcePart.applyAction(action, resourcePart.amount)
+        return applyAction(action, resourceAmount)
     }
 
     private val activePart: Double
