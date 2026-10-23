@@ -59,10 +59,8 @@ class EcosystemWorld(
     }
 
     //How many turns passed from the beginning of the io.tashtabash.simulation.
-    override var lesserTurnNumber = 0
+    override var second: Long = 0
         private set
-    private var thousandTurns = 0
-    private var millionTurns = 0
 
     override fun placeResources() = ResourcePlacer(
         map,
@@ -71,29 +69,13 @@ class EcosystemWorld(
         RandomSingleton.random
     ).placeResources()
 
-    override val turn
-        get() = lesserTurnNumber + thousandTurns * 1000 + millionTurns * 1000000
-
     override fun incrementTurn() {
-        lesserTurnNumber++
-        if (lesserTurnNumber == 1000) {
-            lesserTurnNumber = 0
-            incrementTurnEvolution()
-        }
+        second += SpaceData.data.tickDurationSeconds
+
     }
 
-    fun incrementTurnEvolution() {
-        thousandTurns++
-        if (thousandTurns == 1000) {
-            thousandTurns = 0
-            incrementTurnGeology()
-        }
-    }
 
     override fun incrementTurnGeology() {
-        millionTurns++
+        second += SpaceData.data.tickDurationSeconds * 1_000_000
     }
-
-    override fun toString() =
-        turn.toString()
 }

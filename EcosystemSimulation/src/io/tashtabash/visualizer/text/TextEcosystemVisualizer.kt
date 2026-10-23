@@ -85,7 +85,7 @@ open class TextEcosystemVisualizer<E : World>(
     }
 
     private fun computeDateString() =
-        "Year %,d, day %d (turn %.1f)".format(world.year, world.day, world.turn % data.yearDurationTicks)
+        "Year %,d, day %d (seconds %d)".format(world.year, world.dayShort, world.second % data.dayDurationSeconds)
 
     /**
      * Prints default map and information output.

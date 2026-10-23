@@ -5,7 +5,7 @@ import io.tashtabash.sim.Controller
 
 // A message about something that happened in the World
 open class Event(var type: Type, val description: String) {
-    private val turnString = Controller.session.world.turn.toString()
+    private val turnString = Controller.session.world.second.toString()
     val turn = turnString.toIntOrNull()
 
     override fun toString() = "${type.colourString}$turnString. ${type.javaClass.simpleName}: $description\u001B[37m"

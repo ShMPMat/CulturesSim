@@ -60,7 +60,7 @@ class Data(
             throw DataInitializationError("resourceSizeEffect value $resourceSizeEffect is not in 0..1 range")
     }
 
-    val yearDurationTicks = yearDurationDays.toDouble() / tickDurationDays
+    val tickDurationSeconds = tickDurationDays * dayDurationSeconds
 
     val worldSizeXKm = generation.sizeX * generation.scale.tileSizeKm
 }

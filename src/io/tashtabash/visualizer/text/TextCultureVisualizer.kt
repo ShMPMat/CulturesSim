@@ -19,7 +19,7 @@ open class TextCultureVisualizer(
 ) : TextEcosystemVisualizer<CulturesWorld>(controller, CommandManager(TextPassExecutor()), commandManager) {
     private var groupInfo = ConglomeratePrintInfo(mutableListOf())
     private var lastClaimedTiles: Map<Group, Set<Tile>> = mutableMapOf()
-    private var lastClaimedTilesPrintTurn = 0
+    private var lastClaimedTilesPrintTurn = 0L
 
     private val world
         get() = controller.world
@@ -33,7 +33,7 @@ open class TextCultureVisualizer(
 
     override fun print() {
         lastClaimedTiles = interactionModel.eventLog.lastClaimedTiles(lastClaimedTilesPrintTurn)
-        lastClaimedTilesPrintTurn = world.turn
+        lastClaimedTilesPrintTurn = world.second
         println(printedConglomerates(world.conglomerates, groupInfo))
         println("Conglomerates overall: ${world.conglomerates.size}")
         super.print()

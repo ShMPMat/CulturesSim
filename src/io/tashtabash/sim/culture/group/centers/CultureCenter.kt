@@ -10,6 +10,7 @@ import io.tashtabash.generator.culture.worldview.Meme
 import io.tashtabash.sim.culture.desirableTag
 import io.tashtabash.sim.culture.thinking.meaning.makeMeme
 import io.tashtabash.sim.event.*
+import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.tag.labeler.ResourceLabeler
 import kotlin.math.abs
@@ -74,7 +75,7 @@ class CultureCenter(
 
     fun evaluateResource(resource: Resource): Int {
         evaluatedMap[resource]?.let {
-            if (session.world.turn - it.creationTime < session.resourceValueRefreshTime)
+            if ((session.world.second - it.creationTime) / SpaceData.data.tickDurationSeconds < session.resourceValueRefreshTime)
                 return it.value
         }
 
@@ -147,5 +148,5 @@ class CultureCenter(
 
 
 private data class ValueEntry(val value: Int) {
-    val creationTime = session.world.turn
+    val creationTime = session.world.second
 }

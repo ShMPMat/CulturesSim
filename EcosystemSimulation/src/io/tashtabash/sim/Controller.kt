@@ -7,6 +7,7 @@ import io.tashtabash.sim.init.ControllerInitStep
 import io.tashtabash.sim.init.EcosystemTurnsStep
 import io.tashtabash.sim.init.GeologicalTurnsStep
 import io.tashtabash.sim.interactionmodel.InteractionModel
+import io.tashtabash.sim.space.SpaceData
 import io.tashtabash.visualizer.Visualizer
 import kotlin.random.Random
 import kotlin.time.measureTime
@@ -53,7 +54,7 @@ open class Controller<E : World>(val interactionModel: InteractionModel<E>, val 
         }
     }
 
-    fun isTime(denominator: Int) = world.lesserTurnNumber % denominator == 0
+    fun isTime(denominator: Int) = (world.day / SpaceData.data.tickDurationDays)  % denominator == 0L
 
     open fun turn() {
         interactionModel.turn(world)

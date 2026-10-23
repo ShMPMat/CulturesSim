@@ -23,14 +23,15 @@ interface World {
     val tags: Set<ResourceTag>
     val resourcePool: ResourcePool
     val actionTags: List<ActionTag>
-    val lesserTurnNumber: Int
-    val turn: Int
+    val second: Long
 
-    val year: Int
-        get() = (turn / data.yearDurationTicks).toInt()
+    val day: Long
+        get() = second / data.dayDurationSeconds
+    val dayShort: Long
+        get() = day % data.yearDurationDays
 
-    val day: Int
-        get() = ((turn % data.yearDurationTicks) * data.tickDurationDays).toInt() + 1
+    val year: Long
+        get() = day / data.yearDurationDays
 
     fun initializeMap(
         actions: Map<ResourceAction, List<ActionMatcher>>,

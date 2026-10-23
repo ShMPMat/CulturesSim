@@ -2,6 +2,7 @@ package io.tashtabash.sim.interactionmodel
 
 import io.tashtabash.sim.CulturesWorld
 import io.tashtabash.sim.event.EventLog
+import io.tashtabash.sim.space.SpaceData
 
 
 //Model with a 2d map on which all interactions take place.
@@ -45,7 +46,7 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
 
         world.incrementTurn()
 
-        if (world.lesserTurnNumber % 100 == 0)
+        if ((world.second / SpaceData.data.tickDurationSeconds) % 100 == 0L)
             world.clearDeadConglomerates()
 
         val nsToS = 1000_000_000.0

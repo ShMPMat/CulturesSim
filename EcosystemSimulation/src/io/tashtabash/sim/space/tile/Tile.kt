@@ -337,7 +337,7 @@ class Tile(
             val result = resource.update(this)
 
             if (!result.isAlive)
-                deletedResources.add(resource)
+                deletedResources += resource
 
             for ((t, r) in result.produced)
                 t.addDelayedResource(r)
