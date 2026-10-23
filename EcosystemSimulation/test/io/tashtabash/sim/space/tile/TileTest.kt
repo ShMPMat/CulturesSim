@@ -5,6 +5,7 @@ import io.tashtabash.sim.space.SpaceData.data
 import io.tashtabash.sim.space.createTestMap
 import io.tashtabash.sim.space.WorldMap
 import io.tashtabash.sim.space.mockWorldExtent
+import io.tashtabash.sim.space.resource.createTestResource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ import kotlin.math.abs
 
 
 class TileTest {
-    private val scale = Scale(50.0, 10 * 24 * 60 * 60.0)
+    private val scale = Scale(50.0, 10 * 24 * 60 * 60)
 
     @Test
     fun `area defaults to the Scale tile area`() {
@@ -59,5 +60,41 @@ class TileTest {
         assertThrows<IllegalArgumentException> {
             WorldMap(listOf(Tile(1, 0, 0, scale = scale), Tile(1, 0, 1, scale = scale)), mockWorldExtent(1, 2), data.generation.scale)
         }
+    }
+
+    @Test
+    fun `addDelayedResources result in the same outcome`() {
+        val from = Tile(0, 0, 0, scale = scale)
+        val to = Tile(1, 1, 0, scale = scale)
+        val melon = createTestResource("Melon")
+        val watermelon = createTestResource("Watermelon")
+        from.addDelayedResource(melon.copy(100))
+        from.flushDelayedResources()
+        assertEquals(100, from.resourcePack.getAmount(melon))
+
+        from.addDelayedResource(melon.copy(100))
+        from.flushDelayedResources()
+        assertEquals(200, from.resourcePack.getAmount(melon))
+
+        from.addDelayedResource(melon, 100)
+        from.flushDelayedResources()
+        assertEquals(300, from.resourcePack.getAmount(melon))
+
+        from.addDelayedResource(watermelon, 100)
+        from.flushDelayedResources()
+        assertEquals(100, from.resourcePack.getAmount(watermelon))
+
+        from.addDelayedResource(watermelon, 100)
+        from.addDelayedResource(watermelon, 100)
+        from.flushDelayedResources()
+        assertEquals(300, from.resourcePack.getAmount(watermelon))
+
+        to.addDelayedResource(from.resourcePack.getUnpackedResource(melon).getCleanPart(50, null))
+        to.addDelayedResource(from.resourcePack.getUnpackedResource(watermelon), from.resourcePack.getUnpackedResource(watermelon).getCleanPartInt(50, null))
+        to.flushDelayedResources()
+        assertEquals(250, from.resourcePack.getAmount(watermelon))
+        assertEquals(250, from.resourcePack.getAmount(melon))
+        assertEquals(50, to.resourcePack.getAmount(melon))
+        assertEquals(50, to.resourcePack.getAmount(watermelon))
     }
 }

@@ -15,6 +15,6 @@ class MapModel : InteractionModel<World> {
         eventLog.joinNewEvents(world.events)
         eventLog.clearNewEvents()
 
-        world.incrementTurn()
+        world.incrementTurn(world.map.scale.tickDurationSeconds)
     }
 }

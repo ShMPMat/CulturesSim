@@ -40,4 +40,4 @@ class ScaleTest {
     }
 }
 
-private const val TEN_DAYS = 10 * 24 * 60 * 60.0
+private const val TEN_DAYS = 10 * 24 * 60 * 60L

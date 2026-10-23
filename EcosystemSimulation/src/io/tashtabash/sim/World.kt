@@ -60,6 +60,5 @@ interface World {
     }
 
     fun placeResources()
-    fun incrementTurn()
-    fun incrementTurnGeology()
+    fun incrementTurn(seconds: Long)
 }

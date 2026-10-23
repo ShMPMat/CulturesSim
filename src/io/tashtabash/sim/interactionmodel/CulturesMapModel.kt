@@ -44,7 +44,7 @@ class CulturesMapModel : InteractionModel<CulturesWorld> {
         othersTime = System.nanoTime() - othersTime
         overallTime = System.nanoTime() - overallTime
 
-        world.incrementTurn()
+        world.incrementTurn(world.map.scale.tickDurationSeconds)
 
         if ((world.second / SpaceData.data.tickDurationSeconds) % 100 == 0L)
             world.clearDeadConglomerates()

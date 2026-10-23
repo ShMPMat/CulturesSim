@@ -69,13 +69,7 @@ class EcosystemWorld(
         RandomSingleton.random
     ).placeResources()
 
-    override fun incrementTurn() {
-        second += SpaceData.data.tickDurationSeconds
-
-    }
-
-
-    override fun incrementTurnGeology() {
-        second += SpaceData.data.tickDurationSeconds * 1_000_000
+    override fun incrementTurn(seconds: Long) {
+        second += seconds
     }
 }

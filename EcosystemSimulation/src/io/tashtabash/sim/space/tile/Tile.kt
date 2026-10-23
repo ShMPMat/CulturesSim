@@ -47,7 +47,7 @@ class Tile(
     var secondLevel = 0
         private set
 
-    var temperature = 0.0
+    var temperature = .0
         private set
 
     var neighbours = listOf<Tile>()

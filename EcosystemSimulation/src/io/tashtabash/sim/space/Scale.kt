@@ -1,7 +1,7 @@
 package io.tashtabash.sim.space
 
 
-class Scale(val tileSizeKm: Double, val tickDurationSeconds: Double) {
+class Scale(val tileSizeKm: Double, val tickDurationSeconds: Long) {
     val tileAreaKm2 = tileSizeKm * tileSizeKm
 
     fun toTileSpeed(speedMs: Double): Double {

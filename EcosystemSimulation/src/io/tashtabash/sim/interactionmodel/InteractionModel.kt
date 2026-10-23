@@ -13,7 +13,7 @@ interface InteractionModel<in E : World> {
     fun geologicTurn(world: E) {
         world.map.geologicUpdate()
         eventLog.joinNewEvents(world.events)
-        world.incrementTurnGeology()
+        world.incrementTurn(world.map.scale.tickDurationSeconds * 1_000_000)
     }
 
     val eventLog: EventLog
