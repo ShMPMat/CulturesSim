@@ -64,7 +64,7 @@
 -Carcass                            0       0.1    5          -500   500  1000       Ignore    None         @Carcass
         +_OnDeath_/Detritus:1
 
--Detritus                           0       0.1    20         -500   500  1000       Ignore    None         @Detritus
+-Detritus                           0       0.1    19         -500   500  1000       Ignore    Biological   @Detritus
 
 -Pearl                              0       0.01   100000     -500   500  100000000  Migrate   None         @Pearl
         cWhite

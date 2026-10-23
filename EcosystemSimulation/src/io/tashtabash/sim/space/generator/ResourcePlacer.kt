@@ -82,8 +82,8 @@ class ResourcePlacer(
                 tile.addDelayedResource(dependencyResource.exactCopy())
     }
 
-    private fun filterDependencyResources(resource: Resource, previous: List<Resource>, rootResource: Resource? = null) =
-            resource.genome.type in listOf(ResourceType.Plant, ResourceType.Animal)
-                    && previous.none { resource.simpleName == it.simpleName }
-                    && resource.simpleName != rootResource?.simpleName
+    private fun filterDependencyResources(resource: Resource, previous: List<Resource>, rootResource: Resource?) =
+        resource.genome.type in listOf(ResourceType.Plant, ResourceType.Animal, ResourceType.Biological)
+                && previous.none { resource.simpleName == it.simpleName }
+                && resource.simpleName != rootResource?.simpleName
 }

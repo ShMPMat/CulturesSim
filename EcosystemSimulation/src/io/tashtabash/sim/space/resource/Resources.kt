@@ -36,7 +36,7 @@ internal fun Resource.replaceRecursiveLinks(old: Resource): Resource {
 
 
 enum class ResourceType {
-    Plant, Animal, Mineral, Building, Artifact, None
+    Plant, Animal, Biological, Mineral, Building, Artifact, None
 }
 
 
