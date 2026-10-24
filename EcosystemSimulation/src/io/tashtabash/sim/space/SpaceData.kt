@@ -36,7 +36,6 @@ class Data(
     val temperatureBaseFinish: Double = 29.0,
     val startResourceAmountMin: Int = 40,
     val startResourceAmountMax: Int = startResourceAmountMin + 30,
-    val resourceProportionCoefficient: Int = 100,
     val defaultWaterLevel: Int = 98,
     val seabedLevel: Int = 85,
     val resourceSizeEffect: Double = 1.0,
