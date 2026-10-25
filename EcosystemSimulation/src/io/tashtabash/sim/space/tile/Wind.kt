@@ -5,14 +5,14 @@ import kotlin.math.min
 
 
 class Wind {
-    var affectedTiles: MutableList<Pair<Tile, Double>> = mutableListOf()
+    var affectedTiles = mutableListOf<Pair<Tile, Double>>()
 
     val isStill: Boolean
         get() = affectedTiles.isEmpty()
 
     val maxLevel: Double
         get() = affectedTiles.maxOfOrNull { (_, t) -> t }
-            ?: 0.0
+            ?: .0
 
     val sumLevel: Double
         get() = affectedTiles.sumOf { (_, t) -> t }
@@ -32,11 +32,11 @@ class Wind {
         if (change <= 0)
             return
 
-        affectedTiles.add(Pair(tile, min(change, data.maxWind)))
+        affectedTiles += tile to min(change, data.maxWind)
     }
 
     fun getLevelByTile(tile: Tile): Double = affectedTiles
-            .firstOrNull { (t) -> t == tile }
-            ?.second
-            ?: 0.0
+        .firstOrNull { (t) -> t == tile }
+        ?.second
+        ?: .0
 }
