@@ -19,7 +19,7 @@ private val personGenome = Genome(
     Behaviour(.1, .05, .25, 1.0, OverflowType.Ignore),
     Appearance(null, null, null),
     false,
-    50.0,
+    Lifespan.Years(50.0),
     50,
     null,
     emptyList(),
@@ -62,10 +62,10 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
         this.deathTurn = deathTurn
     }
 
-    override fun naturalDeath(): List<Resource> {
-        val toDie = calculateDeadAmount().toInt()
+    override fun naturalDeath(tickSeconds: Long): List<Resource> {
+        val toDie = calculateDeadAmount(tickSeconds).toInt()
         if (toDie > 0) {
-            val deadAmount = min(amount, (toDie / genome.lifespan).toInt() + 1)
+            val deadAmount = min(amount, (toDie / genome.computeLifespan(tickSeconds)).toInt() + 1)
 
             takers += Taker.DeathTaker to deadAmount
             amount -= deadAmount

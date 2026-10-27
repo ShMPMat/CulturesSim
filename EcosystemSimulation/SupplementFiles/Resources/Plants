@@ -1,8 +1,8 @@
 /Name                             ||Spread||Size||DeathTime||TempMin|Max||DefAmount||Overflow||Type       ||Materials      ||Parts - ^ Dependencies - ~ Conversions - +
 -AppleTree                          0.0     2      10         0       30  150        Cut       Plant        @Wood
         ~r:Vapour;0.0025;2;1;CONSUME
-        ~r:Detritus;1.5;2;0;CONSUME
-        +_Drop_prob_0.04_f/Pome:10:n|Apple#c|Red
+        ~m:Detritus;1.5;2;0;CONSUME
+        +_Drop_prob_0.04_f/Pome:15:n|Apple#c|Red
         +_OnDeath_/Detritus:20
         ^Trunk:1:s|2 ^SoftBranch:15 ^Leaf:100 ^Pome:5:n|Apple#c|Red ^Flower:10:c|White ^SoftRoot:5
         #Water
@@ -11,16 +11,16 @@
 
 -PeachTree                          0.19    2.5    10         10      30  100        Cut       Plant        @Wood
         ~r:Vapour;0.0025;2;1;CONSUME
-        ~r:Detritus;2;2;0;CONSUME
+        ~m:Detritus;2;2;0;CONSUME
         +_OnDeath_/Detritus:25
-        ^Trunk:1:s|2.5 ^SoftBranch:15 ^Leaf:100 ^Drupe:5:n|Peach#c|Yellow ^SoftRoot:5
+        ^Trunk:1:s|2.5 ^SoftBranch:15 ^Leaf:100 ^Drupe:15:n|Peach#c|Yellow ^SoftRoot:5
         #Water
         $Tree
         cGreen
 
 -ColdPlant                          0.2     1      15         -30     0   50         Cut       Plant        @PlantFibre
         ~r:Vapour;0.001;2;1;CONSUME
-        ~r:Detritus;0.5;2;0;CONSUME
+        ~m:Detritus;0.5;2;0;CONSUME
         +_OnDeath_/Detritus:10
         ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.02    ^Seed:2 ^SoftRoot:5
         #Water
@@ -28,7 +28,7 @@
 
 -ColdBerry                          0.2     1      15         -30     0   50         Cut       Plant        @Wood
         ~r:Vapour;0.001;2;1;CONSUME
-        ~r:Detritus;0.5;2;0;CONSUME
+        ~m:Detritus;0.5;2;0;CONSUME
         +_OnDeath_/Detritus:10
         ^Trunk:1:s|1  ^SoftBranch:10:s|0.1 ^Leaf:30:s|0.01  ^Pome:1:s|0.01#c|Red ^SoftRoot:5
         #Water
@@ -37,7 +37,7 @@
 -FlowerBush                         0.25    1      10         0       30  150        Cut        Plant        @PlantFibre
         ~r:Vapour;0.0025;1.25;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
-        ~r:Detritus;0.75;2;0;CONSUME
+        ~m:Detritus;0.75;2;0;CONSUME
         +_OnDeath_/Detritus:10
         ^SoftBranch:15 ^Leaf:100 ^Flower:10:c|Red   ^Seed:2 ^SoftRoot:5
         #Water
@@ -46,7 +46,7 @@
 -Dandelion                          0.3     0.1    7          5      30   500        Cut        Plant        @PlantFibre
         ~r:Vapour;0.00001;2;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
-        ~r:Detritus;0.1;2;0;CONSUME
+        ~m:Detritus;0.1;2;0;CONSUME
         +_OnDeath_/Detritus:1
         ^Leaf:3:s|0.2 ^Flower:1:c|Yellow
         #Water
@@ -54,7 +54,7 @@
 
 -DwarfBirch                         0.0     1      15         -30     20  40         Cut        Plant        @Wood
         ~r:Vapour;0.001;2;1;CONSUME
-        ~r:Detritus;0.5;2;0;CONSUME
+        ~m:Detritus;0.5;2;0;CONSUME
         +_OnDeath_/Detritus:10
         +_Drop_prob_0.04_t/Seed:13
         ^Trunk:1:s|1 ^SoftBranch:15 ^Leaf:30:s|0.02              ^Seed:13 ^SoftRoot:5
@@ -64,8 +64,7 @@
 
 -Spruce                             0.1     5      40         -15     15  100        Cut        Plant        @Wood
         ~r:Vapour;0.001;2;1;CONSUME
-        ~r:Vapour;0.1;2;1;EXIST
-        ~r:Detritus;1;2;0;CONSUME
+        ~m:Detritus;0.5;10;0;CONSUME
         +_OnDeath_/Detritus:50
         ^Trunk:1       ^PineNeedle:300 ^Branch:30  ^ConiferCone:10 ^Root:5
         #Water
@@ -82,7 +81,7 @@
 -Oak                                0.09    5      40         0      30   100        Cut        Plant        @Wood
         ~r:Vapour;0.001;2;1;CONSUME
         ~r:Vapour;0.1;2;1;EXIST
-        ~r:Detritus;1;2;0;CONSUME
+        ~m:Detritus;1;2;0;CONSUME
         +_OnDeath_/Detritus:50
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
@@ -92,16 +91,16 @@
 -Filbert                            0.09    5      40         0      30   10         Cut        Plant        @Wood
         ~r:Vapour;0.001;2;1;CONSUME
         ~r:Vapour;0.1;2;1;EXIST
-        ~r:Detritus;1;2;0;CONSUME
+        ~m:Detritus;1;2;0;CONSUME
         +_OnDeath_/Detritus:50
         ^Trunk:1       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5 ^Nut:50
         #Water
         $Tree
         cGreen
 
--JungleTree                         0.06    5      40         20     40   150        Cut        Plant        @Wood
+-JungleTree                         0.1     5      40         20     40   150        Cut        Plant        @Wood
         ~r:Vapour;1;2;1;CONSUME
-        ~r:Detritus;1;2;0;CONSUME
+        ~m:Detritus;1;2;0;CONSUME
         +_OnDeath_/Detritus:50
         ^Trunk:1:s|5       ^Leaf:300 ^Branch:30  ^Seed:4 ^Root:5
         #Water
@@ -110,7 +109,7 @@
 
 -Reed                               0.35    1      5          5      30   50         Cut        Plant        @PlantFibre
         ~r:Vapour;0.1;2;1;CONSUME
-        ~r:Detritus;1.5;2;0;CONSUME
+        ~m:Detritus;1.5;2;0;CONSUME
         +_OnDeath_/Detritus:10
         ^SoftBranch:1:s|1  ^Leaf:5               ^Seed:2 ^SoftRoot:2
         #Water
@@ -118,8 +117,8 @@
 
 -Grass                              0.0     0.1    5          5      30   5000       Cut        Plant        @PlantFibre
         ~r:Vapour;0.000001;2;1;CONSUME
-        ~r:Detritus;0.1;2;0;CONSUME
-        +_Drop_prob_0.2_f/Seed:20
+        ~m:Detritus;0.1;2;0;CONSUME
+        +_Drop_prob_0.2_f/Seed:30
         +_OnDeath_/Detritus:1
         ^Leaf:3:s|0.1 ^Seed:3
         #Water
@@ -127,7 +126,7 @@
 
 -Clover                             0.0     0.1    5          5      30   800        Cut        Plant        @PlantFibre
         ~r:Vapour;0.000001;2;1;CONSUME
-        ~r:Detritus;0.1;2;0;CONSUME
+        ~m:Detritus;0.1;2;0;CONSUME
         +_Drop_prob_0.2_f/Seed:10
         +_OnDeath_/Detritus:1
         ^Leaf:4:s|0.02 ^Flower:1:c|White ^SoftRoot:2 ^Seed:3
@@ -136,7 +135,7 @@
 
 -Wheat                              0.0     0.2    5          10     28   500        Cut        Plant        @PlantFibre
         ~r:Vapour;0.00001;2;1;CONSUME
-        ~r:Detritus;0.1;2;0;CONSUME
+        ~m:Detritus;0.1;2;0;CONSUME
         +_Drop_prob_0.2_t/Seed:30
         +_OnDeath_/Detritus:2
         ^Leaf:2:s|0.2 ^Seed:30
@@ -146,7 +145,7 @@
 -Lily                               0.0     0.1    5          5      30   100        Cut        Plant        @PlantFibre
         ~r:Vapour;0.000001;1.25;1;CONSUME
         ~t:Pollinator;0.01;1.01;0;EXIST
-        ~r:Detritus;0.1;2;0;CONSUME
+        ~m:Detritus;0.1;2;0;CONSUME
         +_Drop_prob_0.2_f/Seed:10
         +_OnDeath_/Detritus:1
         ^Leaf:3:s|0.1 ^Seed:3   ^Flower:1:c|Orange
@@ -154,8 +153,8 @@
         cGreen
 
 -Ragweed                            0.0     0.1    5          5      30   100        Cut        Plant        @PlantFibre
-        ~r:Vapour;0.000001;1.25;1;CONSUME
-        ~r:Detritus;0.1;2;0;CONSUME
+        ~r:Vapour;0.000001;2;1;CONSUME
+        ~m:Detritus;0.1;2;0;CONSUME
         +_Drop_prob_0.2_f/Seed:10
         +_OnDeath_/Detritus:1
         ^Leaf:3   ^Flower:50:c|Yellow#s|0.003
@@ -163,7 +162,7 @@
         cGreen
 
 -Moss                               0.3     0.05   20         -10    30   500        Cut        Plant        @PlantFibre
-        ~r:Vapour;0.001;2;1;CONSUME
+        ~r:Vapour;0.001;4;1;CONSUME
         +_OnDeath_/Detritus:1
         ^PlantFibre:1
         #Water
@@ -174,24 +173,24 @@
         ~r:SaltWater;0.001;200;1;EXIST
         cGreen
 
--Acetabularia                       0.9     0.02   5          10     35   200000     Cut        Plant        @PlantFibre
+-Acetabularia                       0.9     0.02   5          10     35   200000     Migrate    Plant        @PlantFibre
         ^Leaf:1:s|0.01
-        ~r:SaltWater;0.001;200;1;EXIST
-        l95;1000
+        ~r:SaltWater;0.001;20000;1;EXIST
+        l90;1000
         cGreen
         sMushroom
 
--FreshWaterWeed                     0.8     0.1    4          -5     30   2000       Cut        Plant        @PlantFibre
+-FreshWaterWeed                     0.5     0.1    4          -5     30   2000       Cut        Plant        @PlantFibre
         ^Leaf:6:s|0.2
         ~m:Water,t:liquid;0.001;200;1;EXIST
         #Normal:Mountain:Ice:Woods:Growth
         cGreen
 
--Diatom                             0.8     0.0001 3          -100   90   200000     Cut        Plant        @PlantFibre
-        ~D(m:Water||m:SaltWater),t:liquid;0.00000001;200;1;EXIST
+-Diatom                             0.5     0.0001 3          -100   90   200000     Cut        Plant        @PlantFibre
+        ~D(m:Water||m:SaltWater),t:liquid;0.00000001;200000;1;EXIST
         cGreen
 
 
 -PhotosyntheticDinoflagellate       0.7     0.0002 3          -70   90   100000     Cut        Plant        @PlantFibre
-        ~D(m:Water||m:SaltWater),t:liquid;0.001;200;1;EXIST
+        ~D(m:Water||m:SaltWater),t:liquid;0.001;200000;1;EXIST
         cGreen

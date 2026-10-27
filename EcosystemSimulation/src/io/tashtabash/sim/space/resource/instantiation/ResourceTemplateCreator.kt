@@ -124,9 +124,11 @@ class ResourceTemplateCreator(
 
         val lifespan =
             if (tags[3] == "inf")
-                Double.POSITIVE_INFINITY
+                Lifespan.Turns(Int.MAX_VALUE) // I don't want to figure out what will happen w/ MAX_VALUE in years now
+            else if (tags[3][0] == 'y')
+                Lifespan.Years(tags[3].drop(1).toDouble())
             else
-                tags[3].toDouble()
+                Lifespan.Turns(tags[3].toInt())
 
         val sizeRange = parseSizeRange(tags[2])
 

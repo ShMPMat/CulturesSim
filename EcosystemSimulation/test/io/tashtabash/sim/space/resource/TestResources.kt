@@ -14,7 +14,7 @@ fun createTestGenome(
     tags: Set<ResourceTag> = emptySet(),
     actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
     behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut),
-    lifespan: Double = 100.0,
+    lifespan: Lifespan = Lifespan.Years(100.0),
 ): Genome {
     return Genome(
         name = name,
@@ -46,7 +46,7 @@ fun createTestResource(
     tags: Set<ResourceTag> = emptySet(),
     actions: Map<ResourceAction, MutableList<Resource>> = mapOf(),
     behaviour: Behaviour = Behaviour(.0, .0, .0, .0, OverflowType.Cut),
-    lifespan: Double = 100.0,
+    lifespan: Lifespan = Lifespan.Years(100.0),
 ): Resource =
     ResourceCore(createTestGenome(name, legacy, sizeRange, primaryMaterial, tags, actions, behaviour, lifespan))
         .fullCopy()

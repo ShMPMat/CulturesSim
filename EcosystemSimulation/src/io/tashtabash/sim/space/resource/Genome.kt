@@ -6,8 +6,6 @@ import io.tashtabash.sim.space.resource.dependency.ResourceDependency
 import io.tashtabash.sim.space.resource.material.Material
 import io.tashtabash.sim.space.resource.tag.ResourceTag
 import kotlin.math.ceil
-import kotlin.math.max
-import kotlin.math.min
 
 
 class Genome(
@@ -21,8 +19,8 @@ class Genome(
     val behaviour: Behaviour,
     val appearance: Appearance,
     val hasLegacy: Boolean,
-    val lifespan: Double,
-    val defaultAmount: Int, // The amount spawned at once; also the natural amount per DENSITY_REFERENCE_AREA_KM2
+    val lifespan: Lifespan,
+    val defaultAmount: Int, // The amount spawned at once; also the natural amount per 1 km^2
     val legacy: BaseName?,
     val dependencies: List<ResourceDependency>,
     tags: Set<ResourceTag>,
@@ -32,6 +30,15 @@ class Genome(
     val parts: MutableList<Resource> = mutableListOf()
 ) {
     val size = sizeRange.first.avg(sizeRange.second)
+
+    fun computeLifespan(tickSeconds: Long): Int =
+        when (lifespan) {
+            is Lifespan.Turns -> lifespan.turns
+            is Lifespan.Years -> (lifespan.years * data.yearDurationDays * data.dayDurationSeconds / tickSeconds)
+                .coerceAtLeast(1.0)
+                .toInt()
+        }
+
     // The amount per tile after which the Resource starts overflowing
     fun naturalDensity(area: Double): Int =
         ceil(area * defaultAmount).toInt()
@@ -61,7 +68,7 @@ class Genome(
         behaviour: Behaviour = this.behaviour,
         appearance: Appearance = this.appearance,
         hasLegacy: Boolean = this.hasLegacy,
-        lifespan: Double = this.lifespan,
+        lifespan: Lifespan = this.lifespan,
         defaultAmount: Int = this.defaultAmount,
         legacy: BaseName? = this.legacy,
         dependencies: List<ResourceDependency> = this.dependencies,
@@ -145,10 +152,15 @@ typealias BaseName = String
 data class Size(val x: Double, val y: Double, val z: Double) {
     constructor(dimension: Double) : this(dimension, dimension, dimension)
 
-    val max = max(x, max(y, z))
-    val min = min(x, min(y, z))
+    val max = maxOf(x, y, z)
+    val min = minOf(x, y, z)
 
     operator fun times(other: Double) = Size(x * other, y * other, z * other)
 
     fun avg(other: Size) = Size((x + other.x) / 2, (y + other.y) / 2, (z + other.z) / 2)
+}
+
+sealed interface Lifespan {
+    class Turns(val turns: Int): Lifespan
+    class Years(val years: Double): Lifespan
 }

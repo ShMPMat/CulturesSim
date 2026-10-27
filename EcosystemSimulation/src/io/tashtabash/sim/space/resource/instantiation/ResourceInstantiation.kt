@@ -265,7 +265,7 @@ private val phonyResource = Resource(
             Behaviour(.0, .0, .0, .0, OverflowType.Ignore),
             Appearance(null, null, null),
             false,
-            .0,
+            Lifespan.Years(.0),
             1,
             null,
             emptyList(),

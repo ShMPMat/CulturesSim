@@ -36,7 +36,7 @@ open class Resource private constructor(
     // Precomputed hash for quick comparisons
     private var _hash = 0
 
-    //How many additional years added to this Resource due to bad environment.
+    //How many additional years added to this Resource due to bad environment (in fraction)
     protected var deathOverhead = .0
 
     // Food left over by ConsumeDependencies; create later to not stress short-lived Resource copies
@@ -227,7 +227,7 @@ open class Resource private constructor(
 
         for (dependency in genome.dependencies) {
             val satisfaction = dependency.satisfactionPercent(tile, this)
-            deathOverhead += (1 - satisfaction) * genome.lifespan
+            deathOverhead += 1 - satisfaction
         }
 
         val resources = genome.conversionCore.probabilityActions.flatMap { applyProbabilityAction(it, tile) }
@@ -237,13 +237,13 @@ open class Resource private constructor(
         expand(tile)
         distribute(tile)
 
-        result += naturalDeath().map { tile to it }
+        result += naturalDeath(tile.scale.tickDurationSeconds).map { tile to it }
 
         return ResourceUpdateResult(amount > 0, result)
     }
 
-    protected open fun naturalDeath(): List<Resource> {
-        val deadAmount = calculateDeadAmount()
+    protected open fun naturalDeath(tickSeconds: Long): List<Resource> {
+        val deadAmount = calculateDeadAmount(tickSeconds)
         val shouldDie = deadAmount >= 1.0 || deadAmount.testProbability()
         if (!shouldDie)
             return emptyList()
@@ -256,8 +256,8 @@ open class Resource private constructor(
         return applyActionOrEmpty(specialActions.getValue("_OnDeath_"), deadNumber)
     }
 
-    protected open fun calculateDeadAmount() = // deathTurn isn't used for now
-        ((deathOverhead + 1) / genome.lifespan).coerceAtMost(1.0) * amount
+    protected open fun calculateDeadAmount(tickSeconds: Long) = // deathTurn isn't used for now
+        (deathOverhead + 1.0 / genome.computeLifespan(tickSeconds)).coerceAtMost(1.0) * amount
 
     private fun applyProbabilityAction(action: ResourceProbabilityAction, tile: Tile): List<TiledResource> {
         val expectedValue = activeAmount * action.probability
@@ -366,10 +366,7 @@ open class Resource private constructor(
     }
 
     private val activePart: Double
-        get() =
-            if (genome.lifespan != Double.POSITIVE_INFINITY)
-                    (genome.lifespan - deathOverhead) / genome.lifespan
-            else 1.0
+        get() = (1.0 - deathOverhead).coerceAtLeast(.0)
 
     private val activeAmount: Double
         get() = max(1.0, amount * activePart)

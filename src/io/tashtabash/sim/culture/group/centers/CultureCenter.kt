@@ -83,10 +83,10 @@ class CultureCenter(
         val meaningPart = if (resource.hasMeaning) 3 else 1
         val desire = getResourceDesirability(resource)
         val uniqueness = resource.externalFeatures.size + 1
-        val durability =
-                if (resource.genome.lifespan < 1_000_000_000)
-                    log(resource.genome.lifespan, 10.0).toInt() + 1
-                else 1
+        val lifespan = resource.genome.computeLifespan(SpaceData.data.tickDurationSeconds.toLong())
+            .coerceAtMost(1_000_000_000) // Clap to not get infinity
+            .toDouble()
+        val durability = log(lifespan, 10.0).toInt() + 1
         val accessibility = getResourceAccessibility(resource)
 
         val value = base * meaningPart * desire * uniqueness * durability * accessibility
