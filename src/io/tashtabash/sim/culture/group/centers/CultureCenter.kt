@@ -19,12 +19,12 @@ import kotlin.math.log
 
 
 class CultureCenter(
-        private val group: Group,
-        val memePool: GroupMemes,
-        val traitCenter: TraitCenter,
-        val memoryCenter: MemoryCenter,
-        val cultureAspectCenter: CultureAspectCenter,
-        val aspectCenter: AspectCenter
+    private val group: Group,
+    val memePool: GroupMemes,
+    val traitCenter: TraitCenter,
+    val memoryCenter: MemoryCenter,
+    val cultureAspectCenter: CultureAspectCenter,
+    val aspectCenter: AspectCenter
 ) {
     val requestCenter = RequestCenter()
 
@@ -34,10 +34,9 @@ class CultureCenter(
 
     fun addAspiration(labeler: ResourceLabeler) = group.resourceCenter.addNeeded(labeler, 100)
 
-    fun addResourceWant(resource: Resource) = cultureAspectCenter.addCultureAspect(CherishedResource(
-        resource,
-        getRandom()
-    ))
+    fun addResourceWant(resource: Resource) = cultureAspectCenter.addCultureAspect(
+        CherishedResource(resource, getRandom())
+    )
 
     val meaning: Meme
         get() = memePool.valuableMeme
@@ -46,9 +45,11 @@ class CultureCenter(
         val aspects = aspectCenter.finishUpdate()
         aspects.forEach {
             memePool.addAspectMemes(it)
-            memePool.addMemeCombination(makeMeme(group).addPredicate(
+            memePool.addMemeCombination(
+                makeMeme(group).addPredicate(
                     Meme("acquireAspect").addPredicate(Meme(it.name))
-            ))
+                )
+            )
         }
         return aspects
     }
@@ -108,7 +109,7 @@ class CultureCenter(
     private fun getResourceAccessibility(resource: Resource): Int {
         val conglomerate = group.parentGroup.subgroups
         val others = group.relationCenter.relations
-                .filter { it.other.parentGroup != group.parentGroup }
+            .filter { it.other.parentGroup != group.parentGroup }
 
         return when {
             resource.genome.getTagLevel(desirableTag) == 0.0 -> 1
@@ -127,7 +128,7 @@ class CultureCenter(
     }
 
     private fun isResourceDesirable(resource: Resource) =
-            !group.resourceCenter.pack.contains(resource) && !group.populationCenter.turnResources.contains(resource)
+        !group.resourceCenter.pack.contains(resource) && !group.populationCenter.turnResources.contains(resource)
 
     override fun toString() = """
         |$aspectCenter
