@@ -64,7 +64,7 @@ class WindCenter internal constructor() {
         if (tile.type == master.type)
             change *= 5
 
-        val level = max(tile.temperature - master.temperature, 0.0) / change
+        val level = max(tile.temperature - master.temperature, .0) / change
         if (level > 0)
             _newWind.changeLevelOnTile(tile, level)
     }
