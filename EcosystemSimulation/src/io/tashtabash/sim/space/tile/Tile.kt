@@ -166,7 +166,7 @@ class Tile(
     fun getNeighbours(predicate: (Tile) -> Boolean) = neighbours.filter(predicate)
 
     private val radiusCache = arrayOfNulls<List<Tile>>(10).also {
-        it[0] = listOf()
+        it[0] = emptyList()
     }
 
     fun getTilesInRadius(radius: Int): List<Tile> {
