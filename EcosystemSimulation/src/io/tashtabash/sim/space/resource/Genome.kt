@@ -161,6 +161,10 @@ data class Size(val x: Double, val y: Double, val z: Double) {
 }
 
 sealed interface Lifespan {
-    class Turns(val turns: Int): Lifespan
-    class Years(val years: Double): Lifespan
+    class Turns(val turns: Int): Lifespan {
+        override fun toString() = "$turns turns"
+    }
+    class Years(val years: Double): Lifespan {
+        override fun toString() = "$years years"
+    }
 }
