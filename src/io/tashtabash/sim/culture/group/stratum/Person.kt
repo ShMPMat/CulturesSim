@@ -65,7 +65,7 @@ class Person(ownershipMarker: OwnershipMarker) : Resource(
     override fun naturalDeath(tickSeconds: Long): List<Resource> {
         val toDie = calculateDeadAmount(tickSeconds).toInt()
         if (toDie > 0) {
-            val deadAmount = min(amount, (toDie / genome.computeLifespan(tickSeconds)).toInt() + 1)
+            val deadAmount = min(amount, toDie / genome.computeLifespan(tickSeconds) + 1)
 
             takers += Taker.DeathTaker to deadAmount
             amount -= deadAmount
