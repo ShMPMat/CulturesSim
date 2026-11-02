@@ -4,7 +4,6 @@ import io.tashtabash.random.singleton.RandomSingleton
 import io.tashtabash.random.singleton.chanceOfNot
 import io.tashtabash.sim.Controller.Companion.session
 import io.tashtabash.sim.event.Cataclysm
-import io.tashtabash.sim.event.Type
 import io.tashtabash.sim.event.of
 import io.tashtabash.sim.space.resource.Resource
 import io.tashtabash.sim.space.resource.Taker
