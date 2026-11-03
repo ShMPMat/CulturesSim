@@ -45,12 +45,8 @@ interface Territory {
 
     fun getMostUsefulTileOnOuterBrink(predicate: (Tile) -> Boolean, mapper: (Tile) -> Int): Tile? =
         filterOuterBrink(predicate)
-            .map { it to mapper(it) }
-            .maxByOrNull { it.second }
-            ?.first
+            .maxByOrNull { mapper(it) }
 
     fun getMostUsefulTileOnOuterBrink(mapper: (Tile) -> Int): Tile? =
-        outerBrink.map { it to mapper(it) }
-            .maxByOrNull { it.second }
-            ?.first
+        outerBrink.maxByOrNull { mapper(it) }
 }
