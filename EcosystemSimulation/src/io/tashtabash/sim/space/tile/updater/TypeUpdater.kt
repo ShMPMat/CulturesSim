@@ -13,7 +13,7 @@ class TypeUpdater(val water: Resource): TileUpdater {
         else if (tile.type in listOf(Tile.Type.Normal, Tile.Type.Woods, Tile.Type.Growth)) when {
             tile.resourcePack.any { it.tags.any { t -> t.name == "Tree" } } ->
                 tile.setType(Tile.Type.Woods, false)
-            tile.resourcePack.any { it.genome.type === ResourceType.Plant } ->
+            tile.resourcePack.any { it.genome.type === ResourceType.Plant && it.genome.size.max >= .01 } ->
                 tile.setType(Tile.Type.Growth, false)
             else -> tile.setType(Tile.Type.Normal, false)
         } else if (tile.type == Tile.Type.Water && tile.temperature < -10)
