@@ -16,7 +16,7 @@ interface DependencyParser {
     fun parse(tag: String): ResourceDependency?
 
     fun parseUnsafe(tag: String) = parse(tag)
-            ?: throw DataInitializationError("Unknown dependency with tags: $tag")
+        ?: throw DataInitializationError("Unparsable dependency: '$tag'")
 }
 
 open class DefaultDependencyParser : DependencyParser {
