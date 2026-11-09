@@ -16,8 +16,8 @@ import io.tashtabash.utils.chompToLines
 
 fun aliveResourcesCounter(world: World): String {
     val resourceAmounts = world.resourcePool.all
-            .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
-            .associate { it.baseName to ResourceCounter() }
+        .filter { it.genome.type in listOf(ResourceType.Animal, ResourceType.Plant) }
+        .associate { it.baseName to ResourceCounter() }
     world.map.tiles.forEach { t ->
         t.resourcePack.resources.forEach {
             resourceAmounts[it.baseName]?.add(it)
@@ -34,20 +34,20 @@ fun aliveResourcesCounter(world: World): String {
     }
 
     return chompToLines(lines, 35)
-            .append("\u001b[30m")
-            .toString()
+        .append("\u001b[30m")
+        .toString()
 }
 
 fun allResourcesCounter(world: World, shouldFree: Boolean): String {
     val allResources = world.map.tiles
-            .flatMap { t -> t.resourcePack.resources.map { it.exactCopy() } }
-            .map { if (shouldFree) it.free() else it }
+        .flatMap { t -> t.resourcePack.resources.map { it.exactCopy() } }
+        .map { if (shouldFree) it.free() else it }
 
     val pack = ResourcePack(allResources)
 
     return pack.resources
-            .sortedBy { it.amount }
-            .joinToString("\n") { "${it.fullName}, ${it.ownershipMarker} ${it.amount};" }
+        .sortedBy { it.amount }
+        .joinToString("\n") { "${it.fullName}, ${it.ownershipMarker} ${it.amount};" }
 }
 
 data class ResourceCounter(var amount: Int = 0, var tilesAmount: Int = 0) {
@@ -59,14 +59,14 @@ data class ResourceCounter(var amount: Int = 0, var tilesAmount: Int = 0) {
 
 fun outputResourceCharacteristics(resource: Resource): String {
     val actionConversions = resource.genome.conversionCore.allActionConversions.entries
-            .joinToString("\n") { (a, v) ->
-                val needClause = if (a.dependencies.isNotEmpty())
-                    a.dependencies.joinToString(",", " needs ", " ")
-                else ""
+        .joinToString("\n") { (a, v) ->
+            val needClause = if (a.dependencies.isNotEmpty())
+                a.dependencies.joinToString(",", " needs ", " ")
+            else ""
 
-                a.technicalName + needClause + ": " +
-                        v.joinToString { it.fullName + ":" + it.amount }
-            }
+            a.technicalName + needClause + ": " +
+                    v.joinToString { it.fullName + ":" + it.amount }
+        }
     val dependencies = resource.genome.dependencies.joinToString("\n")
     val parts = resource.genome.parts.joinToString("\n") { p ->
         outputResourceCharacteristics(p).lines().joinToString("\n") { "--$it" }
@@ -191,5 +191,5 @@ fun printEvents(events: List<Event>, amount: Int, predicate: (Event) -> Boolean)
 }
 
 fun printRegexEvents(events: List<Event>, amount: Int, regex: Regex) = printEvents(events, amount) {
-        regex.containsMatchIn(it.toString())
+    regex.containsMatchIn(it.toString())
 }
