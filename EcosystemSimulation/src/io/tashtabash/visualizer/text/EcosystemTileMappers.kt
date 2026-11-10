@@ -117,28 +117,30 @@ fun flowMapper(tile: Tile): String {
     return direction
 }
 
+private fun neighbourShift(shift: Int) = when {
+    shift > 1 -> -1
+    shift < -1 -> 1
+    else -> shift
+}
+
 fun windMapper(tile: Tile): String {
     var direction: String
     val level = tile.wind.maxLevel
     direction = when {
-        level > 4 -> "\u001b[41m"
-        level > 3 -> "\u001b[43m"
-        level > 2 -> "\u001b[47m"
-        level > 1 -> "\u001b[46m"
+        level > 8 -> "\u001b[41m"
+        level > 6 -> "\u001b[43m"
+        level > 4 -> "\u001b[47m"
+        level > 2 -> "\u001b[46m"
         else -> "\u001b[44m"
     }
     if (tile.wind.affectedTiles.isNotEmpty()) {
-        val affected = tile.wind.affectedTiles.sortedByDescending { it.second }[0].first
+        val affected = tile.wind.affectedTiles.maxByOrNull { it.second }!!.first
         direction += when {
-            affected.x - tile.x == 1 && affected.y - tile.y == 1 -> "J"
-            affected.x - tile.x == 1 && affected.y - tile.y == -1 -> "L"
-            affected.x - tile.x == -1 && affected.y - tile.y == 1 -> "⏋"
-            affected.x - tile.x == -1 && affected.y - tile.y == -1 -> "Г"
-            affected.x - tile.x == 1 -> "V"
-            affected.x - tile.x == -1 -> "^"
-            affected.y - tile.y == 1 -> ">"
-            affected.y - tile.y == -1 -> "<"
-            else -> " "//TODO look into it
+            neighbourShift(affected.x - tile.x) == 1 -> "V"
+            neighbourShift(affected.x - tile.x) == -1 -> "^"
+            neighbourShift(affected.y - tile.y) == 1 -> ">"
+            neighbourShift(affected.y - tile.y) == -1 -> "<"
+            else -> " "
         }
     } else
         direction = " "
