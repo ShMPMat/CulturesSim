@@ -8,8 +8,8 @@
         cWhite
         R0.1
 
--Rabbit                             0.2     0.2    y10        -5     20   100      Migrate   Animal       @Meat
-        ~m:PlantFibre,>=0.03;0.2;20;0;CONSUME
+-Rabbit                             0.1     0.2    y10        -5     20   100      Migrate   Animal       @Meat
+        ~m:PlantFibre,>=0.03;0.2;100;0;CONSUME
         +_OnDeath_/Carcass:2
         +_Jump_prob_0.8_f
         ^Meat:3 ^Fat:2 ^Bone:3:s|0.05 ^Fur:2 ^Blood:4 ^Heart:1:s|.025
@@ -96,7 +96,7 @@
         cGrey
         R0.2 D0.4 S1.8
 
--Hedgehog                           0.15    0.2    12         0      20   40       Migrate   Animal       @Meat
+-Hedgehog                           0.15    0.2    y4         0      20   40       Migrate   Animal       @Meat
         ~D(A(m:Meat)||m:Fungus||A(m:Pulp)),>=0.004,<=0.06;0.1;1.25;0;CONSUME
         +_OnDeath_/Carcass:2
         ^Meat:2 ^Fat:1 ^Bone:2:s|0.1 ^Fur:1 ^Spike:4 ^Blood:3 ^Heart:1:s|.025
@@ -104,7 +104,7 @@
         cGrey
         R0.4 D0.1 S0.3
 
--Desman                             0.5     0.2    16         0      20   25       Migrate   Animal       @Meat
+-Desman                             0.5     0.2    y4         0      20   25       Migrate   Animal       @Meat
         ~A(m:Meat),>=0.005,<=0.06;0.3;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         +_OnDeath_/Carcass:2
@@ -113,7 +113,7 @@
         cGrey
         C0.3 R0.6 S0.25
 
--Beaver                             0.4     0.9    20         0      20   15       Migrate   Animal       @Meat
+-Beaver                             0.4     0.9    y12        0      20   15       Migrate   Animal       @Meat
         ~D(A(m:PlantFibre)||A(m:Wood)),>=0.05;0.4;1.25;0;CONSUME
         ~r:Water;0.001;200;1;EXIST
         +_buildDam_prob_0.001_f/~m:Wood,>=0.1;4;200;0;CONSUME/BeaverDam:1
@@ -122,8 +122,8 @@
         #Water
         cBrown
         C0.2 R0.4 D0.1 S0.2
-//WHY ARE THERE BEAVERS IN THE OCEAN
--VampireBat                         0.2     0.1    15         5      30   25       Migrate   Animal       @Meat
+
+-VampireBat                         0.2     0.1    y15        5      30   25       Migrate   Animal       @Meat
         ~P(m:Blood),>=0.2;0.05;1.1;1;EXIST
         +_OnDeath_/Carcass:1
         +_Fly_prob_0.98_f
@@ -132,7 +132,7 @@
         cBlack
         R0.3 D0.1 S4
 
--PolarBear                          0.08    2.3    30         -30    0    7        Migrate   Animal       @Meat
+-PolarBear                          0.08    2.3    y18        -30    0    7        Migrate   Animal       @Meat
         ~m:Meat,>=0.1;0.1;1.25;1;CONSUME
         +_OnDeath_/Carcass:23
         +_Roar_prob_0.01_f
@@ -141,7 +141,7 @@
         cWhite
         C0.1 D0.9 S2.5
 
--Seal                               0.4     1.5    25         -30    10   30       Migrate   Animal       @Meat
+-Seal                               0.4     1.5    y25        -30    10   30       Migrate   Animal       @Meat
         ~m:Meat,>=0.05,<=0.5,h:Water;0.2;10;1;CONSUME
         ~D(m:Water||m:SaltWater),t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:15
@@ -151,7 +151,7 @@
         cWhite
         C0.3 R0.2 D0.1 S2
 
--SeaOtter                           0.2     1      15         -20    10   40       Migrate   Animal       @Meat
+-SeaOtter                           0.2     1      y20        -20    10   40       Migrate   Animal       @Meat
         ~m:Meat,>=0.01,<=0.2,h:Water;0.2;1.25;1;CONSUME
         ~m:SaltWater,t:liquid;0.001;200;1;EXIST
         +_OnDeath_/Carcass:10
@@ -270,7 +270,7 @@
         S0
 
 -Hawk                               0.0     0.12   11         0      30   5        Migrate   Animal       @Meat
-        ~m:Meat,<=0.09,>=0.009,!!r:HawkEgg;1;1.25;0;CONSUME
+        ~m:Meat,<=0.09,>=0.009,!!r:HawkEgg;1;1.25;1;CONSUME
         +_OnDeath_/Carcass:1
         +_BuildNest_prob_0.01_f/~m:PlantFibre,>=0.05,<=0.4;0.15;200;0;CONSUME/BirdNest:1
         +_LayEggs_prob_0.07_f/~r:BirdNest;1;200;0;EXIST/HawkEgg:5
@@ -326,7 +326,7 @@
         S0
 
 -HerbivorousCricket                 0.0     0.02   5          0      30   500      Migrate   Animal       @Chitin
-        ~m:PlantFibre,>=0.001;0.01;100;0;CONSUME
+        ~m:PlantFibre,>=0.001;0.01;200;0;CONSUME
         +_LayEggs_prob_0.02_t/HerbivorousCricketEgg:25
         ^Chitin:1:s|0.01 ^Meat:1:s|0.01 ^Heart:1:s|.025
         #Water
